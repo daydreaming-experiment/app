@@ -1,0 +1,60 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/RelativeLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:columnCount="2"
+    android:orientation="horizontal" >
+
+    <TextView
+        android:id="@+id/textExperimentRunning"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="30dp"
+        android:text="@string/text_experiment_running"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <ToggleButton
+        android:id="@+id/toggleExperimentRunning"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/textExperimentRunning"
+        android:layout_alignBottom="@+id/textExperimentRunning"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="30dp"
+        android:textOff="@string/toggle_experiment_running_off"
+        android:textOn="@string/toggle_experiment_running_on" />
+
+    <TextView
+        android:id="@+id/textDaysElapsed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textExperimentRunning"
+        android:layout_below="@+id/toggleExperimentRunning"
+        android:layout_marginTop="30dp"
+        android:text="@string/text_days_elapsed"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/textDaysElapsedNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/textDaysElapsed"
+        android:layout_alignBottom="@+id/textDaysElapsed"
+        android:layout_alignRight="@+id/toggleExperimentRunning"
+        android:text="XX/YY"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textDaysElapsed"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:text="@string/button_settings" />
+
+</RelativeLayout>
