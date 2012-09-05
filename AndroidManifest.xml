@@ -13,12 +13,24 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name=".DashboardActivity"
-            android:label="@string/app_name" >
+            android:label="@string/dashboard_title_activity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".FirstLaunchWelcomeActivity"
+            android:label="@string/firstLaunchWelcome_title_activity" >
+        </activity>
+        <activity
+            android:name=".ReLaunchWelcomeActivity"
+            android:label="@string/reLaunchWelcome_title_activity" >
+        </activity>
+        <activity
+            android:name=".FirstLaunchDescriptionActivity"
+            android:label="@string/firstLaunchDescription_title_activity" >
         </activity>
     </application>
 
