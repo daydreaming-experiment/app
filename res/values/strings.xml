@@ -17,6 +17,16 @@
     <string name="firstLaunchDescription_title_activity">Description</string>
     <string name="firstLaunchDescription_text_title">What\'s the experiment</string>
     <string name="firstLaunchDescription_text_description">Here goes the description of what it\s about (possibly with pictures?)</string><string name="firstLaunchDescription_button_next">Next</string>
+    <string name="firstLaunchMeasures_text_measures">What the application will measure:</string>
+    <string name="firstLaunchMeasures_text_network_location">Coarse location (network-based)</string><string name="firstLaunchMeasures_text_gps_location">Finer location (GPS)</string><string name="firstLaunchMeasures_text_answers">Your answers to the questions asked</string><string name="firstLaunchMeasures_text_times">The times at which the questions are asked</string><string name="firstLaunchMeasures_text_anonymous">Please notice that all the data collected is ANONYMOUS: as researchers we have no means of identifying who the data collected comes from.</string>
+    <string name="firstLaunchMeasures_button_next">Keep going</string>
+    <string name="firstLaunchMeasures_text_settings">Your settings need to be changed to access location:</string>
+    <string name="firstLaunchMeasures_button_settings">Settings&#8230;</string>
+    <string name="firstLaunchMeasures_title_activity">Measures &amp; Privacy</string>
+    
+    
+    
+    
     
 
 </resources>

@@ -6,6 +6,8 @@
     <uses-sdk
         android:minSdkVersion="10"
         android:targetSdkVersion="15" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
     <application
         android:icon="@drawable/ic_launcher"
@@ -31,6 +33,10 @@
         <activity
             android:name=".FirstLaunchDescriptionActivity"
             android:label="@string/firstLaunchDescription_title_activity" >
+        </activity>
+        <activity
+            android:name=".FirstLaunchMeasuresActivity"
+            android:label="@string/firstLaunchMeasures_title_activity" >
         </activity>
     </application>
 

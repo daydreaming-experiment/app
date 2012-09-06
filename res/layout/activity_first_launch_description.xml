@@ -31,6 +31,7 @@
         android:layout_alignParentRight="true"
         android:layout_marginBottom="50dp"
         android:layout_marginRight="70dp"
-        android:text="@string/firstLaunchDescription_button_next" />
+        android:text="@string/firstLaunchDescription_button_next"
+        android:onClick="onClick_buttonNext" />
 
 </RelativeLayout>

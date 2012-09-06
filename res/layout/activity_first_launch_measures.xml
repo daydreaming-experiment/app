@@ -1,0 +1,109 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <TextView
+        android:id="@+id/firstLaunchMeasures_textMeasures"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="50dp"
+        android:text="@string/firstLaunchMeasures_text_measures"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/firstLaunchMeasures_textMeasures"
+        android:layout_alignRight="@+id/firstLaunchMeasures_textMeasures"
+        android:layout_below="@+id/firstLaunchMeasures_textMeasures"
+        android:layout_marginLeft="20dp"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/firstLaunchMeasures_textNetworkLocation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/cross_36"
+            android:drawablePadding="@dimen/status_padding"
+            android:paddingTop="@dimen/status_padding"
+            android:text="@string/firstLaunchMeasures_text_network_location" />
+
+        <TextView
+            android:id="@+id/firstLaunchMeasures_textGPSLocation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/cross_36"
+            android:drawablePadding="@dimen/status_padding"
+            android:paddingTop="@dimen/status_padding"
+            android:text="@string/firstLaunchMeasures_text_gps_location" />
+
+        <TextView
+            android:id="@+id/firstLaunchMeasures_textAnswers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/check_36"
+            android:drawablePadding="@dimen/status_padding"
+            android:paddingTop="@dimen/status_padding"
+            android:text="@string/firstLaunchMeasures_text_answers" />
+
+        <TextView
+            android:id="@+id/firstLaunchMeasures_textTimes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/check_36"
+            android:drawablePadding="@dimen/status_padding"
+            android:paddingTop="@dimen/status_padding"
+            android:text="@string/firstLaunchMeasures_text_times" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/firstLaunchMeasures_textAnonymous"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/linearLayout1"
+        android:layout_marginLeft="@dimen/status_padding"
+        android:layout_marginRight="@dimen/status_padding"
+        android:layout_marginTop="@dimen/status_padding"
+        android:text="@string/firstLaunchMeasures_text_anonymous" />
+
+    <TextView
+        android:id="@+id/firstLaunchMeasures_textSettings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/firstLaunchMeasures_textAnonymous"
+        android:layout_below="@+id/firstLaunchMeasures_textAnonymous"
+        android:layout_marginTop="20dp"
+        android:text="@string/firstLaunchMeasures_text_settings"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:visibility="visible" />
+
+    <Button
+        android:id="@+id/firstLaunchMeasures_buttonNext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@+id/linearLayout1"
+        android:layout_marginBottom="20dp"
+        android:alpha="0.3"
+        android:clickable="false"
+        android:text="@string/firstLaunchMeasures_button_next"
+        android:onClick="onClick_buttonNext" />
+
+    <Button
+        android:id="@+id/firstLaunchMeasures_buttonSettings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/firstLaunchMeasures_buttonNext"
+        android:layout_alignBottom="@+id/firstLaunchMeasures_buttonNext"
+        android:layout_alignLeft="@+id/linearLayout1"
+        android:text="@string/firstLaunchMeasures_button_settings"
+        android:visibility="visible"
+        android:onClick="onClick_buttonSettings" />
+
+</RelativeLayout>
