@@ -1,8 +1,8 @@
 package com.brainydroid.daydreaming;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,13 +11,14 @@ import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
-public class FirstLaunchMeasuresActivity extends Activity {
+public class FirstLaunchMeasuresActivity extends FragmentActivity {
 
 	private TextView textNetworkLocation;
 	private TextView textGPSLocation;
@@ -26,6 +27,7 @@ public class FirstLaunchMeasuresActivity extends Activity {
 	private Button buttonNext;
 
 	private SharedPreferences mPrefs;
+	private SharedPreferences.Editor ePrefs;
 	private LocationManager locationManager;
 
 	private boolean networkLocEnabled;
@@ -44,8 +46,12 @@ public class FirstLaunchMeasuresActivity extends Activity {
 		buttonSettings = (Button) findViewById(R.id.firstLaunchMeasures_buttonSettings);
 		buttonNext = (Button) findViewById(R.id.firstLaunchMeasures_buttonNext);
 
-		mPrefs = getPreferences(MODE_PRIVATE);
+		mPrefs = getSharedPreferences(PreferenceKeys.PREFS_NAME, MODE_PRIVATE);
+		ePrefs = mPrefs.edit();
 		locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+
+		ePrefs.putBoolean(PreferenceKeys.FIRST_LAUNCH_STARTED, true);
+		ePrefs.commit();
 	}
 
 	@Override
@@ -137,39 +143,81 @@ public class FirstLaunchMeasuresActivity extends Activity {
 	}
 
 	public void onClick_buttonSettings(View view) {
+		launchSettings();
+	}
+
+	public void launchSettings() {
 		Intent settingsIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
 		startActivity(settingsIntent);
 	}
 
 	public void onClick_buttonNext(View view) {
 		if (adjustSettingsOff) {
-			// Open next activity
-			Toast.makeText(FirstLaunchMeasuresActivity.this, "Will open next activity",
-					Toast.LENGTH_SHORT).show();
+			launchDashboard();
 		} else {
-			// Suggest to adjust the settings
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setMessage(R.string.firstLaunchMeasures_alert_settings)
-			//.setCancelable(false)
-			.setNegativeButton(R.string.firstLaunchMeasures_alert_button_gotosettings,
+			DialogFragment settingsAlert = SettingsAlertDialogFragment.newInstance(
+					R.string.firstLaunchMeasures_alert_title,
+					R.string.firstLaunchMeasures_alert_text,
+					R.string.firstLaunchMeasures_alert_button_gotosettings,
+					R.string.firstLaunchMeasures_alert_button_ignore);
+			settingsAlert.show(getSupportFragmentManager(), "settingsAlert");
+		}
+	}
+
+	public void launchDashboard() {
+		ePrefs.putBoolean(PreferenceKeys.FIRST_LAUNCH_COMPLETED, true);
+		ePrefs.commit();
+		Intent dashboardIntent = new Intent(this, DashboardActivity.class);
+		startActivity(dashboardIntent);
+	}
+
+	public static class SettingsAlertDialogFragment extends DialogFragment {
+
+		public static SettingsAlertDialogFragment newInstance(int title, int text,
+				int negText, int posText) {
+			SettingsAlertDialogFragment frag = new SettingsAlertDialogFragment();
+			Bundle args = new Bundle();
+			args.putInt("title", title);
+			args.putInt("text", text);
+			args.putInt("negText", negText);
+			args.putInt("posText", posText);
+			frag.setArguments(args);
+			return frag;
+		}
+
+		@TargetApi(11)
+		@Override
+		public Dialog onCreateDialog(Bundle savedInstanceState) {
+			int title = getArguments().getInt("title");
+			int text = getArguments().getInt("text");
+			int negText = getArguments().getInt("negText");
+			int posText = getArguments().getInt("posText");
+
+			AlertDialog.Builder alertSettings = new AlertDialog.Builder(getActivity())
+			.setTitle(title)
+			.setMessage(text)
+			.setPositiveButton(posText,
 					new DialogInterface.OnClickListener() {
 				@Override
-				public void onClick(DialogInterface dialog, int id) {
-					Intent settingsIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-					startActivity(settingsIntent);
+				public void onClick(DialogInterface dialog, int whichButton) {
+					((FirstLaunchMeasuresActivity)getActivity()).launchDashboard();
 				}
 			})
-			.setPositiveButton(R.string.firstLaunchMeasures_alert_button_ignore,
+			.setNegativeButton(negText,
 					new DialogInterface.OnClickListener() {
 				@Override
-				public void onClick(DialogInterface dialog, int id) {
-					Toast.makeText(FirstLaunchMeasuresActivity.this, "Will open next activity",
-							Toast.LENGTH_SHORT).show();
-					dialog.cancel();
+				public void onClick(DialogInterface dialog, int whichButton) {
+					((FirstLaunchMeasuresActivity)getActivity()).launchSettings();
 				}
 			});
-			AlertDialog dialog = builder.create();
-			dialog.show();
+
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+				alertSettings.setIconAttribute(android.R.attr.alertDialogIcon);
+			} else {
+				alertSettings.setIcon(android.R.drawable.ic_dialog_alert);
+			}
+
+			return alertSettings.create();
 		}
 	}
 }

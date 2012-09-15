@@ -1,8 +1,9 @@
 package com.brainydroid.daydreaming;
 
 public class PreferenceKeys {
-	public final static String FIRST_RUN_STARTED = "firstRunStarted";
-	public final static String FIRST_RUN_COMPLETED = "firstRunCompleted";
+	public final static String PREFS_NAME = "dayDreamingPrefs";
+	public final static String FIRST_LAUNCH_STARTED = "firstLaunchStarted";
+	public final static String FIRST_LAUNCH_COMPLETED = "firstLaunchCompleted";
 	public final static String EXPERIMENT_RUNNING = "experimentRunning";
 	public final static String RECORD_NETWORK_LOCATION = "recordNetworkLocation";
 	public final static String RECORD_GPS_LOCATION = "recordGPSLocation";

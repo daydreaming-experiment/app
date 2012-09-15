@@ -24,7 +24,8 @@
     <string name="firstLaunchMeasures_text_settings_optional">Please change your settings to access location:</string>
     <string name="firstLaunchMeasures_button_settings">Settings&#8230;</string>
     <string name="firstLaunchMeasures_title_activity">Measures &amp; Privacy</string>
-    <string name="firstLaunchMeasures_alert_settings">Your current settings won\'t let the app access location, please change them to make the experiment worth while</string>
+    <string name="firstLaunchMeasures_alert_title">Please adjust your settings</string>
+    <string name="firstLaunchMeasures_alert_text">Your current settings won\'t let the app access location, please change them to make the experiment worth while</string>
     <string name="firstLaunchMeasures_alert_button_gotosettings">Go to settings&#8230;</string>
     <string name="firstLaunchMeasures_alert_button_ignore">Ignore and keep going</string>
 

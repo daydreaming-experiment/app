@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
-import android.widget.Toast;
 
 public class DashboardActivity extends Activity {
 
@@ -15,7 +14,7 @@ public class DashboardActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		mPrefs = getPreferences(MODE_PRIVATE);
+		mPrefs = getSharedPreferences(PreferenceKeys.PREFS_NAME, MODE_PRIVATE);
 		checkFirstRun();
 
 		setContentView(R.layout.activity_dashboard);
@@ -42,15 +41,9 @@ public class DashboardActivity extends Activity {
 	}
 
 	private void checkFirstRun() {
-		if (!mPrefs.getBoolean(PreferenceKeys.FIRST_RUN_COMPLETED, false)) {
-			// Debug
-			Toast.makeText(DashboardActivity.this, "First run never completed", Toast.LENGTH_SHORT).show();
-
+		if (!mPrefs.getBoolean(PreferenceKeys.FIRST_LAUNCH_COMPLETED, false)) {
 			Intent intent;
-			if (!mPrefs.getBoolean(PreferenceKeys.FIRST_RUN_STARTED, false)) {
-				// Debug
-				Toast.makeText(DashboardActivity.this, "First run never even started", Toast.LENGTH_SHORT).show();
-
+			if (!mPrefs.getBoolean(PreferenceKeys.FIRST_LAUNCH_STARTED, false)) {
 				intent = new Intent(this, FirstLaunchWelcomeActivity.class);
 			} else {
 				intent = new Intent(this, ReLaunchWelcomeActivity.class);
