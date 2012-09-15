@@ -2,7 +2,9 @@ package com.brainydroid.daydreaming;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.LocationManager;
@@ -92,6 +94,7 @@ public class FirstLaunchMeasuresActivity extends Activity {
 
 	@TargetApi(11)
 	private void setAdjustSettingsNecessary() {
+		textSettings.setText(R.string.firstLaunchMeasures_text_settings_necessary);
 		textSettings.setVisibility(View.VISIBLE);
 		buttonSettings.setVisibility(View.VISIBLE);
 		buttonSettings.setClickable(true);
@@ -106,6 +109,7 @@ public class FirstLaunchMeasuresActivity extends Activity {
 
 	@TargetApi(11)
 	private void setAdjustSettingsOptional() {
+		textSettings.setText(R.string.firstLaunchMeasures_text_settings_optional);
 		textSettings.setVisibility(View.VISIBLE);
 		buttonSettings.setVisibility(View.VISIBLE);
 		buttonSettings.setClickable(true);
@@ -144,8 +148,28 @@ public class FirstLaunchMeasuresActivity extends Activity {
 					Toast.LENGTH_SHORT).show();
 		} else {
 			// Suggest to adjust the settings
-			Toast.makeText(FirstLaunchMeasuresActivity.this, "Will suggest to adjust settings again",
-					Toast.LENGTH_SHORT).show();
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setMessage(R.string.firstLaunchMeasures_alert_settings)
+			//.setCancelable(false)
+			.setNegativeButton(R.string.firstLaunchMeasures_alert_button_gotosettings,
+					new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int id) {
+					Intent settingsIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+					startActivity(settingsIntent);
+				}
+			})
+			.setPositiveButton(R.string.firstLaunchMeasures_alert_button_ignore,
+					new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int id) {
+					Toast.makeText(FirstLaunchMeasuresActivity.this, "Will open next activity",
+							Toast.LENGTH_SHORT).show();
+					dialog.cancel();
+				}
+			});
+			AlertDialog dialog = builder.create();
+			dialog.show();
 		}
 	}
 }

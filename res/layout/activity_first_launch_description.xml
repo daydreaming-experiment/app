@@ -1,37 +1,55 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/RelativeLayout3"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <TextView
-        android:id="@+id/firstLaunchDescription_textTitle"
+    <ScrollView
+        android:id="@+id/ScrollView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp"
-        android:gravity="center_horizontal"
-        android:text="@string/firstLaunchDescription_text_title"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:layout_centerVertical="true" >
 
-    <TextView
-        android:id="@+id/firstLaunchDescription_textDescription"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:gravity="center_horizontal"
-        android:text="@string/firstLaunchDescription_text_description" />
-    
-    <Button
-        android:id="@+id/firstLaunchDescription_buttonNext"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="50dp"
-        android:layout_marginRight="70dp"
-        android:text="@string/firstLaunchDescription_button_next"
-        android:onClick="onClick_buttonNext" />
+        <LinearLayout
+            android:id="@+id/LinearLayout3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp" >
+
+            <TextView
+                android:id="@+id/firstLaunchDescription_textTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="50dp"
+                android:gravity="center_horizontal"
+                android:maxWidth="350dp"
+                android:text="@string/firstLaunchDescription_text_title"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <TextView
+                android:id="@+id/firstLaunchDescription_textDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_horizontal"
+                android:maxWidth="350dp"
+                android:text="@string/firstLaunchDescription_text_description" />
+
+            <Button
+                android:id="@+id/firstLaunchDescription_buttonNext"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="50dp"
+                android:drawablePadding="5dp"
+                android:drawableRight="@drawable/arrow_36"
+                android:onClick="onClick_buttonNext"
+                android:text="@string/firstLaunchDescription_button_next" />
+        </LinearLayout>
+    </ScrollView>
 
 </RelativeLayout>
