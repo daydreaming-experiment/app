@@ -2,122 +2,113 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/RelativeLayout4"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:gravity="center" >
 
-    <ScrollView
-        android:id="@+id/ScrollView4"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/linearLayout4"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true" >
+        android:layout_margin="16dp"
+        android:orientation="vertical" >
 
         <LinearLayout
-            android:id="@+id/linearLayout4"
-            android:layout_width="wrap_content"
+            android:id="@+id/LinearLayout4b"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp" >
+            android:layout_marginBottom="8dp"
+            android:orientation="vertical" >
 
             <TextView
                 android:id="@+id/firstLaunchMeasures_textMeasures"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:maxWidth="350dp"
+                android:layout_marginBottom="4dp"
                 android:text="@string/firstLaunchMeasures_text_measures"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <TextView
                 android:id="@+id/firstLaunchMeasures_textNetworkLocation"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/cross_36"
-                android:drawablePadding="@dimen/status_padding"
-                android:maxWidth="350dp"
-                android:paddingTop="@dimen/status_padding"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:drawableLeft="@drawable/cross"
+                android:gravity="center_vertical"
                 android:text="@string/firstLaunchMeasures_text_network_location" />
 
             <TextView
                 android:id="@+id/firstLaunchMeasures_textGPSLocation"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/cross_36"
-                android:drawablePadding="@dimen/status_padding"
-                android:maxWidth="350dp"
-                android:paddingTop="@dimen/status_padding"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:drawableLeft="@drawable/cross"
+                android:gravity="center_vertical"
                 android:text="@string/firstLaunchMeasures_text_gps_location" />
 
             <TextView
                 android:id="@+id/firstLaunchMeasures_textAnswers"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/check_36"
-                android:drawablePadding="@dimen/status_padding"
-                android:maxWidth="350dp"
-                android:paddingTop="@dimen/status_padding"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:drawableLeft="@drawable/check"
+                android:gravity="center_vertical"
                 android:text="@string/firstLaunchMeasures_text_answers" />
 
             <TextView
                 android:id="@+id/firstLaunchMeasures_textTimes"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/check_36"
-                android:drawablePadding="@dimen/status_padding"
-                android:maxWidth="350dp"
-                android:paddingTop="@dimen/status_padding"
-                android:text="@string/firstLaunchMeasures_text_times" />
-
-            <TextView
-                android:id="@+id/firstLaunchMeasures_textAnonymous"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:maxWidth="350dp"
-                android:text="@string/firstLaunchMeasures_text_anonymous" />
-
-            <TextView
-                android:id="@+id/firstLaunchMeasures_textSettings"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="50dp"
-                android:maxWidth="350dp"
-                android:text="@string/firstLaunchMeasures_text_settings_necessary"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:visibility="visible" />
-
-            <RelativeLayout
-                android:id="@+id/RelativeLayout4b"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="50dp"
-                android:orientation="horizontal" >
-
-                <Button
-                    android:id="@+id/firstLaunchMeasures_buttonSettings"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_gravity="left"
-                    android:onClick="onClick_buttonSettings"
-                    android:text="@string/firstLaunchMeasures_button_settings"
-                    android:visibility="visible" />
-
-                <Button
-                    android:id="@+id/firstLaunchMeasures_buttonNext"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentTop="true"
-                    android:alpha="0.3"
-                    android:clickable="false"
-                    android:drawablePadding="5dp"
-                    android:drawableRight="@drawable/arrow_36"
-                    android:onClick="onClick_buttonNext"
-                    android:text="@string/firstLaunchMeasures_button_next" />
-            </RelativeLayout>
+                android:layout_marginTop="4dp"
+                android:drawableLeft="@drawable/check"
+                android:gravity="center_vertical"
+                android:text="@string/firstLaunchMeasures_text_times" />
         </LinearLayout>
-    </ScrollView>
+
+        <TextView
+            android:id="@+id/firstLaunchMeasures_textAnonymous"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="@string/firstLaunchMeasures_text_anonymous" />
+
+        <TextView
+            android:id="@+id/firstLaunchMeasures_textSettings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="@string/firstLaunchMeasures_text_settings_necessary"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:visibility="visible" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp" >
+
+            <Button
+                android:id="@+id/firstLaunchMeasures_buttonSettings"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:onClick="onClick_buttonSettings"
+                android:text="@string/firstLaunchMeasures_button_settings"
+                android:visibility="visible" />
+
+            <Button
+                android:id="@+id/firstLaunchMeasures_buttonNext"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:alpha="0.3"
+                android:clickable="false"
+                android:onClick="onClick_buttonNext"
+                android:text="@string/firstLaunchMeasures_button_next" />
+        </LinearLayout>
+    </LinearLayout>
 
 </RelativeLayout>

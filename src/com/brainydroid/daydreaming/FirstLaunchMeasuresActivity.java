@@ -78,9 +78,9 @@ public class FirstLaunchMeasuresActivity extends FragmentActivity {
 
 	private void updateView() {
 		textNetworkLocation.setCompoundDrawablesWithIntrinsicBounds(
-				networkLocEnabled ? R.drawable.check_36 : R.drawable.cross_36, 0, 0, 0);
+				networkLocEnabled ? R.drawable.check : R.drawable.cross, 0, 0, 0);
 		textGPSLocation.setCompoundDrawablesWithIntrinsicBounds(
-				gpsEnabled ? R.drawable.check_36 : R.drawable.cross_36, 0, 0, 0);
+				gpsEnabled ? R.drawable.check : R.drawable.cross, 0, 0, 0);
 
 		updateRequestAdjustSettings();
 	}
@@ -158,8 +158,8 @@ public class FirstLaunchMeasuresActivity extends FragmentActivity {
 			DialogFragment settingsAlert = SettingsAlertDialogFragment.newInstance(
 					R.string.firstLaunchMeasures_alert_title,
 					R.string.firstLaunchMeasures_alert_text,
-					R.string.firstLaunchMeasures_alert_button_gotosettings,
-					R.string.firstLaunchMeasures_alert_button_ignore);
+					R.string.firstLaunchMeasures_alert_button_ignore,
+					R.string.firstLaunchMeasures_alert_button_gotosettings);
 			settingsAlert.show(getSupportFragmentManager(), "settingsAlert");
 		}
 	}
@@ -196,14 +196,14 @@ public class FirstLaunchMeasuresActivity extends FragmentActivity {
 			AlertDialog.Builder alertSettings = new AlertDialog.Builder(getActivity())
 			.setTitle(title)
 			.setMessage(text)
-			.setPositiveButton(posText,
+			.setNegativeButton(negText,
 					new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int whichButton) {
 					((FirstLaunchMeasuresActivity)getActivity()).launchDashboard();
 				}
 			})
-			.setNegativeButton(negText,
+			.setPositiveButton(posText,
 					new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int whichButton) {

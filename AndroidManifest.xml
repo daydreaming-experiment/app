@@ -24,19 +24,23 @@
         </activity>
         <activity
             android:name=".FirstLaunchWelcomeActivity"
-            android:label="@string/firstLaunchWelcome_title_activity" >
+            android:label="@string/firstLaunchWelcome_title_activity"
+            android:theme="@style/FirstLaunchTheme" >
         </activity>
         <activity
             android:name=".ReLaunchWelcomeActivity"
-            android:label="@string/reLaunchWelcome_title_activity" >
+            android:label="@string/reLaunchWelcome_title_activity"
+            android:theme="@style/FirstLaunchTheme" >
         </activity>
         <activity
             android:name=".FirstLaunchDescriptionActivity"
-            android:label="@string/firstLaunchDescription_title_activity" >
+            android:label="@string/firstLaunchDescription_title_activity"
+            android:theme="@style/FirstLaunchTheme" >
         </activity>
         <activity
             android:name=".FirstLaunchMeasuresActivity"
-            android:label="@string/firstLaunchMeasures_title_activity" >
+            android:label="@string/firstLaunchMeasures_title_activity"
+            android:theme="@style/FirstLaunchTheme" >
         </activity>
     </application>
 
