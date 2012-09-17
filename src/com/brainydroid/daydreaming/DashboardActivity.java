@@ -14,7 +14,7 @@ public class DashboardActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		mPrefs = getSharedPreferences(PreferenceKeys.PREFS_NAME, MODE_PRIVATE);
+		mPrefs = getSharedPreferences(getString(R.pref.firstLaunchPrefs), MODE_PRIVATE);
 		checkFirstRun();
 
 		setContentView(R.layout.activity_dashboard);
@@ -41,9 +41,9 @@ public class DashboardActivity extends Activity {
 	}
 
 	private void checkFirstRun() {
-		if (!mPrefs.getBoolean(PreferenceKeys.FIRST_LAUNCH_COMPLETED, false)) {
+		if (!mPrefs.getBoolean(getString(R.pref.firstLaunchCompleted), false)) {
 			Intent intent;
-			if (!mPrefs.getBoolean(PreferenceKeys.FIRST_LAUNCH_STARTED, false)) {
+			if (!mPrefs.getBoolean(getString(R.pref.firstLaunchStarted), false)) {
 				intent = new Intent(this, FirstLaunchWelcomeActivity.class);
 			} else {
 				intent = new Intent(this, ReLaunchWelcomeActivity.class);

@@ -1,7 +1,7 @@
 <resources>
 
     <style name="AppTheme" parent="android:Theme.Holo.Light.DarkActionBar" />
-    <style name="FirstLaunchTheme" parent="android:Theme.Holo.Light.NoActionBar" />
+    <style name="FirstLaunchTheme" parent="android:Theme.Holo.Light" />
 <!--     <style name="FirstLaunchTheme" parent="android:Theme.Translucent.NoTitleBar">
         <item name="android:windowBackground">@color/translucent_bg</item>
         <item name="android:colorBackground">@color/translucent_bg</item>

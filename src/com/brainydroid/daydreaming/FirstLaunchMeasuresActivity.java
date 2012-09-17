@@ -46,11 +46,11 @@ public class FirstLaunchMeasuresActivity extends FragmentActivity {
 		buttonSettings = (Button) findViewById(R.id.firstLaunchMeasures_buttonSettings);
 		buttonNext = (Button) findViewById(R.id.firstLaunchMeasures_buttonNext);
 
-		mPrefs = getSharedPreferences(PreferenceKeys.PREFS_NAME, MODE_PRIVATE);
+		mPrefs = getSharedPreferences(getString(R.pref.firstLaunchPrefs), MODE_PRIVATE);
 		ePrefs = mPrefs.edit();
 		locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
-		ePrefs.putBoolean(PreferenceKeys.FIRST_LAUNCH_STARTED, true);
+		ePrefs.putBoolean(getString(R.pref.firstLaunchStarted), true);
 		ePrefs.commit();
 	}
 
@@ -165,7 +165,7 @@ public class FirstLaunchMeasuresActivity extends FragmentActivity {
 	}
 
 	public void launchDashboard() {
-		ePrefs.putBoolean(PreferenceKeys.FIRST_LAUNCH_COMPLETED, true);
+		ePrefs.putBoolean(getString(R.pref.firstLaunchCompleted), true);
 		ePrefs.commit();
 		Intent dashboardIntent = new Intent(this, DashboardActivity.class);
 		startActivity(dashboardIntent);
