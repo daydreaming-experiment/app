@@ -7,7 +7,8 @@
     <string name="dashboard_toggle_experiment_running_on">Running</string>
     <string name="dashboard_toggle_experiment_running_off">Stopped</string>
     <string name="dashboard_text_days_elapsed">Days elapsed</string>
-    <string name="dashboard_button_settings">Settings</string>
+    <string name="dashboard_title_results">Results:</string>
+    <string name="dashboard_text_results">Results will appear once the first X days are completed (that\'s in Z days).</string>
     <string name="firstLaunchWelcome_title_activity">Day Dreaming</string>
     <string name="firstLaunchWelcome_text_welcome">Day Dreaming Experiment</string>
     <string name="firstLaunchWelcome_button_start">Start</string>

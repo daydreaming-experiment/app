@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item type="pref" name="firstLaunchPrefs">firstLaunchPrefs</item>
     <item type="pref" name="firstLaunchStarted">firstLaunchStarted</item>
     <item type="pref" name="firstLaunchCompleted">firstLaunchCompleted</item>
+    <item type="pref" name="dashboardPrefs">dashboardPrefs</item>
+    <item type="pref" name="dashboardExpRunning">dashboardExpRunning</item>
+    <item type="pref" name="dashboardExpShouldRun">dashboardExpShouldRun</item>
+    <item type="pref" name="dashboardStartTimestamp">dashboardStartTimestamp</item>
 
 </resources>

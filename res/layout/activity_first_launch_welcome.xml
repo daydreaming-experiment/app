@@ -37,13 +37,13 @@
                 android:id="@+id/space1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.5" />
+                android:layout_weight="1" />
 
             <Button
                 android:id="@+id/firstLaunchWelcome_buttonStart"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.5"
+                android:layout_weight="1"
                 android:drawableRight="@drawable/navigation_next_item"
                 android:onClick="onClick_start"
                 android:text="@string/firstLaunchWelcome_button_start" />

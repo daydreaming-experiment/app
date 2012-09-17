@@ -26,8 +26,10 @@ public class FirstLaunchMeasuresActivity extends FragmentActivity {
 	private Button buttonSettings;
 	private Button buttonNext;
 
-	private SharedPreferences mPrefs;
-	private SharedPreferences.Editor ePrefs;
+	private SharedPreferences mFLPrefs;
+	private SharedPreferences.Editor eFLPrefs;
+	private SharedPreferences mDPrefs;
+	private SharedPreferences.Editor eDPrefs;
 	private LocationManager locationManager;
 
 	private boolean networkLocEnabled;
@@ -46,12 +48,14 @@ public class FirstLaunchMeasuresActivity extends FragmentActivity {
 		buttonSettings = (Button) findViewById(R.id.firstLaunchMeasures_buttonSettings);
 		buttonNext = (Button) findViewById(R.id.firstLaunchMeasures_buttonNext);
 
-		mPrefs = getSharedPreferences(getString(R.pref.firstLaunchPrefs), MODE_PRIVATE);
-		ePrefs = mPrefs.edit();
+		mFLPrefs = getSharedPreferences(getString(R.pref.firstLaunchPrefs), MODE_PRIVATE);
+		eFLPrefs = mFLPrefs.edit();
+		mDPrefs = getSharedPreferences(getString(R.pref.dashboardPrefs), MODE_PRIVATE);
+		eDPrefs = mDPrefs.edit();
 		locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
-		ePrefs.putBoolean(getString(R.pref.firstLaunchStarted), true);
-		ePrefs.commit();
+		eFLPrefs.putBoolean(getString(R.pref.firstLaunchStarted), true);
+		eFLPrefs.commit();
 	}
 
 	@Override
@@ -165,8 +169,10 @@ public class FirstLaunchMeasuresActivity extends FragmentActivity {
 	}
 
 	public void launchDashboard() {
-		ePrefs.putBoolean(getString(R.pref.firstLaunchCompleted), true);
-		ePrefs.commit();
+		eFLPrefs.putBoolean(getString(R.pref.firstLaunchCompleted), true);
+		eFLPrefs.commit();
+		eDPrefs.putBoolean(getString(R.pref.dashboardExpShouldRun), true);
+		eDPrefs.commit();
 		Intent dashboardIntent = new Intent(this, DashboardActivity.class);
 		startActivity(dashboardIntent);
 	}

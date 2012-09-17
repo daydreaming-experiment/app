@@ -94,7 +94,7 @@
                 android:id="@+id/firstLaunchMeasures_buttonSettings"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.5"
+                android:layout_weight="1"
                 android:onClick="onClick_buttonSettings"
                 android:text="@string/firstLaunchMeasures_button_settings"
                 android:visibility="visible" />
@@ -103,7 +103,7 @@
                 android:id="@+id/firstLaunchMeasures_buttonNext"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.5"
+                android:layout_weight="1"
                 android:alpha="0.3"
                 android:clickable="false"
                 android:onClick="onClick_buttonNext"
