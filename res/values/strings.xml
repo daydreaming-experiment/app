@@ -37,6 +37,7 @@
     <string name="firstLaunchProfile_hint_age">Age</string>
     <string name="firstLaunchProfile_button_next">Next</string>
     <string name="firstLaunchProfile_fix_age">Please enter an age between 5 and 100</string>
+    <string name="firstLaunchProfile_text_gender">Gender</string>
     <string-array name="genders">
         <item>Female</item>
         <item>Male</item>

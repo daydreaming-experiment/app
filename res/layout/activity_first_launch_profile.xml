@@ -36,6 +36,30 @@
                 <requestFocus />
             </EditText>
 
+            <android.support.v7.widget.Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+            
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp" >
+
+            <TextView
+                android:id="@+id/firstLaunchProfile_textGender"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:layout_marginRight="4dp"
+                android:hint="@string/firstLaunchProfile_text_gender"
+                android:textAppearance="?android:attr/textAppearanceMedium" >
+            </TextView>
+
             <Spinner
                 android:id="@+id/firstLaunchProfile_genderSpinner"
                 android:layout_width="0dp"
@@ -45,7 +69,7 @@
                 android:layout_marginLeft="4dp" />
             
         </LinearLayout>
-        
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content" >
