@@ -38,16 +38,6 @@
                 android:text="@string/firstLaunchMeasures_text_network_location" />
 
             <TextView
-                android:id="@+id/firstLaunchMeasures_textGPSLocation"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:layout_marginBottom="4dp"
-                android:drawableLeft="@drawable/cross"
-                android:gravity="center_vertical"
-                android:text="@string/firstLaunchMeasures_text_gps_location" />
-
-            <TextView
                 android:id="@+id/firstLaunchMeasures_textAnswers"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

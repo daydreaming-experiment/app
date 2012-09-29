@@ -20,19 +20,14 @@
     <string name="firstLaunchDescription_text_description">*description / images*</string>
     <string name="firstLaunchDescription_button_next">Next</string>
     <string name="firstLaunchMeasures_text_measures">The app will measure:</string>
-    <string name="firstLaunchMeasures_text_network_location">Network-based location</string>
-    <string name="firstLaunchMeasures_text_gps_location">GPS location</string>
+    <string name="firstLaunchMeasures_text_network_location">Coarse location (network-based)</string>
     <string name="firstLaunchMeasures_text_answers">Answers to the questions</string>
     <string name="firstLaunchMeasures_text_times">Time at which the questions are asked</string>
     <string name="firstLaunchMeasures_text_anonymous">Please notice that all the data collected is ANONYMOUS: as researchers we have no means of identifying who the data collected comes from.</string>
     <string name="firstLaunchMeasures_button_next">Finish</string>
     <string name="firstLaunchMeasures_text_settings_necessary">Change your settings to get location:</string>
-    <string name="firstLaunchMeasures_text_settings_optional">Change your settings to get better location:</string>
     <string name="firstLaunchMeasures_button_settings">Settings&#8230;</string>
     <string name="firstLaunchMeasures_title_activity">Measures &amp; Privacy</string>
     <string name="firstLaunchMeasures_alert_title">Location settings</string>
-    <string name="firstLaunchMeasures_alert_text">Change your settings so that the app can get better location</string>
-    <string name="firstLaunchMeasures_alert_button_gotosettings">Go to settings&#8230;</string>
-    <string name="firstLaunchMeasures_alert_button_ignore">Ignore</string>
 
 </resources>
