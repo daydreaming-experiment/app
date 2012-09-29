@@ -19,6 +19,10 @@
     <string name="firstLaunchDescription_text_title">Blabla what\'s the experiment</string>
     <string name="firstLaunchDescription_text_description">*description / images*</string>
     <string name="firstLaunchDescription_button_next">Next</string>
+    <string name="consentAlert_title">Experiment consent</string>
+    <string name="consentAlert_text">Bla bla bla do you consent?</string>
+    <string name="consentAlert_button_consent">Agree</string>
+    <string name="consentAlert_button_notconsent">Disagree</string>
     <string name="firstLaunchMeasures_text_measures">The app will measure:</string>
     <string name="firstLaunchMeasures_text_network_location">Coarse location (network-based)</string>
     <string name="firstLaunchMeasures_text_answers">Answers to the questions</string>
@@ -28,6 +32,5 @@
     <string name="firstLaunchMeasures_text_settings_necessary">Change your settings to get location:</string>
     <string name="firstLaunchMeasures_button_settings">Settings&#8230;</string>
     <string name="firstLaunchMeasures_title_activity">Measures &amp; Privacy</string>
-    <string name="firstLaunchMeasures_alert_title">Location settings</string>
 
 </resources>
