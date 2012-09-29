@@ -46,11 +46,17 @@ public class FirstLaunchMeasuresActivity extends FragmentActivity {
 
 		eFLPrefs.putBoolean(getString(R.pref.firstLaunchStarted), true);
 		eFLPrefs.commit();
+
+		if (isNetworkLocEnabled()) {
+			launchDashboard();
+		}
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
+
+		checkFirstRun();
 
 		updateView();
 	}
@@ -65,6 +71,12 @@ public class FirstLaunchMeasuresActivity extends FragmentActivity {
 	public void onBackPressed() {
 		super.onBackPressed();
 		overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
+	}
+
+	private void checkFirstRun() {
+		if (mFLPrefs.getBoolean(getString(R.pref.firstLaunchCompleted), false)) {
+			finish();
+		}
 	}
 
 	private void updateView() {
@@ -133,5 +145,6 @@ public class FirstLaunchMeasuresActivity extends FragmentActivity {
 		eDPrefs.commit();
 		Intent dashboardIntent = new Intent(this, DashboardActivity.class);
 		startActivity(dashboardIntent);
+		finish();
 	}
 }
