@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.View;
 
 public class FirstLaunchWelcomeActivity extends Activity {
@@ -18,12 +17,6 @@ public class FirstLaunchWelcomeActivity extends Activity {
 		mFLPrefs = getSharedPreferences(getString(R.pref.firstLaunchPrefs), MODE_PRIVATE);
 
 		setContentView(R.layout.activity_first_launch_welcome);
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.activity_first_launch_welcome, menu);
-		return true;
 	}
 
 	@Override

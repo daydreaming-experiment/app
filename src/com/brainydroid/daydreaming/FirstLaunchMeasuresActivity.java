@@ -9,7 +9,6 @@ import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -56,12 +55,6 @@ public class FirstLaunchMeasuresActivity extends Activity {
 		checkFirstRun();
 
 		updateView();
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.activity_first_launch_measures, menu);
-		return true;
 	}
 
 	@Override

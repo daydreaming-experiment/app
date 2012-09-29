@@ -32,5 +32,14 @@
     <string name="firstLaunchMeasures_text_settings_necessary">Change your settings to get location:</string>
     <string name="firstLaunchMeasures_button_settings">Settings&#8230;</string>
     <string name="firstLaunchMeasures_title_activity">Measures &amp; Privacy</string>
+    <string name="firstLaunchProfile_title_activity">Profile</string>
+    <string name="firstLaunchProfile_title_about_you">A little about yourself:</string>
+    <string name="firstLaunchProfile_hint_age">Age</string>
+    <string name="firstLaunchProfile_button_next">Next</string>
+    <string name="firstLaunchProfile_fix_age">Please enter an age between 5 and 100</string>
+    <string-array name="genders">
+        <item>Female</item>
+        <item>Male</item>
+    </string-array>
 
 </resources>

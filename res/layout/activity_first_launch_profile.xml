@@ -1,0 +1,71 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/firstLaunchProfile_titleAboutYou"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="@string/firstLaunchProfile_title_about_you"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp" >
+
+            <EditText
+                android:id="@+id/firstLaunchProfile_editAge"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:layout_marginRight="4dp"
+                android:ems="10"
+                android:hint="@string/firstLaunchProfile_hint_age"
+                android:inputType="number" >
+
+                <requestFocus />
+            </EditText>
+
+            <Spinner
+                android:id="@+id/firstLaunchProfile_genderSpinner"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:layout_marginLeft="4dp" />
+            
+        </LinearLayout>
+        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <android.support.v7.widget.Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+        
+            <Button
+                android:id="@+id/firstLaunchProfile_buttonNext"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawableRight="@drawable/navigation_next_item"
+                android:onClick="onClick_buttonNext"
+                android:text="@string/firstLaunchProfile_button_next" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

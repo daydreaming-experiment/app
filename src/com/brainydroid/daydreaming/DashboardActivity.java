@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.Menu;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.Toast;
@@ -54,12 +53,6 @@ public class DashboardActivity extends Activity {
 
 		checkFirstRun();
 		checkServiceUpdateView();
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.activity_day_dreaming, menu);
-		return true;
 	}
 
 	private void checkFirstRun() {

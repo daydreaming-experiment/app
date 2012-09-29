@@ -38,6 +38,11 @@
             android:theme="@style/FirstLaunchTheme" >
         </activity>
         <activity
+            android:name=".FirstLaunchProfileActivity"
+            android:label="@string/firstLaunchProfile_title_activity"
+            android:theme="@style/FirstLaunchTheme" >
+        </activity>
+        <activity
             android:name=".FirstLaunchMeasuresActivity"
             android:label="@string/firstLaunchMeasures_title_activity"
             android:theme="@style/FirstLaunchTheme" >
