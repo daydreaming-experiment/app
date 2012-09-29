@@ -1,6 +1,5 @@
 package com.brainydroid.daydreaming;
 
-import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -67,6 +66,9 @@ public class FirstLaunchDescriptionActivity extends FragmentActivity {
 
 	public static class ConsentAlertDialogFragment extends DialogFragment {
 
+		SharedPreferences mFLPrefs;
+		SharedPreferences.Editor eFLPrefs;
+
 		public static ConsentAlertDialogFragment newInstance(int title, int text,
 				int negText, int posText) {
 			ConsentAlertDialogFragment frag = new ConsentAlertDialogFragment();
@@ -79,9 +81,12 @@ public class FirstLaunchDescriptionActivity extends FragmentActivity {
 			return frag;
 		}
 
-		@TargetApi(11)
 		@Override
 		public Dialog onCreateDialog(Bundle savedInstanceState) {
+
+			mFLPrefs = getActivity().getSharedPreferences(getString(R.pref.firstLaunchPrefs), MODE_PRIVATE);
+			eFLPrefs = mFLPrefs.edit();
+
 			int title = getArguments().getInt("title");
 			int text = getArguments().getInt("text");
 			int negText = getArguments().getInt("negText");
@@ -103,13 +108,11 @@ public class FirstLaunchDescriptionActivity extends FragmentActivity {
 				public void onClick(DialogInterface dialog, int whichButton) {
 					((FirstLaunchDescriptionActivity)getActivity()).launchMeasuresActivity();
 				}
-			});
+			}).setIcon(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ?
+					R.drawable.ic_action_about_holo_light : R.drawable.ic_action_about_holo_dark);
 
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-				alertSettings.setIconAttribute(android.R.attr.alertDialogIcon);
-			} else {
-				alertSettings.setIcon(android.R.drawable.ic_dialog_alert);
-			}
+			eFLPrefs.putBoolean(getString(R.pref.firstLaunchStarted), true);
+			eFLPrefs.commit();
 
 			return alertSettings.create();
 		}

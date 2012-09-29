@@ -44,9 +44,6 @@ public class FirstLaunchMeasuresActivity extends Activity {
 		eDPrefs = mDPrefs.edit();
 		locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
-		eFLPrefs.putBoolean(getString(R.pref.firstLaunchStarted), true);
-		eFLPrefs.commit();
-
 		if (isNetworkLocEnabled()) {
 			launchDashboard();
 		}
