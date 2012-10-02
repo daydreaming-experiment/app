@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.IBinder;
 
-public class QuestionsService extends Service {
+public class ExperimentService extends Service {
 
 	private SharedPreferences mDPrefs;
 	private SharedPreferences.Editor eDPrefs;

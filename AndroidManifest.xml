@@ -47,6 +47,9 @@
             android:label="@string/firstLaunchMeasures_title_activity"
             android:theme="@style/FirstLaunchTheme" >
         </activity>
+        <service
+            android:name=".ExperimentService"
+            android:exported="false" />
     </application>
 
 </manifest>
