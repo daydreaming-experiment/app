@@ -42,5 +42,8 @@
         <item>Female</item>
         <item>Male</item>
     </string-array>
+    <string name="serviceNotification_ticker">Experiment started and sleeping</string>
+    <string name="serviceNotification_title">Day Dreaming Experiment</string>
+    <string name="serviceNotification_text">Sleeping for now</string>
 
 </resources>

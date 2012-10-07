@@ -1,19 +1,28 @@
 package com.brainydroid.daydreaming;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Binder;
 import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 
 public class ExperimentService extends Service {
+
+	private final int SERVICE_NOTIFICATION = 1;
 
 	private SharedPreferences mDPrefs;
 	private SharedPreferences.Editor eDPrefs;
 
 	private boolean stopSelfOnUnbind = false;
 	private final IBinder mBinder = new LocalBinder();
+
+	private NotificationManager notificationManager;
 
 	public class LocalBinder extends Binder {
 		ExperimentService getService() {
@@ -30,6 +39,20 @@ public class ExperimentService extends Service {
 		eDPrefs.putBoolean(getString(R.pref.dashboardExpRunning), true);
 		eDPrefs.commit();
 
+		notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+
+		Intent notificationIntent = new Intent(this, DashboardActivity.class);
+		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+		Notification notification = new NotificationCompat.Builder(this)
+		.setTicker(getString(R.string.serviceNotification_ticker))
+		.setContentTitle(getString(R.string.serviceNotification_title))
+		.setContentText(getString(R.string.serviceNotification_text))
+		.setContentIntent(contentIntent)
+		.setSmallIcon(android.R.drawable.ic_dialog_info)
+		.setOngoing(true)
+		.build();
+		notificationManager.notify(SERVICE_NOTIFICATION, notification);
+
 		Toast.makeText(getApplicationContext(), "Service started", Toast.LENGTH_SHORT).show();
 	}
 
@@ -41,6 +64,10 @@ public class ExperimentService extends Service {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
+
+		if (notificationManager != null) {
+			notificationManager.cancel(SERVICE_NOTIFICATION);
+		}
 
 		eDPrefs.putBoolean(getString(R.pref.dashboardExpRunning), false);
 		eDPrefs.commit();

@@ -23,8 +23,8 @@ public class DashboardActivity extends Activity {
 	private SharedPreferences mDPrefs;
 	private SharedPreferences.Editor eDPrefs;
 
-	ExperimentService experimentService;
-	boolean mBound = false;
+	private ExperimentService experimentService;
+	private boolean mBound = false;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
