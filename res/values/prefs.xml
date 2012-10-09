@@ -8,5 +8,6 @@
     <item type="pref" name="dashboardExpRunning">dashboardExpRunning</item>
     <item type="pref" name="dashboardExpShouldRun">dashboardExpShouldRun</item>
     <item type="pref" name="dashboardStartTimestamp">dashboardStartTimestamp</item>
+    <item type="pref" name="dashboardStartServiceAtBoot">dashboardStartServiceAtBoot</item>
 
 </resources>

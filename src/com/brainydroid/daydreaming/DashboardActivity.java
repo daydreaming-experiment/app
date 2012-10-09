@@ -40,6 +40,7 @@ public class DashboardActivity extends Activity {
 		toggleExperimentRunning.setOnCheckedChangeListener(new OnCheckedChangeListener () {
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				eDPrefs.putBoolean(getString(R.pref.dashboardStartServiceAtBoot), isChecked);
 				eDPrefs.putBoolean(getString(R.pref.dashboardExpShouldRun), isChecked);
 				eDPrefs.commit();
 				checkService();

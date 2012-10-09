@@ -129,12 +129,17 @@ public class FirstLaunchMeasuresActivity extends Activity {
 	}
 
 	public void launchDashboard() {
-		eFLPrefs.putBoolean(getString(R.pref.firstLaunchCompleted), true);
-		eFLPrefs.commit();
-		eDPrefs.putBoolean(getString(R.pref.dashboardExpShouldRun), true);
-		eDPrefs.commit();
+		setDefaultDashboardSettings();
 		Intent dashboardIntent = new Intent(this, DashboardActivity.class);
 		startActivity(dashboardIntent);
 		finish();
+	}
+
+	private void setDefaultDashboardSettings() {
+		eFLPrefs.putBoolean(getString(R.pref.firstLaunchCompleted), true);
+		eFLPrefs.commit();
+		eDPrefs.putBoolean(getString(R.pref.dashboardExpShouldRun), true);
+		eDPrefs.putBoolean(getString(R.pref.dashboardStartServiceAtBoot), true);
+		eDPrefs.commit();
 	}
 }
