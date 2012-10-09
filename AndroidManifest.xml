@@ -54,7 +54,7 @@
             android:theme="@style/FirstLaunchTheme" >
         </activity>
         <service
-            android:name=".ExperimentService"
+            android:name=".ExpService"
             android:exported="false" />
     </application>
 

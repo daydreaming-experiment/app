@@ -4,7 +4,6 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,10 +19,7 @@ public class FirstLaunchMeasuresActivity extends Activity {
 	private Button buttonSettings;
 	private Button buttonNext;
 
-	private SharedPreferences mFLPrefs;
-	private SharedPreferences.Editor eFLPrefs;
-	private SharedPreferences mDPrefs;
-	private SharedPreferences.Editor eDPrefs;
+	private StatusManager status;
 	private LocationManager locationManager;
 
 	@Override
@@ -36,12 +32,10 @@ public class FirstLaunchMeasuresActivity extends Activity {
 		textSettings = (TextView) findViewById(R.id.firstLaunchMeasures_textSettings);
 		buttonSettings = (Button) findViewById(R.id.firstLaunchMeasures_buttonSettings);
 		buttonNext = (Button) findViewById(R.id.firstLaunchMeasures_buttonNext);
+		status = StatusManager.getInstance(this);
+		locationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
 
-		mFLPrefs = getSharedPreferences(getString(R.pref.firstLaunchPrefs), MODE_PRIVATE);
-		eFLPrefs = mFLPrefs.edit();
-		mDPrefs = getSharedPreferences(getString(R.pref.dashboardPrefs), MODE_PRIVATE);
-		eDPrefs = mDPrefs.edit();
-		locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+		checkFirstRun();
 
 		if (isNetworkLocEnabled()) {
 			launchDashboard();
@@ -51,9 +45,6 @@ public class FirstLaunchMeasuresActivity extends Activity {
 	@Override
 	public void onResume() {
 		super.onResume();
-
-		checkFirstRun();
-
 		updateView();
 	}
 
@@ -64,7 +55,7 @@ public class FirstLaunchMeasuresActivity extends Activity {
 	}
 
 	private void checkFirstRun() {
-		if (mFLPrefs.getBoolean(getString(R.pref.firstLaunchCompleted), false)) {
+		if (status.isFirstLaunchCompleted()) {
 			finish();
 		}
 	}
@@ -119,7 +110,7 @@ public class FirstLaunchMeasuresActivity extends Activity {
 		launchSettings();
 	}
 
-	public void launchSettings() {
+	private void launchSettings() {
 		Intent settingsIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
 		startActivity(settingsIntent);
 	}
@@ -128,18 +119,15 @@ public class FirstLaunchMeasuresActivity extends Activity {
 		launchDashboard();
 	}
 
-	public void launchDashboard() {
-		setDefaultDashboardSettings();
+	private void launchDashboard() {
+		setStatus();
 		Intent dashboardIntent = new Intent(this, DashboardActivity.class);
 		startActivity(dashboardIntent);
 		finish();
 	}
 
-	private void setDefaultDashboardSettings() {
-		eFLPrefs.putBoolean(getString(R.pref.firstLaunchCompleted), true);
-		eFLPrefs.commit();
-		eDPrefs.putBoolean(getString(R.pref.dashboardExpShouldRun), true);
-		eDPrefs.putBoolean(getString(R.pref.dashboardStartServiceAtBoot), true);
-		eDPrefs.commit();
+	private void setStatus() {
+		status.setFirstLaunchCompleted();
+		status.setExpServiceShouldRun(true);
 	}
 }

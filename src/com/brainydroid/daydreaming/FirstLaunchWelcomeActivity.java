@@ -2,27 +2,25 @@ package com.brainydroid.daydreaming;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 
 public class FirstLaunchWelcomeActivity extends Activity {
 
-	SharedPreferences mFLPrefs;
+	private StatusManager status;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-		mFLPrefs = getSharedPreferences(getString(R.pref.firstLaunchPrefs), MODE_PRIVATE);
-
 		setContentView(R.layout.activity_first_launch_welcome);
+
+		status = StatusManager.getInstance(this);
+		checkFirstRun();
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
-		checkFirstRun();
 	}
 
 	public void onClick_start(View view) {
@@ -32,7 +30,7 @@ public class FirstLaunchWelcomeActivity extends Activity {
 	}
 
 	private void checkFirstRun() {
-		if (mFLPrefs.getBoolean(getString(R.pref.firstLaunchCompleted), false)) {
+		if (status.isFirstLaunchCompleted()) {
 			finish();
 		}
 	}

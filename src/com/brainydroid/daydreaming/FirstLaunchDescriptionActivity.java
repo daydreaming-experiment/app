@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -13,21 +12,20 @@ import android.view.View;
 
 public class FirstLaunchDescriptionActivity extends FragmentActivity {
 
-	SharedPreferences mFLPrefs;
+	private StatusManager status;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-		mFLPrefs = getSharedPreferences(getString(R.pref.firstLaunchPrefs), MODE_PRIVATE);
-
 		setContentView(R.layout.activity_first_launch_description);
+
+		status = StatusManager.getInstance(this);
+		checkFirstRun();
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
-		checkFirstRun();
 	}
 
 	@Override
@@ -52,15 +50,14 @@ public class FirstLaunchDescriptionActivity extends FragmentActivity {
 	}
 
 	private void checkFirstRun() {
-		if (mFLPrefs.getBoolean(getString(R.pref.firstLaunchCompleted), false)) {
+		if (status.isFirstLaunchCompleted()) {
 			finish();
 		}
 	}
 
 	public static class ConsentAlertDialogFragment extends DialogFragment {
 
-		SharedPreferences mFLPrefs;
-		SharedPreferences.Editor eFLPrefs;
+		private StatusManager status;
 
 		public static ConsentAlertDialogFragment newInstance(int title, int text,
 				int negText, int posText) {
@@ -77,8 +74,7 @@ public class FirstLaunchDescriptionActivity extends FragmentActivity {
 		@Override
 		public Dialog onCreateDialog(Bundle savedInstanceState) {
 
-			mFLPrefs = getActivity().getSharedPreferences(getString(R.pref.firstLaunchPrefs), MODE_PRIVATE);
-			eFLPrefs = mFLPrefs.edit();
+			status = StatusManager.getInstance(getActivity());
 
 			int title = getArguments().getInt("title");
 			int text = getArguments().getInt("text");
@@ -104,9 +100,7 @@ public class FirstLaunchDescriptionActivity extends FragmentActivity {
 			}).setIcon(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ?
 					R.drawable.ic_action_about_holo_light : R.drawable.ic_action_about_holo_dark);
 
-			eFLPrefs.putBoolean(getString(R.pref.firstLaunchStarted), true);
-			eFLPrefs.commit();
-
+			status.setFirstLaunchStarted();
 			return alertSettings.create();
 		}
 	}

@@ -2,7 +2,6 @@ package com.brainydroid.daydreaming;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -12,7 +11,8 @@ import android.widget.Toast;
 
 public class FirstLaunchProfileActivity extends Activity {
 
-	private SharedPreferences mFLPrefs;
+	private StatusManager status;
+
 	private EditText ageEditText;
 	private Spinner genderSpinner;
 
@@ -21,9 +21,9 @@ public class FirstLaunchProfileActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_first_launch_profile);
 
-		mFLPrefs = getSharedPreferences(getString(R.pref.firstLaunchPrefs), MODE_PRIVATE);
-		ageEditText = (EditText)findViewById(R.id.firstLaunchProfile_editAge);
+		status = StatusManager.getInstance(this);
 
+		ageEditText = (EditText)findViewById(R.id.firstLaunchProfile_editAge);
 		genderSpinner = (Spinner)findViewById(R.id.firstLaunchProfile_genderSpinner);
 		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
 				R.array.genders, android.R.layout.simple_spinner_item);
@@ -44,7 +44,7 @@ public class FirstLaunchProfileActivity extends Activity {
 	}
 
 	private void checkFirstRun() {
-		if (mFLPrefs.getBoolean(getString(R.pref.firstLaunchCompleted), false)) {
+		if (status.isFirstLaunchCompleted()) {
 			finish();
 		}
 	}
