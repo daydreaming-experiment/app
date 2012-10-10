@@ -12,8 +12,6 @@
         <item name="actionbarCompatProgressIndicatorStyle">@style/ActionBarCompatProgressIndicator</item>
     </style>
 
-    <style name="FirstLaunchTheme" parent="android:style/Theme.Light" />
-
     <style name="ActionBarCompat">
         <item name="android:background">#eee</item>
     </style>
