@@ -19,6 +19,12 @@ public class FirstLaunchWelcomeActivity extends Activity {
 	}
 
 	@Override
+	public void onStart() {
+		super.onStart();
+		checkFirstRun();
+	}
+
+	@Override
 	public void onResume() {
 		super.onResume();
 	}

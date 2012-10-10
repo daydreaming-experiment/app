@@ -36,6 +36,7 @@ public class FirstLaunchMeasuresActivity extends Activity {
 		locationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
 
 		checkFirstRun();
+		updateView();
 
 		if (isNetworkLocEnabled()) {
 			launchDashboard();
@@ -43,9 +44,15 @@ public class FirstLaunchMeasuresActivity extends Activity {
 	}
 
 	@Override
+	public void onStart() {
+		super.onStart();
+		updateView();
+		checkFirstRun();
+	}
+
+	@Override
 	public void onResume() {
 		super.onResume();
-		updateView();
 	}
 
 	@Override

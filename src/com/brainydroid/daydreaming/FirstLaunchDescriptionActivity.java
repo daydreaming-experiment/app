@@ -24,6 +24,12 @@ public class FirstLaunchDescriptionActivity extends FragmentActivity {
 	}
 
 	@Override
+	public void onStart() {
+		super.onStart();
+		checkFirstRun();
+	}
+
+	@Override
 	public void onResume() {
 		super.onResume();
 	}

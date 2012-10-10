@@ -1,14 +1,17 @@
 package com.brainydroid.daydreaming;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
-public class DashboardActivity extends Activity {
+public class DashboardActivity extends ActionBarActivity {
 
 	private StatusManager status;
 	private SharedPreferences mDPrefs;
@@ -37,14 +40,22 @@ public class DashboardActivity extends Activity {
 				status.checkService();
 			}
 		});
-		checkServiceUpdateView();
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater menuInflater = getMenuInflater();
+		menuInflater.inflate(R.menu.main, menu);
+
+		// Calling super after populating the menu is necessary here to ensure that the
+		// action bar helpers have a chance to handle this event.
+		return super.onCreateOptionsMenu(menu);
 	}
 
 	@Override
 	public void onStart() {
 		super.onStart();
 
-		checkFirstRun();
 		checkServiceUpdateView();
 	}
 
@@ -56,6 +67,36 @@ public class DashboardActivity extends Activity {
 	@Override
 	public void onStop() {
 		super.onStop();
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			Toast.makeText(this, "Tapped home", Toast.LENGTH_SHORT).show();
+			break;
+
+		case R.id.menu_refresh:
+			Toast.makeText(this, "Fake refreshing...", Toast.LENGTH_SHORT).show();
+			getActionBarHelper().setRefreshActionItemState(true);
+			getWindow().getDecorView().postDelayed(
+					new Runnable() {
+						@Override
+						public void run() {
+							getActionBarHelper().setRefreshActionItemState(false);
+						}
+					}, 1000);
+			break;
+
+		case R.id.menu_search:
+			Toast.makeText(this, "Tapped search", Toast.LENGTH_SHORT).show();
+			break;
+
+		case R.id.menu_share:
+			Toast.makeText(this, "Tapped share", Toast.LENGTH_SHORT).show();
+			break;
+		}
+		return super.onOptionsItemSelected(item);
 	}
 
 	private void checkFirstRun() {

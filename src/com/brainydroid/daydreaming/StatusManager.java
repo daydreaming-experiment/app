@@ -30,7 +30,7 @@ public class StatusManager {
 	}
 
 	private StatusManager(Context c) {
-		context = c;
+		context = c.getApplicationContext();
 		expStatus = context.getSharedPreferences(EXP_STATUS, Context.MODE_PRIVATE);
 		eExpStatus = expStatus.edit();
 		expServiceConnection = new ExpServiceConnection(context);

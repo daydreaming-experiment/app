@@ -15,5 +15,8 @@
   -->
 
 <resources>
-    <color name="actionbar_title_color">#224894</color>
+    <item type="id" name="actionbar_compat" />
+    <item type="id" name="actionbar_compat_title" />
+    <item type="id" name="actionbar_compat_item_refresh_progress" />
+    <item type="id" name="actionbar_compat_item_refresh" />
 </resources>
