@@ -68,7 +68,7 @@ public class FirstLaunchMeasuresActivity extends ActionBarActivity {
 
 	private void updateView() {
 		textNetworkLocation.setCompoundDrawablesWithIntrinsicBounds(
-				isNetworkLocEnabled() ? R.drawable.check : R.drawable.cross, 0, 0, 0);
+				isNetworkLocEnabled() ? R.drawable.ic_check : R.drawable.ic_cross, 0, 0, 0);
 
 		updateRequestAdjustSettings();
 	}

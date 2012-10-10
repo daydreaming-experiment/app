@@ -37,7 +37,6 @@ import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 /**
@@ -105,20 +104,20 @@ public class ActionBarHelperBase extends ActionBarHelper {
 		actionBarCompat.addView(titleText);
 	}
 
-	/**{@inheritDoc}*/
-	@Override
-	public void setRefreshActionItemState(boolean refreshing) {
-		View refreshButton = mActivity.findViewById(R.id.actionbar_compat_item_refresh);
-		View refreshIndicator = mActivity.findViewById(
-				R.id.actionbar_compat_item_refresh_progress);
-
-		if (refreshButton != null) {
-			refreshButton.setVisibility(refreshing ? View.GONE : View.VISIBLE);
-		}
-		if (refreshIndicator != null) {
-			refreshIndicator.setVisibility(refreshing ? View.VISIBLE : View.GONE);
-		}
-	}
+	//	/**{@inheritDoc}*/
+	//	@Override
+	//	public void setRefreshActionItemState(boolean refreshing) {
+	//		View refreshButton = mActivity.findViewById(R.id.actionbar_compat_item_refresh);
+	//		View refreshIndicator = mActivity.findViewById(
+	//				R.id.actionbar_compat_item_refresh_progress);
+	//
+	//		if (refreshButton != null) {
+	//			refreshButton.setVisibility(refreshing ? View.GONE : View.VISIBLE);
+	//		}
+	//		if (refreshIndicator != null) {
+	//			refreshIndicator.setVisibility(refreshing ? View.VISIBLE : View.GONE);
+	//		}
+	//	}
 
 	/**
 	 * Action bar helper code to be run in {@link Activity#onCreateOptionsMenu(android.view.Menu)}.
@@ -185,9 +184,9 @@ public class ActionBarHelperBase extends ActionBarHelper {
 						? R.dimen.actionbar_compat_button_home_width
 								: R.dimen.actionbar_compat_button_width),
 								ViewGroup.LayoutParams.MATCH_PARENT));
-		if (itemId == R.id.menu_refresh) {
-			actionButton.setId(R.id.actionbar_compat_item_refresh);
-		}
+		//		if (itemId == R.id.menu_refresh) {
+		//			actionButton.setId(R.id.actionbar_compat_item_refresh);
+		//		}
 		actionButton.setImageDrawable(item.getIcon());
 		actionButton.setScaleType(ImageView.ScaleType.CENTER);
 		actionButton.setContentDescription(item.getTitle());
@@ -200,30 +199,30 @@ public class ActionBarHelperBase extends ActionBarHelper {
 
 		actionBar.addView(actionButton);
 
-		if (item.getItemId() == R.id.menu_refresh) {
-			// Refresh buttons should be stateful, and allow for indeterminate progress indicators,
-			// so add those.
-			ProgressBar indicator = new ProgressBar(mActivity, null,
-					R.attr.actionbarCompatProgressIndicatorStyle);
-
-			final int buttonWidth = mActivity.getResources().getDimensionPixelSize(
-					R.dimen.actionbar_compat_button_width);
-			final int buttonHeight = mActivity.getResources().getDimensionPixelSize(
-					R.dimen.actionbar_compat_height);
-			final int progressIndicatorWidth = buttonWidth / 2;
-
-			LinearLayout.LayoutParams indicatorLayoutParams = new LinearLayout.LayoutParams(
-					progressIndicatorWidth, progressIndicatorWidth);
-			indicatorLayoutParams.setMargins(
-					(buttonWidth - progressIndicatorWidth) / 2,
-					(buttonHeight - progressIndicatorWidth) / 2,
-					(buttonWidth - progressIndicatorWidth) / 2,
-					0);
-			indicator.setLayoutParams(indicatorLayoutParams);
-			indicator.setVisibility(View.GONE);
-			indicator.setId(R.id.actionbar_compat_item_refresh_progress);
-			actionBar.addView(indicator);
-		}
+		//		if (item.getItemId() == R.id.menu_refresh) {
+		//			// Refresh buttons should be stateful, and allow for indeterminate progress indicators,
+		//			// so add those.
+		//			ProgressBar indicator = new ProgressBar(mActivity, null,
+		//					R.attr.actionbarCompatProgressIndicatorStyle);
+		//
+		//			final int buttonWidth = mActivity.getResources().getDimensionPixelSize(
+		//					R.dimen.actionbar_compat_button_width);
+		//			final int buttonHeight = mActivity.getResources().getDimensionPixelSize(
+		//					R.dimen.actionbar_compat_height);
+		//			final int progressIndicatorWidth = buttonWidth / 2;
+		//
+		//			LinearLayout.LayoutParams indicatorLayoutParams = new LinearLayout.LayoutParams(
+		//					progressIndicatorWidth, progressIndicatorWidth);
+		//			indicatorLayoutParams.setMargins(
+		//					(buttonWidth - progressIndicatorWidth) / 2,
+		//					(buttonHeight - progressIndicatorWidth) / 2,
+		//					(buttonWidth - progressIndicatorWidth) / 2,
+		//					0);
+		//			indicator.setLayoutParams(indicatorLayoutParams);
+		//			indicator.setVisibility(View.GONE);
+		//			indicator.setId(R.id.actionbar_compat_item_refresh_progress);
+		//			actionBar.addView(indicator);
+		//		}
 
 		return actionButton;
 	}

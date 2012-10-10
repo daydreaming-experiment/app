@@ -80,11 +80,11 @@ public abstract class ActionBarHelper {
 	protected void onTitleChanged(CharSequence title, int color) {
 	}
 
-	/**
-	 * Sets the indeterminate loading state of the item with ID {@link R.id.menu_refresh}.
-	 * (where the item ID was menu_refresh).
-	 */
-	public abstract void setRefreshActionItemState(boolean refreshing);
+	//	/**
+	//	 * Sets the indeterminate loading state of the item with ID {@link R.id.menu_refresh}.
+	//	 * (where the item ID was menu_refresh).
+	//	 */
+	//	public abstract void setRefreshActionItemState(boolean refreshing);
 
 	/**
 	 * Returns a {@link MenuInflater} for use when inflating menus. The implementation of this

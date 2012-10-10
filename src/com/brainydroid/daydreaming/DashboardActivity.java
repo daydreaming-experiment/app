@@ -45,7 +45,7 @@ public class DashboardActivity extends ActionBarActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater menuInflater = getMenuInflater();
-		menuInflater.inflate(R.menu.main, menu);
+		menuInflater.inflate(R.menu.dashboard, menu);
 
 		// Calling super after populating the menu is necessary here to ensure that the
 		// action bar helpers have a chance to handle this event.
@@ -76,24 +76,8 @@ public class DashboardActivity extends ActionBarActivity {
 			Toast.makeText(this, "Tapped home", Toast.LENGTH_SHORT).show();
 			break;
 
-		case R.id.menu_refresh:
-			Toast.makeText(this, "Fake refreshing...", Toast.LENGTH_SHORT).show();
-			getActionBarHelper().setRefreshActionItemState(true);
-			getWindow().getDecorView().postDelayed(
-					new Runnable() {
-						@Override
-						public void run() {
-							getActionBarHelper().setRefreshActionItemState(false);
-						}
-					}, 1000);
-			break;
-
-		case R.id.menu_search:
-			Toast.makeText(this, "Tapped search", Toast.LENGTH_SHORT).show();
-			break;
-
-		case R.id.menu_share:
-			Toast.makeText(this, "Tapped share", Toast.LENGTH_SHORT).show();
+		case R.id.menu_settings:
+			Toast.makeText(this, "Tapped settings", Toast.LENGTH_SHORT).show();
 			break;
 		}
 		return super.onOptionsItemSelected(item);

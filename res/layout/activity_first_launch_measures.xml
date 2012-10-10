@@ -30,7 +30,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="4dp"
-                android:drawableLeft="@drawable/cross"
+                android:drawableLeft="@drawable/ic_cross"
                 android:gravity="center_vertical"
                 android:text="@string/firstLaunchMeasures_text_network_location" />
 
@@ -40,7 +40,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="4dp"
-                android:drawableLeft="@drawable/check"
+                android:drawableLeft="@drawable/ic_check"
                 android:gravity="center_vertical"
                 android:text="@string/firstLaunchMeasures_text_answers" />
 
@@ -49,7 +49,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:drawableLeft="@drawable/check"
+                android:drawableLeft="@drawable/ic_check"
                 android:gravity="center_vertical"
                 android:text="@string/firstLaunchMeasures_text_times" />
         </LinearLayout>

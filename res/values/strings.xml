@@ -50,4 +50,5 @@
     <string name="menu_refresh">Refresh</string>
     <string name="menu_search">Search</string>
     <string name="menu_share">Share</string>
+    <string name="menu_settings">Settings</string>
 </resources>
