@@ -1,7 +1,6 @@
 package com.brainydroid.daydreaming;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.location.LocationManager;
@@ -12,7 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-public class FirstLaunchMeasuresActivity extends Activity {
+public class FirstLaunchMeasuresActivity extends ActionBarActivity {
 
 	private TextView textNetworkLocation;
 	private TextView textSettings;
