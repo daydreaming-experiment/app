@@ -73,6 +73,7 @@ public class FirstLaunchProfileActivity extends ActionBarActivity {
 
 	private void launchMeasuresActivity() {
 		Intent intent = new Intent(this, FirstLaunchMeasuresActivity.class);
+		intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
 		startActivity(intent);
 		overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
 	}

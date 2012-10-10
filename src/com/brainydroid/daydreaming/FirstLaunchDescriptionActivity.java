@@ -19,7 +19,6 @@ public class FirstLaunchDescriptionActivity extends ActionBarActivity {
 		setContentView(R.layout.activity_first_launch_description);
 
 		status = StatusManager.getInstance(this);
-		checkFirstRun();
 	}
 
 	@Override
@@ -50,6 +49,7 @@ public class FirstLaunchDescriptionActivity extends ActionBarActivity {
 
 	private void launchProfileActivity() {
 		Intent intent = new Intent(this, FirstLaunchProfileActivity.class);
+		intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
 		startActivity(intent);
 		overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
 	}

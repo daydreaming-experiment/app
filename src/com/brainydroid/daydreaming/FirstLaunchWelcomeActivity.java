@@ -14,7 +14,6 @@ public class FirstLaunchWelcomeActivity extends ActionBarActivity {
 		setContentView(R.layout.activity_first_launch_welcome);
 
 		status = StatusManager.getInstance(this);
-		checkFirstRun();
 	}
 
 	@Override
@@ -30,6 +29,7 @@ public class FirstLaunchWelcomeActivity extends ActionBarActivity {
 
 	public void onClick_start(View view) {
 		Intent intent = new Intent(this, FirstLaunchDescriptionActivity.class);
+		intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
 		startActivity(intent);
 		overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
 	}

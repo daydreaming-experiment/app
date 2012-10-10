@@ -94,7 +94,7 @@ public class DashboardActivity extends ActionBarActivity {
 				intent = new Intent(this, ReLaunchWelcomeActivity.class);
 			}
 
-			intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+			intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
 			startActivity(intent);
 			finish();
 		}

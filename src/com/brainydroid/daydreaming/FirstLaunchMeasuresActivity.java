@@ -34,9 +34,6 @@ public class FirstLaunchMeasuresActivity extends ActionBarActivity {
 		status = StatusManager.getInstance(this);
 		locationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
 
-		checkFirstRun();
-		updateView();
-
 		if (isNetworkLocEnabled()) {
 			launchDashboard();
 		}
@@ -118,6 +115,7 @@ public class FirstLaunchMeasuresActivity extends ActionBarActivity {
 
 	private void launchSettings() {
 		Intent settingsIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+		settingsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
 		startActivity(settingsIntent);
 	}
 
@@ -128,6 +126,7 @@ public class FirstLaunchMeasuresActivity extends ActionBarActivity {
 	private void launchDashboard() {
 		setStatus();
 		Intent dashboardIntent = new Intent(this, DashboardActivity.class);
+		dashboardIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
 		startActivity(dashboardIntent);
 		finish();
 	}
