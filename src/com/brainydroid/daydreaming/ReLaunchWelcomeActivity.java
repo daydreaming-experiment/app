@@ -19,7 +19,7 @@ public class ReLaunchWelcomeActivity extends ActionBarActivity {
 	@Override
 	public void onStart() {
 		super.onStart();
-		checkFirstRun();
+		checkFirstLaunch();
 	}
 
 	@Override
@@ -34,8 +34,11 @@ public class ReLaunchWelcomeActivity extends ActionBarActivity {
 		overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
 	}
 
-	private void checkFirstRun() {
-		if (status.isFirstLaunchCompleted()) {
+	private void checkFirstLaunch() {
+		if (status.isFirstLaunchCompleted() || status.isClearing()) {
+			if (status.isClearing()) {
+				status.finishClear();
+			}
 			finish();
 		}
 	}

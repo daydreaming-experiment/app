@@ -1,45 +1,25 @@
 package com.brainydroid.daydreaming;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.view.View;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 public class DashboardActivity extends ActionBarActivity {
 
 	private StatusManager status;
-	private SharedPreferences mDPrefs;
-	private SharedPreferences.Editor eDPrefs;
-
-	private ToggleButton toggleExperimentRunning;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		status = StatusManager.getInstance(this);
-
-		mDPrefs = getSharedPreferences(getString(R.pref.dashboardPrefs), MODE_PRIVATE);
-		eDPrefs = mDPrefs.edit();
 		checkFirstRun();
 
 		setContentView(R.layout.activity_dashboard);
-		toggleExperimentRunning = (ToggleButton)findViewById(R.id.dashboard_toggleExperimentRunning);
-		toggleExperimentRunning.setOnCheckedChangeListener(new OnCheckedChangeListener () {
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				eDPrefs.putBoolean(getString(R.pref.dashboardStartServiceAtBoot), isChecked);
-				eDPrefs.commit();
-				status.setExpServiceShouldRun(isChecked);
-				status.checkService();
-			}
-		});
 	}
 
 	@Override
@@ -55,8 +35,6 @@ public class DashboardActivity extends ActionBarActivity {
 	@Override
 	public void onStart() {
 		super.onStart();
-
-		checkServiceUpdateView();
 	}
 
 	@Override
@@ -85,8 +63,6 @@ public class DashboardActivity extends ActionBarActivity {
 
 	private void checkFirstRun() {
 		if (!status.isFirstLaunchCompleted()) {
-			status.setExpServiceShouldRun(false);
-
 			Intent intent;
 			if (!status.isFirstLaunchStarted()) {
 				intent = new Intent(this, FirstLaunchWelcomeActivity.class);
@@ -100,12 +76,15 @@ public class DashboardActivity extends ActionBarActivity {
 		}
 	}
 
-	private void updateView() {
-		toggleExperimentRunning.setChecked(status.isExpServiceRunning());
+	public void onClick_quitExperiment(View view) {
+		quitExperiment();
 	}
 
-	private void checkServiceUpdateView() {
-		status.checkService();
-		updateView();
+	private void quitExperiment() {
+		Toast.makeText(this, "This will clear everything. It should ask for confirmation",
+				Toast.LENGTH_SHORT).show();
+		status.startClear();
+		// Delete saved data
+		finish();
 	}
 }

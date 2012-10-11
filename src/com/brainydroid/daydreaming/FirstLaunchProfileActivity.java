@@ -33,7 +33,7 @@ public class FirstLaunchProfileActivity extends ActionBarActivity {
 	@Override
 	public void onStart() {
 		super.onStart();
-		checkFirstRun();
+		checkFirstLaunch();
 	}
 
 	@Override
@@ -47,8 +47,8 @@ public class FirstLaunchProfileActivity extends ActionBarActivity {
 		overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
 	}
 
-	private void checkFirstRun() {
-		if (status.isFirstLaunchCompleted()) {
+	private void checkFirstLaunch() {
+		if (status.isFirstLaunchCompleted() || status.isClearing()) {
 			finish();
 		}
 	}

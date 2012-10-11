@@ -3,9 +3,8 @@
     <string name="app_name">Day Dreaming</string>
     <string name="menu_settings">Settings</string>
     <string name="dashboard_title_activity">Dashboard</string>
-    <string name="dashboard_text_experiment_running">Experiment is</string>
-    <string name="dashboard_toggle_experiment_running_on">Running</string>
-    <string name="dashboard_toggle_experiment_running_off">Stopped</string>
+    <string name="dashboard_text_experiment_running">Experiment is running.</string>
+    <string name="dashboard_quit_experiment">Quit</string>
     <string name="dashboard_text_days_elapsed">Days elapsed</string>
     <string name="dashboard_title_results">Results:</string>
     <string name="dashboard_text_results">Results will appear once the first X days are completed (that\'s in Z days).</string>
@@ -42,9 +41,9 @@
         <item>Female</item>
         <item>Male</item>
     </string-array>
-    <string name="serviceNotification_ticker">Experiment started and sleeping</string>
-    <string name="serviceNotification_title">Day Dreaming Experiment</string>
-    <string name="serviceNotification_text">Sleeping for now</string>
+    <string name="serviceNotification_ticker">Syncing questions and answers</string>
+    <string name="serviceNotification_title">Day Dreaming</string>
+    <string name="serviceNotification_text">Questions and Answers are being synced</string>
 
     
     <string name="menu_refresh">Refresh</string>

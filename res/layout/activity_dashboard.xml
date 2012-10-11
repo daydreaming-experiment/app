@@ -15,18 +15,18 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:text="@string/dashboard_text_experiment_running"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
-        <ToggleButton
-            android:id="@+id/dashboard_toggleExperimentRunning"
+        <Button
+            android:id="@+id/dashboard_quitExperiment"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
-            android:textOff="@string/dashboard_toggle_experiment_running_off"
-            android:textOn="@string/dashboard_toggle_experiment_running_on" />
+            android:onClick="onClick_quitExperiment"
+            android:text="@string/dashboard_quit_experiment" />
 
     </LinearLayout>
 

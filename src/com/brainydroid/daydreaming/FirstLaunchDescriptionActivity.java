@@ -24,7 +24,7 @@ public class FirstLaunchDescriptionActivity extends ActionBarActivity {
 	@Override
 	public void onStart() {
 		super.onStart();
-		checkFirstRun();
+		checkFirstLaunch();
 	}
 
 	@Override
@@ -54,8 +54,8 @@ public class FirstLaunchDescriptionActivity extends ActionBarActivity {
 		overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
 	}
 
-	private void checkFirstRun() {
-		if (status.isFirstLaunchCompleted()) {
+	private void checkFirstLaunch() {
+		if (status.isFirstLaunchCompleted() || status.isClearing()) {
 			finish();
 		}
 	}

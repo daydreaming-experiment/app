@@ -43,7 +43,7 @@ public class FirstLaunchMeasuresActivity extends ActionBarActivity {
 	public void onStart() {
 		super.onStart();
 		updateView();
-		checkFirstRun();
+		checkFirstLaunch();
 	}
 
 	@Override
@@ -57,8 +57,8 @@ public class FirstLaunchMeasuresActivity extends ActionBarActivity {
 		overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
 	}
 
-	private void checkFirstRun() {
-		if (status.isFirstLaunchCompleted()) {
+	private void checkFirstLaunch() {
+		if (status.isFirstLaunchCompleted() || status.isClearing()) {
 			finish();
 		}
 	}
@@ -133,6 +133,5 @@ public class FirstLaunchMeasuresActivity extends ActionBarActivity {
 
 	private void setStatus() {
 		status.setFirstLaunchCompleted();
-		status.setExpServiceShouldRun(true);
 	}
 }

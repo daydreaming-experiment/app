@@ -49,7 +49,7 @@
             android:label="@string/firstLaunchMeasures_title_activity" >
         </activity>
         <service
-            android:name=".ExpService"
+            android:name=".SyncService"
             android:exported="false" />
     </application>
 

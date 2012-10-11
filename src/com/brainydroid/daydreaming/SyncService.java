@@ -11,7 +11,7 @@ import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 
-public class ExpService extends Service {
+public class SyncService extends Service {
 
 	private final int SERVICE_NOTIFICATION = 1;
 
@@ -21,9 +21,9 @@ public class ExpService extends Service {
 	private NotificationManager notificationManager;
 
 	public class LocalBinder extends Binder {
-		ExpService getService() {
+		SyncService getService() {
 			// Return this instance of ExperimentService so clients can call public methods
-			return ExpService.this;
+			return SyncService.this;
 		}
 	}
 
