@@ -15,7 +15,8 @@ public class Poll {
 	private double _locationAccuracy;
 	private long _timestamp;
 	private int _questionsVersion;
-	private final ArrayList<Question> _questions;
+	private ArrayList<Question> _questions;
+	private final Context _context;
 
 	public static final String COL_ID = "pollId";
 	public static final String COL_STATUS = "pollStatus";
@@ -32,9 +33,32 @@ public class Poll {
 	public static final String STATUS_PARTIAL = "pollPartiallyCompleted";
 	public static final String STATUS_COMPLETED = "pollCompleted";
 
+	private final PollsStorage pollsStorage;
+	private final QuestionsStorage questionsStorage;
+
 	public Poll(Context context) {
-		_questions = new ArrayList<Question>();
+		_id = -1;
+		_status = null;
+		_locationLatitude = -1;
+		_locationLongitude = -1;
+		_locationAltitude = -1;
+		_locationAccuracy = -1;
+		_timestamp = -1;
 		_questionsVersion = QuestionsStorage.getInstance(context).getQuestionsVersion();
+		_questions = new ArrayList<Question>();
+		_context = context;
+		pollsStorage = PollsStorage.getInstance(_context);
+		questionsStorage = QuestionsStorage.getInstance(_context);
+	}
+
+	public static Poll create(Context context, int nQuestions) {
+		Poll poll = new Poll(context);
+		poll.populateQuestions(nQuestions);
+		return poll;
+	}
+
+	private void populateQuestions(int nQuestions) {
+		_questions = questionsStorage.getRandomQuestions(nQuestions);
 	}
 
 	public void addQuestion(Question question) {
@@ -118,5 +142,13 @@ public class Poll {
 
 	public void setQuestionsVersion(int questionsVersion) {
 		_questionsVersion = questionsVersion;
+	}
+
+	public void save() {
+		if (_id != -1) {
+			pollsStorage.updatePoll(this);
+		} else {
+			pollsStorage.storePollGetId(this);
+		}
 	}
 }

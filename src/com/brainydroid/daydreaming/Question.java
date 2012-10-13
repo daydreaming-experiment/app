@@ -53,6 +53,17 @@ public class Question {
 	public static final String TYPE_SINGLE_CHOICE = "singleChoice";
 
 	public Question(Context context) {
+		_id = null;
+		_category = null;
+		_subcategory = null;
+		_type = null;
+		_status = null;
+		_answer = null;
+		_locationLatitude = -1;
+		_locationLongitude = -1;
+		_locationAltitude = -1;
+		_locationAccuracy = -1;
+		_timestamp = -1;
 		_questionsVersion = QuestionsStorage.getInstance(context).getQuestionsVersion();
 	}
 
@@ -61,6 +72,13 @@ public class Question {
 		_category = category;
 		_subcategory = subcategory;
 		_type = type;
+		_status = null;
+		_answer = null;
+		_locationLatitude = -1;
+		_locationLongitude = -1;
+		_locationAltitude = -1;
+		_locationAccuracy = -1;
+		_timestamp = -1;
 		_questionsVersion = QuestionsStorage.getInstance(context).getQuestionsVersion();
 	}
 

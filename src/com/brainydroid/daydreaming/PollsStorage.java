@@ -102,9 +102,10 @@ public class PollsStorage {
 	public void storePollGetId(Poll poll) {
 		ContentValues pollValues = getPollContentValues(poll);
 		wDb.insert(TABLE_POLLS, null, pollValues);
-		Cursor res = rDb.query(TABLE_POLLS, new String[] {Poll.COL_ID}, "",
+		Cursor res = rDb.query(TABLE_POLLS, new String[] {Poll.COL_ID}, null,
 				null, null, null, Poll.COL_ID + " DESC", "1");
 		int pollId = res.getInt(res.getColumnIndex(Poll.COL_ID));
+		res.close();
 		poll.setId(pollId);
 
 		Iterator<Question> qIterator = poll.getQuestions().iterator();
@@ -134,6 +135,7 @@ public class PollsStorage {
 		Cursor res = rDb.query(TABLE_POLLS, new String[] {"*"}, Poll.COL_ID + "='?'",
 				new String[] {Integer.toString(pollId)}, null, null, null);
 		if (res.getCount() == 0) {
+			res.close();
 			return null;
 		}
 
@@ -146,10 +148,12 @@ public class PollsStorage {
 		poll.setStatus(res.getString(res.getColumnIndex(Poll.COL_STATUS)));
 		poll.setTimestamp(res.getLong(res.getColumnIndex(Poll.COL_TIMESTAMP)));
 		poll.setQuestionsVersion(res.getInt(res.getColumnIndex(Poll.COL_QUESTIONS_VERSION)));
+		res.close();
 
 		Cursor qRes = rDb.query(TABLE_POLL_QUESTIONS, new String[] {"*"}, Poll.COL_ID + "='?'",
 				new String[] {Integer.toString(pollId)}, null, null, null);
 		if (!qRes.moveToFirst()) {
+			qRes.close();
 			return null;
 		}
 
@@ -172,6 +176,7 @@ public class PollsStorage {
 
 			poll.addQuestion(q);
 		} while (qRes.moveToNext());
+		qRes.close();
 
 		return poll;
 	}
