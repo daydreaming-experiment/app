@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
 
-public class Booter extends BroadcastReceiver {
+public class BootReceiver extends BroadcastReceiver {
 
 	private StatusManager status;
 

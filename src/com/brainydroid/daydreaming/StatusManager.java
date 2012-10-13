@@ -7,26 +7,26 @@ public class StatusManager {
 
 	private static StatusManager smInstance = null;
 
-	private final String EXP_STATUS = "expStatus";
-	private final String FL_STARTED = "flStarted";
-	private final String FL_COMPLETED = "flCompleted";
-	private final String IS_CLEARING = "isClearing";
+	private static final String EXP_STATUS = "expStatus";
+	private static final String FL_STARTED = "flStarted";
+	private static final String FL_COMPLETED = "flCompleted";
+	private static final String IS_CLEARING = "isClearing";
 
 	private final SharedPreferences expStatus;
 	private final SharedPreferences.Editor eExpStatus;
 
-	private final Context context;
+	private final Context _context;
 
-	public static StatusManager getInstance(Context c) {
+	public static StatusManager getInstance(Context context) {
 		if (smInstance == null) {
-			smInstance = new StatusManager(c);
+			smInstance = new StatusManager(context);
 		}
 		return smInstance;
 	}
 
-	private StatusManager(Context c) {
-		context = c.getApplicationContext();
-		expStatus = context.getSharedPreferences(EXP_STATUS, Context.MODE_PRIVATE);
+	private StatusManager(Context context) {
+		_context = context.getApplicationContext();
+		expStatus = _context.getSharedPreferences(EXP_STATUS, Context.MODE_PRIVATE);
 		eExpStatus = expStatus.edit();
 	}
 

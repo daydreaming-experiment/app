@@ -11,10 +11,10 @@ public class SyncServiceConnection implements ServiceConnection {
 
 	private boolean stopServiceOnBound = false;
 	private SyncService syncService;
-	private final Context context;
+	private final Context context_;
 
-	public SyncServiceConnection(Context c) {
-		context = c;
+	public SyncServiceConnection(Context context) {
+		context_ = context.getApplicationContext();
 	}
 
 	@Override
@@ -36,7 +36,7 @@ public class SyncServiceConnection implements ServiceConnection {
 	private void onBound() {
 		if (stopServiceOnBound) {
 			syncService.setStopServiceOnUnbind();
-			context.unbindService(this);
+			context_.unbindService(this);
 		}
 	}
 }
