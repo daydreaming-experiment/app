@@ -55,15 +55,19 @@ public class QuestionsStorage {
 	public int getQuestionsVersion() {
 		Cursor res = rDb.query(TABLE_QUESTIONS, new String[] {Question.COL_QUESTIONS_VERSION},
 				null, null, null, null, null, "1");
+		if (!res.moveToFirst()) {
+			res.close();
+			return -1;
+		}
 		int questionsVersion = Integer.parseInt(res.getString(res.getColumnIndex(Question.COL_QUESTIONS_VERSION)));
 		res.close();
 		return questionsVersion;
 	}
 
 	public Question getQuestion(String questionId) {
-		Cursor res = rDb.query(TABLE_QUESTIONS, new String[] {"*"}, Question.COL_ID + "='?'",
+		Cursor res = rDb.query(TABLE_QUESTIONS, null, Question.COL_ID + "=?",
 				new String[] {questionId}, null, null, null);
-		if (res.getCount() == 0) {
+		if (!res.moveToFirst()) {
 			res.close();
 			return null;
 		}
@@ -116,7 +120,7 @@ public class QuestionsStorage {
 	}
 
 	private void flushQuestions() {
-		wDb.delete(TABLE_QUESTIONS, "*", null);
+		wDb.delete(TABLE_QUESTIONS, null, null);
 	}
 
 	private void addQuestions(ArrayList<Question> questions) {

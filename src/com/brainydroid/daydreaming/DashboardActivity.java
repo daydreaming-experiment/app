@@ -1,5 +1,10 @@
 package com.brainydroid.daydreaming;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -11,12 +16,16 @@ import android.widget.Toast;
 public class DashboardActivity extends ActionBarActivity {
 
 	private StatusManager status;
+	private PollsStorage pollsStorage;
+	private QuestionsStorage questionsStorage;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		status = StatusManager.getInstance(this);
+		pollsStorage = PollsStorage.getInstance(this);
+		questionsStorage = QuestionsStorage.getInstance(this);
 		checkFirstRun();
 
 		setContentView(R.layout.activity_dashboard);
@@ -86,5 +95,39 @@ public class DashboardActivity extends ActionBarActivity {
 		status.startClear();
 		// Delete saved data
 		finish();
+	}
+
+	String convertStreamToString(InputStream is) {
+		try {
+			return new java.util.Scanner(is).useDelimiter("\\A").next();
+		} catch (java.util.NoSuchElementException e) {
+			return "";
+		}
+	}
+
+	public void loadQuestions(View view) {
+
+		InputStream questionsIS = null;
+
+		try {
+			questionsIS = getResources().openRawResource(R.raw.questions);
+			questionsStorage.importQuestions(convertStreamToString(questionsIS));
+			questionsIS.close();
+			Toast.makeText(this, "Questions loaded", Toast.LENGTH_SHORT).show();
+		} catch (IOException e) {
+			Toast.makeText(this, "IOException", Toast.LENGTH_SHORT).show();
+			e.printStackTrace();
+		}
+	}
+
+	public void showQuestions(View view) {
+		ArrayList<String> questionIds = questionsStorage.getQuestionIds();
+		Toast.makeText(this, Integer.toString(questionIds.size()) + " questions in DB", Toast.LENGTH_SHORT).show();
+
+		Iterator<Question> qIt = questionsStorage.getRandomQuestions(2).iterator();
+		do {
+			Question q = qIt.next();
+			Toast.makeText(this, q.getMainText(), Toast.LENGTH_SHORT).show();
+		} while (qIt.hasNext());
 	}
 }

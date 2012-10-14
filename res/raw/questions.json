@@ -1,0 +1,37 @@
+{
+    "questionsVersion": 1,
+    "questions": [
+        {
+            "_id": "mindWandering_onOffTask",
+            "_category": "mind-wandering",
+            "_subcategory": "content",
+            "_type": "slider",
+            "_mainText": "How much off-task are you right now?",
+            "_parametersText": "Completely off-task,Completely off-task"
+        },
+        {
+            "_id": "mindWandering_temporal",
+            "_category": "mind-wandering",
+            "_subcategory": "content",
+            "_type": "slider",
+            "_mainText": "What is the temporal focus of your thoughts?",
+            "_parametersText": "Far into the past,Recent past;Now;Near future;Far into the future"
+        },
+        {
+            "_id": "mindWandering_social",
+            "_category": "mind-wandering",
+            "_subcategory": "content",
+            "_type": "slider",
+            "_mainText": "How much are you thinking about yourself?;How much are you thinking about other people?",
+            "_parametersText": "Not at all about yourself,A lot about yourself;Not at all about other people,A lot about other people"
+        },
+        {
+            "_id": "mindWandering_qualities",
+            "_category": "mind-wandering",
+            "_subcategory": "qualities",
+            "_type": "slider",
+            "_mainText": "How fast were your thoughts?",
+            "_parametersText": "Very slow,Very fast"
+        }
+    ]
+}

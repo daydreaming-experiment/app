@@ -74,4 +74,18 @@
         android:layout_marginRight="16dp"
         android:text="@string/dashboard_text_results" />
 
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="loadQuestions"
+        android:text="Load Questions" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="showQuestions"
+        android:text="Show questions" />
+
 </LinearLayout>
