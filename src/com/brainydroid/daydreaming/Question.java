@@ -13,6 +13,8 @@ public class Question {
 	private String _category;
 	private String _subcategory;
 	private String _type;
+	private String _mainText;
+	private String _parametersText;
 	private String _status;
 	private String _answer;
 	private double _locationLatitude;
@@ -26,6 +28,8 @@ public class Question {
 	public static final String COL_CATEGORY = "questionCategory";
 	public static final String COL_SUBCATEGORY = "questionSubategory";
 	public static final String COL_TYPE = "questionType";
+	public static final String COL_MAIN_TEXT = "mainText";
+	public static final String COL_PARAMETERS_TEXT = "parametersText";
 	public static final String COL_STATUS = "questionStatus";
 	public static final String COL_ANSWER = "questionAnswer";
 	public static final String COL_LOCATION_LATITUDE = "questionLocationLatitude";
@@ -52,11 +56,30 @@ public class Question {
 	public static final String TYPE_MULTIPLE_CHOICE = "multipleChoice";
 	public static final String TYPE_SINGLE_CHOICE = "singleChoice";
 
+	public Question() {
+		_id = null;
+		_category = null;
+		_subcategory = null;
+		_type = null;
+		_mainText = null;
+		_parametersText = null;
+		_status = null;
+		_answer = null;
+		_locationLatitude = -1;
+		_locationLongitude = -1;
+		_locationAltitude = -1;
+		_locationAccuracy = -1;
+		_timestamp = -1;
+		_questionsVersion = -1;
+	}
+
 	public Question(Context context) {
 		_id = null;
 		_category = null;
 		_subcategory = null;
 		_type = null;
+		_mainText = null;
+		_parametersText = null;
 		_status = null;
 		_answer = null;
 		_locationLatitude = -1;
@@ -67,12 +90,15 @@ public class Question {
 		_questionsVersion = QuestionsStorage.getInstance(context).getQuestionsVersion();
 	}
 
-	public Question(Context context, String id, String category, String subcategory, String type) {
+	public Question(Context context, String id, String category, String subcategory, String type,
+			String mainText, String parametersText) {
 		_id = id;
 		_category = category;
 		_subcategory = subcategory;
 		_type = type;
 		_status = null;
+		_mainText = mainText;
+		_parametersText = parametersText;
 		_answer = null;
 		_locationLatitude = -1;
 		_locationLongitude = -1;
@@ -121,6 +147,22 @@ public class Question {
 
 	public void setStatus(String status) {
 		_status = status;
+	}
+
+	public String getMainText() {
+		return _mainText;
+	}
+
+	public void setMainText(String mainText) {
+		_mainText = mainText;
+	}
+
+	public String getParametersText() {
+		return _parametersText;
+	}
+
+	public void setParametersText(String parametersText) {
+		_parametersText = parametersText;
 	}
 
 	public String getAnswer() {

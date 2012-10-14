@@ -30,9 +30,6 @@ public class PollsStorage {
 			"CREATE TABLE IF NOT EXISTS " + TABLE_POLL_QUESTIONS + " (" +
 					Poll.COL_ID + " INTEGER NOT NULL" +
 					Question.COL_ID + " TEXT NOT NULL, " +
-					Question.COL_CATEGORY + " TEXT NOT NULL, " +
-					Question.COL_SUBCATEGORY + " TEXT, " +
-					Question.COL_TYPE + " TEXT NOT NULL, " +
 					Question.COL_STATUS + " TEXT, " +
 					Question.COL_ANSWER + " TEXT, " +
 					Question.COL_LOCATION_LATITUDE + " REAL, " +
@@ -40,13 +37,13 @@ public class PollsStorage {
 					Question.COL_LOCATION_ALTITUDE + " REAL, " +
 					Question.COL_LOCATION_ACCURACY + " REAL, " +
 					Question.COL_TIMESTAMP + " REAL, " +
-					Question.COL_QUESTIONS_VERSION + " INTEGER NOT NULL" +
 					");";
 
 	private final Storage storage;
 	private final SQLiteDatabase rDb;
 	private final SQLiteDatabase wDb;
 	private final Context _context;
+	private final QuestionsStorage _questionsStorage;
 
 	public static PollsStorage getInstance(Context context) {
 		if (psInstance == null) {
@@ -58,6 +55,7 @@ public class PollsStorage {
 	private PollsStorage(Context context) {
 		_context = context.getApplicationContext();
 		storage = Storage.getInstance(_context);
+		_questionsStorage = QuestionsStorage.getInstance(_context);
 		rDb = storage.getWritableDatabase();
 		wDb = storage.getWritableDatabase();
 		wDb.execSQL(SQL_CREATE_TABLE_POLLS);
@@ -66,6 +64,7 @@ public class PollsStorage {
 
 	private ContentValues getPollContentValues(Poll poll) {
 		ContentValues pollValues = new ContentValues();
+		pollValues.put(Poll.COL_STATUS, poll.getStatus());
 		pollValues.put(Poll.COL_LOCATION_LATITUDE, poll.getLocationLatitude());
 		pollValues.put(Poll.COL_LOCATION_LONGITUDE, poll.getLocationLongitude());
 		pollValues.put(Poll.COL_LOCATION_ALTITUDE, poll.getLocationAltitude());
@@ -85,9 +84,6 @@ public class PollsStorage {
 		ContentValues qValues = new ContentValues();
 		qValues.put(Poll.COL_ID, pollId);
 		qValues.put(Question.COL_ID, question.getId());
-		qValues.put(Question.COL_CATEGORY, question.getCategory());
-		qValues.put(Question.COL_SUBCATEGORY, question.getSubcategory());
-		qValues.put(Question.COL_TYPE, question.getType());
 		qValues.put(Question.COL_STATUS, question.getStatus());
 		qValues.put(Question.COL_ANSWER, question.getAnswer());
 		qValues.put(Question.COL_LOCATION_LATITUDE, question.getLocationLatitude());
@@ -95,7 +91,6 @@ public class PollsStorage {
 		qValues.put(Question.COL_LOCATION_ALTITUDE, question.getLocationAltitude());
 		qValues.put(Question.COL_LOCATION_ACCURACY, question.getLocationAccuracy());
 		qValues.put(Question.COL_TIMESTAMP, question.getTimestamp());
-		qValues.put(Question.COL_QUESTIONS_VERSION, question.getQuestionsVersion());
 		return qValues;
 	}
 
@@ -141,11 +136,11 @@ public class PollsStorage {
 
 		Poll poll = new Poll(_context);
 		poll.setId(res.getInt(res.getColumnIndex(Poll.COL_ID)));
+		poll.setStatus(res.getString(res.getColumnIndex(Poll.COL_STATUS)));
 		poll.setLocationLatitude(res.getDouble(res.getColumnIndex(Poll.COL_LOCATION_LATITUDE)));
 		poll.setLocationLongitude(res.getDouble(res.getColumnIndex(Poll.COL_LOCATION_LONGITUDE)));
 		poll.setLocationAltitude(res.getDouble(res.getColumnIndexOrThrow(Poll.COL_LOCATION_ALTITUDE)));
 		poll.setLocationAccuracy(res.getDouble(res.getColumnIndex(Poll.COL_LOCATION_ACCURACY)));
-		poll.setStatus(res.getString(res.getColumnIndex(Poll.COL_STATUS)));
 		poll.setTimestamp(res.getLong(res.getColumnIndex(Poll.COL_TIMESTAMP)));
 		poll.setQuestionsVersion(res.getInt(res.getColumnIndex(Poll.COL_QUESTIONS_VERSION)));
 		res.close();
@@ -158,13 +153,8 @@ public class PollsStorage {
 		}
 
 		do {
-			Question q = new Question(_context);
-			q.setId(qRes.getString(qRes.getColumnIndex(Question.COL_ID)));
-			q.setCategory(qRes.getString(qRes.getColumnIndex(Question.COL_CATEGORY)));
-			if (Question.CATEGORIES_WITH_SUBCATEGORIES.contains(q.getCategory())) {
-				q.setSubcategory(qRes.getString(qRes.getColumnIndex(Question.COL_SUBCATEGORY)));
-			}
-			q.setType(qRes.getString(qRes.getColumnIndex(Question.COL_TYPE)));
+			Question q = _questionsStorage.getQuestion(
+					qRes.getString(qRes.getColumnIndex(Question.COL_ID)));
 			q.setStatus(qRes.getString(qRes.getColumnIndex(Question.COL_STATUS)));
 			q.setAnswer(qRes.getString(qRes.getColumnIndex(Question.COL_ANSWER)));
 			q.setLocationLatitude(qRes.getDouble(qRes.getColumnIndex(Question.COL_LOCATION_LATITUDE)));
@@ -172,7 +162,6 @@ public class PollsStorage {
 			q.setLocationAltitude(qRes.getDouble(qRes.getColumnIndex(Question.COL_LOCATION_ALTITUDE)));
 			q.setLocationAccuracy(qRes.getDouble(qRes.getColumnIndex(Question.COL_LOCATION_ACCURACY)));
 			q.setTimestamp(qRes.getLong(qRes.getColumnIndex(Question.COL_TIMESTAMP)));
-			q.setQuestionsVersion(qRes.getInt(qRes.getColumnIndex(Question.COL_QUESTIONS_VERSION)));
 
 			poll.addQuestion(q);
 		} while (qRes.moveToNext());

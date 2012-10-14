@@ -1,11 +1,15 @@
 package com.brainydroid.daydreaming;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Random;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+
+import com.google.gson.Gson;
 
 public class QuestionsStorage {
 
@@ -19,6 +23,8 @@ public class QuestionsStorage {
 					Question.COL_CATEGORY + " TEXT NOT NULL, " +
 					Question.COL_SUBCATEGORY + " TEXT, " +
 					Question.COL_TYPE + " TEXT NOT NULL, " +
+					Question.COL_MAIN_TEXT + " TEXT NOT NULL, " +
+					Question.COL_PARAMETERS_TEXT + " TEXT NOT NULL, " +
 					Question.COL_QUESTIONS_VERSION + " INTEGER NOT NULL" +
 					");";
 
@@ -27,6 +33,7 @@ public class QuestionsStorage {
 	private final SQLiteDatabase wDb;
 	private final Context _context;
 	private final Random _random;
+	private final Gson gson;
 
 	public static QuestionsStorage getInstance(Context context) {
 		if (qsInstance == null) {
@@ -40,6 +47,7 @@ public class QuestionsStorage {
 		storage = Storage.getInstance(_context);
 		rDb = storage.getWritableDatabase();
 		_random = new Random(System.currentTimeMillis());
+		gson = new Gson();
 		wDb = storage.getWritableDatabase();
 		wDb.execSQL(SQL_CREATE_TABLE_QUESTIONS);
 	}
@@ -65,6 +73,8 @@ public class QuestionsStorage {
 		q.setCategory(res.getString(res.getColumnIndex(Question.COL_CATEGORY)));
 		q.setSubcategory(res.getString(res.getColumnIndex(Question.COL_SUBCATEGORY)));
 		q.setType(res.getString(res.getColumnIndex(Question.COL_TYPE)));
+		q.setMainText(res.getString(res.getColumnIndex(Question.COL_MAIN_TEXT)));
+		q.setParametersText(res.getString(res.getColumnIndex(Question.COL_PARAMETERS_TEXT)));
 		q.setQuestionsVersion(
 				Integer.parseInt(res.getString(res.getColumnIndex(Question.COL_QUESTIONS_VERSION))));
 		res.close();
@@ -103,5 +113,40 @@ public class QuestionsStorage {
 		}
 
 		return randomQuestions;
+	}
+
+	private void flushQuestions() {
+		wDb.delete(TABLE_QUESTIONS, "*", null);
+	}
+
+	private void addQuestions(ArrayList<Question> questions) {
+		Iterator<Question> qIt = questions.iterator();
+
+		while (qIt.hasNext()) {
+			Question q = qIt.next();
+			addQuestion(q);
+		}
+	}
+
+	private void addQuestion(Question question) {
+		wDb.insert(TABLE_QUESTIONS, null, getQuestionContentValues(question));
+	}
+
+	private ContentValues getQuestionContentValues(Question question) {
+		ContentValues qValues = new ContentValues();
+		qValues.put(Question.COL_ID, question.getId());
+		qValues.put(Question.COL_CATEGORY, question.getCategory());
+		qValues.put(Question.COL_SUBCATEGORY, question.getSubcategory());
+		qValues.put(Question.COL_TYPE, question.getType());
+		qValues.put(Question.COL_MAIN_TEXT, question.getMainText());
+		qValues.put(Question.COL_PARAMETERS_TEXT, question.getParametersText());
+		qValues.put(Question.COL_QUESTIONS_VERSION, question.getQuestionsVersion());
+		return qValues;
+	}
+
+	public void importQuestions(String jsonQuestionsString) {
+		JsonQuestions jsonQuestions = gson.fromJson(jsonQuestionsString, JsonQuestions.class);
+		flushQuestions();
+		addQuestions(jsonQuestions.getQuestionsArrayList());
 	}
 }
