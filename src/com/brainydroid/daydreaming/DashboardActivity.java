@@ -130,4 +130,9 @@ public class DashboardActivity extends ActionBarActivity {
 			Toast.makeText(this, q.getMainText(), Toast.LENGTH_SHORT).show();
 		} while (qIt.hasNext());
 	}
+
+	public void runQuestion(View view) {
+		Intent intent = new Intent(this, QuestionActivity.class);
+		startActivity(intent);
+	}
 }

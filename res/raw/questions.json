@@ -23,7 +23,7 @@
             "_subcategory": "content",
             "_type": "slider",
             "_mainText": "How much are you thinking about yourself?;How much are you thinking about other people?",
-            "_parametersText": "Not at all about yourself,A lot about yourself;Not at all about other people,A lot about other people"
+            "_parametersText": "Not at all about yourself,A little about yourself,A lot about yourself;Not at all about other people,A little about other people,A lot about other people"
         },
         {
             "_id": "mindWandering_qualities",

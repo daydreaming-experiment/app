@@ -88,4 +88,11 @@
         android:onClick="showQuestions"
         android:text="Show questions" />
 
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="runQuestion"
+        android:text="Run question" />
+
 </LinearLayout>

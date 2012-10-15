@@ -16,7 +16,6 @@ public class Poll {
 	private long _timestamp;
 	private int _questionsVersion;
 	private ArrayList<Question> _questions;
-	private final Context _context;
 
 	public static final String COL_ID = "pollId";
 	public static final String COL_STATUS = "pollStatus";
@@ -33,10 +32,12 @@ public class Poll {
 	public static final String STATUS_PARTIAL = "pollPartiallyCompleted";
 	public static final String STATUS_COMPLETED = "pollCompleted";
 
+	private final Context _context;
 	private final PollsStorage pollsStorage;
 	private final QuestionsStorage questionsStorage;
 
 	public Poll(Context context) {
+		_context = context.getApplicationContext();
 		_id = -1;
 		_status = null;
 		_locationLatitude = -1;
@@ -44,9 +45,8 @@ public class Poll {
 		_locationAltitude = -1;
 		_locationAccuracy = -1;
 		_timestamp = -1;
-		_questionsVersion = QuestionsStorage.getInstance(context).getQuestionsVersion();
+		_questionsVersion = QuestionsStorage.getInstance(_context).getQuestionsVersion();
 		_questions = new ArrayList<Question>();
-		_context = context;
 		pollsStorage = PollsStorage.getInstance(_context);
 		questionsStorage = QuestionsStorage.getInstance(_context);
 	}

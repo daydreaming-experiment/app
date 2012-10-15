@@ -1,11 +1,19 @@
 package com.brainydroid.daydreaming;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import android.content.Context;
 import android.location.Location;
+import android.util.FloatMath;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
+import android.widget.TextView;
 
 public class Question {
 
@@ -23,6 +31,7 @@ public class Question {
 	private double _locationAccuracy;
 	private long _timestamp;
 	private int _questionsVersion;
+
 
 	public static final String COL_ID = "questionId";
 	public static final String COL_CATEGORY = "questionCategory";
@@ -57,6 +66,27 @@ public class Question {
 	public static final String TYPE_SINGLE_CHOICE = "singleChoice";
 
 	public Question() {
+		initVariables();
+	}
+
+	public Question(Context context) {
+		initVariables();
+		_questionsVersion = QuestionsStorage.getInstance(context).getQuestionsVersion();
+	}
+
+	public Question(Context context, String id, String category, String subcategory, String type,
+			String mainText, String parametersText) {
+		initVariables();
+		_id = id;
+		_category = category;
+		_subcategory = subcategory;
+		_type = type;
+		_mainText = mainText;
+		_parametersText = parametersText;
+		_questionsVersion = QuestionsStorage.getInstance(context).getQuestionsVersion();
+	}
+
+	private void initVariables() {
 		_id = null;
 		_category = null;
 		_subcategory = null;
@@ -72,42 +102,6 @@ public class Question {
 		_timestamp = -1;
 		_questionsVersion = -1;
 	}
-
-	public Question(Context context) {
-		_id = null;
-		_category = null;
-		_subcategory = null;
-		_type = null;
-		_mainText = null;
-		_parametersText = null;
-		_status = null;
-		_answer = null;
-		_locationLatitude = -1;
-		_locationLongitude = -1;
-		_locationAltitude = -1;
-		_locationAccuracy = -1;
-		_timestamp = -1;
-		_questionsVersion = QuestionsStorage.getInstance(context).getQuestionsVersion();
-	}
-
-	public Question(Context context, String id, String category, String subcategory, String type,
-			String mainText, String parametersText) {
-		_id = id;
-		_category = category;
-		_subcategory = subcategory;
-		_type = type;
-		_status = null;
-		_mainText = mainText;
-		_parametersText = parametersText;
-		_answer = null;
-		_locationLatitude = -1;
-		_locationLongitude = -1;
-		_locationAltitude = -1;
-		_locationAccuracy = -1;
-		_timestamp = -1;
-		_questionsVersion = QuestionsStorage.getInstance(context).getQuestionsVersion();
-	}
-
 
 	public String getId() {
 		return _id;
@@ -226,5 +220,94 @@ public class Question {
 
 	public void setQuestionsVersion(int questionsVersion) {
 		_questionsVersion = questionsVersion;
+	}
+
+	public ArrayList<View> getViews(Context context) {
+		Context _context = context;
+		LayoutInflater inflater = (LayoutInflater)_context.getSystemService(
+				Context.LAYOUT_INFLATER_SERVICE);
+		if (_type.equals(TYPE_SLIDER)) {
+			return createViewsSlider(inflater);
+			//		} else if (_type.equals(TYPE_SINGLE_CHOICE)) {
+			//			return createViewsSingleChoice(inflater);
+			//		} else if (_type.equals(TYPE_MULTIPLE_CHOICE)) {
+			//			return createViewsMultipleChoice(inflater);
+		}
+		return null;
+	}
+
+	private ArrayList<View> createViewsSlider(LayoutInflater inflater) {
+		ArrayList<View> views = new ArrayList<View>();
+		ArrayList<String> mainTexts = getParsedMainText();
+		ArrayList<ArrayList<String>> allParametersTexts = getParsedParametersText();
+
+		Iterator<String> mtIt = mainTexts.iterator();
+		Iterator<ArrayList<String>> ptsIt = allParametersTexts.iterator();
+
+		while (mtIt.hasNext()) {
+			String mainText = mtIt.next();
+			final ArrayList<String> parametersTexts = ptsIt.next();
+
+			View view = inflater.inflate(R.layout.question_slider, null);
+			TextView qText = (TextView)view.findViewById(R.id.question_slider_mainText);
+			qText.setText(mainText);
+			TextView leftHintText = (TextView)view.findViewById(R.id.question_slider_leftHint);
+			leftHintText.setText(parametersTexts.get(0));
+			TextView rightHintText = (TextView)view.findViewById(R.id.question_slider_rightHint);
+			rightHintText.setText(parametersTexts.get(parametersTexts.size() - 1));
+			SeekBar seekBar = (SeekBar)view.findViewById(R.id.question_slider_seekBar);
+			final TextView selectedSeek = (TextView)view.findViewById(R.id.question_slider_selectedSeek);
+			final int maxSeek = parametersTexts.size();
+			OnSeekBarChangeListener listener = new OnSeekBarChangeListener() {
+
+				@Override
+				public void onProgressChanged(SeekBar seekBar, int progress,
+						boolean fromUser) {
+					int index = (int)FloatMath.floor((progress / 101f) * maxSeek);
+					selectedSeek.setText(parametersTexts.get(index));
+				}
+
+				@Override
+				public void onStartTrackingTouch(SeekBar seekBar) {
+				}
+
+				@Override
+				public void onStopTrackingTouch(SeekBar seekBar) {
+				}
+			};
+			seekBar.setOnSeekBarChangeListener(listener);
+
+			views.add(view);
+		}
+
+		return views;
+	}
+
+	//	private ArrayList<View> createViewsSingleChoice(LayoutInflater inflater) {
+	//
+	//	}
+	//
+	//	private ArrayList<View> createViewsMultipleChoice(LayoutInflater inflater) {
+	//
+	//	}
+
+	private ArrayList<String> parseString(String toParse, String sep) {
+		return new ArrayList<String>(Arrays.asList(toParse.split(sep)));
+	}
+
+	private ArrayList<String> getParsedMainText() {
+		return parseString(_mainText, ";");
+	}
+
+	private ArrayList<ArrayList<String>> getParsedParametersText() {
+		ArrayList<ArrayList<String>> parsedParametersText = new ArrayList<ArrayList<String>>();
+		Iterator<String> preParsedIt = parseString(_parametersText, ";").iterator();
+		ArrayList<String> subParameters;
+		while (preParsedIt.hasNext()) {
+			subParameters = parseString(preParsedIt.next(), ",");
+			parsedParametersText.add(subParameters);
+		}
+
+		return parsedParametersText;
 	}
 }

@@ -44,6 +44,7 @@
     <string name="serviceNotification_ticker">Syncing questions and answers</string>
     <string name="serviceNotification_title">Day Dreaming</string>
     <string name="serviceNotification_text">Questions and Answers are being synced</string>
+    <string name="questionSlider_please_slide">(Slide to answer)</string>
 
     
     <string name="menu_refresh">Refresh</string>

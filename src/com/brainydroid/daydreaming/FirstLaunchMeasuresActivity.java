@@ -27,10 +27,10 @@ public class FirstLaunchMeasuresActivity extends ActionBarActivity {
 
 		setContentView(R.layout.activity_first_launch_measures);
 
-		textNetworkLocation = (TextView) findViewById(R.id.firstLaunchMeasures_textNetworkLocation);
-		textSettings = (TextView) findViewById(R.id.firstLaunchMeasures_textSettings);
-		buttonSettings = (Button) findViewById(R.id.firstLaunchMeasures_buttonSettings);
-		buttonNext = (Button) findViewById(R.id.firstLaunchMeasures_buttonNext);
+		textNetworkLocation = (TextView)findViewById(R.id.firstLaunchMeasures_textNetworkLocation);
+		textSettings = (TextView)findViewById(R.id.firstLaunchMeasures_textSettings);
+		buttonSettings = (Button)findViewById(R.id.firstLaunchMeasures_buttonSettings);
+		buttonNext = (Button)findViewById(R.id.firstLaunchMeasures_buttonNext);
 		status = StatusManager.getInstance(this);
 		locationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
 
