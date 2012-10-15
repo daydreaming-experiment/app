@@ -1,13 +1,13 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/question_rootView"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_margin="16dp" >
+    android:layout_height="match_parent" >
 
     <LinearLayout
         android:id="@+id/question_linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="16dp"
         android:orientation="vertical" >
         
 	    <LinearLayout
@@ -24,7 +24,7 @@
 	            android:layout_width="0dp"
 	            android:layout_height="wrap_content"
 	            android:layout_weight="1"
-	            android:text="Next" />
+	            android:text="@string/question_button_next" />
 	    
 	    </LinearLayout>
 	    

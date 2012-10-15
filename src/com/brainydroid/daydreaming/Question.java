@@ -11,6 +11,11 @@ import android.location.Location;
 import android.util.FloatMath;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
@@ -230,8 +235,8 @@ public class Question {
 			return createViewsSlider(inflater);
 			//		} else if (_type.equals(TYPE_SINGLE_CHOICE)) {
 			//			return createViewsSingleChoice(inflater);
-			//		} else if (_type.equals(TYPE_MULTIPLE_CHOICE)) {
-			//			return createViewsMultipleChoice(inflater);
+		} else if (_type.equals(TYPE_MULTIPLE_CHOICE)) {
+			return createViewsMultipleChoice(inflater);
 		}
 		return null;
 	}
@@ -286,10 +291,75 @@ public class Question {
 	//	private ArrayList<View> createViewsSingleChoice(LayoutInflater inflater) {
 	//
 	//	}
-	//
-	//	private ArrayList<View> createViewsMultipleChoice(LayoutInflater inflater) {
-	//
-	//	}
+
+	private ArrayList<View> createViewsMultipleChoice(LayoutInflater inflater) {
+		ArrayList<View> views = new ArrayList<View>();
+		ArrayList<String> mainTexts = getParsedMainText();
+		ArrayList<ArrayList<String>> allParametersTexts = getParsedParametersText();
+
+		Iterator<String> mtIt = mainTexts.iterator();
+		Iterator<ArrayList<String>> ptsIt = allParametersTexts.iterator();
+
+		while (mtIt.hasNext()) {
+			String mainText = mtIt.next();
+			final ArrayList<String> parametersTexts = ptsIt.next();
+
+			View view = inflater.inflate(R.layout.question_multiple_choice, null);
+			TextView qText = (TextView)view.findViewById(R.id.question_multiple_choice_mainText);
+			qText.setText(mainText);
+			final CheckBox otherCheck = (CheckBox)view.findViewById(R.id.question_multiple_choices_otherCheckBox);
+			final EditText otherEdit = (EditText)view.findViewById(R.id.question_multiple_choices_otherEditText);
+			OnCheckedChangeListener otherCheckListener = new OnCheckedChangeListener() {
+
+				@Override
+				public void onCheckedChanged(CompoundButton buttonView,
+						boolean isChecked) {
+					if (isChecked) {
+						otherEdit.requestFocus();
+					} else {
+						otherEdit.setText("");
+					}
+				}
+
+			};
+			otherCheck.setOnCheckedChangeListener(otherCheckListener);
+
+			View.OnClickListener otherEditClickListener = new View.OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					otherCheck.setChecked(true);
+				}
+
+			};
+			otherEdit.setOnClickListener(otherEditClickListener);
+
+			View.OnFocusChangeListener otherEditFocusListener = new View.OnFocusChangeListener() {
+
+				@Override
+				public void onFocusChange(View v, boolean hasFocus) {
+					if (hasFocus) {
+						otherCheck.setChecked(true);
+					}
+				}
+			};
+			otherEdit.setOnFocusChangeListener(otherEditFocusListener);
+
+			LinearLayout checksLayout = (LinearLayout)view.findViewById(R.id.question_multiple_choice_rootChoices);
+			Iterator<String> ptIt = parametersTexts.iterator();
+
+			while (ptIt.hasNext()) {
+				String parameter = ptIt.next();
+				CheckBox checkBox = (CheckBox)inflater.inflate(R.layout.question_multiple_choices_item, null);
+				checkBox.setText(parameter);
+				checksLayout.addView(checkBox);
+			}
+
+			views.add(view);
+		}
+
+		return views;
+	}
 
 	private ArrayList<String> parseString(String toParse, String sep) {
 		return new ArrayList<String>(Arrays.asList(toParse.split(sep)));
@@ -304,7 +374,7 @@ public class Question {
 		Iterator<String> preParsedIt = parseString(_parametersText, ";").iterator();
 		ArrayList<String> subParameters;
 		while (preParsedIt.hasNext()) {
-			subParameters = parseString(preParsedIt.next(), ",");
+			subParameters = parseString(preParsedIt.next(), "§");
 			parsedParametersText.add(subParameters);
 		}
 

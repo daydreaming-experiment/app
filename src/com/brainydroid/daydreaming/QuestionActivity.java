@@ -17,7 +17,7 @@ public class QuestionActivity extends ActionBarActivity {
 
 		setContentView(R.layout.activity_question);
 
-		question = QuestionsStorage.getInstance(this).getQuestion("mindWandering_social");
+		question = QuestionsStorage.getInstance(this).getQuestion("currentActivity_doing");
 		populateViews();
 		setTitle("Day Dreaming 1/2");
 	}
