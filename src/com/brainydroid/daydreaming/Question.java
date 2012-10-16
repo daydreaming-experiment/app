@@ -91,6 +91,7 @@ public class Question {
 		_questionsVersion = QuestionsStorage.getInstance(context).getQuestionsVersion();
 	}
 
+	// initialization
 	private void initVariables() {
 		_id = null;
 		_category = null;

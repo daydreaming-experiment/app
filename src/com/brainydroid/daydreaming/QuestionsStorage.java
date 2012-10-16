@@ -42,6 +42,7 @@ public class QuestionsStorage {
 		return qsInstance;
 	}
 
+	// Constructor
 	private QuestionsStorage(Context context) {
 		_context = context.getApplicationContext();
 		storage = Storage.getInstance(_context);
@@ -64,6 +65,7 @@ public class QuestionsStorage {
 		return questionsVersion;
 	}
 
+	// get question from id in db
 	public Question getQuestion(String questionId) {
 		Cursor res = rDb.query(TABLE_QUESTIONS, null, Question.COL_ID + "=?",
 				new String[] {questionId}, null, null, null);
@@ -86,6 +88,7 @@ public class QuestionsStorage {
 		return q;
 	}
 
+	// get questions ids in questions db
 	public ArrayList<String> getQuestionIds() {
 		Cursor res = rDb.query(TABLE_QUESTIONS, new String[] {Question.COL_ID}, null, null,
 				null, null, null);
@@ -104,6 +107,7 @@ public class QuestionsStorage {
 		return questionIds;
 	}
 
+	// getRandomQuestions
 	public ArrayList<Question> getRandomQuestions(int nQuestions) {
 		ArrayList<String> questionIds = getQuestionIds();
 		int nIds = questionIds.size();
@@ -148,6 +152,7 @@ public class QuestionsStorage {
 		return qValues;
 	}
 
+	// import questions from json file into database
 	public void importQuestions(String jsonQuestionsString) {
 		JsonQuestions jsonQuestions = gson.fromJson(jsonQuestionsString, JsonQuestions.class);
 		flushQuestions();

@@ -4,7 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-
+// Class to create SQlite database for both polls and questions
 public class Storage extends SQLiteOpenHelper {
 
 	private static Storage sInstance = null;
