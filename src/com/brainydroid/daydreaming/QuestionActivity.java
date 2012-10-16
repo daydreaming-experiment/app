@@ -22,6 +22,7 @@ public class QuestionActivity extends ActionBarActivity {
 	private int questionIndex;
 	private Question question;
 	private int nQuestions;
+	private boolean isContinuing = false;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -30,10 +31,32 @@ public class QuestionActivity extends ActionBarActivity {
 		setContentView(R.layout.activity_question);
 
 		initVars();
-		// TODO: If poll completed, finish
+		checkPollStatus();
 		setChrome();
 		populateViews();
 		setTitle(getString(R.string.app_name) + " " + (questionIndex + 1) + "/" + nQuestions);
+	}
+
+	@Override
+	public void onStart() {
+		super.onStart();
+		if(checkPollStatus()) {
+			poll.setStatus(Poll.STATUS_RUNNING);
+		}
+	}
+
+	@Override
+	public void onStop() {
+		super.onStop();
+		if (!isContinuing() && !poll.isOver()) {
+			poll.setStatus(Poll.STATUS_STOPPED);
+		}
+	}
+
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
+		overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
 	}
 
 	private void initVars() {
@@ -44,6 +67,14 @@ public class QuestionActivity extends ActionBarActivity {
 		questionIndex = intent.getIntExtra(EXTRA_QUESTION_INDEX, -1);
 		question = poll.getQuestionByIndex(questionIndex);
 		nQuestions = poll.getLength();
+	}
+
+	private boolean checkPollStatus() {
+		boolean isOver = poll.isOver();
+		if (isOver) {
+			finish();
+		}
+		return !isOver;
 	}
 
 	private void setChrome() {
@@ -76,15 +107,17 @@ public class QuestionActivity extends ActionBarActivity {
 			poll.saveAnswer(questionIndex);
 			if (isLastQuestion()) {
 				Toast.makeText(this, getString(R.string.question_thank_you), Toast.LENGTH_SHORT).show();
+				poll.setStatus(Poll.STATUS_COMPLETED);
 				finish();
 			} else {
 				Intent intent = new Intent(this, QuestionActivity.class);
 				intent.putExtra(EXTRA_POLL_ID, pollId);
 				intent.putExtra(EXTRA_QUESTION_INDEX, questionIndex + 1);
+				setIsContinuing();
 				startActivity(intent);
+				overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
 			}
 		}
-
 	}
 
 	private boolean isLastQuestion() {
@@ -93,5 +126,13 @@ public class QuestionActivity extends ActionBarActivity {
 
 	private boolean isFirstQuestion() {
 		return questionIndex == 0;
+	}
+
+	private boolean isContinuing() {
+		return isContinuing;
+	}
+
+	private void setIsContinuing() {
+		isContinuing = true;
 	}
 }

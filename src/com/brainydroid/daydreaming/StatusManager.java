@@ -13,6 +13,7 @@ public class StatusManager {
 	private static final String FL_STARTED = "flStarted"; // first launch started
 	private static final String FL_COMPLETED = "flCompleted"; // first launch completed
 	private static final String IS_CLEARING = "isClearing";
+	public static final String POLL_IS_FINISHING = "pollIsFinishing";
 
 	private final SharedPreferences expStatus; // file containing status of exp
 	private final SharedPreferences.Editor eExpStatus; // editor of expStatus
@@ -27,7 +28,7 @@ public class StatusManager {
 	}
 
 	/*
-	 * Constructor. 
+	 * Constructor.
 	 * loads context, assign initial preferences
 	 */
 	private StatusManager(Context context) {
@@ -63,6 +64,15 @@ public class StatusManager {
 
 	public boolean isClearing() {
 		return expStatus.getBoolean(IS_CLEARING, false);
+	}
+
+	public void setPollIsFinishing(boolean set) {
+		eExpStatus.putBoolean(POLL_IS_FINISHING, set);
+		eExpStatus.commit();
+	}
+
+	public boolean isPollFinishing() {
+		return expStatus.getBoolean(POLL_IS_FINISHING, false);
 	}
 
 	// Clearing expstatus

@@ -13,6 +13,8 @@ import android.widget.Toast;
 
 public class DashboardActivity extends ActionBarActivity {
 
+	public static String EXTRA_COMES_FROM_FIRST_LAUNCH = "comesFromFirstLaunch";
+
 	private StatusManager status;
 	private PollsStorage pollsStorage;
 	private QuestionsStorage questionsStorage;
@@ -83,6 +85,10 @@ public class DashboardActivity extends ActionBarActivity {
 		}
 	}
 
+	private boolean comesFromFirstLaunch() {
+		return getIntent().getBooleanExtra(EXTRA_COMES_FROM_FIRST_LAUNCH, false);
+	}
+
 	public void onClick_quitExperiment(View view) {
 		quitExperiment();
 	}
@@ -92,6 +98,11 @@ public class DashboardActivity extends ActionBarActivity {
 				Toast.LENGTH_SHORT).show();
 		status.startClear();
 		// Delete saved data
+		pollsStorage.dropAll();
+		questionsStorage.dropAll();
+		if (!comesFromFirstLaunch()) {
+			status.finishClear();
+		}
 		finish();
 	}
 
@@ -120,12 +131,12 @@ public class DashboardActivity extends ActionBarActivity {
 
 	public void runPoll(View view) {
 		Poll poll = Poll.create(this, 3);
-		poll.setStatus(Poll.STATUS_RUNNING);
 		poll.save();
 
 		Intent intent = new Intent(this, QuestionActivity.class);
 		intent.putExtra(QuestionActivity.EXTRA_POLL_ID, poll.getId());
 		intent.putExtra(QuestionActivity.EXTRA_QUESTION_INDEX, 0);
 		startActivity(intent);
+		overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
 	}
 }

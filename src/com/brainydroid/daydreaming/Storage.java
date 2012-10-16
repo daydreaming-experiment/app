@@ -19,7 +19,7 @@ public class Storage extends SQLiteOpenHelper {
 		return sInstance;
 	}
 
-	private Storage (Context context) {
+	private Storage(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 	}
 

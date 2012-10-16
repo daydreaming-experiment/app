@@ -28,6 +28,9 @@ public class QuestionsStorage {
 					Question.COL_QUESTIONS_VERSION + " INTEGER NOT NULL" +
 					");";
 
+	private static final String SQL_DROP_TABLE_QUESTIONS =
+			"DROP TABLE IF EXISTS " + TABLE_QUESTIONS + ";";
+
 	private final Storage storage;
 	private final SQLiteDatabase rDb;
 	private final SQLiteDatabase wDb;
@@ -92,8 +95,7 @@ public class QuestionsStorage {
 	public ArrayList<String> getQuestionIds() {
 		Cursor res = rDb.query(TABLE_QUESTIONS, new String[] {Question.COL_ID}, null, null,
 				null, null, null);
-		if (!res.moveToFirst())
-		{
+		if (!res.moveToFirst()) {
 			res.close();
 			return null;
 		}
@@ -123,8 +125,12 @@ public class QuestionsStorage {
 		return randomQuestions;
 	}
 
-	private void flushQuestions() {
+	public void flushAll() {
 		wDb.delete(TABLE_QUESTIONS, null, null);
+	}
+
+	public void dropAll() {
+		wDb.execSQL(SQL_DROP_TABLE_QUESTIONS);
 	}
 
 	private void addQuestions(ArrayList<Question> questions) {
@@ -155,7 +161,7 @@ public class QuestionsStorage {
 	// import questions from json file into database
 	public void importQuestions(String jsonQuestionsString) {
 		JsonQuestions jsonQuestions = gson.fromJson(jsonQuestionsString, JsonQuestions.class);
-		flushQuestions();
+		flushAll();
 		addQuestions(jsonQuestions.getQuestionsArrayList());
 	}
 }

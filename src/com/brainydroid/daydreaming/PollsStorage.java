@@ -6,6 +6,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.SparseArray;
 
 public class PollsStorage {
 
@@ -23,7 +24,7 @@ public class PollsStorage {
 					Poll.COL_LOCATION_ALTITUDE + " REAL, " +
 					Poll.COL_LOCATION_ACCURACY + " REAL, " +
 					Poll.COL_TIMESTAMP + " DATE, " +
-					Poll.COL_QUESTIONS_VERSION + " INTEGER NOT NULL" +
+					Poll.COL_QUESTIONS_VERSION + " INTEGER NOT NULL, " +
 					Poll.COL_KEEP_IN_SYNC + " INTEGER DEFAULT 0" +
 					");";
 
@@ -40,11 +41,17 @@ public class PollsStorage {
 					Question.COL_TIMESTAMP + " REAL" +
 					");";
 
+	private static final String SQL_DROP_TABLE_POLLS =
+			"DROP TABLE IF EXISTS " + TABLE_POLLS + ";";
+	private static final String SQL_DROP_TABLE_POLL_QUESTIONS =
+			"DROP TABLE IF EXISTS " + TABLE_POLL_QUESTIONS + ";";
+
 	private final Storage storage;
 	private final SQLiteDatabase rDb;
 	private final SQLiteDatabase wDb;
 	private final Context _context;
 	private final QuestionsStorage _questionsStorage;
+	private final SparseArray<Poll> _pollInstances;
 
 	public static PollsStorage getInstance(Context context) {
 		if (psInstance == null) {
@@ -57,6 +64,7 @@ public class PollsStorage {
 		_context = context.getApplicationContext();
 		storage = Storage.getInstance(_context);
 		_questionsStorage = QuestionsStorage.getInstance(_context);
+		_pollInstances = new SparseArray<Poll>();
 		rDb = storage.getWritableDatabase();
 		wDb = storage.getWritableDatabase();
 		wDb.execSQL(SQL_CREATE_TABLE_POLLS);
@@ -72,7 +80,8 @@ public class PollsStorage {
 		pollValues.put(Poll.COL_LOCATION_ACCURACY, poll.getLocationAccuracy());
 		pollValues.put(Poll.COL_TIMESTAMP, poll.getTimestamp());
 		pollValues.put(Poll.COL_QUESTIONS_VERSION, poll.getQuestionsVersion());
-		pollValues.put(Poll.COL_KEEP_IN_SYNC, poll.getKeepInSync());
+		pollValues.put(Poll.COL_KEEP_IN_SYNC,
+				poll.getKeepInSync() ? Poll.KEEP_IN_SYNC_ON : Poll.KEEP_IN_SYNC_OFF);
 		return pollValues;
 	}
 
@@ -105,6 +114,7 @@ public class PollsStorage {
 		int pollId = res.getInt(res.getColumnIndex(Poll.COL_ID));
 		res.close();
 		poll.setId(pollId);
+		_pollInstances.put(pollId, poll);
 
 		Iterator<Question> qIterator = poll.getQuestions().iterator();
 		while (qIterator.hasNext()) {
@@ -129,6 +139,10 @@ public class PollsStorage {
 	}
 
 	public Poll getPoll(int pollId) {
+		Poll cachedPoll = _pollInstances.get(pollId, null);
+		if (cachedPoll != null) {
+			return cachedPoll;
+		}
 		Cursor res = rDb.query(TABLE_POLLS, null, Poll.COL_ID + "=?",
 				new String[] {Integer.toString(pollId)}, null, null, null);
 		if (!res.moveToFirst()) {
@@ -175,20 +189,18 @@ public class PollsStorage {
 		return poll;
 	}
 
-	public Poll popPoll(int pollId) {
-		Poll poll = getPoll(pollId);
-
-		if (poll == null) {
-			return null;
-		}
-
-		removePoll(poll.getId());
-		poll.clearId();
-		return poll;
-	}
-
 	public void removePoll(int pollId) {
 		wDb.delete(TABLE_POLLS, Poll.COL_ID + "=?", new String[] {Integer.toString(pollId)});
 		wDb.delete(TABLE_POLL_QUESTIONS, Poll.COL_ID + "=?", new String[] {Integer.toString(pollId)});
+	}
+
+	public void flushAll() {
+		wDb.delete(TABLE_POLLS, null, null);
+		wDb.delete(TABLE_POLL_QUESTIONS, null, null);
+	}
+
+	public void dropAll() {
+		wDb.execSQL(SQL_DROP_TABLE_POLLS);
+		wDb.execSQL(SQL_DROP_TABLE_POLL_QUESTIONS);
 	}
 }

@@ -126,7 +126,7 @@ public class FirstLaunchMeasuresActivity extends ActionBarActivity {
 	private void launchDashboard() {
 		setStatus();
 		Intent dashboardIntent = new Intent(this, DashboardActivity.class);
-		dashboardIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+		dashboardIntent.putExtra(DashboardActivity.EXTRA_COMES_FROM_FIRST_LAUNCH, true);
 		startActivity(dashboardIntent);
 		finish();
 	}

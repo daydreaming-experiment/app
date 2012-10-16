@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import android.content.Context;
 import android.location.Location;
+import android.widget.Toast;
 
 public class Poll {
 
@@ -28,11 +29,12 @@ public class Poll {
 	public static final String COL_QUESTIONS_VERSION = "pollQestionsVersion";
 	public static final String COL_KEEP_IN_SYNC = "pollKeepInSync";
 
-	public static final String STATUS_SCHEDULED = "pollScheduled";
-	public static final String STATUS_RUNNING = "pollRunning";
-	public static final String STATUS_DISMISSED = "pollDismissed";
-	public static final String STATUS_PARTIAL = "pollPartiallyCompleted";
-	public static final String STATUS_COMPLETED = "pollCompleted";
+	public static final String STATUS_PENDING = "pollPending"; // Notification has appeared
+	public static final String STATUS_STOPPED = "pollStopped"; // Notification has appeared, was opened, but QuestionActivity was paused
+	public static final String STATUS_RUNNING = "pollRunning"; // QuestionActivity is running
+	public static final String STATUS_EXPIRED = "pollExpired"; // QuestionActivity was paused and not resumed fast enough, or notification waited for too long
+	public static final String STATUS_DISMISSED = "pollDismissed"; // Notification was dismissed
+	public static final String STATUS_COMPLETED = "pollCompleted"; // QuestionActivity completed
 
 	public static final int KEEP_IN_SYNC_OFF = 0;
 	public static final int KEEP_IN_SYNC_ON = 1;
@@ -105,8 +107,17 @@ public class Poll {
 	}
 
 	public void setStatus(String status) {
+		Toast.makeText(_context, _status + " -> " + status, Toast.LENGTH_SHORT).show();
 		_status = status;
 		saveIfSync();
+	}
+
+	public boolean isOver() {
+		if (_status == null) {
+			return false;
+		}
+		return _status.equals(STATUS_COMPLETED) || _status.equals(STATUS_DISMISSED) ||
+				_status.equals(STATUS_EXPIRED);
 	}
 
 	public double getLocationLatitude() {
@@ -177,22 +188,22 @@ public class Poll {
 
 	public void setKeepInSync() {
 		_keepInSync = true;
-		save();
 	}
 
 	private void saveIfSync() {
 		if (_keepInSync) {
 			save();
+			Toast.makeText(_context, "Saving to DB", Toast.LENGTH_SHORT).show();
 		}
 	}
 
 	public void save() {
+		setKeepInSync();
 		if (_id != -1) {
 			pollsStorage.updatePoll(this);
 		} else {
 			pollsStorage.storePollGetId(this);
 		}
-		setKeepInSync();
 	}
 
 	public void saveAnswer(int index) {
