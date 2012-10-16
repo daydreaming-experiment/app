@@ -24,6 +24,7 @@ public class PollsStorage {
 					Poll.COL_LOCATION_ACCURACY + " REAL, " +
 					Poll.COL_TIMESTAMP + " DATE, " +
 					Poll.COL_QUESTIONS_VERSION + " INTEGER NOT NULL" +
+					Poll.COL_KEEP_IN_SYNC + " INTEGER DEFAULT 0" +
 					");";
 
 	private static final String SQL_CREATE_TABLE_POLL_QUESTIONS =
@@ -71,6 +72,7 @@ public class PollsStorage {
 		pollValues.put(Poll.COL_LOCATION_ACCURACY, poll.getLocationAccuracy());
 		pollValues.put(Poll.COL_TIMESTAMP, poll.getTimestamp());
 		pollValues.put(Poll.COL_QUESTIONS_VERSION, poll.getQuestionsVersion());
+		pollValues.put(Poll.COL_KEEP_IN_SYNC, poll.getKeepInSync());
 		return pollValues;
 	}
 
@@ -143,6 +145,9 @@ public class PollsStorage {
 		poll.setLocationAccuracy(res.getDouble(res.getColumnIndex(Poll.COL_LOCATION_ACCURACY)));
 		poll.setTimestamp(res.getLong(res.getColumnIndex(Poll.COL_TIMESTAMP)));
 		poll.setQuestionsVersion(res.getInt(res.getColumnIndex(Poll.COL_QUESTIONS_VERSION)));
+		if (res.getInt(res.getColumnIndex(Poll.COL_KEEP_IN_SYNC)) == Poll.KEEP_IN_SYNC_ON) {
+			poll.setKeepInSync();
+		}
 		res.close();
 
 		Cursor qRes = rDb.query(TABLE_POLL_QUESTIONS, null, Poll.COL_ID + "=?",

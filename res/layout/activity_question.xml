@@ -9,6 +9,14 @@
         android:layout_height="wrap_content"
         android:padding="16dp"
         android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/question_welcomeText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="@string/question_welcome_text"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
         
 	    <LinearLayout
 	        android:layout_width="match_parent"
@@ -20,10 +28,11 @@
 	            android:layout_weight="1" />
 	
 	        <Button
-	            android:id="@+id/question_slider_buttonNext"
+	            android:id="@+id/question_nextButton"
 	            android:layout_width="0dp"
 	            android:layout_height="wrap_content"
 	            android:layout_weight="1"
+	            android:onClick="onClick_nextButton"
 	            android:text="@string/question_button_next" />
 	    
 	    </LinearLayout>

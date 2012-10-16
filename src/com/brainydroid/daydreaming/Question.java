@@ -37,7 +37,6 @@ public class Question {
 	private long _timestamp;
 	private int _questionsVersion;
 
-
 	public static final String COL_ID = "questionId";
 	public static final String COL_CATEGORY = "questionCategory";
 	public static final String COL_SUBCATEGORY = "questionSubategory";
@@ -53,7 +52,7 @@ public class Question {
 	public static final String COL_TIMESTAMP = "questionTimestamp";
 	public static final String COL_QUESTIONS_VERSION = "questionQestionsVersion";
 
-	public static final String STATUS_DISMISSED = "questionAsked";
+	public static final String STATUS_ASKED = "questionAsked";
 	public static final String STATUS_ASKED_DISMISSED = "questionAskedDismissed";
 	public static final String STATUS_ANSWERED = "questionAnswered";
 
@@ -288,10 +287,6 @@ public class Question {
 		return views;
 	}
 
-	//	private ArrayList<View> createViewsSingleChoice(LayoutInflater inflater) {
-	//
-	//	}
-
 	private ArrayList<View> createViewsMultipleChoice(LayoutInflater inflater) {
 		ArrayList<View> views = new ArrayList<View>();
 		ArrayList<String> mainTexts = getParsedMainText();
@@ -359,6 +354,27 @@ public class Question {
 		}
 
 		return views;
+	}
+
+	public boolean validate() {
+		if (_type.equals(TYPE_SLIDER)) {
+			return validateSlider();
+		} else if (_type.equals(TYPE_MULTIPLE_CHOICE)) {
+			return validateMultipleChoice();
+		}
+		return false;
+	}
+
+	private boolean validateSlider() {
+		// TODO: Find all sliders
+		// Check they've all been touched
+		return true;
+	}
+
+	private boolean validateMultipleChoice() {
+		// TODO: Find all the checkboxes
+		// Check at least one is checked ; check that if "Other" is checked, it is also filled
+		return true;
 	}
 
 	private ArrayList<String> parseString(String toParse, String sep) {

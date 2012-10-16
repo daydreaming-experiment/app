@@ -16,6 +16,7 @@ public class Poll {
 	private long _timestamp;
 	private int _questionsVersion;
 	private ArrayList<Question> _questions;
+	private boolean _keepInSync = false;
 
 	public static final String COL_ID = "pollId";
 	public static final String COL_STATUS = "pollStatus";
@@ -25,12 +26,16 @@ public class Poll {
 	public static final String COL_LOCATION_ACCURACY = "pollLocationAccuracy";
 	public static final String COL_TIMESTAMP = "pollTimestamp";
 	public static final String COL_QUESTIONS_VERSION = "pollQestionsVersion";
+	public static final String COL_KEEP_IN_SYNC = "pollKeepInSync";
 
 	public static final String STATUS_SCHEDULED = "pollScheduled";
 	public static final String STATUS_RUNNING = "pollRunning";
 	public static final String STATUS_DISMISSED = "pollDismissed";
 	public static final String STATUS_PARTIAL = "pollPartiallyCompleted";
 	public static final String STATUS_COMPLETED = "pollCompleted";
+
+	public static final int KEEP_IN_SYNC_OFF = 0;
+	public static final int KEEP_IN_SYNC_ON = 1;
 
 	private final Context _context;
 	private final PollsStorage pollsStorage;
@@ -69,6 +74,20 @@ public class Poll {
 		return _questions;
 	}
 
+	public Question getQuestionByIndex(int index) {
+		return _questions.get(index);
+	}
+
+	public Question popQuestionByIndex(int index) {
+		Question q = getQuestionByIndex(index);
+		_questions.remove(index);
+		return q;
+	}
+
+	public int getLength() {
+		return _questions.size();
+	}
+
 	public int getId() {
 		return _id;
 	}
@@ -87,6 +106,7 @@ public class Poll {
 
 	public void setStatus(String status) {
 		_status = status;
+		saveIfSync();
 	}
 
 	public double getLocationLatitude() {
@@ -107,18 +127,22 @@ public class Poll {
 
 	public void setLocationLatitude(double locationLatitude) {
 		_locationLatitude = locationLatitude;
+		saveIfSync();
 	}
 
 	public void setLocationLongitude(double locationLongitude) {
 		_locationLongitude = locationLongitude;
+		saveIfSync();
 	}
 
 	public void setLocationAltitude(double locationAltitude) {
 		_locationAltitude = locationAltitude;
+		saveIfSync();
 	}
 
 	public void setLocationAccuracy(double locationAccuracy) {
 		_locationAccuracy = locationAccuracy;
+		saveIfSync();
 	}
 
 	public void setLocation(Location location) {
@@ -126,6 +150,7 @@ public class Poll {
 		_locationLongitude = location.getLongitude();
 		_locationAltitude = location.getAltitude();
 		_locationAccuracy = location.getAccuracy();
+		saveIfSync();
 	}
 
 	public long getTimestamp() {
@@ -134,6 +159,7 @@ public class Poll {
 
 	public void setTimestamp(long timestamp) {
 		_timestamp = timestamp;
+		saveIfSync();
 	}
 
 	public int getQuestionsVersion() {
@@ -142,6 +168,22 @@ public class Poll {
 
 	public void setQuestionsVersion(int questionsVersion) {
 		_questionsVersion = questionsVersion;
+		saveIfSync();
+	}
+
+	public boolean getKeepInSync() {
+		return _keepInSync;
+	}
+
+	public void setKeepInSync() {
+		_keepInSync = true;
+		save();
+	}
+
+	private void saveIfSync() {
+		if (_keepInSync) {
+			save();
+		}
 	}
 
 	public void save() {
@@ -150,5 +192,13 @@ public class Poll {
 		} else {
 			pollsStorage.storePollGetId(this);
 		}
+		setKeepInSync();
+	}
+
+	public void saveAnswer(int index) {
+		// TODO: get latest location
+		// get timestamp
+		// set them in the question
+		// save poll
 	}
 }

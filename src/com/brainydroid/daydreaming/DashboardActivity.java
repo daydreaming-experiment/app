@@ -2,8 +2,6 @@ package com.brainydroid.daydreaming;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Iterator;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -120,19 +118,14 @@ public class DashboardActivity extends ActionBarActivity {
 		}
 	}
 
-	public void showQuestions(View view) {
-		ArrayList<String> questionIds = questionsStorage.getQuestionIds();
-		Toast.makeText(this, Integer.toString(questionIds.size()) + " questions in DB", Toast.LENGTH_SHORT).show();
+	public void runPoll(View view) {
+		Poll poll = Poll.create(this, 3);
+		poll.setStatus(Poll.STATUS_RUNNING);
+		poll.save();
 
-		Iterator<Question> qIt = questionsStorage.getRandomQuestions(2).iterator();
-		do {
-			Question q = qIt.next();
-			Toast.makeText(this, q.getMainText(), Toast.LENGTH_SHORT).show();
-		} while (qIt.hasNext());
-	}
-
-	public void runQuestion(View view) {
 		Intent intent = new Intent(this, QuestionActivity.class);
+		intent.putExtra(QuestionActivity.EXTRA_POLL_ID, poll.getId());
+		intent.putExtra(QuestionActivity.EXTRA_QUESTION_INDEX, 0);
 		startActivity(intent);
 	}
 }
