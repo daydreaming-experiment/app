@@ -9,8 +9,11 @@ import java.util.Set;
 import android.content.Context;
 import android.location.Location;
 import android.util.FloatMath;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -19,6 +22,7 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class Question {
 
@@ -68,6 +72,24 @@ public class Question {
 	public static final String TYPE_SLIDER = "slider";
 	public static final String TYPE_MULTIPLE_CHOICE = "multipleChoice";
 	public static final String TYPE_SINGLE_CHOICE = "singleChoice";
+
+	private static ArrayList<View> getViewsByTag(ViewGroup root, String tag){
+		ArrayList<View> views = new ArrayList<View>();
+		final int childCount = root.getChildCount();
+		for (int i = 0; i < childCount; i++) {
+			final View child = root.getChildAt(i);
+			if (child instanceof ViewGroup) {
+				views.addAll(getViewsByTag((ViewGroup) child, tag));
+			}
+
+			final Object tagObj = child.getTag();
+			if (tagObj != null && tagObj.equals(tag)) {
+				views.add(child);
+			}
+
+		}
+		return views;
+	}
 
 	public Question() {
 		initVariables();
@@ -341,6 +363,21 @@ public class Question {
 			};
 			otherEdit.setOnFocusChangeListener(otherEditFocusListener);
 
+			final Context context = inflater.getContext();
+			View.OnKeyListener onSoftKeyboardDonePress = new View.OnKeyListener() {
+
+				@Override
+				public boolean onKey(View v, int keyCode, KeyEvent event) {
+					if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+						InputMethodManager inputMM = (InputMethodManager)context.getSystemService(
+								Context.INPUT_METHOD_SERVICE);
+						inputMM.hideSoftInputFromWindow(otherEdit.getApplicationWindowToken(), 0);
+					}
+					return false;
+				}
+			};
+			otherEdit.setOnKeyListener(onSoftKeyboardDonePress);
+
 			LinearLayout checksLayout = (LinearLayout)view.findViewById(R.id.question_multiple_choice_rootChoices);
 			Iterator<String> ptIt = parametersTexts.iterator();
 
@@ -357,24 +394,79 @@ public class Question {
 		return views;
 	}
 
-	public boolean validate() {
+	public boolean validate(Context context, LinearLayout questionsLinearLayout) {
 		if (_type.equals(TYPE_SLIDER)) {
-			return validateSlider();
+			return validateSlider(context, questionsLinearLayout);
 		} else if (_type.equals(TYPE_MULTIPLE_CHOICE)) {
-			return validateMultipleChoice();
+			return validateMultipleChoice(context, questionsLinearLayout);
 		}
 		return false;
 	}
 
-	private boolean validateSlider() {
-		// TODO: Find all sliders
-		// Check they've all been touched
+	private boolean validateSlider(Context context, LinearLayout questionsLinearLayout) {
+		ArrayList<View> subquestions = getViewsByTag(questionsLinearLayout, "subquestion");
+		boolean isMultiple = subquestions.size() > 1 ? true : false;
+		Iterator<View> subquestionsIt = subquestions.iterator();
+
+		while (subquestionsIt.hasNext()) {
+			TextView selectedSeek = (TextView)subquestionsIt.next().
+					findViewById(R.id.question_slider_selectedSeek);
+			if (selectedSeek.getText().equals(
+					context.getString(R.string.questionSlider_please_slide))) {
+				Toast.makeText(context,
+						context.getString(isMultiple ? R.string.questionSlider_sliders_untouched_multiple :
+							R.string.questionSlider_sliders_untouched_single),
+							Toast.LENGTH_LONG).show();
+				return false;
+			}
+		}
+
 		return true;
 	}
 
-	private boolean validateMultipleChoice() {
-		// TODO: Find all the checkboxes
-		// Check at least one is checked ; check that if "Other" is checked, it is also filled
+	// This will behave badly when there are multiple sub-multiplechoice questions
+	private boolean validateMultipleChoice(Context context, LinearLayout questionsLinearLayout) {
+		ArrayList<View> subquestions = getViewsByTag(questionsLinearLayout, "subquestion");
+		Iterator<View> subquestionsIt = subquestions.iterator();
+
+		while (subquestionsIt.hasNext()) {
+
+			LinearLayout subquestionLinearLayout = (LinearLayout)subquestionsIt.next();
+			LinearLayout rootChoices = (LinearLayout)subquestionLinearLayout.findViewById(
+					R.id.question_multiple_choice_rootChoices);
+			int childCount = rootChoices.getChildCount();
+			boolean hasCheck = false;
+			CheckBox otherCheck = (CheckBox)subquestionLinearLayout.findViewById(
+					R.id.question_multiple_choices_otherCheckBox);
+			boolean hasOtherCheck = otherCheck.isChecked();
+
+			if (hasOtherCheck) {
+				EditText otherEditText = (EditText)subquestionLinearLayout.findViewById(
+						R.id.question_multiple_choices_otherEditText);
+				if (otherEditText.getText().length() == 0) {
+					Toast.makeText(context,
+							context.getString(R.string.questionMultipleChoices_other_please_fill),
+							Toast.LENGTH_LONG).show();
+					return false;
+				}
+			}
+
+			for (int i = 0; i < childCount; i++) {
+				CheckBox child = (CheckBox)rootChoices.getChildAt(i);
+				if (child.isChecked()) {
+					hasCheck = true;
+					break;
+				}
+			}
+
+			if (!hasCheck && !hasOtherCheck) {
+				Toast.makeText(context,
+						context.getString(R.string.questionMultipleChoices_please_check_one),
+						Toast.LENGTH_LONG).show();
+				return false;
+			}
+		}
+
 		return true;
 	}
 

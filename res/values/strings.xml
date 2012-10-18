@@ -49,8 +49,12 @@
     <string name="question_button_finish">Finish</string>
     <string name="question_thank_you">Thank you for answering these questions!</string>
     <string name="questionSlider_please_slide">(Slide to answer)</string>
+    <string name="questionSlider_sliders_untouched_single">Please answer using the slider</string>
+    <string name="questionSlider_sliders_untouched_multiple">Please answer on all the sliders</string>
     <string name="questionMultipleChoice_check_all_that_apply">Check all that apply</string>
     <string name="questionMultipleChoices_other_hint">Other</string>
+    <string name="questionMultipleChoices_other_please_fill">Please tell us more in the \"Other\" box</string>
+    <string name="questionMultipleChoices_please_check_one">Please check at least one option</string>
 
     
     <string name="menu_refresh">Refresh</string>

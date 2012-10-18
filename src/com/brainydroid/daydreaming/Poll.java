@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import android.content.Context;
 import android.location.Location;
-import android.widget.Toast;
 
 public class Poll {
 
@@ -107,7 +106,6 @@ public class Poll {
 	}
 
 	public void setStatus(String status) {
-		Toast.makeText(_context, _status + " -> " + status, Toast.LENGTH_SHORT).show();
 		_status = status;
 		saveIfSync();
 	}
@@ -193,7 +191,6 @@ public class Poll {
 	private void saveIfSync() {
 		if (_keepInSync) {
 			save();
-			Toast.makeText(_context, "Saving to DB", Toast.LENGTH_SHORT).show();
 		}
 	}
 

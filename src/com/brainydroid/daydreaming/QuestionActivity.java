@@ -23,6 +23,7 @@ public class QuestionActivity extends ActionBarActivity {
 	private Question question;
 	private int nQuestions;
 	private boolean isContinuing = false;
+	private LinearLayout questionsLinearLayout;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -67,6 +68,7 @@ public class QuestionActivity extends ActionBarActivity {
 		questionIndex = intent.getIntExtra(EXTRA_QUESTION_INDEX, -1);
 		question = poll.getQuestionByIndex(questionIndex);
 		nQuestions = poll.getLength();
+		questionsLinearLayout = (LinearLayout)findViewById(R.id.question_linearLayout);
 	}
 
 	private boolean checkPollStatus() {
@@ -91,19 +93,18 @@ public class QuestionActivity extends ActionBarActivity {
 	}
 
 	private void populateViews() {
-		LinearLayout rootLinearLayout = (LinearLayout)findViewById(R.id.question_linearLayout);
 		ArrayList<View> views = question.getViews(this);
 
 		Iterator<View> vIt = views.iterator();
 		int i = isFirstQuestion() ? 1 : 0;
 		while (vIt.hasNext()) {
-			rootLinearLayout.addView(vIt.next(), i, rootLinearLayout.getLayoutParams());
+			questionsLinearLayout.addView(vIt.next(), i, questionsLinearLayout.getLayoutParams());
 			i++;
 		}
 	}
 
 	public void onClick_nextButton(View view) {
-		if (question.validate()) {
+		if (question.validate(this, questionsLinearLayout)) {
 			poll.saveAnswer(questionIndex);
 			if (isLastQuestion()) {
 				Toast.makeText(this, getString(R.string.question_thank_you), Toast.LENGTH_SHORT).show();

@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="16dp"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:tag="subquestion" >
 
     <TextView
         android:id="@+id/question_slider_mainText"
