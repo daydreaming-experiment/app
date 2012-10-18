@@ -1,4 +1,4 @@
-package com.brainydroid.daydreaming;
+package com.brainydroid.daydreaming.db;
 
 import java.util.Iterator;
 

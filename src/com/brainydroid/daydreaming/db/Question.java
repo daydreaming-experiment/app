@@ -1,4 +1,4 @@
-package com.brainydroid.daydreaming;
+package com.brainydroid.daydreaming.db;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,6 +23,8 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.brainydroid.daydreaming.R;
 
 public class Question {
 

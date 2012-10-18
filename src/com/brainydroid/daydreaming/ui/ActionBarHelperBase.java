@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.brainydroid.daydreaming;
+package com.brainydroid.daydreaming.ui;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -38,6 +38,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.brainydroid.daydreaming.R;
 
 /**
  * A class that implements the action bar pattern for pre-Honeycomb devices.
@@ -163,7 +165,7 @@ public class ActionBarHelperBase extends ActionBarHelper {
 	 * Adds an action button to the compatibility action bar, using menu information from a {@link
 	 * android.view.MenuItem}. If the menu item ID is <code>menu_refresh</code>, the menu item's
 	 * state can be changed to show a loading spinner using
-	 * {@link com.example.android.actionbarcompat.ActionBarHelperBase#setRefreshActionItemState(boolean)}.
+	 * {@link com.brainydroid.daydreaming.ui.example.android.actionbarcompat.ActionBarHelperBase#setRefreshActionItemState(boolean)}.
 	 */
 	private View addActionItemCompatFromMenuItem(final MenuItem item) {
 		final int itemId = item.getItemId();

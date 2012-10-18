@@ -1,4 +1,4 @@
-package com.brainydroid.daydreaming;
+package com.brainydroid.daydreaming.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,6 +7,9 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import com.brainydroid.daydreaming.R;
+import com.brainydroid.daydreaming.db.StatusManager;
 
 public class FirstLaunchProfileActivity extends ActionBarActivity {
 

@@ -1,4 +1,4 @@
-package com.brainydroid.daydreaming;
+package com.brainydroid.daydreaming.ui;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,6 +10,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
+
+import com.brainydroid.daydreaming.R;
+import com.brainydroid.daydreaming.db.Poll;
+import com.brainydroid.daydreaming.db.PollsStorage;
+import com.brainydroid.daydreaming.db.QuestionsStorage;
+import com.brainydroid.daydreaming.db.StatusManager;
 
 public class DashboardActivity extends ActionBarActivity {
 

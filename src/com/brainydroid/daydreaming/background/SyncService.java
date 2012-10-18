@@ -1,4 +1,4 @@
-package com.brainydroid.daydreaming;
+package com.brainydroid.daydreaming.background;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -10,6 +10,9 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
+
+import com.brainydroid.daydreaming.R;
+import com.brainydroid.daydreaming.ui.DashboardActivity;
 
 public class SyncService extends Service {
 

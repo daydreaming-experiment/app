@@ -1,11 +1,11 @@
-package com.brainydroid.daydreaming;
+package com.brainydroid.daydreaming.background;
 
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 
-import com.brainydroid.daydreaming.SyncService.LocalBinder;
+import com.brainydroid.daydreaming.background.SyncService.LocalBinder;
 
 public class SyncServiceConnection implements ServiceConnection {
 

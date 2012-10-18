@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.brainydroid.daydreaming;
+package com.brainydroid.daydreaming.network;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;

@@ -1,4 +1,4 @@
-package com.brainydroid.daydreaming;
+package com.brainydroid.daydreaming.ui;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -10,6 +10,11 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.brainydroid.daydreaming.R;
+import com.brainydroid.daydreaming.db.Poll;
+import com.brainydroid.daydreaming.db.PollsStorage;
+import com.brainydroid.daydreaming.db.Question;
 
 public class QuestionActivity extends ActionBarActivity {
 

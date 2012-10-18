@@ -1,4 +1,4 @@
-package com.brainydroid.daydreaming;
+package com.brainydroid.daydreaming.ui;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -10,6 +10,9 @@ import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.brainydroid.daydreaming.R;
+import com.brainydroid.daydreaming.db.StatusManager;
 
 public class FirstLaunchMeasuresActivity extends ActionBarActivity {
 

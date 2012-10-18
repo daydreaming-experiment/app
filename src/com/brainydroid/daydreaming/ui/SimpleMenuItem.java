@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.brainydroid.daydreaming;
+package com.brainydroid.daydreaming.ui;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;

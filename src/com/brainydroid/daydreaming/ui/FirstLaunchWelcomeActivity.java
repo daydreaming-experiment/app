@@ -1,17 +1,20 @@
-package com.brainydroid.daydreaming;
+package com.brainydroid.daydreaming.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
-public class ReLaunchWelcomeActivity extends ActionBarActivity {
+import com.brainydroid.daydreaming.R;
+import com.brainydroid.daydreaming.db.StatusManager;
+
+public class FirstLaunchWelcomeActivity extends ActionBarActivity {
 
 	private StatusManager status;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_re_launch_welcome);
+		setContentView(R.layout.activity_first_launch_welcome);
 
 		status = StatusManager.getInstance(this);
 	}

@@ -1,4 +1,4 @@
-package com.brainydroid.daydreaming;
+package com.brainydroid.daydreaming.ui;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -8,6 +8,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.View;
+
+import com.brainydroid.daydreaming.R;
+import com.brainydroid.daydreaming.db.StatusManager;
 
 public class FirstLaunchDescriptionActivity extends ActionBarActivity {
 

@@ -1,4 +1,6 @@
-package com.brainydroid.daydreaming;
+package com.brainydroid.daydreaming.background;
+
+import com.brainydroid.daydreaming.db.StatusManager;
 
 import android.app.AlarmManager;
 import android.content.Context;
