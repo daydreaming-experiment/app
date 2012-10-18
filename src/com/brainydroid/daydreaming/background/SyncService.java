@@ -19,13 +19,13 @@ public class SyncService extends Service {
 	private final int SERVICE_NOTIFICATION = 1;
 
 	private boolean stopSelfOnUnbind = false;
-	private final IBinder mBinder = new LocalBinder();
+	private final IBinder mBinder = new SyncServiceBinder();
 
 	private NotificationManager notificationManager;
 
-	public class LocalBinder extends Binder {
+	public class SyncServiceBinder extends Binder {
 		SyncService getService() {
-			// Return this instance of ExperimentService so clients can call public methods
+			// Return this instance of SyncService so clients can call public methods
 			return SyncService.this;
 		}
 	}
