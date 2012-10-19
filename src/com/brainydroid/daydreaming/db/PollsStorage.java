@@ -19,11 +19,6 @@ public class PollsStorage {
 			"CREATE TABLE IF NOT EXISTS " + TABLE_POLLS + " (" +
 					Poll.COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
 					Poll.COL_STATUS + " TEXT, " +
-					Poll.COL_LOCATION_LATITUDE + " REAL, " +
-					Poll.COL_LOCATION_LONGITUDE + " REAL, " +
-					Poll.COL_LOCATION_ALTITUDE + " REAL, " +
-					Poll.COL_LOCATION_ACCURACY + " REAL, " +
-					Poll.COL_TIMESTAMP + " DATE, " +
 					Poll.COL_QUESTIONS_VERSION + " INTEGER NOT NULL, " +
 					Poll.COL_KEEP_IN_SYNC + " INTEGER DEFAULT 0" +
 					");";
@@ -74,11 +69,6 @@ public class PollsStorage {
 	private ContentValues getPollContentValues(Poll poll) {
 		ContentValues pollValues = new ContentValues();
 		pollValues.put(Poll.COL_STATUS, poll.getStatus());
-		pollValues.put(Poll.COL_LOCATION_LATITUDE, poll.getLocationLatitude());
-		pollValues.put(Poll.COL_LOCATION_LONGITUDE, poll.getLocationLongitude());
-		pollValues.put(Poll.COL_LOCATION_ALTITUDE, poll.getLocationAltitude());
-		pollValues.put(Poll.COL_LOCATION_ACCURACY, poll.getLocationAccuracy());
-		pollValues.put(Poll.COL_TIMESTAMP, poll.getTimestamp());
 		pollValues.put(Poll.COL_QUESTIONS_VERSION, poll.getQuestionsVersion());
 		pollValues.put(Poll.COL_KEEP_IN_SYNC,
 				poll.getKeepInSync() ? Poll.KEEP_IN_SYNC_ON : Poll.KEEP_IN_SYNC_OFF);
@@ -153,11 +143,6 @@ public class PollsStorage {
 		Poll poll = new Poll(_context);
 		poll.setId(res.getInt(res.getColumnIndex(Poll.COL_ID)));
 		poll.setStatus(res.getString(res.getColumnIndex(Poll.COL_STATUS)));
-		poll.setLocationLatitude(res.getDouble(res.getColumnIndex(Poll.COL_LOCATION_LATITUDE)));
-		poll.setLocationLongitude(res.getDouble(res.getColumnIndex(Poll.COL_LOCATION_LONGITUDE)));
-		poll.setLocationAltitude(res.getDouble(res.getColumnIndexOrThrow(Poll.COL_LOCATION_ALTITUDE)));
-		poll.setLocationAccuracy(res.getDouble(res.getColumnIndex(Poll.COL_LOCATION_ACCURACY)));
-		poll.setTimestamp(res.getLong(res.getColumnIndex(Poll.COL_TIMESTAMP)));
 		poll.setQuestionsVersion(res.getInt(res.getColumnIndex(Poll.COL_QUESTIONS_VERSION)));
 		if (res.getInt(res.getColumnIndex(Poll.COL_KEEP_IN_SYNC)) == Poll.KEEP_IN_SYNC_ON) {
 			poll.setKeepInSync();

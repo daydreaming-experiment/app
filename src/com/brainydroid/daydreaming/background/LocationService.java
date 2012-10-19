@@ -2,24 +2,48 @@ package com.brainydroid.daydreaming.background;
 
 import android.app.Service;
 import android.content.Intent;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Binder;
+import android.os.Bundle;
 import android.os.IBinder;
+import android.widget.Toast;
+
 
 public class LocationService extends Service {
 
-	private boolean stopSelfOnUnbind = false;
+	private Location latestLocation;
+	private LocationManager locationManager;
+	private LocationListener locationListener;
+	private StatusManager status;
+	private boolean stopOnUnbind = false;
 	private final IBinder mBinder = new LocationServiceBinder();
 
 	public class LocationServiceBinder extends Binder {
 		LocationService getService() {
-			// Return this instance of SyncService so clients can call public methods
+			// Return this instance of LocationService so clients can call public methods
 			return LocationService.this;
 		}
+	}
+
+	public Location getLatestLocation() {
+		return latestLocation;
+	}
+
+	private void setLatestLocation(Location location) {
+		latestLocation = location;
 	}
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		initVars();
+		if (!status.isDataAndLocationEnabled()) {
+			stopSelf();
+			return;
+		}
+		startLocationListener();
 	}
 
 	@Override
@@ -31,6 +55,7 @@ public class LocationService extends Service {
 
 	@Override
 	public void onDestroy() {
+		stopLocationListener();
 		super.onDestroy();
 	}
 
@@ -48,14 +73,50 @@ public class LocationService extends Service {
 	public boolean onUnbind(Intent intent) {
 		super.onUnbind(intent);
 
-		if (stopSelfOnUnbind) {
+		if (stopOnUnbind) {
 			stopSelf();
 		}
 
 		return true;
 	}
 
-	public void setStopServiceOnUnbind() {
-		stopSelfOnUnbind = true;
+	public void setStopOnUnbind() {
+		stopOnUnbind = true;
+	}
+
+	private void initVars() {
+		locationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
+		status = StatusManager.getInstance(this);
+	}
+
+	private void startLocationListener() {
+		locationListener = new LocationListener() {
+
+			@Override
+			public void onLocationChanged(Location location) {
+				Toast.makeText(LocationService.this,
+						"New location received (prec: " + location.getAccuracy() + ")",
+						Toast.LENGTH_SHORT).show();
+				setLatestLocation(location);
+			}
+
+			@Override
+			public void onStatusChanged(String provider, int status, Bundle extras) {}
+
+			@Override
+			public void onProviderEnabled(String provider) {}
+
+			@Override
+			public void onProviderDisabled(String provider) {}
+		};
+
+		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
+				0, 0, locationListener);
+	}
+
+	private void stopLocationListener() {
+		if (locationListener != null) {
+			locationManager.removeUpdates(locationListener);
+		}
 	}
 }

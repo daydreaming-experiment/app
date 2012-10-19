@@ -9,7 +9,7 @@ import com.brainydroid.daydreaming.background.LocationService.LocationServiceBin
 
 public class LocationServiceConnection implements ServiceConnection {
 
-	private boolean stopServiceOnBound = false;
+	private boolean stopOnBound = false;
 	private LocationService locationService;
 	private final Context _context;
 
@@ -27,13 +27,17 @@ public class LocationServiceConnection implements ServiceConnection {
 	@Override
 	public void onServiceDisconnected(ComponentName name) {}
 
-	public void setStopServiceOnBound(boolean stop) {
-		stopServiceOnBound = stop;
+	public LocationService getService() {
+		return locationService;
+	}
+
+	public void setStopOnBound(boolean set) {
+		stopOnBound = set;
 	}
 
 	private void onBound() {
-		if (stopServiceOnBound) {
-			locationService.setStopServiceOnUnbind();
+		if (stopOnBound) {
+			locationService.setStopOnUnbind();
 			_context.unbindService(this);
 		}
 	}

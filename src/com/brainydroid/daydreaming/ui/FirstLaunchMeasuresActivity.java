@@ -12,7 +12,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.brainydroid.daydreaming.R;
-import com.brainydroid.daydreaming.db.StatusManager;
+import com.brainydroid.daydreaming.background.StatusManager;
 
 public class FirstLaunchMeasuresActivity extends ActionBarActivity {
 

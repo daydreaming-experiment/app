@@ -55,7 +55,13 @@
     <string name="questionMultipleChoices_other_hint">Other</string>
     <string name="questionMultipleChoices_other_please_fill">Please tell us more in the \"Other\" box</string>
     <string name="questionMultipleChoices_please_check_one">Please check at least one option</string>
-
+    <string name="locationAlert_title_location">Enable location</string>
+    <string name="locationAlert_title_data">Enable data connection</string>
+    <string name="locationAlert_title_location_and_data">Enable location and data</string>
+    <string name="locationAlert_text_location">You should enable network-based (coarse) location to continue. Please adjust your settings.</string>
+    <string name="locationAlert_text_data">You should enable data connection to continue. Please adjust your settings.</string>
+    <string name="locationAlert_text_location_and_data">You should enable network-based (coarse) location AND data connection to continue. Please adjust your settings.</string>
+    <string name="locationAlert_button_settings">Go to settings&#8230;</string>
     
     <string name="menu_refresh">Refresh</string>
     <string name="menu_search">Search</string>

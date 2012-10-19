@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.brainydroid.daydreaming.R;
-import com.brainydroid.daydreaming.db.StatusManager;
+import com.brainydroid.daydreaming.background.StatusManager;
 
 public class FirstLaunchWelcomeActivity extends ActionBarActivity {
 

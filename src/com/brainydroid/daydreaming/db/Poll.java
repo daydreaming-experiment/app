@@ -3,28 +3,17 @@ package com.brainydroid.daydreaming.db;
 import java.util.ArrayList;
 
 import android.content.Context;
-import android.location.Location;
 
 public class Poll {
 
 	private int _id;
 	private String _status;
-	private double _locationLatitude;
-	private double _locationLongitude;
-	private double _locationAltitude;
-	private double _locationAccuracy;
-	private long _timestamp;
 	private int _questionsVersion;
 	private ArrayList<Question> _questions;
 	private boolean _keepInSync = false;
 
 	public static final String COL_ID = "pollId";
 	public static final String COL_STATUS = "pollStatus";
-	public static final String COL_LOCATION_LATITUDE = "pollLocationLatitude";
-	public static final String COL_LOCATION_LONGITUDE = "pollLocationLongitude";
-	public static final String COL_LOCATION_ALTITUDE = "pollLocationAltitude";
-	public static final String COL_LOCATION_ACCURACY = "pollLocationAccuracy";
-	public static final String COL_TIMESTAMP = "pollTimestamp";
 	public static final String COL_QUESTIONS_VERSION = "pollQestionsVersion";
 	public static final String COL_KEEP_IN_SYNC = "pollKeepInSync";
 
@@ -46,11 +35,6 @@ public class Poll {
 		_context = context.getApplicationContext();
 		_id = -1;
 		_status = null;
-		_locationLatitude = -1;
-		_locationLongitude = -1;
-		_locationAltitude = -1;
-		_locationAccuracy = -1;
-		_timestamp = -1;
 		_questionsVersion = QuestionsStorage.getInstance(_context).getQuestionsVersion();
 		_questions = new ArrayList<Question>();
 		pollsStorage = PollsStorage.getInstance(_context);
@@ -116,59 +100,6 @@ public class Poll {
 		}
 		return _status.equals(STATUS_COMPLETED) || _status.equals(STATUS_DISMISSED) ||
 				_status.equals(STATUS_EXPIRED);
-	}
-
-	public double getLocationLatitude() {
-		return _locationLatitude;
-	}
-
-	public double getLocationLongitude() {
-		return _locationLongitude;
-	}
-
-	public double getLocationAltitude() {
-		return _locationAltitude;
-	}
-
-	public double getLocationAccuracy() {
-		return _locationAccuracy;
-	}
-
-	public void setLocationLatitude(double locationLatitude) {
-		_locationLatitude = locationLatitude;
-		saveIfSync();
-	}
-
-	public void setLocationLongitude(double locationLongitude) {
-		_locationLongitude = locationLongitude;
-		saveIfSync();
-	}
-
-	public void setLocationAltitude(double locationAltitude) {
-		_locationAltitude = locationAltitude;
-		saveIfSync();
-	}
-
-	public void setLocationAccuracy(double locationAccuracy) {
-		_locationAccuracy = locationAccuracy;
-		saveIfSync();
-	}
-
-	public void setLocation(Location location) {
-		_locationLatitude = location.getLatitude();
-		_locationLongitude = location.getLongitude();
-		_locationAltitude = location.getAltitude();
-		_locationAccuracy = location.getAccuracy();
-		saveIfSync();
-	}
-
-	public long getTimestamp() {
-		return _timestamp;
-	}
-
-	public void setTimestamp(long timestamp) {
-		_timestamp = timestamp;
-		saveIfSync();
 	}
 
 	public int getQuestionsVersion() {

@@ -229,10 +229,12 @@ public class Question {
 	}
 
 	public void setLocation(Location location) {
-		_locationLatitude = location.getLatitude();
-		_locationLongitude = location.getLongitude();
-		_locationAltitude = location.getAltitude();
-		_locationAccuracy = location.getAccuracy();
+		if (location != null) {
+			_locationLatitude = location.getLatitude();
+			_locationLongitude = location.getLongitude();
+			_locationAltitude = location.getAltitude();
+			_locationAccuracy = location.getAccuracy();
+		}
 	}
 
 	public long getTimestamp() {
@@ -337,6 +339,7 @@ public class Question {
 					if (isChecked) {
 						otherEdit.requestFocus();
 					} else {
+						((LinearLayout)otherEdit.getParent()).requestFocus();
 						otherEdit.setText("");
 					}
 				}
@@ -418,7 +421,7 @@ public class Question {
 				Toast.makeText(context,
 						context.getString(isMultiple ? R.string.questionSlider_sliders_untouched_multiple :
 							R.string.questionSlider_sliders_untouched_single),
-							Toast.LENGTH_LONG).show();
+							Toast.LENGTH_SHORT).show();
 				return false;
 			}
 		}
@@ -448,7 +451,7 @@ public class Question {
 				if (otherEditText.getText().length() == 0) {
 					Toast.makeText(context,
 							context.getString(R.string.questionMultipleChoices_other_please_fill),
-							Toast.LENGTH_LONG).show();
+							Toast.LENGTH_SHORT).show();
 					return false;
 				}
 			}
@@ -464,7 +467,7 @@ public class Question {
 			if (!hasCheck && !hasOtherCheck) {
 				Toast.makeText(context,
 						context.getString(R.string.questionMultipleChoices_please_check_one),
-						Toast.LENGTH_LONG).show();
+						Toast.LENGTH_SHORT).show();
 				return false;
 			}
 		}

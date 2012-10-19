@@ -1,6 +1,5 @@
 package com.brainydroid.daydreaming.background;
 
-import com.brainydroid.daydreaming.db.StatusManager;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

@@ -9,7 +9,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.brainydroid.daydreaming.R;
-import com.brainydroid.daydreaming.db.StatusManager;
+import com.brainydroid.daydreaming.background.StatusManager;
 
 public class FirstLaunchProfileActivity extends ActionBarActivity {
 
