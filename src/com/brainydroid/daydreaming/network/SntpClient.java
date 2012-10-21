@@ -20,6 +20,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
+import android.os.AsyncTask;
 import android.os.SystemClock;
 import android.util.Log;
 
@@ -61,6 +62,29 @@ public class SntpClient
 	// round trip time in milliseconds
 	private long mRoundTripTime;
 
+	private class RequestTimeTask extends AsyncTask<SntpClient, Integer, SntpClient> {
+
+		private SntpClientCallback _callback = null;
+
+		protected void setSntpClientCallback(SntpClientCallback callback) {
+			_callback = callback;
+		}
+
+		@Override
+		protected SntpClient doInBackground(SntpClient... sntpClients) {
+			SntpClient sntpClient = sntpClients[0];
+			if (sntpClient.requestTime("0.pool.ntp.org", 5000)) {
+				return sntpClient;
+			}
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(SntpClient sntpClient) {
+			_callback.onTimeReceived(sntpClient);
+		}
+	}
+
 	/**
 	 * Sends an SNTP request to the given host and processes the response.
 	 *
@@ -68,7 +92,7 @@ public class SntpClient
 	 * @param timeout network timeout in milliseconds.
 	 * @return true if the transaction was successful.
 	 */
-	public boolean requestTime(String host, int timeout) {
+	private boolean requestTime(String host, int timeout) {
 		try {
 			DatagramSocket socket = new DatagramSocket();
 			socket.setSoTimeout(timeout);
@@ -123,6 +147,16 @@ public class SntpClient
 		}
 
 		return true;
+	}
+
+	public void asyncRequestTime(SntpClientCallback callback) {
+		RequestTimeTask requestTask = new RequestTimeTask();
+		requestTask.setSntpClientCallback(callback);
+		requestTask.execute(this);
+	}
+
+	public long getNow() {
+		return getNtpTime() + SystemClock.elapsedRealtime() - getNtpTimeReference();
 	}
 
 	/**
