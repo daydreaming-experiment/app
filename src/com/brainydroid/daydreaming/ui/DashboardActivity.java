@@ -120,6 +120,7 @@ public class DashboardActivity extends ActionBarActivity {
 		}
 	}
 
+	// loads questions from external file raw/questions
 	public void loadQuestions(View view) {
 
 		InputStream questionsIS = null;

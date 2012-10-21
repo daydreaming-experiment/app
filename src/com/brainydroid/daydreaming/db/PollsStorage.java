@@ -55,6 +55,7 @@ public class PollsStorage {
 		return psInstance;
 	}
 
+	// Constructor from context
 	private PollsStorage(Context context) {
 		_context = context.getApplicationContext();
 		storage = Storage.getInstance(_context);
@@ -62,8 +63,8 @@ public class PollsStorage {
 		_pollInstances = new SparseArray<Poll>();
 		rDb = storage.getWritableDatabase();
 		wDb = storage.getWritableDatabase();
-		wDb.execSQL(SQL_CREATE_TABLE_POLLS);
-		wDb.execSQL(SQL_CREATE_TABLE_POLL_QUESTIONS);
+		wDb.execSQL(SQL_CREATE_TABLE_POLLS); // creates db fields
+		wDb.execSQL(SQL_CREATE_TABLE_POLL_QUESTIONS); // creates db fields
 	}
 
 	private ContentValues getPollContentValues(Poll poll) {

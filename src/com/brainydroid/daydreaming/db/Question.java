@@ -26,22 +26,29 @@ import android.widget.Toast;
 
 import com.brainydroid.daydreaming.R;
 
+// this class defines the general structure of questions and their answer.
+// These attributes will be saved 
+
 public class Question {
 
+	// attirbutes inherent to the question
 	private String _id;
 	private String _category;
 	private String _subcategory;
 	private String _type;
 	private String _mainText;
 	private String _parametersText;
+	private int _questionsVersion;
+	
+	// attributes dependent on the answer
 	private String _status;
 	private String _answer;
 	private double _locationLatitude;
 	private double _locationLongitude;
 	private double _locationAltitude;
 	private double _locationAccuracy;
-	private long _timestamp;
-	private int _questionsVersion;
+	private long _timestamp;	
+
 
 	public static final String COL_ID = "questionId";
 	public static final String COL_CATEGORY = "questionCategory";
@@ -75,33 +82,18 @@ public class Question {
 	public static final String TYPE_MULTIPLE_CHOICE = "multipleChoice";
 	public static final String TYPE_SINGLE_CHOICE = "singleChoice";
 
-	private static ArrayList<View> getViewsByTag(ViewGroup root, String tag){
-		ArrayList<View> views = new ArrayList<View>();
-		final int childCount = root.getChildCount();
-		for (int i = 0; i < childCount; i++) {
-			final View child = root.getChildAt(i);
-			if (child instanceof ViewGroup) {
-				views.addAll(getViewsByTag((ViewGroup) child, tag));
-			}
-
-			final Object tagObj = child.getTag();
-			if (tagObj != null && tagObj.equals(tag)) {
-				views.add(child);
-			}
-
-		}
-		return views;
-	}
-
+	
 	public Question() {
 		initVariables();
 	}
 
+	// constructor : sets default values
 	public Question(Context context) {
 		initVariables();
 		_questionsVersion = QuestionsStorage.getInstance(context).getQuestionsVersion();
 	}
 
+	// constructor from fields values
 	public Question(Context context, String id, String category, String subcategory, String type,
 			String mainText, String parametersText) {
 		initVariables();
@@ -114,7 +106,7 @@ public class Question {
 		_questionsVersion = QuestionsStorage.getInstance(context).getQuestionsVersion();
 	}
 
-	// initialization
+	// default initialization of a question
 	private void initVariables() {
 		_id = null;
 		_category = null;
@@ -132,6 +124,8 @@ public class Question {
 		_questionsVersion = -1;
 	}
 
+	//-------------------------- set / get functions	
+	
 	public String getId() {
 		return _id;
 	}
@@ -253,6 +247,32 @@ public class Question {
 		_questionsVersion = questionsVersion;
 	}
 
+	// Generating views for subsequent display of questions
+	// Manage ui and fills answer fields of the class
+	
+	
+	 
+	// Select questions by tags.
+	// Tags only used to identify subquestions when they exist
+	private static ArrayList<View> getViewsByTag(ViewGroup root, String tag){
+		ArrayList<View> views = new ArrayList<View>();
+		final int childCount = root.getChildCount();
+		for (int i = 0; i < childCount; i++) {
+			final View child = root.getChildAt(i);
+			if (child instanceof ViewGroup) {
+				views.addAll(getViewsByTag((ViewGroup) child, tag));
+			}
+
+			final Object tagObj = child.getTag();
+			if (tagObj != null && tagObj.equals(tag)) {
+				views.add(child);
+			}
+
+		}
+		return views;
+	}
+
+	
 	public ArrayList<View> getViews(Context context) {
 		Context _context = context;
 		LayoutInflater inflater = (LayoutInflater)_context.getSystemService(
@@ -399,6 +419,8 @@ public class Question {
 		return views;
 	}
 
+	// --- Validation functions
+	
 	public boolean validate(Context context, LinearLayout questionsLinearLayout) {
 		if (_type.equals(TYPE_SLIDER)) {
 			return validateSlider(context, questionsLinearLayout);
@@ -408,6 +430,7 @@ public class Question {
 		return false;
 	}
 
+	// For slider, checks whether or not sliders were kept untouched
 	private boolean validateSlider(Context context, LinearLayout questionsLinearLayout) {
 		ArrayList<View> subquestions = getViewsByTag(questionsLinearLayout, "subquestion");
 		boolean isMultiple = subquestions.size() > 1 ? true : false;
@@ -475,6 +498,8 @@ public class Question {
 		return true;
 	}
 
+	// Parsing subfunctions
+	
 	private ArrayList<String> parseString(String toParse, String sep) {
 		return new ArrayList<String>(Arrays.asList(toParse.split(sep)));
 	}

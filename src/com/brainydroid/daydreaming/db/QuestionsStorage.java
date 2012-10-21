@@ -142,6 +142,7 @@ public class QuestionsStorage {
 		}
 	}
 
+	// add question in database
 	private void addQuestion(Question question) {
 		wDb.insert(TABLE_QUESTIONS, null, getQuestionContentValues(question));
 	}
