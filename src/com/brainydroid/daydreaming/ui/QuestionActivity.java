@@ -23,6 +23,8 @@ import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.db.Poll;
 import com.brainydroid.daydreaming.db.PollsStorage;
 import com.brainydroid.daydreaming.db.Question;
+import com.brainydroid.daydreaming.network.SntpClient;
+import com.brainydroid.daydreaming.network.SntpClientCallback;
 
 public class QuestionActivity extends ActionBarActivity {
 
@@ -94,7 +96,7 @@ public class QuestionActivity extends ActionBarActivity {
 			poll.setStatus(Poll.STATUS_RUNNING);
 
 			if (status.isDataAndLocationEnabled()) {
-				status.startLocationService();
+				startListeningTasks();
 			}
 		}
 	}
@@ -148,6 +150,22 @@ public class QuestionActivity extends ActionBarActivity {
 				nextButton.setText(getString(R.string.question_button_finish));
 			}
 		}
+	}
+
+	private void startListeningTasks() {
+		status.startLocationService();
+		SntpClientCallback sntpCallback = new SntpClientCallback() {
+
+			@Override
+			public void onTimeReceived(SntpClient sntpClient) {
+				if (sntpClient != null) {
+					question.setTimestamp(sntpClient.getNow());
+				}
+			}
+
+		};
+		SntpClient sntpClient = new SntpClient();
+		sntpClient.asyncRequestTime(sntpCallback);
 	}
 
 	private void populateViews() {
