@@ -12,8 +12,8 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.brainydroid.daydreaming.R;
+import com.brainydroid.daydreaming.background.ScheduleManager;
 import com.brainydroid.daydreaming.background.StatusManager;
-import com.brainydroid.daydreaming.db.Poll;
 import com.brainydroid.daydreaming.db.PollsStorage;
 import com.brainydroid.daydreaming.db.QuestionsStorage;
 
@@ -137,13 +137,6 @@ public class DashboardActivity extends ActionBarActivity {
 	}
 
 	public void runPoll(View view) {
-		Poll poll = Poll.create(this, 3);
-		poll.save();
-
-		Intent intent = new Intent(this, QuestionActivity.class);
-		intent.putExtra(QuestionActivity.EXTRA_POLL_ID, poll.getId());
-		intent.putExtra(QuestionActivity.EXTRA_QUESTION_INDEX, 0);
-		startActivity(intent);
-		overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+		ScheduleManager.getInstance(this).schedulePoll();
 	}
 }

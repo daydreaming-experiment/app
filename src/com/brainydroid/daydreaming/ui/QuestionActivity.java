@@ -26,6 +26,7 @@ import com.brainydroid.daydreaming.db.Question;
 import com.brainydroid.daydreaming.network.SntpClient;
 import com.brainydroid.daydreaming.network.SntpClientCallback;
 
+// TODO: adapt Poll status to expiry/saving/etc states
 public class QuestionActivity extends ActionBarActivity {
 
 	public static String EXTRA_POLL_ID = "pollId";
@@ -87,6 +88,7 @@ public class QuestionActivity extends ActionBarActivity {
 		setChrome();
 		populateViews();
 		setTitle(getString(R.string.app_name) + " " + (questionIndex + 1) + "/" + nQuestions);
+		// TODO: add a call to ScheduleManager / SchedulerService
 	}
 
 	@Override
@@ -115,8 +117,8 @@ public class QuestionActivity extends ActionBarActivity {
 		super.onBackPressed();
 		if (!isFirstQuestion()) {
 			setIsContinuing();
+			overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
 		}
-		overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
 	}
 
 	private void initVars() {
@@ -220,6 +222,7 @@ public class QuestionActivity extends ActionBarActivity {
 		Intent intent = new Intent(this, QuestionActivity.class);
 		intent.putExtra(EXTRA_POLL_ID, pollId);
 		intent.putExtra(EXTRA_QUESTION_INDEX, questionIndex + 1);
+		intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
 		startActivity(intent);
 		overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
 	}

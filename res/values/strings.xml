@@ -41,9 +41,6 @@
         <item>Female</item>
         <item>Male</item>
     </string-array>
-    <string name="serviceNotification_ticker">Syncing questions and answers</string>
-    <string name="serviceNotification_title">Day Dreaming</string>
-    <string name="serviceNotification_text">Questions and Answers are being synced</string>
     <string name="question_welcome_text">Here are a few quick questions:</string>
     <string name="question_button_next">Next</string>
     <string name="question_button_finish">Finish</string>
@@ -62,6 +59,9 @@
     <string name="locationAlert_text_data">You should enable data connection to continue. Please adjust your settings.</string>
     <string name="locationAlert_text_location_and_data">You should enable network-based (coarse) location AND data connection to continue. Please adjust your settings.</string>
     <string name="locationAlert_button_settings">Go to settings&#8230;</string>
+    <string name="pollNotification_ticker">Day Dreaming poll</string>
+    <string name="pollNotification_title">Day Dreaming</string>
+    <string name="pollNotification_text">A few quick questions</string>
     
     <string name="menu_refresh">Refresh</string>
     <string name="menu_search">Search</string>
