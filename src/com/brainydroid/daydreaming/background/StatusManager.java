@@ -5,7 +5,6 @@ import android.app.ActivityManager.RunningServiceInfo;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -114,19 +113,16 @@ public class StatusManager {
 		if (isLocationServiceRunning()) {
 			locationServiceConnection.setStopOnBound(true);
 			Intent locationServiceIntent = new Intent(_context, LocationService.class);
-			_context.bindService(locationServiceIntent, locationServiceConnection, Context.BIND_AUTO_CREATE);
+			_context.bindService(locationServiceIntent, locationServiceConnection, 0);
 		}
 	}
 
-	public Location getLatestLocation() {
-		if (!isLocationServiceRunning()) {
-			return null;
-		} else {
+	public void setLocationCallback(LocationCallback callback) {
+		if (isLocationServiceRunning()) {
 			Intent locationServiceIntent = new Intent(_context, LocationService.class);
-			_context.bindService(locationServiceIntent, locationServiceConnection, Context.BIND_AUTO_CREATE);
-			Location latestLocation = locationServiceConnection.getService().getLatestLocation();
+			locationServiceConnection.setLocationCallbackOnBound(callback);
+			_context.bindService(locationServiceIntent, locationServiceConnection, 0);
 			_context.unbindService(locationServiceConnection);
-			return latestLocation;
 		}
 	}
 

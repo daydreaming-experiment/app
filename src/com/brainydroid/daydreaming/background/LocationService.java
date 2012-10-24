@@ -13,12 +13,12 @@ import android.widget.Toast;
 
 public class LocationService extends Service {
 
-	private Location latestLocation;
 	private LocationManager locationManager;
 	private LocationListener locationListener;
 	private StatusManager status;
 	private boolean stopOnUnbind = false;
 	private final IBinder mBinder = new LocationServiceBinder();
+	private LocationCallback _callback = null;
 
 	public class LocationServiceBinder extends Binder {
 		LocationService getService() {
@@ -27,12 +27,9 @@ public class LocationService extends Service {
 		}
 	}
 
-	public Location getLatestLocation() {
-		return latestLocation;
-	}
-
-	private void setLatestLocation(Location location) {
-		latestLocation = location;
+	public void setLocationCallback(LocationCallback callback) {
+		Toast.makeText(this, "Setting Location callback", Toast.LENGTH_SHORT).show();
+		_callback = callback;
 	}
 
 	@Override
@@ -97,7 +94,9 @@ public class LocationService extends Service {
 				Toast.makeText(LocationService.this,
 						"New location received (prec: " + location.getAccuracy() + ")",
 						Toast.LENGTH_SHORT).show();
-				setLatestLocation(location);
+				if (_callback != null) {
+					_callback.onLocationReceived(location);
+				}
 			}
 
 			@Override

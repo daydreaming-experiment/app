@@ -27,7 +27,7 @@ import android.widget.Toast;
 import com.brainydroid.daydreaming.R;
 
 // this class defines the general structure of questions and their answer.
-// These attributes will be saved 
+// These attributes will be saved
 
 public class Question {
 
@@ -39,7 +39,7 @@ public class Question {
 	private String _mainText;
 	private String _parametersText;
 	private int _questionsVersion;
-	
+
 	// attributes dependent on the answer
 	private String _status;
 	private String _answer;
@@ -47,7 +47,7 @@ public class Question {
 	private double _locationLongitude;
 	private double _locationAltitude;
 	private double _locationAccuracy;
-	private long _timestamp;	
+	private long _timestamp;
 
 
 	public static final String COL_ID = "questionId";
@@ -82,7 +82,7 @@ public class Question {
 	public static final String TYPE_MULTIPLE_CHOICE = "multipleChoice";
 	public static final String TYPE_SINGLE_CHOICE = "singleChoice";
 
-	
+
 	public Question() {
 		initVariables();
 	}
@@ -124,8 +124,8 @@ public class Question {
 		_questionsVersion = -1;
 	}
 
-	//-------------------------- set / get functions	
-	
+	//-------------------------- set / get functions
+
 	public String getId() {
 		return _id;
 	}
@@ -249,9 +249,9 @@ public class Question {
 
 	// Generating views for subsequent display of questions
 	// Manage ui and fills answer fields of the class
-	
-	
-	 
+
+
+
 	// Select questions by tags.
 	// Tags only used to identify subquestions when they exist
 	private static ArrayList<View> getViewsByTag(ViewGroup root, String tag){
@@ -272,7 +272,7 @@ public class Question {
 		return views;
 	}
 
-	
+
 	public ArrayList<View> getViews(Context context) {
 		Context _context = context;
 		LayoutInflater inflater = (LayoutInflater)_context.getSystemService(
@@ -420,7 +420,7 @@ public class Question {
 	}
 
 	// --- Validation functions
-	
+
 	public boolean validate(Context context, LinearLayout questionsLinearLayout) {
 		if (_type.equals(TYPE_SLIDER)) {
 			return validateSlider(context, questionsLinearLayout);
@@ -499,7 +499,7 @@ public class Question {
 	}
 
 	// Parsing subfunctions
-	
+
 	private ArrayList<String> parseString(String toParse, String sep) {
 		return new ArrayList<String>(Arrays.asList(toParse.split(sep)));
 	}
@@ -518,5 +518,102 @@ public class Question {
 		}
 
 		return parsedParametersText;
+	}
+
+	public void saveAnswers(LinearLayout questionLinearLayout) {
+		if (_type.equals(TYPE_SLIDER)) {
+			saveAnswersSlider(questionLinearLayout);
+			//		} else if (_type.equals(TYPE_SINGLE_CHOICE)) {
+			//			saveAnswersSingleChoice(questionLinearLayout);
+		} else if (_type.equals(TYPE_MULTIPLE_CHOICE)) {
+			saveAnswersMultipleChoice(questionLinearLayout);
+		}
+	}
+
+	private void saveAnswersSlider(LinearLayout questionLinearLayout) {
+		ArrayList<View> subQuestions = getViewsByTag(questionLinearLayout, "subquestion");
+		Iterator<View> subQuestionsIt = subQuestions.iterator();
+		StringBuilder sbAnswer = new StringBuilder("{\"sliderValues\": {");
+
+		while (subQuestionsIt.hasNext()) {
+			View subQuestion = subQuestionsIt.next();
+			SeekBar seekBar = (SeekBar)subQuestion.findViewById(
+					R.id.question_slider_seekBar);
+			TextView mainTextView = (TextView)subQuestion.findViewById(R.id.question_slider_mainText);
+			String mainText = mainTextView.getText().toString();
+			sbAnswer.append("\"" + mainText + "\": " + seekBar.getProgress());
+
+			if (subQuestionsIt.hasNext()) {
+				sbAnswer.append(", ");
+			}
+		}
+
+		sbAnswer.append("}}");
+		setAnswer(sbAnswer.toString());
+	}
+
+	private void saveAnswersMultipleChoice(LinearLayout questionLinearLayout) {
+		ArrayList<View> subQuestions = getViewsByTag(questionLinearLayout, "subquestion");
+		Iterator<View> subQuestionsIt = subQuestions.iterator();
+		StringBuilder sbAnswer = new StringBuilder("{\"multipleChoiceValues\": {");
+
+		while (subQuestionsIt.hasNext()) {
+			View subQuestion = subQuestionsIt.next();
+			TextView mainTextView = (TextView)subQuestion.findViewById(R.id.question_multiple_choice_mainText);
+			String mainText = mainTextView.getText().toString();
+			sbAnswer.append("\"" + mainText + "\": [");
+
+			LinearLayout rootChoices = (LinearLayout)subQuestion.findViewById(
+					R.id.question_multiple_choice_rootChoices);
+			int childCount = rootChoices.getChildCount();
+			ArrayList<String> choices = new ArrayList<String>();
+
+			// Get choices in a list
+			for (int i = 0; i < childCount; i++) {
+				CheckBox child = (CheckBox)rootChoices.getChildAt(i);
+				if (child.isChecked()) {
+					choices.add("\"" + child.getText().toString() + "\"");
+				}
+			}
+
+			// Join choices into a string
+			String joinedChoices = joinStrings(choices, ", ");
+			sbAnswer.append(joinedChoices);
+
+			// Get the "Other" field
+			CheckBox otherCheck = (CheckBox)subQuestion.findViewById(
+					R.id.question_multiple_choices_otherCheckBox);
+			if (otherCheck.isChecked()) {
+				EditText otherEditText = (EditText)subQuestion.findViewById(
+						R.id.question_multiple_choices_otherEditText);
+				String otherText = otherEditText.getText().toString();
+				if (choices.size() != 0) {
+					sbAnswer.append(", ");
+				}
+				sbAnswer.append("{\"Other\": \"" + otherText + "\"}");
+			}
+
+			// Close that JSON object
+			sbAnswer.append("]");
+			if (subQuestionsIt.hasNext()) {
+				sbAnswer.append(", ");
+			}
+		}
+
+		sbAnswer.append("}}");
+		setAnswer(sbAnswer.toString());
+	}
+
+	private String joinStrings(ArrayList<String> strings, String joinString) {
+		StringBuilder sb = new StringBuilder();
+
+		for (String s : strings) {
+			sb.append(s);
+			sb.append(joinString);
+		}
+
+		int sbLength = sb.length();
+		sb.delete(sbLength - joinString.length(), sbLength);
+		return sb.toString();
 	}
 }

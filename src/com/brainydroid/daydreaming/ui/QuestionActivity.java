@@ -8,6 +8,7 @@ import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -19,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.brainydroid.daydreaming.R;
+import com.brainydroid.daydreaming.background.LocationCallback;
 import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.db.Poll;
 import com.brainydroid.daydreaming.db.PollsStorage;
@@ -39,7 +41,7 @@ public class QuestionActivity extends ActionBarActivity {
 	private Question question;
 	private int nQuestions;
 	private boolean isContinuing = false;
-	private LinearLayout questionsLinearLayout;
+	private LinearLayout questionLinearLayout;
 	private StatusManager status;
 
 	public static class LocationAlertDialogFragment extends DialogFragment {
@@ -129,7 +131,7 @@ public class QuestionActivity extends ActionBarActivity {
 		questionIndex = intent.getIntExtra(EXTRA_QUESTION_INDEX, -1);
 		question = poll.getQuestionByIndex(questionIndex);
 		nQuestions = poll.getLength();
-		questionsLinearLayout = (LinearLayout)findViewById(R.id.question_linearLayout);
+		questionLinearLayout = (LinearLayout)findViewById(R.id.question_linearLayout);
 		status = StatusManager.getInstance(this);
 	}
 
@@ -155,7 +157,6 @@ public class QuestionActivity extends ActionBarActivity {
 	}
 
 	private void startListeningTasks() {
-		status.startLocationService();
 		SntpClientCallback sntpCallback = new SntpClientCallback() {
 
 			@Override
@@ -168,6 +169,16 @@ public class QuestionActivity extends ActionBarActivity {
 		};
 		SntpClient sntpClient = new SntpClient();
 		sntpClient.asyncRequestTime(sntpCallback);
+		status.startLocationService();
+		LocationCallback locationCallback = new LocationCallback() {
+
+			@Override
+			public void onLocationReceived(Location location) {
+				question.setLocation(location);
+			}
+
+		};
+		status.setLocationCallback(locationCallback);
 	}
 
 	private void populateViews() {
@@ -176,14 +187,14 @@ public class QuestionActivity extends ActionBarActivity {
 		Iterator<View> vIt = views.iterator();
 		int i = isFirstQuestion() ? 1 : 0;
 		while (vIt.hasNext()) {
-			questionsLinearLayout.addView(vIt.next(), i, questionsLinearLayout.getLayoutParams());
+			questionLinearLayout.addView(vIt.next(), i, questionLinearLayout.getLayoutParams());
 			i++;
 		}
 	}
 
 	public void onClick_nextButton(View view) {
-		if (question.validate(this, questionsLinearLayout)) {
-			poll.saveAnswer(questionIndex);
+		if (question.validate(this, questionLinearLayout)) {
+			poll.saveAnswers(questionLinearLayout, questionIndex);
 			if (isLastQuestion()) {
 				finishPoll();
 			} else {

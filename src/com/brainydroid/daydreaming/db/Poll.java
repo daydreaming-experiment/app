@@ -3,6 +3,8 @@ package com.brainydroid.daydreaming.db;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
 public class Poll {
 
@@ -134,10 +136,10 @@ public class Poll {
 		}
 	}
 
-	public void saveAnswer(int index) {
-		// TODO: get latest location
-		// get timestamp
-		// set them in the question
-		// save poll
+	public void saveAnswers(LinearLayout questionLinearLayout, int index) {
+		// Location and Timestamp are set by callbacks defined in QuestionActivity
+		_questions.get(index).saveAnswers(questionLinearLayout);
+		Toast.makeText(_context, "Answers:\n" + _questions.get(index).getAnswer(), Toast.LENGTH_LONG).show();
+		save();
 	}
 }

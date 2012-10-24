@@ -10,6 +10,8 @@ import com.brainydroid.daydreaming.background.LocationService.LocationServiceBin
 public class LocationServiceConnection implements ServiceConnection {
 
 	private boolean stopOnBound = false;
+	private boolean updateLocationCallbackOnBound = false;
+	private LocationCallback locationCallback = null;
 	private LocationService locationService;
 	private final Context _context;
 
@@ -40,5 +42,16 @@ public class LocationServiceConnection implements ServiceConnection {
 			locationService.setStopOnUnbind();
 			_context.unbindService(this);
 		}
+
+		if (updateLocationCallbackOnBound) {
+			locationService.setLocationCallback(locationCallback);
+			updateLocationCallbackOnBound = false;
+			locationCallback = null;
+		}
+	}
+
+	public void setLocationCallbackOnBound(LocationCallback callback) {
+		updateLocationCallbackOnBound = true;
+		locationCallback = callback;
 	}
 }
