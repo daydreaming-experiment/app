@@ -17,7 +17,8 @@ public class BootReceiver extends BroadcastReceiver {
 
 		if (action.equals(Intent.ACTION_BOOT_COMPLETED)) {
 			if (status.isFirstLaunchCompleted()) {
-				Toast.makeText(context, "Will start questions scheduler", Toast.LENGTH_SHORT).show();
+				// TODO: add call to SchedulerService
+				Toast.makeText(context, "Will start SchedulerService", Toast.LENGTH_SHORT).show();
 			}
 		}
 	}
