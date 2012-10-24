@@ -12,7 +12,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.brainydroid.daydreaming.R;
-import com.brainydroid.daydreaming.background.ScheduleManager;
+import com.brainydroid.daydreaming.background.SchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.db.PollsStorage;
 import com.brainydroid.daydreaming.db.QuestionsStorage;
@@ -137,6 +137,7 @@ public class DashboardActivity extends ActionBarActivity {
 	}
 
 	public void runPoll(View view) {
-		ScheduleManager.getInstance(this).schedulePoll();
+		Intent schedulerIntent = new Intent(this, SchedulerService.class);
+		startService(schedulerIntent);
 	}
 }

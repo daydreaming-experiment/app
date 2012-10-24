@@ -59,6 +59,9 @@
         
         <service android:name=".background.PollService"
                  android:exported="false"/>
+        
+        <service android:name=".background.SchedulerService"
+                 android:exported="false"/>
 
     </application>
 
