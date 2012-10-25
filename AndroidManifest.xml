@@ -31,7 +31,11 @@
         </activity>
         
         <activity android:name=".ui.FirstLaunchSettingsActivity"
-                  android:label="TO SET">
+                  android:label="@string/firstLaunchSettings_title_activity">
+        </activity>
+        
+        <activity android:name=".ui.SettingsActivity"
+                  android:label="@string/settings_title_activity">
         </activity>
         
         <activity android:name=".ui.ReLaunchWelcomeActivity"

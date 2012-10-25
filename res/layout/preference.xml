@@ -1,47 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
-   <PreferenceCategory
+    <PreferenceCategory
         android:key="notifications_cat_key"
         android:title="@string/notifications_settings" >
-    
-    <CheckBoxPreference
-        android:defaultValue="true"
-        android:key="notification_sound_key"
-        android:persistent="true"
-        android:title="@string/notif_sound" />
 
-    <CheckBoxPreference
-        android:defaultValue="true"
-        android:key="notification_vibrator_key"
-        android:persistent="true"
-        android:title="@string/notif_vibrator" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="notification_sound_key"
+            android:persistent="true"
+            android:title="@string/notif_sound" />
 
-    <CheckBoxPreference
-        android:defaultValue="true"
-        android:key="notification_blink_key"
-        android:persistent="true"
-        android:title="@string/notif_led" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="notification_vibrator_key"
+            android:persistent="true"
+            android:title="@string/notif_vibrator" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="notification_blink_key"
+            android:persistent="true"
+            android:title="@string/notif_led" />
     </PreferenceCategory>
-    
+
     <PreferenceCategory
         android:key="time_window_settings_key"
         android:title="@string/time_window_settings" >
 
         <com.brainydroid.daydreaming.ui.TimePreference
-            android:defaultValue="10:00"
-            android:key="time_window_ub_key"
+            android:defaultValue="19:00"
+            android:key="time_window_lb_key"
+            android:persistent="true"
+            android:summary="not set yet"
             android:title="@string/time_window_lb" />
 
         <com.brainydroid.daydreaming.ui.TimePreference
-            android:defaultValue="19:00"
-            android:key="time_window_lb_key"
+            android:defaultValue="10:00"
+            android:key="time_window_ub_key"
+            android:persistent="true"
+            android:summary="not set yet"
             android:title="@string/time_window_ub" />
-        />
     </PreferenceCategory>
-    
-    <Preference android:title="Validate"
-                android:key="button"
-                android:summary="you may change the settings later"/>
 
 </PreferenceScreen>

@@ -70,6 +70,9 @@ public class DashboardActivity extends ActionBarActivity {
 			break;
 
 		case R.id.menu_settings:
+			Intent intent = new Intent(this, SettingsActivity.class);
+			intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+			startActivity(intent);
 			Toast.makeText(this, "Tapped settings", Toast.LENGTH_SHORT).show();
 			break;
 		}
