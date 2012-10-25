@@ -30,6 +30,10 @@
                   android:label="@string/firstLaunchWelcome_title_activity">
         </activity>
         
+        <activity android:name=".ui.FirstLaunchSettingsActivity"
+                  android:label="TO SET">
+        </activity>
+        
         <activity android:name=".ui.ReLaunchWelcomeActivity"
                   android:label="@string/reLaunchWelcome_title_activity">
         </activity>

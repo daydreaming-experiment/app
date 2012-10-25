@@ -1,5 +1,11 @@
 <resources>
-
+    <string name="notif_sound">Allow notification sound</string>
+    <string name="notif_vibrator">Vibrates with notification</string>
+    <string name="notif_led">Blink at notification</string>
+    <string name="time_window_lb">From </string>
+    <string name="time_window_ub">Until</string>
+    <string name="time_window_settings">Time window for notifications</string>
+    <string name="notifications_settings">Notifications</string>
     <string name="app_name">Day Dreaming</string>
     <string name="menu_settings">Settings</string>
     <string name="dashboard_title_activity">Dashboard</string>
