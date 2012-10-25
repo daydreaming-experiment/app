@@ -11,23 +11,15 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.view.View;
 
-public class FirstLaunchSettingsActivity extends PreferenceActivity {
-    @SuppressWarnings("deprecation")
+public class FirstLaunchSettingsActivity extends ActionBarActivity {
+
+	
+	
 	@Override
-	
-	
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        addPreferencesFromResource(R.layout.preference);
-        
-        Preference button = (Preference)findPreference("button");
-        button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                        @Override
-                        public boolean onPreferenceClick(Preference arg0) { 
-                        	launchDashboard();
-                        	return true;
-                        }
-                    });
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+	      setContentView(R.layout.activity_first_launch_settings);
+
     }
     
     
@@ -42,12 +34,17 @@ public class FirstLaunchSettingsActivity extends PreferenceActivity {
     // - saving preference : automatic
     // - setting default values in xml
     
-    private void launchDashboard() {
+    public void launchDashboard(View v) {
 		Intent dashboardIntent = new Intent(this, DashboardActivity.class);
 		dashboardIntent.putExtra(DashboardActivity.EXTRA_COMES_FROM_FIRST_LAUNCH, true);
 		startActivity(dashboardIntent);
 	}
 
+    public void runSettings(View v) {
+		Intent dashboardIntent = new Intent(this, SettingsActivity.class);
+		dashboardIntent.putExtra(DashboardActivity.EXTRA_COMES_FROM_FIRST_LAUNCH, true);
+		startActivity(dashboardIntent);
+	}
     
     
 }

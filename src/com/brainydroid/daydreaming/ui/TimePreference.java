@@ -6,29 +6,35 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TimePicker;
 
+// Extends DialogPreference, a preference class that pops out in a dialogbox
 public class TimePreference extends DialogPreference {
     private int lastHour=0;
     private int lastMinute=0;
     private TimePicker picker=null;
 
+    // hour from string HH:MM
     public static int getHour(String time) {
         String[] pieces=time.split(":");
         return(Integer.parseInt(pieces[0]));
     }
 
+    // minutes from string HH:MM
     public static int getMinute(String time) {
         String[] pieces=time.split(":");
         return(Integer.parseInt(pieces[1]));
     }
 
+    // constructor from context
     public TimePreference(Context ctxt) {
-        this(ctxt, null);
+        this(ctxt, null); // constructor from superclass DialogPreference
     }
-
+    
+    // constructor from context and attributes
     public TimePreference(Context ctxt, AttributeSet attrs) {
         this(ctxt, attrs, 0);
     }
 
+    // constructor from context and attributes and style
     public TimePreference(Context ctxt, AttributeSet attrs, int defStyle) {
         super(ctxt, attrs, defStyle);
         setPositiveButtonText("Set");
@@ -41,6 +47,7 @@ public class TimePreference extends DialogPreference {
         return(picker);
     }
 
+    // bind dialog to current view
     @Override
     protected void onBindDialogView(View v) {
         super.onBindDialogView(v);
@@ -48,6 +55,7 @@ public class TimePreference extends DialogPreference {
         picker.setCurrentMinute(lastMinute);
     }
 
+    
     @Override
     protected void onDialogClosed(boolean positiveResult) {
         super.onDialogClosed(positiveResult);
@@ -85,4 +93,26 @@ public class TimePreference extends DialogPreference {
         lastHour=getHour(time);
         lastMinute=getMinute(time);
     }
+
+	public String getTimeString() {
+     //   lastHour=picker.getCurrentHour();
+     //   lastMinute=picker.getCurrentMinute();
+        String time=pad(lastHour)+":"+pad(lastMinute);
+   	return time;
+	}
+
+	public void setTime(String time) {
+        String[] pieces=time.split(":");
+        lastHour = Integer.parseInt(pieces[0]);
+        lastMinute = Integer.parseInt(pieces[1]);
+
+	}
+	
+	private static String pad(int c) {
+		if (c >= 10)
+		   return String.valueOf(c);
+		else
+		   return "0" + String.valueOf(c);
+	}
+	
 }
