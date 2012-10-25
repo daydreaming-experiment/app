@@ -35,7 +35,7 @@ public class Question {
 	private String _id;
 	private String _category;
 	private String _subcategory;
-	private String _type;
+	private static String _type;
 	private String _mainText;
 	private String _parametersText;
 	private int _questionsVersion;
@@ -419,6 +419,86 @@ public class Question {
 		return views;
 	}
 
+	// --- Save functions
+	
+	public static String saveAnswers(Context context, LinearLayout questionsLinearLayout) {
+		if (_type.equals(TYPE_SLIDER)) {
+			return saveSlider(context, questionsLinearLayout);
+		} else if (_type.equals(TYPE_MULTIPLE_CHOICE)) {
+			return saveMultipleChoice(context, questionsLinearLayout);
+		}
+		return "";
+	}	
+
+	// For slider, checks whether or not sliders were kept untouched
+	private static String saveSlider(Context context, LinearLayout questionsLinearLayout) {
+		ArrayList<View> subquestions = getViewsByTag(questionsLinearLayout, "subquestion");
+		boolean isMultiple = subquestions.size() > 1 ? true : false;
+		Iterator<View> subquestionsIt = subquestions.iterator();
+
+		while (subquestionsIt.hasNext()) {
+			TextView selectedSeek = (TextView)subquestionsIt.next().
+					findViewById(R.id.question_slider_selectedSeek);
+			if (selectedSeek.getText().equals(
+					context.getString(R.string.questionSlider_please_slide))) {
+				Toast.makeText(context,
+						context.getString(isMultiple ? R.string.questionSlider_sliders_untouched_multiple :
+							R.string.questionSlider_sliders_untouched_single),
+							Toast.LENGTH_SHORT).show();
+				//return false;
+			}
+		}
+
+		return "";
+	}
+
+	// This will behave badly when there are multiple sub-multiplechoice questions
+	private static String saveMultipleChoice(Context context, LinearLayout questionsLinearLayout) {
+		ArrayList<View> subquestions = getViewsByTag(questionsLinearLayout, "subquestion");
+		Iterator<View> subquestionsIt = subquestions.iterator();
+
+		while (subquestionsIt.hasNext()) {
+
+			LinearLayout subquestionLinearLayout = (LinearLayout)subquestionsIt.next();
+			LinearLayout rootChoices = (LinearLayout)subquestionLinearLayout.findViewById(
+					R.id.question_multiple_choice_rootChoices);
+			int childCount = rootChoices.getChildCount();
+			boolean hasCheck = false;
+			CheckBox otherCheck = (CheckBox)subquestionLinearLayout.findViewById(
+					R.id.question_multiple_choices_otherCheckBox);
+			boolean hasOtherCheck = otherCheck.isChecked();
+
+			if (hasOtherCheck) {
+				EditText otherEditText = (EditText)subquestionLinearLayout.findViewById(
+						R.id.question_multiple_choices_otherEditText);
+				if (otherEditText.getText().length() == 0) {
+					Toast.makeText(context,
+							context.getString(R.string.questionMultipleChoices_other_please_fill),
+							Toast.LENGTH_SHORT).show();
+					//return false;
+				}
+			}
+
+			for (int i = 0; i < childCount; i++) {
+				CheckBox child = (CheckBox)rootChoices.getChildAt(i);
+				if (child.isChecked()) {
+					hasCheck = true;
+					break;
+				}
+			}
+
+			if (!hasCheck && !hasOtherCheck) {
+				Toast.makeText(context,
+						context.getString(R.string.questionMultipleChoices_please_check_one),
+						Toast.LENGTH_SHORT).show();
+				//return false;
+			}
+		}
+
+		return "";
+	}
+
+	
 	// --- Validation functions
 
 	public boolean validate(Context context, LinearLayout questionsLinearLayout) {

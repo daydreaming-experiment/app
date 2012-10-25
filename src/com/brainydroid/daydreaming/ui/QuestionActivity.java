@@ -29,6 +29,7 @@ import com.brainydroid.daydreaming.network.SntpClient;
 import com.brainydroid.daydreaming.network.SntpClientCallback;
 
 // TODO: adapt Poll status to expiry/saving/etc states
+//This class display and manage consecutively all questions of a poll.
 public class QuestionActivity extends ActionBarActivity {
 
 	public static String EXTRA_POLL_ID = "pollId";
@@ -85,10 +86,10 @@ public class QuestionActivity extends ActionBarActivity {
 
 		setContentView(R.layout.activity_question);
 
-		initVars();
-		checkPollStatus();
-		setChrome();
-		populateViews();
+		initVars(); // recovers question, init status
+		checkPollStatus(); // check if complete
+		setChrome(); // select view template to display
+		populateViews(); // adds views of each subquestion to current linearLayout 
 		setTitle(getString(R.string.app_name) + " " + (questionIndex + 1) + "/" + nQuestions);
 		// TODO: add a call to ScheduleManager / SchedulerService
 	}
@@ -125,14 +126,15 @@ public class QuestionActivity extends ActionBarActivity {
 
 	private void initVars() {
 		Intent intent = getIntent();
-		pollsStorage = PollsStorage.getInstance(this);
-		pollId = intent.getIntExtra(EXTRA_POLL_ID, -1);
-		poll = pollsStorage.getPoll(pollId);
-		questionIndex = intent.getIntExtra(EXTRA_QUESTION_INDEX, -1);
-		question = poll.getQuestionByIndex(questionIndex);
-		nQuestions = poll.getLength();
+		pollsStorage = PollsStorage.getInstance(this);  // get all polls (through pollstorage)
+		pollId = intent.getIntExtra(EXTRA_POLL_ID, -1); // recovers poll's id
+		poll = pollsStorage.getPoll(pollId); // extract relevant poll
+		questionIndex = intent.getIntExtra(EXTRA_QUESTION_INDEX, -1); // recovers question index
+		question = poll.getQuestionByIndex(questionIndex); // extract relevant question
+		nQuestions = poll.getLength(); // gets number of questions in poll
 		questionLinearLayout = (LinearLayout)findViewById(R.id.question_linearLayout);
-		status = StatusManager.getInstance(this);
+		pollsStorage = PollsStorage.getInstance(this);
+
 	}
 
 	private boolean checkPollStatus() {
@@ -234,7 +236,7 @@ public class QuestionActivity extends ActionBarActivity {
 		intent.putExtra(EXTRA_POLL_ID, pollId);
 		intent.putExtra(EXTRA_QUESTION_INDEX, questionIndex + 1);
 		intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-		startActivity(intent);
+		startActivity(intent); // launch next QuestionActivity for next question
 		overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
 	}
 
