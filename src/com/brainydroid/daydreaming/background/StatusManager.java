@@ -100,6 +100,7 @@ public class StatusManager {
 	public void finishClear() {
 		eExpStatus.clear();
 		eExpStatus.commit();
+		smInstance = null;
 	}
 
 	public void startLocationService() {

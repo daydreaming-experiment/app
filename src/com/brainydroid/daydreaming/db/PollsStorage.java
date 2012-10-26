@@ -188,5 +188,6 @@ public class PollsStorage {
 	public void dropAll() {
 		wDb.execSQL(SQL_DROP_TABLE_POLLS);
 		wDb.execSQL(SQL_DROP_TABLE_POLL_QUESTIONS);
+		psInstance = null;
 	}
 }

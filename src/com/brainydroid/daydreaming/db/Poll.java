@@ -1,13 +1,8 @@
 package com.brainydroid.daydreaming.db;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.location.Criteria;
-import android.location.Location;
-import android.location.LocationManager;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -38,9 +33,6 @@ public class Poll {
 	private final PollsStorage pollsStorage;
 	private final QuestionsStorage questionsStorage;
 
-	private static  LocationManager locationManager;
-
-	
 	public Poll(Context context) {
 		_context = context.getApplicationContext();
 		_id = -1;
@@ -150,26 +142,4 @@ public class Poll {
 		Toast.makeText(_context, "Answers:\n" + _questions.get(index).getAnswer(), Toast.LENGTH_LONG).show();
 		save();
 	}
-	
-	public void saveAnswer(int index, LinearLayout questionsLinearLayout) {
-		
-		locationManager = (LocationManager) _context.getSystemService(Context.LOCATION_SERVICE);
-	    Criteria criteria = new Criteria();
-	    String provider = locationManager.getBestProvider(criteria, false);
-	    Location location = locationManager.getLastKnownLocation(provider);
-
-	    // Environment variables
-	    Calendar c = Calendar.getInstance(); 
-	    double latitude  = location.getLatitude();
-	    double longitude = location.getLongitude();
-	    float Accuracy = location.getAccuracy();
-	    int seconds = c.get(Calendar.SECOND);
-	    
-	    // Answers : TO DO : saveAnswers
-	    String answers = Question.saveAnswers(_context, questionsLinearLayout);
-	    
-	    // TO DO: Save in poll
-	}
 }
-
-	

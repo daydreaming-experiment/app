@@ -131,6 +131,7 @@ public class QuestionsStorage {
 
 	public void dropAll() {
 		wDb.execSQL(SQL_DROP_TABLE_QUESTIONS);
+		qsInstance = null;
 	}
 
 	private void addQuestions(ArrayList<Question> questions) {
