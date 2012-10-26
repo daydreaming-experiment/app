@@ -128,10 +128,9 @@ public class FirstLaunchMeasuresActivity extends ActionBarActivity {
 
 	private void launchDashboard() {
 		setStatus(); // when everything is ok, first launch is set to completed
-		Intent settingsIntent = new Intent(this, FirstLaunchSettingsActivity.class);
-		settingsIntent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-		settingsIntent.putExtra(DashboardActivity.EXTRA_COMES_FROM_FIRST_LAUNCH, true);
-		startActivity(settingsIntent);
+		Intent dashboardIntent = new Intent(this, FirstLaunchSettingsActivity.class);
+		dashboardIntent.putExtra(DashboardActivity.EXTRA_COMES_FROM_FIRST_LAUNCH, true);
+		startActivity(dashboardIntent);
 		finish();
 	}
 
