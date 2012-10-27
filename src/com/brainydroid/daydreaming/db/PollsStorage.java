@@ -1,5 +1,6 @@
 package com.brainydroid.daydreaming.db;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import android.content.ContentValues;
@@ -18,7 +19,7 @@ public class PollsStorage {
 	private static final String SQL_CREATE_TABLE_POLLS =
 			"CREATE TABLE IF NOT EXISTS " + TABLE_POLLS + " (" +
 					Poll.COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-					Poll.COL_STATUS + " TEXT, " +
+					Poll.COL_STATUS + " TEXT NOT NULL, " +
 					Poll.COL_QUESTIONS_VERSION + " INTEGER NOT NULL, " +
 					Poll.COL_KEEP_IN_SYNC + " INTEGER DEFAULT 0" +
 					");";
@@ -175,19 +176,71 @@ public class PollsStorage {
 		return poll;
 	}
 
+	public ArrayList<Poll> getUploadablePolls() {
+		return getPollsWithStatuses(
+				new String[] {Poll.STATUS_COMPLETED, Poll.STATUS_PARTIALLY_COMPLETED});
+	}
+
+	public ArrayList<Poll> getPendingPolls() {
+		return getPollsWithStatuses(new String[] {Poll.STATUS_PENDING});
+	}
+
+	public void cleanPolls() {
+		ArrayList<Integer> pollIdsToClean = getPollIdsWithStatuses(
+				new String[] {Poll.STATUS_EXPIRED, Poll.STATUS_DISMISSED});
+
+		if (pollIdsToClean != null) {
+			for (int pollId : pollIdsToClean) {
+				removePoll(pollId);
+			}
+		}
+	}
+
+	private ArrayList<Integer> getPollIdsWithStatuses(String[] statuses) {
+		String query = Util.multiplyString(Poll.COL_STATUS + "=?", statuses.length, " OR ");
+		Cursor res = rDb.query(TABLE_POLLS, new String[] {Poll.COL_ID}, query, statuses,
+				null, null, null);
+
+		if (!res.moveToFirst()) {
+			res.close();
+			return null;
+		}
+
+		ArrayList<Integer> statusPollIds = new ArrayList<Integer>();
+		do {
+			statusPollIds.add(res.getInt(res.getColumnIndex(Poll.COL_ID)));
+		} while (res.moveToNext());
+
+		return statusPollIds;
+	}
+
+	private ArrayList<Poll> getPollsWithStatuses(String[] statuses) {
+		ArrayList<Integer> statusPollIds = getPollIdsWithStatuses(statuses);
+		ArrayList<Poll> statusPolls = new ArrayList<Poll>();
+
+		for (int pollId : statusPollIds) {
+			statusPolls.add(getPoll(pollId));
+		}
+
+		return statusPolls;
+	}
+
 	public void removePoll(int pollId) {
 		wDb.delete(TABLE_POLLS, Poll.COL_ID + "=?", new String[] {Integer.toString(pollId)});
 		wDb.delete(TABLE_POLL_QUESTIONS, Poll.COL_ID + "=?", new String[] {Integer.toString(pollId)});
+		_pollInstances.delete(pollId);
 	}
 
 	public void flushAll() {
 		wDb.delete(TABLE_POLLS, null, null);
 		wDb.delete(TABLE_POLL_QUESTIONS, null, null);
+		_pollInstances.clear();
 	}
 
 	public void dropAll() {
 		wDb.execSQL(SQL_DROP_TABLE_POLLS);
 		wDb.execSQL(SQL_DROP_TABLE_POLL_QUESTIONS);
+		_pollInstances.clear();
 		psInstance = null;
 	}
 }

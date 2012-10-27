@@ -12,7 +12,7 @@ public class Poll {
 	private String _status;
 	private int _questionsVersion;
 	private ArrayList<Question> _questions;
-	private boolean _keepInSync = false;
+	private transient boolean _keepInSync = false;
 
 	public static final String COL_ID = "pollId";
 	public static final String COL_STATUS = "pollStatus";
@@ -20,18 +20,19 @@ public class Poll {
 	public static final String COL_KEEP_IN_SYNC = "pollKeepInSync";
 
 	public static final String STATUS_PENDING = "pollPending"; // Notification has appeared
-	public static final String STATUS_STOPPED = "pollStopped"; // Notification has appeared, was opened, but QuestionActivity was paused
-	public static final String STATUS_RUNNING = "pollRunning"; // QuestionActivity is running
 	public static final String STATUS_EXPIRED = "pollExpired"; // QuestionActivity was paused and not resumed fast enough, or notification waited for too long
 	public static final String STATUS_DISMISSED = "pollDismissed"; // Notification was dismissed
+	public static final String STATUS_RUNNING = "pollRunning"; // QuestionActivity is running
+	public static final String STATUS_STOPPED = "pollStopped"; // Notification has appeared, was opened, but QuestionActivity was paused
+	public static final String STATUS_PARTIALLY_COMPLETED = "pollPartiallyCompleted"; // QuestionActivity was stopped, and Poll expired
 	public static final String STATUS_COMPLETED = "pollCompleted"; // QuestionActivity completed
 
 	public static final int KEEP_IN_SYNC_OFF = 0;
 	public static final int KEEP_IN_SYNC_ON = 1;
 
-	private final Context _context;
-	private final PollsStorage pollsStorage;
-	private final QuestionsStorage questionsStorage;
+	private transient final Context _context;
+	private transient final PollsStorage pollsStorage;
+	private transient final QuestionsStorage questionsStorage;
 
 	public Poll(Context context) {
 		_context = context.getApplicationContext();

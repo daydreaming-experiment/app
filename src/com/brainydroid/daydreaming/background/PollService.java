@@ -1,5 +1,7 @@
 package com.brainydroid.daydreaming.background;
 
+import java.util.ArrayList;
+
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -11,6 +13,7 @@ import android.support.v4.app.NotificationCompat;
 
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.db.Poll;
+import com.brainydroid.daydreaming.db.PollsStorage;
 import com.brainydroid.daydreaming.ui.QuestionActivity;
 
 public class PollService extends Service {
@@ -18,6 +21,7 @@ public class PollService extends Service {
 	private static int nQuestionsPerPoll = 3;
 
 	private NotificationManager notificationManager;
+	private PollsStorage pollsStorage;
 
 	@Override
 	public void onCreate() {
@@ -29,6 +33,8 @@ public class PollService extends Service {
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		super.onStartCommand(intent, flags, startId);
 
+		initVars();
+		pollsStorage.cleanPolls();
 		createAndNotifyPoll();
 		stopSelf();
 		return START_REDELIVER_INTENT;
@@ -43,6 +49,10 @@ public class PollService extends Service {
 	public IBinder onBind(Intent intent) {
 		// Don't allow binding
 		return null;
+	}
+
+	private void initVars() {
+		pollsStorage = PollsStorage.getInstance(this);
 	}
 
 	private void createAndNotifyPoll() {
@@ -67,14 +77,25 @@ public class PollService extends Service {
 		.setAutoCancel(true)
 		.build();
 
-		// TODO: add expiry of notification and poll
-		// TODO: add way to keep the notification open (after having been opened) for 5 minutes
+		// TODO: add expiry of notification and poll:
+		// update poll status to Poll.STATUS_EXPIRED or Poll.STATUS_DISMISSED
+		// TODO: add way to keep the notification open (after having been opened)
+		// for 5 minutes. On expiry, set status to Poll.STATUS_PARTIALLY_COMPLETED
 
 		notificationManager.notify(poll.getId(), notification);
 	}
 
 	private Poll createPoll() {
-		Poll poll = Poll.create(this, nQuestionsPerPoll);
+		ArrayList<Poll> pendingPolls = pollsStorage.getPendingPolls();
+		Poll poll;
+
+		if (pendingPolls != null) {
+			poll = pendingPolls.get(0);
+		} else {
+			poll = Poll.create(this, nQuestionsPerPoll);
+		}
+
+		poll.setStatus(Poll.STATUS_PENDING);
 		poll.save();
 		return poll;
 	}

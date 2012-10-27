@@ -28,7 +28,6 @@ import com.brainydroid.daydreaming.db.Question;
 import com.brainydroid.daydreaming.network.SntpClient;
 import com.brainydroid.daydreaming.network.SntpClientCallback;
 
-// TODO: adapt Poll status to expiry/saving/etc states
 public class QuestionActivity extends ActionBarActivity {
 
 	public static String EXTRA_POLL_ID = "pollId";

@@ -31,7 +31,7 @@ import com.brainydroid.daydreaming.R;
 
 public class Question {
 
-	// attirbutes inherent to the question
+	// attributes inherent to the question
 	private String _id;
 	private String _category;
 	private String _subcategory;
@@ -48,7 +48,6 @@ public class Question {
 	private double _locationAltitude;
 	private double _locationAccuracy;
 	private long _timestamp;
-
 
 	public static final String COL_ID = "questionId";
 	public static final String COL_CATEGORY = "questionCategory";
@@ -577,7 +576,7 @@ public class Question {
 			}
 
 			// Join choices into a string
-			String joinedChoices = joinStrings(choices, ", ");
+			String joinedChoices = Util.joinStrings(choices, ", ");
 			sbAnswer.append(joinedChoices);
 
 			// Get the "Other" field
@@ -602,18 +601,5 @@ public class Question {
 
 		sbAnswer.append("}}");
 		setAnswer(sbAnswer.toString());
-	}
-
-	private String joinStrings(ArrayList<String> strings, String joinString) {
-		StringBuilder sb = new StringBuilder();
-
-		for (String s : strings) {
-			sb.append(s);
-			sb.append(joinString);
-		}
-
-		int sbLength = sb.length();
-		sb.delete(sbLength - joinString.length(), sbLength);
-		return sb.toString();
 	}
 }
