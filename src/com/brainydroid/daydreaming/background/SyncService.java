@@ -1,12 +1,21 @@
 package com.brainydroid.daydreaming.background;
 
+import java.util.ArrayList;
+
 import android.app.Service;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.IBinder;
+
+import com.brainydroid.daydreaming.db.Poll;
+import com.brainydroid.daydreaming.db.PollsStorage;
+import com.google.gson.Gson;
 
 public class SyncService extends Service {
 
 	private StatusManager status;
+	private PollsStorage pollsStorage;
+	private Gson gson;
 	private boolean updateQuestionsDone = false;
 	private boolean uploadAnswersDone = false;
 
@@ -41,6 +50,8 @@ public class SyncService extends Service {
 
 	private void initVars() {
 		status = StatusManager.getInstance(this);
+		pollsStorage = PollsStorage.getInstance(this);
+		gson = new Gson();
 	}
 
 	private void asyncUpdateQuestions() {
@@ -57,6 +68,40 @@ public class SyncService extends Service {
 		// orientation of the display changes. That will stop and restart the worker process.
 		// See http://developer.android.com/guide/components/processes-and-threads.html ,
 		// right above the "Thread-safe methods" title.
+
+		AsyncTask<Void, Void, Void> uploaderTask = new AsyncTask<Void, Void, Void>() {
+
+			private ArrayList<Poll> uploadablePolls;
+
+			@Override
+			protected void onPreExecute() {
+				uploadablePolls = pollsStorage.getUploadablePolls();
+			}
+
+			@Override
+			protected Void doInBackground(Void... params) {
+
+				if (uploadablePolls == null) {
+					return null;
+				}
+
+				for (Poll poll : uploadablePolls) {
+					String jsonPoll = gson.toJson(poll);
+					// TODO: upload poll
+					pollsStorage.removePoll(poll.getId());
+				}
+
+				return null;
+			}
+
+			@Override
+			protected void onPostExecute(Void result) {
+				setUploadAnswersDone();
+				stopSelfIfAllDone();
+			}
+		};
+
+		uploaderTask.execute();
 	}
 
 	private void setUpdateQuestionsDone() {
