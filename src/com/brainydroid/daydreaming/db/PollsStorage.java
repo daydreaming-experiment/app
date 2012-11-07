@@ -49,7 +49,7 @@ public class PollsStorage {
 	private final QuestionsStorage _questionsStorage;
 	private final SparseArray<Poll> _pollInstances;
 
-	public static PollsStorage getInstance(Context context) {
+	public static synchronized PollsStorage getInstance(Context context) {
 		if (psInstance == null) {
 			psInstance = new PollsStorage(context);
 		}
@@ -216,6 +216,11 @@ public class PollsStorage {
 
 	private ArrayList<Poll> getPollsWithStatuses(String[] statuses) {
 		ArrayList<Integer> statusPollIds = getPollIdsWithStatuses(statuses);
+
+		if (statusPollIds == null) {
+			return null;
+		}
+
 		ArrayList<Poll> statusPolls = new ArrayList<Poll>();
 
 		for (int pollId : statusPollIds) {

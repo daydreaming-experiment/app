@@ -30,7 +30,7 @@ public class StatusManager {
 	private NetworkInfo networkInfo;
 	private final Context _context; // application environment
 
-	public static StatusManager getInstance(Context context) {
+	public static synchronized StatusManager getInstance(Context context) {
 		if (smInstance == null) {
 			smInstance = new StatusManager(context);
 		}
@@ -115,6 +115,7 @@ public class StatusManager {
 			locationServiceConnection.setStopOnBound(true);
 			Intent locationServiceIntent = new Intent(_context, LocationService.class);
 			_context.bindService(locationServiceIntent, locationServiceConnection, 0);
+			_context.unbindService(locationServiceConnection);
 		}
 	}
 

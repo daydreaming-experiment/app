@@ -12,7 +12,7 @@ public class Storage extends SQLiteOpenHelper {
 	private static final int DATABASE_VERSION = 2;
 	private static final String DATABASE_NAME = "Storage";
 
-	public static Storage getInstance(Context context) {
+	public static synchronized Storage getInstance(Context context) {
 		if (sInstance == null) {
 			sInstance = new Storage(context);
 		}

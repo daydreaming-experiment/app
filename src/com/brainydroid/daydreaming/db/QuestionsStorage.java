@@ -38,7 +38,7 @@ public class QuestionsStorage {
 	private final Random _random;
 	private final Gson gson;
 
-	public static QuestionsStorage getInstance(Context context) {
+	public static synchronized QuestionsStorage getInstance(Context context) {
 		if (qsInstance == null) {
 			qsInstance = new QuestionsStorage(context);
 		}

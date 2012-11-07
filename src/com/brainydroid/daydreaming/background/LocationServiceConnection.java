@@ -40,7 +40,6 @@ public class LocationServiceConnection implements ServiceConnection {
 	private void onBound() {
 		if (stopOnBound) {
 			locationService.setStopOnUnbind();
-			_context.unbindService(this);
 		}
 
 		if (updateLocationCallbackOnBound) {
