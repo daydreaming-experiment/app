@@ -166,9 +166,12 @@ public class QuestionActivity extends ActionBarActivity {
 			}
 
 		};
+
 		SntpClient sntpClient = new SntpClient();
 		sntpClient.asyncRequestTime(sntpCallback);
+
 		status.startLocationService();
+
 		LocationCallback locationCallback = new LocationCallback() {
 
 			@Override
@@ -177,6 +180,7 @@ public class QuestionActivity extends ActionBarActivity {
 			}
 
 		};
+
 		status.setLocationCallback(locationCallback);
 	}
 

@@ -1,7 +1,6 @@
 package com.brainydroid.daydreaming.background;
 
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 
@@ -13,11 +12,6 @@ public class LocationServiceConnection implements ServiceConnection {
 	private boolean updateLocationCallbackOnBound = false;
 	private LocationCallback locationCallback = null;
 	private LocationService locationService;
-	private final Context _context;
-
-	public LocationServiceConnection(Context context) {
-		_context = context.getApplicationContext();
-	}
 
 	@Override
 	public void onServiceConnected(ComponentName name, IBinder service) {

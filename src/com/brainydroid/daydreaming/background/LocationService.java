@@ -40,6 +40,7 @@ public class LocationService extends Service {
 			stopSelf();
 			return;
 		}
+		Toast.makeText(this, "Starting LocationService", Toast.LENGTH_SHORT).show();
 		startLocationListener();
 	}
 
@@ -52,6 +53,7 @@ public class LocationService extends Service {
 
 	@Override
 	public void onDestroy() {
+		Toast.makeText(this, "Stopping LocationService", Toast.LENGTH_SHORT).show();
 		stopLocationListener();
 		super.onDestroy();
 	}

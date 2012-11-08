@@ -45,7 +45,7 @@ public class StatusManager {
 		_context = context.getApplicationContext();
 		expStatus = _context.getSharedPreferences(EXP_STATUS, Context.MODE_PRIVATE);
 		eExpStatus = expStatus.edit();
-		locationServiceConnection = new LocationServiceConnection(_context);
+		locationServiceConnection = new LocationServiceConnection();
 		locationManager = (LocationManager)_context.getSystemService(Context.LOCATION_SERVICE);
 		connManager = (ConnectivityManager)_context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		networkInfo = connManager.getActiveNetworkInfo();
