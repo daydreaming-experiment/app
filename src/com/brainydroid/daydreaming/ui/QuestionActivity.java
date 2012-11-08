@@ -13,6 +13,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.DialogFragment;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -30,6 +31,8 @@ import com.brainydroid.daydreaming.network.SntpClientCallback;
 
 public class QuestionActivity extends ActionBarActivity {
 
+	private static String TAG = "QuestionActivity";
+
 	public static String EXTRA_POLL_ID = "pollId";
 	public static String EXTRA_QUESTION_INDEX = "questionIndex";
 
@@ -45,7 +48,13 @@ public class QuestionActivity extends ActionBarActivity {
 
 	public static class LocationAlertDialogFragment extends DialogFragment {
 
+		private static String TAG = "LocationAlertDialogFragment";
+
 		public static LocationAlertDialogFragment newInstance(int title, int text, int posText) {
+
+			// Debug
+			Log.d(TAG, "[fn] newInstance");
+
 			LocationAlertDialogFragment frag = new LocationAlertDialogFragment();
 			Bundle args = new Bundle();
 			args.putInt("title", title);
@@ -57,6 +66,9 @@ public class QuestionActivity extends ActionBarActivity {
 
 		@Override
 		public Dialog onCreateDialog(Bundle savedInstanceState) {
+
+			// Debug
+			Log.d(TAG, "[fn] onCreateDialog");
 
 			int title = getArguments().getInt("title");
 			int text = getArguments().getInt("text");
@@ -80,6 +92,10 @@ public class QuestionActivity extends ActionBarActivity {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+
+		// Debug
+		Log.d(TAG, "[fn] onCreate");
+
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_question);
@@ -94,6 +110,10 @@ public class QuestionActivity extends ActionBarActivity {
 
 	@Override
 	public void onStart() {
+
+		// Debug
+		Log.d(TAG, "[fn] onStart");
+
 		super.onStart();
 		if(checkPollStatus()) {
 			poll.setStatus(Poll.STATUS_RUNNING);
@@ -106,6 +126,10 @@ public class QuestionActivity extends ActionBarActivity {
 
 	@Override
 	public void onStop() {
+
+		// Debug
+		Log.d(TAG, "[fn] onStop");
+
 		super.onStop();
 		if (!isContinuing() && !poll.isOver()) {
 			poll.setStatus(Poll.STATUS_STOPPED);
@@ -115,6 +139,10 @@ public class QuestionActivity extends ActionBarActivity {
 
 	@Override
 	public void onBackPressed() {
+
+		// Debug
+		Log.d(TAG, "[fn] onBackPressed");
+
 		super.onBackPressed();
 		if (!isFirstQuestion()) {
 			setIsContinuing();
@@ -123,6 +151,10 @@ public class QuestionActivity extends ActionBarActivity {
 	}
 
 	private void initVars() {
+
+		// Debug
+		Log.d(TAG, "[fn] initVars");
+
 		Intent intent = getIntent();
 		pollsStorage = PollsStorage.getInstance(this);
 		pollId = intent.getIntExtra(EXTRA_POLL_ID, -1);
@@ -135,6 +167,10 @@ public class QuestionActivity extends ActionBarActivity {
 	}
 
 	private boolean checkPollStatus() {
+
+		// Debug
+		Log.d(TAG, "[fn] checkPollStatus");
+
 		boolean isOver = poll.isOver();
 		if (isOver) {
 			finish();
@@ -143,6 +179,10 @@ public class QuestionActivity extends ActionBarActivity {
 	}
 
 	private void setChrome() {
+
+		// Debug
+		Log.d(TAG, "[fn] setChrome");
+
 		if (!isFirstQuestion()) {
 			LinearLayout question_linearLayout = (LinearLayout)findViewById(R.id.question_linearLayout);
 			TextView welcomeText = (TextView)question_linearLayout.findViewById(R.id.question_welcomeText);
@@ -156,10 +196,20 @@ public class QuestionActivity extends ActionBarActivity {
 	}
 
 	private void startListeningTasks() {
+
+		// Debug
+		Log.d(TAG, "[fn] startListeningTasks");
+
 		SntpClientCallback sntpCallback = new SntpClientCallback() {
+
+			private final String TAG = "SntpClientCallback > sntpCallback";
 
 			@Override
 			public void onTimeReceived(SntpClient sntpClient) {
+
+				// Debug
+				Log.d(TAG, "[fn] onTimeReceived");
+
 				if (sntpClient != null) {
 					question.setTimestamp(sntpClient.getNow());
 				}
@@ -174,8 +224,14 @@ public class QuestionActivity extends ActionBarActivity {
 
 		LocationCallback locationCallback = new LocationCallback() {
 
+			private final String TAG = "LocationCallback locationCallback";
+
 			@Override
 			public void onLocationReceived(Location location) {
+
+				// Debug
+				Log.d(TAG, "[fn] onLocationReceived");
+
 				question.setLocation(location);
 			}
 
@@ -185,6 +241,10 @@ public class QuestionActivity extends ActionBarActivity {
 	}
 
 	private void populateViews() {
+
+		// Debug
+		Log.d(TAG, "[fn] populateViews");
+
 		ArrayList<View> views = question.createViews(this);
 
 		Iterator<View> vIt = views.iterator();
@@ -196,6 +256,10 @@ public class QuestionActivity extends ActionBarActivity {
 	}
 
 	public void onClick_nextButton(View view) {
+
+		// Debug
+		Log.d(TAG, "[fn] onClick_nextButton");
+
 		if (question.validate(this, questionLinearLayout)) {
 			poll.saveAnswers(questionLinearLayout, questionIndex);
 			if (isLastQuestion()) {
@@ -211,6 +275,10 @@ public class QuestionActivity extends ActionBarActivity {
 	}
 
 	private void launchLocationAlertDialog() {
+
+		// Debug
+		Log.d(TAG, "[fn] launchLocationAlertDialog");
+
 		int titleId;
 		int textId;
 		if (!status.isNetworkLocEnabled()) {
@@ -232,6 +300,10 @@ public class QuestionActivity extends ActionBarActivity {
 	}
 
 	private void launchNextQuestion() {
+
+		// Debug
+		Log.d(TAG, "[fn] launchNextQuestion");
+
 		setIsContinuing();
 		Intent intent = new Intent(this, QuestionActivity.class);
 		intent.putExtra(EXTRA_POLL_ID, pollId);
@@ -242,6 +314,10 @@ public class QuestionActivity extends ActionBarActivity {
 	}
 
 	private void launchSettings() {
+
+		// Debug
+		Log.d(TAG, "[fn] launchSettings");
+
 		Intent settingsIntent;
 		if (!status.isNetworkLocEnabled()) {
 			settingsIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
@@ -258,6 +334,10 @@ public class QuestionActivity extends ActionBarActivity {
 	}
 
 	private void finishPoll() {
+
+		// Debug
+		Log.d(TAG, "[fn] finishPoll");
+
 		Toast.makeText(this, getString(R.string.question_thank_you), Toast.LENGTH_SHORT).show();
 		poll.setStatus(Poll.STATUS_COMPLETED);
 		status.stopLocationService();
@@ -265,18 +345,34 @@ public class QuestionActivity extends ActionBarActivity {
 	}
 
 	private boolean isLastQuestion() {
+
+		// Debug
+		Log.d(TAG, "[fn] isLastQuestion");
+
 		return questionIndex == nQuestions - 1;
 	}
 
 	private boolean isFirstQuestion() {
+
+		// Debug
+		Log.d(TAG, "[fn] isFirstQuestion");
+
 		return questionIndex == 0;
 	}
 
 	private boolean isContinuing() {
+
+		// Debug
+		Log.d(TAG, "[fn] isContinuing");
+
 		return isContinuing;
 	}
 
 	private void setIsContinuing() {
+
+		// Debug
+		Log.d(TAG, "[fn] setIsContinuing");
+
 		isContinuing = true;
 	}
 }

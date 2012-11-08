@@ -18,6 +18,7 @@ package com.brainydroid.daydreaming.ui;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.Menu;
 
 /**
@@ -25,15 +26,25 @@ import android.view.Menu;
  * Honeycomb tablets. It thus requires API level 11.
  */
 public class ActionBarHelperHoneycomb extends ActionBarHelper {
+
+	private static String TAG = "ActionBarHelpHoneycomb";
+
 	//	private Menu mOptionsMenu;
 	//	private View mRefreshIndeterminateProgressView = null;
 
 	protected ActionBarHelperHoneycomb(Activity activity) {
 		super(activity);
+
+		// Debug
+		Log.d(TAG, "[fn] ActionBarHelpHoneycomb");
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
+
+		// Debug
+		Log.d(TAG, "[fn] onCreateOptionsMenu");
+
 		//		mOptionsMenu = menu;
 		return super.onCreateOptionsMenu(menu);
 	}
@@ -70,6 +81,10 @@ public class ActionBarHelperHoneycomb extends ActionBarHelper {
 	 * themed context.
 	 */
 	protected Context getActionBarThemedContext() {
+
+		// Verbose
+		Log.v(TAG, "[fn] getActionBarThemedContext");
+
 		return mActivity;
 	}
 }

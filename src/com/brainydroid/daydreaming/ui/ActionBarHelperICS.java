@@ -18,18 +18,30 @@ package com.brainydroid.daydreaming.ui;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 
 /**
  * An extension of {@link com.brainydroid.daydreaming.ui.example.android.actionbarcompat.ActionBarHelper} that provides Android
  * 4.0-specific functionality for IceCreamSandwich devices. It thus requires API level 14.
  */
 public class ActionBarHelperICS extends ActionBarHelperHoneycomb {
+
+	private static String TAG = "ActionBarHelpICS";
+
 	protected ActionBarHelperICS(Activity activity) {
 		super(activity);
+
+		// Debug
+		Log.d(TAG, "[fn] ActionBarHelperICS");
+
 	}
 
 	@Override
 	protected Context getActionBarThemedContext() {
+
+		// Debug
+		Log.d(TAG, "[fn] getActionBarThemedContect");
+
 		return mActivity.getActionBar().getThemedContext();
 	}
 }

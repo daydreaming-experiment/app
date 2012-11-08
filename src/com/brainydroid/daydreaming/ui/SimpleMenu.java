@@ -16,16 +16,17 @@
 
 package com.brainydroid.daydreaming.ui;
 
+import java.util.ArrayList;
+
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
-
-import java.util.ArrayList;
 
 /**
  * A <em>really</em> dumb implementation of the {@link android.view.Menu} interface, that's only
@@ -35,169 +36,319 @@ import java.util.ArrayList;
  */
 public class SimpleMenu implements Menu {
 
-    private Context mContext;
-    private Resources mResources;
+	private static String TAG = "SimpleMenu";
 
-    private ArrayList<SimpleMenuItem> mItems;
+	private final Context mContext;
+	private final Resources mResources;
 
-    public SimpleMenu(Context context) {
-        mContext = context;
-        mResources = context.getResources();
-        mItems = new ArrayList<SimpleMenuItem>();
-    }
+	private final ArrayList<SimpleMenuItem> mItems;
 
-    public Context getContext() {
-        return mContext;
-    }
+	public SimpleMenu(Context context) {
 
-    public Resources getResources() {
-        return mResources;
-    }
+		// Debug
+		Log.d(TAG, "[fn] SimpleMenu");
 
-    public MenuItem add(CharSequence title) {
-        return addInternal(0, 0, title);
-    }
+		mContext = context;
+		mResources = context.getResources();
+		mItems = new ArrayList<SimpleMenuItem>();
+	}
 
-    public MenuItem add(int titleRes) {
-        return addInternal(0, 0, mResources.getString(titleRes));
-    }
+	public Context getContext() {
 
-    public MenuItem add(int groupId, int itemId, int order, CharSequence title) {
-        return addInternal(itemId, order, title);
-    }
+		// Verbose
+		Log.v(TAG, "[fn] getContext");
 
-    public MenuItem add(int groupId, int itemId, int order, int titleRes) {
-        return addInternal(itemId, order, mResources.getString(titleRes));
-    }
+		return mContext;
+	}
 
-    /**
-     * Adds an item to the menu.  The other add methods funnel to this.
-     */
-    private MenuItem addInternal(int itemId, int order, CharSequence title) {
-        final SimpleMenuItem item = new SimpleMenuItem(this, itemId, order, title);
-        mItems.add(findInsertIndex(mItems, order), item);
-        return item;
-    }
+	public Resources getResources() {
 
-    private static int findInsertIndex(ArrayList<? extends MenuItem> items, int order) {
-        for (int i = items.size() - 1; i >= 0; i--) {
-            MenuItem item = items.get(i);
-            if (item.getOrder() <= order) {
-                return i + 1;
-            }
-        }
+		// Verbose
+		Log.v(TAG, "[fn] getResources");
 
-        return 0;
-    }
+		return mResources;
+	}
 
-    public int findItemIndex(int id) {
-        final int size = size();
+	@Override
+	public MenuItem add(CharSequence title) {
 
-        for (int i = 0; i < size; i++) {
-            SimpleMenuItem item = mItems.get(i);
-            if (item.getItemId() == id) {
-                return i;
-            }
-        }
+		// Debug
+		Log.d(TAG, "[fn] add (from CharSequence)");
 
-        return -1;
-    }
+		return addInternal(0, 0, title);
+	}
 
-    public void removeItem(int itemId) {
-        removeItemAtInt(findItemIndex(itemId));
-    }
+	@Override
+	public MenuItem add(int titleRes) {
 
-    private void removeItemAtInt(int index) {
-        if ((index < 0) || (index >= mItems.size())) {
-            return;
-        }
-        mItems.remove(index);
-    }
+		// Debug
+		Log.d(TAG, "[fn] add (from int)");
 
-    public void clear() {
-        mItems.clear();
-    }
+		return addInternal(0, 0, mResources.getString(titleRes));
+	}
 
-    public MenuItem findItem(int id) {
-        final int size = size();
-        for (int i = 0; i < size; i++) {
-            SimpleMenuItem item = mItems.get(i);
-            if (item.getItemId() == id) {
-                return item;
-            }
-        }
+	@Override
+	public MenuItem add(int groupId, int itemId, int order, CharSequence title) {
 
-        return null;
-    }
+		// Debug
+		Log.d(TAG, "[fn] add (from int, int, int, CharSequence)");
 
-    public int size() {
-        return mItems.size();
-    }
+		return addInternal(itemId, order, title);
+	}
 
-    public MenuItem getItem(int index) {
-        return mItems.get(index);
-    }
+	@Override
+	public MenuItem add(int groupId, int itemId, int order, int titleRes) {
 
-    // Unsupported operations.
+		// Debug
+		Log.d(TAG, "[fn] add (from int, int, int, int)");
 
-    public SubMenu addSubMenu(CharSequence charSequence) {
-        throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
-    }
+		return addInternal(itemId, order, mResources.getString(titleRes));
+	}
 
-    public SubMenu addSubMenu(int titleRes) {
-        throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
-    }
+	/**
+	 * Adds an item to the menu.  The other add methods funnel to this.
+	 */
+	private MenuItem addInternal(int itemId, int order, CharSequence title) {
 
-    public SubMenu addSubMenu(int groupId, int itemId, int order, CharSequence title) {
-        throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
-    }
+		// Debug
+		Log.d(TAG, "[fn] addInternal");
 
-    public SubMenu addSubMenu(int groupId, int itemId, int order, int titleRes) {
-        throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
-    }
+		final SimpleMenuItem item = new SimpleMenuItem(this, itemId, order, title);
+		mItems.add(findInsertIndex(mItems, order), item);
+		return item;
+	}
 
-    public int addIntentOptions(int i, int i1, int i2, ComponentName componentName,
-            Intent[] intents, Intent intent, int i3, MenuItem[] menuItems) {
-        throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
-    }
+	private static int findInsertIndex(ArrayList<? extends MenuItem> items, int order) {
 
-    public void removeGroup(int i) {
-        throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
-    }
+		// Debug
+		Log.d(TAG, "[fn] findInsertIndex");
 
-    public void setGroupCheckable(int i, boolean b, boolean b1) {
-        throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
-    }
+		for (int i = items.size() - 1; i >= 0; i--) {
+			MenuItem item = items.get(i);
+			if (item.getOrder() <= order) {
+				return i + 1;
+			}
+		}
 
-    public void setGroupVisible(int i, boolean b) {
-        throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
-    }
+		return 0;
+	}
 
-    public void setGroupEnabled(int i, boolean b) {
-        throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
-    }
+	public int findItemIndex(int id) {
 
-    public boolean hasVisibleItems() {
-        throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
-    }
+		// Debug
+		Log.d(TAG, "[fn] findItemIndex");
 
-    public void close() {
-        throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
-    }
+		final int size = size();
 
-    public boolean performShortcut(int i, KeyEvent keyEvent, int i1) {
-        throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
-    }
+		for (int i = 0; i < size; i++) {
+			SimpleMenuItem item = mItems.get(i);
+			if (item.getItemId() == id) {
+				return i;
+			}
+		}
 
-    public boolean isShortcutKey(int i, KeyEvent keyEvent) {
-        throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
-    }
+		return -1;
+	}
 
-    public boolean performIdentifierAction(int i, int i1) {
-        throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
-    }
+	@Override
+	public void removeItem(int itemId) {
 
-    public void setQwertyMode(boolean b) {
-        throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
-    }
+		// Debug
+		Log.d(TAG, "[fn] removeItem");
+
+		removeItemAtInt(findItemIndex(itemId));
+	}
+
+	private void removeItemAtInt(int index) {
+
+		// Debug
+		Log.d(TAG, "[fn] removeItemAtInt");
+
+		if ((index < 0) || (index >= mItems.size())) {
+			return;
+		}
+		mItems.remove(index);
+	}
+
+	@Override
+	public void clear() {
+
+		// Debug
+		Log.d(TAG, "[fn] clear");
+
+		mItems.clear();
+	}
+
+	@Override
+	public MenuItem findItem(int id) {
+
+		// Debug
+		Log.d(TAG, "[fn] findItem");
+
+		final int size = size();
+		for (int i = 0; i < size; i++) {
+			SimpleMenuItem item = mItems.get(i);
+			if (item.getItemId() == id) {
+				return item;
+			}
+		}
+
+		return null;
+	}
+
+	@Override
+	public int size() {
+
+		// Debug
+		Log.d(TAG, "[fn] size");
+
+		return mItems.size();
+	}
+
+	@Override
+	public MenuItem getItem(int index) {
+
+		// Debug
+		Log.d(TAG, "[fn] getItem");
+
+		return mItems.get(index);
+	}
+
+	// Unsupported operations.
+
+	@Override
+	public SubMenu addSubMenu(CharSequence charSequence) {
+
+		// Debug
+		Log.d(TAG, "[fn] addSubMenu (from CharSequence)");
+
+		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
+	}
+
+	@Override
+	public SubMenu addSubMenu(int titleRes) {
+
+		// Debug
+		Log.d(TAG, "[fn] addSubMenu (from int)");
+
+		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
+	}
+
+	@Override
+	public SubMenu addSubMenu(int groupId, int itemId, int order, CharSequence title) {
+
+		// Debug
+		Log.d(TAG, "[fn] addSubMenu (from int, int, int, CharSequence)");
+
+		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
+	}
+
+	@Override
+	public SubMenu addSubMenu(int groupId, int itemId, int order, int titleRes) {
+
+		// Debug
+		Log.d(TAG, "[fn] addSubMenu (from int, int, int, int)");
+
+		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
+	}
+
+	@Override
+	public int addIntentOptions(int i, int i1, int i2, ComponentName componentName,
+			Intent[] intents, Intent intent, int i3, MenuItem[] menuItems) {
+
+		// Debug
+		Log.d(TAG, "[fn] addIntentOptions");
+
+		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
+	}
+
+	@Override
+	public void removeGroup(int i) {
+
+		// Debug
+		Log.d(TAG, "[fn] removeGroup");
+
+		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
+	}
+
+	@Override
+	public void setGroupCheckable(int i, boolean b, boolean b1) {
+
+		// Debug
+		Log.d(TAG, "[fn] setGroupCheckable");
+
+		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
+	}
+
+	@Override
+	public void setGroupVisible(int i, boolean b) {
+
+		// Debug
+		Log.d(TAG, "[fn] setGroupVisible");
+
+		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
+	}
+
+	@Override
+	public void setGroupEnabled(int i, boolean b) {
+
+		// Debug
+		Log.d(TAG, "[fn] setGroupEnabled");
+
+		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
+	}
+
+	@Override
+	public boolean hasVisibleItems() {
+
+		// Debug
+		Log.d(TAG, "[fn] hasVisibleItems");
+
+		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
+	}
+
+	@Override
+	public void close() {
+
+		// Debug
+		Log.d(TAG, "[fn] close");
+
+		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
+	}
+
+	@Override
+	public boolean performShortcut(int i, KeyEvent keyEvent, int i1) {
+
+		// Debug
+		Log.d(TAG, "[fn] performShortcut");
+
+		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
+	}
+
+	@Override
+	public boolean isShortcutKey(int i, KeyEvent keyEvent) {
+
+		// Debug
+		Log.d(TAG, "[fn] isShortcutKey");
+
+		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
+	}
+
+	@Override
+	public boolean performIdentifierAction(int i, int i1) {
+
+		// Debug
+		Log.d(TAG, "[fn] performIdentifierAction");
+
+		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
+	}
+
+	@Override
+	public void setQwertyMode(boolean b) {
+
+		// Debug
+		Log.d(TAG, "[fn] setQwertyMode");
+
+		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
+	}
 }

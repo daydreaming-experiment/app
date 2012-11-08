@@ -18,6 +18,7 @@ package com.brainydroid.daydreaming.ui;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.ActionProvider;
 import android.view.ContextMenu;
 import android.view.MenuItem;
@@ -32,230 +33,440 @@ import android.view.View;
  */
 public class SimpleMenuItem implements MenuItem {
 
-    private SimpleMenu mMenu;
+	private static String TAG = "SimpleMenuItem";
 
-    private final int mId;
-    private final int mOrder;
-    private CharSequence mTitle;
-    private CharSequence mTitleCondensed;
-    private Drawable mIconDrawable;
-    private int mIconResId = 0;
-    private boolean mEnabled = true;
+	private final SimpleMenu mMenu;
 
-    public SimpleMenuItem(SimpleMenu menu, int id, int order, CharSequence title) {
-        mMenu = menu;
-        mId = id;
-        mOrder = order;
-        mTitle = title;
-    }
+	private final int mId;
+	private final int mOrder;
+	private CharSequence mTitle;
+	private CharSequence mTitleCondensed;
+	private Drawable mIconDrawable;
+	private int mIconResId = 0;
+	private boolean mEnabled = true;
 
-    public int getItemId() {
-        return mId;
-    }
+	public SimpleMenuItem(SimpleMenu menu, int id, int order, CharSequence title) {
 
-    public int getOrder() {
-        return mOrder;
-    }
+		// Debug
+		Log.d(TAG, "[fn] SimpleMenuItem");
 
-    public MenuItem setTitle(CharSequence title) {
-        mTitle = title;
-        return this;
-    }
+		mMenu = menu;
+		mId = id;
+		mOrder = order;
+		mTitle = title;
+	}
 
-    public MenuItem setTitle(int titleRes) {
-        return setTitle(mMenu.getContext().getString(titleRes));
-    }
+	@Override
+	public int getItemId() {
 
-    public CharSequence getTitle() {
-        return mTitle;
-    }
+		// Verbose
+		Log.v(TAG, "[fn] getItemId");
 
-    public MenuItem setTitleCondensed(CharSequence title) {
-        mTitleCondensed = title;
-        return this;
-    }
+		return mId;
+	}
 
-    public CharSequence getTitleCondensed() {
-        return mTitleCondensed != null ? mTitleCondensed : mTitle;
-    }
+	@Override
+	public int getOrder() {
 
-    public MenuItem setIcon(Drawable icon) {
-        mIconResId = 0;
-        mIconDrawable = icon;
-        return this;
-    }
+		// Verbose
+		Log.v(TAG, "[fn] getOrder");
 
-    public MenuItem setIcon(int iconResId) {
-        mIconDrawable = null;
-        mIconResId = iconResId;
-        return this;
-    }
+		return mOrder;
+	}
 
-    public Drawable getIcon() {
-        if (mIconDrawable != null) {
-            return mIconDrawable;
-        }
+	@Override
+	public MenuItem setTitle(CharSequence title) {
 
-        if (mIconResId != 0) {
-            return mMenu.getResources().getDrawable(mIconResId);
-        }
+		// Verbose
+		Log.v(TAG, "[fn] setTitle (from CharSequence)");
 
-        return null;
-    }
+		mTitle = title;
+		return this;
+	}
 
-    public MenuItem setEnabled(boolean enabled) {
-        mEnabled = enabled;
-        return this;
-    }
+	@Override
+	public MenuItem setTitle(int titleRes) {
 
-    public boolean isEnabled() {
-        return mEnabled;
-    }
+		// Debug
+		Log.d(TAG, "[fn] setTitle (from int)");
 
-    // No-op operations. We use no-ops to allow inflation from menu XML.
+		return setTitle(mMenu.getContext().getString(titleRes));
+	}
 
-    public int getGroupId() {
-        // Noop
-        return 0;
-    }
+	@Override
+	public CharSequence getTitle() {
 
-    public View getActionView() {
-        // Noop
-        return null;
-    }
+		// Verbose
+		Log.v(TAG, "[fn] getTitle");
 
-    public MenuItem setActionProvider(ActionProvider actionProvider) {
-        // Noop
-        return this;
-    }
+		return mTitle;
+	}
 
-    public ActionProvider getActionProvider() {
-        // Noop
-        return null;
-    }
+	@Override
+	public MenuItem setTitleCondensed(CharSequence title) {
 
-    public boolean expandActionView() {
-        // Noop
-        return false;
-    }
+		// Verbose
+		Log.v(TAG, "[fn] setTitleCondensed");
 
-    public boolean collapseActionView() {
-        // Noop
-        return false;
-    }
+		mTitleCondensed = title;
+		return this;
+	}
 
-    public boolean isActionViewExpanded() {
-        // Noop
-        return false;
-    }
+	@Override
+	public CharSequence getTitleCondensed() {
 
-    @Override
-    public MenuItem setOnActionExpandListener(OnActionExpandListener onActionExpandListener) {
-        // Noop
-        return this;
-    }
+		// Verbose
+		Log.v(TAG, "[fn] getTitleCondensed");
 
-    public MenuItem setIntent(Intent intent) {
-        // Noop
-        return this;
-    }
+		return mTitleCondensed != null ? mTitleCondensed : mTitle;
+	}
 
-    public Intent getIntent() {
-        // Noop
-        return null;
-    }
+	@Override
+	public MenuItem setIcon(Drawable icon) {
 
-    public MenuItem setShortcut(char c, char c1) {
-        // Noop
-        return this;
-    }
+		// Debug
+		Log.d(TAG, "[fn] setIcon (from Drawable)");
 
-    public MenuItem setNumericShortcut(char c) {
-        // Noop
-        return this;
-    }
+		mIconResId = 0;
+		mIconDrawable = icon;
+		return this;
+	}
 
-    public char getNumericShortcut() {
-        // Noop
-        return 0;
-    }
+	@Override
+	public MenuItem setIcon(int iconResId) {
 
-    public MenuItem setAlphabeticShortcut(char c) {
-        // Noop
-        return this;
-    }
+		// Debug
+		Log.d(TAG, "[fn] setIcon (from int)");
 
-    public char getAlphabeticShortcut() {
-        // Noop
-        return 0;
-    }
+		mIconDrawable = null;
+		mIconResId = iconResId;
+		return this;
+	}
 
-    public MenuItem setCheckable(boolean b) {
-        // Noop
-        return this;
-    }
+	@Override
+	public Drawable getIcon() {
 
-    public boolean isCheckable() {
-        // Noop
-        return false;
-    }
+		// Debug
+		Log.d(TAG, "[fn] getIcon");
 
-    public MenuItem setChecked(boolean b) {
-        // Noop
-        return this;
-    }
+		if (mIconDrawable != null) {
+			return mIconDrawable;
+		}
 
-    public boolean isChecked() {
-        // Noop
-        return false;
-    }
+		if (mIconResId != 0) {
+			return mMenu.getResources().getDrawable(mIconResId);
+		}
 
-    public MenuItem setVisible(boolean b) {
-        // Noop
-        return this;
-    }
+		return null;
+	}
 
-    public boolean isVisible() {
-        // Noop
-        return true;
-    }
+	@Override
+	public MenuItem setEnabled(boolean enabled) {
 
-    public boolean hasSubMenu() {
-        // Noop
-        return false;
-    }
+		// Verbose
+		Log.v(TAG, "[fn] setEnabled");
 
-    public SubMenu getSubMenu() {
-        // Noop
-        return null;
-    }
+		mEnabled = enabled;
+		return this;
+	}
 
-    public MenuItem setOnMenuItemClickListener(OnMenuItemClickListener onMenuItemClickListener) {
-        // Noop
-        return this;
-    }
+	@Override
+	public boolean isEnabled() {
 
-    public ContextMenu.ContextMenuInfo getMenuInfo() {
-        // Noop
-        return null;
-    }
+		// Debug
+		Log.d(TAG, "[fn] isEnabled");
 
-    public void setShowAsAction(int i) {
-        // Noop
-    }
+		return mEnabled;
+	}
 
-    public MenuItem setShowAsActionFlags(int i) {
-        // Noop
-        return null;
-    }
+	// No-op operations. We use no-ops to allow inflation from menu XML.
 
-    public MenuItem setActionView(View view) {
-        // Noop
-        return this;
-    }
+	@Override
+	public int getGroupId() {
 
-    public MenuItem setActionView(int i) {
-        // Noop
-        return this;
-    }
+		// Verbose
+		Log.v(TAG, "[fn] getGroupId");
+
+		// Noop
+		return 0;
+	}
+
+	@Override
+	public View getActionView() {
+
+		// Verbose
+		Log.v(TAG, "[fn] getActionView");
+
+		// Noop
+		return null;
+	}
+
+	@Override
+	public MenuItem setActionProvider(ActionProvider actionProvider) {
+
+		// Verbose
+		Log.v(TAG, "[fn] setActionProvider");
+
+		// Noop
+		return this;
+	}
+
+	@Override
+	public ActionProvider getActionProvider() {
+
+		// Verbose
+		Log.v(TAG, "[fn] getActionProvider");
+
+		// Noop
+		return null;
+	}
+
+	@Override
+	public boolean expandActionView() {
+
+		// Debug
+		Log.d(TAG, "[fn] expandActionView");
+
+		// Noop
+		return false;
+	}
+
+	@Override
+	public boolean collapseActionView() {
+
+		// Debug
+		Log.d(TAG, "[fn] collapseActionView");
+
+		// Noop
+		return false;
+	}
+
+	@Override
+	public boolean isActionViewExpanded() {
+
+		// Verbose
+		Log.v(TAG, "[fn] isActionViewExpanded");
+
+		// Noop
+		return false;
+	}
+
+	@Override
+	public MenuItem setOnActionExpandListener(OnActionExpandListener onActionExpandListener) {
+
+		// Verbose
+		Log.v(TAG, "[fn] setOnActionExpandListener");
+
+		// Noop
+		return this;
+	}
+
+	@Override
+	public MenuItem setIntent(Intent intent) {
+
+		// Verbose
+		Log.v(TAG, "[fn] setIntent");
+
+		// Noop
+		return this;
+	}
+
+	@Override
+	public Intent getIntent() {
+
+		// Verbose
+		Log.v(TAG, "[fn] getIntent");
+
+		// Noop
+		return null;
+	}
+
+	@Override
+	public MenuItem setShortcut(char c, char c1) {
+
+		// Verbose
+		Log.v(TAG, "[fn] setShortcut");
+
+		// Noop
+		return this;
+	}
+
+	@Override
+	public MenuItem setNumericShortcut(char c) {
+
+		// Verbose
+		Log.v(TAG, "[fn] setNumericShortcut");
+
+		// Noop
+		return this;
+	}
+
+	@Override
+	public char getNumericShortcut() {
+
+		// Verbose
+		Log.v(TAG, "[fn] getNumericShortcut");
+
+		// Noop
+		return 0;
+	}
+
+	@Override
+	public MenuItem setAlphabeticShortcut(char c) {
+
+		// Verbose
+		Log.v(TAG, "[fn] setAlphabeticShortcut");
+
+		// Noop
+		return this;
+	}
+
+	@Override
+	public char getAlphabeticShortcut() {
+
+		// Verbose
+		Log.v(TAG, "[fn] getAlphabeticShortcut");
+
+		// Noop
+		return 0;
+	}
+
+	@Override
+	public MenuItem setCheckable(boolean b) {
+
+		// Verbose
+		Log.v(TAG, "[fn] setCheckable");
+
+		// Noop
+		return this;
+	}
+
+	@Override
+	public boolean isCheckable() {
+
+		// Verbose
+		Log.v(TAG, "[fn] isCheckable");
+
+		// Noop
+		return false;
+	}
+
+	@Override
+	public MenuItem setChecked(boolean b) {
+
+		// Verbose
+		Log.v(TAG, "[fn] setChecked");
+
+		// Noop
+		return this;
+	}
+
+	@Override
+	public boolean isChecked() {
+
+		// Verbose
+		Log.v(TAG, "[fn] isChecked");
+
+		// Noop
+		return false;
+	}
+
+	@Override
+	public MenuItem setVisible(boolean b) {
+
+		// Verbose
+		Log.v(TAG, "[fn] setVisible");
+
+		// Noop
+		return this;
+	}
+
+	@Override
+	public boolean isVisible() {
+
+		// Verbose
+		Log.v(TAG, "[fn] isVisible");
+
+		// Noop
+		return true;
+	}
+
+	@Override
+	public boolean hasSubMenu() {
+
+		// Debug
+		Log.d(TAG, "[fn] hasSubMenu");
+
+		// Noop
+		return false;
+	}
+
+	@Override
+	public SubMenu getSubMenu() {
+
+		// Verbose
+		Log.v(TAG, "[fn] getSubMenu");
+
+		// Noop
+		return null;
+	}
+
+	@Override
+	public MenuItem setOnMenuItemClickListener(OnMenuItemClickListener onMenuItemClickListener) {
+
+		// Verbose
+		Log.v(TAG, "[fn] setOnMenuItemClickListener");
+
+		// Noop
+		return this;
+	}
+
+	@Override
+	public ContextMenu.ContextMenuInfo getMenuInfo() {
+
+		// Verbose
+		Log.v(TAG, "[fn] getMenuInfo");
+
+		// Noop
+		return null;
+	}
+
+	@Override
+	public void setShowAsAction(int i) {
+
+		// Verbose
+		Log.v(TAG, "[fn] setShowAsAction");
+
+		// Noop
+	}
+
+	@Override
+	public MenuItem setShowAsActionFlags(int i) {
+
+		// Verbose
+		Log.v(TAG, "[fn] setShowAsActionFlags");
+
+		// Noop
+		return null;
+	}
+
+	@Override
+	public MenuItem setActionView(View view) {
+
+		// Verbose
+		Log.v(TAG, "[fn] setActionView");
+
+		// Noop
+		return this;
+	}
+
+	@Override
+	public MenuItem setActionView(int i) {
+
+		// Verbose
+		Log.v(TAG, "[fn] setActionView");
+
+		// Noop
+		return this;
+	}
 }

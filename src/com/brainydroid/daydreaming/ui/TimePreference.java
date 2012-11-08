@@ -1,118 +1,172 @@
 package com.brainydroid.daydreaming.ui;
+
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.TimePicker;
 
 // Extends DialogPreference, a preference class that pops out in a dialogbox
 public class TimePreference extends DialogPreference {
-    private int lastHour=0;
-    private int lastMinute=0;
-    private TimePicker picker=null;
 
-    // hour from string HH:MM
-    public static int getHour(String time) {
-        String[] pieces=time.split(":");
-        return(Integer.parseInt(pieces[0]));
-    }
+	private static String TAG = "TimePreference";
 
-    // minutes from string HH:MM
-    public static int getMinute(String time) {
-        String[] pieces=time.split(":");
-        return(Integer.parseInt(pieces[1]));
-    }
+	private int lastHour = 0;
+	private int lastMinute = 0;
+	private TimePicker picker = null;
 
-    // constructor from context
-    public TimePreference(Context ctxt) {
-        this(ctxt, null); // constructor from superclass DialogPreference
-    }
-    
-    // constructor from context and attributes
-    public TimePreference(Context ctxt, AttributeSet attrs) {
-        this(ctxt, attrs, 0);
-    }
+	// hour from string HH:MM
+	public static int getHour(String time) {
 
-    // constructor from context and attributes and style
-    public TimePreference(Context ctxt, AttributeSet attrs, int defStyle) {
-        super(ctxt, attrs, defStyle);
-        setPositiveButtonText("Set");
-        setNegativeButtonText("Cancel");
-    }
+		// Verbose
+		Log.v(TAG, "[fn] getHour");
 
-    @Override
-    protected View onCreateDialogView() {
-        picker=new TimePicker(getContext());
-        return(picker);
-    }
+		String[] pieces = time.split(":");
+		return(Integer.parseInt(pieces[0]));
+	}
 
-    // bind dialog to current view
-    @Override
-    protected void onBindDialogView(View v) {
-        super.onBindDialogView(v);
-        picker.setCurrentHour(lastHour);
-        picker.setCurrentMinute(lastMinute);
-    }
+	// minutes from string HH:MM
+	public static int getMinute(String time) {
 
-    
-    @Override
-    protected void onDialogClosed(boolean positiveResult) {
-        super.onDialogClosed(positiveResult);
-        if (positiveResult) {
-            lastHour=picker.getCurrentHour();
-            lastMinute=picker.getCurrentMinute();
-            String time=String.valueOf(lastHour)+":"+String.valueOf(lastMinute);
-            if (callChangeListener(time)) {
-                persistString(time);
-            }
-        }
-    }
+		// Verbose
+		Log.v(TAG, "[fn] getMinute");
 
-    @Override
-    protected Object onGetDefaultValue(TypedArray a, int index) {
-        return(a.getString(index));
-    }
+		String[] pieces = time.split(":");
+		return(Integer.parseInt(pieces[1]));
+	}
 
-    @Override
-    protected void onSetInitialValue(boolean restoreValue, Object defaultValue) {
-        String time=null;
+	// constructor from context
+	public TimePreference(Context ctxt) {
 
-        if (restoreValue) {
-            if (defaultValue==null) {
-                time=getPersistedString("00:00");
-            }
-            else {
-                time=getPersistedString(defaultValue.toString());
-            }
-        }
-        else {
-            time=defaultValue.toString();
-        }
+		super(ctxt, null); // constructor from superclass DialogPreference
 
-        lastHour=getHour(time);
-        lastMinute=getMinute(time);
-    }
+		// Debug
+		Log.d(TAG, "[fn] TimePreference (argset 1: small)");
+	}
+
+	// constructor from context and attributes
+	public TimePreference(Context ctxt, AttributeSet attrs) {
+		super(ctxt, attrs, 0);
+
+		// Debug
+		Log.d(TAG, "[fn] TimePreference (argset 2: medium)");
+	}
+
+	// constructor from context and attributes and style
+	public TimePreference(Context ctxt, AttributeSet attrs, int defStyle) {
+		super(ctxt, attrs, defStyle);
+
+		// Debug
+		Log.d(TAG, "[fn] TimePreference (argset 3: full)");
+
+		setPositiveButtonText("Set");
+		setNegativeButtonText("Cancel");
+	}
+
+	@Override
+	protected View onCreateDialogView() {
+
+		// Debug
+		Log.d(TAG, "[fn] onCreateDialogView");
+
+		picker = new TimePicker(getContext());
+		return(picker);
+	}
+
+	// bind dialog to current view
+	@Override
+	protected void onBindDialogView(View v) {
+
+		// Debug
+		Log.d(TAG, "[fn] onBindDialogView");
+
+		super.onBindDialogView(v);
+		picker.setCurrentHour(lastHour);
+		picker.setCurrentMinute(lastMinute);
+	}
+
+	@Override
+	protected void onDialogClosed(boolean positiveResult) {
+
+		// Debug
+		Log.d(TAG, "[fn] onDialogClosed");
+
+		super.onDialogClosed(positiveResult);
+
+		if (positiveResult) {
+			lastHour = picker.getCurrentHour();
+			lastMinute = picker.getCurrentMinute();
+			String time = String.valueOf(lastHour) + ":" + String.valueOf(lastMinute);
+			if (callChangeListener(time)) {
+				persistString(time);
+			}
+		}
+	}
+
+	@Override
+	protected Object onGetDefaultValue(TypedArray a, int index) {
+
+		// Debug
+		Log.d(TAG, "[fn] onGetDefaultValue");
+
+		return a.getString(index);
+	}
+
+	@Override
+	protected void onSetInitialValue(boolean restoreValue, Object defaultValue) {
+
+		// Debug
+		Log.d(TAG, "[fn] onSetInitialValue");
+
+		String time = null;
+
+		if (restoreValue) {
+			if (defaultValue == null) {
+				time = getPersistedString("00:00");
+			} else {
+				time = getPersistedString(defaultValue.toString());
+			}
+		} else {
+			time = defaultValue.toString();
+		}
+
+		lastHour = getHour(time);
+		lastMinute = getMinute(time);
+	}
 
 	public String getTimeString() {
-     //   lastHour=picker.getCurrentHour();
-     //   lastMinute=picker.getCurrentMinute();
-        String time=pad(lastHour)+":"+pad(lastMinute);
-   	return time;
+
+		// Debug
+		Log.d(TAG, "[fn] getTimeString");
+
+		//        lastHour=picker.getCurrentHour();
+		//        lastMinute=picker.getCurrentMinute();
+		String time = pad(lastHour) + ":" + pad(lastMinute);
+		return time;
 	}
 
 	public void setTime(String time) {
-        String[] pieces=time.split(":");
-        lastHour = Integer.parseInt(pieces[0]);
-        lastMinute = Integer.parseInt(pieces[1]);
+
+		// Debug
+		Log.d(TAG, "[fn] setTime");
+
+		String[] pieces = time.split(":");
+		lastHour = Integer.parseInt(pieces[0]);
+		lastMinute = Integer.parseInt(pieces[1]);
 
 	}
-	
+
 	private static String pad(int c) {
-		if (c >= 10)
-		   return String.valueOf(c);
-		else
-		   return "0" + String.valueOf(c);
+
+		// Verbose
+		Log.v(TAG, "[fn] pad");
+
+		if (c >= 10) {
+			return String.valueOf(c);
+		} else {
+			return "0" + String.valueOf(c);
+		}
 	}
-	
 }

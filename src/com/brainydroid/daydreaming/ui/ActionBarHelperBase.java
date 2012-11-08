@@ -27,6 +27,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.XmlResourceParser;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.InflateException;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -45,6 +46,9 @@ import com.brainydroid.daydreaming.R;
  * A class that implements the action bar pattern for pre-Honeycomb devices.
  */
 public class ActionBarHelperBase extends ActionBarHelper {
+
+	private static String TAG = "ActionBarHelperBase";
+
 	private static final String MENU_RES_NAMESPACE = "http://schemas.android.com/apk/res/android";
 	private static final String MENU_ATTR_ID = "id";
 	private static final String MENU_ATTR_SHOW_AS_ACTION = "showAsAction";
@@ -53,17 +57,29 @@ public class ActionBarHelperBase extends ActionBarHelper {
 
 	protected ActionBarHelperBase(Activity activity) {
 		super(activity);
+
+		// Debug
+		Log.d(TAG, "[fn] ActionBarHelperBase");
+
 	}
 
 	/**{@inheritDoc}*/
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+
+		// Debug
+		Log.d(TAG, "[fn] onCreate");
+
 		mActivity.requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 	}
 
 	/**{@inheritDoc}*/
 	@Override
 	public void onPostCreate(Bundle savedInstanceState) {
+
+		// Debug
+		Log.d(TAG, "[fn] onPostCreate");
+
 		mActivity.getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE,
 				R.layout.actionbar_compat);
 		setupActionBar();
@@ -83,6 +99,10 @@ public class ActionBarHelperBase extends ActionBarHelper {
 	 * Sets up the compatibility action bar with the given title.
 	 */
 	private void setupActionBar() {
+
+		// Debug
+		Log.d(TAG, "[fn] setupActionBar");
+
 		final ViewGroup actionBarCompat = getActionBarCompat();
 		if (actionBarCompat == null) {
 			return;
@@ -128,6 +148,10 @@ public class ActionBarHelperBase extends ActionBarHelper {
 	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
+
+		// Debug
+		Log.d(TAG, "[fn] onCreateOptionsMenu");
+
 		// Hides on-screen action items from the options menu.
 		for (Integer id : mActionItemIds) {
 			menu.findItem(id).setVisible(false);
@@ -138,6 +162,10 @@ public class ActionBarHelperBase extends ActionBarHelper {
 	/**{@inheritDoc}*/
 	@Override
 	protected void onTitleChanged(CharSequence title, int color) {
+
+		// Debug
+		Log.d(TAG, "[fn] onTitleChanged");
+
 		TextView titleView = (TextView) mActivity.findViewById(R.id.actionbar_compat_title);
 		if (titleView != null) {
 			titleView.setText(title);
@@ -150,6 +178,10 @@ public class ActionBarHelperBase extends ActionBarHelper {
 	 */
 	@Override
 	public MenuInflater getMenuInflater(MenuInflater superMenuInflater) {
+
+		// Debug
+		Log.d(TAG, "[fn] getMenuInflater");
+
 		return new WrappedMenuInflater(mActivity, superMenuInflater);
 	}
 
@@ -158,6 +190,10 @@ public class ActionBarHelperBase extends ActionBarHelper {
 	 * bar). Can return null, and will return null on Honeycomb.
 	 */
 	private ViewGroup getActionBarCompat() {
+
+		// Debug
+		Log.d(TAG, "[fn] getActionBarCompat");
+
 		return (ViewGroup) mActivity.findViewById(R.id.actionbar_compat);
 	}
 
@@ -168,6 +204,10 @@ public class ActionBarHelperBase extends ActionBarHelper {
 	 * {@link com.brainydroid.daydreaming.ui.example.android.actionbarcompat.ActionBarHelperBase#setRefreshActionItemState(boolean)}.
 	 */
 	private View addActionItemCompatFromMenuItem(final MenuItem item) {
+
+		// Debug
+		Log.d(TAG, "[fn] addActionItemCompatFromMenuItem");
+
 		final int itemId = item.getItemId();
 
 		final ViewGroup actionBar = getActionBarCompat();
@@ -233,15 +273,26 @@ public class ActionBarHelperBase extends ActionBarHelper {
 	 * A {@link android.view.MenuInflater} that reads action bar metadata.
 	 */
 	private class WrappedMenuInflater extends MenuInflater {
+
+		private final String TAG = "WrappedMenuInflater";
+
 		MenuInflater mInflater;
 
 		public WrappedMenuInflater(Context context, MenuInflater inflater) {
 			super(context);
+
+			// Debug
+			Log.d(TAG, "[fn] WrappedMenuInflater");
+
 			mInflater = inflater;
 		}
 
 		@Override
 		public void inflate(int menuRes, Menu menu) {
+
+			// Debug
+			Log.d(TAG, "[fn] inflate");
+
 			loadActionBarMetadata(menuRes);
 			mInflater.inflate(menuRes, menu);
 		}
@@ -252,6 +303,10 @@ public class ActionBarHelperBase extends ActionBarHelper {
 		 * @param menuResId
 		 */
 		private void loadActionBarMetadata(int menuResId) {
+
+			// Debug
+			Log.d(TAG, "[fn] loadActionBarMetadata");
+
 			XmlResourceParser parser = null;
 			try {
 				parser = mActivity.getResources().getXml(menuResId);
@@ -299,6 +354,5 @@ public class ActionBarHelperBase extends ActionBarHelper {
 				}
 			}
 		}
-
 	}
 }

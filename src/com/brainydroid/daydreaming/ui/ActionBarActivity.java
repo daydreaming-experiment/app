@@ -19,6 +19,7 @@ package com.brainydroid.daydreaming.ui;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 
@@ -32,24 +33,39 @@ import android.view.MenuInflater;
  * android.support.v4.app.FragmentActivity instead of {@link Activity}.
  */
 public abstract class ActionBarActivity extends FragmentActivity {
+
+	private static String TAG = "ActionBarActivity";
+
 	final ActionBarHelper mActionBarHelper = ActionBarHelper.createInstance(this);
 
 	/**
 	 * Returns the {@link ActionBarHelper} for this activity.
 	 */
 	protected ActionBarHelper getActionBarHelper() {
+
+		// Verbose
+		Log.v(TAG, "[fn] getActionBarHelper");
+
 		return mActionBarHelper;
 	}
 
 	/**{@inheritDoc}*/
 	@Override
 	public MenuInflater getMenuInflater() {
+
+		// Debug
+		Log.d(TAG, "[fn] getMenuInflater");
+
 		return mActionBarHelper.getMenuInflater(super.getMenuInflater());
 	}
 
 	/**{@inheritDoc}*/
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+
+		// Debug
+		Log.d(TAG, "[fn] onCreate");
+
 		super.onCreate(savedInstanceState);
 		mActionBarHelper.onCreate(savedInstanceState);
 	}
@@ -57,6 +73,10 @@ public abstract class ActionBarActivity extends FragmentActivity {
 	/**{@inheritDoc}*/
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
+
+		// Debug
+		Log.d(TAG, "[fn] onPostCreate");
+
 		super.onPostCreate(savedInstanceState);
 		mActionBarHelper.onPostCreate(savedInstanceState);
 	}
@@ -69,6 +89,10 @@ public abstract class ActionBarActivity extends FragmentActivity {
 	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
+
+		// Debug
+		Log.d(TAG, "[fn] onCreateOptionsMenu");
+
 		boolean retValue = false;
 		retValue |= mActionBarHelper.onCreateOptionsMenu(menu);
 		retValue |= super.onCreateOptionsMenu(menu);
@@ -78,6 +102,10 @@ public abstract class ActionBarActivity extends FragmentActivity {
 	/**{@inheritDoc}*/
 	@Override
 	protected void onTitleChanged(CharSequence title, int color) {
+
+		// Debug
+		Log.d(TAG, "[fn] onTitleChanged");
+
 		mActionBarHelper.onTitleChanged(title, color);
 		super.onTitleChanged(title, color);
 	}

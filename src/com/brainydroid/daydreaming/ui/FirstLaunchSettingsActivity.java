@@ -2,23 +2,24 @@ package com.brainydroid.daydreaming.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import com.brainydroid.daydreaming.R;
 
 public class FirstLaunchSettingsActivity extends ActionBarActivity {
 
-
+	private static String TAG = "FirstLaunchSettingsActivity";
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+
+		// Debug
+		Log.d(TAG, "[fn] onCreate");
+
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_first_launch_settings);
-
 	}
-
-
-
 
 	// TODO
 	// - save and restore preference state (when screen rotates)
@@ -30,16 +31,22 @@ public class FirstLaunchSettingsActivity extends ActionBarActivity {
 	// - setting default values in xml
 
 	public void launchDashboard(View v) {
+
+		// Debug
+		Log.d(TAG, "[fn] launchDashboard");
+
 		Intent dashboardIntent = new Intent(this, DashboardActivity.class);
 		dashboardIntent.putExtra(DashboardActivity.EXTRA_COMES_FROM_FIRST_LAUNCH, true);
 		startActivity(dashboardIntent);
 	}
 
 	public void runSettings(View v) {
+
+		// Debug
+		Log.d(TAG, "[fn] runSettings");
+
 		Intent dashboardIntent = new Intent(this, SettingsActivity.class);
 		dashboardIntent.putExtra(DashboardActivity.EXTRA_COMES_FROM_FIRST_LAUNCH, true);
 		startActivity(dashboardIntent);
 	}
-
-
 }

@@ -1,5 +1,6 @@
 package com.brainydroid.daydreaming.db;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import android.util.Log;
@@ -40,5 +41,17 @@ public class Util {
 		int sbLength = sb.length();
 		sb.delete(sbLength - joinString.length(), sbLength);
 		return sb.toString();
+	}
+
+	public static String convertStreamToString(InputStream is) {
+
+		// Verbose
+		Log.v(TAG, "[fn] convertStreamToString");
+
+		try {
+			return new java.util.Scanner(is).useDelimiter("\\A").next();
+		} catch (java.util.NoSuchElementException e) {
+			return "";
+		}
 	}
 }

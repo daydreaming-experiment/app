@@ -19,6 +19,7 @@ package com.brainydroid.daydreaming.ui;
 import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 
@@ -32,6 +33,9 @@ import android.view.MenuInflater;
  * in Android 3.0 and later.
  */
 public abstract class ActionBarHelper {
+
+	private static String TAG = "ActionBarHelper";
+
 	protected Activity mActivity;
 
 	/**
@@ -40,6 +44,10 @@ public abstract class ActionBarHelper {
 	 * Honeycomb-specific helper will be returned.
 	 */
 	public static ActionBarHelper createInstance(Activity activity) {
+
+		// Debug
+		Log.d(TAG, "[fn] createInstance");
+
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
 			return new ActionBarHelperICS(activity);
 		} else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -50,6 +58,10 @@ public abstract class ActionBarHelper {
 	}
 
 	protected ActionBarHelper(Activity activity) {
+
+		// Debug
+		Log.d(TAG, "[fn] ActionBarHelper");
+
 		mActivity = activity;
 	}
 
@@ -57,12 +69,20 @@ public abstract class ActionBarHelper {
 	 * Action bar helper code to be run in {@link Activity#onCreate(android.os.Bundle)}.
 	 */
 	public void onCreate(Bundle savedInstanceState) {
+
+		// Debug
+		Log.d(TAG, "[fn] onCreate");
+
 	}
 
 	/**
 	 * Action bar helper code to be run in {@link Activity#onPostCreate(android.os.Bundle)}.
 	 */
 	public void onPostCreate(Bundle savedInstanceState) {
+
+		// Debug
+		Log.d(TAG, "[fn] onPostCreate");
+
 	}
 
 	/**
@@ -71,6 +91,10 @@ public abstract class ActionBarHelper {
 	 * NOTE: Setting the visibility of menu items in <em>menu</em> is not currently supported.
 	 */
 	public boolean onCreateOptionsMenu(Menu menu) {
+
+		// Debug
+		Log.d(TAG, "[fn] onCreateOptionsMenu");
+
 		return true;
 	}
 
@@ -78,6 +102,10 @@ public abstract class ActionBarHelper {
 	 * Action bar helper code to be run in {@link Activity#onTitleChanged(CharSequence, int)}.
 	 */
 	protected void onTitleChanged(CharSequence title, int color) {
+
+		// Debug
+		Log.d(TAG, "[fn] onTitleChanged");
+
 	}
 
 	//	/**
@@ -92,6 +120,10 @@ public abstract class ActionBarHelper {
 	 * action bar metadata from a menu resource pre-Honeycomb.
 	 */
 	public MenuInflater getMenuInflater(MenuInflater superMenuInflater) {
+
+		// Verbose
+		Log.v(TAG, "[fn] getMenuInflater");
+
 		return superMenuInflater;
 	}
 }
