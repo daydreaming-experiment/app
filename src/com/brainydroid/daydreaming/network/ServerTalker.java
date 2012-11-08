@@ -1,22 +1,14 @@
 package com.brainydroid.daydreaming.network;
 
 import java.io.File;
-import java.util.Map;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.mime.HttpMultipartMode;
-import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
 
-import android.os.AsyncTask;
+import android.util.Log;
 
 public class ServerTalker {
+
+	private static String TAG = "ServerTalker";
 
 	private static String BS_URL_UPLOAD = "upload/";
 	private static String BS_URL_UPLOAD_MAI_PUBKEY = "mai_pubkey/";
@@ -27,95 +19,16 @@ public class ServerTalker {
 	private static String BS_FORM_UPLOAD_DATAFILE = "datafile";
 	private static String BS_FORM_UPLOAD_SIGFILE = "sigfile";
 
-	private static HttpClient client;
 	private static String servername;
 
 	private static CryptoStorage cryptoStorage;
 	private static ServerTalker stInstance;
 
-	private class HttpGetTask extends AsyncTask<HttpGetData, Void, Boolean> {
-
-		String serverAnswer;
-		HttpGetData getData;
-		HttpGet httpGet;
-		HttpResponse response;
-		HttpEntity resEntity;
-		HttpConversationCallback httpConversationCallback;
-
-		@Override
-		protected Boolean doInBackground(HttpGetData... getDatas) {
-			try {
-				getData = getDatas[0];
-				httpConversationCallback = getData.getHttpConversationCallback();
-				httpGet = new HttpGet(getData.getGetUrl());
-
-				response = client.execute(httpGet);
-				resEntity = response.getEntity();
-
-				if (resEntity != null) {
-					serverAnswer = EntityUtils.toString(resEntity);
-				}
-			} catch (Exception e) {
-				serverAnswer = null;
-				return false;
-			}
-
-			return true;
-		}
-
-		@Override
-		protected void onPostExecute(Boolean success) {
-			httpConversationCallback.onHttpConversationFinished(success, serverAnswer);
-		}
-
-	}
-
-	private class HttpPostTask extends AsyncTask<HttpPostData, Void, Boolean> {
-
-		String serverAnswer;
-		HttpPostData postData;
-		HttpPost httpPost;
-		MultipartEntity reqEntity;
-		HttpResponse response;
-		HttpEntity resEntity;
-		HttpConversationCallback httpConversationCallback;
-
-		@Override
-		protected Boolean doInBackground(HttpPostData... postDatas) {
-			try {
-				postData = postDatas[0];
-				httpConversationCallback = postData.getHttpConversationCallback();
-				httpPost = new HttpPost(postData.getPostUrl());
-				reqEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
-
-				for (Map.Entry<String, FileBody> entry : postData.getPostFiles().entrySet()) {
-					reqEntity.addPart(entry.getKey(), entry.getValue());
-				}
-
-				httpPost.setEntity(reqEntity);
-
-				response = client.execute(httpPost);
-				resEntity = response.getEntity();
-
-				if (resEntity != null) {
-					serverAnswer = EntityUtils.toString(resEntity);
-				}
-			} catch (Exception e) {
-				serverAnswer = null;
-				return false;
-			}
-
-			return true;
-		}
-
-		@Override
-		protected void onPostExecute(Boolean success) {
-			httpConversationCallback.onHttpConversationFinished(success, serverAnswer);
-		}
-
-	}
-
 	public static synchronized ServerTalker getInstance(String s, CryptoStorage cs) {
+
+		// Debug
+		Log.d(TAG, "[fn] getInstance");
+
 		if (stInstance == null) {
 			stInstance = new ServerTalker(s, cs);
 		}
@@ -124,24 +37,40 @@ public class ServerTalker {
 	}
 
 	private ServerTalker(String s, CryptoStorage cs) {
-		client = new DefaultHttpClient();
+
+		// Debug
+		Log.d(TAG, "[fn] ServerTalker");
+
 		servername = s;
 		cryptoStorage = cs;
 	}
 
 	public void setServerName(String s) {
+
+		// Verbose
+		Log.v(TAG, "[fn] setServerName");
+
 		servername = s;
 	}
 
 	public void uploadPublicKey(HttpConversationCallback callback) {
+
+		// Debug
+		Log.d(TAG, "[fn] uploadPublicKey");
 
 		final File keyFile = cryptoStorage.createArmoredPublicKeyFile();
 		final HttpConversationCallback initialCallback = callback;
 
 		HttpConversationCallback fullCallback = new HttpConversationCallback() {
 
+			private final String TAG = "HttpConversationCallback > fullCallback";
+
 			@Override
 			public void onHttpConversationFinished(boolean success, String serverAnswer) {
+
+				// Debug
+				Log.d(TAG, "[fn] onHttpConversationFinished");
+
 				initialCallback.onHttpConversationFinished(success, serverAnswer);
 				keyFile.delete();
 			}
@@ -159,13 +88,22 @@ public class ServerTalker {
 	public void signAndUploadData(String ea_id, String data,
 			HttpConversationCallback callback) {
 
+		// Debug
+		Log.d(TAG, "[fn] signAndUploadData");
+
 		final SignedDataFiles sdf = cryptoStorage.createSignedDataFiles(data);
 		final HttpConversationCallback initialCallback = callback;
 
 		HttpConversationCallback fullCallback = new HttpConversationCallback() {
 
+			private final String TAG = "HttpConversationCallback > fullCallback";
+
 			@Override
 			public void onHttpConversationFinished(boolean success, String serverAnswer) {
+
+				// Debug
+				Log.d(TAG, "[fn] onHttpConversationFinished");
+
 				initialCallback.onHttpConversationFinished(success, serverAnswer);
 				sdf.deleteFiles();
 			}
@@ -182,10 +120,13 @@ public class ServerTalker {
 	}
 
 	public void requestMaiId(HttpConversationCallback callback) {
+
+		// Debug
+		Log.d(TAG, "[fn] requestMaiId");
+
 		String getUrl = servername + BS_URL_UPLOAD + BS_URL_UPLOAD_REQUEST_MAI_ID;
 		HttpGetData getData = new HttpGetData(getUrl, callback);
 		HttpGetTask getTask = new HttpGetTask();
 		getTask.execute(getData);
 	}
-
 }
