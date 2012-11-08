@@ -9,9 +9,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.os.SystemClock;
+import android.util.Log;
 import android.widget.Toast;
 
 public class SchedulerService extends Service {
+
+	private static String TAG = "SchedulerService";
 
 	private static long SAMPLE_TIME_MEAN = 15 * 1000; // in milliseconds
 	private static long SAMPLE_TIME_STD = 5 * 1000; // in milliseconds
@@ -22,6 +25,10 @@ public class SchedulerService extends Service {
 
 	@Override
 	public void onCreate() {
+
+		// Debug
+		Log.d(TAG, "[fn] onCreate");
+
 		super.onCreate();
 		alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
 		random = new Random(System.currentTimeMillis());
@@ -29,6 +36,10 @@ public class SchedulerService extends Service {
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
+
+		// Debug
+		Log.d(TAG, "[fn] onStartCommand");
+
 		super.onStartCommand(intent, flags, startId);
 
 		schedulePoll();
@@ -38,16 +49,28 @@ public class SchedulerService extends Service {
 
 	@Override
 	public void onDestroy() {
+
+		// Debug
+		Log.d(TAG, "[fn] onDestroy");
+
 		super.onDestroy();
 	}
 
 	@Override
 	public IBinder onBind(Intent intent) {
+
+		// Debug
+		Log.d(TAG, "[fn] onBind");
+
 		// Don't allow binding
 		return null;
 	}
 
 	public void schedulePoll() {
+
+		// Debug
+		Log.d(TAG, "[fn] schedulePoll");
+
 		// TODO: check for current time against times at which polls are allowed
 		long scheduledTime = generateTime();
 
@@ -63,6 +86,10 @@ public class SchedulerService extends Service {
 	}
 
 	private long generateTime() {
+
+		// Debug
+		Log.d(TAG, "[fn] generateTime");
+
 		long wait = SAMPLE_TIME_MIN;
 
 		for (int i = 0; i < 1000; i++) {

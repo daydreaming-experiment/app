@@ -3,10 +3,13 @@ package com.brainydroid.daydreaming.db;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 public class Poll {
+
+	private static String TAG = "Poll";
 
 	private int _id;
 	private String _status;
@@ -35,6 +38,10 @@ public class Poll {
 	private transient final QuestionsStorage questionsStorage;
 
 	public Poll(Context context) {
+
+		// Debug
+		Log.d(TAG, "[fn] Poll");
+
 		_context = context.getApplicationContext();
 		_id = -1;
 		_status = null;
@@ -45,59 +52,111 @@ public class Poll {
 	}
 
 	public static Poll create(Context context, int nQuestions) {
+
+		// Debug
+		Log.d(TAG, "[fn] create");
+
 		Poll poll = new Poll(context);
 		poll.populateQuestions(nQuestions);
 		return poll;
 	}
 
 	private void populateQuestions(int nQuestions) {
+
+		// Debug
+		Log.d(TAG, "[fn] populateQuestions");
+
 		_questions = questionsStorage.getRandomQuestions(nQuestions);
 	}
 
 	public void addQuestion(Question question) {
+
+		// Debug
+		Log.d(TAG, "[fn] addQuestion");
+
 		_questions.add(question);
 	}
 
 	public ArrayList<Question> getQuestions() {
+
+		// Verbose
+		Log.v(TAG, "[fn] getQuestion");
+
 		return _questions;
 	}
 
 	public Question getQuestionByIndex(int index) {
+
+		// Debug
+		Log.d(TAG, "[fn] getQuestionByIndex");
+
 		return _questions.get(index);
 	}
 
 	public Question popQuestionByIndex(int index) {
+
+		// Debug
+		Log.d(TAG, "[fn] popQuestionByIndex");
+
 		Question q = getQuestionByIndex(index);
 		_questions.remove(index);
 		return q;
 	}
 
 	public int getLength() {
+
+		// Debug
+		Log.d(TAG, "[fn] getLength");
+
 		return _questions.size();
 	}
 
 	public int getId() {
+
+		// Verbose
+		Log.v(TAG, "[fn] getId");
+
 		return _id;
 	}
 
 	public void setId(int id) {
+
+		// Verbose
+		Log.v(TAG, "[fn] setId");
+
 		_id = id;
 	}
 
 	public void clearId() {
+
+		// Debug
+		Log.d(TAG, "[fn] clearId");
+
 		_id = -1;
 	}
 
 	public String getStatus() {
+
+		// Verbose
+		Log.v(TAG, "[fn] getStatus");
+
 		return _status;
 	}
 
 	public void setStatus(String status) {
+
+		// Debug
+		Log.d(TAG, "[fn] setStatus");
+
 		_status = status;
 		saveIfSync();
 	}
 
 	public boolean isOver() {
+
+		// Debug
+		Log.d(TAG, "[fn] isOver");
+
 		if (_status == null) {
 			return false;
 		}
@@ -106,29 +165,53 @@ public class Poll {
 	}
 
 	public int getQuestionsVersion() {
+
+		// Verbose
+		Log.v(TAG, "[fn] getQuestionsVersion");
+
 		return _questionsVersion;
 	}
 
 	public void setQuestionsVersion(int questionsVersion) {
+
+		// Debug
+		Log.d(TAG, "[fn] setQuestionsVersion");
+
 		_questionsVersion = questionsVersion;
 		saveIfSync();
 	}
 
 	public boolean getKeepInSync() {
+
+		// Verbose
+		Log.v(TAG, "[fn] getKeepInSync");
+
 		return _keepInSync;
 	}
 
 	public void setKeepInSync() {
+
+		// Debug
+		Log.d(TAG, "[fn] setKeepInSync");
+
 		_keepInSync = true;
 	}
 
 	private void saveIfSync() {
+
+		// Debug
+		Log.d(TAG, "[fn] saveIfSync");
+
 		if (_keepInSync) {
 			save();
 		}
 	}
 
 	public void save() {
+
+		// Debug
+		Log.d(TAG, "[fn] save");
+
 		setKeepInSync();
 		if (_id != -1) {
 			pollsStorage.updatePoll(this);
@@ -138,6 +221,10 @@ public class Poll {
 	}
 
 	public void saveAnswers(LinearLayout questionLinearLayout, int index) {
+
+		// Debug
+		Log.d(TAG, "[fn] saveAnswers");
+
 		// Location and Timestamp are set by callbacks defined in QuestionActivity
 		_questions.get(index).saveAnswers(questionLinearLayout);
 		Toast.makeText(_context, "Answers:\n" + _questions.get(index).getAnswer(), Toast.LENGTH_LONG).show();

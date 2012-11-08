@@ -7,9 +7,12 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 import android.util.SparseArray;
 
 public class PollsStorage {
+
+	private static String TAG = "PollsStorage";
 
 	private static PollsStorage psInstance = null;
 
@@ -50,6 +53,10 @@ public class PollsStorage {
 	private final SparseArray<Poll> _pollInstances;
 
 	public static synchronized PollsStorage getInstance(Context context) {
+
+		// Debug
+		Log.d(TAG, "[fn] getInstance");
+
 		if (psInstance == null) {
 			psInstance = new PollsStorage(context);
 		}
@@ -58,6 +65,10 @@ public class PollsStorage {
 
 	// Constructor from context
 	private PollsStorage(Context context) {
+
+		// Debug
+		Log.d(TAG, "[fn] PollsStorage");
+
 		_context = context.getApplicationContext();
 		storage = Storage.getInstance(_context);
 		_questionsStorage = QuestionsStorage.getInstance(_context);
@@ -69,6 +80,10 @@ public class PollsStorage {
 	}
 
 	private ContentValues getPollContentValues(Poll poll) {
+
+		// Debug
+		Log.d(TAG, "[fn] getPollContentValues");
+
 		ContentValues pollValues = new ContentValues();
 		pollValues.put(Poll.COL_STATUS, poll.getStatus());
 		pollValues.put(Poll.COL_QUESTIONS_VERSION, poll.getQuestionsVersion());
@@ -78,12 +93,20 @@ public class PollsStorage {
 	}
 
 	private ContentValues getPollContentValuesWithId(Poll poll) {
+
+		// Debug
+		Log.d(TAG, "[fn] getPollContentValuesWithId");
+
 		ContentValues pollValues = getPollContentValues(poll);
 		pollValues.put(Poll.COL_ID, poll.getId());
 		return pollValues;
 	}
 
 	private ContentValues getQuestionContentValues(int pollId, Question question) {
+
+		// Debug
+		Log.d(TAG, "[fn] getQuestionContentValues");
+
 		ContentValues qValues = new ContentValues();
 		qValues.put(Poll.COL_ID, pollId);
 		qValues.put(Question.COL_ID, question.getId());
@@ -98,6 +121,10 @@ public class PollsStorage {
 	}
 
 	public void storePollGetId(Poll poll) {
+
+		// Debug
+		Log.d(TAG, "[fn] storePollGetId");
+
 		ContentValues pollValues = getPollContentValues(poll);
 		wDb.insert(TABLE_POLLS, null, pollValues);
 		Cursor res = rDb.query(TABLE_POLLS, new String[] {Poll.COL_ID}, null,
@@ -116,6 +143,10 @@ public class PollsStorage {
 	}
 
 	public void updatePoll(Poll poll) {
+
+		// Debug
+		Log.d(TAG, "[fn] updatePoll");
+
 		ContentValues pollValues = getPollContentValuesWithId(poll);
 		int pollId = poll.getId();
 		wDb.update(TABLE_POLLS, pollValues, Poll.COL_ID + "=?",
@@ -131,6 +162,10 @@ public class PollsStorage {
 	}
 
 	public Poll getPoll(int pollId) {
+
+		// Debug
+		Log.d(TAG, "[fn] getPoll");
+
 		Poll cachedPoll = _pollInstances.get(pollId, null);
 		if (cachedPoll != null) {
 			return cachedPoll;
@@ -177,15 +212,27 @@ public class PollsStorage {
 	}
 
 	public ArrayList<Poll> getUploadablePolls() {
+
+		// Debug
+		Log.d(TAG, "[fn] getUploadablePolls");
+
 		return getPollsWithStatuses(
 				new String[] {Poll.STATUS_COMPLETED, Poll.STATUS_PARTIALLY_COMPLETED});
 	}
 
 	public ArrayList<Poll> getPendingPolls() {
+
+		// Debug
+		Log.d(TAG, "[fn] getPendingPolls");
+
 		return getPollsWithStatuses(new String[] {Poll.STATUS_PENDING});
 	}
 
 	public void cleanPolls() {
+
+		// Debug
+		Log.d(TAG, "[fn] cleanPolls");
+
 		ArrayList<Integer> pollIdsToClean = getPollIdsWithStatuses(
 				new String[] {Poll.STATUS_EXPIRED, Poll.STATUS_DISMISSED});
 
@@ -197,6 +244,10 @@ public class PollsStorage {
 	}
 
 	private ArrayList<Integer> getPollIdsWithStatuses(String[] statuses) {
+
+		// Debug
+		Log.d(TAG, "[fn] getPollIdsWithStatuses");
+
 		String query = Util.multiplyString(Poll.COL_STATUS + "=?", statuses.length, " OR ");
 		Cursor res = rDb.query(TABLE_POLLS, new String[] {Poll.COL_ID}, query, statuses,
 				null, null, null);
@@ -215,6 +266,10 @@ public class PollsStorage {
 	}
 
 	private ArrayList<Poll> getPollsWithStatuses(String[] statuses) {
+
+		// Debug
+		Log.d(TAG, "[fn] getPollsWithStatuses");
+
 		ArrayList<Integer> statusPollIds = getPollIdsWithStatuses(statuses);
 
 		if (statusPollIds == null) {
@@ -231,18 +286,30 @@ public class PollsStorage {
 	}
 
 	public void removePoll(int pollId) {
+
+		// Debug
+		Log.d(TAG, "[fn] removePoll");
+
 		wDb.delete(TABLE_POLLS, Poll.COL_ID + "=?", new String[] {Integer.toString(pollId)});
 		wDb.delete(TABLE_POLL_QUESTIONS, Poll.COL_ID + "=?", new String[] {Integer.toString(pollId)});
 		_pollInstances.delete(pollId);
 	}
 
 	public void flushAll() {
+
+		// Debug
+		Log.d(TAG, "[fn] flushAll");
+
 		wDb.delete(TABLE_POLLS, null, null);
 		wDb.delete(TABLE_POLL_QUESTIONS, null, null);
 		_pollInstances.clear();
 	}
 
 	public void dropAll() {
+
+		// Debug
+		Log.d(TAG, "[fn] dropAll");
+
 		wDb.execSQL(SQL_DROP_TABLE_POLLS);
 		wDb.execSQL(SQL_DROP_TABLE_POLL_QUESTIONS);
 		_pollInstances.clear();

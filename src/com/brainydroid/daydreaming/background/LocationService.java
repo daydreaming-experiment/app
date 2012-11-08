@@ -8,10 +8,12 @@ import android.location.LocationManager;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
 import android.widget.Toast;
 
-
 public class LocationService extends Service {
+
+	private static String TAG = "LocationService";
 
 	private LocationManager locationManager;
 	private LocationListener locationListener;
@@ -21,31 +23,49 @@ public class LocationService extends Service {
 	private LocationCallback _callback = null;
 
 	public class LocationServiceBinder extends Binder {
+
+		private final String TAG = "LocationServiceBinder";
+
 		LocationService getService() {
+
+			// Verbose
+			Log.v(TAG, "[fn] getService");
+
 			// Return this instance of LocationService so clients can call public methods
 			return LocationService.this;
 		}
 	}
 
 	public void setLocationCallback(LocationCallback callback) {
-		Toast.makeText(this, "Setting Location callback", Toast.LENGTH_SHORT).show();
+
+		// Debug
+		Log.d(TAG, "[fn] setLocationCallback");
+
 		_callback = callback;
 	}
 
 	@Override
 	public void onCreate() {
+
+		// Debug
+		Log.d(TAG, "[fn] onCreate");
+
 		super.onCreate();
 		initVars();
 		if (!status.isDataAndLocationEnabled()) {
 			stopSelf();
 			return;
 		}
-		Toast.makeText(this, "Starting LocationService", Toast.LENGTH_SHORT).show();
+
 		startLocationListener();
 	}
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
+
+		// Debug
+		Log.d(TAG, "[fn] onStartCommand");
+
 		super.onStartCommand(intent, flags, startId);
 
 		return START_REDELIVER_INTENT;
@@ -53,23 +73,38 @@ public class LocationService extends Service {
 
 	@Override
 	public void onDestroy() {
-		Toast.makeText(this, "Stopping LocationService", Toast.LENGTH_SHORT).show();
+
+		// Debug
+		Log.d(TAG, "[fn] onDestroy");
+
 		stopLocationListener();
 		super.onDestroy();
 	}
 
 	@Override
 	public IBinder onBind(Intent intent) {
+
+		// Debug
+		Log.d(TAG, "[fn] onBind");
+
 		return mBinder;
 	}
 
 	@Override
 	public void onRebind(Intent intent) {
+
+		// Debug
+		Log.d(TAG, "[fn] onRebind");
+
 		super.onRebind(intent);
 	}
 
 	@Override
 	public boolean onUnbind(Intent intent) {
+
+		// Debug
+		Log.d(TAG, "[fn] onUnbind");
+
 		super.onUnbind(intent);
 
 		if (stopOnUnbind) {
@@ -80,15 +115,27 @@ public class LocationService extends Service {
 	}
 
 	public void setStopOnUnbind() {
+
+		// Debug
+		Log.d(TAG, "[fn] setStopOnUnbind");
+
 		stopOnUnbind = true;
 	}
 
 	private void initVars() {
+
+		// Debug
+		Log.d(TAG, "[fn] initVars");
+
 		locationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
 		status = StatusManager.getInstance(this);
 	}
 
 	private void startLocationListener() {
+
+		// Debug
+		Log.d(TAG, "[fn] startLocationListener");
+
 		locationListener = new LocationListener() {
 
 			@Override
@@ -116,6 +163,10 @@ public class LocationService extends Service {
 	}
 
 	private void stopLocationListener() {
+
+		// Debug
+		Log.d(TAG, "[fn] stopLocationListener");
+
 		if (locationListener != null) {
 			locationManager.removeUpdates(locationListener);
 		}

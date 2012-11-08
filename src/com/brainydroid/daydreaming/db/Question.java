@@ -9,6 +9,7 @@ import java.util.Set;
 import android.content.Context;
 import android.location.Location;
 import android.util.FloatMath;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +31,8 @@ import com.brainydroid.daydreaming.R;
 // These attributes will be saved
 
 public class Question {
+
+	private static String TAG = "Question";
 
 	// attributes inherent to the question
 	private String _id;
@@ -81,21 +84,24 @@ public class Question {
 	public static final String TYPE_MULTIPLE_CHOICE = "multipleChoice";
 	public static final String TYPE_SINGLE_CHOICE = "singleChoice";
 
-
-	public Question() {
-		initVariables();
-	}
-
 	// constructor : sets default values
 	public Question(Context context) {
-		initVariables();
+
+		// Debug
+		Log.d(TAG, "[fn] Question (argset 1: small)");
+
+		initVars();
 		_questionsVersion = QuestionsStorage.getInstance(context).getQuestionsVersion();
 	}
 
 	// constructor from fields values
 	public Question(Context context, String id, String category, String subcategory, String type,
 			String mainText, String parametersText) {
-		initVariables();
+
+		// Debug
+		Log.d(TAG, "[fn] Question (argset 2: full)");
+
+		initVars();
 		_id = id;
 		_category = category;
 		_subcategory = subcategory;
@@ -106,7 +112,11 @@ public class Question {
 	}
 
 	// default initialization of a question
-	private void initVariables() {
+	private void initVars() {
+
+		// Debug
+		Log.d(TAG, "[fn] initVars");
+
 		_id = null;
 		_category = null;
 		_subcategory = null;
@@ -126,102 +136,202 @@ public class Question {
 	//-------------------------- set / get functions
 
 	public String getId() {
+
+		// Verbose
+		Log.v(TAG, "[fn] getId");
+
 		return _id;
 	}
 
 	public void setId(String id) {
+
+		// Verbose
+		Log.v(TAG, "[fn] setId");
+
 		_id = id;
 	}
 
 	public String getCategory() {
+
+		// Verbose
+		Log.v(TAG, "[fn] getCategory");
+
 		return _category;
 	}
 
 	public void setCategory(String category) {
+
+		// Verbose
+		Log.v(TAG, "[fn] setCategory");
+
 		_category = category;
 	}
 
 	public String getSubcategory() {
+
+		// Verbose
+		Log.v(TAG, "[fn] getSubcategory");
+
 		return _subcategory;
 	}
 
 	public void setSubcategory(String subcategory) {
+
+		// Verbose
+		Log.v(TAG, "[fn] setSubcategory");
+
 		_subcategory = subcategory;
 	}
 
 	public String getType() {
+
+		// Verbose
+		Log.v(TAG, "[fn] getType");
+
 		return _type;
 	}
 
 	public void setType(String type) {
+
+		// Verbose
+		Log.v(TAG, "[fn] setType");
+
 		_type = type;
 	}
 
 	public String getStatus() {
+
+		// Verbose
+		Log.v(TAG, "[fn] getStatus");
+
 		return _status;
 	}
 
 	public void setStatus(String status) {
+
+		// Verbose
+		Log.v(TAG, "[fn] setStatus");
+
 		_status = status;
 	}
 
 	public String getMainText() {
+
+		// Verbose
+		Log.v(TAG, "[fn] getMainText");
+
 		return _mainText;
 	}
 
 	public void setMainText(String mainText) {
+
+		// Verbose
+		Log.v(TAG, "[fn] setMainText");
+
 		_mainText = mainText;
 	}
 
 	public String getParametersText() {
+
+		// Verbose
+		Log.v(TAG, "[fn] getParametersText");
+
 		return _parametersText;
 	}
 
 	public void setParametersText(String parametersText) {
+
+		// Verbose
+		Log.v(TAG, "[fn] setParametersText");
+
 		_parametersText = parametersText;
 	}
 
 	public String getAnswer() {
+
+		// Verbose
+		Log.v(TAG, "[fn] getAnswer");
+
 		return _answer;
 	}
 
 	public void setAnswer(String answer) {
+
+		// Verbose
+		Log.v(TAG, "[fn] setAnswer");
+
 		_answer = answer;
 	}
 
 	public double getLocationLatitude() {
+
+		// Verbose
+		Log.v(TAG, "[fn] getLocationLatitude");
+
 		return _locationLatitude;
 	}
 
 	public double getLocationLongitude() {
+
+		// Verbose
+		Log.v(TAG, "[fn] getLocationLongitude");
+
 		return _locationLongitude;
 	}
 
 	public double getLocationAltitude() {
+
+		// Verbose
+		Log.v(TAG, "[fn] getLocationAltitude");
+
 		return _locationAltitude;
 	}
 
 	public double getLocationAccuracy() {
+
+		// Verbose
+		Log.v(TAG, "[fn] getLocationAccuracy");
+
 		return _locationAccuracy;
 	}
 
 	public void setLocationLatitude(double locationLatitude) {
+
+		// Verbose
+		Log.v(TAG, "[fn] setLocationLatitude");
+
 		_locationLatitude = locationLatitude;
 	}
 
 	public void setLocationLongitude(double locationLongitude) {
+
+		// Verbose
+		Log.v(TAG, "[fn] setLocationLongitude");
+
 		_locationLongitude = locationLongitude;
 	}
 
 	public void setLocationAltitude(double locationAltitude) {
+
+		// Verbose
+		Log.v(TAG, "[fn] setLocationAltitude");
+
 		_locationAltitude = locationAltitude;
 	}
 
 	public void setLocationAccuracy(double locationAccuracy) {
+
+		// Verbose
+		Log.v(TAG, "[fn] setLocationAccuracy");
+
 		_locationAccuracy = locationAccuracy;
 	}
 
 	public void setLocation(Location location) {
+
+		// Debug
+		Log.d(TAG, "[fn] setLocation");
+
 		if (location != null) {
 			_locationLatitude = location.getLatitude();
 			_locationLongitude = location.getLongitude();
@@ -231,18 +341,34 @@ public class Question {
 	}
 
 	public long getTimestamp() {
+
+		// Verbose
+		Log.v(TAG, "[fn] getTimestamp");
+
 		return _timestamp;
 	}
 
 	public void setTimestamp(long timestamp) {
+
+		// Verbose
+		Log.v(TAG, "[fn] setTimestamp");
+
 		_timestamp = timestamp;
 	}
 
 	public int getQuestionsVersion() {
+
+		// Verbose
+		Log.v(TAG, "[fn] getQuestionsVersion");
+
 		return _questionsVersion;
 	}
 
 	public void setQuestionsVersion(int questionsVersion) {
+
+		// Verbose
+		Log.v(TAG, "[fn] setQuestionsVersion");
+
 		_questionsVersion = questionsVersion;
 	}
 
@@ -254,6 +380,10 @@ public class Question {
 	// Select questions by tags.
 	// Tags only used to identify subquestions when they exist
 	private static ArrayList<View> getViewsByTag(ViewGroup root, String tag){
+
+		// Debug
+		Log.d(TAG, "[fn] getViewsByTag");
+
 		ArrayList<View> views = new ArrayList<View>();
 		final int childCount = root.getChildCount();
 		for (int i = 0; i < childCount; i++) {
@@ -272,7 +402,11 @@ public class Question {
 	}
 
 
-	public ArrayList<View> getViews(Context context) {
+	public ArrayList<View> createViews(Context context) {
+
+		// Debug
+		Log.d(TAG, "[fn] createViews");
+
 		Context _context = context;
 		LayoutInflater inflater = (LayoutInflater)_context.getSystemService(
 				Context.LAYOUT_INFLATER_SERVICE);
@@ -287,6 +421,10 @@ public class Question {
 	}
 
 	private ArrayList<View> createViewsSlider(LayoutInflater inflater) {
+
+		// Debug
+		Log.d(TAG, "[fn] createViewsSlider");
+
 		ArrayList<View> views = new ArrayList<View>();
 		ArrayList<String> mainTexts = getParsedMainText();
 		ArrayList<ArrayList<String>> allParametersTexts = getParsedParametersText();
@@ -334,6 +472,10 @@ public class Question {
 	}
 
 	private ArrayList<View> createViewsMultipleChoice(LayoutInflater inflater) {
+
+		// Debug
+		Log.d(TAG, "[fn] createViewsMultipleChoice");
+
 		ArrayList<View> views = new ArrayList<View>();
 		ArrayList<String> mainTexts = getParsedMainText();
 		ArrayList<ArrayList<String>> allParametersTexts = getParsedParametersText();
@@ -421,6 +563,10 @@ public class Question {
 	// --- Validation functions
 
 	public boolean validate(Context context, LinearLayout questionsLinearLayout) {
+
+		// Debug
+		Log.d(TAG, "[fn] validate");
+
 		if (_type.equals(TYPE_SLIDER)) {
 			return validateSlider(context, questionsLinearLayout);
 		} else if (_type.equals(TYPE_MULTIPLE_CHOICE)) {
@@ -431,6 +577,10 @@ public class Question {
 
 	// For slider, checks whether or not sliders were kept untouched
 	private boolean validateSlider(Context context, LinearLayout questionsLinearLayout) {
+
+		// Debug
+		Log.d(TAG, "[fn] validateSlider");
+
 		ArrayList<View> subquestions = getViewsByTag(questionsLinearLayout, "subquestion");
 		boolean isMultiple = subquestions.size() > 1 ? true : false;
 		Iterator<View> subquestionsIt = subquestions.iterator();
@@ -453,6 +603,10 @@ public class Question {
 
 	// This will behave badly when there are multiple sub-multiplechoice questions
 	private boolean validateMultipleChoice(Context context, LinearLayout questionsLinearLayout) {
+
+		// Debug
+		Log.d(TAG, "[fn] validateMultipleChoice");
+
 		ArrayList<View> subquestions = getViewsByTag(questionsLinearLayout, "subquestion");
 		Iterator<View> subquestionsIt = subquestions.iterator();
 
@@ -500,14 +654,26 @@ public class Question {
 	// Parsing subfunctions
 
 	private ArrayList<String> parseString(String toParse, String sep) {
+
+		// Verbose
+		Log.v(TAG, "[fn] parseString");
+
 		return new ArrayList<String>(Arrays.asList(toParse.split(sep)));
 	}
 
 	private ArrayList<String> getParsedMainText() {
+
+		// Debug
+		Log.d(TAG, "[fn] getParsedMainText");
+
 		return parseString(_mainText, ";");
 	}
 
 	private ArrayList<ArrayList<String>> getParsedParametersText() {
+
+		// Debug
+		Log.d(TAG, "[fn] getParsedParametersText");
+
 		ArrayList<ArrayList<String>> parsedParametersText = new ArrayList<ArrayList<String>>();
 		Iterator<String> preParsedIt = parseString(_parametersText, ";").iterator();
 		ArrayList<String> subParameters;
@@ -520,6 +686,10 @@ public class Question {
 	}
 
 	public void saveAnswers(LinearLayout questionLinearLayout) {
+
+		// Debug
+		Log.d(TAG, "[fn] saveAnswers");
+
 		if (_type.equals(TYPE_SLIDER)) {
 			saveAnswersSlider(questionLinearLayout);
 			//		} else if (_type.equals(TYPE_SINGLE_CHOICE)) {
@@ -530,6 +700,10 @@ public class Question {
 	}
 
 	private void saveAnswersSlider(LinearLayout questionLinearLayout) {
+
+		// Debug
+		Log.d(TAG, "[fn] saveAnswersSlider");
+
 		ArrayList<View> subQuestions = getViewsByTag(questionLinearLayout, "subquestion");
 		Iterator<View> subQuestionsIt = subQuestions.iterator();
 		StringBuilder sbAnswer = new StringBuilder("{\"sliderValues\": {");
@@ -552,6 +726,10 @@ public class Question {
 	}
 
 	private void saveAnswersMultipleChoice(LinearLayout questionLinearLayout) {
+
+		// Debug
+		Log.d(TAG, "[fn] saveAnswersMultipleChoice");
+
 		ArrayList<View> subQuestions = getViewsByTag(questionLinearLayout, "subquestion");
 		Iterator<View> subQuestionsIt = subQuestions.iterator();
 		StringBuilder sbAnswer = new StringBuilder("{\"multipleChoiceValues\": {");

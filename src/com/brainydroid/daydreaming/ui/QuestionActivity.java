@@ -185,7 +185,7 @@ public class QuestionActivity extends ActionBarActivity {
 	}
 
 	private void populateViews() {
-		ArrayList<View> views = question.getViews(this);
+		ArrayList<View> views = question.createViews(this);
 
 		Iterator<View> vIt = views.iterator();
 		int i = isFirstQuestion() ? 1 : 0;
