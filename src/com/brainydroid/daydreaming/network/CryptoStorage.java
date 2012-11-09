@@ -182,13 +182,13 @@ public class CryptoStorage {
 
 		final HttpConversationCallback uploadPublicKeyCallback = new HttpConversationCallback() {
 
-			private final String TAG = "HttpConversationCallback > uploadPublicKeyCallback";
+			private final String TAG = "HttpConversationCallback";
 
 			@Override
 			public void onHttpConversationFinished(boolean success, String serverAnswer) {
 
 				// Debug
-				Log.d(TAG, "[fn] onHttpConversationFinished");
+				Log.d(TAG, "[fn] (uploadPublicKeyCallback) onHttpConversationFinished");
 
 				parentCallback.onCryptoStorageReady(success);
 			}
@@ -197,13 +197,13 @@ public class CryptoStorage {
 
 		HttpConversationCallback fullCallback = new HttpConversationCallback() {
 
-			private final String TAG = "HttpConversationCallback > fullCallback";
+			private final String TAG = "HttpConversationCallback";
 
 			@Override
 			public void onHttpConversationFinished(boolean success, String serverAnswer) {
 
 				// Debug
-				Log.d(TAG, "[fn] onHttpConversationFinished");
+				Log.d(TAG, "[fn] (fullCallback) onHttpConversationFinished");
 
 				boolean storageSuccess = false;
 				if (success) {

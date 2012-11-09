@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?><manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.brainydroid.daydreaming" android:versionCode="1" android:versionName="1.0">
 
     <uses-sdk android:minSdkVersion="10" android:targetSdkVersion="15"/>
+    <!-- Require GPS (fine) location for emulation purposes -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>

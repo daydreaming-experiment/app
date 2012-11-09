@@ -9,7 +9,6 @@ import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.Toast;
 
 public class LocationService extends Service {
 
@@ -17,10 +16,10 @@ public class LocationService extends Service {
 
 	private LocationManager locationManager;
 	private LocationListener locationListener;
-	private StatusManager status;
 	private boolean stopOnUnbind = false;
 	private final IBinder mBinder = new LocationServiceBinder();
 	private LocationCallback _callback = null;
+	private Location lastLocation;
 
 	public class LocationServiceBinder extends Binder {
 
@@ -42,6 +41,10 @@ public class LocationService extends Service {
 		Log.d(TAG, "[fn] setLocationCallback");
 
 		_callback = callback;
+
+		if (lastLocation != null) {
+			_callback.onLocationReceived(lastLocation);
+		}
 	}
 
 	@Override
@@ -52,11 +55,6 @@ public class LocationService extends Service {
 
 		super.onCreate();
 		initVars();
-		if (!status.isDataAndLocationEnabled()) {
-			stopSelf();
-			return;
-		}
-
 		startLocationListener();
 	}
 
@@ -77,7 +75,7 @@ public class LocationService extends Service {
 		// Debug
 		Log.d(TAG, "[fn] onDestroy");
 
-		stopLocationListener();
+		stopLocationListenerIfExists();
 		super.onDestroy();
 	}
 
@@ -128,21 +126,27 @@ public class LocationService extends Service {
 		Log.d(TAG, "[fn] initVars");
 
 		locationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
-		status = StatusManager.getInstance(this);
 	}
 
 	private void startLocationListener() {
 
 		// Debug
-		Log.d(TAG, "[fn] startLocationListener");
+		Log.d(TAG, "[fn] updateLocationListener");
+
+		stopLocationListenerIfExists();
 
 		locationListener = new LocationListener() {
 
+			private final String TAG = "LocationListener";
+
 			@Override
 			public void onLocationChanged(Location location) {
-				Toast.makeText(LocationService.this,
-						"New location received (prec: " + location.getAccuracy() + ")",
-						Toast.LENGTH_SHORT).show();
+
+				// Debug
+				Log.d(TAG, "[fn] (locationListener) onLocationChanged");
+
+				lastLocation = location;
+
 				if (_callback != null) {
 					_callback.onLocationReceived(location);
 				}
@@ -160,15 +164,22 @@ public class LocationService extends Service {
 
 		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
 				0, 0, locationListener);
+
+		// Listen for GPS updates for emulation
+		if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+					0, 0, locationListener);
+		}
 	}
 
-	private void stopLocationListener() {
+	private void stopLocationListenerIfExists() {
 
 		// Debug
-		Log.d(TAG, "[fn] stopLocationListener");
+		Log.d(TAG, "[fn] removeLocationListenerIfExists");
 
 		if (locationListener != null) {
 			locationManager.removeUpdates(locationListener);
+			locationListener = null;
 		}
 	}
 }

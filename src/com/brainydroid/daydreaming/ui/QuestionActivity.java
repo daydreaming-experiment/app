@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.LocationCallback;
+import com.brainydroid.daydreaming.background.LocationServiceConnection;
 import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.db.Poll;
 import com.brainydroid.daydreaming.db.PollsStorage;
@@ -45,6 +46,8 @@ public class QuestionActivity extends ActionBarActivity {
 	private boolean isContinuing = false;
 	private LinearLayout questionLinearLayout;
 	private StatusManager status;
+
+	private LocationServiceConnection locationServiceConnection;
 
 	public static class LocationAlertDialogFragment extends DialogFragment {
 
@@ -133,8 +136,10 @@ public class QuestionActivity extends ActionBarActivity {
 		super.onStop();
 		if (!isContinuing() && !poll.isOver()) {
 			poll.setStatus(Poll.STATUS_STOPPED);
-			status.stopLocationService();
+			locationServiceConnection.setStopOnUnbind();
 		}
+
+		locationServiceConnection.unbindLocationService();
 	}
 
 	@Override
@@ -164,6 +169,7 @@ public class QuestionActivity extends ActionBarActivity {
 		nQuestions = poll.getLength();
 		questionLinearLayout = (LinearLayout)findViewById(R.id.question_linearLayout);
 		status = StatusManager.getInstance(this);
+		locationServiceConnection = new LocationServiceConnection(this);
 	}
 
 	private boolean checkPollStatus() {
@@ -202,13 +208,13 @@ public class QuestionActivity extends ActionBarActivity {
 
 		SntpClientCallback sntpCallback = new SntpClientCallback() {
 
-			private final String TAG = "SntpClientCallback > sntpCallback";
+			private final String TAG = "SntpClientCallback";
 
 			@Override
 			public void onTimeReceived(SntpClient sntpClient) {
 
 				// Debug
-				Log.d(TAG, "[fn] onTimeReceived");
+				Log.d(TAG, "[fn] (sntpCallback) onTimeReceived");
 
 				if (sntpClient != null) {
 					question.setTimestamp(sntpClient.getNow());
@@ -220,24 +226,29 @@ public class QuestionActivity extends ActionBarActivity {
 		SntpClient sntpClient = new SntpClient();
 		sntpClient.asyncRequestTime(sntpCallback);
 
-		status.startLocationService();
-
 		LocationCallback locationCallback = new LocationCallback() {
 
-			private final String TAG = "LocationCallback locationCallback";
+			private final String TAG = "LocationCallback";
 
 			@Override
 			public void onLocationReceived(Location location) {
 
 				// Debug
-				Log.d(TAG, "[fn] onLocationReceived");
+				Log.d(TAG, "[fn] (locationCallback) onLocationReceived");
 
 				question.setLocation(location);
 			}
 
 		};
 
-		status.setLocationCallback(locationCallback);
+		locationServiceConnection.setLocationCallback(locationCallback);
+
+		if (!status.isLocationServiceRunning()) {
+			locationServiceConnection.bindLocationService();
+			locationServiceConnection.startLocationService();
+		} else {
+			locationServiceConnection.bindLocationService();
+		}
 	}
 
 	private void populateViews() {
@@ -340,7 +351,7 @@ public class QuestionActivity extends ActionBarActivity {
 
 		Toast.makeText(this, getString(R.string.question_thank_you), Toast.LENGTH_SHORT).show();
 		poll.setStatus(Poll.STATUS_COMPLETED);
-		status.stopLocationService();
+		locationServiceConnection.setStopOnUnbind();
 		finish();
 	}
 

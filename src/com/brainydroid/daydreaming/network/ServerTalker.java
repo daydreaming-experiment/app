@@ -63,13 +63,13 @@ public class ServerTalker {
 
 		HttpConversationCallback fullCallback = new HttpConversationCallback() {
 
-			private final String TAG = "HttpConversationCallback > fullCallback";
+			private final String TAG = "HttpConversationCallback";
 
 			@Override
 			public void onHttpConversationFinished(boolean success, String serverAnswer) {
 
 				// Debug
-				Log.d(TAG, "[fn] onHttpConversationFinished");
+				Log.d(TAG, "[fn] (fullCallback) onHttpConversationFinished");
 
 				initialCallback.onHttpConversationFinished(success, serverAnswer);
 				keyFile.delete();
@@ -96,13 +96,13 @@ public class ServerTalker {
 
 		HttpConversationCallback fullCallback = new HttpConversationCallback() {
 
-			private final String TAG = "HttpConversationCallback > fullCallback";
+			private final String TAG = "HttpConversationCallback";
 
 			@Override
 			public void onHttpConversationFinished(boolean success, String serverAnswer) {
 
 				// Debug
-				Log.d(TAG, "[fn] onHttpConversationFinished");
+				Log.d(TAG, "[fn] (fullCallback) onHttpConversationFinished");
 
 				initialCallback.onHttpConversationFinished(success, serverAnswer);
 				sdf.deleteFiles();

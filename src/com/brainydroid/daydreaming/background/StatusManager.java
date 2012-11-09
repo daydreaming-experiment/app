@@ -3,7 +3,6 @@ package com.brainydroid.daydreaming.background;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
@@ -25,7 +24,6 @@ public class StatusManager {
 	private final SharedPreferences expStatus; // file containing status of exp
 	private final SharedPreferences.Editor eExpStatus; // editor of expStatus
 
-	private final LocationServiceConnection locationServiceConnection;
 	private final LocationManager locationManager;
 	private final ConnectivityManager connManager;
 	private NetworkInfo networkInfo;
@@ -54,7 +52,6 @@ public class StatusManager {
 		_context = context.getApplicationContext();
 		expStatus = _context.getSharedPreferences(EXP_STATUS, Context.MODE_PRIVATE);
 		eExpStatus = expStatus.edit();
-		locationServiceConnection = new LocationServiceConnection();
 		locationManager = (LocationManager)_context.getSystemService(Context.LOCATION_SERVICE);
 		connManager = (ConnectivityManager)_context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		networkInfo = connManager.getActiveNetworkInfo();
@@ -142,43 +139,6 @@ public class StatusManager {
 		eExpStatus.clear();
 		eExpStatus.commit();
 		smInstance = null;
-	}
-
-	public void startLocationService() {
-
-		// Debug
-		Log.d(TAG, "[fn] startLocationService");
-
-		if (!isLocationServiceRunning()) {
-			Intent locationServiceIntent = new Intent(_context, LocationService.class);
-			_context.startService(locationServiceIntent);
-		}
-	}
-
-	public void stopLocationService() {
-
-		// Debug
-		Log.d(TAG, "[fn] stopLocationService");
-
-		if (isLocationServiceRunning()) {
-			locationServiceConnection.setStopOnBound(true);
-			Intent locationServiceIntent = new Intent(_context, LocationService.class);
-			_context.bindService(locationServiceIntent, locationServiceConnection, 0);
-			_context.unbindService(locationServiceConnection);
-		}
-	}
-
-	public void setLocationCallback(LocationCallback callback) {
-
-		// Debug
-		Log.d(TAG, "[fn] setLocationCallback");
-
-		if (isLocationServiceRunning()) {
-			Intent locationServiceIntent = new Intent(_context, LocationService.class);
-			locationServiceConnection.setSetLocationCallbackOnBound(callback);
-			_context.bindService(locationServiceIntent, locationServiceConnection, 0);
-			_context.unbindService(locationServiceConnection);
-		}
 	}
 
 	public boolean isNetworkLocEnabled() {
