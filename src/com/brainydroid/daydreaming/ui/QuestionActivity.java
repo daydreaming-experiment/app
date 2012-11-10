@@ -108,7 +108,7 @@ public class QuestionActivity extends ActionBarActivity {
 		setChrome();
 		populateViews();
 		setTitle(getString(R.string.app_name) + " " + (questionIndex + 1) + "/" + nQuestions);
-		// TODO: add a call to ScheduleManager / SchedulerService
+		// TODO: add a call to SchedulerService
 	}
 
 	@Override
@@ -140,6 +140,7 @@ public class QuestionActivity extends ActionBarActivity {
 		}
 
 		locationServiceConnection.unbindLocationService();
+		// TODO: add a call to SyncService
 	}
 
 	@Override

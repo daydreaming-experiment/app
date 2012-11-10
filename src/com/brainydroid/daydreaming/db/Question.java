@@ -36,6 +36,7 @@ public class Question {
 
 	// attributes inherent to the question
 	private String _id;
+	// FIXME: parameters below this line need not be saved as JSON when uploading to server
 	private String _category;
 	private String _subcategory;
 	private String _type;
@@ -45,6 +46,8 @@ public class Question {
 
 	// attributes dependent on the answer
 	private String _status;
+	// FIXME: the answer should be converted to JSON and not JSON-between-quotes when
+	// uploading to server
 	private String _answer;
 	private double _locationLatitude;
 	private double _locationLongitude;

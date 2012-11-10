@@ -140,6 +140,8 @@ public class PollsStorage {
 			ContentValues qValues = getQuestionContentValues(pollId, qIterator.next());
 			wDb.insert(TABLE_POLL_QUESTIONS, null, qValues);
 		}
+
+		checkNetworkReceiver();
 	}
 
 	public void updatePoll(Poll poll) {
@@ -159,6 +161,8 @@ public class PollsStorage {
 			wDb.update(TABLE_POLL_QUESTIONS, qValues, Poll.COL_ID + "=? AND " + Question.COL_ID + "=?",
 					new String[] {Integer.toString(pollId), q.getId()});
 		}
+
+		checkNetworkReceiver();
 	}
 
 	public Poll getPoll(int pollId) {
@@ -293,6 +297,8 @@ public class PollsStorage {
 		wDb.delete(TABLE_POLLS, Poll.COL_ID + "=?", new String[] {Integer.toString(pollId)});
 		wDb.delete(TABLE_POLL_QUESTIONS, Poll.COL_ID + "=?", new String[] {Integer.toString(pollId)});
 		_pollInstances.delete(pollId);
+
+		checkNetworkReceiver();
 	}
 
 	public void flushAll() {
@@ -314,5 +320,13 @@ public class PollsStorage {
 		wDb.execSQL(SQL_DROP_TABLE_POLL_QUESTIONS);
 		_pollInstances.clear();
 		psInstance = null;
+	}
+
+	private void checkNetworkReceiver() {
+
+		// Debug
+		Log.d(TAG, "[fn] checkNetworkReceiver");
+
+		// TODO: if no polls are uploadable, disable NetworkReceiver. Otherwise activate it.
 	}
 }

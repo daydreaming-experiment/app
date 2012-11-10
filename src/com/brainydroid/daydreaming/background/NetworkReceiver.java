@@ -3,11 +3,12 @@ package com.brainydroid.daydreaming.background;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.util.Log;
 
-public class BootReceiver extends BroadcastReceiver {
+public class NetworkReceiver extends BroadcastReceiver {
 
-	private static String TAG = "BootReceiver";
+	private static String TAG = "NetworkReceiver";
 
 	private StatusManager status;
 
@@ -20,19 +21,17 @@ public class BootReceiver extends BroadcastReceiver {
 		status = StatusManager.getInstance(context);
 		String action = intent.getAction();
 
-		if (action.equals(Intent.ACTION_BOOT_COMPLETED)) {
+		if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
 
 			// Info
-			Log.i(TAG, "Received ACTION_BOOT_COMPLETED");
+			Log.i(TAG, "Received CONNECTIVITY_ACTION");
 
-			if (status.isFirstLaunchCompleted()) {
+			if (status.isFirstLaunchCompleted() && status.isDataEnabled()) {
 
 				// Info
 				Log.i(TAG, "first launch is completed");
-				Log.i(TAG, "will start SchedulerService");
 				Log.i(TAG, "will start SyncService");
 
-				// TODO: add a call to SchedulerService
 				// TODO: add a call to SyncService
 			}
 		}
