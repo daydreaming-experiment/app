@@ -52,6 +52,9 @@ public class Question {
 	private double _locationAccuracy;
 	private long _timestamp;
 
+	public static final String PARAMETER_SPLITTER = "\\{s\\}";
+	public static final String SUBPARAMETER_SPLITTER = "\\{ss\\}";
+
 	public static final String COL_ID = "questionId";
 	public static final String COL_CATEGORY = "questionCategory";
 	public static final String COL_SUBCATEGORY = "questionSubategory";
@@ -666,7 +669,7 @@ public class Question {
 		// Debug
 		Log.d(TAG, "[fn] getParsedMainText");
 
-		return parseString(_mainText, ";");
+		return parseString(_mainText, PARAMETER_SPLITTER);
 	}
 
 	private ArrayList<ArrayList<String>> getParsedParametersText() {
@@ -675,10 +678,11 @@ public class Question {
 		Log.d(TAG, "[fn] getParsedParametersText");
 
 		ArrayList<ArrayList<String>> parsedParametersText = new ArrayList<ArrayList<String>>();
-		Iterator<String> preParsedIt = parseString(_parametersText, ";").iterator();
+		Iterator<String> preParsedIt = parseString(_parametersText,
+				PARAMETER_SPLITTER).iterator();
 		ArrayList<String> subParameters;
 		while (preParsedIt.hasNext()) {
-			subParameters = parseString(preParsedIt.next(), "§");
+			subParameters = parseString(preParsedIt.next(), SUBPARAMETER_SPLITTER);
 			parsedParametersText.add(subParameters);
 		}
 

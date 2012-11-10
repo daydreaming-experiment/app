@@ -7,7 +7,7 @@
             "_subcategory": "content",
             "_type": "slider",
             "_mainText": "How much off-task are you right now?",
-            "_parametersText": "Completely off-task§Completely on-task"
+            "_parametersText": "Completely off-task{ss}Completely on-task"
         },
         {
             "_id": "mindWandering_temporal",
@@ -15,15 +15,15 @@
             "_subcategory": "content",
             "_type": "slider",
             "_mainText": "What is the temporal focus of your thoughts?",
-            "_parametersText": "Far into the past§Recent past§Now§Near future§Far into the future"
+            "_parametersText": "Far into the past{ss}Recent past{ss}Now{ss}Near future{ss}Far into the future"
         },
         {
             "_id": "mindWandering_social",
             "_category": "mindWandering",
             "_subcategory": "content",
             "_type": "slider",
-            "_mainText": "How much are you thinking about yourself?;How much are you thinking about other people?",
-            "_parametersText": "Not at all about yourself§A little about yourself§A lot about yourself;Not at all about other people§A little about other people§A lot about other people"
+            "_mainText": "How much are you thinking about yourself?{s}How much are you thinking about other people?",
+            "_parametersText": "Not at all about yourself{ss}A little about yourself{ss}A lot about yourself{s}Not at all about other people{ss}A little about other people{ss}A lot about other people"
         },
         {
             "_id": "mindWandering_qualities",
@@ -31,14 +31,14 @@
             "_subcategory": "qualities",
             "_type": "slider",
             "_mainText": "How fast were your thoughts?",
-            "_parametersText": "Very slow§Very fast"
+            "_parametersText": "Very slow{ss}Very fast"
         },
         {
             "_id": "currentActivity_doing",
             "_category": "currentActivity",
             "_type": "multipleChoice",
             "_mainText": "What you were doing just before the probe interrupted you?",
-            "_parametersText": "Commuting§Working§Shopping§Preparing food§Doing housework§Taking care of your children§Eating§Praying, worshiping, or meditating§Socializing§Watching TV§Having a nap, resting§Computer, Internet, or Email§Relaxing§On the phone§Intimate relations§Exercising"
+            "_parametersText": "Commuting{ss}Working{ss}Shopping{ss}Preparing food{ss}Doing housework{ss}Taking care of your children{ss}Eating{ss}Praying, worshiping, or meditating{ss}Socializing{ss}Watching TV{ss}Having a nap, resting{ss}Computer, Internet, or Email{ss}Relaxing{ss}On the phone{ss}Intimate relations{ss}Exercising"
         }
     ]
 }
