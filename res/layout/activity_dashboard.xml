@@ -74,17 +74,21 @@
         android:layout_marginRight="16dp"
         android:text="@string/dashboard_text_results" />
 
-    <Button
-        android:id="@+id/button1"
+    <TextView
+        android:id="@+id/dashboard_titleTesting"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="loadQuestions"
-        android:text="Load Questions" />
-
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:text="Testing"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+    
     <Button
         android:id="@+id/button3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:onClick="runPoll"
         android:text="Run a Poll" />
 
@@ -92,6 +96,8 @@
         android:id="@+id/button2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:onClick="startSyncService"
         android:text="Start SyncService" />
 

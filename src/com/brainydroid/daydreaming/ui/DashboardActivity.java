@@ -1,8 +1,5 @@
 package com.brainydroid.daydreaming.ui;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,7 +15,6 @@ import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.background.SyncService;
 import com.brainydroid.daydreaming.db.PollsStorage;
 import com.brainydroid.daydreaming.db.QuestionsStorage;
-import com.brainydroid.daydreaming.db.Util;
 
 public class DashboardActivity extends ActionBarActivity {
 
@@ -158,25 +154,6 @@ public class DashboardActivity extends ActionBarActivity {
 			status.finishClear();
 		}
 		finish();
-	}
-
-	// loads questions from external file raw/questions
-	public void loadQuestions(View view) {
-
-		// Debug
-		Log.d(TAG, "[fn] loadQuestions");
-
-		InputStream questionsIS = null;
-
-		try {
-			questionsIS = getResources().openRawResource(R.raw.questions);
-			questionsStorage.importQuestions(Util.convertStreamToString(questionsIS));
-			questionsIS.close();
-			Toast.makeText(this, "Questions loaded", Toast.LENGTH_SHORT).show();
-		} catch (IOException e) {
-			Toast.makeText(this, "IOException", Toast.LENGTH_SHORT).show();
-			e.printStackTrace();
-		}
 	}
 
 	public void runPoll(View view) {

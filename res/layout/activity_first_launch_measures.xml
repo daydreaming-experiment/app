@@ -7,7 +7,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
+        android:padding="16dp"
         android:orientation="vertical" >
 
         <LinearLayout
@@ -96,6 +96,7 @@
                 android:onClick="onClick_buttonNext"
                 android:text="@string/firstLaunchMeasures_button_next" />
         </LinearLayout>
+
     </LinearLayout>
 
 </RelativeLayout>

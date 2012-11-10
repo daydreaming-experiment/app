@@ -1,5 +1,8 @@
 package com.brainydroid.daydreaming.ui;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
@@ -12,6 +15,8 @@ import android.widget.TextView;
 
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.StatusManager;
+import com.brainydroid.daydreaming.db.QuestionsStorage;
+import com.brainydroid.daydreaming.db.Util;
 
 public class FirstLaunchMeasuresActivity extends ActionBarActivity {
 
@@ -174,18 +179,38 @@ public class FirstLaunchMeasuresActivity extends ActionBarActivity {
 		// Debug
 		Log.d(TAG, "[fn] launchDashboard");
 
-		setStatus(); // when everything is ok, first launch is set to completed
+		finishFirstLaunch(); // when everything is ok, first launch is set to completed
 		Intent dashboardIntent = new Intent(this, DashboardActivity.class);
 		dashboardIntent.putExtra(DashboardActivity.EXTRA_COMES_FROM_FIRST_LAUNCH, true);
 		startActivity(dashboardIntent);
 		finish();
 	}
 
-	private void setStatus() {
+	private void finishFirstLaunch() {
 
 		// Debug
 		Log.d(TAG, "[fn] setStatus");
 
 		status.setFirstLaunchCompleted();
+		loadQuestionsFromRes();
+	}
+
+	private void loadQuestionsFromRes() {
+
+		// Debug
+		Log.d(TAG, "[fn] loadQuestionsFromRes");
+
+		InputStream questionsIS = null;
+
+		try {
+			QuestionsStorage questionsStorage = QuestionsStorage.getInstance(this);
+			questionsIS = getResources().openRawResource(R.raw.questions);
+			questionsStorage.importQuestions(Util.convertStreamToString(questionsIS));
+			questionsIS.close();
+		} catch (IOException e) {
+			// Error
+			Log.e(TAG, "error importing questions from local resource", e);
+			e.printStackTrace();
+		}
 	}
 }

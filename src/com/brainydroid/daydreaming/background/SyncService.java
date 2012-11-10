@@ -80,23 +80,41 @@ public class SyncService extends Service {
 		Log.d(TAG, "[fn] initVarsAndUpdates");
 
 		status = StatusManager.getInstance(this);
-		pollsStorage = PollsStorage.getInstance(this);
-		questionsStorage = QuestionsStorage.getInstance(this);
-		gson = new Gson();
 
-		CryptoStorageCallback callback = new CryptoStorageCallback() {
+		if (status.isDataEnabled()) {
 
-			@Override
-			public void onCryptoStorageReady(boolean hasKeyPairAndMaiId) {
-				if (hasKeyPairAndMaiId && status.isDataEnabled()) {
-					asyncUpdateQuestions();
-					asyncUploadAnswers();
+			// Info
+			Log.i(TAG, "data connection enabled -> starting sync tasks");
+
+			Toast.makeText(this, "SyncService: starting sync...",
+					Toast.LENGTH_SHORT).show();
+
+			pollsStorage = PollsStorage.getInstance(this);
+			questionsStorage = QuestionsStorage.getInstance(this);
+			gson = new Gson();
+
+			CryptoStorageCallback callback = new CryptoStorageCallback() {
+
+				@Override
+				public void onCryptoStorageReady(boolean hasKeyPairAndMaiId) {
+					if (hasKeyPairAndMaiId && status.isDataEnabled()) {
+						asyncUpdateQuestions();
+						asyncUploadAnswers();
+					}
 				}
-			}
 
-		};
+			};
 
-		cryptoStorage = CryptoStorage.getInstance(this, BS_SERVER_NAME, callback);
+			cryptoStorage = CryptoStorage.getInstance(this, BS_SERVER_NAME, callback);
+		} else {
+
+			// Info
+			Log.i(TAG, "no data connection available -> exiting");
+
+			Toast.makeText(this, "SyncService: no internet connection",
+					Toast.LENGTH_SHORT).show();
+			stopSelf();
+		}
 	}
 
 	private void asyncUpdateQuestions() {
@@ -161,12 +179,20 @@ public class SyncService extends Service {
 						int serverQuestionsVersion = Integer.parseInt(serverAnswer.split("\n")[0]);
 
 						if (serverQuestionsVersion != questionsStorage.getQuestionsVersion()) {
+
+							// Info
+							Log.i(TAG, "server's questionsVersion is different from the local one -> trying to update questions");
+
 							willGetQuestions = true;
 
 							HttpGetData updateQuestionsData = new HttpGetData(QUESTIONS_URL,
 									updateQuestionsCallback);
 							HttpGetTask updateQuestionsTask = new HttpGetTask();
 							updateQuestionsTask.execute(updateQuestionsData);
+						} else {
+							Toast.makeText(SyncService.this,
+									"SyncService: no new questions to download",
+									Toast.LENGTH_SHORT).show();
 						}
 					} catch (Exception e) {
 						// Warning
