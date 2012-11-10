@@ -10,10 +10,10 @@ public class Poll {
 
 	private static String TAG = "Poll";
 
-	private int _id;
 	private String _status;
 	private int _questionsVersion;
 	private ArrayList<Question> _questions;
+	private transient int _id;
 	private transient boolean _keepInSync = false;
 
 	public static final String COL_ID = "pollId";

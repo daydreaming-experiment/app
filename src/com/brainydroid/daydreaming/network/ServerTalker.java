@@ -19,30 +19,31 @@ public class ServerTalker {
 	private static String BS_FORM_UPLOAD_DATAFILE = "datafile";
 	private static String BS_FORM_UPLOAD_SIGFILE = "sigfile";
 
-	private static String servername;
-
-	private static CryptoStorage cryptoStorage;
 	private static ServerTalker stInstance;
 
-	public static synchronized ServerTalker getInstance(String s, CryptoStorage cs) {
+	private final CryptoStorage _cryptoStorage;
+	private String _serverName;
+
+	public static synchronized ServerTalker getInstance(String serverName,
+			CryptoStorage cryptoStorage) {
 
 		// Debug
 		Log.d(TAG, "[fn] getInstance");
 
 		if (stInstance == null) {
-			stInstance = new ServerTalker(s, cs);
+			stInstance = new ServerTalker(serverName, cryptoStorage);
 		}
 
 		return stInstance;
 	}
 
-	private ServerTalker(String s, CryptoStorage cs) {
+	private ServerTalker(String serverName, CryptoStorage cryptoStorage) {
 
 		// Debug
 		Log.d(TAG, "[fn] ServerTalker");
 
-		servername = s;
-		cryptoStorage = cs;
+		_serverName = serverName;
+		_cryptoStorage = cryptoStorage;
 	}
 
 	public void setServerName(String s) {
@@ -50,7 +51,7 @@ public class ServerTalker {
 		// Verbose
 		Log.v(TAG, "[fn] setServerName");
 
-		servername = s;
+		_serverName = s;
 	}
 
 	public void uploadPublicKey(HttpConversationCallback callback) {
@@ -58,7 +59,7 @@ public class ServerTalker {
 		// Debug
 		Log.d(TAG, "[fn] uploadPublicKey");
 
-		final File keyFile = cryptoStorage.createArmoredPublicKeyFile();
+		final File keyFile = _cryptoStorage.createArmoredPublicKeyFile();
 		final HttpConversationCallback initialCallback = callback;
 
 		HttpConversationCallback fullCallback = new HttpConversationCallback() {
@@ -77,7 +78,7 @@ public class ServerTalker {
 
 		};
 
-		String postUrl = servername + BS_URL_UPLOAD + BS_URL_UPLOAD_MAI_PUBKEY + cryptoStorage.getMaiId();
+		String postUrl = _serverName + BS_URL_UPLOAD + BS_URL_UPLOAD_MAI_PUBKEY + _cryptoStorage.getMaiId();
 		HttpPostData postData = new HttpPostData(postUrl, fullCallback);
 		postData.addPostFile(BS_FORM_UPLOAD_PUBKEYFILE, new FileBody(keyFile));
 
@@ -91,7 +92,7 @@ public class ServerTalker {
 		// Debug
 		Log.d(TAG, "[fn] signAndUploadData");
 
-		final SignedDataFiles sdf = cryptoStorage.createSignedDataFiles(data);
+		final SignedDataFiles sdf = _cryptoStorage.createSignedDataFiles(data);
 		final HttpConversationCallback initialCallback = callback;
 
 		HttpConversationCallback fullCallback = new HttpConversationCallback() {
@@ -110,7 +111,7 @@ public class ServerTalker {
 
 		};
 
-		String postUrl = servername + BS_URL_UPLOAD + BS_URL_UPLOAD_EA_DATA + cryptoStorage.getMaiId() + "/" + ea_id;
+		String postUrl = _serverName + BS_URL_UPLOAD + BS_URL_UPLOAD_EA_DATA + _cryptoStorage.getMaiId() + "/" + ea_id;
 		HttpPostData postData = new HttpPostData(postUrl, fullCallback);
 		postData.addPostFile(BS_FORM_UPLOAD_SIGFILE, new FileBody(sdf.getSignatureFile()));
 		postData.addPostFile(BS_FORM_UPLOAD_DATAFILE, new FileBody(sdf.getDataFile()));
@@ -124,7 +125,7 @@ public class ServerTalker {
 		// Debug
 		Log.d(TAG, "[fn] requestMaiId");
 
-		String getUrl = servername + BS_URL_UPLOAD + BS_URL_UPLOAD_REQUEST_MAI_ID;
+		String getUrl = _serverName + BS_URL_UPLOAD + BS_URL_UPLOAD_REQUEST_MAI_ID;
 		HttpGetData getData = new HttpGetData(getUrl, callback);
 		HttpGetTask getTask = new HttpGetTask();
 		getTask.execute(getData);

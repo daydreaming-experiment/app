@@ -1,11 +1,15 @@
 package com.brainydroid.daydreaming.background;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.brainydroid.daydreaming.db.Poll;
 import com.brainydroid.daydreaming.db.PollsStorage;
 import com.brainydroid.daydreaming.db.QuestionsStorage;
 import com.brainydroid.daydreaming.network.CryptoStorage;
@@ -13,13 +17,14 @@ import com.brainydroid.daydreaming.network.CryptoStorageCallback;
 import com.brainydroid.daydreaming.network.HttpConversationCallback;
 import com.brainydroid.daydreaming.network.HttpGetData;
 import com.brainydroid.daydreaming.network.HttpGetTask;
+import com.brainydroid.daydreaming.network.ServerTalker;
 import com.google.gson.Gson;
 
 public class SyncService extends Service {
 
 	private static String TAG = "SyncService";
 
-	private static String BS_EXP_APP_ID = "app1";
+	private static String BS_EXP_APP_ID = "daydreaming";
 	private static String BS_SERVER_NAME = "http://mehho.net:5000/";
 
 	private static String QUESTIONS_VERSION_URL = "http://mehho.net:5001/questionsVersion";
@@ -29,7 +34,10 @@ public class SyncService extends Service {
 	private PollsStorage pollsStorage;
 	private QuestionsStorage questionsStorage;
 	private CryptoStorage cryptoStorage;
+	private ServerTalker serverTalker;
 	private Gson gson;
+	private ArrayList<Poll> uploadablePolls;
+	private HashSet<Integer> pollsLeftToUpload;
 	private boolean updateQuestionsDone = false;
 	private boolean uploadAnswersDone = false;
 
@@ -95,8 +103,16 @@ public class SyncService extends Service {
 
 			CryptoStorageCallback callback = new CryptoStorageCallback() {
 
+				private final String TAG = "CryptoStorageCallback";
+
 				@Override
 				public void onCryptoStorageReady(boolean hasKeyPairAndMaiId) {
+
+					// Debug
+					Log.d(TAG, "(callback) onCryptoStorageReady");
+
+					serverTalker = ServerTalker.getInstance(BS_SERVER_NAME, cryptoStorage);
+
 					if (hasKeyPairAndMaiId && status.isDataEnabled()) {
 						asyncUpdateQuestions();
 						asyncUploadAnswers();
@@ -105,6 +121,7 @@ public class SyncService extends Service {
 
 			};
 
+			// This will launch all calls through the callbacks
 			cryptoStorage = CryptoStorage.getInstance(this, BS_SERVER_NAME, callback);
 		} else {
 
@@ -153,7 +170,6 @@ public class SyncService extends Service {
 				}
 
 				setUpdateQuestionsDone();
-				stopSelfIfAllDone();
 			}
 
 		};
@@ -205,7 +221,6 @@ public class SyncService extends Service {
 
 				if (!willGetQuestions) {
 					setUpdateQuestionsDone();
-					stopSelfIfAllDone();
 				}
 			}
 
@@ -222,48 +237,79 @@ public class SyncService extends Service {
 		// Debug
 		Log.d(TAG, "[fn] asyncUploadAnswers");
 
-		// TODO: Create an AsyncTask to upload answers. Then, notify the main service that it can exit.
-		// There might be a problem if the service is started from an Activity, and the
+		// FIXME: There might be a problem if the service is started from an Activity, and the
 		// orientation of the display changes. That will stop and restart the worker process.
 		// See http://developer.android.com/guide/components/processes-and-threads.html ,
 		// right above the "Thread-safe methods" title.
 
-		//		AsyncTask<Void, Void, Void> uploaderTask = new AsyncTask<Void, Void, Void>() {
-		//
-		//			private ArrayList<Poll> uploadablePolls;
-		//
-		//			@Override
-		//			protected void onPreExecute() {
-		//				uploadablePolls = pollsStorage.getUploadablePolls();
-		//			}
-		//
-		//			@Override
-		//			protected Void doInBackground(Void... params) {
-		//
-		//				if (uploadablePolls == null) {
-		//					return null;
-		//				}
-		//
-		//				for (Poll poll : uploadablePolls) {
-		//					String jsonPoll = gson.toJson(poll);
-		//					// TODO: upload poll
-		//					pollsStorage.removePoll(poll.getId());
-		//				}
-		//
-		//				return null;
-		//			}
-		//
-		//			@Override
-		//			protected void onPostExecute(Void result) {
-		//				setUploadAnswersDone();
-		//				stopSelfIfAllDone();
-		//			}
-		//		};
-		//
-		//		uploaderTask.execute();
+		uploadablePolls = pollsStorage.getUploadablePolls();
 
-		setUploadAnswersDone();
-		stopSelfIfAllDone();
+		if (uploadablePolls == null) {
+
+			// Info
+			Log.i(TAG, "no polls to upload -> exiting");
+
+			Toast.makeText(this,
+					"SyncService: no polls to upload",
+					Toast.LENGTH_SHORT).show();
+
+			setUploadPollsDone();
+			return;
+		}
+
+		// Info
+		Log.i(TAG, "trying to upload " + uploadablePolls.size() + " polls");
+
+		Toast.makeText(this,
+				"SyncService: trying to upload " + uploadablePolls.size() + " polls",
+				Toast.LENGTH_SHORT).show();
+
+		pollsLeftToUpload = new HashSet<Integer>();
+		for (Poll poll : uploadablePolls) {
+			pollsLeftToUpload.add(poll.getId());
+		}
+
+		for (Poll poll : uploadablePolls) {
+
+			final int pollId = poll.getId();
+
+			HttpConversationCallback callback = new HttpConversationCallback() {
+
+				private final String TAG = "HttpConversationCallback";
+
+				@Override
+				public void onHttpConversationFinished(boolean success, String serverAnswer) {
+
+					// Debug
+					Log.d(TAG, "(callback) onHttpConversationFinished");
+
+					if (success) {
+
+						// Info
+						Log.i(TAG, "successfully uploaded poll (id: " +
+								pollId + ") to server (serverAnswer: " +
+								serverAnswer + ")");
+
+						Toast.makeText(SyncService.this,
+								"SyncService: uploaded poll (id: " + pollId +
+								") (serverAnswer: " + serverAnswer + ")",
+								Toast.LENGTH_LONG).show();
+
+						pollsStorage.removePoll(pollId);
+						setUploadPollDone(pollId);
+					} else {
+
+						// Warning
+						Log.w(TAG, "error while upload poll (id: " + pollId + ") to server");
+
+						setUploadPollDone(pollId);
+					}
+				}
+
+			};
+
+			serverTalker.signAndUploadData(BS_EXP_APP_ID, gson.toJson(poll), callback);
+		}
 	}
 
 	private void setUpdateQuestionsDone() {
@@ -272,14 +318,28 @@ public class SyncService extends Service {
 		Log.d(TAG, "[fn] setUpdateQuestionsDone");
 
 		updateQuestionsDone = true;
+		stopSelfIfAllDone();
 	}
 
-	private void setUploadAnswersDone() {
+	private void setUploadPollDone(int pollId) {
 
 		// Debug
-		Log.d(TAG, "[fn] setUploadAnswersDone");
+		Log.d(TAG, "[fn] setUploadPollDone");
+
+		pollsLeftToUpload.remove(pollId);
+
+		if (pollsLeftToUpload.size() == 0) {
+			setUploadPollsDone();
+		}
+	}
+
+	private void setUploadPollsDone() {
+
+		// Debug
+		Log.d(TAG, "[fn] setUploadPollsDone");
 
 		uploadAnswersDone = true;
+		stopSelfIfAllDone();
 	}
 
 	private void stopSelfIfAllDone() {

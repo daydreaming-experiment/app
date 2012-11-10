@@ -172,6 +172,13 @@ public class CryptoStorage {
 		}
 	}
 
+	// FIXME: this process should be done the other way around, server-side:
+	// instead of asking for a maiId, then generating keys, then upload the public key
+	// for the server to associate it with the maiId, it should be:
+	// 1. generate keys
+	// 2. upload the public key
+	// 3. the server generates an maiId and sends it back as an answer
+	// That way the maiId gets locked to that public key.
 	public synchronized void generateAndStoreKeyPairAndMaiId(CryptoStorageCallback callback) {
 
 		// Debug

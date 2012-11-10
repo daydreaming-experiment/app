@@ -42,6 +42,10 @@ public class SchedulerService extends Service {
 
 		super.onStartCommand(intent, flags, startId);
 
+		// Since the poll gets created when the notification show up, there's a good chance
+		// the questions will have finished updating (if internet connection is available)
+		// before poll creation.
+		startSyncService();
 		schedulePoll();
 		stopSelf();
 		return START_REDELIVER_INTENT;
@@ -66,7 +70,7 @@ public class SchedulerService extends Service {
 		return null;
 	}
 
-	public void schedulePoll() {
+	private void schedulePoll() {
 
 		// Debug
 		Log.d(TAG, "[fn] schedulePoll");
@@ -83,6 +87,15 @@ public class SchedulerService extends Service {
 		Toast.makeText(this, "Poll scheduled in " +
 				((scheduledTime - SystemClock.elapsedRealtime()) / 1000f) +
 				" seconds", Toast.LENGTH_LONG).show();
+	}
+
+	private void startSyncService() {
+
+		// Debug
+		Log.d(TAG, "[fn] startSyncService");
+
+		Intent syncIntent = new Intent(this, SyncService.class);
+		startService(syncIntent);
 	}
 
 	private long generateTime() {
