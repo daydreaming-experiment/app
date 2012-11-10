@@ -19,6 +19,7 @@ import com.brainydroid.daydreaming.network.HttpGetData;
 import com.brainydroid.daydreaming.network.HttpGetTask;
 import com.brainydroid.daydreaming.network.ServerTalker;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class SyncService extends Service {
 
@@ -99,7 +100,9 @@ public class SyncService extends Service {
 
 			pollsStorage = PollsStorage.getInstance(this);
 			questionsStorage = QuestionsStorage.getInstance(this);
-			gson = new Gson();
+			gson = new GsonBuilder()
+			.excludeFieldsWithoutExposeAnnotation()
+			.create();
 
 			CryptoStorageCallback callback = new CryptoStorageCallback() {
 

@@ -6,13 +6,15 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.LinearLayout;
 
+import com.google.gson.annotations.Expose;
+
 public class Poll {
 
 	private static String TAG = "Poll";
 
-	private String _status;
-	private int _questionsVersion;
-	private ArrayList<Question> _questions;
+	@Expose private String _status;
+	@Expose private int _questionsVersion;
+	@Expose private ArrayList<Question> _questions;
 	private transient int _id;
 	private transient boolean _keepInSync = false;
 
@@ -148,6 +150,15 @@ public class Poll {
 		Log.d(TAG, "[fn] setStatus");
 
 		_status = status;
+		saveIfSync();
+	}
+
+	public void setQuestionStatus(int questionIndex, String status) {
+
+		// Debug
+		Log.d(TAG, "[fn] setQuestionStatus");
+
+		_questions.get(questionIndex).setStatus(status);
 		saveIfSync();
 	}
 

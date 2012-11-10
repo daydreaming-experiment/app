@@ -120,6 +120,7 @@ public class QuestionActivity extends ActionBarActivity {
 		super.onStart();
 		if(checkPollStatus()) {
 			poll.setStatus(Poll.STATUS_RUNNING);
+			poll.setQuestionStatus(questionIndex, Question.STATUS_ASKED);
 
 			if (status.isDataAndLocationEnabled()) {
 				startListeningTasks();
@@ -136,6 +137,7 @@ public class QuestionActivity extends ActionBarActivity {
 		super.onStop();
 		if (!isContinuing() && !poll.isOver()) {
 			poll.setStatus(Poll.STATUS_STOPPED);
+			poll.setQuestionStatus(questionIndex, Question.STATUS_ASKED_DISMISSED);
 			locationServiceConnection.setStopOnUnbind();
 		}
 
@@ -274,6 +276,7 @@ public class QuestionActivity extends ActionBarActivity {
 
 		if (question.validate(this, questionLinearLayout)) {
 			poll.saveAnswers(questionLinearLayout, questionIndex);
+			poll.setQuestionStatus(questionIndex, Question.STATUS_ANSWERED);
 			if (isLastQuestion()) {
 				finishPoll();
 			} else {

@@ -26,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.brainydroid.daydreaming.R;
+import com.google.gson.annotations.Expose;
 
 // this class defines the general structure of questions and their answer.
 // These attributes will be saved
@@ -35,8 +36,7 @@ public class Question {
 	private static String TAG = "Question";
 
 	// attributes inherent to the question
-	private String _id;
-	// FIXME: parameters below this line need not be saved as JSON when uploading to server
+	@Expose private String _id;
 	private String _category;
 	private String _subcategory;
 	private String _type;
@@ -45,15 +45,15 @@ public class Question {
 	private int _questionsVersion;
 
 	// attributes dependent on the answer
-	private String _status;
+	@Expose private String _status;
 	// FIXME: the answer should be converted to JSON and not JSON-between-quotes when
 	// uploading to server
-	private String _answer;
-	private double _locationLatitude;
-	private double _locationLongitude;
-	private double _locationAltitude;
-	private double _locationAccuracy;
-	private long _timestamp;
+	@Expose private String _answer;
+	@Expose private double _locationLatitude;
+	@Expose private double _locationLongitude;
+	@Expose private double _locationAltitude;
+	@Expose private double _locationAccuracy;
+	@Expose private long _timestamp;
 
 	public static final String PARAMETER_SPLITTER = "\\{s\\}";
 	public static final String SUBPARAMETER_SPLITTER = "\\{ss\\}";
