@@ -6,13 +6,13 @@ import com.google.gson.annotations.Expose;
 
 public class SliderAnswer extends Answer {
 
-	@Expose private final HashMap<String,Integer> answers;
+	@Expose private final HashMap<String,Integer> sliders;
 
 	public SliderAnswer() {
-		answers = new HashMap<String,Integer>();
+		sliders = new HashMap<String,Integer>();
 	}
 
 	public void addAnswer(String questionString, int answer) {
-		answers.put(questionString, answer);
+		sliders.put(questionString, answer);
 	}
 }
