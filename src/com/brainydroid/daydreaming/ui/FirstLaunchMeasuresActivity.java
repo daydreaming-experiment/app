@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.brainydroid.daydreaming.R;
+import com.brainydroid.daydreaming.background.SchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.db.QuestionsStorage;
 import com.brainydroid.daydreaming.db.Util;
@@ -193,6 +194,9 @@ public class FirstLaunchMeasuresActivity extends ActionBarActivity {
 
 		status.setFirstLaunchCompleted();
 		loadQuestionsFromRes();
+
+		Intent scheduleIntent = new Intent(this, SchedulerService.class);
+		startService(scheduleIntent);
 	}
 
 	private void loadQuestionsFromRes() {

@@ -15,6 +15,7 @@ public class Poll {
 	@Expose private String _status;
 	@Expose private int _questionsVersion;
 	@Expose private ArrayList<Question> _questions;
+	@Expose private int _subjectAge;
 	private transient int _id;
 	private transient boolean _keepInSync = false;
 

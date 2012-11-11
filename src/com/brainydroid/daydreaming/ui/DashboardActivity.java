@@ -11,7 +11,6 @@ import android.widget.Toast;
 
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.PollService;
-import com.brainydroid.daydreaming.background.SchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.background.SyncService;
 import com.brainydroid.daydreaming.db.PollsStorage;
@@ -129,30 +128,30 @@ public class DashboardActivity extends ActionBarActivity {
 		return getIntent().getBooleanExtra(EXTRA_COMES_FROM_FIRST_LAUNCH, false);
 	}
 
-	public void onClick_quitExperiment(View view) {
+	//	public void onClick_quitExperiment(View view) {
+	//
+	//		// Debug
+	//		Log.d(TAG, "[fn] onClick_quitExperiment");
+	//
+	//		quitExperiment();
+	//	}
 
-		// Debug
-		Log.d(TAG, "[fn] onClick_quitExperiment");
-
-		quitExperiment();
-	}
-
-	private void quitExperiment() {
-
-		// Debug
-		Log.d(TAG, "[fn] quitExperiment");
-
-		Toast.makeText(this, "This will clear everything. It should ask for confirmation",
-				Toast.LENGTH_SHORT).show();
-		status.startClear();
-		// Delete saved data
-		pollsStorage.dropAll();
-		questionsStorage.dropAll();
-		if (!comesFromFirstLaunch()) {
-			status.finishClear();
-		}
-		finish();
-	}
+	//	private void quitExperiment() {
+	//
+	//		// Debug
+	//		Log.d(TAG, "[fn] quitExperiment");
+	//
+	//		Toast.makeText(this, "This will clear everything. It should ask for confirmation",
+	//				Toast.LENGTH_SHORT).show();
+	//		status.startClear();
+	//		// Delete saved data
+	//		pollsStorage.dropAll();
+	//		questionsStorage.dropAll();
+	//		if (!comesFromFirstLaunch()) {
+	//			status.finishClear();
+	//		}
+	//		finish();
+	//	}
 
 	public void runPollNow(View view) {
 
@@ -169,16 +168,13 @@ public class DashboardActivity extends ActionBarActivity {
 		// Debug
 		Log.d(TAG, "[fn] startSyncService");
 
+		if (!status.isDataEnabled()) {
+			Toast.makeText(this, "Please activate internet connection first!",
+					Toast.LENGTH_SHORT).show();
+			return;
+		}
+
 		Intent syncIntent = new Intent(this, SyncService.class);
 		startService(syncIntent);
-	}
-
-	public void schedulePoll(View view) {
-
-		// Debug
-		Log.d(TAG, "[fn] schedulePoll");
-
-		Intent scheduleIntent = new Intent(this, SchedulerService.class);
-		startService(scheduleIntent);
 	}
 }

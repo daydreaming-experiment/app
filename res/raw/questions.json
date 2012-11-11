@@ -6,7 +6,7 @@
             "_category": "mindWandering",
             "_subcategory": "content",
             "_type": "slider",
-            "_mainText": "How much off-task are you right now?",
+            "_mainText": "How much on-task are you right now?",
             "_parametersText": "Completely off-task{ss}Completely on-task"
         },
         {
@@ -37,7 +37,7 @@
             "_id": "currentActivity_doing",
             "_category": "currentActivity",
             "_type": "multipleChoice",
-            "_mainText": "What you were doing just before the probe interrupted you?",
+            "_mainText": "What were you doing just before the probe interrupted you?",
             "_parametersText": "Commuting{ss}Working{ss}Shopping{ss}Preparing food{ss}Doing housework{ss}Taking care of your children{ss}Eating{ss}Praying, worshiping, or meditating{ss}Socializing{ss}Watching TV{ss}Having a nap, resting{ss}Computer, Internet, or Email{ss}Relaxing{ss}On the phone{ss}Intimate relations{ss}Exercising"
         }
     ]

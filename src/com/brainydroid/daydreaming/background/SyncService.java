@@ -7,7 +7,6 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.brainydroid.daydreaming.db.Poll;
 import com.brainydroid.daydreaming.db.PollsStorage;
@@ -97,8 +96,8 @@ public class SyncService extends Service {
 			// Info
 			Log.i(TAG, "data connection enabled -> starting sync tasks");
 
-			Toast.makeText(this, "SyncService: starting sync...",
-					Toast.LENGTH_SHORT).show();
+			//			Toast.makeText(this, "SyncService: starting sync...",
+			//					Toast.LENGTH_SHORT).show();
 
 			pollsStorage = PollsStorage.getInstance(this);
 			questionsStorage = QuestionsStorage.getInstance(this);
@@ -133,8 +132,8 @@ public class SyncService extends Service {
 			// Info
 			Log.i(TAG, "no data connection available -> exiting");
 
-			Toast.makeText(this, "SyncService: no internet connection",
-					Toast.LENGTH_SHORT).show();
+			//			Toast.makeText(this, "SyncService: no internet connection",
+			//					Toast.LENGTH_SHORT).show();
 			stopSelf();
 		}
 	}
@@ -165,9 +164,9 @@ public class SyncService extends Service {
 					// Info
 					Log.i(TAG, "successfully retrieved new questions.json from server");
 
-					Toast.makeText(SyncService.this,
-							"SyncService: new questions downloaded from server",
-							Toast.LENGTH_SHORT).show();
+					//					Toast.makeText(SyncService.this,
+					//							"SyncService: new questions downloaded from server",
+					//							Toast.LENGTH_SHORT).show();
 					questionsStorage.importQuestions(serverAnswer);
 				} else {
 					// Warning
@@ -211,9 +210,9 @@ public class SyncService extends Service {
 							HttpGetTask updateQuestionsTask = new HttpGetTask();
 							updateQuestionsTask.execute(updateQuestionsData);
 						} else {
-							Toast.makeText(SyncService.this,
-									"SyncService: no new questions to download",
-									Toast.LENGTH_SHORT).show();
+							//							Toast.makeText(SyncService.this,
+							//									"SyncService: no new questions to download",
+							//									Toast.LENGTH_SHORT).show();
 						}
 					} catch (Exception e) {
 						// Warning
@@ -254,9 +253,9 @@ public class SyncService extends Service {
 			// Info
 			Log.i(TAG, "no polls to upload -> exiting");
 
-			Toast.makeText(this,
-					"SyncService: no polls to upload",
-					Toast.LENGTH_SHORT).show();
+			//			Toast.makeText(this,
+			//					"SyncService: no polls to upload",
+			//					Toast.LENGTH_SHORT).show();
 
 			setUploadPollsDone();
 			return;
@@ -265,9 +264,9 @@ public class SyncService extends Service {
 		// Info
 		Log.i(TAG, "trying to upload " + uploadablePolls.size() + " polls");
 
-		Toast.makeText(this,
-				"SyncService: trying to upload " + uploadablePolls.size() + " polls",
-				Toast.LENGTH_SHORT).show();
+		//		Toast.makeText(this,
+		//				"SyncService: trying to upload " + uploadablePolls.size() + " polls",
+		//				Toast.LENGTH_SHORT).show();
 
 		pollsLeftToUpload = new HashSet<Integer>();
 		for (Poll poll : uploadablePolls) {
@@ -295,10 +294,10 @@ public class SyncService extends Service {
 								pollId + ") to server (serverAnswer: " +
 								serverAnswer + ")");
 
-						Toast.makeText(SyncService.this,
-								"SyncService: uploaded poll (id: " + pollId +
-								") (serverAnswer: " + serverAnswer + ")",
-								Toast.LENGTH_LONG).show();
+						//						Toast.makeText(SyncService.this,
+						//								"SyncService: uploaded poll (id: " + pollId +
+						//								") (serverAnswer: " + serverAnswer + ")",
+						//								Toast.LENGTH_LONG).show();
 
 						pollsStorage.removePoll(pollId);
 						setUploadPollDone(pollId);
