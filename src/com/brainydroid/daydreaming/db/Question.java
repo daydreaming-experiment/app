@@ -1,5 +1,6 @@
 package com.brainydroid.daydreaming.db;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -26,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.brainydroid.daydreaming.R;
+import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 
 // this class defines the general structure of questions and their answer.
@@ -48,12 +50,14 @@ public class Question {
 	@Expose private String _status;
 	// FIXME: the answer should be converted to JSON and not JSON-between-quotes when
 	// uploading to server
-	@Expose private String _answer;
+	@Expose private Answer _answer;
 	@Expose private double _locationLatitude;
 	@Expose private double _locationLongitude;
 	@Expose private double _locationAltitude;
 	@Expose private double _locationAccuracy;
 	@Expose private long _timestamp;
+
+	private transient Gson gson;
 
 	public static final String PARAMETER_SPLITTER = "\\{s\\}";
 	public static final String SUBPARAMETER_SPLITTER = "\\{ss\\}";
@@ -108,13 +112,13 @@ public class Question {
 		Log.d(TAG, "[fn] Question (argset 2: full)");
 
 		initVars();
-		_id = id;
-		_category = category;
-		_subcategory = subcategory;
-		_type = type;
-		_mainText = mainText;
-		_parametersText = parametersText;
-		_questionsVersion = QuestionsStorage.getInstance(context).getQuestionsVersion();
+		setId(id);
+		setCategory(category);
+		setSubcategory(subcategory);
+		setType(type);
+		setMainText(mainText);
+		setParametersText(parametersText);
+		setQuestionsVersion(QuestionsStorage.getInstance(context).getQuestionsVersion());
 	}
 
 	// default initialization of a question
@@ -137,6 +141,7 @@ public class Question {
 		_locationAccuracy = -1;
 		_timestamp = -1;
 		_questionsVersion = -1;
+		gson = new Gson();
 	}
 
 	//-------------------------- set / get functions
@@ -255,18 +260,51 @@ public class Question {
 
 	public String getAnswer() {
 
-		// Verbose
-		Log.v(TAG, "[fn] getAnswer");
+		// Debug
+		Log.d(TAG, "[fn] getAnswer");
 
-		return _answer;
+		if (_answer != null) {
+			Type outputType;
+			if (_type.equals(TYPE_MULTIPLE_CHOICE)) {
+				outputType = MultipleChoiceAnswer.class;
+			} else if (_type.equals(TYPE_SLIDER)) {
+				outputType = SliderAnswer.class;
+			} else {
+				throw new RuntimeException("Question type not set");
+			}
+
+			return gson.toJson(_answer, outputType);
+		} else {
+			return null;
+		}
 	}
 
-	public void setAnswer(String answer) {
+	private void setAnswer(Answer answer) {
 
 		// Verbose
-		Log.v(TAG, "[fn] setAnswer");
+		Log.v(TAG, "[fn] setAnswer (from Answer)");
 
 		_answer = answer;
+	}
+
+	public void setAnswer(String jsonAnswer) {
+
+		// Debug
+		Log.d(TAG, "[fn] setAnswer (from String)");
+
+		Answer answer;
+
+		if (jsonAnswer.length() != 0) {
+			if (_type.equals(TYPE_MULTIPLE_CHOICE)) {
+				answer = gson.fromJson(jsonAnswer, MultipleChoiceAnswer.class);
+			} else if (_type.equals(TYPE_SLIDER)) {
+				answer = gson.fromJson(jsonAnswer, SliderAnswer.class);
+			} else {
+				throw new RuntimeException("Question type not set");
+			}
+
+			setAnswer(answer);
+		}
 	}
 
 	public double getLocationLatitude() {
@@ -711,9 +749,10 @@ public class Question {
 		// Debug
 		Log.d(TAG, "[fn] saveAnswersSlider");
 
+		SliderAnswer answer = new SliderAnswer();
+
 		ArrayList<View> subQuestions = getViewsByTag(questionLinearLayout, "subquestion");
 		Iterator<View> subQuestionsIt = subQuestions.iterator();
-		StringBuilder sbAnswer = new StringBuilder("{\"sliderValues\": {");
 
 		while (subQuestionsIt.hasNext()) {
 			View subQuestion = subQuestionsIt.next();
@@ -721,15 +760,10 @@ public class Question {
 					R.id.question_slider_seekBar);
 			TextView mainTextView = (TextView)subQuestion.findViewById(R.id.question_slider_mainText);
 			String mainText = mainTextView.getText().toString();
-			sbAnswer.append("\"" + mainText + "\": " + seekBar.getProgress());
-
-			if (subQuestionsIt.hasNext()) {
-				sbAnswer.append(", ");
-			}
+			answer.addAnswer(mainText, seekBar.getProgress());
 		}
 
-		sbAnswer.append("}}");
-		setAnswer(sbAnswer.toString());
+		setAnswer(answer);
 	}
 
 	private void saveAnswersMultipleChoice(LinearLayout questionLinearLayout) {
@@ -737,32 +771,28 @@ public class Question {
 		// Debug
 		Log.d(TAG, "[fn] saveAnswersMultipleChoice");
 
+		MultipleChoiceAnswer answer = new MultipleChoiceAnswer();
+
 		ArrayList<View> subQuestions = getViewsByTag(questionLinearLayout, "subquestion");
 		Iterator<View> subQuestionsIt = subQuestions.iterator();
-		StringBuilder sbAnswer = new StringBuilder("{\"multipleChoiceValues\": {");
 
 		while (subQuestionsIt.hasNext()) {
 			View subQuestion = subQuestionsIt.next();
 			TextView mainTextView = (TextView)subQuestion.findViewById(R.id.question_multiple_choice_mainText);
 			String mainText = mainTextView.getText().toString();
-			sbAnswer.append("\"" + mainText + "\": [");
+			answer.addSubquestion(mainText);
 
 			LinearLayout rootChoices = (LinearLayout)subQuestion.findViewById(
 					R.id.question_multiple_choice_rootChoices);
 			int childCount = rootChoices.getChildCount();
-			ArrayList<String> choices = new ArrayList<String>();
 
 			// Get choices in a list
 			for (int i = 0; i < childCount; i++) {
 				CheckBox child = (CheckBox)rootChoices.getChildAt(i);
 				if (child.isChecked()) {
-					choices.add("\"" + child.getText().toString() + "\"");
+					answer.addChoice(mainText, child.getText().toString());
 				}
 			}
-
-			// Join choices into a string
-			String joinedChoices = Util.joinStrings(choices, ", ");
-			sbAnswer.append(joinedChoices);
 
 			// Get the "Other" field
 			CheckBox otherCheck = (CheckBox)subQuestion.findViewById(
@@ -771,20 +801,11 @@ public class Question {
 				EditText otherEditText = (EditText)subQuestion.findViewById(
 						R.id.question_multiple_choices_otherEditText);
 				String otherText = otherEditText.getText().toString();
-				if (choices.size() != 0) {
-					sbAnswer.append(", ");
-				}
-				sbAnswer.append("{\"Other\": \"" + otherText + "\"}");
-			}
 
-			// Close that JSON object
-			sbAnswer.append("]");
-			if (subQuestionsIt.hasNext()) {
-				sbAnswer.append(", ");
+				answer.addChoice(mainText, "Other: " + otherText);
 			}
 		}
 
-		sbAnswer.append("}}");
-		setAnswer(sbAnswer.toString());
+		setAnswer(answer);
 	}
 }

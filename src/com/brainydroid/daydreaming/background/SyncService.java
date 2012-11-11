@@ -83,6 +83,8 @@ public class SyncService extends Service {
 		return null;
 	}
 
+	// FIXME: if the servers don't answer, does the connection time out and does the
+	// service exit?
 	private void initVarsAndUpdates() {
 
 		// Debug
