@@ -1,4 +1,12 @@
 package com.brainydroid.daydreaming.db;
 
+import android.widget.LinearLayout;
 
-public abstract class Answer {}
+
+public interface Answer {
+
+	public String toJson();
+
+	public void getAnswersFromLayout(LinearLayout questionLinearLayout);
+
+}

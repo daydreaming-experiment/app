@@ -48,8 +48,6 @@ public class Question {
 
 	// attributes dependent on the answer
 	@Expose private String _status;
-	// FIXME: the answer should be converted to JSON and not JSON-between-quotes when
-	// uploading to server
 	@Expose private Answer _answer;
 	@Expose private double _locationLatitude;
 	@Expose private double _locationLongitude;
@@ -202,6 +200,38 @@ public class Question {
 		return _type;
 	}
 
+	private Type getTypeType() {
+
+		// Debug
+		Log.d(TAG, "[fn] getTypeType");
+
+		if (_type == null) {
+			throw new RuntimeException("Question type not set");
+		} else if (_type.equals(TYPE_MULTIPLE_CHOICE)) {
+			return MultipleChoiceAnswer.class;
+		} else if (_type.equals(TYPE_SLIDER)) {
+			return SliderAnswer.class;
+		} else {
+			throw new RuntimeException("Question type not set");
+		}
+	}
+
+	private Answer newAnswerType() {
+
+		// Debug
+		Log.d(TAG, "[fn] newAnswerType");
+
+		if (_type == null) {
+			throw new RuntimeException("Question type not set");
+		} else if (_type.equals(TYPE_MULTIPLE_CHOICE)) {
+			return new MultipleChoiceAnswer();
+		} else if (_type.equals(TYPE_SLIDER)) {
+			return new SliderAnswer();
+		} else {
+			throw new RuntimeException("Question type not set");
+		}
+	}
+
 	public void setType(String type) {
 
 		// Verbose
@@ -264,16 +294,7 @@ public class Question {
 		Log.d(TAG, "[fn] getAnswer");
 
 		if (_answer != null) {
-			Type outputType;
-			if (_type.equals(TYPE_MULTIPLE_CHOICE)) {
-				outputType = MultipleChoiceAnswer.class;
-			} else if (_type.equals(TYPE_SLIDER)) {
-				outputType = SliderAnswer.class;
-			} else {
-				throw new RuntimeException("Question type not set");
-			}
-
-			return gson.toJson(_answer, outputType);
+			return _answer.toJson();
 		} else {
 			return null;
 		}
@@ -292,17 +313,9 @@ public class Question {
 		// Debug
 		Log.d(TAG, "[fn] setAnswer (from String)");
 
-		Answer answer;
-
 		if (jsonAnswer.length() != 0) {
-			if (_type.equals(TYPE_MULTIPLE_CHOICE)) {
-				answer = gson.fromJson(jsonAnswer, MultipleChoiceAnswer.class);
-			} else if (_type.equals(TYPE_SLIDER)) {
-				answer = gson.fromJson(jsonAnswer, SliderAnswer.class);
-			} else {
-				throw new RuntimeException("Question type not set");
-			}
-
+			Type typeType = getTypeType();
+			Answer answer = gson.fromJson(jsonAnswer, typeType);
 			setAnswer(answer);
 		}
 	}
@@ -420,10 +433,9 @@ public class Question {
 	// Manage ui and fills answer fields of the class
 
 
-
 	// Select questions by tags.
 	// Tags only used to identify subquestions when they exist
-	private static ArrayList<View> getViewsByTag(ViewGroup root, String tag){
+	protected static ArrayList<View> getViewsByTag(ViewGroup root, String tag){
 
 		// Debug
 		Log.d(TAG, "[fn] getViewsByTag");
@@ -444,7 +456,6 @@ public class Question {
 		}
 		return views;
 	}
-
 
 	public ArrayList<View> createViews(Context context) {
 
@@ -735,77 +746,8 @@ public class Question {
 		// Debug
 		Log.d(TAG, "[fn] saveAnswers");
 
-		if (_type.equals(TYPE_SLIDER)) {
-			saveAnswersSlider(questionLinearLayout);
-			//		} else if (_type.equals(TYPE_SINGLE_CHOICE)) {
-			//			saveAnswersSingleChoice(questionLinearLayout);
-		} else if (_type.equals(TYPE_MULTIPLE_CHOICE)) {
-			saveAnswersMultipleChoice(questionLinearLayout);
-		}
-	}
-
-	private void saveAnswersSlider(LinearLayout questionLinearLayout) {
-
-		// Debug
-		Log.d(TAG, "[fn] saveAnswersSlider");
-
-		SliderAnswer answer = new SliderAnswer();
-
-		ArrayList<View> subQuestions = getViewsByTag(questionLinearLayout, "subquestion");
-		Iterator<View> subQuestionsIt = subQuestions.iterator();
-
-		while (subQuestionsIt.hasNext()) {
-			View subQuestion = subQuestionsIt.next();
-			SeekBar seekBar = (SeekBar)subQuestion.findViewById(
-					R.id.question_slider_seekBar);
-			TextView mainTextView = (TextView)subQuestion.findViewById(R.id.question_slider_mainText);
-			String mainText = mainTextView.getText().toString();
-			answer.addAnswer(mainText, seekBar.getProgress());
-		}
-
-		setAnswer(answer);
-	}
-
-	private void saveAnswersMultipleChoice(LinearLayout questionLinearLayout) {
-
-		// Debug
-		Log.d(TAG, "[fn] saveAnswersMultipleChoice");
-
-		MultipleChoiceAnswer answer = new MultipleChoiceAnswer();
-
-		ArrayList<View> subQuestions = getViewsByTag(questionLinearLayout, "subquestion");
-		Iterator<View> subQuestionsIt = subQuestions.iterator();
-
-		while (subQuestionsIt.hasNext()) {
-			View subQuestion = subQuestionsIt.next();
-			TextView mainTextView = (TextView)subQuestion.findViewById(R.id.question_multiple_choice_mainText);
-			String mainText = mainTextView.getText().toString();
-			answer.addSubquestion(mainText);
-
-			LinearLayout rootChoices = (LinearLayout)subQuestion.findViewById(
-					R.id.question_multiple_choice_rootChoices);
-			int childCount = rootChoices.getChildCount();
-
-			// Get choices in a list
-			for (int i = 0; i < childCount; i++) {
-				CheckBox child = (CheckBox)rootChoices.getChildAt(i);
-				if (child.isChecked()) {
-					answer.addChoice(mainText, child.getText().toString());
-				}
-			}
-
-			// Get the "Other" field
-			CheckBox otherCheck = (CheckBox)subQuestion.findViewById(
-					R.id.question_multiple_choices_otherCheckBox);
-			if (otherCheck.isChecked()) {
-				EditText otherEditText = (EditText)subQuestion.findViewById(
-						R.id.question_multiple_choices_otherEditText);
-				String otherText = otherEditText.getText().toString();
-
-				answer.addChoice(mainText, "Other: " + otherText);
-			}
-		}
-
+		Answer answer = newAnswerType();
+		answer.getAnswersFromLayout(questionLinearLayout);
 		setAnswer(answer);
 	}
 }
