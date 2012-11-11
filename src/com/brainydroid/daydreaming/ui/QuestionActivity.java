@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.LocationCallback;
 import com.brainydroid.daydreaming.background.LocationServiceConnection;
+import com.brainydroid.daydreaming.background.PollService;
 import com.brainydroid.daydreaming.background.SchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.background.SyncService;
@@ -110,7 +111,9 @@ public class QuestionActivity extends ActionBarActivity {
 		setChrome();
 		populateViews();
 		setTitle(getString(R.string.app_name) + " " + (questionIndex + 1) + "/" + nQuestions);
-		startSchedulerService();
+		if (!getIntent().getBooleanExtra(PollService.POLL_DEBUGGING, false)) {
+			startSchedulerService();
+		}
 	}
 
 	@Override
@@ -141,10 +144,10 @@ public class QuestionActivity extends ActionBarActivity {
 			poll.setStatus(Poll.STATUS_STOPPED);
 			poll.setQuestionStatus(questionIndex, Question.STATUS_ASKED_DISMISSED);
 			locationServiceConnection.setStopOnUnbind();
+			startSyncService();
 		}
 
 		locationServiceConnection.unbindLocationService();
-		startSyncService();
 	}
 
 	@Override
@@ -343,6 +346,8 @@ public class QuestionActivity extends ActionBarActivity {
 		Intent intent = new Intent(this, QuestionActivity.class);
 		intent.putExtra(EXTRA_POLL_ID, pollId);
 		intent.putExtra(EXTRA_QUESTION_INDEX, questionIndex + 1);
+		intent.putExtra(PollService.POLL_DEBUGGING,
+				getIntent().getBooleanExtra(PollService.POLL_DEBUGGING, false));
 		intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
 		startActivity(intent);
 		overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
@@ -376,6 +381,7 @@ public class QuestionActivity extends ActionBarActivity {
 		Toast.makeText(this, getString(R.string.question_thank_you), Toast.LENGTH_SHORT).show();
 		poll.setStatus(Poll.STATUS_COMPLETED);
 		locationServiceConnection.setStopOnUnbind();
+		startSyncService();
 		finish();
 	}
 

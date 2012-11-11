@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.PollService;
+import com.brainydroid.daydreaming.background.SchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.background.SyncService;
 import com.brainydroid.daydreaming.db.PollsStorage;
@@ -156,10 +157,10 @@ public class DashboardActivity extends ActionBarActivity {
 	public void runPollNow(View view) {
 
 		// Debug
-		Log.d(TAG, "[fn] runPoll");
+		Log.d(TAG, "[fn] runPollNow");
 
 		Intent pollIntent = new Intent(this, PollService.class);
-		pollIntent.putExtra("startNow", true);
+		pollIntent.putExtra(PollService.POLL_DEBUGGING, true);
 		startService(pollIntent);
 	}
 
@@ -170,5 +171,14 @@ public class DashboardActivity extends ActionBarActivity {
 
 		Intent syncIntent = new Intent(this, SyncService.class);
 		startService(syncIntent);
+	}
+
+	public void schedulePoll(View view) {
+
+		// Debug
+		Log.d(TAG, "[fn] schedulePoll");
+
+		Intent scheduleIntent = new Intent(this, SchedulerService.class);
+		startService(scheduleIntent);
 	}
 }

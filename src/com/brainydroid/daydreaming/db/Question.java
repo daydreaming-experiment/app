@@ -316,7 +316,7 @@ public class Question {
 		// Debug
 		Log.d(TAG, "[fn] setAnswer (from String)");
 
-		if (jsonAnswer.length() != 0) {
+		if (jsonAnswer != null && jsonAnswer.length() != 0) {
 			Type typeType = getTypeType();
 			Answer answer = gson.fromJson(jsonAnswer, typeType);
 			setAnswer(answer);

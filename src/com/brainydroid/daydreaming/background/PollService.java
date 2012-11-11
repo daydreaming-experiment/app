@@ -21,6 +21,8 @@ public class PollService extends Service {
 
 	private static String TAG = "PollService";
 
+	public static String POLL_DEBUGGING = "pollDebugging";
+
 	private static int nQuestionsPerPoll = 3;
 
 	private NotificationManager notificationManager;
@@ -46,7 +48,7 @@ public class PollService extends Service {
 
 		initVars();
 		pollsStorage.cleanPolls();
-		createAndLaunchPoll(intent.getBooleanExtra("startNow", false));
+		createAndLaunchPoll(intent.getBooleanExtra(POLL_DEBUGGING, false));
 		stopSelf();
 		return START_REDELIVER_INTENT;
 	}
@@ -92,6 +94,10 @@ public class PollService extends Service {
 	}
 
 	private Intent createPollIntent(Poll poll) {
+		return createPollIntent(poll, false);
+	}
+
+	private Intent createPollIntent(Poll poll, boolean startNow) {
 
 		// Debug
 		Log.d(TAG, "[fn] createPollIntent");
@@ -99,6 +105,7 @@ public class PollService extends Service {
 		Intent intent = new Intent(this, QuestionActivity.class);
 		intent.putExtra(QuestionActivity.EXTRA_POLL_ID, poll.getId());
 		intent.putExtra(QuestionActivity.EXTRA_QUESTION_INDEX, 0);
+		intent.putExtra(POLL_DEBUGGING, startNow);
 		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
 		return intent;
 	}
@@ -108,7 +115,7 @@ public class PollService extends Service {
 		// Debug
 		Log.d(TAG, "[fn] launchPoll");
 
-		Intent intent = createPollIntent(poll);
+		Intent intent = createPollIntent(poll, true);
 		startActivity(intent);
 	}
 

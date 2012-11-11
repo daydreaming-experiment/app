@@ -1,5 +1,6 @@
 package com.brainydroid.daydreaming.background;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Random;
 
@@ -98,9 +99,25 @@ public class SchedulerService extends Service {
 		alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
 				scheduledTime, pendingIntent);
 
-		Toast.makeText(this, "Poll scheduled in " +
-				((scheduledTime - SystemClock.elapsedRealtime()) / 1000f) +
-				" seconds", Toast.LENGTH_LONG).show();
+		Calendar now = Calendar.getInstance();
+		long wait = scheduledTime - SystemClock.elapsedRealtime();
+		now.add(Calendar.MILLISECOND, (int)wait);
+
+		long hours = wait / (60 * 60 * 1000);
+		wait -= hours * 60 * 60 * 1000;
+		long minutes = wait / (60 * 1000);
+		wait -= minutes * 60 * 1000;
+		long seconds = wait / 1000;
+
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+		String target = sdf.format(now.getTime());
+
+		// Info
+
+		Log.i(TAG, "poll scheduled in " + hours +" hours, " +
+				minutes + " minutes, and " + seconds + " seconds (i.e. " + target + ")");
+
+		Toast.makeText(this, "New poll scheduled at " + target, Toast.LENGTH_LONG).show();
 	}
 
 	private void startSyncService() {

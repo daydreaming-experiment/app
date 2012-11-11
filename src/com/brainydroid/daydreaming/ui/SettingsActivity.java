@@ -46,6 +46,11 @@ implements OnSharedPreferenceChangeListener {
 
 	@Override
 	protected void onStop() {
+
+		// Debug
+		Log.d(TAG, "[fn] onStop");
+
+		super.onStop();
 		sharedPrefs.unregisterOnSharedPreferenceChangeListener(this);
 	}
 
