@@ -10,7 +10,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.brainydroid.daydreaming.R;
-import com.brainydroid.daydreaming.background.SchedulerService;
+import com.brainydroid.daydreaming.background.PollService;
 import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.background.SyncService;
 import com.brainydroid.daydreaming.db.PollsStorage;
@@ -91,14 +91,11 @@ public class DashboardActivity extends ActionBarActivity {
 
 		switch (item.getItemId()) {
 		case android.R.id.home:
-			Toast.makeText(this, "Tapped home", Toast.LENGTH_SHORT).show();
 			break;
 
 		case R.id.menu_settings:
 			Intent intent = new Intent(this, SettingsActivity.class);
-			intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 			startActivity(intent);
-			Toast.makeText(this, "Tapped settings", Toast.LENGTH_SHORT).show();
 			break;
 		}
 		return super.onOptionsItemSelected(item);
@@ -156,13 +153,14 @@ public class DashboardActivity extends ActionBarActivity {
 		finish();
 	}
 
-	public void runPoll(View view) {
+	public void runPollNow(View view) {
 
 		// Debug
 		Log.d(TAG, "[fn] runPoll");
 
-		Intent schedulerIntent = new Intent(this, SchedulerService.class);
-		startService(schedulerIntent);
+		Intent pollIntent = new Intent(this, PollService.class);
+		pollIntent.putExtra("startNow", true);
+		startService(pollIntent);
 	}
 
 	public void startSyncService(View view) {

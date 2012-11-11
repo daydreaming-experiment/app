@@ -72,7 +72,7 @@ public class TimePreference extends DialogPreference {
 		Log.d(TAG, "[fn] onCreateDialogView");
 
 		picker = new TimePicker(getContext());
-		return(picker);
+		return picker;
 	}
 
 	// bind dialog to current view
@@ -141,8 +141,8 @@ public class TimePreference extends DialogPreference {
 		// Debug
 		Log.d(TAG, "[fn] getTimeString");
 
-		//        lastHour=picker.getCurrentHour();
-		//        lastMinute=picker.getCurrentMinute();
+		//        lastHour = picker.getCurrentHour();
+		//        lastMinute = picker.getCurrentMinute();
 		String time = pad(lastHour) + ":" + pad(lastMinute);
 		return time;
 	}
@@ -155,7 +155,6 @@ public class TimePreference extends DialogPreference {
 		String[] pieces = time.split(":");
 		lastHour = Integer.parseInt(pieces[0]);
 		lastMinute = Integer.parseInt(pieces[1]);
-
 	}
 
 	private static String pad(int c) {

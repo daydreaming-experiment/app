@@ -23,7 +23,9 @@ import android.widget.Toast;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.LocationCallback;
 import com.brainydroid.daydreaming.background.LocationServiceConnection;
+import com.brainydroid.daydreaming.background.SchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
+import com.brainydroid.daydreaming.background.SyncService;
 import com.brainydroid.daydreaming.db.Poll;
 import com.brainydroid.daydreaming.db.PollsStorage;
 import com.brainydroid.daydreaming.db.Question;
@@ -108,7 +110,7 @@ public class QuestionActivity extends ActionBarActivity {
 		setChrome();
 		populateViews();
 		setTitle(getString(R.string.app_name) + " " + (questionIndex + 1) + "/" + nQuestions);
-		// TODO: add a call to SchedulerService
+		startSchedulerService();
 	}
 
 	@Override
@@ -142,7 +144,7 @@ public class QuestionActivity extends ActionBarActivity {
 		}
 
 		locationServiceConnection.unbindLocationService();
-		// TODO: add a call to SyncService
+		startSyncService();
 	}
 
 	@Override
@@ -173,6 +175,24 @@ public class QuestionActivity extends ActionBarActivity {
 		questionLinearLayout = (LinearLayout)findViewById(R.id.question_linearLayout);
 		status = StatusManager.getInstance(this);
 		locationServiceConnection = new LocationServiceConnection(this);
+	}
+
+	private void startSyncService() {
+
+		// Debug
+		Log.d(TAG, "[fn] startSyncService");
+
+		Intent syncIntent = new Intent(this, SyncService.class);
+		startService(syncIntent);
+	}
+
+	private void startSchedulerService() {
+
+		// Debug
+		Log.d(TAG, "[fn] startSchedulerService");
+
+		Intent schedulerIntent = new Intent(this, SchedulerService.class);
+		startService(schedulerIntent);
 	}
 
 	private boolean checkPollStatus() {

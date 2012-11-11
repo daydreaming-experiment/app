@@ -29,11 +29,10 @@ public class BootReceiver extends BroadcastReceiver {
 
 				// Info
 				Log.i(TAG, "first launch is completed");
-				Log.i(TAG, "will start SchedulerService");
-				Log.i(TAG, "will start SyncService");
+				Log.i(TAG, "starting SchedulerService");
 
-				// TODO: add a call to SchedulerService
-				// TODO: add a call to SyncService
+				Intent schedulerIntent = new Intent(context, SchedulerService.class);
+				context.startService(schedulerIntent);
 			}
 		}
 	}

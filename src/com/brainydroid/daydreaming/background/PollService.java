@@ -46,7 +46,7 @@ public class PollService extends Service {
 
 		initVars();
 		pollsStorage.cleanPolls();
-		createAndNotifyPoll();
+		createAndLaunchPoll(intent.getBooleanExtra("startNow", false));
 		stopSelf();
 		return START_REDELIVER_INTENT;
 	}
@@ -78,13 +78,38 @@ public class PollService extends Service {
 		pollsStorage = PollsStorage.getInstance(this);
 	}
 
-	private void createAndNotifyPoll() {
+	private void createAndLaunchPoll(boolean startNow) {
 
 		// Debug
-		Log.d(TAG, "[fn] createAndNotifyPoll");
+		Log.d(TAG, "[fn] createAndLaunchPoll");
 
 		Poll poll = createPoll();
-		notifyPoll(poll);
+		if (startNow) {
+			launchPoll(poll);
+		} else {
+			notifyPoll(poll);
+		}
+	}
+
+	private Intent createPollIntent(Poll poll) {
+
+		// Debug
+		Log.d(TAG, "[fn] createPollIntent");
+
+		Intent intent = new Intent(this, QuestionActivity.class);
+		intent.putExtra(QuestionActivity.EXTRA_POLL_ID, poll.getId());
+		intent.putExtra(QuestionActivity.EXTRA_QUESTION_INDEX, 0);
+		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+		return intent;
+	}
+
+	private void launchPoll(Poll poll) {
+
+		// Debug
+		Log.d(TAG, "[fn] launchPoll");
+
+		Intent intent = createPollIntent(poll);
+		startActivity(intent);
 	}
 
 	private void notifyPoll(Poll poll) {
@@ -92,10 +117,7 @@ public class PollService extends Service {
 		// Debug
 		Log.d(TAG, "[fn] notifyPoll");
 
-		Intent intent = new Intent(this, QuestionActivity.class);
-		intent.putExtra(QuestionActivity.EXTRA_POLL_ID, poll.getId());
-		intent.putExtra(QuestionActivity.EXTRA_QUESTION_INDEX, 0);
-		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+		Intent intent = createPollIntent(poll);
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent,
 				PendingIntent.FLAG_CANCEL_CURRENT);
 

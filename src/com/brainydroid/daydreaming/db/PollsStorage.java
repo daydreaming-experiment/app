@@ -141,7 +141,7 @@ public class PollsStorage {
 			wDb.insert(TABLE_POLL_QUESTIONS, null, qValues);
 		}
 
-		checkNetworkReceiver();
+		//		checkNetworkReceiver();
 	}
 
 	public void updatePoll(Poll poll) {
@@ -158,11 +158,12 @@ public class PollsStorage {
 		while (qIterator.hasNext()) {
 			Question q = qIterator.next();
 			ContentValues qValues = getQuestionContentValues(pollId, q);
-			wDb.update(TABLE_POLL_QUESTIONS, qValues, Poll.COL_ID + "=? AND " + Question.COL_ID + "=?",
+			wDb.update(TABLE_POLL_QUESTIONS, qValues,
+					Poll.COL_ID + "=? AND " + Question.COL_ID + "=?",
 					new String[] {Integer.toString(pollId), q.getId()});
 		}
 
-		checkNetworkReceiver();
+		//		checkNetworkReceiver();
 	}
 
 	public Poll getPoll(int pollId) {
@@ -202,10 +203,14 @@ public class PollsStorage {
 					qRes.getString(qRes.getColumnIndex(Question.COL_ID)));
 			q.setStatus(qRes.getString(qRes.getColumnIndex(Question.COL_STATUS)));
 			q.setAnswer(qRes.getString(qRes.getColumnIndex(Question.COL_ANSWER)));
-			q.setLocationLatitude(qRes.getDouble(qRes.getColumnIndex(Question.COL_LOCATION_LATITUDE)));
-			q.setLocationLongitude(qRes.getDouble(qRes.getColumnIndex(Question.COL_LOCATION_LONGITUDE)));
-			q.setLocationAltitude(qRes.getDouble(qRes.getColumnIndex(Question.COL_LOCATION_ALTITUDE)));
-			q.setLocationAccuracy(qRes.getDouble(qRes.getColumnIndex(Question.COL_LOCATION_ACCURACY)));
+			q.setLocationLatitude(qRes.getDouble(
+					qRes.getColumnIndex(Question.COL_LOCATION_LATITUDE)));
+			q.setLocationLongitude(qRes.getDouble(
+					qRes.getColumnIndex(Question.COL_LOCATION_LONGITUDE)));
+			q.setLocationAltitude(qRes.getDouble(
+					qRes.getColumnIndex(Question.COL_LOCATION_ALTITUDE)));
+			q.setLocationAccuracy(qRes.getDouble(
+					qRes.getColumnIndex(Question.COL_LOCATION_ACCURACY)));
 			q.setTimestamp(qRes.getLong(qRes.getColumnIndex(Question.COL_TIMESTAMP)));
 
 			poll.addQuestion(q);
@@ -247,10 +252,31 @@ public class PollsStorage {
 		}
 	}
 
+	//	private boolean hasUploadablePolls() {
+	//		return hasPollsWithStatuses(
+	//				new String[] {Poll.STATUS_COMPLETED, Poll.STATUS_PARTIALLY_COMPLETED});
+	//	}
+
+	//	private boolean hasPollsWithStatuses(String[] statuses) {
+	//
+	//		// Debug
+	//		Log.d(TAG, "[fn] hasPollsWithStatuses");
+	//
+	//		return getPollIdsWithStatuses(statuses, "LIMIT 1") != null;
+	//	}
+
 	private ArrayList<Integer> getPollIdsWithStatuses(String[] statuses) {
 
 		// Debug
-		Log.d(TAG, "[fn] getPollIdsWithStatuses");
+		Log.d(TAG, "[fn] getPollIdsWithStatuses (from String[])");
+
+		return getPollIdsWithStatuses(statuses, null);
+	}
+
+	private ArrayList<Integer> getPollIdsWithStatuses(String[] statuses, String limit) {
+
+		// Debug
+		Log.d(TAG, "[fn] getPollIdsWithStatuses (from String[], String)");
 
 		String query = Util.multiplyString(Poll.COL_STATUS + "=?", statuses.length, " OR ");
 		Cursor res = rDb.query(TABLE_POLLS, new String[] {Poll.COL_ID}, query, statuses,
@@ -295,10 +321,11 @@ public class PollsStorage {
 		Log.d(TAG, "[fn] removePoll");
 
 		wDb.delete(TABLE_POLLS, Poll.COL_ID + "=?", new String[] {Integer.toString(pollId)});
-		wDb.delete(TABLE_POLL_QUESTIONS, Poll.COL_ID + "=?", new String[] {Integer.toString(pollId)});
+		wDb.delete(TABLE_POLL_QUESTIONS, Poll.COL_ID + "=?",
+				new String[] {Integer.toString(pollId)});
 		_pollInstances.delete(pollId);
 
-		checkNetworkReceiver();
+		//		checkNetworkReceiver();
 	}
 
 	public void flushAll() {
@@ -322,11 +349,12 @@ public class PollsStorage {
 		psInstance = null;
 	}
 
-	private void checkNetworkReceiver() {
-
-		// Debug
-		Log.d(TAG, "[fn] checkNetworkReceiver");
-
-		// TODO: if no polls are uploadable, disable NetworkReceiver. Otherwise activate it.
-	}
+	//	private void checkNetworkReceiver() {
+	//
+	//		// Debug
+	//		Log.d(TAG, "[fn] checkNetworkReceiver");
+	//
+	//		// Unregister or re-register the NetworkReceiver depending on whether
+	//		// there are any uploadable polls
+	//	}
 }

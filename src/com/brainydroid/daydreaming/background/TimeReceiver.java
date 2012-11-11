@@ -3,12 +3,11 @@ package com.brainydroid.daydreaming.background;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
 import android.util.Log;
 
-public class NetworkReceiver extends BroadcastReceiver {
+public class TimeReceiver extends BroadcastReceiver {
 
-	private static String TAG = "NetworkReceiver";
+	private static String TAG = "TimeReceiver";
 
 	private StatusManager status;
 
@@ -21,19 +20,19 @@ public class NetworkReceiver extends BroadcastReceiver {
 		status = StatusManager.getInstance(context);
 		String action = intent.getAction();
 
-		if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
+		if (action.equals(Intent.ACTION_TIME_CHANGED) || action.equals(Intent.ACTION_TIMEZONE_CHANGED)) {
 
 			// Info
-			Log.i(TAG, "Received CONNECTIVITY_ACTION");
+			Log.i(TAG, "Received ACTION_TIME_CHANGED or ACTION_TIMEZONE_CHANGED");
 
-			if (status.isFirstLaunchCompleted() && status.isDataEnabled()) {
+			if (status.isFirstLaunchCompleted()) {
 
 				// Info
 				Log.i(TAG, "first launch is completed");
-				Log.i(TAG, "starting SyncService");
+				Log.i(TAG, "starting SchedulerService");
 
-				Intent syncIntent = new Intent(context, SyncService.class);
-				context.startService(syncIntent);
+				Intent schedulerIntent = new Intent(context, SchedulerService.class);
+				context.startService(schedulerIntent);
 			}
 		}
 	}

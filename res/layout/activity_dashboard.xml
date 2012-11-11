@@ -89,7 +89,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:onClick="runPoll"
+        android:onClick="runPollNow"
         android:text="Run a Poll" />
 
     <Button
@@ -99,6 +99,6 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:onClick="startSyncService"
-        android:text="Start SyncService" />
+        android:text="Sync" />
 
 </LinearLayout>

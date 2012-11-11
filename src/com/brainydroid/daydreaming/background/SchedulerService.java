@@ -1,5 +1,6 @@
 package com.brainydroid.daydreaming.background;
 
+import java.util.Calendar;
 import java.util.Random;
 
 import android.app.AlarmManager;
@@ -7,19 +8,24 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.brainydroid.daydreaming.R;
 
 public class SchedulerService extends Service {
 
 	private static String TAG = "SchedulerService";
 
-	private static long SAMPLE_TIME_MEAN = 15 * 1000; // in milliseconds
-	private static long SAMPLE_TIME_STD = 5 * 1000; // in milliseconds
-	private static long SAMPLE_TIME_MIN = 0; // in milliseconds;
+	private static long SAMPLE_TIME_MEAN = 2 * 60 * 60 * 1000; // 2 hours (in milliseconds)
+	private static long SAMPLE_TIME_STD = 1 * 60 * 60 * 1000; // 1 hour (in milliseconds)
+	private static long SAMPLE_TIME_MIN = 10 * 60 * 1000; // 10 minutes (in milliseconds)
 
+	private SharedPreferences sharedPrefs;
 	private Random random;
 	private AlarmManager alarmManager;
 
@@ -30,8 +36,7 @@ public class SchedulerService extends Service {
 		Log.d(TAG, "[fn] onCreate");
 
 		super.onCreate();
-		alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
-		random = new Random(System.currentTimeMillis());
+		initVars();
 	}
 
 	@Override
@@ -42,7 +47,7 @@ public class SchedulerService extends Service {
 
 		super.onStartCommand(intent, flags, startId);
 
-		// Since the poll gets created when the notification show up, there's a good chance
+		// Since the poll gets created when the notification shows up, there's a good chance
 		// the questions will have finished updating (if internet connection is available)
 		// before poll creation.
 		startSyncService();
@@ -70,12 +75,21 @@ public class SchedulerService extends Service {
 		return null;
 	}
 
+	private void initVars() {
+
+		// Debug
+		Log.d(TAG, "[fn] initVars");
+
+		alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+		random = new Random(System.currentTimeMillis());
+		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+	}
+
 	private void schedulePoll() {
 
 		// Debug
 		Log.d(TAG, "[fn] schedulePoll");
 
-		// TODO: check for current time against times at which polls are allowed
 		long scheduledTime = generateTime();
 
 		Intent intent = new Intent(this, PollService.class);
@@ -116,6 +130,77 @@ public class SchedulerService extends Service {
 			wait = SAMPLE_TIME_MIN;
 		}
 
-		return SystemClock.elapsedRealtime() + wait;
+		return SystemClock.elapsedRealtime() + scaleWaitTime(wait);
+	}
+
+	private long scaleWaitTime(long wait) {
+
+		// Debug
+		Log.d(TAG, "[fn] scaleWaitTime");
+
+		String[] startPieces = sharedPrefs.getString("time_window_lb_key",
+				getString(R.pref.settings_time_window_lb_default)).split(":");
+		String[] endPieces = sharedPrefs.getString("time_window_ub_key",
+				getString(R.pref.settings_time_window_ub_default)).split(":");
+
+		int startHour = Integer.parseInt(startPieces[0]);
+		int startMinute = Integer.parseInt(startPieces[1]);
+		int endHour = Integer.parseInt(endPieces[0]);
+		int endMinute = Integer.parseInt(endPieces[1]);
+
+		Calendar now = Calendar.getInstance();
+
+		Calendar suggested = (Calendar)now.clone();
+		suggested.add(Calendar.MILLISECOND, (int)wait);
+
+		Calendar start = (Calendar)now.clone();
+		start.set(Calendar.HOUR_OF_DAY, startHour);
+		start.set(Calendar.MINUTE, startMinute);
+
+		Calendar end = (Calendar)now.clone();
+		end.set(Calendar.HOUR_OF_DAY, endHour);
+		end.set(Calendar.MINUTE, endMinute);
+
+		Calendar nextStart = (Calendar)start.clone();
+		nextStart.add(Calendar.DAY_OF_YEAR, 1);
+
+		if (now.before(start)) {
+			// Now is before the starting time for notifications
+
+			if (suggested.before(start)) {
+				// Suggested schedule is also before start
+				// Shift to the beginning of the allowed window
+				return wait + start.getTimeInMillis() - now.getTimeInMillis();
+			} else {
+				// Suggested schedule falls in the allowed window
+				// Accept that
+				return wait;
+			}
+
+		} else if (now.before(end)) {
+			// Now is in the allowed window
+
+			if (suggested.before(end) || suggested.after(nextStart)) {
+				// Suggested schedule falls in the allowed window (today or tomorrow)
+				// Accept that
+				return wait;
+			} else {
+				// Suggested schedule falls outside the allowed window
+				// Add the surplus after the next allowed start time
+				return wait + nextStart.getTimeInMillis() - end.getTimeInMillis();
+			}
+		} else {
+			// Now is after the stop time
+
+			if (suggested.before(nextStart)) {
+				// Suggested is still in the forbidden window
+				// Shift to the beginning of the allowed window
+				return wait + nextStart.getTimeInMillis() - now.getTimeInMillis();
+			} else {
+				// Suggested is in the next allowed window
+				// Accept that
+				return wait;
+			}
+		}
 	}
 }

@@ -33,6 +33,9 @@ import com.google.gson.annotations.Expose;
 // this class defines the general structure of questions and their answer.
 // These attributes will be saved
 
+// TODO: add some way to save the phone's timezone and the user's preferences
+// about what times he allowed notifications to appear at.
+
 public class Question {
 
 	private static String TAG = "Question";

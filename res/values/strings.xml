@@ -72,7 +72,4 @@
     <string name="pollNotification_title">Day Dreaming</string>
     <string name="pollNotification_text">A few quick questions</string>
     
-    <string name="menu_refresh">Refresh</string>
-    <string name="menu_search">Search</string>
-    <string name="menu_share">Share</string>
 </resources>

@@ -24,9 +24,9 @@ public class FirstLaunchSettingsActivity extends ActionBarActivity {
 	// TODO
 	// - save and restore preference state (when screen rotates)
 	// - save value for time window dialog
-	// - listening for preference change ? (if time window is set to 7pm while a notification is scheduled for 8)
 	// - status checks (good insertion in the firstlaunch sequence)
 	// DONE
+	// - listening for preference change (if time window is set to 7pm while a notification is scheduled for 8)
 	// - saving preference : automatic
 	// - setting default values in xml
 

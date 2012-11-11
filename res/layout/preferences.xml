@@ -29,17 +29,17 @@
         android:title="@string/time_window_settings" >
 
         <com.brainydroid.daydreaming.ui.TimePreference
-            android:defaultValue="19:00"
+            android:defaultValue="@pref/settings_time_window_lb_default"
             android:key="time_window_lb_key"
             android:persistent="true"
-            android:summary="not set yet"
+            android:summary="@pref/settings_time_window_lb_default"
             android:title="@string/time_window_lb" />
 
         <com.brainydroid.daydreaming.ui.TimePreference
-            android:defaultValue="10:00"
+            android:defaultValue="@pref/settings_time_window_ub_default"
             android:key="time_window_ub_key"
             android:persistent="true"
-            android:summary="not set yet"
+            android:summary="@pref/settings_time_window_ub_default"
             android:title="@string/time_window_ub" />
     </PreferenceCategory>
 
