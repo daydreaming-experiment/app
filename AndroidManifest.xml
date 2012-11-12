@@ -1,4 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?><manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.brainydroid.daydreaming" android:versionCode="1" android:versionName="1.0">
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.brainydroid.daydreaming"
+    android:versionCode="2"
+    android:versionName="0.1">
 
     <uses-sdk android:minSdkVersion="10" android:targetSdkVersion="15"/>
     <!-- Require GPS (fine) location for emulation purposes -->
@@ -11,78 +15,78 @@
     <application android:icon="@drawable/ic_launcher"
                  android:label="@string/app_name"
                  android:theme="@style/AppTheme">
-        
+
         <receiver android:name=".background.BootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
         </receiver>
-        
+
         <receiver android:name=".background.NetworkReceiver">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
             </intent-filter>
         </receiver>
-        
+
         <receiver android:name=".background.TimeReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.TIMEZONE_CHANGED"/>
                 <action android:name="android.intent.action.TIME_SET"/>
             </intent-filter>
         </receiver>
-        
+
         <activity android:name=".ui.DashboardActivity"
                   android:label="@string/app_name" >
-            
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-            
+
         </activity>
-        
+
         <activity android:name=".ui.FirstLaunchWelcomeActivity"
                   android:label="@string/firstLaunchWelcome_title_activity">
         </activity>
-        
+
         <activity android:name=".ui.FirstLaunchSettingsActivity"
                   android:label="@string/firstLaunchSettings_title_activity">
         </activity>
-        
+
         <activity android:name=".ui.SettingsActivity"
                   android:label="@string/settings_title_activity">
         </activity>
-        
+
         <activity android:name=".ui.ReLaunchWelcomeActivity"
                   android:label="@string/reLaunchWelcome_title_activity">
         </activity>
-        
+
         <activity android:name=".ui.FirstLaunchDescriptionActivity"
                   android:label="@string/firstLaunchDescription_title_activity">
         </activity>
-        
+
         <activity android:name=".ui.FirstLaunchProfileActivity"
                   android:label="@string/firstLaunchProfile_title_activity">
         </activity>
-        
+
         <activity android:name=".ui.FirstLaunchMeasuresActivity"
                   android:label="@string/firstLaunchMeasures_title_activity">
         </activity>
-        
+
         <activity android:name=".ui.QuestionActivity"
                   android:label="@string/app_name"
                   android:taskAffinity="">
         </activity>
-        
+
         <service android:name=".background.LocationService"
                  android:exported="false"/>
-        
+
         <service android:name=".background.SyncService"
                  android:exported="false"/>
-        
+
         <service android:name=".background.PollService"
                  android:exported="false"/>
-        
+
         <service android:name=".background.SchedulerService"
                  android:exported="false"/>
 
