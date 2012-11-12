@@ -13,8 +13,6 @@ import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.PollService;
 import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.background.SyncService;
-import com.brainydroid.daydreaming.db.PollsStorage;
-import com.brainydroid.daydreaming.db.QuestionsStorage;
 
 public class DashboardActivity extends ActionBarActivity {
 
@@ -23,20 +21,22 @@ public class DashboardActivity extends ActionBarActivity {
 	public static String EXTRA_COMES_FROM_FIRST_LAUNCH = "comesFromFirstLaunch";
 
 	private StatusManager status;
-	private PollsStorage pollsStorage;
-	private QuestionsStorage questionsStorage;
+	//	private PollsStorage pollsStorage;
+	//	private QuestionsStorage questionsStorage;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 
 		// Debug
-		Log.d(TAG, "[fn] onCreate");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onCreate");
+		}
 
 		super.onCreate(savedInstanceState);
 
 		status = StatusManager.getInstance(this);
-		pollsStorage = PollsStorage.getInstance(this);
-		questionsStorage = QuestionsStorage.getInstance(this);
+		//		pollsStorage = PollsStorage.getInstance(this);
+		//		questionsStorage = QuestionsStorage.getInstance(this);
 		checkFirstRun();
 
 		setContentView(R.layout.activity_dashboard);
@@ -46,7 +46,9 @@ public class DashboardActivity extends ActionBarActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 
 		// Debug
-		Log.d(TAG, "[fn] onCreateOptionsMenu");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onCreateOptionsMenu");
+		}
 
 		MenuInflater menuInflater = getMenuInflater();
 		menuInflater.inflate(R.menu.dashboard, menu);
@@ -60,7 +62,9 @@ public class DashboardActivity extends ActionBarActivity {
 	public void onStart() {
 
 		// Debug
-		Log.d(TAG, "[fn] onStart");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onStart");
+		}
 
 		super.onStart();
 	}
@@ -69,7 +73,9 @@ public class DashboardActivity extends ActionBarActivity {
 	public void onResume() {
 
 		// Debug
-		Log.d(TAG, "[fn] onResume");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onResume");
+		}
 
 		super.onResume();
 	}
@@ -78,7 +84,9 @@ public class DashboardActivity extends ActionBarActivity {
 	public void onStop() {
 
 		// Debug
-		Log.d(TAG, "[fn] onStop");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onStop");
+		}
 
 		super.onStop();
 	}
@@ -87,7 +95,9 @@ public class DashboardActivity extends ActionBarActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 
 		// Debug
-		Log.d(TAG, "[fn] onOptionsItemSelected");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onOptionsItemSelected");
+		}
 
 		switch (item.getItemId()) {
 		case android.R.id.home:
@@ -104,7 +114,9 @@ public class DashboardActivity extends ActionBarActivity {
 	private void checkFirstRun() {
 
 		// Debug
-		Log.d(TAG, "[fn] checkFirstRun");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] checkFirstRun");
+		}
 
 		if (!status.isFirstLaunchCompleted()) {
 			Intent intent;
@@ -120,18 +132,18 @@ public class DashboardActivity extends ActionBarActivity {
 		}
 	}
 
-	private boolean comesFromFirstLaunch() {
-
-		// Debug
-		Log.d(TAG, "[fn] comesFromFirstLaunch");
-
-		return getIntent().getBooleanExtra(EXTRA_COMES_FROM_FIRST_LAUNCH, false);
-	}
+	//	private boolean comesFromFirstLaunch() {
+	//
+	//		// Debug
+	//		if (Config.LOGD) Log.d(TAG, "[fn] comesFromFirstLaunch");
+	//
+	//		return getIntent().getBooleanExtra(EXTRA_COMES_FROM_FIRST_LAUNCH, false);
+	//	}
 
 	//	public void onClick_quitExperiment(View view) {
 	//
 	//		// Debug
-	//		Log.d(TAG, "[fn] onClick_quitExperiment");
+	//		if (Config.LOGD) Log.d(TAG, "[fn] onClick_quitExperiment");
 	//
 	//		quitExperiment();
 	//	}
@@ -139,10 +151,14 @@ public class DashboardActivity extends ActionBarActivity {
 	//	private void quitExperiment() {
 	//
 	//		// Debug
-	//		Log.d(TAG, "[fn] quitExperiment");
+	//		if (Config.LOGD) {
+	//			Log.d(TAG, "[fn] quitExperiment");
+	//		}
 	//
-	//		Toast.makeText(this, "This will clear everything. It should ask for confirmation",
-	//				Toast.LENGTH_SHORT).show();
+	//		if (Config.TOASTD) {
+	//			Toast.makeText(this, "This will clear everything. It should ask for confirmation",
+	//					Toast.LENGTH_SHORT).show();
+	//		}
 	//		status.startClear();
 	//		// Delete saved data
 	//		pollsStorage.dropAll();
@@ -156,7 +172,9 @@ public class DashboardActivity extends ActionBarActivity {
 	public void runPollNow(View view) {
 
 		// Debug
-		Log.d(TAG, "[fn] runPollNow");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] runPollNow");
+		}
 
 		Intent pollIntent = new Intent(this, PollService.class);
 		pollIntent.putExtra(PollService.POLL_DEBUGGING, true);
@@ -166,7 +184,9 @@ public class DashboardActivity extends ActionBarActivity {
 	public void startSyncService(View view) {
 
 		// Debug
-		Log.d(TAG, "[fn] startSyncService");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] startSyncService");
+		}
 
 		if (!status.isDataEnabled()) {
 			Toast.makeText(this, "Please activate internet connection first!",

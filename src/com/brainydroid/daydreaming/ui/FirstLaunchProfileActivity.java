@@ -25,7 +25,9 @@ public class FirstLaunchProfileActivity extends ActionBarActivity {
 	public void onCreate(Bundle savedInstanceState) {
 
 		// Debug
-		Log.d(TAG, "[fn] onCreate");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onCreate");
+		}
 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_first_launch_profile);
@@ -44,7 +46,9 @@ public class FirstLaunchProfileActivity extends ActionBarActivity {
 	public void onStart() {
 
 		// Debug
-		Log.d(TAG, "[fn] onStart");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onStart");
+		}
 
 		super.onStart();
 		checkFirstLaunch();
@@ -54,7 +58,9 @@ public class FirstLaunchProfileActivity extends ActionBarActivity {
 	public void onResume() {
 
 		// Debug
-		Log.d(TAG, "[fn] onResume");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onResume");
+		}
 
 		super.onResume();
 	}
@@ -63,7 +69,9 @@ public class FirstLaunchProfileActivity extends ActionBarActivity {
 	public void onBackPressed() {
 
 		// Debug
-		Log.d(TAG, "[fn] onBackPressed");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onBackPressed");
+		}
 
 		super.onBackPressed();
 		overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
@@ -72,7 +80,9 @@ public class FirstLaunchProfileActivity extends ActionBarActivity {
 	private void checkFirstLaunch() {
 
 		// Debug
-		Log.d(TAG, "[fn] checkFirstLaunch");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] checkFirstLaunch");
+		}
 
 		if (status.isFirstLaunchCompleted() || status.isClearing()) {
 			finish();
@@ -82,7 +92,9 @@ public class FirstLaunchProfileActivity extends ActionBarActivity {
 	public void onClick_buttonNext(View view) {
 
 		// Debug
-		Log.d(TAG, "[fn] onClick_buttonNext");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onClick_buttonNext");
+		}
 
 		if (!checkForm()) {
 			Toast.makeText(this, getString(R.string.firstLaunchProfile_fix_age),
@@ -95,7 +107,9 @@ public class FirstLaunchProfileActivity extends ActionBarActivity {
 	private boolean checkForm() {
 
 		// Debug
-		Log.d(TAG, "[fn] checkForm");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] checkForm");
+		}
 
 		try {
 			int age = Integer.parseInt(ageEditText.getText().toString());
@@ -108,7 +122,9 @@ public class FirstLaunchProfileActivity extends ActionBarActivity {
 	private void launchMeasuresActivity() {
 
 		// Debug
-		Log.d(TAG, "[fn] launchMeasuresActivity");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] launchMeasuresActivity");
+		}
 
 		Intent intent = new Intent(this, FirstLaunchMeasuresActivity.class);
 		intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);

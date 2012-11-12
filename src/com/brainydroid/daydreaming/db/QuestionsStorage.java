@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.brainydroid.daydreaming.ui.Config;
 import com.google.gson.Gson;
 
 public class QuestionsStorage {
@@ -44,7 +45,9 @@ public class QuestionsStorage {
 	public static synchronized QuestionsStorage getInstance(Context context) {
 
 		// Debug
-		Log.d(TAG, "[fn] getInstance");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] getInstance");
+		}
 
 		if (qsInstance == null) {
 			qsInstance = new QuestionsStorage(context);
@@ -56,7 +59,9 @@ public class QuestionsStorage {
 	private QuestionsStorage(Context context) {
 
 		// Debug
-		Log.d(TAG, "[fn] QuestionsStorage");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] QuestionsStorage");
+		}
 
 		_context = context.getApplicationContext();
 		storage = Storage.getInstance(_context);
@@ -70,7 +75,9 @@ public class QuestionsStorage {
 	public int getQuestionsVersion() {
 
 		// Debug
-		Log.d(TAG, "[fn] getQuestionsVersion");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] getQuestionsVersion");
+		}
 
 		Cursor res = rDb.query(TABLE_QUESTIONS, new String[] {Question.COL_QUESTIONS_VERSION},
 				null, null, null, null, null, "1");
@@ -87,7 +94,9 @@ public class QuestionsStorage {
 	public Question getQuestion(String questionId) {
 
 		// Debug
-		Log.d(TAG, "[fn] getQuestion");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] getQuestion");
+		}
 
 		Cursor res = rDb.query(TABLE_QUESTIONS, null, Question.COL_ID + "=?",
 				new String[] {questionId}, null, null, null);
@@ -114,7 +123,9 @@ public class QuestionsStorage {
 	public ArrayList<String> getQuestionIds() {
 
 		// Debug
-		Log.d(TAG, "[fn] getQuestionIds");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] getQuestionIds");
+		}
 
 		Cursor res = rDb.query(TABLE_QUESTIONS, new String[] {Question.COL_ID}, null, null,
 				null, null, null);
@@ -136,7 +147,9 @@ public class QuestionsStorage {
 	public ArrayList<Question> getRandomQuestions(int nQuestions) {
 
 		// Debug
-		Log.d(TAG, "[fn] getRandomQuestions");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] getRandomQuestions");
+		}
 
 		ArrayList<String> questionIds = getQuestionIds();
 		int nIds = questionIds.size();
@@ -155,7 +168,9 @@ public class QuestionsStorage {
 	public void flushAll() {
 
 		// Debug
-		Log.d(TAG, "[fn] flushAll");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] flushAll");
+		}
 
 		wDb.delete(TABLE_QUESTIONS, null, null);
 	}
@@ -163,7 +178,9 @@ public class QuestionsStorage {
 	public void dropAll() {
 
 		// Debug
-		Log.d(TAG, "[fn] dropAll");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] dropAll");
+		}
 
 		wDb.execSQL(SQL_DROP_TABLE_QUESTIONS);
 		qsInstance = null;
@@ -172,7 +189,9 @@ public class QuestionsStorage {
 	private void addQuestions(ArrayList<Question> questions) {
 
 		// Debug
-		Log.d(TAG, "[fn] addQuestions");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] addQuestions");
+		}
 
 		Iterator<Question> qIt = questions.iterator();
 
@@ -186,7 +205,9 @@ public class QuestionsStorage {
 	private void addQuestion(Question question) {
 
 		// Debug
-		Log.d(TAG, "[fn] addQuestion");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] addQuestion");
+		}
 
 		wDb.insert(TABLE_QUESTIONS, null, getQuestionContentValues(question));
 	}
@@ -194,7 +215,9 @@ public class QuestionsStorage {
 	private ContentValues getQuestionContentValues(Question question) {
 
 		// Debug
-		Log.d(TAG, "[fn] getQuestionContentValues");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] getQuestionContentValues");
+		}
 
 		ContentValues qValues = new ContentValues();
 		qValues.put(Question.COL_ID, question.getId());
@@ -211,7 +234,9 @@ public class QuestionsStorage {
 	public void importQuestions(String jsonQuestionsString) {
 
 		// Debug
-		Log.d(TAG, "[fn] importQuestions");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] importQuestions");
+		}
 
 		JsonQuestions jsonQuestions = gson.fromJson(jsonQuestionsString, JsonQuestions.class);
 		flushAll();

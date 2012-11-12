@@ -6,6 +6,8 @@
     <string name="time_window_ub">Until</string>
     <string name="time_window_settings">Time window for notifications</string>
     <string name="notifications_settings">Notifications</string>
+    <string name="settings_picker_positive">Set</string>
+    <string name="settings_picker_negative">Cancel</string>
     <string name="firstLaunchSettings_title_activity">Settings</string>
     <string name="settings_title_activity">Settings</string>
     

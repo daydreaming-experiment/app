@@ -8,6 +8,7 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.brainydroid.daydreaming.background.LocationService.LocationServiceBinder;
+import com.brainydroid.daydreaming.ui.Config;
 
 public class LocationServiceConnection implements ServiceConnection {
 
@@ -23,7 +24,9 @@ public class LocationServiceConnection implements ServiceConnection {
 		super();
 
 		// Debug
-		Log.d(TAG, "[fn] LocationServiceConnection");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] LocationServiceConnection");
+		}
 
 		_context = context;
 	}
@@ -32,7 +35,9 @@ public class LocationServiceConnection implements ServiceConnection {
 	public void onServiceConnected(ComponentName name, IBinder service) {
 
 		// Debug
-		Log.d(TAG, "[fn] onServiceConnected");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onServiceConnected");
+		}
 
 		LocationServiceBinder binder = (LocationServiceBinder)service;
 		locationService = binder.getService();
@@ -43,7 +48,9 @@ public class LocationServiceConnection implements ServiceConnection {
 	public void onServiceDisconnected(ComponentName name) {
 
 		// Debug
-		Log.d(TAG, "[fn] onServiceDisconnected");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onServiceDisconnected");
+		}
 
 		locationService = null;
 	}
@@ -51,7 +58,9 @@ public class LocationServiceConnection implements ServiceConnection {
 	public void startLocationService() {
 
 		// Debug
-		Log.d(TAG, "[fn] startLocationService");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] startLocationService");
+		}
 
 		Intent locationServiceIntent = new Intent(_context, LocationService.class);
 		_context.startService(locationServiceIntent);
@@ -60,7 +69,9 @@ public class LocationServiceConnection implements ServiceConnection {
 	public void bindLocationService() {
 
 		// Debug
-		Log.d(TAG, "[fn] bindLocationService");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] bindLocationService");
+		}
 
 		Intent locationServiceIntent = new Intent(_context, LocationService.class);
 		_context.bindService(locationServiceIntent, this, 0);
@@ -70,7 +81,9 @@ public class LocationServiceConnection implements ServiceConnection {
 	public void unbindLocationService() {
 
 		// Debug
-		Log.d(TAG, "[fn] unbindLocationService");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] unbindLocationService");
+		}
 
 		if (sBound) {
 			_context.unbindService(this);
@@ -81,7 +94,9 @@ public class LocationServiceConnection implements ServiceConnection {
 	public LocationService getService() {
 
 		// Verbose
-		Log.v(TAG, "[fn] getService");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] getService");
+		}
 
 		return locationService;
 	}
@@ -89,7 +104,9 @@ public class LocationServiceConnection implements ServiceConnection {
 	private void onConnected() {
 
 		// Debug
-		Log.d(TAG, "[fn] onConnected");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onConnected");
+		}
 
 		if (callbackToSet != null) {
 			locationService.setLocationCallback(callbackToSet);
@@ -105,7 +122,9 @@ public class LocationServiceConnection implements ServiceConnection {
 	public void setLocationCallback(LocationCallback callback) {
 
 		// Debug
-		Log.d(TAG, "[fn] setLocationCallback");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] setLocationCallback");
+		}
 
 		if (sBound && locationService != null) {
 			locationService.setLocationCallback(callback);
@@ -118,7 +137,9 @@ public class LocationServiceConnection implements ServiceConnection {
 	public void setStopOnUnbind() {
 
 		// Debug
-		Log.d(TAG, "[fn] setStopOnUnbind");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] setStopOnUnbind");
+		}
 
 		if (sBound && locationService != null) {
 			locationService.setStopOnUnbind();

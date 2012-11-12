@@ -59,7 +59,9 @@ public class QuestionActivity extends ActionBarActivity {
 		public static LocationAlertDialogFragment newInstance(int title, int text, int posText) {
 
 			// Debug
-			Log.d(TAG, "[fn] newInstance");
+			if (Config.LOGD) {
+				Log.d(TAG, "[fn] newInstance");
+			}
 
 			LocationAlertDialogFragment frag = new LocationAlertDialogFragment();
 			Bundle args = new Bundle();
@@ -74,7 +76,9 @@ public class QuestionActivity extends ActionBarActivity {
 		public Dialog onCreateDialog(Bundle savedInstanceState) {
 
 			// Debug
-			Log.d(TAG, "[fn] onCreateDialog");
+			if (Config.LOGD) {
+				Log.d(TAG, "[fn] onCreateDialog");
+			}
 
 			int title = getArguments().getInt("title");
 			int text = getArguments().getInt("text");
@@ -100,7 +104,9 @@ public class QuestionActivity extends ActionBarActivity {
 	public void onCreate(Bundle savedInstanceState) {
 
 		// Debug
-		Log.d(TAG, "[fn] onCreate");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onCreate");
+		}
 
 		super.onCreate(savedInstanceState);
 
@@ -120,7 +126,9 @@ public class QuestionActivity extends ActionBarActivity {
 	public void onStart() {
 
 		// Debug
-		Log.d(TAG, "[fn] onStart");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onStart");
+		}
 
 		super.onStart();
 		if(checkPollStatus()) {
@@ -137,7 +145,9 @@ public class QuestionActivity extends ActionBarActivity {
 	public void onStop() {
 
 		// Debug
-		Log.d(TAG, "[fn] onStop");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onStop");
+		}
 
 		super.onStop();
 		if (!isContinuing() && !poll.isOver()) {
@@ -154,7 +164,9 @@ public class QuestionActivity extends ActionBarActivity {
 	public void onBackPressed() {
 
 		// Debug
-		Log.d(TAG, "[fn] onBackPressed");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onBackPressed");
+		}
 
 		super.onBackPressed();
 		if (!isFirstQuestion()) {
@@ -166,7 +178,9 @@ public class QuestionActivity extends ActionBarActivity {
 	private void initVars() {
 
 		// Debug
-		Log.d(TAG, "[fn] initVars");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] initVars");
+		}
 
 		Intent intent = getIntent();
 		pollsStorage = PollsStorage.getInstance(this);
@@ -183,7 +197,9 @@ public class QuestionActivity extends ActionBarActivity {
 	private void startSyncService() {
 
 		// Debug
-		Log.d(TAG, "[fn] startSyncService");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] startSyncService");
+		}
 
 		Intent syncIntent = new Intent(this, SyncService.class);
 		startService(syncIntent);
@@ -192,7 +208,9 @@ public class QuestionActivity extends ActionBarActivity {
 	private void startSchedulerService() {
 
 		// Debug
-		Log.d(TAG, "[fn] startSchedulerService");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] startSchedulerService");
+		}
 
 		Intent schedulerIntent = new Intent(this, SchedulerService.class);
 		startService(schedulerIntent);
@@ -201,7 +219,9 @@ public class QuestionActivity extends ActionBarActivity {
 	private boolean checkPollStatus() {
 
 		// Debug
-		Log.d(TAG, "[fn] checkPollStatus");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] checkPollStatus");
+		}
 
 		boolean isOver = poll.isOver();
 		if (isOver) {
@@ -213,7 +233,9 @@ public class QuestionActivity extends ActionBarActivity {
 	private void setChrome() {
 
 		// Debug
-		Log.d(TAG, "[fn] setChrome");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] setChrome");
+		}
 
 		if (!isFirstQuestion()) {
 			LinearLayout question_linearLayout = (LinearLayout)findViewById(R.id.question_linearLayout);
@@ -230,7 +252,9 @@ public class QuestionActivity extends ActionBarActivity {
 	private void startListeningTasks() {
 
 		// Debug
-		Log.d(TAG, "[fn] startListeningTasks");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] startListeningTasks");
+		}
 
 		SntpClientCallback sntpCallback = new SntpClientCallback() {
 
@@ -240,7 +264,9 @@ public class QuestionActivity extends ActionBarActivity {
 			public void onTimeReceived(SntpClient sntpClient) {
 
 				// Debug
-				Log.d(TAG, "[fn] (sntpCallback) onTimeReceived");
+				if (Config.LOGD) {
+					Log.d(TAG, "[fn] (sntpCallback) onTimeReceived");
+				}
 
 				if (sntpClient != null) {
 					question.setTimestamp(sntpClient.getNow());
@@ -260,7 +286,9 @@ public class QuestionActivity extends ActionBarActivity {
 			public void onLocationReceived(Location location) {
 
 				// Debug
-				Log.d(TAG, "[fn] (locationCallback) onLocationReceived");
+				if (Config.LOGD) {
+					Log.d(TAG, "[fn] (locationCallback) onLocationReceived");
+				}
 
 				question.setLocation(location);
 			}
@@ -280,7 +308,9 @@ public class QuestionActivity extends ActionBarActivity {
 	private void populateViews() {
 
 		// Debug
-		Log.d(TAG, "[fn] populateViews");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] populateViews");
+		}
 
 		ArrayList<View> views = question.createViews(this);
 
@@ -295,7 +325,9 @@ public class QuestionActivity extends ActionBarActivity {
 	public void onClick_nextButton(View view) {
 
 		// Debug
-		Log.d(TAG, "[fn] onClick_nextButton");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onClick_nextButton");
+		}
 
 		if (question.validate(this, questionLinearLayout)) {
 			poll.saveAnswers(questionLinearLayout, questionIndex);
@@ -315,7 +347,9 @@ public class QuestionActivity extends ActionBarActivity {
 	private void launchLocationAlertDialog() {
 
 		// Debug
-		Log.d(TAG, "[fn] launchLocationAlertDialog");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] launchLocationAlertDialog");
+		}
 
 		int titleId;
 		int textId;
@@ -340,7 +374,9 @@ public class QuestionActivity extends ActionBarActivity {
 	private void launchNextQuestion() {
 
 		// Debug
-		Log.d(TAG, "[fn] launchNextQuestion");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] launchNextQuestion");
+		}
 
 		setIsContinuing();
 		Intent intent = new Intent(this, QuestionActivity.class);
@@ -356,7 +392,9 @@ public class QuestionActivity extends ActionBarActivity {
 	private void launchSettings() {
 
 		// Debug
-		Log.d(TAG, "[fn] launchSettings");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] launchSettings");
+		}
 
 		Intent settingsIntent;
 		if (!status.isNetworkLocEnabled()) {
@@ -376,7 +414,9 @@ public class QuestionActivity extends ActionBarActivity {
 	private void finishPoll() {
 
 		// Debug
-		Log.d(TAG, "[fn] finishPoll");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] finishPoll");
+		}
 
 		Toast.makeText(this, getString(R.string.question_thank_you), Toast.LENGTH_SHORT).show();
 		poll.setStatus(Poll.STATUS_COMPLETED);
@@ -388,7 +428,9 @@ public class QuestionActivity extends ActionBarActivity {
 	private boolean isLastQuestion() {
 
 		// Debug
-		Log.d(TAG, "[fn] isLastQuestion");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] isLastQuestion");
+		}
 
 		return questionIndex == nQuestions - 1;
 	}
@@ -396,7 +438,9 @@ public class QuestionActivity extends ActionBarActivity {
 	private boolean isFirstQuestion() {
 
 		// Debug
-		Log.d(TAG, "[fn] isFirstQuestion");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] isFirstQuestion");
+		}
 
 		return questionIndex == 0;
 	}
@@ -404,7 +448,9 @@ public class QuestionActivity extends ActionBarActivity {
 	private boolean isContinuing() {
 
 		// Debug
-		Log.d(TAG, "[fn] isContinuing");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] isContinuing");
+		}
 
 		return isContinuing;
 	}
@@ -412,7 +458,9 @@ public class QuestionActivity extends ActionBarActivity {
 	private void setIsContinuing() {
 
 		// Debug
-		Log.d(TAG, "[fn] setIsContinuing");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] setIsContinuing");
+		}
 
 		isContinuing = true;
 	}

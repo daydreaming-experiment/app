@@ -19,6 +19,8 @@ import java.util.Enumeration;
 import android.content.Context;
 import android.util.Log;
 
+import com.brainydroid.daydreaming.ui.Config;
+
 public class CryptoStorage {
 
 	private static String TAG = "CryptoStorage";
@@ -47,7 +49,9 @@ public class CryptoStorage {
 			CryptoStorageCallback callback) {
 
 		// Debug
-		Log.d(TAG, "[fn] getInstance");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] getInstance");
+		}
 
 		if (csInstance == null) {
 			csInstance = new CryptoStorage(context, server, callback);
@@ -61,7 +65,9 @@ public class CryptoStorage {
 	private CryptoStorage(Context context, String server, CryptoStorageCallback callback) {
 
 		// Debug
-		Log.d(TAG, "[fn] CryptoStorage");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] CryptoStorage");
+		}
 
 		crypto = Crypto.getInstance();
 		serverTalker = ServerTalker.getInstance(server, this);
@@ -78,7 +84,9 @@ public class CryptoStorage {
 	private void initCrypto(CryptoStorageCallback callback) {
 
 		// Debug
-		Log.d(TAG, "[fn] initCrypto");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] initCrypto");
+		}
 
 		if (!hasStoredKeyPairAndMaiId()) {
 			generateAndStoreKeyPairAndMaiId(callback);
@@ -90,7 +98,9 @@ public class CryptoStorage {
 	public synchronized void setServerName(String s) {
 
 		// Debug
-		Log.d(TAG, "[fn] setServerName");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] setServerName");
+		}
 
 		serverTalker.setServerName(s);
 	}
@@ -99,7 +109,9 @@ public class CryptoStorage {
 			HttpConversationCallback callback) {
 
 		// Debug
-		Log.d(TAG, "[fn] signeAndUploadData");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] signeAndUploadData");
+		}
 
 		serverTalker.signAndUploadData(ea_id, data, callback);
 	}
@@ -107,7 +119,9 @@ public class CryptoStorage {
 	private synchronized boolean hasStoredMaiId() {
 
 		// Debug
-		Log.d(TAG, "[fn] hasStoredMaiId");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] hasStoredMaiId");
+		}
 
 		return maiIdFile.exists();
 	}
@@ -115,7 +129,9 @@ public class CryptoStorage {
 	private synchronized boolean hasStoredPrivateKey() {
 
 		// Debug
-		Log.d(TAG, "[fn] hasStoredPrivateKey");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] hasStoredPrivateKey");
+		}
 
 		return privateFile.exists();
 	}
@@ -123,7 +139,9 @@ public class CryptoStorage {
 	private synchronized boolean hasStoredPublicKey() {
 
 		// Debug
-		Log.d(TAG, "[fn] hasStoredPublicKey");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] hasStoredPublicKey");
+		}
 
 		return publicFile.exists();
 	}
@@ -131,7 +149,9 @@ public class CryptoStorage {
 	public synchronized Enumeration<String> getAvailableCurveNames() {
 
 		// Debug
-		Log.d(TAG, "[fn] getAvailableCurveNames");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] getAvailableCurveNames");
+		}
 
 		return crypto.getAvailableCurveNames();
 	}
@@ -139,7 +159,9 @@ public class CryptoStorage {
 	public synchronized void setCurveName(String s) {
 
 		// Verbose
-		Log.v(TAG, "[fn] setCurveName");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] setCurveName");
+		}
 
 		curveName = s;
 	}
@@ -147,7 +169,9 @@ public class CryptoStorage {
 	public synchronized boolean hasStoredKeyPairAndMaiId() {
 
 		// Debug
-		Log.d(TAG, "[fn] hasStoredKeyPairAndMaiId");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] hasStoredKeyPairAndMaiId");
+		}
 
 		if (hasStoredPrivateKey() && hasStoredPublicKey() && hasStoredMaiId()) {
 			return true;
@@ -160,7 +184,9 @@ public class CryptoStorage {
 	public synchronized byte[] sign(byte[] data) {
 
 		// Debug
-		Log.d(TAG, "[fn] sign");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] sign");
+		}
 
 		if (! hasStoredKeyPairAndMaiId()) {
 			throw new RuntimeException(NOKP_EXCEPTION_MSG);
@@ -182,7 +208,9 @@ public class CryptoStorage {
 	public synchronized void generateAndStoreKeyPairAndMaiId(CryptoStorageCallback callback) {
 
 		// Debug
-		Log.d(TAG, "[fn] generateAndStoreKeyPairAndMaiId");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] generateAndStoreKeyPairAndMaiId");
+		}
 
 		final KeyPair kp = crypto.generateKeyPairNamedCurve(curveName);
 		final CryptoStorageCallback parentCallback = callback;
@@ -195,7 +223,9 @@ public class CryptoStorage {
 			public void onHttpConversationFinished(boolean success, String serverAnswer) {
 
 				// Debug
-				Log.d(TAG, "[fn] (uploadPublicKeyCallback) onHttpConversationFinished");
+				if (Config.LOGD) {
+					Log.d(TAG, "[fn] (uploadPublicKeyCallback) onHttpConversationFinished");
+				}
 
 				parentCallback.onCryptoStorageReady(success);
 			}
@@ -210,7 +240,9 @@ public class CryptoStorage {
 			public void onHttpConversationFinished(boolean success, String serverAnswer) {
 
 				// Debug
-				Log.d(TAG, "[fn] (fullCallback) onHttpConversationFinished");
+				if (Config.LOGD) {
+					Log.d(TAG, "[fn] (fullCallback) onHttpConversationFinished");
+				}
 
 				boolean storageSuccess = false;
 				if (success) {
@@ -232,7 +264,9 @@ public class CryptoStorage {
 	private synchronized boolean storeKeyPairAndMaiId(KeyPair kp, String maiId) {
 
 		// Debug
-		Log.d(TAG, "[fn] storeKeyPairAndMaiId");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] storeKeyPairAndMaiId");
+		}
 
 		try {
 			clearStore();
@@ -261,7 +295,9 @@ public class CryptoStorage {
 	public synchronized KeyPair getKeyPair() {
 
 		// Debug
-		Log.d(TAG, "[fn] getKeyPair");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] getKeyPair");
+		}
 
 		return new KeyPair(getPublicKey(), getPrivateKey());
 	}
@@ -269,7 +305,9 @@ public class CryptoStorage {
 	public synchronized String getMaiId() {
 
 		// Debug
-		Log.d(TAG, "[fn] getMaiId");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] getMaiId");
+		}
 
 		try {
 			BufferedReader buf;
@@ -287,7 +325,9 @@ public class CryptoStorage {
 	public synchronized PrivateKey getPrivateKey() {
 
 		// Debug
-		Log.d(TAG, "[fn] getPrivateKey");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] getPrivateKey");
+		}
 
 		try {
 			BufferedReader buf;
@@ -307,7 +347,9 @@ public class CryptoStorage {
 	public synchronized PublicKey getPublicKey() {
 
 		// Debug
-		Log.d(TAG, "[fn] getPublicKey");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] getPublicKey");
+		}
 
 		try {
 			BufferedReader buf;
@@ -327,7 +369,9 @@ public class CryptoStorage {
 	public synchronized boolean clearStore() {
 
 		// Debug
-		Log.d(TAG, "[fn] clearStore");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] clearStore");
+		}
 
 		return clearPrivateKey() && clearPublicKey() && clearMaiId();
 	}
@@ -335,7 +379,9 @@ public class CryptoStorage {
 	private synchronized boolean clearMaiId() {
 
 		// Debug
-		Log.d(TAG, "[fn] clearMaiId");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] clearMaiId");
+		}
 
 		return maiIdFile.delete();
 	}
@@ -343,7 +389,9 @@ public class CryptoStorage {
 	private synchronized boolean clearPrivateKey() {
 
 		// Debug
-		Log.d(TAG, "[fn] clearPrivateKey");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] clearPrivateKey");
+		}
 
 		return privateFile.delete();
 	}
@@ -351,7 +399,9 @@ public class CryptoStorage {
 	private synchronized boolean clearPublicKey() {
 
 		// Debug
-		Log.d(TAG, "[fn] clearPublicKey");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] clearPublicKey");
+		}
 
 		return publicFile.delete();
 	}
@@ -359,7 +409,9 @@ public class CryptoStorage {
 	public synchronized File createArmoredPublicKeyFile() {
 
 		// Debug
-		Log.d(TAG, "[fn] createArmoredPublicKeyFile");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] createArmoredPublicKeyFile");
+		}
 
 		File keyFile;
 		try {
@@ -376,7 +428,9 @@ public class CryptoStorage {
 	public synchronized String getArmoredPublicKeyString() {
 
 		// Debug
-		Log.d(TAG, "[fn] getArmoredPublicKeyString");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] getArmoredPublicKeyString");
+		}
 
 		return Crypto.armorPublicKey(getPublicKey());
 	}
@@ -384,7 +438,9 @@ public class CryptoStorage {
 	public synchronized String getPrivateKeyString() {
 
 		// Debug
-		Log.d(TAG, "[fn] getPrivateKeyString");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] getPrivateKeyString");
+		}
 
 		return Crypto.base64Encode(getPrivateKey().getEncoded());
 	}
@@ -392,7 +448,9 @@ public class CryptoStorage {
 	public synchronized SignedDataFiles createSignedDataFiles(String data) {
 
 		// Debug
-		Log.d(TAG, "[fn] createSignedDataFiles");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] createSignedDataFiles");
+		}
 
 		try {
 			byte[] signature = sign(data.getBytes());

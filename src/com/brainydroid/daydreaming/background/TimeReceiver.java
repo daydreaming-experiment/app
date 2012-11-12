@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import com.brainydroid.daydreaming.ui.Config;
+
 public class TimeReceiver extends BroadcastReceiver {
 
 	private static String TAG = "TimeReceiver";
@@ -15,7 +17,9 @@ public class TimeReceiver extends BroadcastReceiver {
 	public void onReceive(Context context, Intent intent) {
 
 		// Debug
-		Log.d(TAG, "[fn] onReceive");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onReceive");
+		}
 
 		status = StatusManager.getInstance(context);
 		String action = intent.getAction();

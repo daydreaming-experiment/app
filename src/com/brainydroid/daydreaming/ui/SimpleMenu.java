@@ -46,7 +46,9 @@ public class SimpleMenu implements Menu {
 	public SimpleMenu(Context context) {
 
 		// Debug
-		Log.d(TAG, "[fn] SimpleMenu");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] SimpleMenu");
+		}
 
 		mContext = context;
 		mResources = context.getResources();
@@ -56,7 +58,9 @@ public class SimpleMenu implements Menu {
 	public Context getContext() {
 
 		// Verbose
-		Log.v(TAG, "[fn] getContext");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] getContext");
+		}
 
 		return mContext;
 	}
@@ -64,7 +68,9 @@ public class SimpleMenu implements Menu {
 	public Resources getResources() {
 
 		// Verbose
-		Log.v(TAG, "[fn] getResources");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] getResources");
+		}
 
 		return mResources;
 	}
@@ -73,7 +79,9 @@ public class SimpleMenu implements Menu {
 	public MenuItem add(CharSequence title) {
 
 		// Debug
-		Log.d(TAG, "[fn] add (from CharSequence)");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] add (from CharSequence)");
+		}
 
 		return addInternal(0, 0, title);
 	}
@@ -82,7 +90,9 @@ public class SimpleMenu implements Menu {
 	public MenuItem add(int titleRes) {
 
 		// Debug
-		Log.d(TAG, "[fn] add (from int)");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] add (from int)");
+		}
 
 		return addInternal(0, 0, mResources.getString(titleRes));
 	}
@@ -91,7 +101,9 @@ public class SimpleMenu implements Menu {
 	public MenuItem add(int groupId, int itemId, int order, CharSequence title) {
 
 		// Debug
-		Log.d(TAG, "[fn] add (from int, int, int, CharSequence)");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] add (from int, int, int, CharSequence)");
+		}
 
 		return addInternal(itemId, order, title);
 	}
@@ -100,7 +112,9 @@ public class SimpleMenu implements Menu {
 	public MenuItem add(int groupId, int itemId, int order, int titleRes) {
 
 		// Debug
-		Log.d(TAG, "[fn] add (from int, int, int, int)");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] add (from int, int, int, int)");
+		}
 
 		return addInternal(itemId, order, mResources.getString(titleRes));
 	}
@@ -111,7 +125,9 @@ public class SimpleMenu implements Menu {
 	private MenuItem addInternal(int itemId, int order, CharSequence title) {
 
 		// Debug
-		Log.d(TAG, "[fn] addInternal");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] addInternal");
+		}
 
 		final SimpleMenuItem item = new SimpleMenuItem(this, itemId, order, title);
 		mItems.add(findInsertIndex(mItems, order), item);
@@ -121,7 +137,9 @@ public class SimpleMenu implements Menu {
 	private static int findInsertIndex(ArrayList<? extends MenuItem> items, int order) {
 
 		// Debug
-		Log.d(TAG, "[fn] findInsertIndex");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] findInsertIndex");
+		}
 
 		for (int i = items.size() - 1; i >= 0; i--) {
 			MenuItem item = items.get(i);
@@ -136,7 +154,9 @@ public class SimpleMenu implements Menu {
 	public int findItemIndex(int id) {
 
 		// Debug
-		Log.d(TAG, "[fn] findItemIndex");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] findItemIndex");
+		}
 
 		final int size = size();
 
@@ -154,7 +174,9 @@ public class SimpleMenu implements Menu {
 	public void removeItem(int itemId) {
 
 		// Debug
-		Log.d(TAG, "[fn] removeItem");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] removeItem");
+		}
 
 		removeItemAtInt(findItemIndex(itemId));
 	}
@@ -162,7 +184,9 @@ public class SimpleMenu implements Menu {
 	private void removeItemAtInt(int index) {
 
 		// Debug
-		Log.d(TAG, "[fn] removeItemAtInt");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] removeItemAtInt");
+		}
 
 		if ((index < 0) || (index >= mItems.size())) {
 			return;
@@ -174,7 +198,9 @@ public class SimpleMenu implements Menu {
 	public void clear() {
 
 		// Debug
-		Log.d(TAG, "[fn] clear");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] clear");
+		}
 
 		mItems.clear();
 	}
@@ -183,7 +209,9 @@ public class SimpleMenu implements Menu {
 	public MenuItem findItem(int id) {
 
 		// Debug
-		Log.d(TAG, "[fn] findItem");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] findItem");
+		}
 
 		final int size = size();
 		for (int i = 0; i < size; i++) {
@@ -200,7 +228,9 @@ public class SimpleMenu implements Menu {
 	public int size() {
 
 		// Debug
-		Log.d(TAG, "[fn] size");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] size");
+		}
 
 		return mItems.size();
 	}
@@ -209,7 +239,9 @@ public class SimpleMenu implements Menu {
 	public MenuItem getItem(int index) {
 
 		// Debug
-		Log.d(TAG, "[fn] getItem");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] getItem");
+		}
 
 		return mItems.get(index);
 	}
@@ -220,7 +252,9 @@ public class SimpleMenu implements Menu {
 	public SubMenu addSubMenu(CharSequence charSequence) {
 
 		// Debug
-		Log.d(TAG, "[fn] addSubMenu (from CharSequence)");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] addSubMenu (from CharSequence)");
+		}
 
 		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
 	}
@@ -229,7 +263,9 @@ public class SimpleMenu implements Menu {
 	public SubMenu addSubMenu(int titleRes) {
 
 		// Debug
-		Log.d(TAG, "[fn] addSubMenu (from int)");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] addSubMenu (from int)");
+		}
 
 		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
 	}
@@ -238,7 +274,9 @@ public class SimpleMenu implements Menu {
 	public SubMenu addSubMenu(int groupId, int itemId, int order, CharSequence title) {
 
 		// Debug
-		Log.d(TAG, "[fn] addSubMenu (from int, int, int, CharSequence)");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] addSubMenu (from int, int, int, CharSequence)");
+		}
 
 		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
 	}
@@ -247,7 +285,9 @@ public class SimpleMenu implements Menu {
 	public SubMenu addSubMenu(int groupId, int itemId, int order, int titleRes) {
 
 		// Debug
-		Log.d(TAG, "[fn] addSubMenu (from int, int, int, int)");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] addSubMenu (from int, int, int, int)");
+		}
 
 		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
 	}
@@ -257,7 +297,9 @@ public class SimpleMenu implements Menu {
 			Intent[] intents, Intent intent, int i3, MenuItem[] menuItems) {
 
 		// Debug
-		Log.d(TAG, "[fn] addIntentOptions");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] addIntentOptions");
+		}
 
 		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
 	}
@@ -266,7 +308,9 @@ public class SimpleMenu implements Menu {
 	public void removeGroup(int i) {
 
 		// Debug
-		Log.d(TAG, "[fn] removeGroup");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] removeGroup");
+		}
 
 		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
 	}
@@ -275,7 +319,9 @@ public class SimpleMenu implements Menu {
 	public void setGroupCheckable(int i, boolean b, boolean b1) {
 
 		// Debug
-		Log.d(TAG, "[fn] setGroupCheckable");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] setGroupCheckable");
+		}
 
 		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
 	}
@@ -284,7 +330,9 @@ public class SimpleMenu implements Menu {
 	public void setGroupVisible(int i, boolean b) {
 
 		// Debug
-		Log.d(TAG, "[fn] setGroupVisible");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] setGroupVisible");
+		}
 
 		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
 	}
@@ -293,7 +341,9 @@ public class SimpleMenu implements Menu {
 	public void setGroupEnabled(int i, boolean b) {
 
 		// Debug
-		Log.d(TAG, "[fn] setGroupEnabled");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] setGroupEnabled");
+		}
 
 		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
 	}
@@ -302,7 +352,9 @@ public class SimpleMenu implements Menu {
 	public boolean hasVisibleItems() {
 
 		// Debug
-		Log.d(TAG, "[fn] hasVisibleItems");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] hasVisibleItems");
+		}
 
 		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
 	}
@@ -311,7 +363,9 @@ public class SimpleMenu implements Menu {
 	public void close() {
 
 		// Debug
-		Log.d(TAG, "[fn] close");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] close");
+		}
 
 		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
 	}
@@ -320,7 +374,9 @@ public class SimpleMenu implements Menu {
 	public boolean performShortcut(int i, KeyEvent keyEvent, int i1) {
 
 		// Debug
-		Log.d(TAG, "[fn] performShortcut");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] performShortcut");
+		}
 
 		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
 	}
@@ -329,7 +385,9 @@ public class SimpleMenu implements Menu {
 	public boolean isShortcutKey(int i, KeyEvent keyEvent) {
 
 		// Debug
-		Log.d(TAG, "[fn] isShortcutKey");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] isShortcutKey");
+		}
 
 		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
 	}
@@ -338,7 +396,9 @@ public class SimpleMenu implements Menu {
 	public boolean performIdentifierAction(int i, int i1) {
 
 		// Debug
-		Log.d(TAG, "[fn] performIdentifierAction");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] performIdentifierAction");
+		}
 
 		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
 	}
@@ -347,7 +407,9 @@ public class SimpleMenu implements Menu {
 	public void setQwertyMode(boolean b) {
 
 		// Debug
-		Log.d(TAG, "[fn] setQwertyMode");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] setQwertyMode");
+		}
 
 		throw new UnsupportedOperationException("This operation is not supported for SimpleMenu");
 	}

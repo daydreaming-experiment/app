@@ -59,7 +59,9 @@ public class ActionBarHelperBase extends ActionBarHelper {
 		super(activity);
 
 		// Debug
-		Log.d(TAG, "[fn] ActionBarHelperBase");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] ActionBarHelperBase");
+		}
 
 	}
 
@@ -68,7 +70,9 @@ public class ActionBarHelperBase extends ActionBarHelper {
 	public void onCreate(Bundle savedInstanceState) {
 
 		// Debug
-		Log.d(TAG, "[fn] onCreate");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onCreate");
+		}
 
 		mActivity.requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 	}
@@ -78,7 +82,9 @@ public class ActionBarHelperBase extends ActionBarHelper {
 	public void onPostCreate(Bundle savedInstanceState) {
 
 		// Debug
-		Log.d(TAG, "[fn] onPostCreate");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onPostCreate");
+		}
 
 		mActivity.getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE,
 				R.layout.actionbar_compat);
@@ -101,7 +107,9 @@ public class ActionBarHelperBase extends ActionBarHelper {
 	private void setupActionBar() {
 
 		// Debug
-		Log.d(TAG, "[fn] setupActionBar");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] setupActionBar");
+		}
 
 		final ViewGroup actionBarCompat = getActionBarCompat();
 		if (actionBarCompat == null) {
@@ -150,7 +158,9 @@ public class ActionBarHelperBase extends ActionBarHelper {
 	public boolean onCreateOptionsMenu(Menu menu) {
 
 		// Debug
-		Log.d(TAG, "[fn] onCreateOptionsMenu");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onCreateOptionsMenu");
+		}
 
 		// Hides on-screen action items from the options menu.
 		for (Integer id : mActionItemIds) {
@@ -164,7 +174,9 @@ public class ActionBarHelperBase extends ActionBarHelper {
 	protected void onTitleChanged(CharSequence title, int color) {
 
 		// Debug
-		Log.d(TAG, "[fn] onTitleChanged");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onTitleChanged");
+		}
 
 		TextView titleView = (TextView) mActivity.findViewById(R.id.actionbar_compat_title);
 		if (titleView != null) {
@@ -180,7 +192,9 @@ public class ActionBarHelperBase extends ActionBarHelper {
 	public MenuInflater getMenuInflater(MenuInflater superMenuInflater) {
 
 		// Debug
-		Log.d(TAG, "[fn] getMenuInflater");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] getMenuInflater");
+		}
 
 		return new WrappedMenuInflater(mActivity, superMenuInflater);
 	}
@@ -192,7 +206,9 @@ public class ActionBarHelperBase extends ActionBarHelper {
 	private ViewGroup getActionBarCompat() {
 
 		// Debug
-		Log.d(TAG, "[fn] getActionBarCompat");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] getActionBarCompat");
+		}
 
 		return (ViewGroup) mActivity.findViewById(R.id.actionbar_compat);
 	}
@@ -206,7 +222,9 @@ public class ActionBarHelperBase extends ActionBarHelper {
 	private View addActionItemCompatFromMenuItem(final MenuItem item) {
 
 		// Debug
-		Log.d(TAG, "[fn] addActionItemCompatFromMenuItem");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] addActionItemCompatFromMenuItem");
+		}
 
 		final int itemId = item.getItemId();
 
@@ -282,7 +300,9 @@ public class ActionBarHelperBase extends ActionBarHelper {
 			super(context);
 
 			// Debug
-			Log.d(TAG, "[fn] WrappedMenuInflater");
+			if (Config.LOGD) {
+				Log.d(TAG, "[fn] WrappedMenuInflater");
+			}
 
 			mInflater = inflater;
 		}
@@ -291,7 +311,9 @@ public class ActionBarHelperBase extends ActionBarHelper {
 		public void inflate(int menuRes, Menu menu) {
 
 			// Debug
-			Log.d(TAG, "[fn] inflate");
+			if (Config.LOGD) {
+				Log.d(TAG, "[fn] inflate");
+			}
 
 			loadActionBarMetadata(menuRes);
 			mInflater.inflate(menuRes, menu);
@@ -305,7 +327,9 @@ public class ActionBarHelperBase extends ActionBarHelper {
 		private void loadActionBarMetadata(int menuResId) {
 
 			// Debug
-			Log.d(TAG, "[fn] loadActionBarMetadata");
+			if (Config.LOGD) {
+				Log.d(TAG, "[fn] loadActionBarMetadata");
+			}
 
 			XmlResourceParser parser = null;
 			try {

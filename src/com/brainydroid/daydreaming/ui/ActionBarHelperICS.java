@@ -32,7 +32,9 @@ public class ActionBarHelperICS extends ActionBarHelperHoneycomb {
 		super(activity);
 
 		// Debug
-		Log.d(TAG, "[fn] ActionBarHelperICS");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] ActionBarHelperICS");
+		}
 
 	}
 
@@ -40,7 +42,9 @@ public class ActionBarHelperICS extends ActionBarHelperHoneycomb {
 	protected Context getActionBarThemedContext() {
 
 		// Debug
-		Log.d(TAG, "[fn] getActionBarThemedContect");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] getActionBarThemedContect");
+		}
 
 		return mActivity.getActionBar().getThemedContext();
 	}

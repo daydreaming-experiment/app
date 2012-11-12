@@ -33,14 +33,18 @@
             android:key="time_window_lb_key"
             android:persistent="true"
             android:summary="@pref/settings_time_window_lb_default"
-            android:title="@string/time_window_lb" />
+            android:title="@string/time_window_lb"
+            android:negativeButtonText="@string/settings_picker_negative"
+            android:positiveButtonText="@string/settings_picker_positive" />
 
         <com.brainydroid.daydreaming.ui.TimePreference
             android:defaultValue="@pref/settings_time_window_ub_default"
             android:key="time_window_ub_key"
             android:persistent="true"
             android:summary="@pref/settings_time_window_ub_default"
-            android:title="@string/time_window_ub" />
+            android:title="@string/time_window_ub"
+            android:negativeButtonText="@string/settings_picker_negative"
+            android:positiveButtonText="@string/settings_picker_positive" />
     </PreferenceCategory>
 
 </PreferenceScreen>

@@ -2,6 +2,8 @@ package com.brainydroid.daydreaming.network;
 
 import android.util.Log;
 
+import com.brainydroid.daydreaming.ui.Config;
+
 public class HttpGetData {
 
 	private static String TAG = "HttpGetData";
@@ -12,7 +14,9 @@ public class HttpGetData {
 	public HttpGetData(String getUrl, HttpConversationCallback httpConversationCallback) {
 
 		// Debug
-		Log.d(TAG, "[fn] HttpGetData");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] HttpGetData");
+		}
 
 		_getUrl = getUrl;
 		_httpConversationCallback = httpConversationCallback;
@@ -21,7 +25,9 @@ public class HttpGetData {
 	public String getGetUrl() {
 
 		// Verbose
-		Log.v(TAG, "[fn] getGetUrl");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] getGetUrl");
+		}
 
 		return _getUrl;
 	}
@@ -29,7 +35,9 @@ public class HttpGetData {
 	public HttpConversationCallback getHttpConversationCallback() {
 
 		// Verbose
-		Log.v(TAG, "[fn] getHttpConversationCallback");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] getHttpConversationCallback");
+		}
 
 		return _httpConversationCallback;
 	}

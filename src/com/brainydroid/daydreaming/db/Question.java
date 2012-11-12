@@ -27,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.brainydroid.daydreaming.R;
+import com.brainydroid.daydreaming.ui.Config;
 import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 
@@ -99,7 +100,9 @@ public class Question {
 	public Question(Context context) {
 
 		// Debug
-		Log.d(TAG, "[fn] Question (argset 1: small)");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] Question (argset 1: small)");
+		}
 
 		initVars();
 		_questionsVersion = QuestionsStorage.getInstance(context).getQuestionsVersion();
@@ -110,7 +113,9 @@ public class Question {
 			String mainText, String parametersText) {
 
 		// Debug
-		Log.d(TAG, "[fn] Question (argset 2: full)");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] Question (argset 2: full)");
+		}
 
 		initVars();
 		setId(id);
@@ -126,7 +131,9 @@ public class Question {
 	private void initVars() {
 
 		// Debug
-		Log.d(TAG, "[fn] initVars");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] initVars");
+		}
 
 		_id = null;
 		_category = null;
@@ -150,7 +157,9 @@ public class Question {
 	public String getId() {
 
 		// Verbose
-		Log.v(TAG, "[fn] getId");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] getId");
+		}
 
 		return _id;
 	}
@@ -158,7 +167,9 @@ public class Question {
 	public void setId(String id) {
 
 		// Verbose
-		Log.v(TAG, "[fn] setId");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] setId");
+		}
 
 		_id = id;
 	}
@@ -166,7 +177,9 @@ public class Question {
 	public String getCategory() {
 
 		// Verbose
-		Log.v(TAG, "[fn] getCategory");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] getCategory");
+		}
 
 		return _category;
 	}
@@ -174,7 +187,9 @@ public class Question {
 	public void setCategory(String category) {
 
 		// Verbose
-		Log.v(TAG, "[fn] setCategory");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] setCategory");
+		}
 
 		_category = category;
 	}
@@ -182,7 +197,9 @@ public class Question {
 	public String getSubcategory() {
 
 		// Verbose
-		Log.v(TAG, "[fn] getSubcategory");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] getSubcategory");
+		}
 
 		return _subcategory;
 	}
@@ -190,7 +207,9 @@ public class Question {
 	public void setSubcategory(String subcategory) {
 
 		// Verbose
-		Log.v(TAG, "[fn] setSubcategory");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] setSubcategory");
+		}
 
 		_subcategory = subcategory;
 	}
@@ -198,7 +217,9 @@ public class Question {
 	public String getType() {
 
 		// Verbose
-		Log.v(TAG, "[fn] getType");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] getType");
+		}
 
 		return _type;
 	}
@@ -206,7 +227,9 @@ public class Question {
 	private Type getTypeType() {
 
 		// Debug
-		Log.d(TAG, "[fn] getTypeType");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] getTypeType");
+		}
 
 		if (_type == null) {
 			throw new RuntimeException("Question type not set");
@@ -222,7 +245,9 @@ public class Question {
 	private Answer newAnswerType() {
 
 		// Debug
-		Log.d(TAG, "[fn] newAnswerType");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] newAnswerType");
+		}
 
 		if (_type == null) {
 			throw new RuntimeException("Question type not set");
@@ -238,7 +263,9 @@ public class Question {
 	public void setType(String type) {
 
 		// Verbose
-		Log.v(TAG, "[fn] setType");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] setType");
+		}
 
 		_type = type;
 	}
@@ -246,7 +273,9 @@ public class Question {
 	public String getStatus() {
 
 		// Verbose
-		Log.v(TAG, "[fn] getStatus");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] getStatus");
+		}
 
 		return _status;
 	}
@@ -254,7 +283,9 @@ public class Question {
 	public void setStatus(String status) {
 
 		// Verbose
-		Log.v(TAG, "[fn] setStatus");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] setStatus");
+		}
 
 		_status = status;
 	}
@@ -262,7 +293,9 @@ public class Question {
 	public String getMainText() {
 
 		// Verbose
-		Log.v(TAG, "[fn] getMainText");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] getMainText");
+		}
 
 		return _mainText;
 	}
@@ -270,7 +303,9 @@ public class Question {
 	public void setMainText(String mainText) {
 
 		// Verbose
-		Log.v(TAG, "[fn] setMainText");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] setMainText");
+		}
 
 		_mainText = mainText;
 	}
@@ -278,7 +313,9 @@ public class Question {
 	public String getParametersText() {
 
 		// Verbose
-		Log.v(TAG, "[fn] getParametersText");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] getParametersText");
+		}
 
 		return _parametersText;
 	}
@@ -286,7 +323,9 @@ public class Question {
 	public void setParametersText(String parametersText) {
 
 		// Verbose
-		Log.v(TAG, "[fn] setParametersText");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] setParametersText");
+		}
 
 		_parametersText = parametersText;
 	}
@@ -294,7 +333,9 @@ public class Question {
 	public String getAnswer() {
 
 		// Debug
-		Log.d(TAG, "[fn] getAnswer");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] getAnswer");
+		}
 
 		if (_answer != null) {
 			return _answer.toJson();
@@ -306,7 +347,9 @@ public class Question {
 	private void setAnswer(Answer answer) {
 
 		// Verbose
-		Log.v(TAG, "[fn] setAnswer (from Answer)");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] setAnswer (from Answer)");
+		}
 
 		_answer = answer;
 	}
@@ -314,7 +357,9 @@ public class Question {
 	public void setAnswer(String jsonAnswer) {
 
 		// Debug
-		Log.d(TAG, "[fn] setAnswer (from String)");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] setAnswer (from String)");
+		}
 
 		if (jsonAnswer != null && jsonAnswer.length() != 0) {
 			Type typeType = getTypeType();
@@ -326,7 +371,9 @@ public class Question {
 	public double getLocationLatitude() {
 
 		// Verbose
-		Log.v(TAG, "[fn] getLocationLatitude");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] getLocationLatitude");
+		}
 
 		return _locationLatitude;
 	}
@@ -334,7 +381,9 @@ public class Question {
 	public double getLocationLongitude() {
 
 		// Verbose
-		Log.v(TAG, "[fn] getLocationLongitude");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] getLocationLongitude");
+		}
 
 		return _locationLongitude;
 	}
@@ -342,7 +391,9 @@ public class Question {
 	public double getLocationAltitude() {
 
 		// Verbose
-		Log.v(TAG, "[fn] getLocationAltitude");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] getLocationAltitude");
+		}
 
 		return _locationAltitude;
 	}
@@ -350,7 +401,9 @@ public class Question {
 	public double getLocationAccuracy() {
 
 		// Verbose
-		Log.v(TAG, "[fn] getLocationAccuracy");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] getLocationAccuracy");
+		}
 
 		return _locationAccuracy;
 	}
@@ -358,7 +411,9 @@ public class Question {
 	public void setLocationLatitude(double locationLatitude) {
 
 		// Verbose
-		Log.v(TAG, "[fn] setLocationLatitude");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] setLocationLatitude");
+		}
 
 		_locationLatitude = locationLatitude;
 	}
@@ -366,7 +421,9 @@ public class Question {
 	public void setLocationLongitude(double locationLongitude) {
 
 		// Verbose
-		Log.v(TAG, "[fn] setLocationLongitude");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] setLocationLongitude");
+		}
 
 		_locationLongitude = locationLongitude;
 	}
@@ -374,7 +431,9 @@ public class Question {
 	public void setLocationAltitude(double locationAltitude) {
 
 		// Verbose
-		Log.v(TAG, "[fn] setLocationAltitude");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] setLocationAltitude");
+		}
 
 		_locationAltitude = locationAltitude;
 	}
@@ -382,7 +441,9 @@ public class Question {
 	public void setLocationAccuracy(double locationAccuracy) {
 
 		// Verbose
-		Log.v(TAG, "[fn] setLocationAccuracy");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] setLocationAccuracy");
+		}
 
 		_locationAccuracy = locationAccuracy;
 	}
@@ -390,7 +451,9 @@ public class Question {
 	public void setLocation(Location location) {
 
 		// Debug
-		Log.d(TAG, "[fn] setLocation");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] setLocation");
+		}
 
 		if (location != null) {
 			_locationLatitude = location.getLatitude();
@@ -403,7 +466,9 @@ public class Question {
 	public long getTimestamp() {
 
 		// Verbose
-		Log.v(TAG, "[fn] getTimestamp");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] getTimestamp");
+		}
 
 		return _timestamp;
 	}
@@ -411,7 +476,9 @@ public class Question {
 	public void setTimestamp(long timestamp) {
 
 		// Verbose
-		Log.v(TAG, "[fn] setTimestamp");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] setTimestamp");
+		}
 
 		_timestamp = timestamp;
 	}
@@ -419,7 +486,9 @@ public class Question {
 	public int getQuestionsVersion() {
 
 		// Verbose
-		Log.v(TAG, "[fn] getQuestionsVersion");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] getQuestionsVersion");
+		}
 
 		return _questionsVersion;
 	}
@@ -427,7 +496,9 @@ public class Question {
 	public void setQuestionsVersion(int questionsVersion) {
 
 		// Verbose
-		Log.v(TAG, "[fn] setQuestionsVersion");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] setQuestionsVersion");
+		}
 
 		_questionsVersion = questionsVersion;
 	}
@@ -441,7 +512,9 @@ public class Question {
 	protected static ArrayList<View> getViewsByTag(ViewGroup root, String tag){
 
 		// Debug
-		Log.d(TAG, "[fn] getViewsByTag");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] getViewsByTag");
+		}
 
 		ArrayList<View> views = new ArrayList<View>();
 		final int childCount = root.getChildCount();
@@ -463,7 +536,9 @@ public class Question {
 	public ArrayList<View> createViews(Context context) {
 
 		// Debug
-		Log.d(TAG, "[fn] createViews");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] createViews");
+		}
 
 		Context _context = context;
 		LayoutInflater inflater = (LayoutInflater)_context.getSystemService(
@@ -481,7 +556,9 @@ public class Question {
 	private ArrayList<View> createViewsSlider(LayoutInflater inflater) {
 
 		// Debug
-		Log.d(TAG, "[fn] createViewsSlider");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] createViewsSlider");
+		}
 
 		ArrayList<View> views = new ArrayList<View>();
 		ArrayList<String> mainTexts = getParsedMainText();
@@ -532,7 +609,9 @@ public class Question {
 	private ArrayList<View> createViewsMultipleChoice(LayoutInflater inflater) {
 
 		// Debug
-		Log.d(TAG, "[fn] createViewsMultipleChoice");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] createViewsMultipleChoice");
+		}
 
 		ArrayList<View> views = new ArrayList<View>();
 		ArrayList<String> mainTexts = getParsedMainText();
@@ -623,7 +702,9 @@ public class Question {
 	public boolean validate(Context context, LinearLayout questionsLinearLayout) {
 
 		// Debug
-		Log.d(TAG, "[fn] validate");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] validate");
+		}
 
 		if (_type.equals(TYPE_SLIDER)) {
 			return validateSlider(context, questionsLinearLayout);
@@ -637,7 +718,9 @@ public class Question {
 	private boolean validateSlider(Context context, LinearLayout questionsLinearLayout) {
 
 		// Debug
-		Log.d(TAG, "[fn] validateSlider");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] validateSlider");
+		}
 
 		ArrayList<View> subquestions = getViewsByTag(questionsLinearLayout, "subquestion");
 		boolean isMultiple = subquestions.size() > 1 ? true : false;
@@ -663,7 +746,9 @@ public class Question {
 	private boolean validateMultipleChoice(Context context, LinearLayout questionsLinearLayout) {
 
 		// Debug
-		Log.d(TAG, "[fn] validateMultipleChoice");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] validateMultipleChoice");
+		}
 
 		ArrayList<View> subquestions = getViewsByTag(questionsLinearLayout, "subquestion");
 		Iterator<View> subquestionsIt = subquestions.iterator();
@@ -714,7 +799,9 @@ public class Question {
 	private ArrayList<String> parseString(String toParse, String sep) {
 
 		// Verbose
-		Log.v(TAG, "[fn] parseString");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] parseString");
+		}
 
 		return new ArrayList<String>(Arrays.asList(toParse.split(sep)));
 	}
@@ -722,7 +809,9 @@ public class Question {
 	private ArrayList<String> getParsedMainText() {
 
 		// Debug
-		Log.d(TAG, "[fn] getParsedMainText");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] getParsedMainText");
+		}
 
 		return parseString(_mainText, PARAMETER_SPLITTER);
 	}
@@ -730,7 +819,9 @@ public class Question {
 	private ArrayList<ArrayList<String>> getParsedParametersText() {
 
 		// Debug
-		Log.d(TAG, "[fn] getParsedParametersText");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] getParsedParametersText");
+		}
 
 		ArrayList<ArrayList<String>> parsedParametersText = new ArrayList<ArrayList<String>>();
 		Iterator<String> preParsedIt = parseString(_parametersText,
@@ -747,7 +838,9 @@ public class Question {
 	public void saveAnswers(LinearLayout questionLinearLayout) {
 
 		// Debug
-		Log.d(TAG, "[fn] saveAnswers");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] saveAnswers");
+		}
 
 		Answer answer = newAnswerType();
 		answer.getAnswersFromLayout(questionLinearLayout);

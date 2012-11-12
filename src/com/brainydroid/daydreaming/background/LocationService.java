@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.brainydroid.daydreaming.ui.Config;
+
 public class LocationService extends Service {
 
 	private static String TAG = "LocationService";
@@ -28,7 +30,9 @@ public class LocationService extends Service {
 		LocationService getService() {
 
 			// Verbose
-			Log.v(TAG, "[fn] getService");
+			if (Config.LOGV) {
+				Log.v(TAG, "[fn] getService");
+			}
 
 			// Return this instance of LocationService so clients can call public methods
 			return LocationService.this;
@@ -38,7 +42,9 @@ public class LocationService extends Service {
 	public void setLocationCallback(LocationCallback callback) {
 
 		// Debug
-		Log.d(TAG, "[fn] setLocationCallback");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] setLocationCallback");
+		}
 
 		_callback = callback;
 
@@ -51,7 +57,9 @@ public class LocationService extends Service {
 	public void onCreate() {
 
 		// Debug
-		Log.d(TAG, "[fn] onCreate");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onCreate");
+		}
 
 		super.onCreate();
 		initVars();
@@ -62,7 +70,9 @@ public class LocationService extends Service {
 	public int onStartCommand(Intent intent, int flags, int startId) {
 
 		// Debug
-		Log.d(TAG, "[fn] onStartCommand");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onStartCommand");
+		}
 
 		super.onStartCommand(intent, flags, startId);
 
@@ -73,7 +83,9 @@ public class LocationService extends Service {
 	public void onDestroy() {
 
 		// Debug
-		Log.d(TAG, "[fn] onDestroy");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onDestroy");
+		}
 
 		stopLocationListenerIfExists();
 		super.onDestroy();
@@ -83,7 +95,9 @@ public class LocationService extends Service {
 	public IBinder onBind(Intent intent) {
 
 		// Debug
-		Log.d(TAG, "[fn] onBind");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onBind");
+		}
 
 		return mBinder;
 	}
@@ -92,7 +106,9 @@ public class LocationService extends Service {
 	public void onRebind(Intent intent) {
 
 		// Debug
-		Log.d(TAG, "[fn] onRebind");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onRebind");
+		}
 
 		super.onRebind(intent);
 	}
@@ -101,7 +117,9 @@ public class LocationService extends Service {
 	public boolean onUnbind(Intent intent) {
 
 		// Debug
-		Log.d(TAG, "[fn] onUnbind");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onUnbind");
+		}
 
 		super.onUnbind(intent);
 
@@ -115,7 +133,9 @@ public class LocationService extends Service {
 	public void setStopOnUnbind() {
 
 		// Debug
-		Log.d(TAG, "[fn] setStopOnUnbind");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] setStopOnUnbind");
+		}
 
 		stopOnUnbind = true;
 	}
@@ -123,7 +143,9 @@ public class LocationService extends Service {
 	private void initVars() {
 
 		// Debug
-		Log.d(TAG, "[fn] initVars");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] initVars");
+		}
 
 		locationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
 	}
@@ -131,7 +153,9 @@ public class LocationService extends Service {
 	private void startLocationListener() {
 
 		// Debug
-		Log.d(TAG, "[fn] updateLocationListener");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] updateLocationListener");
+		}
 
 		stopLocationListenerIfExists();
 
@@ -143,7 +167,9 @@ public class LocationService extends Service {
 			public void onLocationChanged(Location location) {
 
 				// Debug
-				Log.d(TAG, "[fn] (locationListener) onLocationChanged");
+				if (Config.LOGD) {
+					Log.d(TAG, "[fn] (locationListener) onLocationChanged");
+				}
 
 				lastLocation = location;
 
@@ -175,7 +201,9 @@ public class LocationService extends Service {
 	private void stopLocationListenerIfExists() {
 
 		// Debug
-		Log.d(TAG, "[fn] removeLocationListenerIfExists");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] removeLocationListenerIfExists");
+		}
 
 		if (locationListener != null) {
 			locationManager.removeUpdates(locationListener);

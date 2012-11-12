@@ -48,7 +48,9 @@ public class SimpleMenuItem implements MenuItem {
 	public SimpleMenuItem(SimpleMenu menu, int id, int order, CharSequence title) {
 
 		// Debug
-		Log.d(TAG, "[fn] SimpleMenuItem");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] SimpleMenuItem");
+		}
 
 		mMenu = menu;
 		mId = id;
@@ -60,7 +62,9 @@ public class SimpleMenuItem implements MenuItem {
 	public int getItemId() {
 
 		// Verbose
-		Log.v(TAG, "[fn] getItemId");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] getItemId");
+		}
 
 		return mId;
 	}
@@ -69,7 +73,9 @@ public class SimpleMenuItem implements MenuItem {
 	public int getOrder() {
 
 		// Verbose
-		Log.v(TAG, "[fn] getOrder");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] getOrder");
+		}
 
 		return mOrder;
 	}
@@ -78,7 +84,9 @@ public class SimpleMenuItem implements MenuItem {
 	public MenuItem setTitle(CharSequence title) {
 
 		// Verbose
-		Log.v(TAG, "[fn] setTitle (from CharSequence)");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] setTitle (from CharSequence)");
+		}
 
 		mTitle = title;
 		return this;
@@ -88,7 +96,9 @@ public class SimpleMenuItem implements MenuItem {
 	public MenuItem setTitle(int titleRes) {
 
 		// Debug
-		Log.d(TAG, "[fn] setTitle (from int)");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] setTitle (from int)");
+		}
 
 		return setTitle(mMenu.getContext().getString(titleRes));
 	}
@@ -97,7 +107,9 @@ public class SimpleMenuItem implements MenuItem {
 	public CharSequence getTitle() {
 
 		// Verbose
-		Log.v(TAG, "[fn] getTitle");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] getTitle");
+		}
 
 		return mTitle;
 	}
@@ -106,7 +118,9 @@ public class SimpleMenuItem implements MenuItem {
 	public MenuItem setTitleCondensed(CharSequence title) {
 
 		// Verbose
-		Log.v(TAG, "[fn] setTitleCondensed");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] setTitleCondensed");
+		}
 
 		mTitleCondensed = title;
 		return this;
@@ -116,7 +130,9 @@ public class SimpleMenuItem implements MenuItem {
 	public CharSequence getTitleCondensed() {
 
 		// Verbose
-		Log.v(TAG, "[fn] getTitleCondensed");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] getTitleCondensed");
+		}
 
 		return mTitleCondensed != null ? mTitleCondensed : mTitle;
 	}
@@ -125,7 +141,9 @@ public class SimpleMenuItem implements MenuItem {
 	public MenuItem setIcon(Drawable icon) {
 
 		// Debug
-		Log.d(TAG, "[fn] setIcon (from Drawable)");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] setIcon (from Drawable)");
+		}
 
 		mIconResId = 0;
 		mIconDrawable = icon;
@@ -136,7 +154,9 @@ public class SimpleMenuItem implements MenuItem {
 	public MenuItem setIcon(int iconResId) {
 
 		// Debug
-		Log.d(TAG, "[fn] setIcon (from int)");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] setIcon (from int)");
+		}
 
 		mIconDrawable = null;
 		mIconResId = iconResId;
@@ -147,7 +167,9 @@ public class SimpleMenuItem implements MenuItem {
 	public Drawable getIcon() {
 
 		// Debug
-		Log.d(TAG, "[fn] getIcon");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] getIcon");
+		}
 
 		if (mIconDrawable != null) {
 			return mIconDrawable;
@@ -164,7 +186,9 @@ public class SimpleMenuItem implements MenuItem {
 	public MenuItem setEnabled(boolean enabled) {
 
 		// Verbose
-		Log.v(TAG, "[fn] setEnabled");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] setEnabled");
+		}
 
 		mEnabled = enabled;
 		return this;
@@ -174,7 +198,9 @@ public class SimpleMenuItem implements MenuItem {
 	public boolean isEnabled() {
 
 		// Debug
-		Log.d(TAG, "[fn] isEnabled");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] isEnabled");
+		}
 
 		return mEnabled;
 	}
@@ -185,7 +211,9 @@ public class SimpleMenuItem implements MenuItem {
 	public int getGroupId() {
 
 		// Verbose
-		Log.v(TAG, "[fn] getGroupId");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] getGroupId");
+		}
 
 		// Noop
 		return 0;
@@ -195,7 +223,9 @@ public class SimpleMenuItem implements MenuItem {
 	public View getActionView() {
 
 		// Verbose
-		Log.v(TAG, "[fn] getActionView");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] getActionView");
+		}
 
 		// Noop
 		return null;
@@ -205,7 +235,9 @@ public class SimpleMenuItem implements MenuItem {
 	public MenuItem setActionProvider(ActionProvider actionProvider) {
 
 		// Verbose
-		Log.v(TAG, "[fn] setActionProvider");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] setActionProvider");
+		}
 
 		// Noop
 		return this;
@@ -215,7 +247,9 @@ public class SimpleMenuItem implements MenuItem {
 	public ActionProvider getActionProvider() {
 
 		// Verbose
-		Log.v(TAG, "[fn] getActionProvider");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] getActionProvider");
+		}
 
 		// Noop
 		return null;
@@ -225,7 +259,9 @@ public class SimpleMenuItem implements MenuItem {
 	public boolean expandActionView() {
 
 		// Debug
-		Log.d(TAG, "[fn] expandActionView");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] expandActionView");
+		}
 
 		// Noop
 		return false;
@@ -235,7 +271,9 @@ public class SimpleMenuItem implements MenuItem {
 	public boolean collapseActionView() {
 
 		// Debug
-		Log.d(TAG, "[fn] collapseActionView");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] collapseActionView");
+		}
 
 		// Noop
 		return false;
@@ -245,7 +283,9 @@ public class SimpleMenuItem implements MenuItem {
 	public boolean isActionViewExpanded() {
 
 		// Verbose
-		Log.v(TAG, "[fn] isActionViewExpanded");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] isActionViewExpanded");
+		}
 
 		// Noop
 		return false;
@@ -255,7 +295,9 @@ public class SimpleMenuItem implements MenuItem {
 	public MenuItem setOnActionExpandListener(OnActionExpandListener onActionExpandListener) {
 
 		// Verbose
-		Log.v(TAG, "[fn] setOnActionExpandListener");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] setOnActionExpandListener");
+		}
 
 		// Noop
 		return this;
@@ -265,7 +307,9 @@ public class SimpleMenuItem implements MenuItem {
 	public MenuItem setIntent(Intent intent) {
 
 		// Verbose
-		Log.v(TAG, "[fn] setIntent");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] setIntent");
+		}
 
 		// Noop
 		return this;
@@ -275,7 +319,9 @@ public class SimpleMenuItem implements MenuItem {
 	public Intent getIntent() {
 
 		// Verbose
-		Log.v(TAG, "[fn] getIntent");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] getIntent");
+		}
 
 		// Noop
 		return null;
@@ -285,7 +331,9 @@ public class SimpleMenuItem implements MenuItem {
 	public MenuItem setShortcut(char c, char c1) {
 
 		// Verbose
-		Log.v(TAG, "[fn] setShortcut");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] setShortcut");
+		}
 
 		// Noop
 		return this;
@@ -295,7 +343,9 @@ public class SimpleMenuItem implements MenuItem {
 	public MenuItem setNumericShortcut(char c) {
 
 		// Verbose
-		Log.v(TAG, "[fn] setNumericShortcut");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] setNumericShortcut");
+		}
 
 		// Noop
 		return this;
@@ -305,7 +355,9 @@ public class SimpleMenuItem implements MenuItem {
 	public char getNumericShortcut() {
 
 		// Verbose
-		Log.v(TAG, "[fn] getNumericShortcut");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] getNumericShortcut");
+		}
 
 		// Noop
 		return 0;
@@ -315,7 +367,9 @@ public class SimpleMenuItem implements MenuItem {
 	public MenuItem setAlphabeticShortcut(char c) {
 
 		// Verbose
-		Log.v(TAG, "[fn] setAlphabeticShortcut");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] setAlphabeticShortcut");
+		}
 
 		// Noop
 		return this;
@@ -325,7 +379,9 @@ public class SimpleMenuItem implements MenuItem {
 	public char getAlphabeticShortcut() {
 
 		// Verbose
-		Log.v(TAG, "[fn] getAlphabeticShortcut");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] getAlphabeticShortcut");
+		}
 
 		// Noop
 		return 0;
@@ -335,7 +391,9 @@ public class SimpleMenuItem implements MenuItem {
 	public MenuItem setCheckable(boolean b) {
 
 		// Verbose
-		Log.v(TAG, "[fn] setCheckable");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] setCheckable");
+		}
 
 		// Noop
 		return this;
@@ -345,7 +403,9 @@ public class SimpleMenuItem implements MenuItem {
 	public boolean isCheckable() {
 
 		// Verbose
-		Log.v(TAG, "[fn] isCheckable");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] isCheckable");
+		}
 
 		// Noop
 		return false;
@@ -355,7 +415,9 @@ public class SimpleMenuItem implements MenuItem {
 	public MenuItem setChecked(boolean b) {
 
 		// Verbose
-		Log.v(TAG, "[fn] setChecked");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] setChecked");
+		}
 
 		// Noop
 		return this;
@@ -365,7 +427,9 @@ public class SimpleMenuItem implements MenuItem {
 	public boolean isChecked() {
 
 		// Verbose
-		Log.v(TAG, "[fn] isChecked");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] isChecked");
+		}
 
 		// Noop
 		return false;
@@ -375,7 +439,9 @@ public class SimpleMenuItem implements MenuItem {
 	public MenuItem setVisible(boolean b) {
 
 		// Verbose
-		Log.v(TAG, "[fn] setVisible");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] setVisible");
+		}
 
 		// Noop
 		return this;
@@ -385,7 +451,9 @@ public class SimpleMenuItem implements MenuItem {
 	public boolean isVisible() {
 
 		// Verbose
-		Log.v(TAG, "[fn] isVisible");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] isVisible");
+		}
 
 		// Noop
 		return true;
@@ -395,7 +463,9 @@ public class SimpleMenuItem implements MenuItem {
 	public boolean hasSubMenu() {
 
 		// Debug
-		Log.d(TAG, "[fn] hasSubMenu");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] hasSubMenu");
+		}
 
 		// Noop
 		return false;
@@ -405,7 +475,9 @@ public class SimpleMenuItem implements MenuItem {
 	public SubMenu getSubMenu() {
 
 		// Verbose
-		Log.v(TAG, "[fn] getSubMenu");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] getSubMenu");
+		}
 
 		// Noop
 		return null;
@@ -415,7 +487,9 @@ public class SimpleMenuItem implements MenuItem {
 	public MenuItem setOnMenuItemClickListener(OnMenuItemClickListener onMenuItemClickListener) {
 
 		// Verbose
-		Log.v(TAG, "[fn] setOnMenuItemClickListener");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] setOnMenuItemClickListener");
+		}
 
 		// Noop
 		return this;
@@ -425,7 +499,9 @@ public class SimpleMenuItem implements MenuItem {
 	public ContextMenu.ContextMenuInfo getMenuInfo() {
 
 		// Verbose
-		Log.v(TAG, "[fn] getMenuInfo");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] getMenuInfo");
+		}
 
 		// Noop
 		return null;
@@ -435,7 +511,9 @@ public class SimpleMenuItem implements MenuItem {
 	public void setShowAsAction(int i) {
 
 		// Verbose
-		Log.v(TAG, "[fn] setShowAsAction");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] setShowAsAction");
+		}
 
 		// Noop
 	}
@@ -444,7 +522,9 @@ public class SimpleMenuItem implements MenuItem {
 	public MenuItem setShowAsActionFlags(int i) {
 
 		// Verbose
-		Log.v(TAG, "[fn] setShowAsActionFlags");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] setShowAsActionFlags");
+		}
 
 		// Noop
 		return null;
@@ -454,7 +534,9 @@ public class SimpleMenuItem implements MenuItem {
 	public MenuItem setActionView(View view) {
 
 		// Verbose
-		Log.v(TAG, "[fn] setActionView");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] setActionView");
+		}
 
 		// Noop
 		return this;
@@ -464,7 +546,9 @@ public class SimpleMenuItem implements MenuItem {
 	public MenuItem setActionView(int i) {
 
 		// Verbose
-		Log.v(TAG, "[fn] setActionView");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] setActionView");
+		}
 
 		// Noop
 		return this;

@@ -44,7 +44,9 @@ public abstract class ActionBarActivity extends FragmentActivity {
 	protected ActionBarHelper getActionBarHelper() {
 
 		// Verbose
-		Log.v(TAG, "[fn] getActionBarHelper");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] getActionBarHelper");
+		}
 
 		return mActionBarHelper;
 	}
@@ -54,7 +56,9 @@ public abstract class ActionBarActivity extends FragmentActivity {
 	public MenuInflater getMenuInflater() {
 
 		// Debug
-		Log.d(TAG, "[fn] getMenuInflater");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] getMenuInflater");
+		}
 
 		return mActionBarHelper.getMenuInflater(super.getMenuInflater());
 	}
@@ -64,7 +68,9 @@ public abstract class ActionBarActivity extends FragmentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 
 		// Debug
-		Log.d(TAG, "[fn] onCreate");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onCreate");
+		}
 
 		super.onCreate(savedInstanceState);
 		mActionBarHelper.onCreate(savedInstanceState);
@@ -75,7 +81,9 @@ public abstract class ActionBarActivity extends FragmentActivity {
 	protected void onPostCreate(Bundle savedInstanceState) {
 
 		// Debug
-		Log.d(TAG, "[fn] onPostCreate");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onPostCreate");
+		}
 
 		super.onPostCreate(savedInstanceState);
 		mActionBarHelper.onPostCreate(savedInstanceState);
@@ -91,7 +99,9 @@ public abstract class ActionBarActivity extends FragmentActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 
 		// Debug
-		Log.d(TAG, "[fn] onCreateOptionsMenu");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onCreateOptionsMenu");
+		}
 
 		boolean retValue = false;
 		retValue |= mActionBarHelper.onCreateOptionsMenu(menu);
@@ -104,7 +114,9 @@ public abstract class ActionBarActivity extends FragmentActivity {
 	protected void onTitleChanged(CharSequence title, int color) {
 
 		// Debug
-		Log.d(TAG, "[fn] onTitleChanged");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onTitleChanged");
+		}
 
 		mActionBarHelper.onTitleChanged(title, color);
 		super.onTitleChanged(title, color);

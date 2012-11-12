@@ -36,14 +36,18 @@ public class ActionBarHelperHoneycomb extends ActionBarHelper {
 		super(activity);
 
 		// Debug
-		Log.d(TAG, "[fn] ActionBarHelpHoneycomb");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] ActionBarHelpHoneycomb");
+		}
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 
 		// Debug
-		Log.d(TAG, "[fn] onCreateOptionsMenu");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onCreateOptionsMenu");
+		}
 
 		//		mOptionsMenu = menu;
 		return super.onCreateOptionsMenu(menu);
@@ -83,7 +87,9 @@ public class ActionBarHelperHoneycomb extends ActionBarHelper {
 	protected Context getActionBarThemedContext() {
 
 		// Verbose
-		Log.v(TAG, "[fn] getActionBarThemedContext");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] getActionBarThemedContext");
+		}
 
 		return mActivity;
 	}

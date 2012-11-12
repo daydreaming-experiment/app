@@ -23,7 +23,9 @@ public class FirstLaunchDescriptionActivity extends ActionBarActivity {
 	public void onCreate(Bundle savedInstanceState) {
 
 		// Debug
-		Log.d(TAG, "[fn] onCreate");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onCreate");
+		}
 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_first_launch_description);
@@ -35,7 +37,9 @@ public class FirstLaunchDescriptionActivity extends ActionBarActivity {
 	public void onStart() {
 
 		// Debug
-		Log.d(TAG, "[fn] onStart");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onStart");
+		}
 
 		super.onStart();
 		checkFirstLaunch();
@@ -45,7 +49,9 @@ public class FirstLaunchDescriptionActivity extends ActionBarActivity {
 	public void onResume() {
 
 		// Debug
-		Log.d(TAG, "[fn] onResume");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onResume");
+		}
 
 		super.onResume();
 	}
@@ -54,7 +60,9 @@ public class FirstLaunchDescriptionActivity extends ActionBarActivity {
 	public void onBackPressed() {
 
 		// Debug
-		Log.d(TAG, "[fn] onBackPressed");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onBackPressed");
+		}
 
 		super.onBackPressed();
 		overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
@@ -63,7 +71,9 @@ public class FirstLaunchDescriptionActivity extends ActionBarActivity {
 	public void onClick_buttonNext(View view) {
 
 		// Debug
-		Log.d(TAG, "[fn] onClick_buttonNext");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onClick_buttonNext");
+		}
 
 		DialogFragment consentAlert = ConsentAlertDialogFragment.newInstance(
 				R.string.consentAlert_title,
@@ -76,7 +86,9 @@ public class FirstLaunchDescriptionActivity extends ActionBarActivity {
 	private void launchProfileActivity() {
 
 		// Debug
-		Log.d(TAG, "[fn] launchProfileActivity");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] launchProfileActivity");
+		}
 
 		Intent intent = new Intent(this, FirstLaunchProfileActivity.class);
 		intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
@@ -87,7 +99,9 @@ public class FirstLaunchDescriptionActivity extends ActionBarActivity {
 	private void checkFirstLaunch() {
 
 		// Debug
-		Log.d(TAG, "[fn] checkFirstLaunch");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] checkFirstLaunch");
+		}
 
 		if (status.isFirstLaunchCompleted() || status.isClearing()) {
 			finish();
@@ -104,7 +118,9 @@ public class FirstLaunchDescriptionActivity extends ActionBarActivity {
 				int negText, int posText) {
 
 			// Debug
-			Log.d(TAG, "[fn] newInstance");
+			if (Config.LOGD) {
+				Log.d(TAG, "[fn] newInstance");
+			}
 
 			ConsentAlertDialogFragment frag = new ConsentAlertDialogFragment();
 			Bundle args = new Bundle();
@@ -120,7 +136,9 @@ public class FirstLaunchDescriptionActivity extends ActionBarActivity {
 		public Dialog onCreateDialog(Bundle savedInstanceState) {
 
 			// Debug
-			Log.d(TAG, "[fn] onCreateDialog");
+			if (Config.LOGD) {
+				Log.d(TAG, "[fn] onCreateDialog");
+			}
 
 			status = StatusManager.getInstance(getActivity());
 

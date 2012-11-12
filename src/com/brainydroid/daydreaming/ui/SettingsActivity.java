@@ -25,7 +25,9 @@ implements OnSharedPreferenceChangeListener {
 	public void onCreate(Bundle savedInstanceState) {
 
 		// Debug
-		Log.d(TAG, "[fn] onCreate");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onCreate");
+		}
 
 		super.onCreate(savedInstanceState);
 
@@ -36,7 +38,9 @@ implements OnSharedPreferenceChangeListener {
 	protected void onResume() {
 
 		// Debug
-		Log.d(TAG, "[fn] onResume");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onResume");
+		}
 
 		super.onResume();
 
@@ -48,7 +52,9 @@ implements OnSharedPreferenceChangeListener {
 	protected void onStop() {
 
 		// Debug
-		Log.d(TAG, "[fn] onStop");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onStop");
+		}
 
 		super.onStop();
 		sharedPrefs.unregisterOnSharedPreferenceChangeListener(this);
@@ -58,7 +64,9 @@ implements OnSharedPreferenceChangeListener {
 	private void initVars() {
 
 		// Debug
-		Log.d(TAG, "[fn] initVars");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] initVars");
+		}
 
 		// Load the XML preferences file
 		addPreferencesFromResource(R.layout.preferences);
@@ -81,7 +89,9 @@ implements OnSharedPreferenceChangeListener {
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 
 		// Debug
-		Log.d(TAG, "[fn] onSharedPreferenceChanged");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onSharedPreferenceChanged");
+		}
 
 		// TODO: check that the final time is after the starting time
 		// TODO: check that the allowed time window is longer than a certain minimum (e.g. 3 hours)
@@ -115,7 +125,9 @@ implements OnSharedPreferenceChangeListener {
 	private void startSchedulerService() {
 
 		// Debug
-		Log.d(TAG, "[fn] startSchedulerService");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] startSchedulerService");
+		}
 
 		Intent schedulerIntent = new Intent(this, SchedulerService.class);
 		startService(schedulerIntent);

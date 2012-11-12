@@ -24,6 +24,8 @@ import android.os.AsyncTask;
 import android.os.SystemClock;
 import android.util.Log;
 
+import com.brainydroid.daydreaming.ui.Config;
+
 /**
  * {@hide}
  *
@@ -36,8 +38,7 @@ import android.util.Log;
  * }
  * </pre>
  */
-public class SntpClient
-{
+public class SntpClient {
 	private static final String TAG = "SntpClient";
 
 	private static final int ORIGINATE_TIME_OFFSET = 24;
@@ -71,7 +72,9 @@ public class SntpClient
 		protected void setSntpClientCallback(SntpClientCallback callback) {
 
 			// Verbose
-			Log.v(TAG, "[fn] setSntpClientCallback");
+			if (Config.LOGV) {
+				Log.v(TAG, "[fn] setSntpClientCallback");
+			}
 
 			_callback = callback;
 		}
@@ -80,7 +83,9 @@ public class SntpClient
 		protected SntpClient doInBackground(SntpClient... sntpClients) {
 
 			// Debug
-			Log.d(TAG, "[fn] doInBackground");
+			if (Config.LOGD) {
+				Log.d(TAG, "[fn] doInBackground");
+			}
 
 			SntpClient sntpClient = sntpClients[0];
 			if (sntpClient.requestTime("0.pool.ntp.org", 5000)) {
@@ -93,7 +98,9 @@ public class SntpClient
 		protected void onPostExecute(SntpClient sntpClient) {
 
 			// Debug
-			Log.d(TAG, "[fn] onPostExecute");
+			if (Config.LOGD) {
+				Log.d(TAG, "[fn] onPostExecute");
+			}
 
 			_callback.onTimeReceived(sntpClient);
 		}
@@ -109,7 +116,9 @@ public class SntpClient
 	private boolean requestTime(String host, int timeout) {
 
 		// Debug
-		Log.d(TAG, "[fn] requestTime");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] requestTime");
+		}
 
 		try {
 			DatagramSocket socket = new DatagramSocket();
@@ -151,8 +160,8 @@ public class SntpClient
 			//             = (transit + skew - transit + skew)/2
 			//             = (2 * skew)/2 = skew
 			long clockOffset = ((receiveTime - originateTime) + (transmitTime - responseTime))/2;
-			// if (Config.LOGD) Log.d(TAG, "round trip: " + roundTripTime + " ms");
-			// if (Config.LOGD) Log.d(TAG, "clock offset: " + clockOffset + " ms");
+			// if (Config.LOGD) if (Config.LOGD) Log.d(TAG, "round trip: " + roundTripTime + " ms");
+			// if (Config.LOGD) if (Config.LOGD) Log.d(TAG, "clock offset: " + clockOffset + " ms");
 
 			// save our results - use the times on this side of the network latency
 			// (response rather than request time)
@@ -160,7 +169,9 @@ public class SntpClient
 			mNtpTimeReference = responseTicks;
 			mRoundTripTime = roundTripTime;
 		} catch (Exception e) {
-			Log.d(TAG, "request time failed: " + e);
+			if (Config.LOGD) {
+				Log.d(TAG, "request time failed: " + e);
+			}
 			return false;
 		}
 
@@ -170,7 +181,9 @@ public class SntpClient
 	public void asyncRequestTime(SntpClientCallback callback) {
 
 		// Debug
-		Log.d(TAG, "[fn] asyncRequestTime");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] asyncRequestTime");
+		}
 
 		RequestTimeTask requestTask = new RequestTimeTask();
 		requestTask.setSntpClientCallback(callback);
@@ -180,7 +193,9 @@ public class SntpClient
 	public long getNow() {
 
 		// Debug
-		Log.d(TAG, "[fn] getNow");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] getNow");
+		}
 
 		return getNtpTime() + SystemClock.elapsedRealtime() - getNtpTimeReference();
 	}
@@ -193,7 +208,9 @@ public class SntpClient
 	public long getNtpTime() {
 
 		// Verbose
-		Log.v(TAG, "[fn] getNtpTime");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] getNtpTime");
+		}
 
 		return mNtpTime;
 	}
@@ -207,7 +224,9 @@ public class SntpClient
 	public long getNtpTimeReference() {
 
 		// Verbose
-		Log.v(TAG, "[fn] getNtpTimeReference");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] getNtpTimeReference");
+		}
 
 		return mNtpTimeReference;
 	}
@@ -220,7 +239,9 @@ public class SntpClient
 	public long getRoundTripTime() {
 
 		// Verbose
-		Log.v(TAG, "[fn] getRoundTripTime");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] getRoundTripTime");
+		}
 
 		return mRoundTripTime;
 	}
@@ -231,7 +252,9 @@ public class SntpClient
 	private long read32(byte[] buffer, int offset) {
 
 		// Verbose
-		Log.v(TAG, "[fn] read32");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] read32");
+		}
 
 		byte b0 = buffer[offset];
 		byte b1 = buffer[offset+1];
@@ -254,7 +277,9 @@ public class SntpClient
 	private long readTimeStamp(byte[] buffer, int offset) {
 
 		// Verbose
-		Log.v(TAG, "[fn] readTimeStamp");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] readTimeStamp");
+		}
 
 		long seconds = read32(buffer, offset);
 		long fraction = read32(buffer, offset + 4);
@@ -268,7 +293,9 @@ public class SntpClient
 	private void writeTimeStamp(byte[] buffer, int offset, long time) {
 
 		// Verbose
-		Log.v(TAG, "[fn] writeTimeStamp");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] writeTimeStamp");
+		}
 
 		long seconds = time / 1000L;
 		long milliseconds = time - seconds * 1000L;

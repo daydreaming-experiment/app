@@ -9,6 +9,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
+import com.brainydroid.daydreaming.ui.Config;
+
 // Class to create, maintain and update data (SharedPreferences) associated to the app
 public class StatusManager {
 
@@ -32,7 +34,9 @@ public class StatusManager {
 	public static synchronized StatusManager getInstance(Context context) {
 
 		// Debug
-		Log.d(TAG, "[fn] getInstance");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] getInstance");
+		}
 
 		if (smInstance == null) {
 			smInstance = new StatusManager(context);
@@ -47,7 +51,9 @@ public class StatusManager {
 	private StatusManager(Context context) {
 
 		// Debug
-		Log.d(TAG, "[fn] StatusManager");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] StatusManager");
+		}
 
 		_context = context.getApplicationContext();
 		expStatus = _context.getSharedPreferences(EXP_STATUS, Context.MODE_PRIVATE);
@@ -63,7 +69,9 @@ public class StatusManager {
 	public boolean isFirstLaunchStarted() {
 
 		// Debug
-		Log.d(TAG, "[fn] isFirstLaunchStarted");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] isFirstLaunchStarted");
+		}
 
 		return expStatus.getBoolean(FL_STARTED, false);
 	}
@@ -72,7 +80,9 @@ public class StatusManager {
 	public void setFirstLaunchStarted() {
 
 		// Debug
-		Log.d(TAG, "[fn] setFirstLaunchStarted");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] setFirstLaunchStarted");
+		}
 
 		eExpStatus.putBoolean(FL_STARTED, true);
 		eExpStatus.commit();
@@ -84,7 +94,9 @@ public class StatusManager {
 	public boolean isFirstLaunchCompleted() {
 
 		// Debug
-		Log.d(TAG, "[fn] isFirstLaunchCompleted");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] isFirstLaunchCompleted");
+		}
 
 		return expStatus.getBoolean(FL_COMPLETED, false);
 	}
@@ -92,7 +104,9 @@ public class StatusManager {
 	public void setFirstLaunchCompleted() {
 
 		// Debug
-		Log.d(TAG, "[fn] setFirstLaunchCompleted");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] setFirstLaunchCompleted");
+		}
 
 		eExpStatus.putBoolean(FL_COMPLETED, true);
 		eExpStatus.commit();
@@ -101,7 +115,9 @@ public class StatusManager {
 	public boolean isLocationServiceRunning() {
 
 		// Debug
-		Log.d(TAG, "[fn] isLocationServiceRunning");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] isLocationServiceRunning");
+		}
 
 		ActivityManager manager = (ActivityManager)_context.getSystemService(Context.ACTIVITY_SERVICE);
 		for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
@@ -115,7 +131,9 @@ public class StatusManager {
 	public boolean isClearing() {
 
 		// Debug
-		Log.d(TAG, "[fn] isClearing");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] isClearing");
+		}
 
 		return expStatus.getBoolean(IS_CLEARING, false);
 	}
@@ -124,7 +142,9 @@ public class StatusManager {
 	public void startClear() {
 
 		// Debug
-		Log.d(TAG, "[fn] startClear");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] startClear");
+		}
 
 		eExpStatus.clear();
 		eExpStatus.putBoolean(IS_CLEARING, true);
@@ -134,7 +154,9 @@ public class StatusManager {
 	public void finishClear() {
 
 		// Debug
-		Log.d(TAG, "[fn] finishClear");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] finishClear");
+		}
 
 		eExpStatus.clear();
 		eExpStatus.commit();
@@ -144,7 +166,9 @@ public class StatusManager {
 	public boolean isNetworkLocEnabled() {
 
 		// Debug
-		Log.d(TAG, "[fn] isNetworkEnabled");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] isNetworkEnabled");
+		}
 
 		return locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 	}
@@ -152,7 +176,9 @@ public class StatusManager {
 	public boolean isDataEnabled() {
 
 		// Debug
-		Log.d(TAG, "[fn] isDataEnabled");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] isDataEnabled");
+		}
 
 		networkInfo = connManager.getActiveNetworkInfo();
 		return networkInfo != null && networkInfo.isConnectedOrConnecting();
@@ -161,7 +187,9 @@ public class StatusManager {
 	public boolean isDataAndLocationEnabled() {
 
 		// Debug
-		Log.d(TAG, "[fn] isDataAndLocationEnabled");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] isDataAndLocationEnabled");
+		}
 
 		return isNetworkLocEnabled() && isDataEnabled();
 	}

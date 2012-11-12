@@ -21,7 +21,9 @@ public class TimePreference extends DialogPreference {
 	public static int getHour(String time) {
 
 		// Verbose
-		Log.v(TAG, "[fn] getHour");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] getHour");
+		}
 
 		String[] pieces = time.split(":");
 		return(Integer.parseInt(pieces[0]));
@@ -31,7 +33,9 @@ public class TimePreference extends DialogPreference {
 	public static int getMinute(String time) {
 
 		// Verbose
-		Log.v(TAG, "[fn] getMinute");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] getMinute");
+		}
 
 		String[] pieces = time.split(":");
 		return(Integer.parseInt(pieces[1]));
@@ -43,7 +47,9 @@ public class TimePreference extends DialogPreference {
 		super(ctxt, null); // constructor from superclass DialogPreference
 
 		// Debug
-		Log.d(TAG, "[fn] TimePreference (argset 1: small)");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] TimePreference (argset 1: small)");
+		}
 	}
 
 	// constructor from context and attributes
@@ -51,7 +57,9 @@ public class TimePreference extends DialogPreference {
 		super(ctxt, attrs, 0);
 
 		// Debug
-		Log.d(TAG, "[fn] TimePreference (argset 2: medium)");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] TimePreference (argset 2: medium)");
+		}
 	}
 
 	// constructor from context and attributes and style
@@ -59,17 +67,18 @@ public class TimePreference extends DialogPreference {
 		super(ctxt, attrs, defStyle);
 
 		// Debug
-		Log.d(TAG, "[fn] TimePreference (argset 3: full)");
-
-		setPositiveButtonText("Set");
-		setNegativeButtonText("Cancel");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] TimePreference (argset 3: full)");
+		}
 	}
 
 	@Override
 	protected View onCreateDialogView() {
 
 		// Debug
-		Log.d(TAG, "[fn] onCreateDialogView");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onCreateDialogView");
+		}
 
 		picker = new TimePicker(getContext());
 		return picker;
@@ -80,7 +89,9 @@ public class TimePreference extends DialogPreference {
 	protected void onBindDialogView(View v) {
 
 		// Debug
-		Log.d(TAG, "[fn] onBindDialogView");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onBindDialogView");
+		}
 
 		super.onBindDialogView(v);
 		picker.setCurrentHour(lastHour);
@@ -91,7 +102,9 @@ public class TimePreference extends DialogPreference {
 	protected void onDialogClosed(boolean positiveResult) {
 
 		// Debug
-		Log.d(TAG, "[fn] onDialogClosed");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onDialogClosed");
+		}
 
 		super.onDialogClosed(positiveResult);
 
@@ -109,7 +122,9 @@ public class TimePreference extends DialogPreference {
 	protected Object onGetDefaultValue(TypedArray a, int index) {
 
 		// Debug
-		Log.d(TAG, "[fn] onGetDefaultValue");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onGetDefaultValue");
+		}
 
 		return a.getString(index);
 	}
@@ -118,7 +133,9 @@ public class TimePreference extends DialogPreference {
 	protected void onSetInitialValue(boolean restoreValue, Object defaultValue) {
 
 		// Debug
-		Log.d(TAG, "[fn] onSetInitialValue");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onSetInitialValue");
+		}
 
 		String time = null;
 
@@ -139,7 +156,9 @@ public class TimePreference extends DialogPreference {
 	public String getTimeString() {
 
 		// Debug
-		Log.d(TAG, "[fn] getTimeString");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] getTimeString");
+		}
 
 		//        lastHour = picker.getCurrentHour();
 		//        lastMinute = picker.getCurrentMinute();
@@ -150,7 +169,9 @@ public class TimePreference extends DialogPreference {
 	public void setTime(String time) {
 
 		// Debug
-		Log.d(TAG, "[fn] setTime");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] setTime");
+		}
 
 		String[] pieces = time.split(":");
 		lastHour = Integer.parseInt(pieces[0]);
@@ -160,7 +181,9 @@ public class TimePreference extends DialogPreference {
 	private static String pad(int c) {
 
 		// Verbose
-		Log.v(TAG, "[fn] pad");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] pad");
+		}
 
 		if (c >= 10) {
 			return String.valueOf(c);

@@ -4,6 +4,8 @@ import java.io.File;
 
 import android.util.Log;
 
+import com.brainydroid.daydreaming.ui.Config;
+
 public class SignedDataFiles {
 
 	private static String TAG = "SignedDataFiles";
@@ -14,7 +16,9 @@ public class SignedDataFiles {
 	public SignedDataFiles(File d, File s) {
 
 		// Debug
-		Log.d(TAG, "[fn] SignedDataFiles");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] SignedDataFiles");
+		}
 
 		data = d;
 		signature = s;
@@ -23,7 +27,9 @@ public class SignedDataFiles {
 	boolean deleteFiles() {
 
 		// Debug
-		Log.d(TAG, "[fn] deleteFiles");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] deleteFiles");
+		}
 
 		return data.delete() && signature.delete();
 	}
@@ -31,7 +37,9 @@ public class SignedDataFiles {
 	public File getDataFile() {
 
 		// Verbose
-		Log.v(TAG, "[fn] getDataFile");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] getDataFile");
+		}
 
 		return data;
 	}
@@ -39,7 +47,9 @@ public class SignedDataFiles {
 	public File getSignatureFile() {
 
 		// Verbose
-		Log.v(TAG, "[fn] getSignatureFile");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] getSignatureFile");
+		}
 
 		return signature;
 	}

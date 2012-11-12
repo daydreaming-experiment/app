@@ -34,7 +34,9 @@ public class FirstLaunchMeasuresActivity extends ActionBarActivity {
 	public void onCreate(Bundle savedInstanceState) {
 
 		// Debug
-		Log.d(TAG, "[fn] onCreate");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onCreate");
+		}
 
 		super.onCreate(savedInstanceState);
 
@@ -55,7 +57,9 @@ public class FirstLaunchMeasuresActivity extends ActionBarActivity {
 	public void onStart() {
 
 		// Debug
-		Log.d(TAG, "[fn] onStart");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onStart");
+		}
 
 		super.onStart();
 		updateView();
@@ -66,7 +70,9 @@ public class FirstLaunchMeasuresActivity extends ActionBarActivity {
 	public void onResume() {
 
 		// Debug
-		Log.d(TAG, "[fn] onResume");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onResume");
+		}
 
 		super.onResume();
 	}
@@ -75,7 +81,9 @@ public class FirstLaunchMeasuresActivity extends ActionBarActivity {
 	public void onBackPressed() {
 
 		// Debug
-		Log.d(TAG, "[fn] onBackPressed");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onBackPressed");
+		}
 
 		super.onBackPressed();
 		overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
@@ -84,7 +92,9 @@ public class FirstLaunchMeasuresActivity extends ActionBarActivity {
 	private void checkFirstLaunch() {
 
 		// Debug
-		Log.d(TAG, "[fn] checkFirstLaunch");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] checkFirstLaunch");
+		}
 
 		if (status.isFirstLaunchCompleted() || status.isClearing()) {
 			finish();
@@ -94,7 +104,9 @@ public class FirstLaunchMeasuresActivity extends ActionBarActivity {
 	private void updateView() {
 
 		// Debug
-		Log.d(TAG, "[fn] updateView");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] updateView");
+		}
 
 		textNetworkLocation.setCompoundDrawablesWithIntrinsicBounds(
 				status.isNetworkLocEnabled() ? R.drawable.ic_check : R.drawable.ic_cross, 0, 0, 0);
@@ -105,7 +117,9 @@ public class FirstLaunchMeasuresActivity extends ActionBarActivity {
 	private void updateRequestAdjustSettings() {
 
 		// Debug
-		Log.d(TAG, "[fn] updateRequestAdjustSettings");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] updateRequestAdjustSettings");
+		}
 
 		if (status.isNetworkLocEnabled()) {
 			setAdjustSettingsOff();
@@ -118,7 +132,9 @@ public class FirstLaunchMeasuresActivity extends ActionBarActivity {
 	private void setAdjustSettingsNecessary() {
 
 		// Debug
-		Log.d(TAG, "[fn] setAdjustSettingsNecessary");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] setAdjustSettingsNecessary");
+		}
 
 		textSettings.setText(R.string.firstLaunchMeasures_text_settings_necessary);
 		textSettings.setVisibility(View.VISIBLE);
@@ -136,7 +152,9 @@ public class FirstLaunchMeasuresActivity extends ActionBarActivity {
 	private void setAdjustSettingsOff() {
 
 		// Debug
-		Log.d(TAG, "[fn] setAdjustSettingsOff");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] setAdjustSettingsOff");
+		}
 
 		textSettings.setVisibility(View.INVISIBLE);
 		buttonSettings.setVisibility(View.INVISIBLE);
@@ -152,7 +170,9 @@ public class FirstLaunchMeasuresActivity extends ActionBarActivity {
 	public void onClick_buttonSettings(View view) {
 
 		// Debug
-		Log.d(TAG, "[fn] onClick_buttonSettings");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onClick_buttonSettings");
+		}
 
 		launchSettings();
 	}
@@ -160,7 +180,9 @@ public class FirstLaunchMeasuresActivity extends ActionBarActivity {
 	private void launchSettings() {
 
 		// Debug
-		Log.d(TAG, "[fn] launchSettings");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] launchSettings");
+		}
 
 		Intent settingsIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
 		settingsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
@@ -170,7 +192,9 @@ public class FirstLaunchMeasuresActivity extends ActionBarActivity {
 	public void onClick_buttonNext(View view) {
 
 		// Debug
-		Log.d(TAG, "[fn] onClick_buttonNext");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onClick_buttonNext");
+		}
 
 		launchDashboard();
 	}
@@ -178,7 +202,9 @@ public class FirstLaunchMeasuresActivity extends ActionBarActivity {
 	private void launchDashboard() {
 
 		// Debug
-		Log.d(TAG, "[fn] launchDashboard");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] launchDashboard");
+		}
 
 		finishFirstLaunch(); // when everything is ok, first launch is set to completed
 		Intent dashboardIntent = new Intent(this, DashboardActivity.class);
@@ -190,7 +216,9 @@ public class FirstLaunchMeasuresActivity extends ActionBarActivity {
 	private void finishFirstLaunch() {
 
 		// Debug
-		Log.d(TAG, "[fn] setStatus");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] setStatus");
+		}
 
 		status.setFirstLaunchCompleted();
 		loadQuestionsFromRes();
@@ -202,7 +230,9 @@ public class FirstLaunchMeasuresActivity extends ActionBarActivity {
 	private void loadQuestionsFromRes() {
 
 		// Debug
-		Log.d(TAG, "[fn] loadQuestionsFromRes");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] loadQuestionsFromRes");
+		}
 
 		InputStream questionsIS = null;
 

@@ -15,7 +15,9 @@ public class FirstLaunchSettingsActivity extends ActionBarActivity {
 	public void onCreate(Bundle savedInstanceState) {
 
 		// Debug
-		Log.d(TAG, "[fn] onCreate");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onCreate");
+		}
 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_first_launch_settings);
@@ -33,7 +35,9 @@ public class FirstLaunchSettingsActivity extends ActionBarActivity {
 	public void launchDashboard(View v) {
 
 		// Debug
-		Log.d(TAG, "[fn] launchDashboard");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] launchDashboard");
+		}
 
 		Intent dashboardIntent = new Intent(this, DashboardActivity.class);
 		dashboardIntent.putExtra(DashboardActivity.EXTRA_COMES_FROM_FIRST_LAUNCH, true);
@@ -43,7 +47,9 @@ public class FirstLaunchSettingsActivity extends ActionBarActivity {
 	public void runSettings(View v) {
 
 		// Debug
-		Log.d(TAG, "[fn] runSettings");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] runSettings");
+		}
 
 		Intent dashboardIntent = new Intent(this, SettingsActivity.class);
 		dashboardIntent.putExtra(DashboardActivity.EXTRA_COMES_FROM_FIRST_LAUNCH, true);

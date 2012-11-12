@@ -11,6 +11,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.brainydroid.daydreaming.R;
+import com.brainydroid.daydreaming.ui.Config;
 import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 
@@ -24,7 +25,9 @@ public class SliderAnswer implements Answer {
 	public SliderAnswer() {
 
 		//Debug
-		Log.d(TAG, "[fn] SliderAnswer");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] SliderAnswer");
+		}
 
 		sliders = new HashMap<String,Integer>();
 		gson = new Gson();
@@ -34,7 +37,9 @@ public class SliderAnswer implements Answer {
 	public String toJson() {
 
 		//Debug
-		Log.d(TAG, "[fn] toJson");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] toJson");
+		}
 
 		return gson.toJson(this, this.getClass());
 	}
@@ -43,7 +48,9 @@ public class SliderAnswer implements Answer {
 	public void getAnswersFromLayout(LinearLayout questionLinearLayout) {
 
 		//Debug
-		Log.d(TAG, "[fn] getAnswersFromLayout");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] getAnswersFromLayout");
+		}
 
 		ArrayList<View> subQuestions = Question.getViewsByTag(questionLinearLayout, "subquestion");
 		Iterator<View> subQuestionsIt = subQuestions.iterator();
@@ -61,7 +68,9 @@ public class SliderAnswer implements Answer {
 	private void addAnswer(String questionString, int answer) {
 
 		//Debug
-		Log.d(TAG, "[fn] addAnswer");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] addAnswer");
+		}
 
 		sliders.put(questionString, answer);
 	}

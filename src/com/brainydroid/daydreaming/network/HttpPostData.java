@@ -6,6 +6,8 @@ import org.apache.http.entity.mime.content.FileBody;
 
 import android.util.Log;
 
+import com.brainydroid.daydreaming.ui.Config;
+
 public class HttpPostData {
 
 	private static String TAG = "HttpPostData";
@@ -17,7 +19,9 @@ public class HttpPostData {
 	public HttpPostData(String postUrl, HttpConversationCallback httpConversationCallback) {
 
 		// Debug
-		Log.d(TAG, "[fn] HttpPostData (argset 1: small)");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] HttpPostData (argset 1: small)");
+		}
 
 		_postUrl = postUrl;
 		_postFiles = new HashMap<String, FileBody>();
@@ -28,7 +32,9 @@ public class HttpPostData {
 			HttpConversationCallback httpConversationCallback) {
 
 		// Debug
-		Log.d(TAG, "[fn] HttpPostData (argset 2: full)");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] HttpPostData (argset 2: full)");
+		}
 
 		_postUrl = postUrl;
 		_postFiles = postFiles;
@@ -38,7 +44,9 @@ public class HttpPostData {
 	public String getPostUrl() {
 
 		// Verbose
-		Log.v(TAG, "[fn] getPostUrl");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] getPostUrl");
+		}
 
 		return _postUrl;
 	}
@@ -46,7 +54,9 @@ public class HttpPostData {
 	public HashMap<String, FileBody> getPostFiles() {
 
 		// Verbose
-		Log.v(TAG, "[fn] getPostFiles");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] getPostFiles");
+		}
 
 		return _postFiles;
 	}
@@ -54,7 +64,9 @@ public class HttpPostData {
 	public void addPostFile(String key, FileBody fileBody) {
 
 		// Debug
-		Log.d(TAG, "[fn] addPostFile");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] addPostFile");
+		}
 
 		_postFiles.put(key, fileBody);
 	}
@@ -62,7 +74,9 @@ public class HttpPostData {
 	public HttpConversationCallback getHttpConversationCallback() {
 
 		// Verbose
-		Log.v(TAG, "[fn] getHttpConversationCallback");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] getHttpConversationCallback");
+		}
 
 		return _httpConversationCallback;
 	}

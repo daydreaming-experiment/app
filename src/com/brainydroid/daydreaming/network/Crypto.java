@@ -25,6 +25,8 @@ import org.spongycastle.util.encoders.Hex;
 
 import android.util.Log;
 
+import com.brainydroid.daydreaming.ui.Config;
+
 public class Crypto {
 
 	private static String TAG = "Crypto";
@@ -50,7 +52,9 @@ public class Crypto {
 	public static synchronized Crypto getInstance() {
 
 		// Debug
-		Log.d(TAG, "[fn] getInstance");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] getInstance");
+		}
 
 		if (cInstance == null) {
 			cInstance = new Crypto();
@@ -62,7 +66,9 @@ public class Crypto {
 	private Crypto() {
 
 		// Debug
-		Log.d(TAG, "[fn] Crypto");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] Crypto");
+		}
 
 		try {
 			kf = KeyFactory.getInstance(KEYGEN_ALG, PROVIDER);
@@ -79,7 +85,9 @@ public class Crypto {
 	public synchronized Enumeration<String> getAvailableCurveNames() {
 
 		// Debug
-		Log.d(TAG, "[fn] getAvailableCurveNames");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] getAvailableCurveNames");
+		}
 
 		return ECNamedCurveTable.getNames();
 	}
@@ -87,7 +95,9 @@ public class Crypto {
 	public synchronized KeyPair generateKeyPairNamedCurve(String curveName) {
 
 		// Debug
-		Log.d(TAG, "[fn] generateKeyPairNamedCurve");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] generateKeyPairNamedCurve");
+		}
 
 		try {
 			ECGenParameterSpec ecParamSpec = new ECGenParameterSpec(curveName);
@@ -102,7 +112,9 @@ public class Crypto {
 	public static String base64Encode(byte[] b) {
 
 		// Verbose
-		Log.v(TAG, "[fn] base64Encode");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] base64Encode");
+		}
 
 		try {
 			return new String(Base64.encode(b), "ASCII");
@@ -114,7 +126,9 @@ public class Crypto {
 	public static String hex(byte[] bytes) {
 
 		// Verbose
-		Log.v(TAG, "[fn] hex");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] hex");
+		}
 
 		try {
 			return new String(Hex.encode(bytes), "ASCII");
@@ -126,7 +140,9 @@ public class Crypto {
 	public static byte[] base64Decode(String str) {
 
 		// Verbose
-		Log.v(TAG, "[fn] base64Decode");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] base64Decode");
+		}
 
 		return Base64.decode(str);
 	}
@@ -134,7 +150,9 @@ public class Crypto {
 	public synchronized PublicKey readPublicKey(String keyStr) throws InvalidKeySpecException {
 
 		// Debug
-		Log.d(TAG, "[fn] readPublicKey (from String)");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] readPublicKey (from String)");
+		}
 
 		X509EncodedKeySpec x509ks = new X509EncodedKeySpec(
 				Base64.decode(keyStr));
@@ -144,7 +162,9 @@ public class Crypto {
 	public synchronized PublicKey readPublicKey(byte[] key) throws InvalidKeySpecException {
 
 		// Debug
-		Log.d(TAG, "[fn] readPublicKey (from byte[])");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] readPublicKey (from byte[])");
+		}
 
 		X509EncodedKeySpec x509ks = new X509EncodedKeySpec(key);
 		return kf.generatePublic(x509ks);
@@ -153,7 +173,9 @@ public class Crypto {
 	public synchronized PrivateKey readPrivateKey(String keyStr) throws InvalidKeySpecException {
 
 		// Debug
-		Log.d(TAG, "[fn] readPrivateKey (from String)");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] readPrivateKey (from String)");
+		}
 
 		PKCS8EncodedKeySpec p8ks = new PKCS8EncodedKeySpec(
 				Base64.decode(keyStr));
@@ -163,7 +185,9 @@ public class Crypto {
 	public synchronized PrivateKey readPrivateKey(byte[] key) throws InvalidKeySpecException {
 
 		// Debug
-		Log.d(TAG, "[fn] readPrivateKey (from byte[])");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] readPrivateKey (from byte[])");
+		}
 
 		PKCS8EncodedKeySpec p8ks = new PKCS8EncodedKeySpec(key);
 		return kf.generatePrivate(p8ks);
@@ -172,7 +196,9 @@ public class Crypto {
 	public synchronized KeyPair readKeyPair(String pubKeyStr, String privKeyStr) throws InvalidKeySpecException {
 
 		// Debug
-		Log.d(TAG, "[fn] readKeyPair (from String, String)");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] readKeyPair (from String, String)");
+		}
 
 		return new KeyPair(readPublicKey(pubKeyStr), readPrivateKey(privKeyStr));
 	}
@@ -180,7 +206,9 @@ public class Crypto {
 	public synchronized KeyPair readKeyPair(byte[] pubKey, byte[] privKey) throws InvalidKeySpecException {
 
 		// Debug
-		Log.d(TAG, "[fn] readKeyPair (from byte[], byte[])");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] readKeyPair (from byte[], byte[])");
+		}
 
 		return new KeyPair(readPublicKey(pubKey), readPrivateKey(privKey));
 	}
@@ -188,7 +216,9 @@ public class Crypto {
 	private static String wrapString(String str, int lineWidth) {
 
 		// Verbose
-		Log.v(TAG, "[fn] wrapString");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] wrapString");
+		}
 
 		if (str.length() <= lineWidth) {
 			return str;
@@ -200,7 +230,9 @@ public class Crypto {
 	private static String formatKeyString(String keyString) {
 
 		// Debug
-		Log.d(TAG, "[fn] formatKeyString");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] formatKeyString");
+		}
 
 		return BEGIN_KEY_BLOCK + "\n" + wrapString(keyString, LINEWIDTH) + "\n" + END_KEY_BLOCK + "\n";
 	}
@@ -208,7 +240,9 @@ public class Crypto {
 	public static String armorPublicKey(PublicKey publicKey) {
 
 		// Debug
-		Log.d(TAG, "[fn] armorPublicKey");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] armorPublicKey");
+		}
 
 		return formatKeyString(base64Encode(publicKey.getEncoded()));
 	}
@@ -217,7 +251,9 @@ public class Crypto {
 			throws InvalidKeyException {
 
 		// Debug
-		Log.d(TAG, "[fn] sign");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] sign");
+		}
 
 		try {
 			sg.initSign(privateKey);

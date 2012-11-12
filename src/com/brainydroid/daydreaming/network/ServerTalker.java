@@ -6,6 +6,8 @@ import org.apache.http.entity.mime.content.FileBody;
 
 import android.util.Log;
 
+import com.brainydroid.daydreaming.ui.Config;
+
 public class ServerTalker {
 
 	private static String TAG = "ServerTalker";
@@ -28,7 +30,9 @@ public class ServerTalker {
 			CryptoStorage cryptoStorage) {
 
 		// Debug
-		Log.d(TAG, "[fn] getInstance");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] getInstance");
+		}
 
 		if (stInstance == null) {
 			stInstance = new ServerTalker(serverName, cryptoStorage);
@@ -40,7 +44,9 @@ public class ServerTalker {
 	private ServerTalker(String serverName, CryptoStorage cryptoStorage) {
 
 		// Debug
-		Log.d(TAG, "[fn] ServerTalker");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] ServerTalker");
+		}
 
 		_serverName = serverName;
 		_cryptoStorage = cryptoStorage;
@@ -49,7 +55,9 @@ public class ServerTalker {
 	public void setServerName(String s) {
 
 		// Verbose
-		Log.v(TAG, "[fn] setServerName");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] setServerName");
+		}
 
 		_serverName = s;
 	}
@@ -57,7 +65,9 @@ public class ServerTalker {
 	public void uploadPublicKey(HttpConversationCallback callback) {
 
 		// Debug
-		Log.d(TAG, "[fn] uploadPublicKey");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] uploadPublicKey");
+		}
 
 		final File keyFile = _cryptoStorage.createArmoredPublicKeyFile();
 		final HttpConversationCallback initialCallback = callback;
@@ -70,7 +80,9 @@ public class ServerTalker {
 			public void onHttpConversationFinished(boolean success, String serverAnswer) {
 
 				// Debug
-				Log.d(TAG, "[fn] (fullCallback) onHttpConversationFinished");
+				if (Config.LOGD) {
+					Log.d(TAG, "[fn] (fullCallback) onHttpConversationFinished");
+				}
 
 				initialCallback.onHttpConversationFinished(success, serverAnswer);
 				keyFile.delete();
@@ -90,7 +102,9 @@ public class ServerTalker {
 			HttpConversationCallback callback) {
 
 		// Debug
-		Log.d(TAG, "[fn] signAndUploadData");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] signAndUploadData");
+		}
 
 		final SignedDataFiles sdf = _cryptoStorage.createSignedDataFiles(data);
 		final HttpConversationCallback initialCallback = callback;
@@ -103,7 +117,9 @@ public class ServerTalker {
 			public void onHttpConversationFinished(boolean success, String serverAnswer) {
 
 				// Debug
-				Log.d(TAG, "[fn] (fullCallback) onHttpConversationFinished");
+				if (Config.LOGD) {
+					Log.d(TAG, "[fn] (fullCallback) onHttpConversationFinished");
+				}
 
 				initialCallback.onHttpConversationFinished(success, serverAnswer);
 				sdf.deleteFiles();
@@ -123,7 +139,9 @@ public class ServerTalker {
 	public void requestMaiId(HttpConversationCallback callback) {
 
 		// Debug
-		Log.d(TAG, "[fn] requestMaiId");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] requestMaiId");
+		}
 
 		String getUrl = _serverName + BS_URL_UPLOAD + BS_URL_UPLOAD_REQUEST_MAI_ID;
 		HttpGetData getData = new HttpGetData(getUrl, callback);

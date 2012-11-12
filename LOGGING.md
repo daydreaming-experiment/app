@@ -38,21 +38,21 @@ Function calls are logged by including a log line at the very beginning of each 
 A function is logged at debug level like this:
 
         // Debug
-        Log.d(TAG, "[fn] functionName");
+        if (Config.LOGD) Log.d(TAG, "[fn] functionName");
 
 and at verbose level like this:
 
         // Verbose
-        Log.v(TAG, "[fn] functionName");
+        if (Config.LOGV) Log.v(TAG, "[fn] functionName");
 
 If the function called is inside a nested class that can be instantianted various times for different uses, the name of the class instance should be included. For example, `HttpConversationCallback` callbacks are instantiated for different uses in `CryptoStorage`; therefore function calls are logged in the following way:
 
         // Debug
-        Log.d(TAG, "[fn] (classInstanceName) functionName");
+        if (Config.LOGD) Log.d(TAG, "[fn] (classInstanceName) functionName");
 
 In the case of `HttpConversationCallback fullCallback = new HttpConversationCallback()`, the log line in `onHttpConversationFinished` looks like:
 
         // Debug
-        Log.d(TAG, "[fn] (fullCallback) onHttpConversationFinished");
+        if (Config.LOGD) Log.d(TAG, "[fn] (fullCallback) onHttpConversationFinished");
 
 This makes the logs way more understandable.

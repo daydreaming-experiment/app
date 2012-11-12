@@ -5,6 +5,8 @@ import java.util.ArrayList;
 
 import android.util.Log;
 
+import com.brainydroid.daydreaming.ui.Config;
+
 public class Util {
 
 	private static String TAG = "Util";
@@ -12,7 +14,9 @@ public class Util {
 	public static String joinStrings(ArrayList<String> strings, String joinString) {
 
 		// Verbose
-		Log.v(TAG, "[fn] joinStrings");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] joinStrings");
+		}
 
 		StringBuilder sb = new StringBuilder();
 
@@ -29,7 +33,9 @@ public class Util {
 	public static String multiplyString(String string, int times, String joinString) {
 
 		// Verbose
-		Log.v(TAG, "[fn] multiplyString");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] multiplyString");
+		}
 
 		StringBuilder sb = new StringBuilder();
 
@@ -46,7 +52,9 @@ public class Util {
 	public static String convertStreamToString(InputStream is) {
 
 		// Verbose
-		Log.v(TAG, "[fn] convertStreamToString");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] convertStreamToString");
+		}
 
 		try {
 			return new java.util.Scanner(is).useDelimiter("\\A").next();

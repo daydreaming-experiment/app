@@ -10,6 +10,8 @@ import org.apache.http.util.EntityUtils;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.brainydroid.daydreaming.ui.Config;
+
 public class HttpGetTask extends AsyncTask<HttpGetData, Void, Boolean> {
 
 	private static String TAG = "HttpGetTask";
@@ -26,7 +28,9 @@ public class HttpGetTask extends AsyncTask<HttpGetData, Void, Boolean> {
 	protected void onPreExecute() {
 
 		// Debug
-		Log.d(TAG, "[fn] onPreExecute");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onPreExecute");
+		}
 
 		client = new DefaultHttpClient();
 	}
@@ -35,7 +39,9 @@ public class HttpGetTask extends AsyncTask<HttpGetData, Void, Boolean> {
 	protected Boolean doInBackground(HttpGetData... getDatas) {
 
 		// Debug
-		Log.d(TAG, "[fn] doInBackground");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] doInBackground");
+		}
 
 		try {
 			getData = getDatas[0];
@@ -60,7 +66,9 @@ public class HttpGetTask extends AsyncTask<HttpGetData, Void, Boolean> {
 	protected void onPostExecute(Boolean success) {
 
 		// Debug
-		Log.d(TAG, "[fn] onPostExecute");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onPostExecute");
+		}
 
 		httpConversationCallback.onHttpConversationFinished(success, serverAnswer);
 	}

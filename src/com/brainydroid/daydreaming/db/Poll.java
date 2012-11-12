@@ -6,6 +6,7 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.LinearLayout;
 
+import com.brainydroid.daydreaming.ui.Config;
 import com.google.gson.annotations.Expose;
 
 public class Poll {
@@ -42,7 +43,9 @@ public class Poll {
 	public Poll(Context context) {
 
 		// Debug
-		Log.d(TAG, "[fn] Poll");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] Poll");
+		}
 
 		_context = context.getApplicationContext();
 		_id = -1;
@@ -56,7 +59,9 @@ public class Poll {
 	public static Poll create(Context context, int nQuestions) {
 
 		// Debug
-		Log.d(TAG, "[fn] create");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] create");
+		}
 
 		Poll poll = new Poll(context);
 		poll.populateQuestions(nQuestions);
@@ -66,7 +71,9 @@ public class Poll {
 	private void populateQuestions(int nQuestions) {
 
 		// Debug
-		Log.d(TAG, "[fn] populateQuestions");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] populateQuestions");
+		}
 
 		_questions = questionsStorage.getRandomQuestions(nQuestions);
 	}
@@ -74,7 +81,9 @@ public class Poll {
 	public void addQuestion(Question question) {
 
 		// Debug
-		Log.d(TAG, "[fn] addQuestion");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] addQuestion");
+		}
 
 		_questions.add(question);
 	}
@@ -82,7 +91,9 @@ public class Poll {
 	public ArrayList<Question> getQuestions() {
 
 		// Verbose
-		Log.v(TAG, "[fn] getQuestion");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] getQuestion");
+		}
 
 		return _questions;
 	}
@@ -90,7 +101,9 @@ public class Poll {
 	public Question getQuestionByIndex(int index) {
 
 		// Debug
-		Log.d(TAG, "[fn] getQuestionByIndex");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] getQuestionByIndex");
+		}
 
 		return _questions.get(index);
 	}
@@ -98,7 +111,9 @@ public class Poll {
 	public Question popQuestionByIndex(int index) {
 
 		// Debug
-		Log.d(TAG, "[fn] popQuestionByIndex");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] popQuestionByIndex");
+		}
 
 		Question q = getQuestionByIndex(index);
 		_questions.remove(index);
@@ -108,7 +123,9 @@ public class Poll {
 	public int getLength() {
 
 		// Debug
-		Log.d(TAG, "[fn] getLength");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] getLength");
+		}
 
 		return _questions.size();
 	}
@@ -116,7 +133,9 @@ public class Poll {
 	public int getId() {
 
 		// Verbose
-		Log.v(TAG, "[fn] getId");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] getId");
+		}
 
 		return _id;
 	}
@@ -124,7 +143,9 @@ public class Poll {
 	public void setId(int id) {
 
 		// Verbose
-		Log.v(TAG, "[fn] setId");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] setId");
+		}
 
 		_id = id;
 	}
@@ -132,7 +153,9 @@ public class Poll {
 	public void clearId() {
 
 		// Debug
-		Log.d(TAG, "[fn] clearId");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] clearId");
+		}
 
 		_id = -1;
 	}
@@ -140,7 +163,9 @@ public class Poll {
 	public String getStatus() {
 
 		// Verbose
-		Log.v(TAG, "[fn] getStatus");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] getStatus");
+		}
 
 		return _status;
 	}
@@ -148,7 +173,9 @@ public class Poll {
 	public void setStatus(String status) {
 
 		// Debug
-		Log.d(TAG, "[fn] setStatus");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] setStatus");
+		}
 
 		_status = status;
 		saveIfSync();
@@ -157,7 +184,9 @@ public class Poll {
 	public void setQuestionStatus(int questionIndex, String status) {
 
 		// Debug
-		Log.d(TAG, "[fn] setQuestionStatus");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] setQuestionStatus");
+		}
 
 		_questions.get(questionIndex).setStatus(status);
 		saveIfSync();
@@ -166,7 +195,9 @@ public class Poll {
 	public boolean isOver() {
 
 		// Debug
-		Log.d(TAG, "[fn] isOver");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] isOver");
+		}
 
 		if (_status == null) {
 			return false;
@@ -178,7 +209,9 @@ public class Poll {
 	public int getQuestionsVersion() {
 
 		// Verbose
-		Log.v(TAG, "[fn] getQuestionsVersion");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] getQuestionsVersion");
+		}
 
 		return _questionsVersion;
 	}
@@ -186,7 +219,9 @@ public class Poll {
 	public void setQuestionsVersion(int questionsVersion) {
 
 		// Debug
-		Log.d(TAG, "[fn] setQuestionsVersion");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] setQuestionsVersion");
+		}
 
 		_questionsVersion = questionsVersion;
 		saveIfSync();
@@ -195,7 +230,9 @@ public class Poll {
 	public boolean getKeepInSync() {
 
 		// Verbose
-		Log.v(TAG, "[fn] getKeepInSync");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] getKeepInSync");
+		}
 
 		return _keepInSync;
 	}
@@ -203,7 +240,9 @@ public class Poll {
 	public void setKeepInSync() {
 
 		// Debug
-		Log.d(TAG, "[fn] setKeepInSync");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] setKeepInSync");
+		}
 
 		_keepInSync = true;
 	}
@@ -211,7 +250,9 @@ public class Poll {
 	private void saveIfSync() {
 
 		// Debug
-		Log.d(TAG, "[fn] saveIfSync");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] saveIfSync");
+		}
 
 		if (_keepInSync) {
 			save();
@@ -221,7 +262,9 @@ public class Poll {
 	public void save() {
 
 		// Debug
-		Log.d(TAG, "[fn] save");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] save");
+		}
 
 		setKeepInSync();
 		if (_id != -1) {
@@ -234,7 +277,9 @@ public class Poll {
 	public void saveAnswers(LinearLayout questionLinearLayout, int index) {
 
 		// Debug
-		Log.d(TAG, "[fn] saveAnswers");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] saveAnswers");
+		}
 
 		// Location and Timestamp are set by callbacks defined in QuestionActivity
 		_questions.get(index).saveAnswers(questionLinearLayout);

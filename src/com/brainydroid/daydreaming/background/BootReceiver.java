@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import com.brainydroid.daydreaming.ui.Config;
+
 public class BootReceiver extends BroadcastReceiver {
 
 	private static String TAG = "BootReceiver";
@@ -15,7 +17,9 @@ public class BootReceiver extends BroadcastReceiver {
 	public void onReceive(Context context, Intent intent) {
 
 		// Debug
-		Log.d(TAG, "[fn] onReceive");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onReceive");
+		}
 
 		status = StatusManager.getInstance(context);
 		String action = intent.getAction();

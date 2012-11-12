@@ -17,6 +17,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.brainydroid.daydreaming.R;
+import com.brainydroid.daydreaming.ui.Config;
 
 public class SchedulerService extends Service {
 
@@ -34,7 +35,9 @@ public class SchedulerService extends Service {
 	public void onCreate() {
 
 		// Debug
-		Log.d(TAG, "[fn] onCreate");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onCreate");
+		}
 
 		super.onCreate();
 		initVars();
@@ -44,7 +47,9 @@ public class SchedulerService extends Service {
 	public int onStartCommand(Intent intent, int flags, int startId) {
 
 		// Debug
-		Log.d(TAG, "[fn] onStartCommand");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onStartCommand");
+		}
 
 		super.onStartCommand(intent, flags, startId);
 
@@ -61,7 +66,9 @@ public class SchedulerService extends Service {
 	public void onDestroy() {
 
 		// Debug
-		Log.d(TAG, "[fn] onDestroy");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onDestroy");
+		}
 
 		super.onDestroy();
 	}
@@ -70,7 +77,9 @@ public class SchedulerService extends Service {
 	public IBinder onBind(Intent intent) {
 
 		// Debug
-		Log.d(TAG, "[fn] onBind");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onBind");
+		}
 
 		// Don't allow binding
 		return null;
@@ -79,7 +88,9 @@ public class SchedulerService extends Service {
 	private void initVars() {
 
 		// Debug
-		Log.d(TAG, "[fn] initVars");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] initVars");
+		}
 
 		alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
 		random = new Random(System.currentTimeMillis());
@@ -89,7 +100,9 @@ public class SchedulerService extends Service {
 	private void schedulePoll() {
 
 		// Debug
-		Log.d(TAG, "[fn] schedulePoll");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] schedulePoll");
+		}
 
 		long scheduledTime = generateTime();
 
@@ -117,13 +130,17 @@ public class SchedulerService extends Service {
 		Log.i(TAG, "poll scheduled in " + hours +" hours, " +
 				minutes + " minutes, and " + seconds + " seconds (i.e. " + target + ")");
 
-		Toast.makeText(this, "New poll scheduled at " + target, Toast.LENGTH_LONG).show();
+		if (Config.TOASTI) {
+			Toast.makeText(this, "New poll scheduled at " + target, Toast.LENGTH_LONG).show();
+		}
 	}
 
 	private void startSyncService() {
 
 		// Debug
-		Log.d(TAG, "[fn] startSyncService");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] startSyncService");
+		}
 
 		Intent syncIntent = new Intent(this, SyncService.class);
 		startService(syncIntent);
@@ -132,7 +149,9 @@ public class SchedulerService extends Service {
 	private long generateTime() {
 
 		// Debug
-		Log.d(TAG, "[fn] generateTime");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] generateTime");
+		}
 
 		long wait = SAMPLE_TIME_MIN;
 
@@ -153,7 +172,9 @@ public class SchedulerService extends Service {
 	private long scaleWaitTime(long wait) {
 
 		// Debug
-		Log.d(TAG, "[fn] scaleWaitTime");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] scaleWaitTime");
+		}
 
 		String[] startPieces = sharedPrefs.getString("time_window_lb_key",
 				getString(R.pref.settings_time_window_lb_default)).split(":");

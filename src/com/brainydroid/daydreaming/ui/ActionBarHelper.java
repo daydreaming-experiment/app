@@ -46,7 +46,9 @@ public abstract class ActionBarHelper {
 	public static ActionBarHelper createInstance(Activity activity) {
 
 		// Debug
-		Log.d(TAG, "[fn] createInstance");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] createInstance");
+		}
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
 			return new ActionBarHelperICS(activity);
@@ -60,7 +62,9 @@ public abstract class ActionBarHelper {
 	protected ActionBarHelper(Activity activity) {
 
 		// Debug
-		Log.d(TAG, "[fn] ActionBarHelper");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] ActionBarHelper");
+		}
 
 		mActivity = activity;
 	}
@@ -71,7 +75,9 @@ public abstract class ActionBarHelper {
 	public void onCreate(Bundle savedInstanceState) {
 
 		// Debug
-		Log.d(TAG, "[fn] onCreate");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onCreate");
+		}
 
 	}
 
@@ -81,7 +87,9 @@ public abstract class ActionBarHelper {
 	public void onPostCreate(Bundle savedInstanceState) {
 
 		// Debug
-		Log.d(TAG, "[fn] onPostCreate");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onPostCreate");
+		}
 
 	}
 
@@ -93,7 +101,9 @@ public abstract class ActionBarHelper {
 	public boolean onCreateOptionsMenu(Menu menu) {
 
 		// Debug
-		Log.d(TAG, "[fn] onCreateOptionsMenu");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onCreateOptionsMenu");
+		}
 
 		return true;
 	}
@@ -104,7 +114,9 @@ public abstract class ActionBarHelper {
 	protected void onTitleChanged(CharSequence title, int color) {
 
 		// Debug
-		Log.d(TAG, "[fn] onTitleChanged");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onTitleChanged");
+		}
 
 	}
 
@@ -122,7 +134,9 @@ public abstract class ActionBarHelper {
 	public MenuInflater getMenuInflater(MenuInflater superMenuInflater) {
 
 		// Verbose
-		Log.v(TAG, "[fn] getMenuInflater");
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] getMenuInflater");
+		}
 
 		return superMenuInflater;
 	}

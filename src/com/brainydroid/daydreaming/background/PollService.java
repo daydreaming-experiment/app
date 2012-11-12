@@ -15,6 +15,7 @@ import android.util.Log;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.db.Poll;
 import com.brainydroid.daydreaming.db.PollsStorage;
+import com.brainydroid.daydreaming.ui.Config;
 import com.brainydroid.daydreaming.ui.QuestionActivity;
 
 public class PollService extends Service {
@@ -32,7 +33,9 @@ public class PollService extends Service {
 	public void onCreate() {
 
 		// Debug
-		Log.d(TAG, "[fn] onCreate");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onCreate");
+		}
 
 		super.onCreate();
 		notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
@@ -42,7 +45,9 @@ public class PollService extends Service {
 	public int onStartCommand(Intent intent, int flags, int startId) {
 
 		// Debug
-		Log.d(TAG, "[fn] onStartCommand");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onStartCommand");
+		}
 
 		super.onStartCommand(intent, flags, startId);
 
@@ -57,7 +62,9 @@ public class PollService extends Service {
 	public void onDestroy() {
 
 		// Debug
-		Log.d(TAG, "[fn] onDestroy");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onDestroy");
+		}
 
 		super.onDestroy();
 	}
@@ -66,7 +73,9 @@ public class PollService extends Service {
 	public IBinder onBind(Intent intent) {
 
 		// Debug
-		Log.d(TAG, "[fn] onBind");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onBind");
+		}
 
 		// Don't allow binding
 		return null;
@@ -75,7 +84,9 @@ public class PollService extends Service {
 	private void initVars() {
 
 		// Debug
-		Log.d(TAG, "[fn] initVars");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] initVars");
+		}
 
 		pollsStorage = PollsStorage.getInstance(this);
 	}
@@ -83,7 +94,9 @@ public class PollService extends Service {
 	private void createAndLaunchPoll(boolean startNow) {
 
 		// Debug
-		Log.d(TAG, "[fn] createAndLaunchPoll");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] createAndLaunchPoll");
+		}
 
 		Poll poll = createPoll();
 		if (startNow) {
@@ -100,7 +113,9 @@ public class PollService extends Service {
 	private Intent createPollIntent(Poll poll, boolean startNow) {
 
 		// Debug
-		Log.d(TAG, "[fn] createPollIntent");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] createPollIntent");
+		}
 
 		Intent intent = new Intent(this, QuestionActivity.class);
 		intent.putExtra(QuestionActivity.EXTRA_POLL_ID, poll.getId());
@@ -113,7 +128,9 @@ public class PollService extends Service {
 	private void launchPoll(Poll poll) {
 
 		// Debug
-		Log.d(TAG, "[fn] launchPoll");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] launchPoll");
+		}
 
 		Intent intent = createPollIntent(poll, true);
 		startActivity(intent);
@@ -122,7 +139,9 @@ public class PollService extends Service {
 	private void notifyPoll(Poll poll) {
 
 		// Debug
-		Log.d(TAG, "[fn] notifyPoll");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] notifyPoll");
+		}
 
 		Intent intent = createPollIntent(poll);
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent,
@@ -148,7 +167,9 @@ public class PollService extends Service {
 	private Poll createPoll() {
 
 		// Debug
-		Log.d(TAG, "[fn] createPoll");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] createPoll");
+		}
 
 		ArrayList<Poll> pendingPolls = pollsStorage.getPendingPolls();
 		Poll poll;

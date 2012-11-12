@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.brainydroid.daydreaming.R;
+import com.brainydroid.daydreaming.ui.Config;
 import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 
@@ -26,7 +27,9 @@ public class MultipleChoiceAnswer implements Answer {
 	public MultipleChoiceAnswer() {
 
 		//Debug
-		Log.d(TAG, "[fn] MultipleChoiceAnswer");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] MultipleChoiceAnswer");
+		}
 
 		choices = new HashMap<String,HashSet<String>>();
 		gson = new Gson();
@@ -36,7 +39,9 @@ public class MultipleChoiceAnswer implements Answer {
 	public String toJson() {
 
 		//Debug
-		Log.d(TAG, "[fn] toJson");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] toJson");
+		}
 
 		return gson.toJson(this, this.getClass());
 	}
@@ -45,7 +50,9 @@ public class MultipleChoiceAnswer implements Answer {
 	public void getAnswersFromLayout(LinearLayout questionLinearLayout) {
 
 		//Debug
-		Log.d(TAG, "[fn] getAnswersFromLayout");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] getAnswersFromLayout");
+		}
 
 		ArrayList<View> subQuestions = Question.getViewsByTag(questionLinearLayout, "subquestion");
 		Iterator<View> subQuestionsIt = subQuestions.iterator();
@@ -84,7 +91,9 @@ public class MultipleChoiceAnswer implements Answer {
 	private void addSubquestion(String questionString) {
 
 		//Debug
-		Log.d(TAG, "[fn] addSubquestion");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] addSubquestion");
+		}
 
 		choices.put(questionString, new HashSet<String>());
 	}
@@ -92,7 +101,9 @@ public class MultipleChoiceAnswer implements Answer {
 	private void addChoice(String subQuestionString, String choice) {
 
 		//Debug
-		Log.d(TAG, "[fn] addChoice");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] addChoice");
+		}
 
 		choices.get(subQuestionString).add(choice);
 	}

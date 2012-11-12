@@ -7,6 +7,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.brainydroid.daydreaming.db.Poll;
 import com.brainydroid.daydreaming.db.PollsStorage;
@@ -17,6 +18,7 @@ import com.brainydroid.daydreaming.network.HttpConversationCallback;
 import com.brainydroid.daydreaming.network.HttpGetData;
 import com.brainydroid.daydreaming.network.HttpGetTask;
 import com.brainydroid.daydreaming.network.ServerTalker;
+import com.brainydroid.daydreaming.ui.Config;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -45,7 +47,9 @@ public class SyncService extends Service {
 	public void onCreate() {
 
 		// Debug
-		Log.d(TAG, "[fn] onCreate");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onCreate");
+		}
 
 		super.onCreate();
 
@@ -56,7 +60,9 @@ public class SyncService extends Service {
 	public int onStartCommand(Intent intent, int flags, int startId) {
 
 		// Debug
-		Log.d(TAG, "[fn] onStartCommand");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onStartCommand");
+		}
 
 		super.onStartCommand(intent, flags, startId);
 
@@ -67,7 +73,9 @@ public class SyncService extends Service {
 	public void onDestroy() {
 
 		// Debug
-		Log.d(TAG, "[fn] onDestroy");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onDestroy");
+		}
 
 		super.onDestroy();
 	}
@@ -76,7 +84,9 @@ public class SyncService extends Service {
 	public IBinder onBind(Intent intent) {
 
 		// Debug
-		Log.d(TAG, "[fn] onBind");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] onBind");
+		}
 
 		// Don't allow binding
 		return null;
@@ -87,7 +97,9 @@ public class SyncService extends Service {
 	private void initVarsAndUpdates() {
 
 		// Debug
-		Log.d(TAG, "[fn] initVarsAndUpdates");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] initVarsAndUpdates");
+		}
 
 		status = StatusManager.getInstance(this);
 
@@ -96,8 +108,10 @@ public class SyncService extends Service {
 			// Info
 			Log.i(TAG, "data connection enabled -> starting sync tasks");
 
-			//			Toast.makeText(this, "SyncService: starting sync...",
-			//					Toast.LENGTH_SHORT).show();
+			if (Config.TOASTD) {
+				Toast.makeText(this, "SyncService: starting sync...",
+						Toast.LENGTH_SHORT).show();
+			}
 
 			pollsStorage = PollsStorage.getInstance(this);
 			questionsStorage = QuestionsStorage.getInstance(this);
@@ -113,7 +127,9 @@ public class SyncService extends Service {
 				public void onCryptoStorageReady(boolean hasKeyPairAndMaiId) {
 
 					// Debug
-					Log.d(TAG, "(callback) onCryptoStorageReady");
+					if (Config.LOGD) {
+						Log.d(TAG, "(callback) onCryptoStorageReady");
+					}
 
 					serverTalker = ServerTalker.getInstance(BS_SERVER_NAME, cryptoStorage);
 
@@ -132,8 +148,10 @@ public class SyncService extends Service {
 			// Info
 			Log.i(TAG, "no data connection available -> exiting");
 
-			//			Toast.makeText(this, "SyncService: no internet connection",
-			//					Toast.LENGTH_SHORT).show();
+			if (Config.TOASTD) {
+				Toast.makeText(this, "SyncService: no internet connection",
+						Toast.LENGTH_SHORT).show();
+			}
 			stopSelf();
 		}
 	}
@@ -141,7 +159,9 @@ public class SyncService extends Service {
 	private void asyncUpdateQuestions() {
 
 		// Debug
-		Log.d(TAG, "[fn] asyncUpdateQuestions");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] asyncUpdateQuestions");
+		}
 
 		// FIXME: There might be a problem if the service is started from an Activity, and the
 		// orientation of the display changes. That will stop and restart the worker process.
@@ -157,16 +177,20 @@ public class SyncService extends Service {
 			public void onHttpConversationFinished(boolean success, String serverAnswer) {
 
 				// Debug
-				Log.d(TAG, "[fn] (updateQuestionsCallback) onHttpConversationFinished");
+				if (Config.LOGD) {
+					Log.d(TAG, "[fn] (updateQuestionsCallback) onHttpConversationFinished");
+				}
 
 				if (success) {
 
 					// Info
 					Log.i(TAG, "successfully retrieved new questions.json from server");
 
-					//					Toast.makeText(SyncService.this,
-					//							"SyncService: new questions downloaded from server",
-					//							Toast.LENGTH_SHORT).show();
+					if (Config.TOASTD) {
+						Toast.makeText(SyncService.this,
+								"SyncService: new questions downloaded from server",
+								Toast.LENGTH_SHORT).show();
+					}
 					questionsStorage.importQuestions(serverAnswer);
 				} else {
 					// Warning
@@ -186,7 +210,9 @@ public class SyncService extends Service {
 			public void onHttpConversationFinished(boolean success, String serverAnswer) {
 
 				// Debug
-				Log.d(TAG, "[fn] (fullCallback) onHttpConversationFinished");
+				if (Config.LOGD) {
+					Log.d(TAG, "[fn] (fullCallback) onHttpConversationFinished");
+				}
 
 				boolean willGetQuestions = false;
 
@@ -210,9 +236,11 @@ public class SyncService extends Service {
 							HttpGetTask updateQuestionsTask = new HttpGetTask();
 							updateQuestionsTask.execute(updateQuestionsData);
 						} else {
-							//							Toast.makeText(SyncService.this,
-							//									"SyncService: no new questions to download",
-							//									Toast.LENGTH_SHORT).show();
+							if (Config.TOASTD) {
+								Toast.makeText(SyncService.this,
+										"SyncService: no new questions to download",
+										Toast.LENGTH_SHORT).show();
+							}
 						}
 					} catch (Exception e) {
 						// Warning
@@ -239,7 +267,9 @@ public class SyncService extends Service {
 	private void asyncUploadAnswers() {
 
 		// Debug
-		Log.d(TAG, "[fn] asyncUploadAnswers");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] asyncUploadAnswers");
+		}
 
 		// FIXME: There might be a problem if the service is started from an Activity, and the
 		// orientation of the display changes. That will stop and restart the worker process.
@@ -253,9 +283,11 @@ public class SyncService extends Service {
 			// Info
 			Log.i(TAG, "no polls to upload -> exiting");
 
-			//			Toast.makeText(this,
-			//					"SyncService: no polls to upload",
-			//					Toast.LENGTH_SHORT).show();
+			if (Config.TOASTD) {
+				Toast.makeText(this,
+						"SyncService: no polls to upload",
+						Toast.LENGTH_SHORT).show();
+			}
 
 			setUploadPollsDone();
 			return;
@@ -264,9 +296,11 @@ public class SyncService extends Service {
 		// Info
 		Log.i(TAG, "trying to upload " + uploadablePolls.size() + " polls");
 
-		//		Toast.makeText(this,
-		//				"SyncService: trying to upload " + uploadablePolls.size() + " polls",
-		//				Toast.LENGTH_SHORT).show();
+		if (Config.TOASTD) {
+			Toast.makeText(this,
+					"SyncService: trying to upload " + uploadablePolls.size() + " polls",
+					Toast.LENGTH_SHORT).show();
+		}
 
 		pollsLeftToUpload = new HashSet<Integer>();
 		for (Poll poll : uploadablePolls) {
@@ -285,7 +319,9 @@ public class SyncService extends Service {
 				public void onHttpConversationFinished(boolean success, String serverAnswer) {
 
 					// Debug
-					Log.d(TAG, "(callback) onHttpConversationFinished");
+					if (Config.LOGD) {
+						Log.d(TAG, "(callback) onHttpConversationFinished");
+					}
 
 					if (success) {
 
@@ -294,10 +330,12 @@ public class SyncService extends Service {
 								pollId + ") to server (serverAnswer: " +
 								serverAnswer + ")");
 
-						//						Toast.makeText(SyncService.this,
-						//								"SyncService: uploaded poll (id: " + pollId +
-						//								") (serverAnswer: " + serverAnswer + ")",
-						//								Toast.LENGTH_LONG).show();
+						if (Config.TOASTD) {
+							Toast.makeText(SyncService.this,
+									"SyncService: uploaded poll (id: " + pollId +
+									") (serverAnswer: " + serverAnswer + ")",
+									Toast.LENGTH_LONG).show();
+						}
 
 						pollsStorage.removePoll(pollId);
 						setUploadPollDone(pollId);
@@ -319,7 +357,9 @@ public class SyncService extends Service {
 	private void setUpdateQuestionsDone() {
 
 		// Debug
-		Log.d(TAG, "[fn] setUpdateQuestionsDone");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] setUpdateQuestionsDone");
+		}
 
 		updateQuestionsDone = true;
 		stopSelfIfAllDone();
@@ -328,7 +368,9 @@ public class SyncService extends Service {
 	private void setUploadPollDone(int pollId) {
 
 		// Debug
-		Log.d(TAG, "[fn] setUploadPollDone");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] setUploadPollDone");
+		}
 
 		pollsLeftToUpload.remove(pollId);
 
@@ -340,7 +382,9 @@ public class SyncService extends Service {
 	private void setUploadPollsDone() {
 
 		// Debug
-		Log.d(TAG, "[fn] setUploadPollsDone");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] setUploadPollsDone");
+		}
 
 		uploadAnswersDone = true;
 		stopSelfIfAllDone();
@@ -349,7 +393,9 @@ public class SyncService extends Service {
 	private void stopSelfIfAllDone() {
 
 		// Debug
-		Log.d(TAG, "[fn] stopSelfIfAllDone");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] stopSelfIfAllDone");
+		}
 
 		if (updateQuestionsDone && uploadAnswersDone) {
 			stopSelf();

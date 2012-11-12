@@ -10,6 +10,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import android.util.SparseArray;
 
+import com.brainydroid.daydreaming.ui.Config;
+
 public class PollsStorage {
 
 	private static String TAG = "PollsStorage";
@@ -55,7 +57,9 @@ public class PollsStorage {
 	public static synchronized PollsStorage getInstance(Context context) {
 
 		// Debug
-		Log.d(TAG, "[fn] getInstance");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] getInstance");
+		}
 
 		if (psInstance == null) {
 			psInstance = new PollsStorage(context);
@@ -67,7 +71,9 @@ public class PollsStorage {
 	private PollsStorage(Context context) {
 
 		// Debug
-		Log.d(TAG, "[fn] PollsStorage");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] PollsStorage");
+		}
 
 		_context = context.getApplicationContext();
 		storage = Storage.getInstance(_context);
@@ -82,7 +88,9 @@ public class PollsStorage {
 	private ContentValues getPollContentValues(Poll poll) {
 
 		// Debug
-		Log.d(TAG, "[fn] getPollContentValues");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] getPollContentValues");
+		}
 
 		ContentValues pollValues = new ContentValues();
 		pollValues.put(Poll.COL_STATUS, poll.getStatus());
@@ -95,7 +103,9 @@ public class PollsStorage {
 	private ContentValues getPollContentValuesWithId(Poll poll) {
 
 		// Debug
-		Log.d(TAG, "[fn] getPollContentValuesWithId");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] getPollContentValuesWithId");
+		}
 
 		ContentValues pollValues = getPollContentValues(poll);
 		pollValues.put(Poll.COL_ID, poll.getId());
@@ -105,7 +115,9 @@ public class PollsStorage {
 	private ContentValues getQuestionContentValues(int pollId, Question question) {
 
 		// Debug
-		Log.d(TAG, "[fn] getQuestionContentValues");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] getQuestionContentValues");
+		}
 
 		ContentValues qValues = new ContentValues();
 		qValues.put(Poll.COL_ID, pollId);
@@ -123,7 +135,9 @@ public class PollsStorage {
 	public void storePollGetId(Poll poll) {
 
 		// Debug
-		Log.d(TAG, "[fn] storePollGetId");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] storePollGetId");
+		}
 
 		ContentValues pollValues = getPollContentValues(poll);
 		wDb.insert(TABLE_POLLS, null, pollValues);
@@ -147,7 +161,9 @@ public class PollsStorage {
 	public void updatePoll(Poll poll) {
 
 		// Debug
-		Log.d(TAG, "[fn] updatePoll");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] updatePoll");
+		}
 
 		ContentValues pollValues = getPollContentValuesWithId(poll);
 		int pollId = poll.getId();
@@ -169,7 +185,9 @@ public class PollsStorage {
 	public Poll getPoll(int pollId) {
 
 		// Debug
-		Log.d(TAG, "[fn] getPoll");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] getPoll");
+		}
 
 		Poll cachedPoll = _pollInstances.get(pollId, null);
 		if (cachedPoll != null) {
@@ -223,7 +241,9 @@ public class PollsStorage {
 	public ArrayList<Poll> getUploadablePolls() {
 
 		// Debug
-		Log.d(TAG, "[fn] getUploadablePolls");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] getUploadablePolls");
+		}
 
 		return getPollsWithStatuses(
 				new String[] {Poll.STATUS_COMPLETED, Poll.STATUS_PARTIALLY_COMPLETED});
@@ -232,7 +252,9 @@ public class PollsStorage {
 	public ArrayList<Poll> getPendingPolls() {
 
 		// Debug
-		Log.d(TAG, "[fn] getPendingPolls");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] getPendingPolls");
+		}
 
 		return getPollsWithStatuses(new String[] {Poll.STATUS_PENDING});
 	}
@@ -240,7 +262,9 @@ public class PollsStorage {
 	public void cleanPolls() {
 
 		// Debug
-		Log.d(TAG, "[fn] cleanPolls");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] cleanPolls");
+		}
 
 		ArrayList<Integer> pollIdsToClean = getPollIdsWithStatuses(
 				new String[] {Poll.STATUS_EXPIRED, Poll.STATUS_DISMISSED});
@@ -260,7 +284,7 @@ public class PollsStorage {
 	//	private boolean hasPollsWithStatuses(String[] statuses) {
 	//
 	//		// Debug
-	//		Log.d(TAG, "[fn] hasPollsWithStatuses");
+	//		if (Config.LOGD) Log.d(TAG, "[fn] hasPollsWithStatuses");
 	//
 	//		return getPollIdsWithStatuses(statuses, "LIMIT 1") != null;
 	//	}
@@ -268,7 +292,9 @@ public class PollsStorage {
 	private ArrayList<Integer> getPollIdsWithStatuses(String[] statuses) {
 
 		// Debug
-		Log.d(TAG, "[fn] getPollIdsWithStatuses (from String[])");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] getPollIdsWithStatuses (from String[])");
+		}
 
 		return getPollIdsWithStatuses(statuses, null);
 	}
@@ -276,7 +302,9 @@ public class PollsStorage {
 	private ArrayList<Integer> getPollIdsWithStatuses(String[] statuses, String limit) {
 
 		// Debug
-		Log.d(TAG, "[fn] getPollIdsWithStatuses (from String[], String)");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] getPollIdsWithStatuses (from String[], String)");
+		}
 
 		String query = Util.multiplyString(Poll.COL_STATUS + "=?", statuses.length, " OR ");
 		Cursor res = rDb.query(TABLE_POLLS, new String[] {Poll.COL_ID}, query, statuses,
@@ -298,7 +326,9 @@ public class PollsStorage {
 	private ArrayList<Poll> getPollsWithStatuses(String[] statuses) {
 
 		// Debug
-		Log.d(TAG, "[fn] getPollsWithStatuses");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] getPollsWithStatuses");
+		}
 
 		ArrayList<Integer> statusPollIds = getPollIdsWithStatuses(statuses);
 
@@ -318,7 +348,9 @@ public class PollsStorage {
 	public void removePoll(int pollId) {
 
 		// Debug
-		Log.d(TAG, "[fn] removePoll");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] removePoll");
+		}
 
 		wDb.delete(TABLE_POLLS, Poll.COL_ID + "=?", new String[] {Integer.toString(pollId)});
 		wDb.delete(TABLE_POLL_QUESTIONS, Poll.COL_ID + "=?",
@@ -331,7 +363,9 @@ public class PollsStorage {
 	public void flushAll() {
 
 		// Debug
-		Log.d(TAG, "[fn] flushAll");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] flushAll");
+		}
 
 		wDb.delete(TABLE_POLLS, null, null);
 		wDb.delete(TABLE_POLL_QUESTIONS, null, null);
@@ -341,7 +375,9 @@ public class PollsStorage {
 	public void dropAll() {
 
 		// Debug
-		Log.d(TAG, "[fn] dropAll");
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] dropAll");
+		}
 
 		wDb.execSQL(SQL_DROP_TABLE_POLLS);
 		wDb.execSQL(SQL_DROP_TABLE_POLL_QUESTIONS);
@@ -352,7 +388,7 @@ public class PollsStorage {
 	//	private void checkNetworkReceiver() {
 	//
 	//		// Debug
-	//		Log.d(TAG, "[fn] checkNetworkReceiver");
+	//		if (Config.LOGD) Log.d(TAG, "[fn] checkNetworkReceiver");
 	//
 	//		// Unregister or re-register the NetworkReceiver depending on whether
 	//		// there are any uploadable polls
