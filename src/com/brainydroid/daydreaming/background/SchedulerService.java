@@ -30,6 +30,7 @@ public class SchedulerService extends Service {
 	private SharedPreferences sharedPrefs;
 	private Random random;
 	private AlarmManager alarmManager;
+	private SimpleDateFormat sdf;
 
 	@Override
 	public void onCreate() {
@@ -95,6 +96,7 @@ public class SchedulerService extends Service {
 		alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
 		random = new Random(System.currentTimeMillis());
 		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+		sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 	}
 
 	private void schedulePoll() {
@@ -112,9 +114,9 @@ public class SchedulerService extends Service {
 		alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
 				scheduledTime, pendingIntent);
 
-		Calendar now = Calendar.getInstance();
+		Calendar scheduled = Calendar.getInstance();
 		long wait = scheduledTime - SystemClock.elapsedRealtime();
-		now.add(Calendar.MILLISECOND, (int)wait);
+		scheduled.add(Calendar.MILLISECOND, (int)wait);
 
 		long hours = wait / (60 * 60 * 1000);
 		wait -= hours * 60 * 60 * 1000;
@@ -122,12 +124,10 @@ public class SchedulerService extends Service {
 		wait -= minutes * 60 * 1000;
 		long seconds = wait / 1000;
 
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-		String target = sdf.format(now.getTime());
+		String target = sdf.format(scheduled.getTime());
 
 		// Info
-
-		Log.i(TAG, "poll scheduled in " + hours +" hours, " +
+		Log.i(TAG, "poll scheduled in " + hours + " hours, " +
 				minutes + " minutes, and " + seconds + " seconds (i.e. " + target + ")");
 
 		if (Config.TOASTI) {
@@ -166,14 +166,14 @@ public class SchedulerService extends Service {
 			wait = SAMPLE_TIME_MIN;
 		}
 
-		return SystemClock.elapsedRealtime() + scaleWaitTime(wait);
+		return SystemClock.elapsedRealtime() + shiftWaitTime(wait);
 	}
 
-	private long scaleWaitTime(long wait) {
+	private long shiftWaitTime(long wait) {
 
 		// Debug
 		if (Config.LOGD) {
-			Log.d(TAG, "[fn] scaleWaitTime");
+			Log.d(TAG, "[fn] shiftWaitTime");
 		}
 
 		String[] startPieces = sharedPrefs.getString("time_window_lb_key",
@@ -185,6 +185,12 @@ public class SchedulerService extends Service {
 		int startMinute = Integer.parseInt(startPieces[1]);
 		int endHour = Integer.parseInt(endPieces[0]);
 		int endMinute = Integer.parseInt(endPieces[1]);
+
+		// Debug
+		if (Config.LOGD){
+			Log.d(TAG, "allowed start: " + startHour + ":" + startMinute);
+			Log.d(TAG, "allowed end: " + endHour + ":" + endMinute);
+		}
 
 		Calendar now = Calendar.getInstance();
 
@@ -202,17 +208,38 @@ public class SchedulerService extends Service {
 		Calendar nextStart = (Calendar)start.clone();
 		nextStart.add(Calendar.DAY_OF_YEAR, 1);
 
+		// Debug
+		if (Config.LOGD) {
+			Log.d(TAG, "now is: " + sdf.format(now.getTime()));
+			Log.d(TAG, "suggested is: " + sdf.format(suggested.getTime()));
+			Log.d(TAG, "allowed start is: " + sdf.format(start.getTime()));
+			Log.d(TAG, "allowed end is: " + sdf.format(end.getTime()));
+			Log.d(TAG, "allowed next start is: " + sdf.format(nextStart.getTime()));
+		}
+
+		long shift;
+
 		if (now.before(start)) {
 			// Now is before the starting time for notifications
 
 			if (suggested.before(start)) {
 				// Suggested schedule is also before start
 				// Shift to the beginning of the allowed window
-				return wait + start.getTimeInMillis() - now.getTimeInMillis();
+				shift = start.getTimeInMillis() - now.getTimeInMillis();
+
+				// Debug
+				if (Config.LOGD) {
+					Log.d(TAG, "now, suggested < start");
+				}
 			} else {
 				// Suggested schedule falls in the allowed window
 				// Accept that
-				return wait;
+				shift = 0;
+
+				// Debug
+				if (Config.LOGD) {
+					Log.d(TAG, "now < start < suggested");
+				}
 			}
 
 		} else if (now.before(end)) {
@@ -221,11 +248,21 @@ public class SchedulerService extends Service {
 			if (suggested.before(end) || suggested.after(nextStart)) {
 				// Suggested schedule falls in the allowed window (today or tomorrow)
 				// Accept that
-				return wait;
+				shift = 0;
+
+				// Debug
+				if (Config.LOGD) {
+					Log.d(TAG, "start < now, suggested < end OR now < end, nextStart < suggested");
+				}
 			} else {
 				// Suggested schedule falls outside the allowed window
 				// Add the surplus after the next allowed start time
-				return wait + nextStart.getTimeInMillis() - end.getTimeInMillis();
+				shift = nextStart.getTimeInMillis() - end.getTimeInMillis();
+
+				// Debug
+				if (Config.LOGD) {
+					Log.d(TAG, "start < now < end < suggested");
+				}
 			}
 		} else {
 			// Now is after the stop time
@@ -233,12 +270,36 @@ public class SchedulerService extends Service {
 			if (suggested.before(nextStart)) {
 				// Suggested is still in the forbidden window
 				// Shift to the beginning of the allowed window
-				return wait + nextStart.getTimeInMillis() - now.getTimeInMillis();
+				shift = nextStart.getTimeInMillis() - now.getTimeInMillis();
+
+				// Debug
+				if (Config.LOGD) {
+					Log.d(TAG, "end < now, suggested < nextStart");
+				}
 			} else {
 				// Suggested is in the next allowed window
 				// Accept that
-				return wait;
+				shift = 0;
+
+				// Debug
+				if (Config.LOGD) {
+					Log.d(TAG, "end < now < nextStart < suggested");
+				}
 			}
 		}
+
+		// Debug
+		if (Config.LOGD) {
+
+			long tmpshift = shift;
+			long hours = tmpshift / (60 * 60 * 1000);
+			tmpshift -= hours * 60 * 60 * 1000;
+			long minutes = tmpshift / (60 * 1000);
+			tmpshift -= minutes * 60 * 1000;
+			long seconds = tmpshift / 1000;
+			Log.d(TAG, "shift: " + hours + ":" + minutes + ":" + seconds);
+		}
+
+		return wait + shift;
 	}
 }

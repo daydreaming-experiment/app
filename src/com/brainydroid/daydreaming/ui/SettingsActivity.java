@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceScreen;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.SchedulerService;
@@ -15,6 +16,8 @@ public class SettingsActivity extends PreferenceActivity
 implements OnSharedPreferenceChangeListener {
 
 	private static String TAG = "SettingsActivity";
+
+	private static int MIN_WINDOW_HOURS = 5; // 5 hours (in hours)
 
 	private PreferenceScreen prefScreen;
 	private SharedPreferences sharedPrefs;
@@ -78,10 +81,8 @@ implements OnSharedPreferenceChangeListener {
 		timepreference_min = (TimePreference)prefScreen.findPreference("time_window_lb_key");
 		timepreference_max = (TimePreference)prefScreen.findPreference("time_window_ub_key");
 
-		timepreference_min.setSummary("Current value is " +
-				timepreference_min.getTimeString());
-		timepreference_max.setSummary("Current value is " +
-				timepreference_max.getTimeString());
+		timepreference_min.setSummary(timepreference_min.getTimeString());
+		timepreference_max.setSummary(timepreference_max.getTimeString());
 
 	}
 
@@ -97,30 +98,56 @@ implements OnSharedPreferenceChangeListener {
 		// TODO: check that the allowed time window is longer than a certain minimum (e.g. 3 hours)
 
 		// Let's do something a preference value changes
-		if (key.equals("time_window_ub_key")) {
+		if (key.equals("time_window_ub_key") || key.equals("time_window_lb_key")) {
+			correctTimeWindow();
 			timepreference_max.setSummary(timepreference_max.getTimeString());
-			startSchedulerService();
-		} else if (key.equals("time_window_lb_key")) {
 			timepreference_min.setSummary(timepreference_min.getTimeString());
 			startSchedulerService();
 		}
 	}
 
-	//	private boolean compareTimes(String timeFirst, String timeLast) {
-	//		String[] firstPieces = timeFirst.split(":");
-	//		int firstHour = Integer.parseInt(firstPieces[0]);
-	//		int firstMinute = Integer.parseInt(firstPieces[1]);
-	//
-	//		String[] lastPieces = timeLast.split(":");
-	//		int lastHour = Integer.parseInt(lastPieces[0]);
-	//		int lastMinute = Integer.parseInt(lastPieces[1]);
-	//
-	//		if (firstHour != lastHour) {
-	//			return firstHour < lastHour;
-	//		} else {
-	//			return firstMinute < lastMinute;
-	//		}
-	//	}
+	private void correctTimeWindow() {
+
+		// Debug
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] correctTimeWindow");
+		}
+
+		if (!checkTimeWindow()) {
+			timepreference_min.setTime(getString(R.pref.settings_time_window_lb_default));
+			timepreference_min.saveTime(getString(R.pref.settings_time_window_lb_default));
+			timepreference_max.setTime(getString(R.pref.settings_time_window_ub_default));
+			timepreference_max.saveTime(getString(R.pref.settings_time_window_ub_default));
+			Toast.makeText(this, getString(R.string.settings_time_corrected_1) + " " +
+					MIN_WINDOW_HOURS + " " + getString(R.string.settings_time_corrected_2),
+					Toast.LENGTH_LONG).show();
+		}
+	}
+
+	private boolean checkTimeWindow() {
+
+		// Debug
+		if (Config.LOGD){
+			Log.d(TAG, "[fn] checkTimeWindow");
+		}
+
+		String timeFirst = timepreference_min.getTimeString();
+		int firstHour = TimePreference.getHour(timeFirst);
+		int firstMinute = TimePreference.getMinute(timeFirst);
+		int first = firstHour * 60 + firstMinute;
+
+		String timeLast = timepreference_max.getTimeString();
+		int lastHour = TimePreference.getHour(timeLast);
+		int lastMinute = TimePreference.getMinute(timeLast);
+		int last = lastHour * 60 + lastMinute;
+
+		if (last < first) {
+			// The time window goes through midnight
+			last += 24 * 60;
+		}
+
+		return (first + MIN_WINDOW_HOURS * 60) <= last;
+	}
 
 	private void startSchedulerService() {
 

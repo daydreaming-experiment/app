@@ -81,6 +81,7 @@ public class TimePreference extends DialogPreference {
 		}
 
 		picker = new TimePicker(getContext());
+		picker.setIs24HourView(true);
 		return picker;
 	}
 
@@ -112,9 +113,7 @@ public class TimePreference extends DialogPreference {
 			lastHour = picker.getCurrentHour();
 			lastMinute = picker.getCurrentMinute();
 			String time = String.valueOf(lastHour) + ":" + String.valueOf(lastMinute);
-			if (callChangeListener(time)) {
-				persistString(time);
-			}
+			saveTime(time);
 		}
 	}
 
@@ -151,6 +150,18 @@ public class TimePreference extends DialogPreference {
 
 		lastHour = getHour(time);
 		lastMinute = getMinute(time);
+	}
+
+	public void saveTime(String time) {
+
+		// Debug
+		if (Config.LOGD){
+			Log.d(TAG, "[fn] saveTime");
+		}
+
+		if (callChangeListener(time)) {
+			persistString(time);
+		}
 	}
 
 	public String getTimeString() {

@@ -10,6 +10,8 @@
     <string name="settings_picker_negative">Cancel</string>
     <string name="firstLaunchSettings_title_activity">Settings</string>
     <string name="settings_title_activity">Settings</string>
+    <string name="settings_time_corrected_1">Please allow polls for at least</string>
+    <string name="settings_time_corrected_2">hours in the day! The time settings have been reset to default.</string>
     
     <string name="app_name">Day Dreaming</string>
     <string name="menu_settings">Settings</string>
