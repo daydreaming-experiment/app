@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TimePicker;
 
+import com.brainydroid.daydreaming.db.Util;
+
 // Extends DialogPreference, a preference class that pops out in a dialogbox
 public class TimePreference extends DialogPreference {
 
@@ -16,30 +18,6 @@ public class TimePreference extends DialogPreference {
 	private int lastHour = 0;
 	private int lastMinute = 0;
 	private TimePicker picker = null;
-
-	// hour from string HH:MM
-	public static int getHour(String time) {
-
-		// Verbose
-		if (Config.LOGV) {
-			Log.v(TAG, "[fn] getHour");
-		}
-
-		String[] pieces = time.split(":");
-		return(Integer.parseInt(pieces[0]));
-	}
-
-	// minutes from string HH:MM
-	public static int getMinute(String time) {
-
-		// Verbose
-		if (Config.LOGV) {
-			Log.v(TAG, "[fn] getMinute");
-		}
-
-		String[] pieces = time.split(":");
-		return(Integer.parseInt(pieces[1]));
-	}
 
 	// constructor from context
 	public TimePreference(Context ctxt) {
@@ -148,11 +126,11 @@ public class TimePreference extends DialogPreference {
 			time = defaultValue.toString();
 		}
 
-		lastHour = getHour(time);
-		lastMinute = getMinute(time);
+		lastHour = Util.getHour(time);
+		lastMinute = Util.getMinute(time);
 	}
 
-	public void saveTime(String time) {
+	private void saveTime(String time) {
 
 		// Debug
 		if (Config.LOGD){
@@ -187,6 +165,8 @@ public class TimePreference extends DialogPreference {
 		String[] pieces = time.split(":");
 		lastHour = Integer.parseInt(pieces[0]);
 		lastMinute = Integer.parseInt(pieces[1]);
+
+		saveTime(time);
 	}
 
 	private static String pad(int c) {

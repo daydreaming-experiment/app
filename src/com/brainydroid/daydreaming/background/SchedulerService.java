@@ -17,6 +17,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.brainydroid.daydreaming.R;
+import com.brainydroid.daydreaming.db.Util;
 import com.brainydroid.daydreaming.ui.Config;
 
 public class SchedulerService extends Service {
@@ -176,15 +177,15 @@ public class SchedulerService extends Service {
 			Log.d(TAG, "[fn] shiftWaitTime");
 		}
 
-		String[] startPieces = sharedPrefs.getString("time_window_lb_key",
-				getString(R.pref.settings_time_window_lb_default)).split(":");
-		String[] endPieces = sharedPrefs.getString("time_window_ub_key",
-				getString(R.pref.settings_time_window_ub_default)).split(":");
+		String startString = sharedPrefs.getString("time_window_lb_key",
+				getString(R.pref.settings_time_window_lb_default));
+		String endString = sharedPrefs.getString("time_window_ub_key",
+				getString(R.pref.settings_time_window_ub_default));
 
-		int startHour = Integer.parseInt(startPieces[0]);
-		int startMinute = Integer.parseInt(startPieces[1]);
-		int endHour = Integer.parseInt(endPieces[0]);
-		int endMinute = Integer.parseInt(endPieces[1]);
+		int startHour = Util.getHour(startString);
+		int startMinute = Util.getMinute(startString);
+		int endHour = Util.getHour(endString);
+		int endMinute = Util.getMinute(endString);
 
 		// Debug
 		if (Config.LOGD){
@@ -204,6 +205,10 @@ public class SchedulerService extends Service {
 		Calendar end = (Calendar)now.clone();
 		end.set(Calendar.HOUR_OF_DAY, endHour);
 		end.set(Calendar.MINUTE, endMinute);
+		if (endHour * 60 + endMinute < startHour * 60 + startMinute) {
+			// The time window goes through midnight. Account for this in `end`
+			end.add(Calendar.DAY_OF_YEAR, 1);
+		}
 
 		Calendar nextStart = (Calendar)start.clone();
 		nextStart.add(Calendar.DAY_OF_YEAR, 1);

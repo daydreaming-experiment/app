@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.SchedulerService;
+import com.brainydroid.daydreaming.db.Util;
 
 public class SettingsActivity extends PreferenceActivity
 implements OnSharedPreferenceChangeListener {
@@ -115,9 +116,7 @@ implements OnSharedPreferenceChangeListener {
 
 		if (!checkTimeWindow()) {
 			timepreference_min.setTime(getString(R.pref.settings_time_window_lb_default));
-			timepreference_min.saveTime(getString(R.pref.settings_time_window_lb_default));
 			timepreference_max.setTime(getString(R.pref.settings_time_window_ub_default));
-			timepreference_max.saveTime(getString(R.pref.settings_time_window_ub_default));
 			Toast.makeText(this, getString(R.string.settings_time_corrected_1) + " " +
 					MIN_WINDOW_HOURS + " " + getString(R.string.settings_time_corrected_2),
 					Toast.LENGTH_LONG).show();
@@ -132,13 +131,13 @@ implements OnSharedPreferenceChangeListener {
 		}
 
 		String timeFirst = timepreference_min.getTimeString();
-		int firstHour = TimePreference.getHour(timeFirst);
-		int firstMinute = TimePreference.getMinute(timeFirst);
+		int firstHour = Util.getHour(timeFirst);
+		int firstMinute = Util.getMinute(timeFirst);
 		int first = firstHour * 60 + firstMinute;
 
 		String timeLast = timepreference_max.getTimeString();
-		int lastHour = TimePreference.getHour(timeLast);
-		int lastMinute = TimePreference.getMinute(timeLast);
+		int lastHour = Util.getHour(timeLast);
+		int lastMinute = Util.getMinute(timeLast);
 		int last = lastHour * 60 + lastMinute;
 
 		if (last < first) {

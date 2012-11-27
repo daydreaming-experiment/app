@@ -62,4 +62,28 @@ public class Util {
 			return "";
 		}
 	}
+
+	// hour from string HH:MM
+	public static int getHour(String time) {
+
+		// Verbose
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] getHour");
+		}
+
+		String[] pieces = time.split(":");
+		return(Integer.parseInt(pieces[0]));
+	}
+
+	// minutes from string HH:MM
+	public static int getMinute(String time) {
+
+		// Verbose
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] getMinute");
+		}
+
+		String[] pieces = time.split(":");
+		return(Integer.parseInt(pieces[1]));
+	}
 }
