@@ -23,8 +23,6 @@ import android.widget.Toast;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.LocationCallback;
 import com.brainydroid.daydreaming.background.LocationServiceConnection;
-import com.brainydroid.daydreaming.background.PollService;
-import com.brainydroid.daydreaming.background.SchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.db.Poll;
 import com.brainydroid.daydreaming.db.PollsStorage;
@@ -183,17 +181,6 @@ public class QuestionActivity extends ActionBarActivity {
 		locationServiceConnection = new LocationServiceConnection(this);
 	}
 
-	private void startSchedulerService() {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] startSchedulerService");
-		}
-
-		Intent schedulerIntent = new Intent(this, SchedulerService.class);
-		startService(schedulerIntent);
-	}
-
 	private void setChrome() {
 
 		// Debug
@@ -348,8 +335,6 @@ public class QuestionActivity extends ActionBarActivity {
 		Intent intent = new Intent(this, QuestionActivity.class);
 		intent.putExtra(EXTRA_POLL_ID, pollId);
 		intent.putExtra(EXTRA_QUESTION_INDEX, questionIndex + 1);
-		intent.putExtra(PollService.POLL_DEBUGGING,
-				getIntent().getBooleanExtra(PollService.POLL_DEBUGGING, false));
 		intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
 		startActivity(intent);
 		overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
@@ -388,9 +373,6 @@ public class QuestionActivity extends ActionBarActivity {
 		poll.setStatus(Poll.STATUS_PARTIALLY_COMPLETED);
 		poll.setQuestionStatus(questionIndex, Question.STATUS_ASKED_DISMISSED);
 		locationServiceConnection.setStopOnUnbind();
-		if (!getIntent().getBooleanExtra(PollService.POLL_DEBUGGING, false)) {
-			startSchedulerService();
-		}
 	}
 
 	private void finishPoll() {
@@ -403,9 +385,6 @@ public class QuestionActivity extends ActionBarActivity {
 		Toast.makeText(this, getString(R.string.question_thank_you), Toast.LENGTH_SHORT).show();
 		poll.setStatus(Poll.STATUS_COMPLETED);
 		locationServiceConnection.setStopOnUnbind();
-		if (!getIntent().getBooleanExtra(PollService.POLL_DEBUGGING, false)) {
-			startSchedulerService();
-		}
 		finish();
 	}
 

@@ -102,6 +102,7 @@ public class PollService extends Service {
 		if (startNow) {
 			launchPoll(poll);
 		} else {
+			startSchedulerService();
 			notifyPoll(poll);
 		}
 	}
@@ -120,7 +121,6 @@ public class PollService extends Service {
 		Intent intent = new Intent(this, QuestionActivity.class);
 		intent.putExtra(QuestionActivity.EXTRA_POLL_ID, poll.getId());
 		intent.putExtra(QuestionActivity.EXTRA_QUESTION_INDEX, 0);
-		intent.putExtra(POLL_DEBUGGING, startNow);
 		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
 		return intent;
 	}
@@ -183,5 +183,16 @@ public class PollService extends Service {
 		poll.setStatus(Poll.STATUS_PENDING);
 		poll.save();
 		return poll;
+	}
+
+	private void startSchedulerService() {
+
+		// Debug
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] startSchedulerService");
+		}
+
+		Intent schedulerIntent = new Intent(this, SchedulerService.class);
+		startService(schedulerIntent);
 	}
 }
