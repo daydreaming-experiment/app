@@ -26,7 +26,6 @@ import com.brainydroid.daydreaming.background.LocationServiceConnection;
 import com.brainydroid.daydreaming.background.PollService;
 import com.brainydroid.daydreaming.background.SchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
-import com.brainydroid.daydreaming.background.SyncService;
 import com.brainydroid.daydreaming.db.Poll;
 import com.brainydroid.daydreaming.db.PollsStorage;
 import com.brainydroid.daydreaming.db.Question;
@@ -113,13 +112,8 @@ public class QuestionActivity extends ActionBarActivity {
 		setContentView(R.layout.activity_question);
 
 		initVars();
-		checkPollStatus();
 		setChrome();
 		populateViews();
-		setTitle(getString(R.string.app_name) + " " + (questionIndex + 1) + "/" + nQuestions);
-		if (!getIntent().getBooleanExtra(PollService.POLL_DEBUGGING, false)) {
-			startSchedulerService();
-		}
 	}
 
 	@Override
@@ -131,13 +125,11 @@ public class QuestionActivity extends ActionBarActivity {
 		}
 
 		super.onStart();
-		if(checkPollStatus()) {
-			poll.setStatus(Poll.STATUS_RUNNING);
-			poll.setQuestionStatus(questionIndex, Question.STATUS_ASKED);
+		poll.setStatus(Poll.STATUS_RUNNING);
+		poll.setQuestionStatus(questionIndex, Question.STATUS_ASKED);
 
-			if (status.isDataAndLocationEnabled()) {
-				startListeningTasks();
-			}
+		if (status.isDataAndLocationEnabled()) {
+			startListeningTasks();
 		}
 	}
 
@@ -150,11 +142,8 @@ public class QuestionActivity extends ActionBarActivity {
 		}
 
 		super.onStop();
-		if (!isContinuing() && !poll.isOver()) {
-			poll.setStatus(Poll.STATUS_STOPPED);
-			poll.setQuestionStatus(questionIndex, Question.STATUS_ASKED_DISMISSED);
-			locationServiceConnection.setStopOnUnbind();
-			startSyncService();
+		if (!isContinuing()) {
+			dismissPoll();
 		}
 
 		locationServiceConnection.unbindLocationService();
@@ -194,17 +183,6 @@ public class QuestionActivity extends ActionBarActivity {
 		locationServiceConnection = new LocationServiceConnection(this);
 	}
 
-	private void startSyncService() {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] startSyncService");
-		}
-
-		Intent syncIntent = new Intent(this, SyncService.class);
-		startService(syncIntent);
-	}
-
 	private void startSchedulerService() {
 
 		// Debug
@@ -216,26 +194,14 @@ public class QuestionActivity extends ActionBarActivity {
 		startService(schedulerIntent);
 	}
 
-	private boolean checkPollStatus() {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] checkPollStatus");
-		}
-
-		boolean isOver = poll.isOver();
-		if (isOver) {
-			finish();
-		}
-		return !isOver;
-	}
-
 	private void setChrome() {
 
 		// Debug
 		if (Config.LOGD) {
 			Log.d(TAG, "[fn] setChrome");
 		}
+
+		setTitle(getString(R.string.app_name) + " " + (questionIndex + 1) + "/" + nQuestions);
 
 		if (!isFirstQuestion()) {
 			LinearLayout question_linearLayout = (LinearLayout)findViewById(R.id.question_linearLayout);
@@ -387,6 +353,7 @@ public class QuestionActivity extends ActionBarActivity {
 		intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
 		startActivity(intent);
 		overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+		finish();
 	}
 
 	private void launchSettings() {
@@ -411,6 +378,21 @@ public class QuestionActivity extends ActionBarActivity {
 		startActivity(settingsIntent);
 	}
 
+	private void dismissPoll() {
+
+		// Debug
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] dismissPoll");
+		}
+
+		poll.setStatus(Poll.STATUS_PARTIALLY_COMPLETED);
+		poll.setQuestionStatus(questionIndex, Question.STATUS_ASKED_DISMISSED);
+		locationServiceConnection.setStopOnUnbind();
+		if (!getIntent().getBooleanExtra(PollService.POLL_DEBUGGING, false)) {
+			startSchedulerService();
+		}
+	}
+
 	private void finishPoll() {
 
 		// Debug
@@ -421,7 +403,9 @@ public class QuestionActivity extends ActionBarActivity {
 		Toast.makeText(this, getString(R.string.question_thank_you), Toast.LENGTH_SHORT).show();
 		poll.setStatus(Poll.STATUS_COMPLETED);
 		locationServiceConnection.setStopOnUnbind();
-		startSyncService();
+		if (!getIntent().getBooleanExtra(PollService.POLL_DEBUGGING, false)) {
+			startSchedulerService();
+		}
 		finish();
 	}
 

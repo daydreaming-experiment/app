@@ -29,7 +29,6 @@ public class Poll {
 	public static final String STATUS_EXPIRED = "pollExpired"; // QuestionActivity was paused and not resumed fast enough, or notification waited for too long
 	public static final String STATUS_DISMISSED = "pollDismissed"; // Notification was dismissed
 	public static final String STATUS_RUNNING = "pollRunning"; // QuestionActivity is running
-	public static final String STATUS_STOPPED = "pollStopped"; // Notification has appeared, was opened, but QuestionActivity was paused
 	public static final String STATUS_PARTIALLY_COMPLETED = "pollPartiallyCompleted"; // QuestionActivity was stopped, and Poll expired
 	public static final String STATUS_COMPLETED = "pollCompleted"; // QuestionActivity completed
 
@@ -190,20 +189,6 @@ public class Poll {
 
 		_questions.get(questionIndex).setStatus(status);
 		saveIfSync();
-	}
-
-	public boolean isOver() {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] isOver");
-		}
-
-		if (_status == null) {
-			return false;
-		}
-		return _status.equals(STATUS_COMPLETED) || _status.equals(STATUS_DISMISSED) ||
-				_status.equals(STATUS_EXPIRED);
 	}
 
 	public int getQuestionsVersion() {
