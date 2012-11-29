@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.provider.Settings;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
@@ -37,6 +38,8 @@ public class QuestionActivity extends ActionBarActivity {
 	public static String EXTRA_POLL_ID = "pollId";
 	public static String EXTRA_QUESTION_INDEX = "questionIndex";
 
+	public static long BACK_REPEAT_DELAY = 2 * 1000; // 2 seconds, in milliseconds
+
 	private PollsStorage pollsStorage;
 	private int pollId;
 	private Poll poll;
@@ -44,6 +47,7 @@ public class QuestionActivity extends ActionBarActivity {
 	private Question question;
 	private int nQuestions;
 	private boolean isContinuing = false;
+	private long lastBackTime = 0;
 	private LinearLayout questionLinearLayout;
 	private StatusManager status;
 
@@ -155,11 +159,26 @@ public class QuestionActivity extends ActionBarActivity {
 			Log.d(TAG, "[fn] onBackPressed");
 		}
 
-		super.onBackPressed();
-		if (!isFirstQuestion()) {
-			setIsContinuing();
-			overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
+		if (!isRepeatingBack()) {
+			Toast.makeText(this, getString(R.string.questionActivity_catch_key),
+					Toast.LENGTH_SHORT).show();
+			return;
 		}
+		finish();
+		super.onBackPressed();
+	}
+
+	private boolean isRepeatingBack() {
+
+		// Debug
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] isRepeatingBack");
+		}
+
+		long now = SystemClock.elapsedRealtime();
+		boolean ret = (lastBackTime != 0) && (lastBackTime + BACK_REPEAT_DELAY >= now);
+		lastBackTime = now;
+		return ret;
 	}
 
 	private void initVars() {

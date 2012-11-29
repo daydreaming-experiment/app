@@ -75,5 +75,6 @@
     <string name="pollNotification_ticker">Day Dreaming poll</string>
     <string name="pollNotification_title">Day Dreaming</string>
     <string name="pollNotification_text">A few quick questions</string>
+    <string name="questionActivity_catch_key">Press again to exit.\nYou\'ll lose these questions!</string>
     
 </resources>
