@@ -267,7 +267,7 @@ public class PollsStorage {
 		}
 
 		ArrayList<Integer> pollIdsToClean = getPollIdsWithStatuses(
-				new String[] {Poll.STATUS_EXPIRED, Poll.STATUS_DISMISSED});
+				new String[] {Poll.STATUS_EXPIRED});
 
 		if (pollIdsToClean != null) {
 			for (int pollId : pollIdsToClean) {

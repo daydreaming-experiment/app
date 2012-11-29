@@ -2,6 +2,7 @@ package com.brainydroid.daydreaming.background;
 
 import java.util.ArrayList;
 
+import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -9,6 +10,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
+import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -23,11 +25,14 @@ public class PollService extends Service {
 	private static String TAG = "PollService";
 
 	public static String POLL_DEBUGGING = "pollDebugging";
+	public static String POLL_CLEAR_NOTIFICATION_ID = "pollClearNotificationId";
+	public static int EXPIRY_DELAY = 5 * 60 * 1000; // 5 minutes (in milliseconds)
 
 	private static int nQuestionsPerPoll = 3;
 
 	private NotificationManager notificationManager;
 	private PollsStorage pollsStorage;
+	private AlarmManager alarmManager;
 
 	@Override
 	public void onCreate() {
@@ -38,7 +43,6 @@ public class PollService extends Service {
 		}
 
 		super.onCreate();
-		notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
 	}
 
 	@Override
@@ -53,7 +57,13 @@ public class PollService extends Service {
 
 		initVars();
 		pollsStorage.cleanPolls();
-		createAndLaunchPoll(intent.getBooleanExtra(POLL_DEBUGGING, false));
+
+		int pollClearNotificationId = intent.getIntExtra(POLL_CLEAR_NOTIFICATION_ID, -1);
+		if (pollClearNotificationId == -1) {
+			createAndLaunchPoll(intent.getBooleanExtra(POLL_DEBUGGING, false));
+		} else {
+			clearPollNotification(pollClearNotificationId);
+		}
 		stopSelf();
 		return START_REDELIVER_INTENT;
 	}
@@ -88,10 +98,18 @@ public class PollService extends Service {
 			Log.d(TAG, "[fn] initVars");
 		}
 
+		notificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 		pollsStorage = PollsStorage.getInstance(this);
+		alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
 	}
 
-	private void createAndLaunchPoll(boolean startNow) {
+	private void clearPollNotification(int id) {
+		notificationManager.cancel(id);
+		Poll poll = pollsStorage.getPoll(id);
+		poll.setStatus(Poll.STATUS_EXPIRED);
+	}
+
+	private void createAndLaunchPoll(boolean debugging) {
 
 		// Debug
 		if (Config.LOGD) {
@@ -99,12 +117,10 @@ public class PollService extends Service {
 		}
 
 		Poll poll = createPoll();
-		if (startNow) {
-			launchPoll(poll);
-		} else {
+		if (!debugging) {
 			startSchedulerService();
-			notifyPoll(poll);
 		}
+		notifyPoll(poll);
 	}
 
 	private Intent createPollIntent(Poll poll) {
@@ -125,17 +141,6 @@ public class PollService extends Service {
 		return intent;
 	}
 
-	private void launchPoll(Poll poll) {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] launchPoll");
-		}
-
-		Intent intent = createPollIntent(poll, true);
-		startActivity(intent);
-	}
-
 	private void notifyPoll(Poll poll) {
 
 		// Debug
@@ -143,6 +148,7 @@ public class PollService extends Service {
 			Log.d(TAG, "[fn] notifyPoll");
 		}
 
+		// Build notification
 		Intent intent = createPollIntent(poll);
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent,
 				PendingIntent.FLAG_CANCEL_CURRENT);
@@ -156,12 +162,16 @@ public class PollService extends Service {
 		.setAutoCancel(true)
 		.build();
 
-		// TODO: add expiry of notification and poll:
-		// update poll status to Poll.STATUS_EXPIRED or Poll.STATUS_DISMISSED
-		// TODO: add way to keep the notification open (after having been opened)
-		// for 5 minutes. On expiry, set status to Poll.STATUS_PARTIALLY_COMPLETED
-
 		notificationManager.notify(poll.getId(), notification);
+
+		// Build notification expirer
+		Intent expirerIntent = new Intent(this, PollService.class);
+		expirerIntent.putExtra(POLL_CLEAR_NOTIFICATION_ID, poll.getId());
+		PendingIntent expirerPendingIntent = PendingIntent.getService(this, 0,
+				expirerIntent, PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_CANCEL_CURRENT);
+		long expiry = SystemClock.elapsedRealtime() + EXPIRY_DELAY;
+		alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+				expiry, expirerPendingIntent);
 	}
 
 	private Poll createPoll() {

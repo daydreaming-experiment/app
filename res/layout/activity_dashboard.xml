@@ -90,7 +90,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:onClick="runPollNow"
-        android:text="Run a poll now" />
+        android:text="Notify a poll now" />
     
     <Button
         android:id="@+id/button2"

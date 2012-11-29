@@ -26,8 +26,7 @@ public class Poll {
 	public static final String COL_KEEP_IN_SYNC = "pollKeepInSync";
 
 	public static final String STATUS_PENDING = "pollPending"; // Notification has appeared
-	public static final String STATUS_EXPIRED = "pollExpired"; // QuestionActivity was paused and not resumed fast enough, or notification waited for too long
-	public static final String STATUS_DISMISSED = "pollDismissed"; // Notification was dismissed
+	public static final String STATUS_EXPIRED = "pollExpired"; // Notification waited for too long or was dismissed
 	public static final String STATUS_RUNNING = "pollRunning"; // QuestionActivity is running
 	public static final String STATUS_PARTIALLY_COMPLETED = "pollPartiallyCompleted"; // QuestionActivity was stopped, and Poll expired
 	public static final String STATUS_COMPLETED = "pollCompleted"; // QuestionActivity completed
