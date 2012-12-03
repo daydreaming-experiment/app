@@ -24,6 +24,9 @@ public class SchedulerService extends Service {
 
 	private static String TAG = "SchedulerService";
 
+	public static String SCHEDULER_DEBUGGING = "schedulerDebugging";
+
+	private static long DEBUG_DELAY = 5 * 1000; // 5 seconds (in milliseconds)
 	private static long SAMPLE_TIME_MEAN = 2 * 60 * 60 * 1000; // 2 hours (in milliseconds)
 	private static long SAMPLE_TIME_STD = 1 * 60 * 60 * 1000; // 1 hour (in milliseconds)
 	private static long SAMPLE_TIME_MIN = 10 * 60 * 1000; // 10 minutes (in milliseconds)
@@ -42,7 +45,6 @@ public class SchedulerService extends Service {
 		}
 
 		super.onCreate();
-		initVars();
 	}
 
 	@Override
@@ -58,8 +60,9 @@ public class SchedulerService extends Service {
 		// Since the poll gets created when the notification shows up, there's a good chance
 		// the questions will have finished updating (if internet connection is available)
 		// before poll creation.
+		initVars();
 		startSyncService();
-		schedulePoll();
+		schedulePoll(intent.getBooleanExtra(SCHEDULER_DEBUGGING, false));
 		stopSelf();
 		return START_REDELIVER_INTENT;
 	}
@@ -100,18 +103,17 @@ public class SchedulerService extends Service {
 		sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 	}
 
-	private void schedulePoll() {
+	private void schedulePoll(boolean debugging) {
 
 		// Debug
 		if (Config.LOGD) {
 			Log.d(TAG, "[fn] schedulePoll");
 		}
 
-		long scheduledTime = generateTime();
+		long scheduledTime = generateTime(debugging);
 
 		Intent intent = new Intent(this, PollService.class);
-		PendingIntent pendingIntent = PendingIntent.getService(this, 0,
-				intent, PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_CANCEL_CURRENT);
+		PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, 0);
 		alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
 				scheduledTime, pendingIntent);
 
@@ -147,11 +149,15 @@ public class SchedulerService extends Service {
 		startService(syncIntent);
 	}
 
-	private long generateTime() {
+	private long generateTime(boolean debugging) {
 
 		// Debug
 		if (Config.LOGD) {
 			Log.d(TAG, "[fn] generateTime");
+		}
+
+		if (debugging) {
+			return SystemClock.elapsedRealtime() + DEBUG_DELAY;
 		}
 
 		long wait = SAMPLE_TIME_MIN;

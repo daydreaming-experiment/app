@@ -10,9 +10,8 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.brainydroid.daydreaming.R;
-import com.brainydroid.daydreaming.background.PollService;
+import com.brainydroid.daydreaming.background.SchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
-import com.brainydroid.daydreaming.background.SyncService;
 
 public class DashboardActivity extends ActionBarActivity {
 
@@ -176,25 +175,27 @@ public class DashboardActivity extends ActionBarActivity {
 			Log.d(TAG, "[fn] runPollNow");
 		}
 
-		Intent pollIntent = new Intent(this, PollService.class);
-		pollIntent.putExtra(PollService.POLL_DEBUGGING, true);
+		Intent pollIntent = new Intent(this, SchedulerService.class);
+		pollIntent.putExtra(SchedulerService.SCHEDULER_DEBUGGING, true);
 		startService(pollIntent);
+
+		Toast.makeText(this, "Now wait for 5 secs", Toast.LENGTH_SHORT).show();
 	}
 
-	public void startSyncService(View view) {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] startSyncService");
-		}
-
-		if (!status.isDataEnabled()) {
-			Toast.makeText(this, "Please activate internet connection first!",
-					Toast.LENGTH_SHORT).show();
-			return;
-		}
-
-		Intent syncIntent = new Intent(this, SyncService.class);
-		startService(syncIntent);
-	}
+	//	public void startSyncService(View view) {
+	//
+	//		// Debug
+	//		if (Config.LOGD) {
+	//			Log.d(TAG, "[fn] startSyncService");
+	//		}
+	//
+	//		if (!status.isDataEnabled()) {
+	//			Toast.makeText(this, "Please activate internet connection first!",
+	//					Toast.LENGTH_SHORT).show();
+	//			return;
+	//		}
+	//
+	//		Intent syncIntent = new Intent(this, SyncService.class);
+	//		startService(syncIntent);
+	//	}
 }

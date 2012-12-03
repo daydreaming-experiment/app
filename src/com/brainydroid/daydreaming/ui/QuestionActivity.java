@@ -25,6 +25,7 @@ import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.LocationCallback;
 import com.brainydroid.daydreaming.background.LocationServiceConnection;
 import com.brainydroid.daydreaming.background.StatusManager;
+import com.brainydroid.daydreaming.background.SyncService;
 import com.brainydroid.daydreaming.db.Poll;
 import com.brainydroid.daydreaming.db.PollsStorage;
 import com.brainydroid.daydreaming.db.Question;
@@ -404,6 +405,7 @@ public class QuestionActivity extends ActionBarActivity {
 		Toast.makeText(this, getString(R.string.question_thank_you), Toast.LENGTH_SHORT).show();
 		poll.setStatus(Poll.STATUS_COMPLETED);
 		locationServiceConnection.setStopOnUnbind();
+		startSyncService();
 		finish();
 	}
 
@@ -445,5 +447,16 @@ public class QuestionActivity extends ActionBarActivity {
 		}
 
 		isContinuing = true;
+	}
+
+	private void startSyncService() {
+
+		// Debug
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] startSyncService");
+		}
+
+		Intent syncIntent = new Intent(this, SyncService.class);
+		startService(syncIntent);
 	}
 }

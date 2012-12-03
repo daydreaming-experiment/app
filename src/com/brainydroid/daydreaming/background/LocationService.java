@@ -190,12 +190,6 @@ public class LocationService extends Service {
 
 		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
 				0, 0, locationListener);
-
-		// Listen for GPS updates for emulation
-		if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-					0, 0, locationListener);
-		}
 	}
 
 	private void stopLocationListenerIfExists() {
