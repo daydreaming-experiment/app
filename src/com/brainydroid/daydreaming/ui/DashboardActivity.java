@@ -20,8 +20,6 @@ public class DashboardActivity extends ActionBarActivity {
 	public static String EXTRA_COMES_FROM_FIRST_LAUNCH = "comesFromFirstLaunch";
 
 	private StatusManager status;
-	//	private PollsStorage pollsStorage;
-	//	private QuestionsStorage questionsStorage;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -34,9 +32,6 @@ public class DashboardActivity extends ActionBarActivity {
 		super.onCreate(savedInstanceState);
 
 		status = StatusManager.getInstance(this);
-		//		pollsStorage = PollsStorage.getInstance(this);
-		//		questionsStorage = QuestionsStorage.getInstance(this);
-		checkFirstRun();
 
 		setContentView(R.layout.activity_dashboard);
 	}
@@ -65,6 +60,7 @@ public class DashboardActivity extends ActionBarActivity {
 			Log.d(TAG, "[fn] onStart");
 		}
 
+		checkFirstRun();
 		super.onStart();
 	}
 
@@ -131,43 +127,6 @@ public class DashboardActivity extends ActionBarActivity {
 		}
 	}
 
-	//	private boolean comesFromFirstLaunch() {
-	//
-	//		// Debug
-	//		if (Config.LOGD) Log.d(TAG, "[fn] comesFromFirstLaunch");
-	//
-	//		return getIntent().getBooleanExtra(EXTRA_COMES_FROM_FIRST_LAUNCH, false);
-	//	}
-
-	//	public void onClick_quitExperiment(View view) {
-	//
-	//		// Debug
-	//		if (Config.LOGD) Log.d(TAG, "[fn] onClick_quitExperiment");
-	//
-	//		quitExperiment();
-	//	}
-
-	//	private void quitExperiment() {
-	//
-	//		// Debug
-	//		if (Config.LOGD) {
-	//			Log.d(TAG, "[fn] quitExperiment");
-	//		}
-	//
-	//		if (Config.TOASTD) {
-	//			Toast.makeText(this, "This will clear everything. It should ask for confirmation",
-	//					Toast.LENGTH_SHORT).show();
-	//		}
-	//		status.startClear();
-	//		// Delete saved data
-	//		pollsStorage.dropAll();
-	//		questionsStorage.dropAll();
-	//		if (!comesFromFirstLaunch()) {
-	//			status.finishClear();
-	//		}
-	//		finish();
-	//	}
-
 	public void runPollNow(View view) {
 
 		// Debug
@@ -181,21 +140,4 @@ public class DashboardActivity extends ActionBarActivity {
 
 		Toast.makeText(this, "Now wait for 5 secs", Toast.LENGTH_SHORT).show();
 	}
-
-	//	public void startSyncService(View view) {
-	//
-	//		// Debug
-	//		if (Config.LOGD) {
-	//			Log.d(TAG, "[fn] startSyncService");
-	//		}
-	//
-	//		if (!status.isDataEnabled()) {
-	//			Toast.makeText(this, "Please activate internet connection first!",
-	//					Toast.LENGTH_SHORT).show();
-	//			return;
-	//		}
-	//
-	//		Intent syncIntent = new Intent(this, SyncService.class);
-	//		startService(syncIntent);
-	//	}
 }
