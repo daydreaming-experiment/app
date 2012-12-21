@@ -1,14 +1,10 @@
 package com.brainydroid.daydreaming.network;
 
-import java.util.Map;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.mime.HttpMultipartMode;
-import org.apache.http.entity.mime.MultipartEntity;
-import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
@@ -25,7 +21,7 @@ public class HttpPostTask extends AsyncTask<HttpPostData, Void, Boolean> {
 	private String serverAnswer;
 	private HttpPostData postData;
 	private HttpPost httpPost;
-	private MultipartEntity reqEntity;
+	private StringEntity stringEntity;
 	private HttpResponse response;
 	private HttpEntity resEntity;
 	private HttpConversationCallback httpConversationCallback;
@@ -53,13 +49,11 @@ public class HttpPostTask extends AsyncTask<HttpPostData, Void, Boolean> {
 			postData = postDatas[0];
 			httpConversationCallback = postData.getHttpConversationCallback();
 			httpPost = new HttpPost(postData.getPostUrl());
-			reqEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+			stringEntity = new StringEntity(postData.getPostString());
 
-			for (Map.Entry<String, FileBody> entry : postData.getPostFiles().entrySet()) {
-				reqEntity.addPart(entry.getKey(), entry.getValue());
-			}
 
-			httpPost.setEntity(reqEntity);
+			httpPost.setHeader("Content-Type", "application/json");
+			httpPost.setEntity(stringEntity);
 
 			response = client.execute(httpPost);
 			resEntity = response.getEntity();

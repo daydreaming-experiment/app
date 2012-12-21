@@ -1,8 +1,6 @@
 package com.brainydroid.daydreaming.network;
 
-import java.io.File;
-
-import org.apache.http.entity.mime.content.FileBody;
+import java.security.PublicKey;
 
 import android.util.Log;
 
@@ -12,14 +10,10 @@ public class ServerTalker {
 
 	private static String TAG = "ServerTalker";
 
-	private static String BS_URL_UPLOAD = "upload/";
-	private static String BS_URL_UPLOAD_MAI_PUBKEY = "mai_pubkey/";
-	private static String BS_URL_UPLOAD_EA_DATA = "ea_data/";
-	private static String BS_URL_UPLOAD_REQUEST_MAI_ID = "request_mai_id";
+	private static String YE_URL_API = "/api/v1";
+	private static String YE_URL_DEVICES = YE_URL_API + "/devices/";
 
-	private static String BS_FORM_UPLOAD_PUBKEYFILE = "pubkeyfile";
-	private static String BS_FORM_UPLOAD_DATAFILE = "datafile";
-	private static String BS_FORM_UPLOAD_SIGFILE = "sigfile";
+	private static String YE_POST_DATA = "jws_data";
 
 	private static ServerTalker stInstance;
 
@@ -62,14 +56,14 @@ public class ServerTalker {
 		_serverName = s;
 	}
 
-	public void uploadPublicKey(HttpConversationCallback callback) {
+	public void register(PublicKey publicKey, HttpConversationCallback callback) {
 
 		// Debug
 		if (Config.LOGD) {
-			Log.d(TAG, "[fn] uploadPublicKey");
+			Log.d(TAG, "[fn] register");
 		}
 
-		final File keyFile = _cryptoStorage.createArmoredPublicKeyFile();
+		final String key = _cryptoStorage.createArmoredPublicKeyJson(publicKey);
 		final HttpConversationCallback initialCallback = callback;
 
 		HttpConversationCallback fullCallback = new HttpConversationCallback() {
@@ -85,14 +79,14 @@ public class ServerTalker {
 				}
 
 				initialCallback.onHttpConversationFinished(success, serverAnswer);
-				keyFile.delete();
 			}
 
 		};
 
-		String postUrl = _serverName + BS_URL_UPLOAD + BS_URL_UPLOAD_MAI_PUBKEY + _cryptoStorage.getMaiId();
+		String postUrl = _serverName + YE_URL_DEVICES;
 		HttpPostData postData = new HttpPostData(postUrl, fullCallback);
-		postData.addPostFile(BS_FORM_UPLOAD_PUBKEYFILE, new FileBody(keyFile));
+		postData.setPostString(key);
+
 
 		HttpPostTask postTask = new HttpPostTask();
 		postTask.execute(postData);
@@ -127,25 +121,12 @@ public class ServerTalker {
 
 		};
 
-		String postUrl = _serverName + BS_URL_UPLOAD + BS_URL_UPLOAD_EA_DATA + _cryptoStorage.getMaiId() + "/" + ea_id;
-		HttpPostData postData = new HttpPostData(postUrl, fullCallback);
-		postData.addPostFile(BS_FORM_UPLOAD_SIGFILE, new FileBody(sdf.getSignatureFile()));
-		postData.addPostFile(BS_FORM_UPLOAD_DATAFILE, new FileBody(sdf.getDataFile()));
+		//		String postUrl = _serverName + BS_URL_UPLOAD + BS_URL_UPLOAD_EA_DATA + _cryptoStorage.getMaiId() + "/" + ea_id;
+		//		HttpPostData postData = new HttpPostData(postUrl, fullCallback);
+		//		postData.addPostFile(BS_FORM_UPLOAD_SIGFILE, new FileBody(sdf.getSignatureFile()));
+		//		postData.addPostFile(BS_FORM_UPLOAD_DATAFILE, new FileBody(sdf.getDataFile()));
 
 		HttpPostTask postTask = new HttpPostTask();
-		postTask.execute(postData);
-	}
-
-	public void requestMaiId(HttpConversationCallback callback) {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] requestMaiId");
-		}
-
-		String getUrl = _serverName + BS_URL_UPLOAD + BS_URL_UPLOAD_REQUEST_MAI_ID;
-		HttpGetData getData = new HttpGetData(getUrl, callback);
-		HttpGetTask getTask = new HttpGetTask();
-		getTask.execute(getData);
+		//		postTask.execute(postData);
 	}
 }

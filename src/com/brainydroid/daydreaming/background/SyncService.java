@@ -27,7 +27,7 @@ public class SyncService extends Service {
 	private static String TAG = "SyncService";
 
 	private static String BS_EXP_APP_ID = "daydreaming";
-	private static String BS_SERVER_NAME = "http://mehho.net:5000/";
+	private static String BS_SERVER_NAME = "http://naja.cc";
 
 	private static String QUESTIONS_VERSION_URL = "http://mehho.net:5001/questionsVersion";
 	private static String QUESTIONS_URL = "http://mehho.net:5001/questions.json";

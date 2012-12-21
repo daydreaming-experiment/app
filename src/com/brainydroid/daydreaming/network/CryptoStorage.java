@@ -15,11 +15,14 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Enumeration;
+import java.util.HashMap;
 
 import android.content.Context;
 import android.util.Log;
 
 import com.brainydroid.daydreaming.ui.Config;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class CryptoStorage {
 
@@ -32,11 +35,12 @@ public class CryptoStorage {
 
 	private static final String NOKP_EXCEPTION_MSG = "No keypair present";
 
-	private static final String DEFAULT_CURVE_NAME = "secp112r1"; // Instead of "sect571k1", which is computationally much more expensive;
+	private static final String DEFAULT_CURVE_NAME = "secp256r1"; // Corresponds to NIST256p in python-ecdsa;
 
 	private static Crypto crypto;
 	private static ServerTalker serverTalker;
 	private static CryptoStorage csInstance;
+	private final Gson gson;
 
 	private final File maiIdFile;
 	private final File publicFile;
@@ -73,6 +77,9 @@ public class CryptoStorage {
 		serverTalker = ServerTalker.getInstance(server, this);
 		_context = context.getApplicationContext();
 		storageDir = _context.getDir(STORAGE_DIRNAME, Context.MODE_PRIVATE);
+		gson = new GsonBuilder()
+		.excludeFieldsWithoutExposeAnnotation()
+		.create();
 		maiIdFile = new File(storageDir, MAI_ID_FILENAME);
 		publicFile = new File(storageDir, PUBLIC_FILENAME);
 		privateFile = new File(storageDir, PRIVATE_FILENAME);
@@ -89,7 +96,7 @@ public class CryptoStorage {
 		}
 
 		if (!hasStoredKeyPairAndMaiId()) {
-			generateAndStoreKeyPairAndMaiId(callback);
+			register(callback);
 		} else {
 			callback.onCryptoStorageReady(true);
 		}
@@ -205,17 +212,17 @@ public class CryptoStorage {
 	// 2. upload the public key
 	// 3. the server generates an maiId and sends it back as an answer
 	// That way the maiId gets locked to that public key.
-	public synchronized void generateAndStoreKeyPairAndMaiId(CryptoStorageCallback callback) {
+	public synchronized void register(CryptoStorageCallback callback) {
 
 		// Debug
 		if (Config.LOGD) {
-			Log.d(TAG, "[fn] generateAndStoreKeyPairAndMaiId");
+			Log.d(TAG, "[fn] register");
 		}
 
 		final KeyPair kp = crypto.generateKeyPairNamedCurve(curveName);
 		final CryptoStorageCallback parentCallback = callback;
 
-		final HttpConversationCallback uploadPublicKeyCallback = new HttpConversationCallback() {
+		final HttpConversationCallback registrationCallback = new HttpConversationCallback() {
 
 			private final String TAG = "HttpConversationCallback";
 
@@ -224,41 +231,23 @@ public class CryptoStorage {
 
 				// Debug
 				if (Config.LOGD) {
-					Log.d(TAG, "[fn] (uploadPublicKeyCallback) onHttpConversationFinished");
-				}
-
-				parentCallback.onCryptoStorageReady(success);
-			}
-
-		};
-
-		HttpConversationCallback fullCallback = new HttpConversationCallback() {
-
-			private final String TAG = "HttpConversationCallback";
-
-			@Override
-			public void onHttpConversationFinished(boolean success, String serverAnswer) {
-
-				// Debug
-				if (Config.LOGD) {
-					Log.d(TAG, "[fn] (fullCallback) onHttpConversationFinished");
+					Log.d(TAG, "[fn] (registrationCallback) onHttpConversationFinished");
 				}
 
 				boolean storageSuccess = false;
 				if (success) {
-					storageSuccess = storeKeyPairAndMaiId(kp, serverAnswer);
+					RegistrationAnswer registrationAnswer = gson.fromJson(serverAnswer,
+							RegistrationAnswer.class);
+					String maiId = registrationAnswer.getId();
+					storageSuccess = storeKeyPairAndMaiId(kp, maiId);
 				}
 
-				if (success && storageSuccess) {
-					serverTalker.uploadPublicKey(uploadPublicKeyCallback);
-				} else {
-					parentCallback.onCryptoStorageReady(false);
-				}
+				parentCallback.onCryptoStorageReady(success && storageSuccess);
 			}
 
 		};
 
-		serverTalker.requestMaiId(fullCallback);
+		serverTalker.register(kp.getPublic(), registrationCallback);
 	}
 
 	private synchronized boolean storeKeyPairAndMaiId(KeyPair kp, String maiId) {
@@ -406,33 +395,26 @@ public class CryptoStorage {
 		return publicFile.delete();
 	}
 
-	public synchronized File createArmoredPublicKeyFile() {
+	public synchronized String createArmoredPublicKeyJson(PublicKey publicKey) {
 
 		// Debug
 		if (Config.LOGD) {
 			Log.d(TAG, "[fn] createArmoredPublicKeyFile");
 		}
 
-		File keyFile;
-		try {
-			keyFile = File.createTempFile("publicKey", ".pub", storageDir);
-			FileWriter keyFileWriter = new FileWriter(keyFile);
-			keyFileWriter.write(getArmoredPublicKeyString());
-			keyFileWriter.close();
-			return keyFile;
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+		HashMap<String, String> pkMap = new HashMap<String, String>();
+		pkMap.put("vk_pem", getArmoredPublicKeyString(publicKey));
+		return gson.toJson(pkMap);
 	}
 
-	public synchronized String getArmoredPublicKeyString() {
+	public synchronized String getArmoredPublicKeyString(PublicKey publicKey) {
 
 		// Debug
 		if (Config.LOGD) {
 			Log.d(TAG, "[fn] getArmoredPublicKeyString");
 		}
 
-		return Crypto.armorPublicKey(getPublicKey());
+		return Crypto.armorPublicKey(publicKey);
 	}
 
 	public synchronized String getPrivateKeyString() {

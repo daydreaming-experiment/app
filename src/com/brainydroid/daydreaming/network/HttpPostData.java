@@ -1,9 +1,5 @@
 package com.brainydroid.daydreaming.network;
 
-import java.util.HashMap;
-
-import org.apache.http.entity.mime.content.FileBody;
-
 import android.util.Log;
 
 import com.brainydroid.daydreaming.ui.Config;
@@ -13,7 +9,7 @@ public class HttpPostData {
 	private static String TAG = "HttpPostData";
 
 	private final String _postUrl;
-	private final HashMap<String, FileBody> _postFiles;
+	private String _postString;
 	private final HttpConversationCallback _httpConversationCallback;
 
 	public HttpPostData(String postUrl, HttpConversationCallback httpConversationCallback) {
@@ -24,11 +20,11 @@ public class HttpPostData {
 		}
 
 		_postUrl = postUrl;
-		_postFiles = new HashMap<String, FileBody>();
+		_postString = null;
 		_httpConversationCallback = httpConversationCallback;
 	}
 
-	public HttpPostData(String postUrl, HashMap<String, FileBody> postFiles,
+	public HttpPostData(String postUrl, String postString,
 			HttpConversationCallback httpConversationCallback) {
 
 		// Debug
@@ -37,7 +33,7 @@ public class HttpPostData {
 		}
 
 		_postUrl = postUrl;
-		_postFiles = postFiles;
+		_postString = postString;
 		_httpConversationCallback = httpConversationCallback;
 	}
 
@@ -51,24 +47,24 @@ public class HttpPostData {
 		return _postUrl;
 	}
 
-	public HashMap<String, FileBody> getPostFiles() {
+	public String getPostString() {
 
 		// Verbose
 		if (Config.LOGV) {
-			Log.v(TAG, "[fn] getPostFiles");
+			Log.v(TAG, "[fn] getPostString");
 		}
 
-		return _postFiles;
+		return _postString;
 	}
 
-	public void addPostFile(String key, FileBody fileBody) {
+	public void setPostString(String postString) {
 
 		// Debug
 		if (Config.LOGD) {
-			Log.d(TAG, "[fn] addPostFile");
+			Log.d(TAG, "[fn] addPostString");
 		}
 
-		_postFiles.put(key, fileBody);
+		_postString = postString;
 	}
 
 	public HttpConversationCallback getHttpConversationCallback() {
