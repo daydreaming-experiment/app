@@ -13,10 +13,10 @@ public class Poll {
 
 	private static String TAG = "Poll";
 
-	@Expose private String _status;
-	@Expose private int _questionsVersion;
-	@Expose private ArrayList<Question> _questions;
-	@Expose private int _subjectAge;
+	@Expose private String status;
+	@Expose private int questionsVersion;
+	@Expose private ArrayList<Question> questions;
+	@Expose private int subjectAge;
 	private transient int _id;
 	private transient boolean _keepInSync = false;
 
@@ -47,9 +47,9 @@ public class Poll {
 
 		_context = context.getApplicationContext();
 		_id = -1;
-		_status = null;
-		_questionsVersion = QuestionsStorage.getInstance(_context).getQuestionsVersion();
-		_questions = new ArrayList<Question>();
+		status = null;
+		questionsVersion = QuestionsStorage.getInstance(_context).getQuestionsVersion();
+		questions = new ArrayList<Question>();
 		pollsStorage = PollsStorage.getInstance(_context);
 		questionsStorage = QuestionsStorage.getInstance(_context);
 	}
@@ -73,7 +73,7 @@ public class Poll {
 			Log.d(TAG, "[fn] populateQuestions");
 		}
 
-		_questions = questionsStorage.getRandomQuestions(nQuestions);
+		questions = questionsStorage.getRandomQuestions(nQuestions);
 	}
 
 	public void addQuestion(Question question) {
@@ -83,7 +83,7 @@ public class Poll {
 			Log.d(TAG, "[fn] addQuestion");
 		}
 
-		_questions.add(question);
+		questions.add(question);
 	}
 
 	public ArrayList<Question> getQuestions() {
@@ -93,7 +93,7 @@ public class Poll {
 			Log.v(TAG, "[fn] getQuestion");
 		}
 
-		return _questions;
+		return questions;
 	}
 
 	public Question getQuestionByIndex(int index) {
@@ -103,7 +103,7 @@ public class Poll {
 			Log.d(TAG, "[fn] getQuestionByIndex");
 		}
 
-		return _questions.get(index);
+		return questions.get(index);
 	}
 
 	public Question popQuestionByIndex(int index) {
@@ -114,7 +114,7 @@ public class Poll {
 		}
 
 		Question q = getQuestionByIndex(index);
-		_questions.remove(index);
+		questions.remove(index);
 		return q;
 	}
 
@@ -125,7 +125,7 @@ public class Poll {
 			Log.d(TAG, "[fn] getLength");
 		}
 
-		return _questions.size();
+		return questions.size();
 	}
 
 	public int getId() {
@@ -165,7 +165,7 @@ public class Poll {
 			Log.v(TAG, "[fn] getStatus");
 		}
 
-		return _status;
+		return status;
 	}
 
 	public void setStatus(String status) {
@@ -175,7 +175,7 @@ public class Poll {
 			Log.d(TAG, "[fn] setStatus");
 		}
 
-		_status = status;
+		this.status = status;
 		saveIfSync();
 	}
 
@@ -186,7 +186,7 @@ public class Poll {
 			Log.d(TAG, "[fn] setQuestionStatus");
 		}
 
-		_questions.get(questionIndex).setStatus(status);
+		questions.get(questionIndex).setStatus(status);
 		saveIfSync();
 	}
 
@@ -197,7 +197,7 @@ public class Poll {
 			Log.v(TAG, "[fn] getQuestionsVersion");
 		}
 
-		return _questionsVersion;
+		return questionsVersion;
 	}
 
 	public void setQuestionsVersion(int questionsVersion) {
@@ -207,7 +207,7 @@ public class Poll {
 			Log.d(TAG, "[fn] setQuestionsVersion");
 		}
 
-		_questionsVersion = questionsVersion;
+		this.questionsVersion = questionsVersion;
 		saveIfSync();
 	}
 
@@ -266,7 +266,7 @@ public class Poll {
 		}
 
 		// Location and Timestamp are set by callbacks defined in QuestionActivity
-		_questions.get(index).saveAnswers(questionLinearLayout);
+		questions.get(index).saveAnswers(questionLinearLayout);
 		save();
 	}
 }

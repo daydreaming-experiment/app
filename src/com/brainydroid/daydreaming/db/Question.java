@@ -42,22 +42,22 @@ public class Question {
 	private static String TAG = "Question";
 
 	// attributes inherent to the question
-	@Expose private String _id;
-	private String _category;
-	private String _subcategory;
-	private String _type;
-	private String _mainText;
-	private String _parametersText;
-	private int _questionsVersion;
+	@Expose private String id;
+	private String category;
+	private String subcategory;
+	private String type;
+	private String mainText;
+	private String parametersText;
+	private int questionsVersion;
 
 	// attributes dependent on the answer
-	@Expose private String _status;
-	@Expose private Answer _answer;
-	@Expose private double _locationLatitude;
-	@Expose private double _locationLongitude;
-	@Expose private double _locationAltitude;
-	@Expose private double _locationAccuracy;
-	@Expose private long _timestamp;
+	@Expose private String status;
+	@Expose private Answer answer;
+	@Expose private double locationLatitude;
+	@Expose private double locationLongitude;
+	@Expose private double locationAltitude;
+	@Expose private double locationAccuracy;
+	@Expose private long timestamp;
 
 	private transient Gson gson;
 
@@ -105,7 +105,7 @@ public class Question {
 		}
 
 		initVars();
-		_questionsVersion = QuestionsStorage.getInstance(context).getQuestionsVersion();
+		questionsVersion = QuestionsStorage.getInstance(context).getQuestionsVersion();
 	}
 
 	// constructor from fields values
@@ -135,20 +135,20 @@ public class Question {
 			Log.d(TAG, "[fn] initVars");
 		}
 
-		_id = null;
-		_category = null;
-		_subcategory = null;
-		_type = null;
-		_mainText = null;
-		_parametersText = null;
-		_status = null;
-		_answer = null;
-		_locationLatitude = -1;
-		_locationLongitude = -1;
-		_locationAltitude = -1;
-		_locationAccuracy = -1;
-		_timestamp = -1;
-		_questionsVersion = -1;
+		id = null;
+		category = null;
+		subcategory = null;
+		type = null;
+		mainText = null;
+		parametersText = null;
+		status = null;
+		answer = null;
+		locationLatitude = -1;
+		locationLongitude = -1;
+		locationAltitude = -1;
+		locationAccuracy = -1;
+		timestamp = -1;
+		questionsVersion = -1;
 		gson = new Gson();
 	}
 
@@ -161,7 +161,7 @@ public class Question {
 			Log.v(TAG, "[fn] getId");
 		}
 
-		return _id;
+		return id;
 	}
 
 	public void setId(String id) {
@@ -171,7 +171,7 @@ public class Question {
 			Log.v(TAG, "[fn] setId");
 		}
 
-		_id = id;
+		this.id = id;
 	}
 
 	public String getCategory() {
@@ -181,7 +181,7 @@ public class Question {
 			Log.v(TAG, "[fn] getCategory");
 		}
 
-		return _category;
+		return category;
 	}
 
 	public void setCategory(String category) {
@@ -191,7 +191,7 @@ public class Question {
 			Log.v(TAG, "[fn] setCategory");
 		}
 
-		_category = category;
+		this.category = category;
 	}
 
 	public String getSubcategory() {
@@ -201,7 +201,7 @@ public class Question {
 			Log.v(TAG, "[fn] getSubcategory");
 		}
 
-		return _subcategory;
+		return subcategory;
 	}
 
 	public void setSubcategory(String subcategory) {
@@ -211,7 +211,7 @@ public class Question {
 			Log.v(TAG, "[fn] setSubcategory");
 		}
 
-		_subcategory = subcategory;
+		this.subcategory = subcategory;
 	}
 
 	public String getType() {
@@ -221,7 +221,7 @@ public class Question {
 			Log.v(TAG, "[fn] getType");
 		}
 
-		return _type;
+		return type;
 	}
 
 	private Type getTypeType() {
@@ -231,11 +231,11 @@ public class Question {
 			Log.d(TAG, "[fn] getTypeType");
 		}
 
-		if (_type == null) {
+		if (type == null) {
 			throw new RuntimeException("Question type not set");
-		} else if (_type.equals(TYPE_MULTIPLE_CHOICE)) {
+		} else if (type.equals(TYPE_MULTIPLE_CHOICE)) {
 			return MultipleChoiceAnswer.class;
-		} else if (_type.equals(TYPE_SLIDER)) {
+		} else if (type.equals(TYPE_SLIDER)) {
 			return SliderAnswer.class;
 		} else {
 			throw new RuntimeException("Question type not set");
@@ -249,11 +249,11 @@ public class Question {
 			Log.d(TAG, "[fn] newAnswerType");
 		}
 
-		if (_type == null) {
+		if (type == null) {
 			throw new RuntimeException("Question type not set");
-		} else if (_type.equals(TYPE_MULTIPLE_CHOICE)) {
+		} else if (type.equals(TYPE_MULTIPLE_CHOICE)) {
 			return new MultipleChoiceAnswer();
-		} else if (_type.equals(TYPE_SLIDER)) {
+		} else if (type.equals(TYPE_SLIDER)) {
 			return new SliderAnswer();
 		} else {
 			throw new RuntimeException("Question type not set");
@@ -267,7 +267,7 @@ public class Question {
 			Log.v(TAG, "[fn] setType");
 		}
 
-		_type = type;
+		this.type = type;
 	}
 
 	public String getStatus() {
@@ -277,7 +277,7 @@ public class Question {
 			Log.v(TAG, "[fn] getStatus");
 		}
 
-		return _status;
+		return status;
 	}
 
 	public void setStatus(String status) {
@@ -287,7 +287,7 @@ public class Question {
 			Log.v(TAG, "[fn] setStatus");
 		}
 
-		_status = status;
+		this.status = status;
 	}
 
 	public String getMainText() {
@@ -297,7 +297,7 @@ public class Question {
 			Log.v(TAG, "[fn] getMainText");
 		}
 
-		return _mainText;
+		return mainText;
 	}
 
 	public void setMainText(String mainText) {
@@ -307,7 +307,7 @@ public class Question {
 			Log.v(TAG, "[fn] setMainText");
 		}
 
-		_mainText = mainText;
+		this.mainText = mainText;
 	}
 
 	public String getParametersText() {
@@ -317,7 +317,7 @@ public class Question {
 			Log.v(TAG, "[fn] getParametersText");
 		}
 
-		return _parametersText;
+		return parametersText;
 	}
 
 	public void setParametersText(String parametersText) {
@@ -327,7 +327,7 @@ public class Question {
 			Log.v(TAG, "[fn] setParametersText");
 		}
 
-		_parametersText = parametersText;
+		this.parametersText = parametersText;
 	}
 
 	public String getAnswer() {
@@ -337,8 +337,8 @@ public class Question {
 			Log.d(TAG, "[fn] getAnswer");
 		}
 
-		if (_answer != null) {
-			return _answer.toJson();
+		if (answer != null) {
+			return answer.toJson();
 		} else {
 			return null;
 		}
@@ -351,7 +351,7 @@ public class Question {
 			Log.v(TAG, "[fn] setAnswer (from Answer)");
 		}
 
-		_answer = answer;
+		this.answer = answer;
 	}
 
 	public void setAnswer(String jsonAnswer) {
@@ -375,7 +375,7 @@ public class Question {
 			Log.v(TAG, "[fn] getLocationLatitude");
 		}
 
-		return _locationLatitude;
+		return locationLatitude;
 	}
 
 	public double getLocationLongitude() {
@@ -385,7 +385,7 @@ public class Question {
 			Log.v(TAG, "[fn] getLocationLongitude");
 		}
 
-		return _locationLongitude;
+		return locationLongitude;
 	}
 
 	public double getLocationAltitude() {
@@ -395,7 +395,7 @@ public class Question {
 			Log.v(TAG, "[fn] getLocationAltitude");
 		}
 
-		return _locationAltitude;
+		return locationAltitude;
 	}
 
 	public double getLocationAccuracy() {
@@ -405,7 +405,7 @@ public class Question {
 			Log.v(TAG, "[fn] getLocationAccuracy");
 		}
 
-		return _locationAccuracy;
+		return locationAccuracy;
 	}
 
 	public void setLocationLatitude(double locationLatitude) {
@@ -415,7 +415,7 @@ public class Question {
 			Log.v(TAG, "[fn] setLocationLatitude");
 		}
 
-		_locationLatitude = locationLatitude;
+		this.locationLatitude = locationLatitude;
 	}
 
 	public void setLocationLongitude(double locationLongitude) {
@@ -425,7 +425,7 @@ public class Question {
 			Log.v(TAG, "[fn] setLocationLongitude");
 		}
 
-		_locationLongitude = locationLongitude;
+		this.locationLongitude = locationLongitude;
 	}
 
 	public void setLocationAltitude(double locationAltitude) {
@@ -435,7 +435,7 @@ public class Question {
 			Log.v(TAG, "[fn] setLocationAltitude");
 		}
 
-		_locationAltitude = locationAltitude;
+		this.locationAltitude = locationAltitude;
 	}
 
 	public void setLocationAccuracy(double locationAccuracy) {
@@ -445,7 +445,7 @@ public class Question {
 			Log.v(TAG, "[fn] setLocationAccuracy");
 		}
 
-		_locationAccuracy = locationAccuracy;
+		this.locationAccuracy = locationAccuracy;
 	}
 
 	public void setLocation(Location location) {
@@ -456,10 +456,10 @@ public class Question {
 		}
 
 		if (location != null) {
-			_locationLatitude = location.getLatitude();
-			_locationLongitude = location.getLongitude();
-			_locationAltitude = location.getAltitude();
-			_locationAccuracy = location.getAccuracy();
+			locationLatitude = location.getLatitude();
+			locationLongitude = location.getLongitude();
+			locationAltitude = location.getAltitude();
+			locationAccuracy = location.getAccuracy();
 		}
 	}
 
@@ -470,7 +470,7 @@ public class Question {
 			Log.v(TAG, "[fn] getTimestamp");
 		}
 
-		return _timestamp;
+		return timestamp;
 	}
 
 	public void setTimestamp(long timestamp) {
@@ -480,7 +480,7 @@ public class Question {
 			Log.v(TAG, "[fn] setTimestamp");
 		}
 
-		_timestamp = timestamp;
+		this.timestamp = timestamp;
 	}
 
 	public int getQuestionsVersion() {
@@ -490,7 +490,7 @@ public class Question {
 			Log.v(TAG, "[fn] getQuestionsVersion");
 		}
 
-		return _questionsVersion;
+		return questionsVersion;
 	}
 
 	public void setQuestionsVersion(int questionsVersion) {
@@ -500,7 +500,7 @@ public class Question {
 			Log.v(TAG, "[fn] setQuestionsVersion");
 		}
 
-		_questionsVersion = questionsVersion;
+		this.questionsVersion = questionsVersion;
 	}
 
 	// Generating views for subsequent display of questions
@@ -543,11 +543,11 @@ public class Question {
 		Context _context = context;
 		LayoutInflater inflater = (LayoutInflater)_context.getSystemService(
 				Context.LAYOUT_INFLATER_SERVICE);
-		if (_type.equals(TYPE_SLIDER)) {
+		if (type.equals(TYPE_SLIDER)) {
 			return createViewsSlider(inflater);
 			//		} else if (_type.equals(TYPE_SINGLE_CHOICE)) {
 			//			return createViewsSingleChoice(inflater);
-		} else if (_type.equals(TYPE_MULTIPLE_CHOICE)) {
+		} else if (type.equals(TYPE_MULTIPLE_CHOICE)) {
 			return createViewsMultipleChoice(inflater);
 		}
 		return null;
@@ -706,9 +706,9 @@ public class Question {
 			Log.d(TAG, "[fn] validate");
 		}
 
-		if (_type.equals(TYPE_SLIDER)) {
+		if (type.equals(TYPE_SLIDER)) {
 			return validateSlider(context, questionsLinearLayout);
-		} else if (_type.equals(TYPE_MULTIPLE_CHOICE)) {
+		} else if (type.equals(TYPE_MULTIPLE_CHOICE)) {
 			return validateMultipleChoice(context, questionsLinearLayout);
 		}
 		return false;
@@ -813,7 +813,7 @@ public class Question {
 			Log.d(TAG, "[fn] getParsedMainText");
 		}
 
-		return parseString(_mainText, PARAMETER_SPLITTER);
+		return parseString(mainText, PARAMETER_SPLITTER);
 	}
 
 	private ArrayList<ArrayList<String>> getParsedParametersText() {
@@ -824,7 +824,7 @@ public class Question {
 		}
 
 		ArrayList<ArrayList<String>> parsedParametersText = new ArrayList<ArrayList<String>>();
-		Iterator<String> preParsedIt = parseString(_parametersText,
+		Iterator<String> preParsedIt = parseString(parametersText,
 				PARAMETER_SPLITTER).iterator();
 		ArrayList<String> subParameters;
 		while (preParsedIt.hasNext()) {

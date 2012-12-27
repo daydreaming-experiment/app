@@ -115,7 +115,9 @@ public class PollService extends Service {
 
 		notificationManager.cancel(id);
 		Poll poll = pollsStorage.getPoll(id);
-		poll.setStatus(Poll.STATUS_EXPIRED);
+		if (poll != null) {
+			poll.setStatus(Poll.STATUS_EXPIRED);
+		}
 	}
 
 	private void createAndLaunchPoll() {

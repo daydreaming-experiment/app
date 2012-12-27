@@ -26,8 +26,8 @@ public class SyncService extends Service {
 
 	private static String TAG = "SyncService";
 
-	private static String BS_EXP_APP_ID = "daydreaming";
-	private static String BS_SERVER_NAME = "http://naja.cc";
+	private static String EXP_ID = "e17cdc2f8ea14a91eee7906954bae98202ead71ebcf300a3157f192ad8ad2354";
+	private static String SERVER_NAME = "http://10.0.3.1";
 
 	private static String QUESTIONS_VERSION_URL = "http://mehho.net:5001/questionsVersion";
 	private static String QUESTIONS_URL = "http://mehho.net:5001/questions.json";
@@ -131,7 +131,7 @@ public class SyncService extends Service {
 						Log.d(TAG, "(callback) onCryptoStorageReady");
 					}
 
-					serverTalker = ServerTalker.getInstance(BS_SERVER_NAME, cryptoStorage);
+					serverTalker = ServerTalker.getInstance(SERVER_NAME, cryptoStorage);
 
 					if (hasKeyPairAndMaiId && status.isDataEnabled()) {
 						asyncUpdateQuestions();
@@ -142,7 +142,7 @@ public class SyncService extends Service {
 			};
 
 			// This will launch all calls through the callbacks
-			cryptoStorage = CryptoStorage.getInstance(this, BS_SERVER_NAME, callback);
+			cryptoStorage = CryptoStorage.getInstance(this, SERVER_NAME, callback);
 		} else {
 
 			// Info
@@ -350,7 +350,7 @@ public class SyncService extends Service {
 
 			};
 
-			serverTalker.signAndUploadData(BS_EXP_APP_ID, gson.toJson(poll), callback);
+			serverTalker.signAndUploadData(EXP_ID, gson.toJson(poll), callback);
 		}
 	}
 

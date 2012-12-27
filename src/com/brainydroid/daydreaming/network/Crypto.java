@@ -33,7 +33,7 @@ public class Crypto {
 
 	private static final String PROVIDER = "SC";
 	private static final String KEYGEN_ALG = "ECDSA";
-	private static final String SIGN_ALG = "SHA512withECDSA";
+	private static final String SIGN_ALG = "SHA256withECDSA";
 
 	private static final String BEGIN_KEY_BLOCK = "-----BEGIN PUBLIC KEY-----";
 	private static final String END_KEY_BLOCK = "-----END PUBLIC KEY-----";

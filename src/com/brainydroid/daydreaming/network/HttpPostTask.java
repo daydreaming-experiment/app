@@ -51,8 +51,7 @@ public class HttpPostTask extends AsyncTask<HttpPostData, Void, Boolean> {
 			httpPost = new HttpPost(postData.getPostUrl());
 			stringEntity = new StringEntity(postData.getPostString());
 
-
-			httpPost.setHeader("Content-Type", "application/json");
+			httpPost.setHeader("Content-Type", postData.getContentType());
 			httpPost.setEntity(stringEntity);
 
 			response = client.execute(httpPost);

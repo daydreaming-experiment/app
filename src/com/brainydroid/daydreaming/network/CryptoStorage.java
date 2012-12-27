@@ -17,6 +17,8 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.Enumeration;
 import java.util.HashMap;
 
+import org.spongycastle.util.encoders.UrlBase64;
+
 import android.content.Context;
 import android.util.Log;
 
@@ -36,6 +38,7 @@ public class CryptoStorage {
 	private static final String NOKP_EXCEPTION_MSG = "No keypair present";
 
 	private static final String DEFAULT_CURVE_NAME = "secp256r1"; // Corresponds to NIST256p in python-ecdsa;
+	private static final String JWS_HEADER = "{\"alg\": \"ES256\"}";
 
 	private static Crypto crypto;
 	private static ServerTalker serverTalker;
@@ -188,7 +191,7 @@ public class CryptoStorage {
 		}
 	}
 
-	public synchronized byte[] sign(byte[] data) {
+	private synchronized byte[] sign(byte[] data) {
 
 		// Debug
 		if (Config.LOGD) {
@@ -205,13 +208,6 @@ public class CryptoStorage {
 		}
 	}
 
-	// FIXME: this process should be done the other way around, server-side:
-	// instead of asking for a maiId, then generating keys, then upload the public key
-	// for the server to associate it with the maiId, it should be:
-	// 1. generate keys
-	// 2. upload the public key
-	// 3. the server generates an maiId and sends it back as an answer
-	// That way the maiId gets locked to that public key.
 	public synchronized void register(CryptoStorageCallback callback) {
 
 		// Debug
@@ -425,6 +421,35 @@ public class CryptoStorage {
 		}
 
 		return Crypto.base64Encode(getPrivateKey().getEncoded());
+	}
+
+	public synchronized String signJws(String data) {
+
+		// Debug
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] signJws");
+		}
+
+		String b64Header = base64urlEncode(JWS_HEADER.getBytes());
+		String b64Payload = base64urlEncode(data.getBytes());
+
+		String b64Input = b64Header + "." + b64Payload;
+		String b64sig = base64urlEncode(sign(b64Input.getBytes()));
+
+		return b64Input + "." + b64sig;
+	}
+
+	public static String base64urlEncode(byte[] data) {
+
+		// Debug
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] base64urlEncode");
+		}
+
+		String padded_b64url = new String(UrlBase64.encode(data));
+
+		// Remove padding
+		return padded_b64url.replace(".", "");
 	}
 
 	public synchronized SignedDataFiles createSignedDataFiles(String data) {

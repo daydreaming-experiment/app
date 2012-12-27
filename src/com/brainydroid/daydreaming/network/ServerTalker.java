@@ -12,8 +12,8 @@ public class ServerTalker {
 
 	private static String YE_URL_API = "/api/v1";
 	private static String YE_URL_DEVICES = YE_URL_API + "/devices/";
-
-	private static String YE_POST_DATA = "jws_data";
+	private static String YE_EXPS = "/exps/";
+	private static String YE_RESULTS = "/results/";
 
 	private static ServerTalker stInstance;
 
@@ -63,36 +63,22 @@ public class ServerTalker {
 			Log.d(TAG, "[fn] register");
 		}
 
-		final String key = _cryptoStorage.createArmoredPublicKeyJson(publicKey);
-		final HttpConversationCallback initialCallback = callback;
-
-		HttpConversationCallback fullCallback = new HttpConversationCallback() {
-
-			private final String TAG = "HttpConversationCallback";
-
-			@Override
-			public void onHttpConversationFinished(boolean success, String serverAnswer) {
-
-				// Debug
-				if (Config.LOGD) {
-					Log.d(TAG, "[fn] (fullCallback) onHttpConversationFinished");
-				}
-
-				initialCallback.onHttpConversationFinished(success, serverAnswer);
-			}
-
-		};
-
+		final String jsonKey = _cryptoStorage.createArmoredPublicKeyJson(publicKey);
 		String postUrl = _serverName + YE_URL_DEVICES;
-		HttpPostData postData = new HttpPostData(postUrl, fullCallback);
-		postData.setPostString(key);
-
+		HttpPostData postData = new HttpPostData(postUrl, callback);
+		postData.setPostString(jsonKey);
+		postData.setContentType("application/json");
 
 		HttpPostTask postTask = new HttpPostTask();
 		postTask.execute(postData);
 	}
 
-	public void signAndUploadData(String ea_id, String data,
+	private String getPostResultUrl(String exp_id) {
+		return _serverName + YE_URL_DEVICES + _cryptoStorage.getMaiId() +
+				YE_EXPS + exp_id + YE_RESULTS;
+	}
+
+	public <T> void signAndUploadData(String exp_id, String data,
 			HttpConversationCallback callback) {
 
 		// Debug
@@ -100,33 +86,12 @@ public class ServerTalker {
 			Log.d(TAG, "[fn] signAndUploadData");
 		}
 
-		final SignedDataFiles sdf = _cryptoStorage.createSignedDataFiles(data);
-		final HttpConversationCallback initialCallback = callback;
-
-		HttpConversationCallback fullCallback = new HttpConversationCallback() {
-
-			private final String TAG = "HttpConversationCallback";
-
-			@Override
-			public void onHttpConversationFinished(boolean success, String serverAnswer) {
-
-				// Debug
-				if (Config.LOGD) {
-					Log.d(TAG, "[fn] (fullCallback) onHttpConversationFinished");
-				}
-
-				initialCallback.onHttpConversationFinished(success, serverAnswer);
-				sdf.deleteFiles();
-			}
-
-		};
-
-		//		String postUrl = _serverName + BS_URL_UPLOAD + BS_URL_UPLOAD_EA_DATA + _cryptoStorage.getMaiId() + "/" + ea_id;
-		//		HttpPostData postData = new HttpPostData(postUrl, fullCallback);
-		//		postData.addPostFile(BS_FORM_UPLOAD_SIGFILE, new FileBody(sdf.getSignatureFile()));
-		//		postData.addPostFile(BS_FORM_UPLOAD_DATAFILE, new FileBody(sdf.getDataFile()));
+		String signedData = _cryptoStorage.signJws(data);
+		HttpPostData postData = new HttpPostData(getPostResultUrl(exp_id), callback);
+		postData.setPostString(signedData);
+		postData.setContentType("application/jws");
 
 		HttpPostTask postTask = new HttpPostTask();
-		//		postTask.execute(postData);
+		postTask.execute(postData);
 	}
 }
