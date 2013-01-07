@@ -29,6 +29,7 @@ public class QuestionsStorage {
 					Question.COL_TYPE + " TEXT NOT NULL, " +
 					Question.COL_MAIN_TEXT + " TEXT NOT NULL, " +
 					Question.COL_PARAMETERS_TEXT + " TEXT NOT NULL, " +
+					Question.COL_DEFAULT_POSITION + " INTEGER NOT NULL, " +
 					Question.COL_QUESTIONS_VERSION + " INTEGER NOT NULL" +
 					");";
 
@@ -112,6 +113,7 @@ public class QuestionsStorage {
 		q.setType(res.getString(res.getColumnIndex(Question.COL_TYPE)));
 		q.setMainText(res.getString(res.getColumnIndex(Question.COL_MAIN_TEXT)));
 		q.setParametersText(res.getString(res.getColumnIndex(Question.COL_PARAMETERS_TEXT)));
+		q.setDefaultPosition(res.getInt(res.getColumnIndex(Question.COL_DEFAULT_POSITION)));
 		q.setQuestionsVersion(
 				Integer.parseInt(res.getString(res.getColumnIndex(Question.COL_QUESTIONS_VERSION))));
 		res.close();
@@ -226,6 +228,7 @@ public class QuestionsStorage {
 		qValues.put(Question.COL_TYPE, question.getType());
 		qValues.put(Question.COL_MAIN_TEXT, question.getMainText());
 		qValues.put(Question.COL_PARAMETERS_TEXT, question.getParametersText());
+		qValues.put(Question.COL_DEFAULT_POSITION, question.getDefaultPosition());
 		qValues.put(Question.COL_QUESTIONS_VERSION, question.getQuestionsVersion());
 		return qValues;
 	}

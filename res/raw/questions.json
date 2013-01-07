@@ -7,7 +7,8 @@
             "subcategory": "content",
             "type": "slider",
             "mainText": "How much on-task are you right now?",
-            "parametersText": "Completely off-task{ss}Completely on-task"
+            "parametersText": "Completely off-task{ss}Completely on-task",
+            "defaultPosition": 50
         },
         {
             "id": "mindWandering_temporal",
@@ -15,7 +16,8 @@
             "subcategory": "content",
             "type": "slider",
             "mainText": "What is the temporal focus of your thoughts?",
-            "parametersText": "Far into the past{ss}Recent past{ss}Now{ss}Near future{ss}Far into the future"
+            "parametersText": "Far into the past{ss}Recent past{ss}Now{ss}Near future{ss}Far into the future",
+            "defaultPosition": 50
         },
         {
             "id": "mindWandering_social",
@@ -23,7 +25,8 @@
             "subcategory": "content",
             "type": "slider",
             "mainText": "How much are you thinking about yourself?{s}How much are you thinking about other people?",
-            "parametersText": "Not at all about yourself{ss}A little about yourself{ss}A lot about yourself{s}Not at all about other people{ss}A little about other people{ss}A lot about other people"
+            "parametersText": "Not at all about yourself{ss}A little about yourself{ss}A lot about yourself{s}Not at all about other people{ss}A little about other people{ss}A lot about other people",
+            "defaultPosition": 50
         },
         {
             "id": "mindWandering_qualities",
@@ -31,7 +34,8 @@
             "subcategory": "qualities",
             "type": "slider",
             "mainText": "How fast were your thoughts?",
-            "parametersText": "Very slow{ss}Very fast"
+            "parametersText": "Very slow{ss}Very fast",
+            "defaultPosition": 50
         },
         {
             "id": "currentActivity_doing",

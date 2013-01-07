@@ -48,6 +48,7 @@ public class Question {
 	private String type;
 	private String mainText;
 	private String parametersText;
+	private int defaultPosition;
 	private int questionsVersion;
 
 	// attributes dependent on the answer
@@ -70,6 +71,7 @@ public class Question {
 	public static final String COL_TYPE = "questionType";
 	public static final String COL_MAIN_TEXT = "mainText";
 	public static final String COL_PARAMETERS_TEXT = "parametersText";
+	public static final String COL_DEFAULT_POSITION = "defaultPosition";
 	public static final String COL_STATUS = "questionStatus";
 	public static final String COL_ANSWER = "questionAnswer";
 	public static final String COL_LOCATION_LATITUDE = "questionLocationLatitude";
@@ -110,7 +112,7 @@ public class Question {
 
 	// constructor from fields values
 	public Question(Context context, String id, String category, String subcategory, String type,
-			String mainText, String parametersText) {
+			String mainText, String parametersText, int defaultPosition) {
 
 		// Debug
 		if (Config.LOGD) {
@@ -124,6 +126,7 @@ public class Question {
 		setType(type);
 		setMainText(mainText);
 		setParametersText(parametersText);
+		setDefaultPosition(defaultPosition);
 		setQuestionsVersion(QuestionsStorage.getInstance(context).getQuestionsVersion());
 	}
 
@@ -141,6 +144,7 @@ public class Question {
 		type = null;
 		mainText = null;
 		parametersText = null;
+		defaultPosition = -1;
 		status = null;
 		answer = null;
 		locationLatitude = -1;
@@ -328,6 +332,26 @@ public class Question {
 		}
 
 		this.parametersText = parametersText;
+	}
+
+	public int getDefaultPosition() {
+
+		// Verbose
+		if (Config.LOGV){
+			Log.v(TAG, "[fn] getDefaultPosition");
+		}
+
+		return defaultPosition;
+	}
+
+	public void setDefaultPosition(int defaultPosition) {
+
+		// Verbose
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] setDefaultPosition");
+		}
+
+		this.defaultPosition = defaultPosition;
 	}
 
 	public String getAnswer() {
@@ -599,6 +623,9 @@ public class Question {
 				}
 			};
 			seekBar.setOnSeekBarChangeListener(listener);
+			if (getDefaultPosition() != -1) {
+				seekBar.setProgress(getDefaultPosition());
+			}
 
 			views.add(view);
 		}
