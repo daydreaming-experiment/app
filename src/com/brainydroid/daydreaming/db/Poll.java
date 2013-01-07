@@ -17,11 +17,13 @@ public class Poll {
 	@Expose private int questionsVersion;
 	@Expose private ArrayList<Question> questions;
 	@Expose private int subjectAge;
+	@Expose private long notificationTimestamp;
 	private transient int _id;
 	private transient boolean _keepInSync = false;
 
 	public static final String COL_ID = "pollId";
 	public static final String COL_STATUS = "pollStatus";
+	public static final String COL_NOTIFICATION_TIMESTAMP = "pollNotificationTimestamp";
 	public static final String COL_QUESTIONS_VERSION = "pollQestionsVersion";
 	public static final String COL_KEEP_IN_SYNC = "pollKeepInSync";
 
@@ -188,6 +190,26 @@ public class Poll {
 
 		questions.get(questionIndex).setStatus(status);
 		saveIfSync();
+	}
+
+	public long getNotificationTimestamp() {
+
+		// Verbose
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] getNotificationTimestamp");
+		}
+
+		return notificationTimestamp;
+	}
+
+	public void setNotificationTimestamp(long notificationTimestamp) {
+
+		// Verbose
+		if (Config.LOGV) {
+			Log.v(TAG, "[fn] setNotificationTimestamp");
+		}
+
+		this.notificationTimestamp = notificationTimestamp;
 	}
 
 	public int getQuestionsVersion() {

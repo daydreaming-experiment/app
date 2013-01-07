@@ -602,11 +602,11 @@ public class Question {
 			leftHintText.setText(parametersTexts.get(0));
 			TextView rightHintText = (TextView)view.findViewById(R.id.question_slider_rightHint);
 			rightHintText.setText(parametersTexts.get(parametersTexts.size() - 1));
-			
+
 			SeekBar seekBar = (SeekBar)view.findViewById(R.id.question_slider_seekBar);
 			final TextView selectedSeek = (TextView)view.findViewById(R.id.question_slider_selectedSeek);
 			final int maxSeek = parametersTexts.size();
-			
+
 			OnSeekBarChangeListener listener = new OnSeekBarChangeListener() {
 
 				@Override
@@ -624,11 +624,11 @@ public class Question {
 				public void onStopTrackingTouch(SeekBar seekBar) {
 				}
 			};
-			
+
 			if (getDefaultPosition() != -1) {
 				seekBar.setProgress(getDefaultPosition());
 			}
-			
+
 			seekBar.setOnSeekBarChangeListener(listener);
 
 			views.add(view);

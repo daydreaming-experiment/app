@@ -2,12 +2,10 @@ package com.brainydroid.daydreaming.background;
 
 import java.util.ArrayList;
 
-import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.IBinder;
@@ -26,14 +24,14 @@ public class PollService extends Service {
 
 	private static String TAG = "PollService";
 
-	public static String POLL_EXPIRE_ID = "pollExpireId";
-	public static int EXPIRY_DELAY = 5 * 60 * 1000; // 5 minutes (in milliseconds)
+	//	public static String POLL_EXPIRE_ID = "pollExpireId";
+	//	public static int EXPIRY_DELAY = 5 * 60 * 1000; // 5 minutes (in milliseconds)
 
 	private static int nQuestionsPerPoll = 3;
 
 	private NotificationManager notificationManager;
 	private PollsStorage pollsStorage;
-	private AlarmManager alarmManager;
+	//	private AlarmManager alarmManager;
 	private SharedPreferences sharedPrefs;
 
 	@Override
@@ -60,12 +58,12 @@ public class PollService extends Service {
 		initVars();
 		pollsStorage.cleanPolls();
 
-		int pollExpireId = intent.getIntExtra(POLL_EXPIRE_ID, -1);
-		if (pollExpireId == -1) {
-			createAndLaunchPoll();
-		} else {
-			expirePoll(pollExpireId);
-		}
+		//		int pollExpireId = intent.getIntExtra(POLL_EXPIRE_ID, -1);
+		//		if (pollExpireId == -1) {
+		createAndLaunchPoll();
+		//		} else {
+		//			expirePoll(pollExpireId);
+		//		}
 		stopSelf();
 		return START_REDELIVER_INTENT;
 	}
@@ -102,23 +100,23 @@ public class PollService extends Service {
 
 		notificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 		pollsStorage = PollsStorage.getInstance(this);
-		alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+		//		alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
 		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 	}
 
-	private void expirePoll(int id) {
-
-		// Debug
-		if (Config.LOGD){
-			Log.d(TAG, "[fn] expirePoll");
-		}
-
-		notificationManager.cancel(id);
-		Poll poll = pollsStorage.getPoll(id);
-		if (poll != null) {
-			poll.setStatus(Poll.STATUS_EXPIRED);
-		}
-	}
+	//	private void expirePoll(int id) {
+	//
+	//		// Debug
+	//		if (Config.LOGD){
+	//			Log.d(TAG, "[fn] expirePoll");
+	//		}
+	//
+	//		notificationManager.cancel(id);
+	//		Poll poll = pollsStorage.getPoll(id);
+	//		if (poll != null) {
+	//			poll.setStatus(Poll.STATUS_EXPIRED);
+	//		}
+	//	}
 
 	private void createAndLaunchPoll() {
 
@@ -185,13 +183,13 @@ public class PollService extends Service {
 		notificationManager.notify(poll.getId(), notification);
 
 		// Build notification expirer
-		Intent expirerIntent = new Intent(this, PollService.class);
-		expirerIntent.putExtra(POLL_EXPIRE_ID, poll.getId());
-		PendingIntent expirerPendingIntent = PendingIntent.getService(this, 0,
-				expirerIntent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_ONE_SHOT);
-		long expiry = SystemClock.elapsedRealtime() + EXPIRY_DELAY;
-		alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-				expiry, expirerPendingIntent);
+		//		Intent expirerIntent = new Intent(this, PollService.class);
+		//		expirerIntent.putExtra(POLL_EXPIRE_ID, poll.getId());
+		//		PendingIntent expirerPendingIntent = PendingIntent.getService(this, 0,
+		//				expirerIntent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_ONE_SHOT);
+		//		long expiry = SystemClock.elapsedRealtime() + EXPIRY_DELAY;
+		//		alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+		//				expiry, expirerPendingIntent);
 	}
 
 	private Poll createPoll() {
@@ -211,6 +209,7 @@ public class PollService extends Service {
 		}
 
 		poll.setStatus(Poll.STATUS_PENDING);
+		poll.setNotificationTimestamp(SystemClock.elapsedRealtime());
 		poll.save();
 		return poll;
 	}

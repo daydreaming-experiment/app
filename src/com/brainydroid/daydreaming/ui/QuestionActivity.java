@@ -47,7 +47,7 @@ public class QuestionActivity extends ActionBarActivity {
 	private int questionIndex;
 	private Question question;
 	private int nQuestions;
-	private boolean isContinuing = false;
+	private boolean isContinuingOrFinishing = false;
 	private long lastBackTime = 0;
 	private LinearLayout questionLinearLayout;
 	private StatusManager status;
@@ -145,7 +145,7 @@ public class QuestionActivity extends ActionBarActivity {
 		}
 
 		super.onStop();
-		if (!isContinuing()) {
+		if (!isContinuingOrFinishing()) {
 			dismissPoll();
 		}
 
@@ -351,7 +351,7 @@ public class QuestionActivity extends ActionBarActivity {
 			Log.d(TAG, "[fn] launchNextQuestion");
 		}
 
-		setIsContinuing();
+		setIsContinuingOrFinishing();
 		Intent intent = new Intent(this, QuestionActivity.class);
 		intent.putExtra(EXTRA_POLL_ID, pollId);
 		intent.putExtra(EXTRA_QUESTION_INDEX, questionIndex + 1);
@@ -393,6 +393,7 @@ public class QuestionActivity extends ActionBarActivity {
 		poll.setStatus(Poll.STATUS_PARTIALLY_COMPLETED);
 		poll.setQuestionStatus(questionIndex, Question.STATUS_ASKED_DISMISSED);
 		locationServiceConnection.setStopOnUnbind();
+		startSyncService();
 	}
 
 	private void finishPoll() {
@@ -402,6 +403,7 @@ public class QuestionActivity extends ActionBarActivity {
 			Log.d(TAG, "[fn] finishPoll");
 		}
 
+		setIsContinuingOrFinishing();
 		Toast.makeText(this, getString(R.string.question_thank_you), Toast.LENGTH_SHORT).show();
 		poll.setStatus(Poll.STATUS_COMPLETED);
 		locationServiceConnection.setStopOnUnbind();
@@ -429,24 +431,24 @@ public class QuestionActivity extends ActionBarActivity {
 		return questionIndex == 0;
 	}
 
-	private boolean isContinuing() {
+	private boolean isContinuingOrFinishing() {
 
 		// Debug
 		if (Config.LOGD) {
 			Log.d(TAG, "[fn] isContinuing");
 		}
 
-		return isContinuing;
+		return isContinuingOrFinishing;
 	}
 
-	private void setIsContinuing() {
+	private void setIsContinuingOrFinishing() {
 
 		// Debug
 		if (Config.LOGD) {
-			Log.d(TAG, "[fn] setIsContinuing");
+			Log.d(TAG, "[fn] setIsContinuingOrFinishing");
 		}
 
-		isContinuing = true;
+		isContinuingOrFinishing = true;
 	}
 
 	private void startSyncService() {
