@@ -1,4 +1,4 @@
 daydreaming
 ===========
 
-Android app for Mind-Wandering experiment. Still in development.
+Android app for Mind-Wandering experiment. Still in development for now.
