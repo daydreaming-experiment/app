@@ -16,7 +16,6 @@ before_install:
   - echo $ANDROID_HOME
   - echo $PATH
   - df -h
-  - ls -la /home/travis/builds/wehlutyk/daydreaming/android-sdk-linux/platform-tools/
   - cd /home/travis/builds/wehlutyk/daydreaming/android-sdk-linux/platform-tools
 
   - echo "Here too, a simple executable works"
@@ -29,8 +28,10 @@ before_install:
 
   - echo "The Readme is found ok:"
   - head ../SDK\ Readme.txt
+  - echo "The Notice is also found ok:"
   - head NOTICE.txt
   - echo "But aapt is not found"
+  - chmod a+x aapt
   - ./aapt
 
   - git clone git://github.com/mosabua/maven-android-sdk-deployer.git
