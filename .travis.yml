@@ -31,8 +31,8 @@ before_install:
   - echo "The Notice is also found ok:"
   - head NOTICE.txt
   - echo "But aapt is not found"
-  - ldd aapt
-  - objdump -x aapt | grep NEEDED
+  - ldd ./aapt
+  - objdump -x ./aapt | grep NEEDED
   - ./aapt
 
   - git clone git://github.com/mosabua/maven-android-sdk-deployer.git
