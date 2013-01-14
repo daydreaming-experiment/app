@@ -10,7 +10,11 @@ before_install:
   - pwd
   - echo $ANDROID_HOME
   - echo $PATH
+  - df -h
   - ls -la /home/travis/builds/wehlutyk/daydreaming/android-sdk-linux/platform-tools/
+  - cd /home/travis/builds/wehlutyk/daydreaming/android-sdk-linux/platform-tools
+  - aapt
+  - ./aapt
   - /home/travis/builds/wehlutyk/daydreaming/android-sdk-linux/platform-tools/aapt
   - /bin/sh -c /home/travis/builds/wehlutyk/daydreaming/android-sdk-linux/platform-tools/aapt
   - mvn install -P 4.0.3 -e
