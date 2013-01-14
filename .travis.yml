@@ -23,7 +23,8 @@ before_install:
   - ls -la .
   - ls -la ..
   - ls -la ../..
-  - aapt
+  - touch aapt
+  - head ../SDK\ Readme.txt
   - ./aapt
   - /home/travis/builds/wehlutyk/daydreaming/android-sdk-linux/platform-tools/aapt
   - /bin/sh -c /home/travis/builds/wehlutyk/daydreaming/android-sdk-linux/platform-tools/aapt
