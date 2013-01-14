@@ -4,16 +4,14 @@ before_install:
   - tar xzf android-sdk_r21.0.1-linux.tgz
   - export ANDROID_HOME="$(pwd)/android-sdk-linux"
   - export PATH="${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools"
-  - cd android-sdk-linux/tools
-  - ./android update sdk --no-ui --force --filter platform-tools,android-15,addon-google_apis-google-15,extra-android-support,extra-google-admob_ads_sdk,extra-google-analytics_sdk,extra-google-gcm,extra-google-google_play_services,extra-google-play_apk_expansion,extra-google-play_billing,extra-google-play_licensing,extra-google-webdriver
-  - cd ../..
+  - android update sdk --no-ui --force --filter platform-tools,android-15,addon-google_apis-google-15,extra-android-support,extra-google-admob_ads_sdk,extra-google-analytics_sdk,extra-google-gcm,extra-google-google_play_services,extra-google-play_apk_expansion,extra-google-play_billing,extra-google-play_licensing,extra-google-webdriver
   - git clone git://github.com/mosabua/maven-android-sdk-deployer.git
   - cd maven-android-sdk-deployer
-  - echo "DEBUG"
-  - echo "pwd"
   - pwd
   - echo $ANDROID_HOME
   - echo $PATH
   - ls -la /home/travis/builds/wehlutyk/daydreaming/android-sdk-linux/platform-tools/
+  - /home/travis/builds/wehlutyk/daydreaming/android-sdk-linux/platform-tools/aapt
+  - /bin/sh -c /home/travis/builds/wehlutyk/daydreaming/android-sdk-linux/platform-tools/aapt
   - mvn install -P 4.0.3 -e
   - cd ..
