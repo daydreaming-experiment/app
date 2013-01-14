@@ -17,7 +17,7 @@ get_maven_sdk_version () {
 }
 
 API_LEVEL="$1"
-MAVEN_SDK_VERSION=$(get_maven_sdk_version "${API_LEVEL}")
+MAVEN_SDK_VERSION=$(get_maven_sdk_version ${API_LEVEL})
 echo "Updating target to API Level ${API_LEVEL}, Maven SDK Version $(get_maven_sdk_version ${MAVEN_SDK_VERSION}) ..."
 
 # Update AndroidManifest.xml
