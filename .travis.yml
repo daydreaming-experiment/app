@@ -1,32 +1,39 @@
 language: java
 before_install:
   - wget http://dl.google.com/android/android-sdk_r21.0.1-linux.tgz
+
+  - echo "A simple executable works:"
   - mkdir test
-  - echo 'echo aa' > test/testsh
-  - chmod a+x test/testsh
-  - test/testsh
+  - echo 'echo "hello people"' > test/test
+  - chmod a+x test/test
+  - test/test
+
   - tar xzf android-sdk_r21.0.1-linux.tgz
   - export ANDROID_HOME="$(pwd)/android-sdk-linux"
   - export PATH="${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools"
   - android update sdk --no-ui --force --filter 1,5,36,48,49,50,51,52,53,54,55,56
-  - git clone git://github.com/mosabua/maven-android-sdk-deployer.git
-  - cd maven-android-sdk-deployer
-  - pwd
+
   - echo $ANDROID_HOME
   - echo $PATH
   - df -h
   - ls -la /home/travis/builds/wehlutyk/daydreaming/android-sdk-linux/platform-tools/
   - cd /home/travis/builds/wehlutyk/daydreaming/android-sdk-linux/platform-tools
-  - echo 'echo aa' > testsh
-  - chmod a+x testsh
-  - ./testsh
+
+  - echo "Here too, a simple executable works"
+  - echo 'echo "hello people"' > test
+  - chmod a+x test
+  - ./test
   - ls -la .
   - ls -la ..
   - ls -la ../..
-  - touch aapt
+
+  - echo "The Readme is found ok:"
   - head ../SDK\ Readme.txt
+  - head NOTICE.txt
+  - echo "But aapt is not found"
   - ./aapt
-  - /home/travis/builds/wehlutyk/daydreaming/android-sdk-linux/platform-tools/aapt
-  - /bin/sh -c /home/travis/builds/wehlutyk/daydreaming/android-sdk-linux/platform-tools/aapt
+
+  - git clone git://github.com/mosabua/maven-android-sdk-deployer.git
+  - cd maven-android-sdk-deployer
   - mvn install -P 4.0.3 -e
   - cd ..
