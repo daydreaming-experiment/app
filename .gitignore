@@ -8,9 +8,13 @@
 # Java class files
 *.class
 
-# generated files
+# Ant-generated files
 bin/
 gen/
+
+# Maven-genereated files
+tmp/
+target/
 
 # Local configuration file (sdk path, etc)
 local.properties
