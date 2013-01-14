@@ -1,40 +1,16 @@
 language: java
 before_install:
+  # Get ia32-libs or else the SDK executables aren't found
+  - sudo apt-get install ia32-libs
+
+  # Install what we need from the SDK
   - wget http://dl.google.com/android/android-sdk_r21.0.1-linux.tgz
-
-  - echo "A simple executable works:"
-  - mkdir test
-  - echo 'echo "hello people"' > test/test
-  - chmod a+x test/test
-  - test/test
-
   - tar xzf android-sdk_r21.0.1-linux.tgz
   - export ANDROID_HOME="$(pwd)/android-sdk-linux"
   - export PATH="${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools"
   - android update sdk --no-ui --force --filter 1,5,36,48,49,50,51,52,53,54,55,56
 
-  - echo $ANDROID_HOME
-  - echo $PATH
-  - df -h
-  - cd /home/travis/builds/wehlutyk/daydreaming/android-sdk-linux/platform-tools
-
-  - echo "Here too, a simple executable works"
-  - echo 'echo "hello people"' > test
-  - chmod a+x test
-  - ./test
-  - ls -la .
-  - ls -la ..
-  - ls -la ../..
-
-  - echo "The Readme is found ok:"
-  - head ../SDK\ Readme.txt
-  - echo "The Notice is also found ok:"
-  - head NOTICE.txt
-  - echo "But aapt is not found"
-  - ldd ./aapt
-  - objdump -x ./aapt | grep NEEDED
-  - ./aapt
-
+  # Install all that to Maven
   - git clone git://github.com/mosabua/maven-android-sdk-deployer.git
   - cd maven-android-sdk-deployer
   - mvn install -P 4.0.3 -e
