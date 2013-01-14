@@ -13,7 +13,7 @@
         <dependency>
             <groupId>com.google.android</groupId>
             <artifactId>android</artifactId>
-            <version>4.1.1.4</version>
+            <version>4.0.1.2</version>
             <scope>provided</scope>
         </dependency>
 
@@ -103,7 +103,7 @@
                 <configuration>
                     <sdk>
                         <!-- platform or api level (api level 8 = platform 2.2)-->
-                        <platform>16</platform>
+                        <platform>15</platform>
                     </sdk>
                 </configuration>
                 <extensions>true</extensions>

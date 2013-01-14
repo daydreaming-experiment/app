@@ -4,14 +4,9 @@ before_install:
   - tar xzf android-sdk_r21.0.1-linux.tgz
   - export ANDROID_HOME="$(pwd)/android-sdk-linux"
   - export PATH="${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools"
-  - android update sdk --no-ui --force --filter platform-tools,android-10,addon-google_apis-google-10,android-11,addon-google_apis-google-11,android-12,addon-google_apis-google-12,addon-google_tv_addon-google-12,android-13,addon-google_apis-google-13,android-14,addon-google_apis-google-14,android-15,addon-google_apis-google-15,android-16,addon-google_apis-google-16,extra-android-support,extra-google-admob_ads_sdk,extra-google-analytics_sdk,extra-google-gcm,extra-google-google_play_services,extra-google-play_apk_expansion,extra-google-play_billing,extra-google-play_licensing,extra-google-webdriver
+  - android update sdk --no-ui --force --filter platform-tools,android-10,addon-google_apis-google-10,android-15,addon-google_apis-google-15,extra-android-support,extra-google-admob_ads_sdk,extra-google-analytics_sdk,extra-google-gcm,extra-google-google_play_services,extra-google-play_apk_expansion,extra-google-play_billing,extra-google-play_licensing,extra-google-webdriver
   - git clone git://github.com/mosabua/maven-android-sdk-deployer.git
   - cd maven-android-sdk-deployer
   - mvn install -P 2.3.3
-  - mvn install -P 3.0
-  - mvn install -P 3.1
-  - mvn install -P 3.2
-  - mvn install -P 4.0
   - mvn install -P 4.0.3
-  - mvn install -P 4.1
   - cd ..
