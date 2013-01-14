@@ -4,7 +4,8 @@ before_install:
   - tar xzf android-sdk_r21.0.1-linux.tgz
   - export ANDROID_HOME="$(pwd)/android-sdk-linux"
   - export PATH="${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools"
-  - android update sdk --filter 1,4,35,48,49,50,51,52,53,54,55,56 --no-ui --force
+  - android update sdk --no-ui --force
   - git clone git://github.com/mosabua/maven-android-sdk-deployer.git
   - cd maven-android-sdk-deployer
-  - mvn install -P 4.1
+  - mvn install
+  - cd ..
