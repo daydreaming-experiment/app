@@ -6,19 +6,18 @@ then
   exit
 fi
 
-get_maven_sdk_version () {
-  case "$1" in
-    10 ) echo "2.3.3";;
-    15 ) echo "4.0.1.2";;
-    16 ) echo "4.1.1.4";;
-    * ) echo "Unsupported API Level. Aborting"
-        exit 1;;
-  esac
-}
-
 API_LEVEL="$1"
-MAVEN_SDK_VERSION=$(get_maven_sdk_version ${API_LEVEL})
-echo "Updating target to API Level ${API_LEVEL}, Maven SDK Version $(get_maven_sdk_version ${MAVEN_SDK_VERSION}) ..."
+
+# Get the SDK version in Maven Central corresponding to given API Level
+case "${API_LEVEL}" in
+  10 ) MAVEN_SDK_VERSION="2.3.3";;
+  15 ) MAVEN_SDK_VERSION="4.0.1.2";;
+  16 ) MAVEN_SDK_VERSION="4.1.1.4";;
+  * ) echo "Unsupported API Level. Aborting" >&2
+      exit 1;;
+esac
+
+echo "Updating target to API Level ${API_LEVEL}, Maven SDK Version ${MAVEN_SDK_VERSION} ..."
 
 # Update AndroidManifest.xml
 echo "Updating AndroidManifest.xml ..."
