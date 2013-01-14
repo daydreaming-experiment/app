@@ -1,8 +1,4 @@
 language: java
-env:
-  - API_LEVEL=10
-  - API_LEVEL=15
-  - API_LEVEL=16
 before_install:
   # Get some shared libs or else the SDK executables aren't found
   - sudo apt-get update -qq
@@ -13,14 +9,10 @@ before_install:
   - tar xzf android-sdk_r21.0.1-linux.tgz
   - export ANDROID_HOME="$(pwd)/android-sdk-linux"
   - export PATH="${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools"
-  - android update sdk --no-ui --force --filter platform-tools,android-10,addon-google_apis-google-10,android-${API_LEVEL},addon-google_apis-google-${API_LEVEL},extra-android-support,extra-google-admob_ads_sdk,extra-google-analytics_sdk,extra-google-gcm,extra-google-google_play_services,extra-google-play_apk_expansion,extra-google-play_billing,extra-google-play_licensing,extra-google-webdriver
+  - android update sdk --no-ui --force --filter platform-tools,android-10,addon-google_apis-google-10,android-16,addon-google_apis-google-16,extra-android-support,extra-google-admob_ads_sdk,extra-google-analytics_sdk,extra-google-gcm,extra-google-google_play_services,extra-google-play_apk_expansion,extra-google-play_billing,extra-google-play_licensing,extra-google-webdriver
 
   # Install all that to Maven
   - git clone git://github.com/mosabua/maven-android-sdk-deployer.git
   - cd maven-android-sdk-deployer
   - mvn install --quiet -P 2.3.3
   - cd ..
-
-  # Update target SDK
-  - ./setTarget.sh ${API_LEVEL}
-script: mvn install --quiet
