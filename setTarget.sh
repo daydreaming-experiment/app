@@ -30,13 +30,15 @@ rm "$TMP"
 echo "Updating pom.xml ..."
 TMP1="$(tempfile)"
 TMP2="$(tempfile)"
-cat pom.xml | sed "/<groupId>com\.google\.android<\/groupId>/,/<\/dependency>/{
-    /<artifactId>android<\/artifactId>/,/<\/dependency>/{
+cat pom.xml | sed "/<groupId>com\.google\.android<\/groupId>/,/<\/version>/{
+    /<artifactId>android<\/artifactId>/,/<\/version>/{
         s/<version>[^<]*<\/version>$/<version>${MAVEN_SDK_VERSION}<\/version>/
     }
 }" > "$TMP1"
 cat "$TMP1" | sed "/<groupId>com\.jayway\.maven\.plugins\.android\.generation2<\/groupId>/,/<\/configuration>/{
-    s/<platform>[0-9]\{1,2\}<\/platform>/<platform>${API_LEVEL}<\/platform>/
+    /<sdk>/,/<\/platform>/{
+        s/<platform>[0-9]\{1,2\}<\/platform>/<platform>${API_LEVEL}<\/platform>/
+    }
 }" > "$TMP2"
 cp "$TMP2" pom.xml
 rm "$TMP1"
