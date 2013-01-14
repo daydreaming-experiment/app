@@ -103,7 +103,7 @@
                 <configuration>
                     <sdk>
                         <!-- platform or api level (api level 8 = platform 2.2)-->
-                        <platform>15</platform>
+                        <platform>16</platform>
                     </sdk>
                 </configuration>
                 <extensions>true</extensions>
