@@ -20,6 +20,9 @@ before_install:
   - echo 'echo aa' > testsh
   - chmod a+x testsh
   - ./testsh
+  - ls -la .
+  - ls -la ..
+  - ls -la ../..
   - aapt
   - ./aapt
   - /home/travis/builds/wehlutyk/daydreaming/android-sdk-linux/platform-tools/aapt
