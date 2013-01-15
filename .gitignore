@@ -8,9 +8,13 @@
 # Java class files
 *.class
 
-# generated files
+# ant-generated files
 bin/
 gen/
+
+# maven-genereated files
+tmp/
+target/
 
 # Local configuration file (sdk path, etc)
 local.properties
@@ -19,3 +23,8 @@ local.properties
 .project
 .classpath
 .settings
+
+# IntelliJ IDEA files
+*.iml
+*.ipr
+*.iws
