@@ -30,7 +30,7 @@ rm "$TMP2"
 ## Update pom.xml
 echo "Updating pom.xml ..."
 TMP="$(tempfile)"
-cat pom.xml | sed "/<groupId>com\.brainydroid\.daydreaming<\/groupId>/,/<\/version>/{
+cat pom.xml | sed "/<groupId>com\.brainydroid<\/groupId>/,/<\/version>/{
     s/<version>[^<]*<\/version>$/<version>${VERSION_NAME}<\/version>/
 }" > "$TMP"
 cp "$TMP" pom.xml
