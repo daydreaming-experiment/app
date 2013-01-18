@@ -34,9 +34,13 @@ public class BootReceiver extends BroadcastReceiver {
 				// Info
 				Log.i(TAG, "first launch is completed");
 				Log.i(TAG, "starting SchedulerService");
+                Log.i(TAG, "starting LocationItemService");
 
 				Intent schedulerIntent = new Intent(context, SchedulerService.class);
 				context.startService(schedulerIntent);
+
+                Intent locationItemServiceIntent = new Intent(context, LocationItemService.class);
+                context.startService(locationItemServiceIntent);
 			}
 		}
 	}
