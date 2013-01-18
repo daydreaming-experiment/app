@@ -67,7 +67,7 @@ public class Question {
 
 	public static final String COL_ID = "questionId";
 	public static final String COL_CATEGORY = "questionCategory";
-	public static final String COL_SUBCATEGORY = "questionSubategory";
+	public static final String COL_SUBCATEGORY = "questionSubcategory";
 	public static final String COL_TYPE = "questionType";
 	public static final String COL_MAIN_TEXT = "mainText";
 	public static final String COL_PARAMETERS_TEXT = "parametersText";
@@ -79,7 +79,7 @@ public class Question {
 	public static final String COL_LOCATION_ALTITUDE = "questionLocationAltitude";
 	public static final String COL_LOCATION_ACCURACY = "questionLocationAccuracy";
 	public static final String COL_TIMESTAMP = "questionTimestamp";
-	public static final String COL_QUESTIONS_VERSION = "questionQestionsVersion";
+	public static final String COL_QUESTIONS_VERSION = "questionQuestionsVersion";
 
 	public static final String STATUS_ASKED = "questionAsked";
 	public static final String STATUS_ASKED_DISMISSED = "questionAskedDismissed";
