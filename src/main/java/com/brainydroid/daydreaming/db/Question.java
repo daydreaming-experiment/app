@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.location.Location;
 import android.util.FloatMath;
 import android.util.Log;
@@ -30,6 +31,8 @@ import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.ui.Config;
 import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
+
+import android.graphics.drawable.ColorDrawable;
 
 // this class defines the general structure of questions and their answer.
 // These attributes will be saved
@@ -607,14 +610,17 @@ public class Question {
 			final TextView selectedSeek = (TextView)view.findViewById(R.id.question_slider_selectedSeek);
 			final int maxSeek = parametersTexts.size();
 
-			OnSeekBarChangeListener listener = new OnSeekBarChangeListener() {
+            seekBar.setBackgroundColor(Color.argb(255,255,205,205));
+
+            OnSeekBarChangeListener listener = new OnSeekBarChangeListener() {
 
 				@Override
 				public void onProgressChanged(SeekBar seekBar, int progress,
 						boolean fromUser) {
 					int index = (int)FloatMath.floor((progress / 101f) * maxSeek);
 					selectedSeek.setText(parametersTexts.get(index));
-				}
+                    seekBar.setBackgroundColor(Color.argb(255,194,246,213));
+                }
 
 				@Override
 				public void onStartTrackingTouch(SeekBar seekBar) {
