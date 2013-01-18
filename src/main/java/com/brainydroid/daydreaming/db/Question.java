@@ -619,7 +619,7 @@ public class Question {
 						boolean fromUser) {
 					int index = (int)FloatMath.floor((progress / 101f) * maxSeek);
 					selectedSeek.setText(parametersTexts.get(index));
-                    seekBar.setBackgroundColor(Color.argb(255,194,246,213));
+                    seekBar.setBackgroundColor(Color.TRANSPARENT);
                 }
 
 				@Override
