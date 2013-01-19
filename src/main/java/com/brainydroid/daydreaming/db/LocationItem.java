@@ -34,7 +34,7 @@ public class LocationItem {
 
 		// Debug
 		if (Config.LOGD) {
-			Log.d(TAG, "[fn] Poll");
+			Log.d(TAG, "[fn] LocationItem");
 		}
 
 		_context = context.getApplicationContext();

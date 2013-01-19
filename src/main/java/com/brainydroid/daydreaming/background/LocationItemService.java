@@ -12,7 +12,7 @@ import com.brainydroid.daydreaming.ui.Config;
 
 public class LocationItemService extends Service {
 
-	private static String TAG = "LocationsItemService";
+	private static String TAG = "LocationItemService";
 
     private static String STOP_LOCATION_LISTENING = "stopLocationListening";
     private static long SAMPLE_INTERVAL = 20 * 60 * 1000; // 20 minutes (in milliseconds)
@@ -44,12 +44,15 @@ public class LocationItemService extends Service {
 		super.onStartCommand(intent, flags, startId);
 
 		initVars();
+
         if (intent.getBooleanExtra(STOP_LOCATION_LISTENING, false)) {
             stopLocationListening();
-        } else {
-            startLocationListening();
-            scheduleStopLocationListening();
             scheduleNextService();
+        } else {
+            if (status.isDataAndLocationEnabled()) {
+                startLocationListening();
+                scheduleStopLocationListening();
+            }
         }
 
 		stopSelf();
@@ -99,9 +102,11 @@ public class LocationItemService extends Service {
             Log.d(TAG, "[fn] stopLocationListening");
         }
 
-        // The locationListener is removed automatically by LocationService in onUnbind
-        locationServiceConnection.setStopOnUnbind();
-        // unBind happens in onDestroy
+        if (status.isLocationServiceRunning()) {
+            locationServiceConnection.bindLocationService();
+            // unBind happens in onDestroy, and the LocationService finishes if nobody else has listeners registered
+            locationServiceConnection.clearLocationItemCallback();
+        }
     }
 
     private void startLocationListening() {
@@ -131,11 +136,11 @@ public class LocationItemService extends Service {
 
         };
 
-        locationServiceConnection.setLocationCallback(locationCallback);
+        locationServiceConnection.setLocationItemCallback(locationCallback);
 
         if (!status.isLocationServiceRunning()) {
-            locationServiceConnection.bindLocationService();
             locationServiceConnection.startLocationService();
+            locationServiceConnection.bindLocationService();
         } else {
             locationServiceConnection.bindLocationService();
         }
@@ -150,7 +155,7 @@ public class LocationItemService extends Service {
 
         long scheduledTime = SystemClock.elapsedRealtime() + SAMPLE_INTERVAL;
         Intent intent = new Intent(this, LocationItemService.class);
-        PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
                 scheduledTime, pendingIntent);
     }
@@ -165,7 +170,7 @@ public class LocationItemService extends Service {
         long scheduledTime = SystemClock.elapsedRealtime() + LISTENING_TIME;
         Intent intent = new Intent(this, LocationItemService.class);
         intent.putExtra(STOP_LOCATION_LISTENING, true);
-        PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
                 scheduledTime, pendingIntent);
     }
