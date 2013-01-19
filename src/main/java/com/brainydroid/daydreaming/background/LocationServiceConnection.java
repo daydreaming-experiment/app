@@ -75,6 +75,7 @@ public class LocationServiceConnection implements ServiceConnection {
 
 		Intent locationServiceIntent = new Intent(_context, LocationService.class);
 		_context.bindService(locationServiceIntent, this, 0);
+        // Why is this here and not in onServiceConnected?
 		sBound = true;
 	}
 
@@ -87,18 +88,9 @@ public class LocationServiceConnection implements ServiceConnection {
 
 		if (sBound) {
 			_context.unbindService(this);
+            // Why is this here and not in onServiceDisconnected?
 			sBound = false;
 		}
-	}
-
-	public LocationService getService() {
-
-		// Verbose
-		if (Config.LOGV) {
-			Log.v(TAG, "[fn] getService");
-		}
-
-		return locationService;
 	}
 
 	private void onConnected() {
