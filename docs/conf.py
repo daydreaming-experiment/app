@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
-# Day Dreaming documentation build configuration file, created by
-# sphinx-quickstart on Sun Jan 20 19:34:55 2013.
+# daydreaming documentation build configuration file, created by
+# sphinx-quickstart on Sun Jan 20 19:54:18 2013.
 #
 # This file is execfile()d with the current directory set to its containing dir.
 #
@@ -25,7 +25,7 @@ import sys, os
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.intersphinx', 'sphinx.ext.todo', 'sphinx.ext.pngmath', 'sphinx.ext.mathjax']
+extensions = ['sphinx.ext.intersphinx', 'sphinx.ext.todo', 'sphinx.ext.mathjax']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -40,8 +40,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Day Dreaming'
-copyright = u'2013, Vincent Adam, Sébastien Lerique'
+project = u'daydreaming'
+copyright = u'2013, Vincent Adam & Sébastien Lerique'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -64,7 +64,7 @@ release = '0.4'
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = []
+exclude_patterns = ['_build']
 
 # The reST default role (used for this markup: `text`) to use for all documents.
 #default_role = None
@@ -164,7 +164,7 @@ html_static_path = ['_static']
 #html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'DayDreamingdoc'
+htmlhelp_basename = 'daydreamingdoc'
 
 
 # -- Options for LaTeX output --------------------------------------------------
@@ -183,8 +183,8 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'DayDreaming.tex', u'Day Dreaming Documentation',
-   u'Vincent Adam, Sébastien Lerique', 'manual'),
+  ('index', 'daydreaming.tex', u'daydreaming Documentation',
+   u'Vincent Adam \\& Sébastien Lerique', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -213,8 +213,8 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'daydreaming', u'Day Dreaming Documentation',
-     [u'Vincent Adam, Sébastien Lerique'], 1)
+    ('index', 'daydreaming', u'daydreaming Documentation',
+     [u'Vincent Adam & Sébastien Lerique'], 1)
 ]
 
 # If true, show URL addresses after external links.
@@ -227,8 +227,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'DayDreaming', u'Day Dreaming Documentation',
-   u'Vincent Adam, Sébastien Lerique', 'DayDreaming', 'One line description of project.',
+  ('index', 'daydreaming', u'daydreaming Documentation',
+   u'Vincent Adam & Sébastien Lerique', 'daydreaming', 'One line description of project.',
    'Miscellaneous'),
 ]
 
