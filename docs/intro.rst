@@ -17,8 +17,8 @@ The technical side of the experiment consists of two parts:
 * A general-purpose server, `yelandur <https://github.com/wehlutyk/yelandur>`_; it receives data sent to it by the app from Android devices.
 
 
-This documentiation
--------------------
+This documentation
+------------------
 
 :ref:`description` describes in full detail the behaviour of the app. Its target audience is researchers interested in the details of the protocol, and of course any other person interested in the experiment.
 
