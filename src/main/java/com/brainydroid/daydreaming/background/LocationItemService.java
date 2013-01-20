@@ -60,8 +60,8 @@ public class LocationItemService extends Service {
         } else {
             if (status.isDataAndLocationEnabled()) {
                 startLocationListening();
-                scheduleStopLocationListening();
             }
+            scheduleStopLocationListening();
         }
 
 		// The service stops itself through callbacks set in stopLocationListening or startLocationListening
