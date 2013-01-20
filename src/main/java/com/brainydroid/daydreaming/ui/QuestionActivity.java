@@ -145,10 +145,12 @@ public class QuestionActivity extends ActionBarActivity {
 		}
 
 		super.onStop();
-		if (!isContinuingOrFinishing()) {
+		if (!isContinuingOrFinishing) {
 			dismissPoll();
 		}
 
+        locationServiceConnection.clearQuestionLocationCallback();
+        // the LocationService finishes if nobody else has listeners registered
 		locationServiceConnection.unbindLocationService();
 	}
 
@@ -303,8 +305,8 @@ public class QuestionActivity extends ActionBarActivity {
 		}
 
 		if (question.validate(this, questionLinearLayout)) {
+            poll.setQuestionStatus(questionIndex, Question.STATUS_ANSWERED);
 			poll.saveAnswers(questionLinearLayout, questionIndex);
-			poll.setQuestionStatus(questionIndex, Question.STATUS_ANSWERED);
 			if (isLastQuestion()) {
 				finishPoll();
 			} else {
@@ -392,8 +394,6 @@ public class QuestionActivity extends ActionBarActivity {
 
 		poll.setStatus(Poll.STATUS_PARTIALLY_COMPLETED);
 		poll.setQuestionStatus(questionIndex, Question.STATUS_ASKED_DISMISSED);
-        // unBind happens in onStop, and the LocationService finishes if nobody else has listeners registered
-		locationServiceConnection.clearQuestionLocationCallback();
 		startSyncService();
 	}
 
@@ -407,8 +407,6 @@ public class QuestionActivity extends ActionBarActivity {
 		setIsContinuingOrFinishing();
 		Toast.makeText(this, getString(R.string.question_thank_you), Toast.LENGTH_SHORT).show();
 		poll.setStatus(Poll.STATUS_COMPLETED);
-        // unBind happens in onStop, and the LocationService finishes if nobody else has listeners registered
-		locationServiceConnection.clearQuestionLocationCallback();
 		startSyncService();
 		finish();
 	}
@@ -431,16 +429,6 @@ public class QuestionActivity extends ActionBarActivity {
 		}
 
 		return questionIndex == 0;
-	}
-
-	private boolean isContinuingOrFinishing() {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] isContinuing");
-		}
-
-		return isContinuingOrFinishing;
 	}
 
 	private void setIsContinuingOrFinishing() {
