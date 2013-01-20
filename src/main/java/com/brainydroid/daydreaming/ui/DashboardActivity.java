@@ -15,7 +15,7 @@ import com.brainydroid.daydreaming.background.StatusManager;
 
 public class DashboardActivity extends ActionBarActivity {
 
-	private static String TAG = "DashboadActivity";
+	private static String TAG = "DashboardActivity";
 
 	public static String EXTRA_COMES_FROM_FIRST_LAUNCH = "comesFromFirstLaunch";
 
