@@ -24,11 +24,11 @@ public class SyncService extends Service {
 
 	private static String TAG = "SyncService";
 
-	private static String EXP_ID = "e17cdc2f8ea14a91eee7906954bae98202ead71ebcf300a3157f192ad8ad2354";
+	private static String EXP_ID = "6cb5e7782ca43681d6349a2280a8f99f74479d142971ac6c91dbd155ac58b4b3";
 	private static String SERVER_NAME = "http://naja.cc";
 
-	private static String QUESTIONS_VERSION_URL = "http://mehho.net:5003/questionsVersion";
-	private static String QUESTIONS_URL = "http://mehho.net:5003/questions.json";
+	private static String QUESTIONS_VERSION_URL = "http://mehho.net:5001/questionsVersion";
+	private static String QUESTIONS_URL = "http://mehho.net:5001/questions.json";
 
 	private StatusManager status;
 	private PollsStorage pollsStorage;
