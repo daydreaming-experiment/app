@@ -139,6 +139,7 @@ public class SyncService extends Service {
 					if (hasKeyPairAndMaiId && status.isDataEnabled()) {
 						asyncUpdateQuestions();
 						asyncUploadPolls();
+                        asyncUploadLocationItems();
 					}
 				}
 

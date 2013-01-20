@@ -14,6 +14,7 @@ public class LocationServiceConnection implements ServiceConnection {
 
 	private static String TAG = "LocationServiceConnection";
 
+    private ServiceConnectionCallback serviceConnectionCallback = null;
 	private LocationCallback locationItemCallbackToSet = null;
     private boolean setLocationItemCallback = false;
     private LocationCallback questionLocationCallbackToSet = null;
@@ -43,7 +44,11 @@ public class LocationServiceConnection implements ServiceConnection {
 
 		LocationServiceBinder binder = (LocationServiceBinder)service;
 		locationService = binder.getService();
-		onConnected();
+		setLocationServiceCallbacks();
+
+        if (serviceConnectionCallback != null) {
+            serviceConnectionCallback.onServiceConnected();
+        }
 	}
 
 	@Override
@@ -97,11 +102,11 @@ public class LocationServiceConnection implements ServiceConnection {
 		}
 	}
 
-	private void onConnected() {
+	private void setLocationServiceCallbacks() {
 
 		// Debug
 		if (Config.LOGD) {
-			Log.d(TAG, "[fn] onConnected");
+			Log.d(TAG, "[fn] setLocationServiceCallbacks");
 		}
 
 		if (setLocationItemCallback) {
@@ -116,6 +121,16 @@ public class LocationServiceConnection implements ServiceConnection {
             setQuestionLocationCallback = false;
         }
 	}
+
+    public void setOnServiceConnectedCallback(ServiceConnectionCallback serviceConnectionCallback) {
+
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] setOnServiceConnectedCallback");
+        }
+
+        this.serviceConnectionCallback = serviceConnectionCallback;
+    }
 
     public void setLocationItemCallback(LocationCallback callback) {
 

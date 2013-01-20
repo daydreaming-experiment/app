@@ -26,8 +26,7 @@ public class PollsStorage {
 					Poll.COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
 					Poll.COL_STATUS + " TEXT NOT NULL, " +
 					Poll.COL_NOTIFICATION_TIMESTAMP + " REAL, " +
-					Poll.COL_QUESTIONS_VERSION + " INTEGER NOT NULL, " +
-					Poll.COL_KEEP_IN_SYNC + " INTEGER DEFAULT 0" +
+					Poll.COL_QUESTIONS_VERSION + " INTEGER NOT NULL" +
 					");";
 
 	private static final String SQL_CREATE_TABLE_POLL_QUESTIONS =
@@ -97,8 +96,6 @@ public class PollsStorage {
 		pollValues.put(Poll.COL_STATUS, poll.getStatus());
 		pollValues.put(Poll.COL_NOTIFICATION_TIMESTAMP, poll.getNotificationTimestamp());
 		pollValues.put(Poll.COL_QUESTIONS_VERSION, poll.getQuestionsVersion());
-		pollValues.put(Poll.COL_KEEP_IN_SYNC,
-				poll.getKeepInSync() ? Poll.KEEP_IN_SYNC_ON : Poll.KEEP_IN_SYNC_OFF);
 		return pollValues;
 	}
 
@@ -205,11 +202,8 @@ public class PollsStorage {
 		Poll poll = new Poll(_context);
 		poll.setId(res.getInt(res.getColumnIndex(Poll.COL_ID)));
 		poll.setStatus(res.getString(res.getColumnIndex(Poll.COL_STATUS)));
-		poll.setNotificationTimestamp(res.getInt(res.getColumnIndex(Poll.COL_NOTIFICATION_TIMESTAMP)));
+		poll.setNotificationTimestamp(res.getLong(res.getColumnIndex(Poll.COL_NOTIFICATION_TIMESTAMP)));
 		poll.setQuestionsVersion(res.getInt(res.getColumnIndex(Poll.COL_QUESTIONS_VERSION)));
-		if (res.getInt(res.getColumnIndex(Poll.COL_KEEP_IN_SYNC)) == Poll.KEEP_IN_SYNC_ON) {
-			poll.setKeepInSync();
-		}
 		res.close();
 
 		Cursor qRes = rDb.query(TABLE_POLL_QUESTIONS, null, Poll.COL_ID + "=?",

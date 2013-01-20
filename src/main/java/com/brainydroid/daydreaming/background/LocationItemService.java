@@ -8,17 +8,26 @@ import android.os.IBinder;
 import android.os.SystemClock;
 import android.util.Log;
 import com.brainydroid.daydreaming.db.LocationItem;
+import com.brainydroid.daydreaming.network.SntpClient;
+import com.brainydroid.daydreaming.network.SntpClientCallback;
 import com.brainydroid.daydreaming.ui.Config;
+
+import java.lang.Override;
+import java.lang.String;
 
 public class LocationItemService extends Service {
 
 	private static String TAG = "LocationItemService";
 
     private static String STOP_LOCATION_LISTENING = "stopLocationListening";
-    private static long SAMPLE_INTERVAL = 20 * 60 * 1000; // 20 minutes (in milliseconds)
-    private static long LISTENING_TIME = 3 * 60 * 1000; // 3 minutes (in milliseconds)
+    private static long SAMPLE_INTERVAL = 18 * 60 * 1000; // 18 minutes (in milliseconds)
+    private static long LISTENING_TIME = 2 * 60 * 1000; // 2 minutes (in milliseconds)
 
-	private AlarmManager alarmManager;
+    private boolean sntpRequestDone = false;
+    private boolean serviceConnectionDone = false;
+    private LocationItem locationItem = null;
+
+    private AlarmManager alarmManager;
     private StatusManager status;
     private LocationServiceConnection locationServiceConnection;
 
@@ -55,7 +64,7 @@ public class LocationItemService extends Service {
             }
         }
 
-		stopSelf();
+		// The service stops itself through callbacks set in stopLocationListening or startLocationListening
 		return START_REDELIVER_INTENT;
 	}
 
@@ -102,8 +111,31 @@ public class LocationItemService extends Service {
             Log.d(TAG, "[fn] stopLocationListening");
         }
 
+        // No need for an NTP request
+        setSntpRequestDone();
+
+        ServiceConnectionCallback serviceConnectionCallback = new ServiceConnectionCallback() {
+
+            private final String TAG = "ServiceConnectionCallback";
+
+            @Override
+            public void onServiceConnected() {
+
+                // Debug
+                if (Config.LOGD) {
+                    Log.d(TAG, "[fn] onServiceConnected");
+                }
+
+                LocationItemService.this.setServiceConnectionDone();
+            }
+
+        };
+
+        locationServiceConnection.setOnServiceConnectedCallback(serviceConnectionCallback);
+
         if (status.isLocationServiceRunning()) {
             locationServiceConnection.bindLocationService();
+            // The serviceConnectionCallback stops this service, which calls onDestroy.
             // unBind happens in onDestroy, and the LocationService finishes if nobody else has listeners registered
             locationServiceConnection.clearLocationItemCallback();
         }
@@ -116,7 +148,26 @@ public class LocationItemService extends Service {
             Log.d(TAG, "[fn] startLocationListening");
         }
 
-        final LocationItem locationItem = new LocationItem(this);
+        ServiceConnectionCallback serviceConnectionCallback = new ServiceConnectionCallback() {
+
+            private final String TAG = "ServiceConnectionCallback";
+
+            @Override
+            public void onServiceConnected() {
+
+                // Debug
+                if (Config.LOGD) {
+                    Log.d(TAG, "[fn] onServiceConnected");
+                }
+
+                LocationItemService.this.setServiceConnectionDone();
+            }
+
+        };
+
+        locationServiceConnection.setOnServiceConnectedCallback(serviceConnectionCallback);
+
+        locationItem = new LocationItem(this);
 
         LocationCallback locationCallback = new LocationCallback() {
 
@@ -131,16 +182,43 @@ public class LocationItemService extends Service {
                 }
 
                 locationItem.setLocation(location);
-                locationItem.save();
+                // save() is called from saveAndStopSelfIfAllDone
             }
 
         };
 
         locationServiceConnection.setLocationItemCallback(locationCallback);
 
+        SntpClientCallback sntpCallback = new SntpClientCallback() {
+
+            private final String TAG = "SntpClientCallback";
+
+            @Override
+            public void onTimeReceived(SntpClient sntpClient) {
+
+                // Debug
+                if (Config.LOGD) {
+                    Log.d(TAG, "[fn] (sntpCallback) onTimeReceived");
+                }
+
+                if (sntpClient != null) {
+                    locationItem.setTimestamp(sntpClient.getNow());
+                    // save() is called from saveAndStopSelfIfAllDone
+                }
+
+                LocationItemService.this.setSntpRequestDone();
+            }
+
+        };
+
+        SntpClient sntpClient = new SntpClient();
+        sntpClient.asyncRequestTime(sntpCallback);
+
         if (!status.isLocationServiceRunning()) {
-            locationServiceConnection.startLocationService();
             locationServiceConnection.bindLocationService();
+            // The serviceConnectionCallback stops this service, which calls onDestroy.
+            // unBind happens in onDestroy, and the LocationService finishes if nobody else has listeners registered
+            locationServiceConnection.startLocationService();
         } else {
             locationServiceConnection.bindLocationService();
         }
@@ -173,5 +251,43 @@ public class LocationItemService extends Service {
         PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
                 scheduledTime, pendingIntent);
+    }
+
+    private void setSntpRequestDone() {
+
+        // Verbose
+        if (Config.LOGV) {
+            Log.v(TAG, "[fn] setSntpRequestDone");
+        }
+
+        sntpRequestDone = true;
+        saveAndStopSelfIfAllDone();
+    }
+
+    private void setServiceConnectionDone() {
+
+        // Verbose
+        if (Config.LOGV) {
+            Log.v(TAG, "[fn] setServiceConnectionDone");
+        }
+
+        serviceConnectionDone = true;
+        saveAndStopSelfIfAllDone();
+    }
+
+    private void saveAndStopSelfIfAllDone() {
+
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] saveAndStopSelfIfAllDone");
+        }
+
+        if (locationItem != null) {
+            locationItem.save();
+        }
+
+        if (sntpRequestDone && serviceConnectionDone) {
+            stopSelf();
+        }
     }
 }

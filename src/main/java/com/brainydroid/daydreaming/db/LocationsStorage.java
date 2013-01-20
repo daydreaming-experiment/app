@@ -71,11 +71,11 @@ public class LocationsStorage {
 		}
 
 		ContentValues locationItemValues = new ContentValues();
-        locationItemValues.put(LocationItem.COL_ID, locationItem.getId());
         locationItemValues.put(LocationItem.COL_LOCATION_LATITUDE, locationItem.getLocationLatitude());
         locationItemValues.put(LocationItem.COL_LOCATION_LONGITUDE, locationItem.getLocationLongitude());
         locationItemValues.put(LocationItem.COL_LOCATION_ALTITUDE, locationItem.getLocationAltitude());
         locationItemValues.put(LocationItem.COL_LOCATION_ACCURACY, locationItem.getLocationAccuracy());
+        locationItemValues.put(LocationItem.COL_TIMESTAMP, locationItem.getTimestamp());
 		return locationItemValues;
 	}
 
@@ -137,10 +137,11 @@ public class LocationsStorage {
 
 		LocationItem locationItem = new LocationItem(_context);
 		locationItem.setId(res.getInt(res.getColumnIndex(LocationItem.COL_ID)));
-        locationItem.setLocationLatitude(res.getInt(res.getColumnIndex(LocationItem.COL_LOCATION_LATITUDE)));
-        locationItem.setLocationLongitude(res.getInt(res.getColumnIndex(LocationItem.COL_LOCATION_LONGITUDE)));
-        locationItem.setLocationAltitude(res.getInt(res.getColumnIndex(LocationItem.COL_LOCATION_ALTITUDE)));
-        locationItem.setLocationAccuracy(res.getInt(res.getColumnIndex(LocationItem.COL_LOCATION_ACCURACY)));
+        locationItem.setLocationLatitude(res.getDouble(res.getColumnIndex(LocationItem.COL_LOCATION_LATITUDE)));
+        locationItem.setLocationLongitude(res.getDouble(res.getColumnIndex(LocationItem.COL_LOCATION_LONGITUDE)));
+        locationItem.setLocationAltitude(res.getDouble(res.getColumnIndex(LocationItem.COL_LOCATION_ALTITUDE)));
+        locationItem.setLocationAccuracy(res.getDouble(res.getColumnIndex(LocationItem.COL_LOCATION_ACCURACY)));
+        locationItem.setTimestamp(res.getLong(res.getColumnIndex(LocationItem.COL_TIMESTAMP)));
 		res.close();
 
 		return locationItem;

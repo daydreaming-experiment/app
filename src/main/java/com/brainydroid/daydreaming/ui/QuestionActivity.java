@@ -271,8 +271,8 @@ public class QuestionActivity extends ActionBarActivity {
 		locationServiceConnection.setQuestionLocationCallback(locationCallback);
 
 		if (!status.isLocationServiceRunning()) {
+            locationServiceConnection.bindLocationService();
             locationServiceConnection.startLocationService();
-			locationServiceConnection.bindLocationService();
 		} else {
 			locationServiceConnection.bindLocationService();
 		}

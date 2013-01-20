@@ -48,7 +48,7 @@ public class LocationService extends Service {
 
 		_locationItemCallback = callback;
 
-		if (lastLocation != null) {
+		if (lastLocation != null && _locationItemCallback != null) {
 			_locationItemCallback.onLocationReceived(lastLocation);
 		}
 	}
@@ -62,7 +62,7 @@ public class LocationService extends Service {
 
         _questionLocationCallback = callback;
 
-        if (lastLocation != null) {
+        if (lastLocation != null && _questionLocationCallback != null) {
             _questionLocationCallback.onLocationReceived(lastLocation);
         }
     }
