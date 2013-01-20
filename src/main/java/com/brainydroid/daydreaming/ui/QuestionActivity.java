@@ -268,11 +268,11 @@ public class QuestionActivity extends ActionBarActivity {
 
 		};
 
-		locationServiceConnection.setLocationCallback(locationCallback);
+		locationServiceConnection.setQuestionLocationCallback(locationCallback);
 
 		if (!status.isLocationServiceRunning()) {
-			locationServiceConnection.bindLocationService();
-			locationServiceConnection.startLocationService();
+            locationServiceConnection.bindLocationService();
+            locationServiceConnection.startLocationService();
 		} else {
 			locationServiceConnection.bindLocationService();
 		}
@@ -392,7 +392,8 @@ public class QuestionActivity extends ActionBarActivity {
 
 		poll.setStatus(Poll.STATUS_PARTIALLY_COMPLETED);
 		poll.setQuestionStatus(questionIndex, Question.STATUS_ASKED_DISMISSED);
-		locationServiceConnection.setStopOnUnbind();
+        // unBind happens in onStop, and the LocationService finishes if nobody else has listeners registered
+		locationServiceConnection.clearQuestionLocationCallback();
 		startSyncService();
 	}
 
@@ -406,7 +407,8 @@ public class QuestionActivity extends ActionBarActivity {
 		setIsContinuingOrFinishing();
 		Toast.makeText(this, getString(R.string.question_thank_you), Toast.LENGTH_SHORT).show();
 		poll.setStatus(Poll.STATUS_COMPLETED);
-		locationServiceConnection.setStopOnUnbind();
+        // unBind happens in onStop, and the LocationService finishes if nobody else has listeners registered
+		locationServiceConnection.clearQuestionLocationCallback();
 		startSyncService();
 		finish();
 	}

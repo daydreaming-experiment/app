@@ -9,9 +9,7 @@ import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.brainydroid.daydreaming.db.Poll;
-import com.brainydroid.daydreaming.db.PollsStorage;
-import com.brainydroid.daydreaming.db.QuestionsStorage;
+import com.brainydroid.daydreaming.db.*;
 import com.brainydroid.daydreaming.network.CryptoStorage;
 import com.brainydroid.daydreaming.network.CryptoStorageCallback;
 import com.brainydroid.daydreaming.network.HttpConversationCallback;
@@ -34,14 +32,18 @@ public class SyncService extends Service {
 
 	private StatusManager status;
 	private PollsStorage pollsStorage;
+    private LocationsStorage locationsStorage;
 	private QuestionsStorage questionsStorage;
 	private CryptoStorage cryptoStorage;
 	private ServerTalker serverTalker;
 	private Gson gson;
 	private ArrayList<Poll> uploadablePolls;
+    private ArrayList<LocationItem> uploadableLocationItems;
 	private HashSet<Integer> pollsLeftToUpload;
+    private HashSet<Integer> locationItemsLeftToUpload;
 	private boolean updateQuestionsDone = false;
-	private boolean uploadAnswersDone = false;
+	private boolean uploadPollsDone = false;
+    private boolean uploadLocationItemsDone = false;
 
 	@Override
 	public void onCreate() {
@@ -115,6 +117,7 @@ public class SyncService extends Service {
 
 			pollsStorage = PollsStorage.getInstance(this);
 			questionsStorage = QuestionsStorage.getInstance(this);
+            locationsStorage = LocationsStorage.getInstance(this);
 			gson = new GsonBuilder()
 			.excludeFieldsWithoutExposeAnnotation()
 			.create();
@@ -135,7 +138,8 @@ public class SyncService extends Service {
 
 					if (hasKeyPairAndMaiId && status.isDataEnabled()) {
 						asyncUpdateQuestions();
-						asyncUploadAnswers();
+						asyncUploadPolls();
+                        asyncUploadLocationItems();
 					}
 				}
 
@@ -167,6 +171,12 @@ public class SyncService extends Service {
 		// orientation of the display changes. That will stop and restart the worker process.
 		// See http://developer.android.com/guide/components/processes-and-threads.html ,
 		// right above the "Thread-safe methods" title.
+
+//        // Use this:
+//        // set the connection timeout value to 30 seconds (30000 milliseconds)
+//        final HttpParams httpParams = new BasicHttpParams();
+//        HttpConnectionParams.setConnectionTimeout(httpParams, 30000);
+//        client = new DefaultHttpClient(httpParams);
 
 
 		final HttpConversationCallback updateQuestionsCallback = new HttpConversationCallback() {
@@ -264,11 +274,11 @@ public class SyncService extends Service {
 		getQuestionsVersionTask.execute(getQuestionsVersionData);
 	}
 
-	private void asyncUploadAnswers() {
+	private void asyncUploadPolls() {
 
 		// Debug
 		if (Config.LOGD) {
-			Log.d(TAG, "[fn] asyncUploadAnswers");
+			Log.d(TAG, "[fn] asyncUploadPolls");
 		}
 
 		// FIXME: There might be a problem if the service is started from an Activity, and the
@@ -354,7 +364,97 @@ public class SyncService extends Service {
 		}
 	}
 
-	private void setUpdateQuestionsDone() {
+    private void asyncUploadLocationItems() {
+
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] asyncUploadLocationItems");
+        }
+
+        // FIXME: There might be a problem if the service is started from an Activity, and the
+        // orientation of the display changes. That will stop and restart the worker process.
+        // See http://developer.android.com/guide/components/processes-and-threads.html ,
+        // right above the "Thread-safe methods" title.
+
+        uploadableLocationItems = locationsStorage.getUploadableLocationItems();
+
+        if (uploadableLocationItems == null) {
+
+            // Info
+            Log.i(TAG, "no locationItems to upload -> exiting");
+
+            if (Config.TOASTD) {
+                Toast.makeText(this,
+                        "SyncService: no locationItems to upload",
+                        Toast.LENGTH_SHORT).show();
+            }
+
+            setUploadLocationItemsDone();
+            return;
+        }
+
+        // Info
+        Log.i(TAG, "trying to upload " + uploadableLocationItems.size() + " locationItems");
+
+        if (Config.TOASTD) {
+            Toast.makeText(this,
+                    "SyncService: trying to upload " + uploadableLocationItems.size() + " locationItems",
+                    Toast.LENGTH_SHORT).show();
+        }
+
+        locationItemsLeftToUpload = new HashSet<Integer>();
+        for (LocationItem locationItem : uploadableLocationItems) {
+            locationItemsLeftToUpload.add(locationItem.getId());
+        }
+
+        for (LocationItem locationItem : uploadableLocationItems) {
+
+            final int locationItemId = locationItem.getId();
+
+            HttpConversationCallback callback = new HttpConversationCallback() {
+
+                private final String TAG = "HttpConversationCallback";
+
+                @Override
+                public void onHttpConversationFinished(boolean success, String serverAnswer) {
+
+                    // Debug
+                    if (Config.LOGD) {
+                        Log.d(TAG, "(callback) onHttpConversationFinished");
+                    }
+
+                    if (success) {
+
+                        // Info
+                        Log.i(TAG, "successfully uploaded locationItem (id: " +
+                                locationItemId + ") to server (serverAnswer: " +
+                                serverAnswer + ")");
+
+                        if (Config.TOASTD) {
+                            Toast.makeText(SyncService.this,
+                                    "SyncService: uploaded locationItem (id: " + locationItemId +
+                                            ") (serverAnswer: " + serverAnswer + ")",
+                                    Toast.LENGTH_LONG).show();
+                        }
+
+                        locationsStorage.removeLocationItem(locationItemId);
+                        setUploadLocationItemDone(locationItemId);
+                    } else {
+
+                        // Warning
+                        Log.w(TAG, "error while upload locationItem (id: " + locationItemId + ") to server");
+
+                        setUploadLocationItemDone(locationItemId);
+                    }
+                }
+
+            };
+
+            serverTalker.signAndUploadData(EXP_ID, gson.toJson(locationItem), callback);
+        }
+    }
+
+    private void setUpdateQuestionsDone() {
 
 		// Debug
 		if (Config.LOGD) {
@@ -386,9 +486,34 @@ public class SyncService extends Service {
 			Log.d(TAG, "[fn] setUploadPollsDone");
 		}
 
-		uploadAnswersDone = true;
+		uploadPollsDone = true;
 		stopSelfIfAllDone();
 	}
+
+    private void setUploadLocationItemDone(int locationItemId) {
+
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] setUploadLocationItemDone");
+        }
+
+        locationItemsLeftToUpload.remove(locationItemId);
+
+        if (locationItemsLeftToUpload.size() == 0) {
+            setUploadLocationItemsDone();
+        }
+    }
+
+    private void setUploadLocationItemsDone() {
+
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] setUploadLocationItemsDone");
+        }
+
+        uploadLocationItemsDone = true;
+        stopSelfIfAllDone();
+    }
 
 	private void stopSelfIfAllDone() {
 
@@ -397,7 +522,7 @@ public class SyncService extends Service {
 			Log.d(TAG, "[fn] stopSelfIfAllDone");
 		}
 
-		if (updateQuestionsDone && uploadAnswersDone) {
+		if (updateQuestionsDone && uploadPollsDone && uploadLocationItemsDone) {
 			stopSelf();
 		}
 	}

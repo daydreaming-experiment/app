@@ -18,9 +18,9 @@ public class LocationService extends Service {
 
 	private LocationManager locationManager;
 	private LocationListener locationListener;
-	private boolean stopOnUnbind = false;
 	private final IBinder mBinder = new LocationServiceBinder();
-	private LocationCallback _callback = null;
+	private LocationCallback _questionLocationCallback = null;
+    private LocationCallback _locationItemCallback = null;
 	private Location lastLocation;
 
 	public class LocationServiceBinder extends Binder {
@@ -39,19 +39,33 @@ public class LocationService extends Service {
 		}
 	}
 
-	public void setLocationCallback(LocationCallback callback) {
+	public void setLocationItemCallback(LocationCallback callback) {
 
 		// Debug
 		if (Config.LOGD) {
-			Log.d(TAG, "[fn] setLocationCallback");
+			Log.d(TAG, "[fn] setLocationItemCallback");
 		}
 
-		_callback = callback;
+		_locationItemCallback = callback;
 
-		if (lastLocation != null) {
-			_callback.onLocationReceived(lastLocation);
+		if (lastLocation != null && _locationItemCallback != null) {
+			_locationItemCallback.onLocationReceived(lastLocation);
 		}
 	}
+
+    public void setQuestionLocationCallback(LocationCallback callback) {
+
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] setQuestionLocationCallback");
+        }
+
+        _questionLocationCallback = callback;
+
+        if (lastLocation != null && _questionLocationCallback != null) {
+            _questionLocationCallback.onLocationReceived(lastLocation);
+        }
+    }
 
 	@Override
 	public void onCreate() {
@@ -123,21 +137,12 @@ public class LocationService extends Service {
 
 		super.onUnbind(intent);
 
-		if (stopOnUnbind) {
+        if (_locationItemCallback == null && _questionLocationCallback == null) {
 			stopSelf();
 		}
 
+        // Make sur onUnbind is called again if some clients rebind and re-unbind
 		return true;
-	}
-
-	public void setStopOnUnbind() {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] setStopOnUnbind");
-		}
-
-		stopOnUnbind = true;
 	}
 
 	private void initVars() {
@@ -173,9 +178,13 @@ public class LocationService extends Service {
 
 				lastLocation = location;
 
-				if (_callback != null) {
-					_callback.onLocationReceived(location);
+				if (_locationItemCallback != null) {
+					_locationItemCallback.onLocationReceived(location);
 				}
+
+                if (_questionLocationCallback != null) {
+                    _questionLocationCallback.onLocationReceived(location);
+                }
 			}
 
 			@Override
