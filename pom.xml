@@ -75,6 +75,13 @@
             <version>1.47.0.2</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.actionbarsherlock</groupId>
+            <artifactId>actionbarsherlock</artifactId>
+            <version>4.2.0</version>
+            <type>apklib</type>
+        </dependency>
+
         <!-- Make sure this is below the android dependencies -->
         <dependency>
             <groupId>com.pivotallabs</groupId>
