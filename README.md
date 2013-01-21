@@ -1,8 +1,10 @@
 Day Dreaming
 ============
 
-`develop` branch: [![Develop build Status](https://travis-ci.org/wehlutyk/daydreaming.png?branch=develop)](https://travis-ci.org/wehlutyk/daydreaming)
 `master` branch: [![Master build Status](https://travis-ci.org/wehlutyk/daydreaming.png?branch=master)](https://travis-ci.org/wehlutyk/daydreaming)
+
+`develop` branch: [![Develop build Status](https://travis-ci.org/wehlutyk/daydreaming.png?branch=develop)](https://travis-ci.org/wehlutyk/daydreaming)
+
 
 Day Dreaming is a pilot cognitive science experiment using smartphones. It takes advantage of *in vivo* possibilities, that is measurements that are not usually possible in a lab.
 
