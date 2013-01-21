@@ -20,6 +20,9 @@ gen-external-apklibs/
 # Local configuration file (sdk path, etc)
 local.properties
 
+# Sphinx build path
+docs/_build
+
 # Eclipse files and folders
 .project
 .classpath
