@@ -19,7 +19,7 @@ TMP2="$(tempfile)"
 cat AndroidManifest.xml | sed "s/android:versionName=\"[^\"]*\"/android:versionName=\"${VERSION_NAME}\"/" > "$TMP1"
 
 # Then bump the version code
-VERSION_CODE=$(cat AndroidManifest.xml | grep 'android:versionCode=' | sed 's/^[^\"]*\"\([^\"]\)\".*$/\1/g')
+VERSION_CODE=$(cat AndroidManifest.xml | grep 'android:versionCode=' | sed 's/^[^\"]*\"\([^\"]*\)\".*$/\1/g')
 (( VERSION_CODE += 1 ))
 cat "$TMP1" | sed "s/android:versionCode=\"[^\"]*\"/android:versionCode=\"${VERSION_CODE}\"/" > "$TMP2"
 
