@@ -1,17 +1,23 @@
 package com.brainydroid.daydreaming.ui;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.SchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class DashboardActivity extends ActionBarActivity {
 
@@ -34,7 +40,37 @@ public class DashboardActivity extends ActionBarActivity {
 		status = StatusManager.getInstance(this);
 
 		setContentView(R.layout.activity_dashboard);
-	}
+
+        // -------------------------------
+        // Read Start date string from preferences
+        SharedPreferences sharedPrefs = getSharedPreferences("startdatepref", 0);
+        String StartDateString = sharedPrefs.getString("startdatestring", "01/01/2013");
+        // Transform string to Date object
+        SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+        Date StartDate;
+        try {
+            StartDate = format.parse(StartDateString);
+
+        // Compute time difference from Date objects:
+        // getTime : number of milliseconds since 1 January 1970 00:00:00 UTC
+        long dt =  (new Date()).getTime() - StartDate.getTime() ;
+        dt /= 1000;
+        int seconds = (int)(dt % 60);
+        dt /= 60;
+        int minutes = (int)(dt % 60);
+        dt /= 60;
+        int hours = (int)(dt % 24);
+        dt /= 24;
+        int days = (int)(dt);
+        String ElapsedTime =  Integer.toString(days) + " days " + Integer.toString(hours) + " hours ";
+        TextView textView = (TextView)findViewById(R.id.dashboard_textDaysElapsed);
+        textView.setText(ElapsedTime);
+
+        } catch (ParseException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }// -------------------------------
+
+    }
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

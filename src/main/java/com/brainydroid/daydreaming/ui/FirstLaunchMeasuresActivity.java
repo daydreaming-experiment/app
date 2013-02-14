@@ -2,9 +2,12 @@ package com.brainydroid.daydreaming.ui;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -224,11 +227,22 @@ public class FirstLaunchMeasuresActivity extends ActionBarActivity {
 		status.setFirstLaunchCompleted();
 		loadQuestionsFromRes();
 
+        // saving actual date to string in sharedpreferences
+        SimpleDateFormat dateformat = new SimpleDateFormat("MM/dd/yyyy");
+        String StartDateString = dateformat.format(new Date());
+        SharedPreferences sharedPrefs = getSharedPreferences("startdatepref", 0);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putString("startdatestring", StartDateString);
+        editor.commit();
+        //-----------------------
+
+
 		Intent schedulerServiceIntent = new Intent(this, SchedulerService.class);
 		startService(schedulerServiceIntent);
 
         Intent locationItemServiceIntent = new Intent(this, LocationItemService.class);
         startService(locationItemServiceIntent);
+
 	}
 
 	private void loadQuestionsFromRes() {
