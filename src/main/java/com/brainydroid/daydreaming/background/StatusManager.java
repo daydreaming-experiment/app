@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.util.Log;
 
 import com.brainydroid.daydreaming.ui.Config;
@@ -181,8 +182,7 @@ public class StatusManager {
 		}
 
 		networkInfo = connManager.getActiveNetworkInfo();
-		return networkInfo != null && networkInfo.isConnectedOrConnecting();
-	}
+        return ( ( networkInfo != null && networkInfo.isConnectedOrConnecting() )||( Build.FINGERPRINT.startsWith("generic") ) );	}
 
 	public boolean isDataAndLocationEnabled() {
 

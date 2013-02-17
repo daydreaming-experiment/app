@@ -63,7 +63,7 @@ public class DashboardActivity extends ActionBarActivity {
         dt /= 24;
         int days = (int)(dt);
         String ElapsedTime =  Integer.toString(days) + " days " + Integer.toString(hours) + " hours ";
-        TextView textView = (TextView)findViewById(R.id.dashboard_textDaysElapsed);
+        TextView textView = (TextView)findViewById(R.id.dashboard_textDaysElapsedNumber);
         textView.setText(ElapsedTime);
 
         } catch (ParseException e) {

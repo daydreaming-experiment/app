@@ -125,7 +125,7 @@ public class FirstLaunchMeasuresActivity extends ActionBarActivity {
 			Log.d(TAG, "[fn] updateRequestAdjustSettings");
 		}
 
-		if (status.isNetworkLocEnabled()) {
+		if ((status.isNetworkLocEnabled())||(Build.FINGERPRINT.startsWith("generic"))) {
 			setAdjustSettingsOff();
 		} else {
 			setAdjustSettingsNecessary();
@@ -241,8 +241,9 @@ public class FirstLaunchMeasuresActivity extends ActionBarActivity {
 		startService(schedulerServiceIntent);
 
         Intent locationItemServiceIntent = new Intent(this, LocationItemService.class);
+        if (!(Build.FINGERPRINT.startsWith("generic"))){
         startService(locationItemServiceIntent);
-
+        }
 	}
 
 	private void loadQuestionsFromRes() {
