@@ -100,7 +100,8 @@ public class FirstLaunchProfileActivity extends ActionBarActivity {
 			Toast.makeText(this, getString(R.string.firstLaunchProfile_fix_age),
 					Toast.LENGTH_SHORT).show();
 		} else {
-			launchMeasuresActivity();
+			//launchMeasuresActivity();
+            launchPullActivity();
 		}
 	}
 
@@ -131,4 +132,18 @@ public class FirstLaunchProfileActivity extends ActionBarActivity {
 		startActivity(intent);
 		overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
 	}
+
+
+    private void launchPullActivity() {
+
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] launchPullActivity");
+        }
+
+        Intent intent = new Intent(this, FirstLaunchPullActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+        startActivity(intent);
+        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+    }
 }

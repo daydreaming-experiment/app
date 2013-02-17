@@ -76,5 +76,14 @@
     <string name="pollNotification_title">Day Dreaming</string>
     <string name="pollNotification_text">A few quick questions</string>
     <string name="questionActivity_catch_key">Press again to exit.\nYou\'ll lose these questions!</string>
-    
+
+    <string name="firstLaunchpull_title_activity">Pull Questions</string>
+    <string name="firstLaunchpull_text_intro">We will now fetch content from our servers.\nThis should take no more than a few seconds</string>
+    <string name="firstLaunchpull_text_downloading">Download : Waiting for connection</string>
+    <string name="firstLaunchpull_text_data_enabled">Network connection</string>
+    <string name="firstLaunchpull_text_settings_necessary">You are not connected to the internet, please change your settings.</string>
+    <string name="firstLaunchpull_button_settings">Settings</string>
+    <string name="firstLaunchpull_button_next">Continue</string>
+
+
 </resources>
