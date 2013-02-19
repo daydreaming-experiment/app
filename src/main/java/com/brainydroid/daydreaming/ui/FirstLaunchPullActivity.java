@@ -298,7 +298,6 @@ public class FirstLaunchPullActivity extends ActionBarActivity {
             Log.d(TAG, "[fn] loadQuestionsFromRes");
         }
 
-
         textdownloading.setText("Downloading...");
 
 
@@ -323,9 +322,18 @@ public class FirstLaunchPullActivity extends ActionBarActivity {
                 questionsIS = getResources().openRawResource(R.raw.questions);
                 questionsStorage.importQuestions(Util.convertStreamToString(questionsIS));
                 questionsIS.close();
-                QD = true;
-                textdownloading.setText("Content downloaded!");
-                allowNext();
+
+
+                if (questionsIS==null){
+                    textdownloading.setText("Could not download, please try later");
+                }else{
+                    QD = true;
+                    textdownloading.setText("Content downloaded!");
+                    allowNext();
+                }
+
+                textdownloading.setCompoundDrawablesWithIntrinsicBounds(
+                        QD ? R.drawable.ic_check : R.drawable.ic_cross, 0, 0, 0);
 
             } catch (IOException e) {
                 // Error

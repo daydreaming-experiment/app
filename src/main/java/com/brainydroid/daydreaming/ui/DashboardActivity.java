@@ -42,11 +42,14 @@ public class DashboardActivity extends ActionBarActivity {
 		setContentView(R.layout.activity_dashboard);
 
         // -------------------------------
+        // Transform string to Date object
+        SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd G 'at' HH:mm:ss z");//("MM/dd/yyyy");
+        // Get today just in case
+        String todayDateString = format.format(new Date());
         // Read Start date string from preferences
         SharedPreferences sharedPrefs = getSharedPreferences("startdatepref", 0);
-        String StartDateString = sharedPrefs.getString("startdatestring", "01/01/2013");
-        // Transform string to Date object
-        SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+        String StartDateString = sharedPrefs.getString("startdatestring", todayDateString);
+
         Date StartDate;
         try {
             StartDate = format.parse(StartDateString);

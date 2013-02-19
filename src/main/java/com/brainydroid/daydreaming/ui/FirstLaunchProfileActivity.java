@@ -1,6 +1,7 @@
 package com.brainydroid.daydreaming.ui;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -100,7 +101,15 @@ public class FirstLaunchProfileActivity extends ActionBarActivity {
 			Toast.makeText(this, getString(R.string.firstLaunchProfile_fix_age),
 					Toast.LENGTH_SHORT).show();
 		} else {
-			//launchMeasuresActivity();
+
+            SharedPreferences sharedPrefs = getSharedPreferences("startdatepref", 0);
+            SharedPreferences.Editor editor = sharedPrefs.edit();
+            editor.putInt("age",Integer.parseInt(ageEditText.getText().toString()));
+            editor.putString("gender", genderSpinner.toString());
+            editor.commit();
+
+            Toast.makeText(this, genderSpinner.getSelectedItem().toString() + ", " + ageEditText.getText().toString(), Toast.LENGTH_LONG).show();
+            //launchMeasuresActivity();
             launchPullActivity();
 		}
 	}

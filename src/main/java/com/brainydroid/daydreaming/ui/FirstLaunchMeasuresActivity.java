@@ -79,6 +79,7 @@ public class FirstLaunchMeasuresActivity extends ActionBarActivity {
 		}
 
 		super.onResume();
+        updateView();
 	}
 
 	@Override
@@ -225,10 +226,10 @@ public class FirstLaunchMeasuresActivity extends ActionBarActivity {
 		}
 
 		status.setFirstLaunchCompleted();
-		loadQuestionsFromRes();
+		//loadQuestionsFromRes();
 
         // saving actual date to string in sharedpreferences
-        SimpleDateFormat dateformat = new SimpleDateFormat("MM/dd/yyyy");
+        SimpleDateFormat dateformat = new SimpleDateFormat("yyyy.MM.dd G 'at' HH:mm:ss z");//("MM/dd/yyyy");
         String StartDateString = dateformat.format(new Date());
         SharedPreferences sharedPrefs = getSharedPreferences("startdatepref", 0);
         SharedPreferences.Editor editor = sharedPrefs.edit();
