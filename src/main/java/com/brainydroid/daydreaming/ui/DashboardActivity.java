@@ -4,13 +4,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.SchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
@@ -19,7 +20,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class DashboardActivity extends ActionBarActivity {
+public class DashboardActivity extends SherlockActivity {
 
 	private static String TAG = "DashboardActivity";
 
@@ -58,9 +59,7 @@ public class DashboardActivity extends ActionBarActivity {
         // getTime : number of milliseconds since 1 January 1970 00:00:00 UTC
         long dt =  (new Date()).getTime() - StartDate.getTime() ;
         dt /= 1000;
-        int seconds = (int)(dt % 60);
         dt /= 60;
-        int minutes = (int)(dt % 60);
         dt /= 60;
         int hours = (int)(dt % 24);
         dt /= 24;
@@ -70,8 +69,9 @@ public class DashboardActivity extends ActionBarActivity {
         textView.setText(ElapsedTime);
 
         } catch (ParseException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }// -------------------------------
+            e.printStackTrace();
+        }
+        // -------------------------------
 
     }
 
@@ -83,7 +83,7 @@ public class DashboardActivity extends ActionBarActivity {
 			Log.d(TAG, "[fn] onCreateOptionsMenu");
 		}
 
-		MenuInflater menuInflater = getMenuInflater();
+		MenuInflater menuInflater = getSupportMenuInflater();
 		menuInflater.inflate(R.menu.dashboard, menu);
 
 		// Calling super after populating the menu is necessary here to ensure that the
