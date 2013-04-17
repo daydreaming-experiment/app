@@ -91,7 +91,7 @@
         </dependency>
 
         <!-- Make sure this is below the android dependencies -->
-       <dependency>
+        <dependency>
             <groupId>com.pivotallabs</groupId>
             <artifactId>robolectric</artifactId>
             <version>1.1</version>

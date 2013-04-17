@@ -12,7 +12,9 @@ before_install:
   - android update sdk --no-ui --force --filter platform-tools,android-10,addon-google_apis-google-10,android-16,addon-google_apis-google-16,extra-android-support,extra-google-admob_ads_sdk,extra-google-analytics_sdk_v2,extra-google-gcm,extra-google-google_play_services,extra-google-play_apk_expansion,extra-google-play_billing,extra-google-play_licensing,extra-google-webdriver
 
   # Install all that to Maven
+  - export PROJECTHOME=$(pwd)
+  - cd ..
   - git clone git://github.com/mosabua/maven-android-sdk-deployer.git
   - cd maven-android-sdk-deployer
-  - mvn install --quiet -P 2.3.3
-  - cd ..
+  - mvn install -P 2.3.3
+  - cd $PROJECTHOME
