@@ -85,5 +85,11 @@
     <string name="firstLaunchpull_button_settings">Settings</string>
     <string name="firstLaunchpull_button_next">Continue</string>
 
+    <string name="firstLaunchTerms_title_activity">Consent</string>
+    <string name="firstLaunchTerms_text_title">Consent</string>
+    <string name="firstLaunchTerms_text_consent">Consent</string>
+    <string name="firstLaunchTerms_button_next">Next</string>
+
+
 
 </resources>

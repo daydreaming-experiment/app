@@ -8,7 +8,18 @@ import android.view.View;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.StatusManager;
 
+/*
+ * Activity at first launch
+ *
+ * In first launch sequence of apps
+ *
+ * Previous activity :  none
+ * This activity     :  FirstLaunchWelcomeActivity
+ * Next activity     :  FirstLaunchDescriptionActivity
+ *
+ */
 public class FirstLaunchWelcomeActivity extends ActionBarActivity {
+
 
 	private static String TAG = "FirstLaunchWelcomeActivity";
 
