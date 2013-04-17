@@ -1,4 +1,8 @@
 language: java
+jdk:
+  - openjdk6
+  - openjdk7
+  - oraclejdk7
 before_install:
   # Get some shared libs or else the SDK executables aren't found
   - sudo apt-get update -qq
@@ -16,5 +20,5 @@ before_install:
   - cd ..
   - git clone git://github.com/mosabua/maven-android-sdk-deployer.git
   - cd maven-android-sdk-deployer
-  - mvn install -P 2.3.3
+  - mvn install --quiet -P 2.3.3
   - cd $PROJECTHOME
