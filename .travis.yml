@@ -1,5 +1,4 @@
 language: java
-install: mvn install -e -DskipTests=true
 before_install:
   # Get some shared libs or else the SDK executables aren't found
   - sudo apt-get update -qq
@@ -23,7 +22,3 @@ before_install:
   - cd ../compatibility-v7-gridlayout
   - mvn install
   - cd ../../..
-
-  # Debug
-  - cat ~/.m2/settings.xml
-  - ls ~/.m2/repository/android/support/*
