@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.actionbarsherlock.app.SherlockActivity;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.db.QuestionsStorage;
@@ -20,7 +21,7 @@ import com.brainydroid.daydreaming.db.Util;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class FirstLaunchPullActivity extends ActionBarActivity {
+public class FirstLaunchPullActivity extends SherlockActivity {
 
 
     private TextView textdownloading;

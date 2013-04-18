@@ -5,9 +5,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import com.actionbarsherlock.app.SherlockActivity;
 import com.brainydroid.daydreaming.R;
 
-public class FirstLaunchSettingsActivity extends ActionBarActivity {
+public class FirstLaunchSettingsActivity extends SherlockActivity {
 
 	private static String TAG = "FirstLaunchSettingsActivity";
 

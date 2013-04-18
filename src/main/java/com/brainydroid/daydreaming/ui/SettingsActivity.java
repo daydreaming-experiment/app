@@ -9,11 +9,12 @@ import android.preference.PreferenceScreen;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.actionbarsherlock.app.SherlockPreferenceActivity;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.SchedulerService;
 import com.brainydroid.daydreaming.db.Util;
 
-public class SettingsActivity extends PreferenceActivity
+public class SettingsActivity extends SherlockPreferenceActivity
 implements OnSharedPreferenceChangeListener {
 
 	private static String TAG = "SettingsActivity";

@@ -10,10 +10,11 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.actionbarsherlock.app.SherlockActivity;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.StatusManager;
 
-public class FirstLaunchProfileActivity extends ActionBarActivity {
+public class FirstLaunchProfileActivity extends SherlockActivity {
 
 	private static String TAG = "FirstLaunchProfileActivity";
 
