@@ -90,6 +90,12 @@
             </exclusions>
         </dependency>
 
+        <dependency>
+            <groupId>com.github.rtyley</groupId>
+            <artifactId>roboguice-sherlock</artifactId>
+            <version>1.5</version>
+        </dependency>
+
         <!-- Make sure this is below the android dependencies -->
         <dependency>
             <groupId>com.pivotallabs</groupId>
