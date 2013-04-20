@@ -9,7 +9,6 @@ import com.actionbarsherlock.app.SherlockActivity;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.StatusManager;
 
-public class FirstLaunchWelcomeActivity extends SherlockActivity {
 /*
  * Activity at first launch
  *
@@ -20,6 +19,7 @@ public class FirstLaunchWelcomeActivity extends SherlockActivity {
  * Next activity     :  FirstLaunchDescriptionActivity
  *
  */
+public class FirstLaunchWelcomeActivity extends SherlockActivity {
 
 	private static String TAG = "FirstLaunchWelcomeActivity";
 
@@ -34,9 +34,10 @@ public class FirstLaunchWelcomeActivity extends SherlockActivity {
 		}
 
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_first_launch_welcome);
 
-		status = StatusManager.getInstance(this);
+        status = StatusManager.getInstance(this);
+
+		setContentView(R.layout.activity_first_launch_welcome);
 	}
 
 	@Override
@@ -82,10 +83,7 @@ public class FirstLaunchWelcomeActivity extends SherlockActivity {
 			Log.d(TAG, "[fn] checkFirstLaunch");
 		}
 
-		if (status.isFirstLaunchCompleted() || status.isClearing()) {
-			if (status.isClearing()) {
-				status.finishClear();
-			}
+		if (status.isFirstLaunchCompleted()) {
 			finish();
 		}
 	}

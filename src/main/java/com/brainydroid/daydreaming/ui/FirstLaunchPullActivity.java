@@ -1,4 +1,3 @@
-
 package com.brainydroid.daydreaming.ui;
 
 import android.annotation.TargetApi;
@@ -8,7 +7,6 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
-
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,19 +21,17 @@ import java.io.InputStream;
 
 public class FirstLaunchPullActivity extends SherlockActivity {
 
+    private static String TAG = "FirstLaunchPullActivity";
 
-    private TextView textdownloading;
-    private TextView DataEnabled;
+    private TextView textDownloading;
+    private TextView dataEnabled;
     private TextView textSettings;
 
     private Button buttonSettings;
     private Button buttonNext;
-    private boolean QD = false; // question downloaded
+    private boolean areQuestionsDownloaded = false;
 
     private StatusManager status;
-
-
-    private static String TAG = "FirstLaunchPullActivity";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,18 +44,17 @@ public class FirstLaunchPullActivity extends SherlockActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_first_launch_pull);
 
-        textdownloading = (TextView)findViewById(R.id.firstLaunchpull_text_downloading);
-        textSettings = (TextView)findViewById(R.id.firstLaunchpull_textchangeSettings);
-        DataEnabled = (TextView)findViewById(R.id.firstLaunchpull_text_data_enabled);
+        textDownloading = (TextView)findViewById(R.id.firstLaunchPull_text_downloading);
+        textSettings = (TextView)findViewById(R.id.firstLaunchPull_text_change_settings);
+        dataEnabled = (TextView)findViewById(R.id.firstLaunchPull_text_data_enabled);
 
-        buttonSettings = (Button)findViewById(R.id.firstLaunchpull_buttonSettings);
-        buttonNext = (Button)findViewById(R.id.firstLaunchpull_buttonNext);
+        buttonSettings = (Button)findViewById(R.id.firstLaunchPull_buttonSettings);
+        buttonNext = (Button)findViewById(R.id.firstLaunchPull_buttonNext);
         status = StatusManager.getInstance(this);
-
     }
 
     @Override
-    public void onStart() {  // At start-up
+    public void onStart() {
 
         // Debug
         if (Config.LOGD) {
@@ -69,7 +64,6 @@ public class FirstLaunchPullActivity extends SherlockActivity {
         super.onStart();
         checkFirstLaunch();
         updateView();
-
     }
 
     @Override
@@ -102,9 +96,8 @@ public class FirstLaunchPullActivity extends SherlockActivity {
             Log.d(TAG, "[fn] checkFirstLaunch");
         }
 
-        if (status.isFirstLaunchCompleted() || status.isClearing()) {
+        if (status.isFirstLaunchCompleted()) {
             finish();
-
         }
     }
 
@@ -115,34 +108,28 @@ public class FirstLaunchPullActivity extends SherlockActivity {
             Log.d(TAG, "[fn] updateView");
         }
 
-        DataEnabled.setCompoundDrawablesWithIntrinsicBounds(
-                ((status.isDataEnabled())|( Build.FINGERPRINT.startsWith("generic") ))? R.drawable.ic_check : R.drawable.ic_cross, 0, 0, 0);
-        textdownloading.setCompoundDrawablesWithIntrinsicBounds(
-                QD ? R.drawable.ic_check : R.drawable.ic_cross, 0, 0, 0);
+        dataEnabled.setCompoundDrawablesWithIntrinsicBounds(
+                (status.isDataEnabled() | Build.FINGERPRINT.startsWith("generic")) ?
+                        R.drawable.ic_check : R.drawable.ic_cross, 0, 0, 0);
+        textDownloading.setCompoundDrawablesWithIntrinsicBounds(
+                areQuestionsDownloaded ? R.drawable.ic_check : R.drawable.ic_cross, 0, 0, 0);
 
-
-        if ( Build.FINGERPRINT.startsWith("generic")){
-
-            if (!QD) {  loadQuestionsFromRes();}
-
+        if (Build.FINGERPRINT.startsWith("generic")) {
+            if (!areQuestionsDownloaded) {
+                loadQuestionsFromRes();
+            }
         } else {
-
-            if (QD) {
+            if (areQuestionsDownloaded) {
                 Toast.makeText(this, "Questions already downloaded", Toast.LENGTH_LONG).show();
-
-            }else{
+            } else {
                 if (status.isDataEnabled()){
-                    Toast.makeText(this, "trying to download questions", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "Downloading questions", Toast.LENGTH_LONG).show();
 
                     loadQuestionsFromRes();
                     updateRequestAdjustSettings();
-
                 }
-
-            };
+            }
         }
-
-
     }
 
     private void updateRequestAdjustSettings() {
@@ -152,9 +139,8 @@ public class FirstLaunchPullActivity extends SherlockActivity {
             Log.d(TAG, "[fn] updateRequestAdjustSettings");
         }
 
-
-        if ( Build.FINGERPRINT.startsWith("generic") ){
-
+        if (Build.FINGERPRINT.startsWith("generic")){
+                setAdjustSettingsOff();
         } else {
             if  (status.isDataEnabled()) {
                 setAdjustSettingsOff();
@@ -172,21 +158,19 @@ public class FirstLaunchPullActivity extends SherlockActivity {
             Log.d(TAG, "[fn] setAdjustSettingsNecessary");
         }
 
-        textSettings.setText(R.string.firstLaunchMeasures_text_settings_necessary);
+        textSettings.setText(R.string.firstLaunchPull_text_settings_necessary);
         textSettings.setVisibility(View.VISIBLE);
         buttonSettings.setVisibility(View.VISIBLE);
         buttonSettings.setClickable(true);
-        forbidNext();
+        forbidNextButton();
     }
 
-
-
     @TargetApi(11)
-    private void forbidNext() {
+    private void forbidNextButton() {
 
         // Debug
         if (Config.LOGD) {
-            Log.d(TAG, "[fn] forbidNextbutton");
+            Log.d(TAG, "[fn] forbidNext");
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -198,11 +182,11 @@ public class FirstLaunchPullActivity extends SherlockActivity {
     }
 
     @TargetApi(11)
-    private void allowNext() {
+    private void allowNextButton() {
 
         // Debug
         if (Config.LOGD) {
-            Log.d(TAG, "[fn] allowNextbutton");
+            Log.d(TAG, "[fn] allowNext");
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -213,9 +197,7 @@ public class FirstLaunchPullActivity extends SherlockActivity {
         buttonNext.setClickable(true);
 
         Toast.makeText(this, "Allowing next button", Toast.LENGTH_LONG).show();
-
     }
-
 
     @TargetApi(11)
     private void setAdjustSettingsOff() {
@@ -230,7 +212,7 @@ public class FirstLaunchPullActivity extends SherlockActivity {
         buttonSettings.setClickable(false);
     }
 
-    public void onClick_buttonSettings(View view) {
+    public void onClick_buttonSettings(@SuppressWarnings("UnusedParameters") View view) {
 
         // Debug
         if (Config.LOGD) {
@@ -252,7 +234,7 @@ public class FirstLaunchPullActivity extends SherlockActivity {
         startActivity(settingsIntent);
     }
 
-    public void onClick_buttonNext(View v) {
+    public void onClick_buttonNext(@SuppressWarnings("UnusedParameters") View view) {
 
         // Debug
         if (Config.LOGD) {
@@ -261,20 +243,6 @@ public class FirstLaunchPullActivity extends SherlockActivity {
 
         launchMeasuresActivity();
     }
-
-
- /*   private void launchPullActivity() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] launchPullActivity");
-        }
-
-        Intent intent = new Intent(this, FirstLaunchPullActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-        startActivity(intent);
-        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
-    }*/
 
     private void launchMeasuresActivity() {
 
@@ -289,9 +257,6 @@ public class FirstLaunchPullActivity extends SherlockActivity {
         overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
     }
 
-
-
-
     private void loadQuestionsFromRes() {
 
         // Debug
@@ -299,54 +264,38 @@ public class FirstLaunchPullActivity extends SherlockActivity {
             Log.d(TAG, "[fn] loadQuestionsFromRes");
         }
 
-        textdownloading.setText("Downloading...");
+        textDownloading.setText("Downloading...");
 
-
-        if (Build.FINGERPRINT.startsWith("generic") ){
-
+        if (Build.FINGERPRINT.startsWith("generic") ) {
             Toast.makeText(this, "skipping download : emulator", Toast.LENGTH_LONG).show();
 
-            QD = true;
-            textdownloading.setText("Content downloaded!");
-            textdownloading.setCompoundDrawablesWithIntrinsicBounds(
-                    QD ? R.drawable.ic_check : R.drawable.ic_cross, 0, 0, 0);
+            areQuestionsDownloaded = true;
+            textDownloading.setText("Questions loaded from resource");
+            textDownloading.setCompoundDrawablesWithIntrinsicBounds(
+                    areQuestionsDownloaded ? R.drawable.ic_check : R.drawable.ic_cross, 0, 0, 0);
 
-            allowNext();
-
-
-        }else {
-
+            allowNextButton();
+        } else {
             try {
-
-                InputStream questionsIS = null;
+                // TODO: change this to download from the Internet
                 QuestionsStorage questionsStorage = QuestionsStorage.getInstance(this);
-                questionsIS = getResources().openRawResource(R.raw.questions);
+                InputStream questionsIS = getResources().openRawResource(R.raw.questions);
                 questionsStorage.importQuestions(Util.convertStreamToString(questionsIS));
                 questionsIS.close();
 
+                areQuestionsDownloaded = true;
+                textDownloading.setText("Questions loaded from resource");
+                allowNextButton();
 
-                if (questionsIS==null){
-                    textdownloading.setText("Could not download, please try later");
-                }else{
-                    QD = true;
-                    textdownloading.setText("Content downloaded!");
-                    allowNext();
-                }
-
-                textdownloading.setCompoundDrawablesWithIntrinsicBounds(
-                        QD ? R.drawable.ic_check : R.drawable.ic_cross, 0, 0, 0);
-
+                textDownloading.setCompoundDrawablesWithIntrinsicBounds(
+                        areQuestionsDownloaded ? R.drawable.ic_check : R.drawable.ic_cross, 0, 0, 0);
             } catch (IOException e) {
                 // Error
-                Log.e(TAG, "error importing questions from local resource", e);
+                Log.e(TAG, "Error importing questions from local resource", e);
                 e.printStackTrace();
-                textdownloading.setText("Error, please try later...");
-
-
+                textDownloading.setText("Oops, there was an error loading questions. Can you talk to the developers?");
             }
         }
-
     }
-
 
 }

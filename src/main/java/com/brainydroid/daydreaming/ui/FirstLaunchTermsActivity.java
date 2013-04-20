@@ -1,31 +1,15 @@
 package com.brainydroid.daydreaming.ui;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import com.actionbarsherlock.app.SherlockActivity;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.StatusManager;
 
-
-import com.brainydroid.daydreaming.R;
-import com.brainydroid.daydreaming.background.StatusManager;
-import org.w3c.dom.Text;
-
-
-/**
- * Created with IntelliJ IDEA.
- * User: vincenta
- * Date: 17/04/13
- * Time: 13:21
- * To change this template use File | Settings | File Templates.
- */
-public class FirstLaunchTermsActivity  extends ActionBarActivity {
+public class FirstLaunchTermsActivity  extends SherlockActivity {
 
     private static String TAG = "FirstLaunchTermsActivity";
 
@@ -43,7 +27,7 @@ public class FirstLaunchTermsActivity  extends ActionBarActivity {
         setContentView(R.layout.activity_first_launch_terms);
 
         TextView consent = (TextView)findViewById(R.id.firstLaunchTerms_textConsent);
-        consent.setText(Text.readTxt(R.raw.terms, (Activity) this));
+        consent.setText(getString(R.raw.terms));
 
         status = StatusManager.getInstance(this);
     }
@@ -83,13 +67,14 @@ public class FirstLaunchTermsActivity  extends ActionBarActivity {
         overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
     }
 
-    public void onClick_buttonNext(View view) {
+    public void onClick_buttonNext(@SuppressWarnings("UnusedParameters") View view) {
 
         // Debug
         if (Config.LOGD) {
             Log.d(TAG, "[fn] onClick_buttonNext");
         }
 
+        launchProfileActivity();
     }
 
     private void launchProfileActivity() {
@@ -112,7 +97,7 @@ public class FirstLaunchTermsActivity  extends ActionBarActivity {
             Log.d(TAG, "[fn] checkFirstLaunch");
         }
 
-        if (status.isFirstLaunchCompleted() || status.isClearing()) {
+        if (status.isFirstLaunchCompleted()) {
             finish();
         }
     }

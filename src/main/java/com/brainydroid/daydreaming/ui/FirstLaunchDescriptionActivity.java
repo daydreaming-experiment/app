@@ -29,9 +29,10 @@ public class FirstLaunchDescriptionActivity extends SherlockFragmentActivity {
 		}
 
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_first_launch_description);
 
-		status = StatusManager.getInstance(this);
+        status = StatusManager.getInstance(this);
+
+		setContentView(R.layout.activity_first_launch_description);
 	}
 
 	@Override
@@ -79,7 +80,7 @@ public class FirstLaunchDescriptionActivity extends SherlockFragmentActivity {
 		SherlockDialogFragment consentAlert = ConsentAlertDialogFragment.newInstance(
 				R.string.consentAlert_title,
 				R.string.consentAlert_text,
-				R.string.consentAlert_button_notconsent,
+				R.string.consentAlert_button_no_consent,
 				R.string.consentAlert_button_consent);
 		consentAlert.show(getSupportFragmentManager(), "consentAlert");
 	}
@@ -104,7 +105,7 @@ public class FirstLaunchDescriptionActivity extends SherlockFragmentActivity {
 			Log.d(TAG, "[fn] checkFirstLaunch");
 		}
 
-		if (status.isFirstLaunchCompleted() || status.isClearing()) {
+		if (status.isFirstLaunchCompleted()) {
 			finish();
 		}
 	}
@@ -112,8 +113,6 @@ public class FirstLaunchDescriptionActivity extends SherlockFragmentActivity {
 	public static class ConsentAlertDialogFragment extends SherlockDialogFragment {
 
 		private static String TAG = "ConsentAlertDialogFragment";
-
-		private StatusManager status;
 
 		public static ConsentAlertDialogFragment newInstance(int title, int text,
 				int negText, int posText) {
@@ -141,8 +140,6 @@ public class FirstLaunchDescriptionActivity extends SherlockFragmentActivity {
 				Log.d(TAG, "[fn] onCreateDialog");
 			}
 
-			status = StatusManager.getInstance(getActivity());
-
 			int title = getArguments().getInt("title");
 			int text = getArguments().getInt("text");
 			int negText = getArguments().getInt("negText");
@@ -165,7 +162,6 @@ public class FirstLaunchDescriptionActivity extends SherlockFragmentActivity {
 			}).setIcon(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ?
 					R.drawable.ic_action_about_holo_light : R.drawable.ic_action_about_holo_dark);
 
-			status.setFirstLaunchStarted();
 			return alertSettings.create();
 		}
 	}

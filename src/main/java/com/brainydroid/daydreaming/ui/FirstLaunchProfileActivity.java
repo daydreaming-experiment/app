@@ -9,7 +9,6 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
-
 import com.actionbarsherlock.app.SherlockActivity;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.StatusManager;
@@ -18,7 +17,11 @@ public class FirstLaunchProfileActivity extends SherlockActivity {
 
 	private static String TAG = "FirstLaunchProfileActivity";
 
-	private StatusManager status;
+    public static String PROFILE_PREFERENCES = "profilePreferences";
+    public static String PROFILE_AGE = "profileAge";
+    public static String PROFILE_GENDER = "profileGender";
+
+    private StatusManager status;
 
 	private EditText ageEditText;
 	private Spinner genderSpinner;
@@ -86,12 +89,12 @@ public class FirstLaunchProfileActivity extends SherlockActivity {
 			Log.d(TAG, "[fn] checkFirstLaunch");
 		}
 
-		if (status.isFirstLaunchCompleted() || status.isClearing()) {
+		if (status.isFirstLaunchCompleted()) {
 			finish();
 		}
 	}
 
-	public void onClick_buttonNext(View view) {
+	public void onClick_buttonNext(@SuppressWarnings("UnusedParameters") View view) {
 
 		// Debug
 		if (Config.LOGD) {
@@ -103,13 +106,14 @@ public class FirstLaunchProfileActivity extends SherlockActivity {
 					Toast.LENGTH_SHORT).show();
 		} else {
 
-            SharedPreferences sharedPrefs = getSharedPreferences("startdatepref", 0);
+            SharedPreferences sharedPrefs = getSharedPreferences(PROFILE_PREFERENCES, 0);
             SharedPreferences.Editor editor = sharedPrefs.edit();
-            editor.putInt("age",Integer.parseInt(ageEditText.getText().toString()));
-            editor.putString("gender", genderSpinner.toString());
+            editor.putInt(PROFILE_AGE, Integer.parseInt(ageEditText.getText().toString()));
+            editor.putString(PROFILE_GENDER, genderSpinner.toString());
             editor.commit();
 
-            Toast.makeText(this, genderSpinner.getSelectedItem().toString() + ", " + ageEditText.getText().toString(), Toast.LENGTH_LONG).show();
+            Toast.makeText(this, genderSpinner.getSelectedItem().toString() +
+                    ", " + ageEditText.getText().toString(), Toast.LENGTH_LONG).show();
             //launchMeasuresActivity();
             launchPullActivity();
 		}
@@ -129,20 +133,6 @@ public class FirstLaunchProfileActivity extends SherlockActivity {
 			return false;
 		}
 	}
-
-	private void launchMeasuresActivity() {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] launchMeasuresActivity");
-		}
-
-		Intent intent = new Intent(this, FirstLaunchMeasuresActivity.class);
-		intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-		startActivity(intent);
-		overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
-	}
-
 
     private void launchPullActivity() {
 

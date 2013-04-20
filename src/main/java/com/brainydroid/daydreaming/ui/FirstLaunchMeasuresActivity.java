@@ -1,13 +1,7 @@
 package com.brainydroid.daydreaming.ui;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import android.annotation.TargetApi;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -15,15 +9,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-
 import com.actionbarsherlock.app.SherlockActivity;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.LocationItemService;
 import com.brainydroid.daydreaming.background.SchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
-import com.brainydroid.daydreaming.db.QuestionsStorage;
-import com.brainydroid.daydreaming.db.Util;
 
 public class FirstLaunchMeasuresActivity extends SherlockActivity {
 
@@ -103,7 +93,7 @@ public class FirstLaunchMeasuresActivity extends SherlockActivity {
 			Log.d(TAG, "[fn] checkFirstLaunch");
 		}
 
-		if (status.isFirstLaunchCompleted() || status.isClearing()) {
+		if (status.isFirstLaunchCompleted()) {
 			finish();
 		}
 	}
@@ -174,7 +164,7 @@ public class FirstLaunchMeasuresActivity extends SherlockActivity {
 		buttonNext.setClickable(true);
 	}
 
-	public void onClick_buttonSettings(View view) {
+	public void onClick_buttonSettings(@SuppressWarnings("UnusedParameters") View view) {
 
 		// Debug
 		if (Config.LOGD) {
@@ -196,7 +186,7 @@ public class FirstLaunchMeasuresActivity extends SherlockActivity {
 		startActivity(settingsIntent);
 	}
 
-	public void onClick_buttonNext(View view) {
+	public void onClick_buttonNext(@SuppressWarnings("UnusedParameters") View view) {
 
 		// Debug
 		if (Config.LOGD) {
@@ -228,15 +218,15 @@ public class FirstLaunchMeasuresActivity extends SherlockActivity {
 		}
 
 		status.setFirstLaunchCompleted();
-		//loadQuestionsFromRes();
 
-        // saving actual date to string in sharedpreferences
-        SimpleDateFormat dateformat = new SimpleDateFormat("yyyy.MM.dd G 'at' HH:mm:ss z");//("MM/dd/yyyy");
-        String StartDateString = dateformat.format(new Date());
-        SharedPreferences sharedPrefs = getSharedPreferences("startdatepref", 0);
-        SharedPreferences.Editor editor = sharedPrefs.edit();
-        editor.putString("startdatestring", StartDateString);
-        editor.commit();
+        // TODO: clean this up and re-activate counterpart in DashboardActivity
+        // saving actual date to string in sharedPreferences
+//        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd G 'at' HH:mm:ss z");//("MM/dd/yyyy");
+//        String StartDateString = dateFormat.format(new Date());
+//        SharedPreferences sharedPrefs = getSharedPreferences("startDatePrefs", 0);
+//        SharedPreferences.Editor editor = sharedPrefs.edit();
+//        editor.putString("startDateString", StartDateString);
+//        editor.commit();
         //-----------------------
 
 
@@ -249,24 +239,4 @@ public class FirstLaunchMeasuresActivity extends SherlockActivity {
         }
 	}
 
-	private void loadQuestionsFromRes() {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] loadQuestionsFromRes");
-		}
-
-		InputStream questionsIS = null;
-
-		try {
-			QuestionsStorage questionsStorage = QuestionsStorage.getInstance(this);
-			questionsIS = getResources().openRawResource(R.raw.questions);
-			questionsStorage.importQuestions(Util.convertStreamToString(questionsIS));
-			questionsIS.close();
-		} catch (IOException e) {
-			// Error
-			Log.e(TAG, "error importing questions from local resource", e);
-			e.printStackTrace();
-		}
-	}
 }
