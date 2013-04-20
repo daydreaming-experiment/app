@@ -1,8 +1,5 @@
 package com.brainydroid.daydreaming.ui;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
@@ -12,15 +9,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-
+import com.actionbarsherlock.app.SherlockActivity;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.LocationItemService;
 import com.brainydroid.daydreaming.background.SchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
-import com.brainydroid.daydreaming.db.QuestionsStorage;
-import com.brainydroid.daydreaming.db.Util;
 
-public class FirstLaunchMeasuresActivity extends ActionBarActivity {
+public class FirstLaunchMeasuresActivity extends SherlockActivity {
 
 	private static String TAG = "FirstLaunchMeasuresActivity";
 
@@ -76,6 +71,7 @@ public class FirstLaunchMeasuresActivity extends ActionBarActivity {
 		}
 
 		super.onResume();
+        updateView();
 	}
 
 	@Override
@@ -97,7 +93,7 @@ public class FirstLaunchMeasuresActivity extends ActionBarActivity {
 			Log.d(TAG, "[fn] checkFirstLaunch");
 		}
 
-		if (status.isFirstLaunchCompleted() || status.isClearing()) {
+		if (status.isFirstLaunchCompleted()) {
 			finish();
 		}
 	}
@@ -122,7 +118,7 @@ public class FirstLaunchMeasuresActivity extends ActionBarActivity {
 			Log.d(TAG, "[fn] updateRequestAdjustSettings");
 		}
 
-		if (status.isNetworkLocEnabled()) {
+		if ((status.isNetworkLocEnabled())||(Build.FINGERPRINT.startsWith("generic"))) {
 			setAdjustSettingsOff();
 		} else {
 			setAdjustSettingsNecessary();
@@ -168,7 +164,7 @@ public class FirstLaunchMeasuresActivity extends ActionBarActivity {
 		buttonNext.setClickable(true);
 	}
 
-	public void onClick_buttonSettings(View view) {
+	public void onClick_buttonSettings(@SuppressWarnings("UnusedParameters") View view) {
 
 		// Debug
 		if (Config.LOGD) {
@@ -190,7 +186,7 @@ public class FirstLaunchMeasuresActivity extends ActionBarActivity {
 		startActivity(settingsIntent);
 	}
 
-	public void onClick_buttonNext(View view) {
+	public void onClick_buttonNext(@SuppressWarnings("UnusedParameters") View view) {
 
 		// Debug
 		if (Config.LOGD) {
@@ -222,33 +218,25 @@ public class FirstLaunchMeasuresActivity extends ActionBarActivity {
 		}
 
 		status.setFirstLaunchCompleted();
-		loadQuestionsFromRes();
+
+        // TODO: clean this up and re-activate counterpart in DashboardActivity
+        // saving actual date to string in sharedPreferences
+//        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd G 'at' HH:mm:ss z");//("MM/dd/yyyy");
+//        String StartDateString = dateFormat.format(new Date());
+//        SharedPreferences sharedPrefs = getSharedPreferences("startDatePrefs", 0);
+//        SharedPreferences.Editor editor = sharedPrefs.edit();
+//        editor.putString("startDateString", StartDateString);
+//        editor.commit();
+        //-----------------------
+
 
 		Intent schedulerServiceIntent = new Intent(this, SchedulerService.class);
 		startService(schedulerServiceIntent);
 
         Intent locationItemServiceIntent = new Intent(this, LocationItemService.class);
+        if (!(Build.FINGERPRINT.startsWith("generic"))){
         startService(locationItemServiceIntent);
+        }
 	}
 
-	private void loadQuestionsFromRes() {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] loadQuestionsFromRes");
-		}
-
-		InputStream questionsIS = null;
-
-		try {
-			QuestionsStorage questionsStorage = QuestionsStorage.getInstance(this);
-			questionsIS = getResources().openRawResource(R.raw.questions);
-			questionsStorage.importQuestions(Util.convertStreamToString(questionsIS));
-			questionsIS.close();
-		} catch (IOException e) {
-			// Error
-			Log.e(TAG, "error importing questions from local resource", e);
-			e.printStackTrace();
-		}
-	}
 }

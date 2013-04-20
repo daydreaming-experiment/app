@@ -5,10 +5,21 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import com.actionbarsherlock.app.SherlockActivity;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.StatusManager;
 
-public class FirstLaunchWelcomeActivity extends ActionBarActivity {
+/*
+ * Activity at first launch
+ *
+ * In first launch sequence of apps
+ *
+ * Previous activity :  none
+ * This activity     :  FirstLaunchWelcomeActivity
+ * Next activity     :  FirstLaunchDescriptionActivity
+ *
+ */
+public class FirstLaunchWelcomeActivity extends SherlockActivity {
 
 	private static String TAG = "FirstLaunchWelcomeActivity";
 
@@ -23,9 +34,10 @@ public class FirstLaunchWelcomeActivity extends ActionBarActivity {
 		}
 
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_first_launch_welcome);
 
-		status = StatusManager.getInstance(this);
+        status = StatusManager.getInstance(this);
+
+		setContentView(R.layout.activity_first_launch_welcome);
 	}
 
 	@Override
@@ -51,7 +63,7 @@ public class FirstLaunchWelcomeActivity extends ActionBarActivity {
 		super.onResume();
 	}
 
-	public void onClick_start(View view) {
+	public void onClick_start(@SuppressWarnings("UnusedParameters") View view) {
 
 		// Debug
 		if (Config.LOGD) {
@@ -71,10 +83,7 @@ public class FirstLaunchWelcomeActivity extends ActionBarActivity {
 			Log.d(TAG, "[fn] checkFirstLaunch");
 		}
 
-		if (status.isFirstLaunchCompleted() || status.isClearing()) {
-			if (status.isClearing()) {
-				status.finishClear();
-			}
+		if (status.isFirstLaunchCompleted()) {
 			finish();
 		}
 	}

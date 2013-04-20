@@ -1,7 +1,7 @@
 <resources>
-    <string name="notif_sound">Allow notification sound</string>
-    <string name="notif_vibrator">Vibrates with notification</string>
-    <string name="notif_led">Blink at notification</string>
+    <string name="notification_sound">Allow notification sound</string>
+    <string name="notification_vibrator">Vibrate with notification</string>
+    <string name="notification_led">Blink with notification</string>
     <string name="time_window_lb">From </string>
     <string name="time_window_ub">Until</string>
     <string name="time_window_settings">Time window for notifications</string>
@@ -24,17 +24,14 @@
     <string name="firstLaunchWelcome_title_activity">Day Dreaming</string>
     <string name="firstLaunchWelcome_text_welcome">Day Dreaming Experiment</string>
     <string name="firstLaunchWelcome_button_start">Start</string>
-    <string name="reLaunchWelcome_title_activity">Day Dreaming</string>
-    <string name="reLaunchWelcome_button_start">Continue</string>
-    <string name="reLaunchWelcome_text_welcome">Day Dreaming Experiment (Welcome back!)</string>
     <string name="firstLaunchDescription_title_activity">Description</string>
-    <string name="firstLaunchDescription_text_title">Blabla what\'s the experiment</string>
+    <string name="firstLaunchDescription_text_title">Explanation of the experiment</string>
     <string name="firstLaunchDescription_text_description">*description / images*</string>
     <string name="firstLaunchDescription_button_next">Next</string>
     <string name="consentAlert_title">Experiment consent</string>
     <string name="consentAlert_text">Bla bla bla do you consent?</string>
     <string name="consentAlert_button_consent">Agree</string>
-    <string name="consentAlert_button_notconsent">Disagree</string>
+    <string name="consentAlert_button_no_consent">Disagree</string>
     <string name="firstLaunchMeasures_text_measures">The app will measure:</string>
     <string name="firstLaunchMeasures_text_network_location">Coarse location (network-based)</string>
     <string name="firstLaunchMeasures_text_answers">Answers to the questions</string>
@@ -76,5 +73,17 @@
     <string name="pollNotification_title">Day Dreaming</string>
     <string name="pollNotification_text">A few quick questions</string>
     <string name="questionActivity_catch_key">Press again to exit.\nYou\'ll lose these questions!</string>
-    
+
+    <string name="firstLaunchPull_title_activity">Pull Questions</string>
+    <string name="firstLaunchPull_text_intro">We will now fetch content from our servers.\nThis should take no more than a few seconds</string>
+    <string name="firstLaunchPull_text_downloading">Download : Waiting for connection</string>
+    <string name="firstLaunchPull_text_data_enabled">Network connection</string>
+    <string name="firstLaunchPull_text_settings_necessary">You are not connected to the internet, please change your settings.</string>
+    <string name="firstLaunchPull_button_settings">Settings</string>
+    <string name="firstLaunchPull_button_next">Continue</string>
+
+    <string name="firstLaunchTerms_title_activity">Consent</string>
+    <string name="firstLaunchTerms_text_title">Consent</string>
+    <string name="firstLaunchTerms_text_consent">Consent</string>
+    <string name="firstLaunchTerms_button_next">Next</string>
 </resources>

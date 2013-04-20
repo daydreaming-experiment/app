@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.util.Log;
 
 import com.brainydroid.daydreaming.ui.Config;
@@ -19,9 +20,7 @@ public class StatusManager {
 	private static StatusManager smInstance = null;
 
 	private static final String EXP_STATUS = "expStatus"; // status of experiment
-	private static final String FL_STARTED = "flStarted"; // first launch started
-	private static final String FL_COMPLETED = "flCompleted"; // first launch completed
-	private static final String IS_CLEARING = "isClearing";
+	private static final String EXP_STATUS_FL_COMPLETED = "expStatusFlCompleted"; // first launch completed
 
 	private final SharedPreferences expStatus; // file containing status of exp
 	private final SharedPreferences.Editor eExpStatus; // editor of expStatus
@@ -29,7 +28,7 @@ public class StatusManager {
 	private final LocationManager locationManager;
 	private final ConnectivityManager connManager;
 	private NetworkInfo networkInfo;
-	private final Context _context; // application environment
+	private final Context context; // application environment
 
 	public static synchronized StatusManager getInstance(Context context) {
 
@@ -55,37 +54,12 @@ public class StatusManager {
 			Log.d(TAG, "[fn] StatusManager");
 		}
 
-		_context = context.getApplicationContext();
-		expStatus = _context.getSharedPreferences(EXP_STATUS, Context.MODE_PRIVATE);
+		this.context = context.getApplicationContext();
+		expStatus = this.context.getSharedPreferences(EXP_STATUS, Context.MODE_PRIVATE);
 		eExpStatus = expStatus.edit();
-		locationManager = (LocationManager)_context.getSystemService(Context.LOCATION_SERVICE);
-		connManager = (ConnectivityManager)_context.getSystemService(Context.CONNECTIVITY_SERVICE);
+		locationManager = (LocationManager)this.context.getSystemService(Context.LOCATION_SERVICE);
+		connManager = (ConnectivityManager)this.context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		networkInfo = connManager.getActiveNetworkInfo();
-	}
-
-	/*
-	 * Check if activity was already launched
-	 */
-	public boolean isFirstLaunchStarted() {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] isFirstLaunchStarted");
-		}
-
-		return expStatus.getBoolean(FL_STARTED, false);
-	}
-
-
-	public void setFirstLaunchStarted() {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] setFirstLaunchStarted");
-		}
-
-		eExpStatus.putBoolean(FL_STARTED, true);
-		eExpStatus.commit();
 	}
 
 	/*
@@ -98,7 +72,7 @@ public class StatusManager {
 			Log.d(TAG, "[fn] isFirstLaunchCompleted");
 		}
 
-		return expStatus.getBoolean(FL_COMPLETED, false);
+		return expStatus.getBoolean(EXP_STATUS_FL_COMPLETED, false);
 	}
 
 	public void setFirstLaunchCompleted() {
@@ -108,7 +82,7 @@ public class StatusManager {
 			Log.d(TAG, "[fn] setFirstLaunchCompleted");
 		}
 
-		eExpStatus.putBoolean(FL_COMPLETED, true);
+		eExpStatus.putBoolean(EXP_STATUS_FL_COMPLETED, true);
 		eExpStatus.commit();
 	}
 
@@ -119,48 +93,13 @@ public class StatusManager {
 			Log.d(TAG, "[fn] isLocationServiceRunning");
 		}
 
-		ActivityManager manager = (ActivityManager)_context.getSystemService(Context.ACTIVITY_SERVICE);
+		ActivityManager manager = (ActivityManager)context.getSystemService(Context.ACTIVITY_SERVICE);
 		for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
 			if (LocationService.class.getName().equals(service.service.getClassName())) {
 				return true;
 			}
 		}
 		return false;
-	}
-
-	public boolean isClearing() {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] isClearing");
-		}
-
-		return expStatus.getBoolean(IS_CLEARING, false);
-	}
-
-	// Clearing expstatus
-	public void startClear() {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] startClear");
-		}
-
-		eExpStatus.clear();
-		eExpStatus.putBoolean(IS_CLEARING, true);
-		eExpStatus.commit();
-	}
-
-	public void finishClear() {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] finishClear");
-		}
-
-		eExpStatus.clear();
-		eExpStatus.commit();
-		smInstance = null;
 	}
 
 	public boolean isNetworkLocEnabled() {
@@ -181,8 +120,7 @@ public class StatusManager {
 		}
 
 		networkInfo = connManager.getActiveNetworkInfo();
-		return networkInfo != null && networkInfo.isConnectedOrConnecting();
-	}
+        return ( ( networkInfo != null && networkInfo.isConnectedOrConnecting() )||( Build.FINGERPRINT.startsWith("generic") ) );	}
 
 	public boolean isDataAndLocationEnabled() {
 

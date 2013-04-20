@@ -137,7 +137,7 @@ public class SyncService extends Service {
 					serverTalker = ServerTalker.getInstance(SERVER_NAME, cryptoStorage);
 
 					if (hasKeyPairAndMaiId && status.isDataEnabled()) {
-						asyncUpdateQuestions();
+						//asyncUpdateQuestions(); // Line commented not to update questions at each launch of the SyncService
 						asyncUploadPolls();
                         asyncUploadLocationItems();
 					}

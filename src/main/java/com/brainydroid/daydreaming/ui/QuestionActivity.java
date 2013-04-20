@@ -21,6 +21,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.actionbarsherlock.app.SherlockDialogFragment;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.LocationCallback;
 import com.brainydroid.daydreaming.background.LocationServiceConnection;
@@ -32,7 +34,7 @@ import com.brainydroid.daydreaming.db.Question;
 import com.brainydroid.daydreaming.network.SntpClient;
 import com.brainydroid.daydreaming.network.SntpClientCallback;
 
-public class QuestionActivity extends ActionBarActivity {
+public class QuestionActivity extends SherlockFragmentActivity {
 
 	private static String TAG = "QuestionActivity";
 
@@ -41,7 +43,6 @@ public class QuestionActivity extends ActionBarActivity {
 
 	public static long BACK_REPEAT_DELAY = 2 * 1000; // 2 seconds, in milliseconds
 
-	private PollsStorage pollsStorage;
 	private int pollId;
 	private Poll poll;
 	private int questionIndex;
@@ -54,7 +55,7 @@ public class QuestionActivity extends ActionBarActivity {
 
 	private LocationServiceConnection locationServiceConnection;
 
-	public static class LocationAlertDialogFragment extends DialogFragment {
+	public static class LocationAlertDialogFragment extends SherlockDialogFragment {
 
 		private static String TAG = "LocationAlertDialogFragment";
 
@@ -86,14 +87,13 @@ public class QuestionActivity extends ActionBarActivity {
 			int text = getArguments().getInt("text");
 			int posText = getArguments().getInt("posText");
 
-			AlertDialog.Builder alertSettings = new AlertDialog.Builder(getActivity())
+			AlertDialog.Builder alertSettings = new AlertDialog.Builder(getSherlockActivity())
 			.setTitle(title)
 			.setMessage(text)
 			.setPositiveButton(posText,
 					new DialogInterface.OnClickListener() {
-				@Override
 				public void onClick(DialogInterface dialog, int whichButton) {
-					((QuestionActivity)getActivity()).launchSettings();
+					((QuestionActivity)getSherlockActivity()).launchSettings();
 				}
 			}).setIcon(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ?
 					R.drawable.ic_action_about_holo_light : R.drawable.ic_action_about_holo_dark);
@@ -192,7 +192,7 @@ public class QuestionActivity extends ActionBarActivity {
 		}
 
 		Intent intent = getIntent();
-		pollsStorage = PollsStorage.getInstance(this);
+		PollsStorage pollsStorage = PollsStorage.getInstance(this);
 		pollId = intent.getIntExtra(EXTRA_POLL_ID, -1);
 		poll = pollsStorage.getPoll(pollId);
 		questionIndex = intent.getIntExtra(EXTRA_QUESTION_INDEX, -1);
@@ -235,7 +235,6 @@ public class QuestionActivity extends ActionBarActivity {
 
 			private final String TAG = "SntpClientCallback";
 
-			@Override
 			public void onTimeReceived(SntpClient sntpClient) {
 
 				// Debug
@@ -257,7 +256,6 @@ public class QuestionActivity extends ActionBarActivity {
 
 			private final String TAG = "LocationCallback";
 
-			@Override
 			public void onLocationReceived(Location location) {
 
 				// Debug
@@ -297,7 +295,7 @@ public class QuestionActivity extends ActionBarActivity {
 		}
 	}
 
-	public void onClick_nextButton(View view) {
+	public void onClick_nextButton(@SuppressWarnings("UnusedParameters") View view) {
 
 		// Debug
 		if (Config.LOGD) {

@@ -9,19 +9,19 @@
             android:defaultValue="true"
             android:key="notification_sound_key"
             android:persistent="true"
-            android:title="@string/notif_sound" />
+            android:title="@string/notification_sound" />
 
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="notification_vibrator_key"
             android:persistent="true"
-            android:title="@string/notif_vibrator" />
+            android:title="@string/notification_vibrator" />
 
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="notification_blink_key"
             android:persistent="true"
-            android:title="@string/notif_led" />
+            android:title="@string/notification_led" />
     </PreferenceCategory>
 
     <PreferenceCategory
