@@ -6,14 +6,15 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.util.Log;
 import android.view.View;
 
+import com.actionbarsherlock.app.SherlockDialogFragment;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.StatusManager;
 
-public class FirstLaunchDescriptionActivity extends ActionBarActivity {
+public class FirstLaunchDescriptionActivity extends SherlockFragmentActivity {
 
 	private static String TAG = "FirstLaunchDescriptionActivity";
 
@@ -68,14 +69,14 @@ public class FirstLaunchDescriptionActivity extends ActionBarActivity {
 		overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
 	}
 
-	public void onClick_buttonNext(View view) {
+	public void onClick_buttonNext(@SuppressWarnings("UnusedParameters") View view) {
 
 		// Debug
 		if (Config.LOGD) {
 			Log.d(TAG, "[fn] onClick_buttonNext");
 		}
 
-		DialogFragment consentAlert = ConsentAlertDialogFragment.newInstance(
+		SherlockDialogFragment consentAlert = ConsentAlertDialogFragment.newInstance(
 				R.string.consentAlert_title,
 				R.string.consentAlert_text,
 				R.string.consentAlert_button_notconsent,
@@ -108,7 +109,7 @@ public class FirstLaunchDescriptionActivity extends ActionBarActivity {
 		}
 	}
 
-	public static class ConsentAlertDialogFragment extends DialogFragment {
+	public static class ConsentAlertDialogFragment extends SherlockDialogFragment {
 
 		private static String TAG = "ConsentAlertDialogFragment";
 
@@ -152,14 +153,12 @@ public class FirstLaunchDescriptionActivity extends ActionBarActivity {
 			.setMessage(text)
 			.setNegativeButton(negText,
 					new DialogInterface.OnClickListener() {
-				@Override
 				public void onClick(DialogInterface dialog, int whichButton) {
 					dialog.cancel();
 				}
 			})
 			.setPositiveButton(posText,
 					new DialogInterface.OnClickListener() {
-				@Override
 				public void onClick(DialogInterface dialog, int whichButton) {
 					((FirstLaunchDescriptionActivity)getActivity()).launchProfileActivity();
 				}

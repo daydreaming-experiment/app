@@ -16,6 +16,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.LocationItemService;
 import com.brainydroid.daydreaming.background.SchedulerService;
@@ -23,7 +25,7 @@ import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.db.QuestionsStorage;
 import com.brainydroid.daydreaming.db.Util;
 
-public class FirstLaunchMeasuresActivity extends ActionBarActivity {
+public class FirstLaunchMeasuresActivity extends SherlockActivity {
 
 	private static String TAG = "FirstLaunchMeasuresActivity";
 
