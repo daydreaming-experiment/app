@@ -8,11 +8,16 @@ import android.widget.TextView;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.StatusManager;
+import com.brainydroid.daydreaming.db.Util;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 public class FirstLaunchTermsActivity  extends SherlockActivity {
 
     private static String TAG = "FirstLaunchTermsActivity";
 
+    TextView consent;
     private StatusManager status;
 
     @Override
@@ -26,10 +31,9 @@ public class FirstLaunchTermsActivity  extends SherlockActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_first_launch_terms);
 
-        TextView consent = (TextView)findViewById(R.id.firstLaunchTerms_textConsent);
-        consent.setText(getString(R.raw.terms));
-
+        consent = (TextView)findViewById(R.id.firstLaunchTerms_textConsent);
         status = StatusManager.getInstance(this);
+        populateConsent();
     }
 
     @Override
@@ -90,6 +94,16 @@ public class FirstLaunchTermsActivity  extends SherlockActivity {
         overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
     }
 
+    private void populateConsent() {
+        try {
+            InputStream termsIS = getResources().openRawResource(R.raw.terms);
+            consent.setText(Util.convertStreamToString(termsIS));
+            termsIS.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void checkFirstLaunch() {
 
         // Debug
@@ -101,6 +115,5 @@ public class FirstLaunchTermsActivity  extends SherlockActivity {
             finish();
         }
     }
-
 
 }
