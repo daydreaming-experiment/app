@@ -84,14 +84,14 @@ public class FirstLaunchDescriptionActivity extends SherlockFragmentActivity {
 		consentAlert.show(getSupportFragmentManager(), "consentAlert");
 	}
 
-	private void launchProfileActivity() {
+	private void launchTermsActivity() {
 
 		// Debug
 		if (Config.LOGD) {
-			Log.d(TAG, "[fn] launchProfileActivity");
+			Log.d(TAG, "[fn] launchTermsActivity");
 		}
 
-		Intent intent = new Intent(this, FirstLaunchProfileActivity.class);
+		Intent intent = new Intent(this, FirstLaunchTermsActivity.class);
 		intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
 		startActivity(intent);
 		overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
@@ -160,7 +160,7 @@ public class FirstLaunchDescriptionActivity extends SherlockFragmentActivity {
 			.setPositiveButton(posText,
 					new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int whichButton) {
-					((FirstLaunchDescriptionActivity)getActivity()).launchProfileActivity();
+					((FirstLaunchDescriptionActivity)getActivity()).launchTermsActivity();
 				}
 			}).setIcon(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ?
 					R.drawable.ic_action_about_holo_light : R.drawable.ic_action_about_holo_dark);

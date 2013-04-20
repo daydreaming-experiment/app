@@ -10,6 +10,16 @@ import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.StatusManager;
 
 public class FirstLaunchWelcomeActivity extends SherlockActivity {
+/*
+ * Activity at first launch
+ *
+ * In first launch sequence of apps
+ *
+ * Previous activity :  none
+ * This activity     :  FirstLaunchWelcomeActivity
+ * Next activity     :  FirstLaunchDescriptionActivity
+ *
+ */
 
 	private static String TAG = "FirstLaunchWelcomeActivity";
 
@@ -52,7 +62,7 @@ public class FirstLaunchWelcomeActivity extends SherlockActivity {
 		super.onResume();
 	}
 
-	public void onClick_start(View view) {
+	public void onClick_start(@SuppressWarnings("UnusedParameters") View view) {
 
 		// Debug
 		if (Config.LOGD) {
