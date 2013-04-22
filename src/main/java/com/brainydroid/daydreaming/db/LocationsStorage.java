@@ -1,19 +1,19 @@
 package com.brainydroid.daydreaming.db;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import com.brainydroid.daydreaming.ui.Config;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import java.util.ArrayList;
 
+@Singleton
 public class LocationsStorage {
 
 	private static String TAG = "LocationsStorage";
-
-	private static LocationsStorage lsInstance = null;
 
 	private static final String TABLE_LOCATIONS = "locations";
 
@@ -27,37 +27,19 @@ public class LocationsStorage {
                     LocationItem.COL_TIMESTAMP + " REAL" +
 					");";
 
-	private static final String SQL_DROP_TABLE_LOCATIONS =
-			"DROP TABLE IF EXISTS " + TABLE_LOCATIONS + ";";
+    @Inject Storage storage;
 
-	private final Storage storage;
 	private final SQLiteDatabase rDb;
 	private final SQLiteDatabase wDb;
-	private final Context _context;
-
-	public static synchronized LocationsStorage getInstance(Context context) {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] getInstance");
-		}
-
-		if (lsInstance == null) {
-			lsInstance = new LocationsStorage(context);
-		}
-		return lsInstance;
-	}
 
 	// Constructor from context
-	private LocationsStorage(Context context) {
+	private LocationsStorage() {
 
 		// Debug
 		if (Config.LOGD) {
 			Log.d(TAG, "[fn] LocationsStorage");
 		}
 
-		_context = context.getApplicationContext();
-		storage = Storage.getInstance(_context);
 		rDb = storage.getWritableDatabase();
 		wDb = storage.getWritableDatabase();
 		wDb.execSQL(SQL_CREATE_TABLE_LOCATIONS); // creates db fields
@@ -135,7 +117,7 @@ public class LocationsStorage {
 			return null;
 		}
 
-		LocationItem locationItem = new LocationItem(_context);
+		LocationItem locationItem = new LocationItem();
 		locationItem.setId(res.getInt(res.getColumnIndex(LocationItem.COL_ID)));
         locationItem.setLocationLatitude(res.getDouble(res.getColumnIndex(LocationItem.COL_LOCATION_LATITUDE)));
         locationItem.setLocationLongitude(res.getDouble(res.getColumnIndex(LocationItem.COL_LOCATION_LONGITUDE)));
@@ -155,16 +137,6 @@ public class LocationsStorage {
 		}
 
 		return getAllLocationItems();
-	}
-
-	public void cleanLocationItems() {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] cleanLocationItems");
-		}
-
-        flushAll();
 	}
 
 	private ArrayList<Integer> getAllLocationItemIds() {
@@ -220,26 +192,5 @@ public class LocationsStorage {
 		}
 
 		wDb.delete(TABLE_LOCATIONS, LocationItem.COL_ID + "=?", new String[] {Integer.toString(locationItemId)});
-	}
-
-	public void flushAll() {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] flushAll");
-		}
-
-		wDb.delete(TABLE_LOCATIONS, null, null);
-	}
-
-	public void dropAll() {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] dropAll");
-		}
-
-		wDb.execSQL(SQL_DROP_TABLE_LOCATIONS);
-		lsInstance = null;
 	}
 }

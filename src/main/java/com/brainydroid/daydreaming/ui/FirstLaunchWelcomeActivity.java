@@ -4,9 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import com.actionbarsherlock.app.SherlockActivity;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.StatusManager;
+import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockActivity;
+import com.google.inject.Inject;
+import roboguice.inject.ContentView;
 
 /*
  * Activity at first launch
@@ -18,11 +20,12 @@ import com.brainydroid.daydreaming.background.StatusManager;
  * Next activity     :  FirstLaunchDescriptionActivity
  *
  */
-public class FirstLaunchWelcomeActivity extends SherlockActivity {
+@ContentView(R.layout.activity_first_launch_welcome)
+public class FirstLaunchWelcomeActivity extends RoboSherlockActivity {
 
 	private static String TAG = "FirstLaunchWelcomeActivity";
 
-	private StatusManager status;
+	@Inject StatusManager statusManager;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -33,10 +36,6 @@ public class FirstLaunchWelcomeActivity extends SherlockActivity {
 		}
 
 		super.onCreate(savedInstanceState);
-
-        status = StatusManager.getInstance(this);
-
-		setContentView(R.layout.activity_first_launch_welcome);
 	}
 
 	@Override
@@ -82,7 +81,7 @@ public class FirstLaunchWelcomeActivity extends SherlockActivity {
 			Log.d(TAG, "[fn] checkFirstLaunch");
 		}
 
-		if (status.isFirstLaunchCompleted()) {
+		if (statusManager.isFirstLaunchCompleted()) {
 			finish();
 		}
 	}

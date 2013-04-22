@@ -14,8 +14,11 @@ import com.brainydroid.daydreaming.background.LocationItemService;
 import com.brainydroid.daydreaming.background.SchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
 import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockActivity;
+import com.google.inject.Inject;
+import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
+@ContentView(R.layout.activity_first_launch_measures)
 public class FirstLaunchMeasuresActivity extends RoboSherlockActivity {
 
 	private static String TAG = "FirstLaunchMeasuresActivity";
@@ -24,8 +27,7 @@ public class FirstLaunchMeasuresActivity extends RoboSherlockActivity {
     @InjectView(R.id.firstLaunchMeasures_textSettings) TextView textSettings;
     @InjectView(R.id.firstLaunchMeasures_buttonSettings) Button buttonSettings;
     @InjectView(R.id.firstLaunchMeasures_buttonNext) Button buttonNext;
-
-	private StatusManager status;
+    @Inject StatusManager statusManager;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -37,11 +39,7 @@ public class FirstLaunchMeasuresActivity extends RoboSherlockActivity {
 
 		super.onCreate(savedInstanceState);
 
-		setContentView(R.layout.activity_first_launch_measures);
-
-		status = StatusManager.getInstance(this);
-
-		if (status.isNetworkLocEnabled()) {
+		if (statusManager.isNetworkLocEnabled()) {
 			launchDashboard();
 		}
 	}
@@ -90,7 +88,7 @@ public class FirstLaunchMeasuresActivity extends RoboSherlockActivity {
 			Log.d(TAG, "[fn] checkFirstLaunch");
 		}
 
-		if (status.isFirstLaunchCompleted()) {
+		if (statusManager.isFirstLaunchCompleted()) {
 			finish();
 		}
 	}
@@ -103,7 +101,7 @@ public class FirstLaunchMeasuresActivity extends RoboSherlockActivity {
 		}
 
 		textNetworkLocation.setCompoundDrawablesWithIntrinsicBounds(
-				status.isNetworkLocEnabled() ? R.drawable.ic_check : R.drawable.ic_cross, 0, 0, 0);
+				statusManager.isNetworkLocEnabled() ? R.drawable.ic_check : R.drawable.ic_cross, 0, 0, 0);
 
 		updateRequestAdjustSettings();
 	}
@@ -115,7 +113,7 @@ public class FirstLaunchMeasuresActivity extends RoboSherlockActivity {
 			Log.d(TAG, "[fn] updateRequestAdjustSettings");
 		}
 
-		if ((status.isNetworkLocEnabled())||(Build.FINGERPRINT.startsWith("generic"))) {
+		if ((statusManager.isNetworkLocEnabled()) || (Build.FINGERPRINT.startsWith("generic"))) {
 			setAdjustSettingsOff();
 		} else {
 			setAdjustSettingsNecessary();
@@ -134,11 +132,13 @@ public class FirstLaunchMeasuresActivity extends RoboSherlockActivity {
 		textSettings.setVisibility(View.VISIBLE);
 		buttonSettings.setVisibility(View.VISIBLE);
 		buttonSettings.setClickable(true);
+
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			buttonNext.setAlpha(0.3f);
 		} else {
 			buttonNext.setVisibility(View.INVISIBLE);
 		}
+
 		buttonNext.setClickable(false);
 	}
 
@@ -153,11 +153,13 @@ public class FirstLaunchMeasuresActivity extends RoboSherlockActivity {
 		textSettings.setVisibility(View.INVISIBLE);
 		buttonSettings.setVisibility(View.INVISIBLE);
 		buttonSettings.setClickable(false);
+
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			buttonNext.setAlpha(1f);
 		} else {
 			buttonNext.setVisibility(View.VISIBLE);
 		}
+
 		buttonNext.setClickable(true);
 	}
 
@@ -214,25 +216,25 @@ public class FirstLaunchMeasuresActivity extends RoboSherlockActivity {
 			Log.d(TAG, "[fn] finishFirstLaunch");
 		}
 
-		status.setFirstLaunchCompleted();
+		statusManager.setFirstLaunchCompleted();
 
-        // TODO: clean this up and re-activate counterpart in DashboardActivity
-        // saving actual date to string in sharedPreferences
+//        // TODO: clean this up and re-activate counterpart in DashboardActivity
+//        // saving actual date to string in sharedPreferences
 //        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd G 'at' HH:mm:ss z");//("MM/dd/yyyy");
 //        String StartDateString = dateFormat.format(new Date());
 //        SharedPreferences sharedPrefs = getSharedPreferences("startDatePrefs", 0);
 //        SharedPreferences.Editor editor = sharedPrefs.edit();
 //        editor.putString("startDateString", StartDateString);
 //        editor.commit();
-        //-----------------------
+//        //-----------------------
 
 
 		Intent schedulerServiceIntent = new Intent(this, SchedulerService.class);
 		startService(schedulerServiceIntent);
 
         Intent locationItemServiceIntent = new Intent(this, LocationItemService.class);
-        if (!(Build.FINGERPRINT.startsWith("generic"))){
-        startService(locationItemServiceIntent);
+        if (!(Build.FINGERPRINT.startsWith("generic"))) {
+            startService(locationItemServiceIntent);
         }
 	}
 

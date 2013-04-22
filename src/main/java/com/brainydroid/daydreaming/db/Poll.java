@@ -1,13 +1,12 @@
 package com.brainydroid.daydreaming.db;
 
-import java.util.ArrayList;
-
-import android.content.Context;
 import android.util.Log;
 import android.widget.LinearLayout;
-
 import com.brainydroid.daydreaming.ui.Config;
 import com.google.gson.annotations.Expose;
+import com.google.inject.Inject;
+
+import java.util.ArrayList;
 
 public class Poll {
 
@@ -15,16 +14,14 @@ public class Poll {
 
 	@Expose private String status;
 	@Expose private int questionsVersion;
-	@Expose private ArrayList<Question> questions;
-	@Expose private int subjectAge;
+	@Expose @Inject private ArrayList<Question> questions;
 	@Expose private long notificationTimestamp;
 	private transient int _id;
 
 	public static final String COL_ID = "pollId";
 	public static final String COL_STATUS = "pollStatus";
 	public static final String COL_NOTIFICATION_TIMESTAMP = "pollNotificationTimestamp";
-	public static final String COL_QUESTIONS_VERSION = "pollQestionsVersion";
-	public static final String COL_KEEP_IN_SYNC = "pollKeepInSync";
+	public static final String COL_QUESTIONS_VERSION = "pollQuestionsVersion";
 
 	public static final String STATUS_PENDING = "pollPending"; // Notification has appeared
 	public static final String STATUS_EXPIRED = "pollExpired"; // Notification waited for too long or was dismissed
@@ -32,37 +29,29 @@ public class Poll {
 	public static final String STATUS_PARTIALLY_COMPLETED = "pollPartiallyCompleted"; // QuestionActivity was stopped, and Poll expired
 	public static final String STATUS_COMPLETED = "pollCompleted"; // QuestionActivity completed
 
-	public static final int KEEP_IN_SYNC_OFF = 0;
-	public static final int KEEP_IN_SYNC_ON = 1;
+    @Inject transient PollsStorage pollsStorage;
+    @Inject transient QuestionsStorage questionsStorage;
 
-	private transient final Context _context;
-	private transient final PollsStorage pollsStorage;
-	private transient final QuestionsStorage questionsStorage;
-
-	public Poll(Context context) {
+	public Poll() {
 
 		// Debug
 		if (Config.LOGD) {
 			Log.d(TAG, "[fn] Poll");
 		}
 
-		_context = context.getApplicationContext();
 		_id = -1;
 		status = null;
-		questionsVersion = QuestionsStorage.getInstance(_context).getQuestionsVersion();
-		questions = new ArrayList<Question>();
-		pollsStorage = PollsStorage.getInstance(_context);
-		questionsStorage = QuestionsStorage.getInstance(_context);
+		questionsVersion = questionsStorage.getQuestionsVersion();
 	}
 
-	public static Poll create(Context context, int nQuestions) {
+	public static Poll create(int nQuestions) {
 
 		// Debug
 		if (Config.LOGD) {
 			Log.d(TAG, "[fn] create");
 		}
 
-		Poll poll = new Poll(context);
+		Poll poll = new Poll();
 		poll.populateQuestions(nQuestions);
 		return poll;
 	}
@@ -105,18 +94,6 @@ public class Poll {
 		}
 
 		return questions.get(index);
-	}
-
-	public Question popQuestionByIndex(int index) {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] popQuestionByIndex");
-		}
-
-		Question q = getQuestionByIndex(index);
-		questions.remove(index);
-		return q;
 	}
 
 	public int getLength() {

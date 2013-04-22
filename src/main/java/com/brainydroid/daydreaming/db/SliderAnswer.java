@@ -14,24 +14,14 @@ import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.ui.Config;
 import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
+import com.google.inject.Inject;
 
 public class SliderAnswer implements Answer {
 
 	private static String TAG = "SliderAnswer";
 
-	private transient Gson gson;
-	@Expose private final HashMap<String,Integer> sliders;
-
-	public SliderAnswer() {
-
-		//Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] SliderAnswer");
-		}
-
-		sliders = new HashMap<String,Integer>();
-		gson = new Gson();
-	}
+	@Expose @Inject private HashMap<String,Integer> sliders;
+    @Inject private transient Gson gson;
 
 	@Override
 	public String toJson() {
@@ -53,10 +43,8 @@ public class SliderAnswer implements Answer {
 		}
 
 		ArrayList<View> subQuestions = Question.getViewsByTag(questionLinearLayout, "subquestion");
-		Iterator<View> subQuestionsIt = subQuestions.iterator();
 
-		while (subQuestionsIt.hasNext()) {
-			View subQuestion = subQuestionsIt.next();
+		for (View subQuestion : subQuestions) {
 			SeekBar seekBar = (SeekBar)subQuestion.findViewById(
 					R.id.question_slider_seekBar);
 			TextView mainTextView = (TextView)subQuestion.findViewById(R.id.question_slider_mainText);

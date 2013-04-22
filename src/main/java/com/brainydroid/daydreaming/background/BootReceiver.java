@@ -6,12 +6,13 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.brainydroid.daydreaming.ui.Config;
+import com.google.inject.Inject;
 
 public class BootReceiver extends BroadcastReceiver {
 
-	private static String TAG = "BootReceiver";
+	public static String TAG = "BootReceiver";
 
-	private StatusManager status;
+	@Inject StatusManager statusManager;
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
@@ -21,7 +22,6 @@ public class BootReceiver extends BroadcastReceiver {
 			Log.d(TAG, "[fn] onReceive");
 		}
 
-		status = StatusManager.getInstance(context);
 		String action = intent.getAction();
 
 		if (action.equals(Intent.ACTION_BOOT_COMPLETED)) {
@@ -29,7 +29,7 @@ public class BootReceiver extends BroadcastReceiver {
 			// Info
 			Log.i(TAG, "Received ACTION_BOOT_COMPLETED");
 
-			if (status.isFirstLaunchCompleted()) {
+			if (statusManager.isFirstLaunchCompleted()) {
 
 				// Info
 				Log.i(TAG, "first launch is completed");

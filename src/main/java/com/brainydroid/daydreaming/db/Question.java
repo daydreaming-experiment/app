@@ -1,12 +1,5 @@
 package com.brainydroid.daydreaming.db;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-
 import android.content.Context;
 import android.graphics.Color;
 import android.location.Location;
@@ -17,22 +10,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
+import android.widget.*;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.ui.Config;
 import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
+import com.google.inject.Inject;
 
-import android.graphics.drawable.ColorDrawable;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 
 // this class defines the general structure of questions and their answer.
 // These attributes will be saved
@@ -43,6 +33,11 @@ import android.graphics.drawable.ColorDrawable;
 public class Question {
 
 	private static String TAG = "Question";
+
+    @Inject transient QuestionsStorage questionsStorage;
+    @Inject transient LayoutInflater layoutInflater;
+    @Inject transient Context context;
+    @Inject transient Gson gson;
 
 	// attributes inherent to the question
 	@Expose private String id;
@@ -62,8 +57,6 @@ public class Question {
 	@Expose private double locationAltitude;
 	@Expose private double locationAccuracy;
 	@Expose private long timestamp;
-
-	private transient Gson gson;
 
 	public static final String PARAMETER_SPLITTER = "\\{s\\}";
 	public static final String SUBPARAMETER_SPLITTER = "\\{ss\\}";
@@ -88,21 +81,11 @@ public class Question {
 	public static final String STATUS_ASKED_DISMISSED = "questionAskedDismissed";
 	public static final String STATUS_ANSWERED = "questionAnswered";
 
-	public static final String CATEGORY_MIND_WANDERING = "mindWandering";
-	public static final String CATEGORY_CURRENT_ACTIVITY = "currentActivity";
-	public static final String CATEGORY_AFFECTIVE_STATE = "affectiveState";
-
-	public static final Set<String> CATEGORIES_WITH_SUBCATEGORIES =
-			new HashSet<String>(Arrays.asList(new String[] {"mindWandering"}));
-	public static final String SUBCATEGORY_CONTENT = "content";
-	public static final String SUBCATEGORY_QUALITIES = "qualities";
-
 	public static final String TYPE_SLIDER = "slider";
 	public static final String TYPE_MULTIPLE_CHOICE = "multipleChoice";
-	public static final String TYPE_SINGLE_CHOICE = "singleChoice";
 
 	// constructor : sets default values
-	public Question(Context context) {
+	public Question() {
 
 		// Debug
 		if (Config.LOGD) {
@@ -110,27 +93,7 @@ public class Question {
 		}
 
 		initVars();
-		questionsVersion = QuestionsStorage.getInstance(context).getQuestionsVersion();
-	}
-
-	// constructor from fields values
-	public Question(Context context, String id, String category, String subcategory, String type,
-			String mainText, String parametersText, int defaultPosition) {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] Question (argset 2: full)");
-		}
-
-		initVars();
-		setId(id);
-		setCategory(category);
-		setSubcategory(subcategory);
-		setType(type);
-		setMainText(mainText);
-		setParametersText(parametersText);
-		setDefaultPosition(defaultPosition);
-		setQuestionsVersion(QuestionsStorage.getInstance(context).getQuestionsVersion());
+		questionsVersion = questionsStorage.getQuestionsVersion();
 	}
 
 	// default initialization of a question
@@ -156,7 +119,6 @@ public class Question {
 		locationAccuracy = -1;
 		timestamp = -1;
 		questionsVersion = -1;
-		gson = new Gson();
 	}
 
 	//-------------------------- set / get functions
@@ -560,27 +522,22 @@ public class Question {
 		return views;
 	}
 
-	public ArrayList<View> createViews(Context context) {
+	public ArrayList<View> createViews() {
 
 		// Debug
 		if (Config.LOGD) {
 			Log.d(TAG, "[fn] createViews");
 		}
 
-		Context _context = context;
-		LayoutInflater inflater = (LayoutInflater)_context.getSystemService(
-				Context.LAYOUT_INFLATER_SERVICE);
 		if (type.equals(TYPE_SLIDER)) {
-			return createViewsSlider(inflater);
-			//		} else if (_type.equals(TYPE_SINGLE_CHOICE)) {
-			//			return createViewsSingleChoice(inflater);
+			return createViewsSlider();
 		} else if (type.equals(TYPE_MULTIPLE_CHOICE)) {
-			return createViewsMultipleChoice(inflater);
+			return createViewsMultipleChoice();
 		}
 		return null;
 	}
 
-	private ArrayList<View> createViewsSlider(LayoutInflater inflater) {
+	private ArrayList<View> createViewsSlider() {
 
 		// Debug
 		if (Config.LOGD) {
@@ -598,7 +555,7 @@ public class Question {
 			String mainText = mtIt.next();
 			final ArrayList<String> parametersTexts = ptsIt.next();
 
-			View view = inflater.inflate(R.layout.question_slider, null);
+			View view = layoutInflater.inflate(R.layout.question_slider, null);
 			TextView qText = (TextView)view.findViewById(R.id.question_slider_mainText);
 			qText.setText(mainText);
 			TextView leftHintText = (TextView)view.findViewById(R.id.question_slider_leftHint);
@@ -643,7 +600,7 @@ public class Question {
 		return views;
 	}
 
-	private ArrayList<View> createViewsMultipleChoice(LayoutInflater inflater) {
+	private ArrayList<View> createViewsMultipleChoice() {
 
 		// Debug
 		if (Config.LOGD) {
@@ -661,7 +618,7 @@ public class Question {
 			String mainText = mtIt.next();
 			final ArrayList<String> parametersTexts = ptsIt.next();
 
-			View view = inflater.inflate(R.layout.question_multiple_choice, null);
+			View view = layoutInflater.inflate(R.layout.question_multiple_choice, null);
 			TextView qText = (TextView)view.findViewById(R.id.question_multiple_choice_mainText);
 			qText.setText(mainText);
 			final CheckBox otherCheck = (CheckBox)view.findViewById(R.id.question_multiple_choices_otherCheckBox);
@@ -703,15 +660,14 @@ public class Question {
 			};
 			otherEdit.setOnFocusChangeListener(otherEditFocusListener);
 
-			final Context context = inflater.getContext();
 			View.OnKeyListener onSoftKeyboardDonePress = new View.OnKeyListener() {
+
+                @Inject InputMethodManager inputMethodManager;
 
 				@Override
 				public boolean onKey(View v, int keyCode, KeyEvent event) {
 					if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
-						InputMethodManager inputMM = (InputMethodManager)context.getSystemService(
-								Context.INPUT_METHOD_SERVICE);
-						inputMM.hideSoftInputFromWindow(otherEdit.getApplicationWindowToken(), 0);
+						inputMethodManager.hideSoftInputFromWindow(otherEdit.getApplicationWindowToken(), 0);
 					}
 					return false;
 				}
@@ -719,11 +675,9 @@ public class Question {
 			otherEdit.setOnKeyListener(onSoftKeyboardDonePress);
 
 			LinearLayout checksLayout = (LinearLayout)view.findViewById(R.id.question_multiple_choice_rootChoices);
-			Iterator<String> ptIt = parametersTexts.iterator();
 
-			while (ptIt.hasNext()) {
-				String parameter = ptIt.next();
-				CheckBox checkBox = (CheckBox)inflater.inflate(R.layout.question_multiple_choices_item, null);
+			for (String parameter : parametersTexts) {
+				CheckBox checkBox = (CheckBox)layoutInflater.inflate(R.layout.question_multiple_choices_item, null);
 				checkBox.setText(parameter);
 				checksLayout.addView(checkBox);
 			}
@@ -736,7 +690,7 @@ public class Question {
 
 	// --- Validation functions
 
-	public boolean validate(Context context, LinearLayout questionsLinearLayout) {
+	public boolean validate(LinearLayout questionsLinearLayout) {
 
 		// Debug
 		if (Config.LOGD) {
@@ -744,15 +698,15 @@ public class Question {
 		}
 
 		if (type.equals(TYPE_SLIDER)) {
-			return validateSlider(context, questionsLinearLayout);
+			return validateSlider(questionsLinearLayout);
 		} else if (type.equals(TYPE_MULTIPLE_CHOICE)) {
-			return validateMultipleChoice(context, questionsLinearLayout);
+			return validateMultipleChoice(questionsLinearLayout);
 		}
 		return false;
 	}
 
 	// For slider, checks whether or not sliders were kept untouched
-	private boolean validateSlider(Context context, LinearLayout questionsLinearLayout) {
+	private boolean validateSlider(LinearLayout questionsLinearLayout) {
 
 		// Debug
 		if (Config.LOGD) {
@@ -760,14 +714,12 @@ public class Question {
 		}
 
 		ArrayList<View> subquestions = getViewsByTag(questionsLinearLayout, "subquestion");
-		boolean isMultiple = subquestions.size() > 1 ? true : false;
-		Iterator<View> subquestionsIt = subquestions.iterator();
+		boolean isMultiple = subquestions.size() > 1;
 
-		while (subquestionsIt.hasNext()) {
-			TextView selectedSeek = (TextView)subquestionsIt.next().
-					findViewById(R.id.question_slider_selectedSeek);
+		for (View subquestion : subquestions) {
+			TextView selectedSeek = (TextView)subquestion.findViewById(R.id.question_slider_selectedSeek);
 			if (selectedSeek.getText().equals(
-					context.getString(R.string.questionSlider_please_slide))) {
+                    context.getString(R.string.questionSlider_please_slide))) {
 				Toast.makeText(context,
 						context.getString(isMultiple ? R.string.questionSlider_sliders_untouched_multiple :
 							R.string.questionSlider_sliders_untouched_single),
@@ -779,8 +731,8 @@ public class Question {
 		return true;
 	}
 
-	// This will behave badly when there are multiple sub-multiplechoice questions
-	private boolean validateMultipleChoice(Context context, LinearLayout questionsLinearLayout) {
+	// This will behave badly when there are multiple sub-multiple choice questions
+	private boolean validateMultipleChoice(LinearLayout questionsLinearLayout) {
 
 		// Debug
 		if (Config.LOGD) {
@@ -788,11 +740,9 @@ public class Question {
 		}
 
 		ArrayList<View> subquestions = getViewsByTag(questionsLinearLayout, "subquestion");
-		Iterator<View> subquestionsIt = subquestions.iterator();
 
-		while (subquestionsIt.hasNext()) {
+		for (View subquestionLinearLayout : subquestions) {
 
-			LinearLayout subquestionLinearLayout = (LinearLayout)subquestionsIt.next();
 			LinearLayout rootChoices = (LinearLayout)subquestionLinearLayout.findViewById(
 					R.id.question_multiple_choice_rootChoices);
 			int childCount = rootChoices.getChildCount();
@@ -831,7 +781,7 @@ public class Question {
 		return true;
 	}
 
-	// Parsing subfunctions
+	// Parsing sub-functions
 
 	private ArrayList<String> parseString(String toParse, String sep) {
 

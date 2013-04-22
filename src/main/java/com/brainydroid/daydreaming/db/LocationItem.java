@@ -1,12 +1,10 @@
 package com.brainydroid.daydreaming.db;
 
-import android.content.Context;
 import android.location.Location;
 import android.util.Log;
 import com.brainydroid.daydreaming.ui.Config;
 import com.google.gson.annotations.Expose;
-
-import java.util.ArrayList;
+import com.google.inject.Inject;
 
 public class LocationItem {
 
@@ -27,19 +25,16 @@ public class LocationItem {
     public static final String COL_LOCATION_ACCURACY = "locationLocationAccuracy";
     public static final String COL_TIMESTAMP = "locationTimestamp";
 
-	private transient final Context _context;
-	private transient final LocationsStorage locationsStorage;
+    @Inject transient LocationsStorage locationsStorage;
 
-	public LocationItem(Context context) {
+	public LocationItem() {
 
 		// Debug
 		if (Config.LOGD) {
 			Log.d(TAG, "[fn] LocationItem");
 		}
 
-		_context = context.getApplicationContext();
 		_id = -1;
-        locationsStorage = LocationsStorage.getInstance(_context);
 	}
 
 	public int getId() {

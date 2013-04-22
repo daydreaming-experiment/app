@@ -9,18 +9,20 @@ import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.db.Util;
 import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockActivity;
+import com.google.inject.Inject;
+import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
 import java.io.IOException;
 import java.io.InputStream;
 
+@ContentView(R.layout.activity_first_launch_terms)
 public class FirstLaunchTermsActivity  extends RoboSherlockActivity {
 
     private static String TAG = "FirstLaunchTermsActivity";
 
     @InjectView(R.id.firstLaunchTerms_textConsent) TextView consent;
-
-    private StatusManager status;
+    @Inject StatusManager statusManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -31,9 +33,7 @@ public class FirstLaunchTermsActivity  extends RoboSherlockActivity {
         }
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_first_launch_terms);
 
-        status = StatusManager.getInstance(this);
         populateConsent();
     }
 
@@ -112,7 +112,7 @@ public class FirstLaunchTermsActivity  extends RoboSherlockActivity {
             Log.d(TAG, "[fn] checkFirstLaunch");
         }
 
-        if (status.isFirstLaunchCompleted()) {
+        if (statusManager.isFirstLaunchCompleted()) {
             finish();
         }
     }

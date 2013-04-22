@@ -1,7 +1,5 @@
 package com.brainydroid.daydreaming.background;
 
-import java.util.ArrayList;
-
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -10,15 +8,16 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.os.SystemClock;
-import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.db.Poll;
 import com.brainydroid.daydreaming.db.PollsStorage;
 import com.brainydroid.daydreaming.ui.Config;
 import com.brainydroid.daydreaming.ui.QuestionActivity;
+import com.google.inject.Inject;
+
+import java.util.ArrayList;
 
 public class PollService extends Service {
 
@@ -27,12 +26,12 @@ public class PollService extends Service {
 	//	public static String POLL_EXPIRE_ID = "pollExpireId";
 	//	public static int EXPIRY_DELAY = 5 * 60 * 1000; // 5 minutes (in milliseconds)
 
-	private static int nQuestionsPerPoll = 3;
+	public static int nQuestionsPerPoll = 3;
 
-	private NotificationManager notificationManager;
-	private PollsStorage pollsStorage;
-	//	private AlarmManager alarmManager;
-	private SharedPreferences sharedPrefs;
+    @Inject NotificationManager notificationManager;
+    @Inject PollsStorage pollsStorage;
+    // @Inject AlarmManager alarmManager;
+    @Inject SharedPreferences sharedPreferences;
 
 	@Override
 	public void onCreate() {
@@ -55,7 +54,6 @@ public class PollService extends Service {
 
 		super.onStartCommand(intent, flags, startId);
 
-		initVars();
 		pollsStorage.cleanPolls();
 
 		//		int pollExpireId = intent.getIntExtra(POLL_EXPIRE_ID, -1);
@@ -89,19 +87,6 @@ public class PollService extends Service {
 
 		// Don't allow binding
 		return null;
-	}
-
-	private void initVars() {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] initVars");
-		}
-
-		notificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-		pollsStorage = PollsStorage.getInstance(this);
-		//		alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
-		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 	}
 
 	//	private void expirePoll(int id) {
@@ -157,15 +142,15 @@ public class PollService extends Service {
 				PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_ONE_SHOT);
 
 		int flags = 0;
-		if (sharedPrefs.getBoolean("notification_blink_key", true)) {
+		if (sharedPreferences.getBoolean("notification_blink_key", true)) {
 			flags |= Notification.DEFAULT_LIGHTS;
 		}
 
-		if (sharedPrefs.getBoolean("notification_vibrator_key", true)) {
+		if (sharedPreferences.getBoolean("notification_vibrator_key", true)) {
 			flags |= Notification.DEFAULT_VIBRATE;
 		}
 
-		if (sharedPrefs.getBoolean("notification_sound_key", true)) {
+		if (sharedPreferences.getBoolean("notification_sound_key", true)) {
 			flags |= Notification.DEFAULT_SOUND;
 		}
 
@@ -205,7 +190,7 @@ public class PollService extends Service {
 		if (pendingPolls != null) {
 			poll = pendingPolls.get(0);
 		} else {
-			poll = Poll.create(this, nQuestionsPerPoll);
+			poll = Poll.create(nQuestionsPerPoll);
 		}
 
 		poll.setStatus(Poll.STATUS_PENDING);

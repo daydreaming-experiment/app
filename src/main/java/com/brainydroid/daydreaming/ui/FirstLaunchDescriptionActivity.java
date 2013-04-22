@@ -9,15 +9,18 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import com.actionbarsherlock.app.SherlockDialogFragment;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.StatusManager;
+import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockFragmentActivity;
+import com.google.inject.Inject;
+import roboguice.inject.ContentView;
 
-public class FirstLaunchDescriptionActivity extends SherlockFragmentActivity {
+@ContentView(R.layout.activity_first_launch_description)
+public class FirstLaunchDescriptionActivity extends RoboSherlockFragmentActivity {
 
 	private static String TAG = "FirstLaunchDescriptionActivity";
 
-	private StatusManager status;
+	@Inject StatusManager statusManager;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -28,10 +31,6 @@ public class FirstLaunchDescriptionActivity extends SherlockFragmentActivity {
 		}
 
 		super.onCreate(savedInstanceState);
-
-        status = StatusManager.getInstance(this);
-
-		setContentView(R.layout.activity_first_launch_description);
 	}
 
 	@Override
@@ -104,7 +103,7 @@ public class FirstLaunchDescriptionActivity extends SherlockFragmentActivity {
 			Log.d(TAG, "[fn] checkFirstLaunch");
 		}
 
-		if (status.isFirstLaunchCompleted()) {
+		if (statusManager.isFirstLaunchCompleted()) {
 			finish();
 		}
 	}

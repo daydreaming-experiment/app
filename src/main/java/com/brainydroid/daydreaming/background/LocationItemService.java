@@ -1,7 +1,7 @@
 package com.brainydroid.daydreaming.background;
 
-import android.app.*;
-import android.content.Context;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.location.Location;
 import android.os.IBinder;
@@ -11,25 +11,24 @@ import com.brainydroid.daydreaming.db.LocationItem;
 import com.brainydroid.daydreaming.network.SntpClient;
 import com.brainydroid.daydreaming.network.SntpClientCallback;
 import com.brainydroid.daydreaming.ui.Config;
+import com.google.inject.Inject;
+import roboguice.service.RoboService;
 
-import java.lang.Override;
-import java.lang.String;
-
-public class LocationItemService extends Service {
+public class LocationItemService extends RoboService {
 
 	private static String TAG = "LocationItemService";
 
     private static String STOP_LOCATION_LISTENING = "stopLocationListening";
-    private static long SAMPLE_INTERVAL = 18 * 60 * 1000; // 18 minutes (in milliseconds)
-    private static long LISTENING_TIME = 2 * 60 * 1000; // 2 minutes (in milliseconds)
+    public static long SAMPLE_INTERVAL = 18 * 60 * 1000; // 18 minutes (in milliseconds)
+    public static long LISTENING_TIME = 2 * 60 * 1000; // 2 minutes (in milliseconds)
 
     private boolean sntpRequestDone = false;
     private boolean serviceConnectionDone = false;
     private LocationItem locationItem = null;
 
-    private AlarmManager alarmManager;
-    private StatusManager status;
-    private LocationServiceConnection locationServiceConnection;
+    @Inject AlarmManager alarmManager;
+    @Inject StatusManager statusManager;
+    @Inject LocationServiceConnection locationServiceConnection;
 
 	@Override
 	public void onCreate() {
@@ -52,13 +51,11 @@ public class LocationItemService extends Service {
 
 		super.onStartCommand(intent, flags, startId);
 
-		initVars();
-
         if (intent.getBooleanExtra(STOP_LOCATION_LISTENING, false)) {
             stopLocationListening();
             scheduleNextService();
         } else {
-            if (status.isDataAndLocationEnabled()) {
+            if (statusManager.isDataAndLocationEnabled()) {
                 startLocationListening();
             }
             scheduleStopLocationListening();
@@ -92,18 +89,6 @@ public class LocationItemService extends Service {
 		return null;
 	}
 
-	private void initVars() {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] initVars");
-		}
-
-		alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
-        status = StatusManager.getInstance(this);
-        locationServiceConnection = new LocationServiceConnection(this);
-	}
-
     private void stopLocationListening() {
 
         // Debug
@@ -133,7 +118,7 @@ public class LocationItemService extends Service {
 
         locationServiceConnection.setOnServiceConnectedCallback(serviceConnectionCallback);
 
-        if (status.isLocationServiceRunning()) {
+        if (statusManager.isLocationServiceRunning()) {
             locationServiceConnection.bindLocationService();
             // The serviceConnectionCallback stops this service, which calls onDestroy.
             // unBind happens in onDestroy, and the LocationService finishes if nobody else has listeners registered
@@ -167,7 +152,7 @@ public class LocationItemService extends Service {
 
         locationServiceConnection.setOnServiceConnectedCallback(serviceConnectionCallback);
 
-        locationItem = new LocationItem(this);
+        locationItem = new LocationItem();
 
         LocationCallback locationCallback = new LocationCallback() {
 
@@ -214,7 +199,7 @@ public class LocationItemService extends Service {
         SntpClient sntpClient = new SntpClient();
         sntpClient.asyncRequestTime(sntpCallback);
 
-        if (!status.isLocationServiceRunning()) {
+        if (!statusManager.isLocationServiceRunning()) {
             locationServiceConnection.bindLocationService();
             // The serviceConnectionCallback stops this service, which calls onDestroy.
             // unBind happens in onDestroy, and the LocationService finishes if nobody else has listeners registered

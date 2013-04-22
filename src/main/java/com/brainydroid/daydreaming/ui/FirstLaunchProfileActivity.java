@@ -12,20 +12,22 @@ import android.widget.Toast;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.StatusManager;
 import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockActivity;
+import com.google.inject.Inject;
+import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
+@ContentView(R.layout.activity_first_launch_profile)
 public class FirstLaunchProfileActivity extends RoboSherlockActivity {
 
 	private static String TAG = "FirstLaunchProfileActivity";
 
-    public static String PROFILE_PREFERENCES = "profilePreferences";
     public static String PROFILE_AGE = "profileAge";
     public static String PROFILE_GENDER = "profileGender";
 
     @InjectView(R.id.firstLaunchProfile_editAge) EditText ageEditText;
     @InjectView(R.id.firstLaunchProfile_genderSpinner) Spinner genderSpinner;
-
-    private StatusManager status;
+    @Inject SharedPreferences sharedPreferences;
+    @Inject StatusManager statusManager;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -36,9 +38,6 @@ public class FirstLaunchProfileActivity extends RoboSherlockActivity {
 		}
 
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_first_launch_profile);
-
-		status = StatusManager.getInstance(this);
 
 		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
 				R.array.genders, android.R.layout.simple_spinner_item);
@@ -88,7 +87,7 @@ public class FirstLaunchProfileActivity extends RoboSherlockActivity {
 			Log.d(TAG, "[fn] checkFirstLaunch");
 		}
 
-		if (status.isFirstLaunchCompleted()) {
+		if (statusManager.isFirstLaunchCompleted()) {
 			finish();
 		}
 	}
@@ -105,15 +104,13 @@ public class FirstLaunchProfileActivity extends RoboSherlockActivity {
 					Toast.LENGTH_SHORT).show();
 		} else {
 
-            SharedPreferences sharedPrefs = getSharedPreferences(PROFILE_PREFERENCES, 0);
-            SharedPreferences.Editor editor = sharedPrefs.edit();
+            SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putInt(PROFILE_AGE, Integer.parseInt(ageEditText.getText().toString()));
             editor.putString(PROFILE_GENDER, genderSpinner.toString());
             editor.commit();
 
             Toast.makeText(this, genderSpinner.getSelectedItem().toString() +
                     ", " + ageEditText.getText().toString(), Toast.LENGTH_LONG).show();
-            //launchMeasuresActivity();
             launchPullActivity();
 		}
 	}

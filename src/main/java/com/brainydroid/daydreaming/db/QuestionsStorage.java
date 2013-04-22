@@ -1,23 +1,21 @@
 package com.brainydroid.daydreaming.db;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Random;
-
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
-
 import com.brainydroid.daydreaming.ui.Config;
 import com.google.gson.Gson;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+import java.util.ArrayList;
+import java.util.Random;
+
+@Singleton
 public class QuestionsStorage {
 
 	private static String TAG = "QuestionsStorage";
-
-	private static QuestionsStorage qsInstance = null;
 
 	private static final String TABLE_QUESTIONS = "questions";
 
@@ -33,42 +31,22 @@ public class QuestionsStorage {
 					Question.COL_QUESTIONS_VERSION + " INTEGER NOT NULL" +
 					");";
 
-	private static final String SQL_DROP_TABLE_QUESTIONS =
-			"DROP TABLE IF EXISTS " + TABLE_QUESTIONS + ";";
+    @Inject Storage storage;
+    @Inject Gson gson;
+    @Inject Random random;
 
-	private final Storage storage;
 	private final SQLiteDatabase rDb;
 	private final SQLiteDatabase wDb;
-	private final Context _context;
-	private final Random _random;
-	private final Gson gson;
-
-	public static synchronized QuestionsStorage getInstance(Context context) {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] getInstance");
-		}
-
-		if (qsInstance == null) {
-			qsInstance = new QuestionsStorage(context);
-		}
-		return qsInstance;
-	}
 
 	// Constructor
-	private QuestionsStorage(Context context) {
+	private QuestionsStorage() {
 
 		// Debug
 		if (Config.LOGD) {
 			Log.d(TAG, "[fn] QuestionsStorage");
 		}
 
-		_context = context.getApplicationContext();
-		storage = Storage.getInstance(_context);
-		rDb = storage.getWritableDatabase();
-		_random = new Random(System.currentTimeMillis());
-		gson = new Gson();
+		rDb = storage.getReadableDatabase();
 		wDb = storage.getWritableDatabase();
 		wDb.execSQL(SQL_CREATE_TABLE_QUESTIONS);
 	}
@@ -82,12 +60,15 @@ public class QuestionsStorage {
 
 		Cursor res = rDb.query(TABLE_QUESTIONS, new String[] {Question.COL_QUESTIONS_VERSION},
 				null, null, null, null, null, "1");
+
 		if (!res.moveToFirst()) {
 			res.close();
 			return -1;
 		}
+
 		int questionsVersion = Integer.parseInt(res.getString(res.getColumnIndex(Question.COL_QUESTIONS_VERSION)));
 		res.close();
+
 		return questionsVersion;
 	}
 
@@ -106,7 +87,7 @@ public class QuestionsStorage {
 			return null;
 		}
 
-		Question q = new Question(_context);
+		Question q = new Question();
 		q.setId(res.getString(res.getColumnIndex(Question.COL_ID)));
 		q.setCategory(res.getString(res.getColumnIndex(Question.COL_CATEGORY)));
 		q.setSubcategory(res.getString(res.getColumnIndex(Question.COL_SUBCATEGORY)));
@@ -129,8 +110,8 @@ public class QuestionsStorage {
 			Log.d(TAG, "[fn] getQuestionIds");
 		}
 
-		Cursor res = rDb.query(TABLE_QUESTIONS, new String[] {Question.COL_ID}, null, null,
-				null, null, null);
+		Cursor res = rDb.query(TABLE_QUESTIONS, new String[]{Question.COL_ID}, null, null,
+                null, null, null);
 		if (!res.moveToFirst()) {
 			res.close();
 			return null;
@@ -159,7 +140,7 @@ public class QuestionsStorage {
 		ArrayList<Question> randomQuestions = new ArrayList<Question>();
 		int rIndex;
 		for (int i = 0; i < nQuestions && i < nIds; i++) {
-			rIndex = _random.nextInt(questionIds.size());
+			rIndex = random.nextInt(questionIds.size());
 			randomQuestions.add(getQuestion(questionIds.get(rIndex)));
 			questionIds.remove(rIndex);
 		}
@@ -177,17 +158,6 @@ public class QuestionsStorage {
 		wDb.delete(TABLE_QUESTIONS, null, null);
 	}
 
-	public void dropAll() {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] dropAll");
-		}
-
-		wDb.execSQL(SQL_DROP_TABLE_QUESTIONS);
-		qsInstance = null;
-	}
-
 	private void addQuestions(ArrayList<Question> questions) {
 
 		// Debug
@@ -195,10 +165,7 @@ public class QuestionsStorage {
 			Log.d(TAG, "[fn] addQuestions");
 		}
 
-		Iterator<Question> qIt = questions.iterator();
-
-		while (qIt.hasNext()) {
-			Question q = qIt.next();
+		for (Question q : questions) {
 			addQuestion(q);
 		}
 	}

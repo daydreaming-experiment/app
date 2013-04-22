@@ -1,47 +1,42 @@
 package com.brainydroid.daydreaming.background;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-
-import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
-
 import com.brainydroid.daydreaming.db.*;
-import com.brainydroid.daydreaming.network.CryptoStorage;
-import com.brainydroid.daydreaming.network.CryptoStorageCallback;
-import com.brainydroid.daydreaming.network.HttpConversationCallback;
-import com.brainydroid.daydreaming.network.HttpGetData;
-import com.brainydroid.daydreaming.network.HttpGetTask;
-import com.brainydroid.daydreaming.network.ServerTalker;
+import com.brainydroid.daydreaming.network.*;
 import com.brainydroid.daydreaming.ui.Config;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.inject.Inject;
+import roboguice.service.RoboService;
 
-public class SyncService extends Service {
+import java.util.ArrayList;
+import java.util.HashSet;
+
+public class SyncService extends RoboService {
 
 	private static String TAG = "SyncService";
 
 	private static String EXP_ID = "6cb5e7782ca43681d6349a2280a8f99f74479d142971ac6c91dbd155ac58b4b3";
 	private static String SERVER_NAME = "http://naja.cc";
 
-	private static String QUESTIONS_VERSION_URL = "http://mehho.net:5001/questionsVersion";
+	public static String QUESTIONS_VERSION_URL = "http://mehho.net:5001/questionsVersion";
 	private static String QUESTIONS_URL = "http://mehho.net:5001/questions.json";
 
-	private StatusManager status;
-	private PollsStorage pollsStorage;
-    private LocationsStorage locationsStorage;
-	private QuestionsStorage questionsStorage;
-	private CryptoStorage cryptoStorage;
-	private ServerTalker serverTalker;
-	private Gson gson;
-	private ArrayList<Poll> uploadablePolls;
-    private ArrayList<LocationItem> uploadableLocationItems;
-	private HashSet<Integer> pollsLeftToUpload;
+    @Inject StatusManager statusManager;
+    @Inject PollsStorage pollsStorage;
+    @Inject LocationsStorage locationsStorage;
+    @Inject QuestionsStorage questionsStorage;
+    @Inject CryptoStorage cryptoStorage;
+    @Inject ServerTalker serverTalker;
+
+    private Gson gson;
+    private HashSet<Integer> pollsLeftToUpload;
     private HashSet<Integer> locationItemsLeftToUpload;
-	private boolean updateQuestionsDone = false;
+
+    private boolean updateQuestionsDone = false;
 	private boolean uploadPollsDone = false;
     private boolean uploadLocationItemsDone = false;
 
@@ -103,9 +98,7 @@ public class SyncService extends Service {
 			Log.d(TAG, "[fn] initVarsAndUpdates");
 		}
 
-		status = StatusManager.getInstance(this);
-
-		if (status.isDataEnabled()) {
+		if (statusManager.isDataEnabled()) {
 
 			// Info
 			Log.i(TAG, "data connection enabled -> starting sync tasks");
@@ -115,9 +108,6 @@ public class SyncService extends Service {
 						Toast.LENGTH_SHORT).show();
 			}
 
-			pollsStorage = PollsStorage.getInstance(this);
-			questionsStorage = QuestionsStorage.getInstance(this);
-            locationsStorage = LocationsStorage.getInstance(this);
 			gson = new GsonBuilder()
 			.excludeFieldsWithoutExposeAnnotation()
 			.create();
@@ -136,7 +126,7 @@ public class SyncService extends Service {
 
 					serverTalker = ServerTalker.getInstance(SERVER_NAME, cryptoStorage);
 
-					if (hasKeyPairAndMaiId && status.isDataEnabled()) {
+					if (hasKeyPairAndMaiId && statusManager.isDataEnabled()) {
 						//asyncUpdateQuestions(); // Line commented not to update questions at each launch of the SyncService
 						asyncUploadPolls();
                         asyncUploadLocationItems();
@@ -160,7 +150,8 @@ public class SyncService extends Service {
 		}
 	}
 
-	private void asyncUpdateQuestions() {
+	@SuppressWarnings("UnusedDeclaration")
+    private void asyncUpdateQuestions() {
 
 		// Debug
 		if (Config.LOGD) {
@@ -286,7 +277,7 @@ public class SyncService extends Service {
 		// See http://developer.android.com/guide/components/processes-and-threads.html ,
 		// right above the "Thread-safe methods" title.
 
-		uploadablePolls = pollsStorage.getUploadablePolls();
+        ArrayList<Poll> uploadablePolls = pollsStorage.getUploadablePolls();
 
 		if (uploadablePolls == null) {
 
@@ -376,7 +367,7 @@ public class SyncService extends Service {
         // See http://developer.android.com/guide/components/processes-and-threads.html ,
         // right above the "Thread-safe methods" title.
 
-        uploadableLocationItems = locationsStorage.getUploadableLocationItems();
+        ArrayList<LocationItem> uploadableLocationItems = locationsStorage.getUploadableLocationItems();
 
         if (uploadableLocationItems == null) {
 

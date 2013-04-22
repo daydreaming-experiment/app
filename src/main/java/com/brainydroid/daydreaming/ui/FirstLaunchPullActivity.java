@@ -15,11 +15,14 @@ import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.db.QuestionsStorage;
 import com.brainydroid.daydreaming.db.Util;
 import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockActivity;
+import com.google.inject.Inject;
+import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
 import java.io.IOException;
 import java.io.InputStream;
 
+@ContentView(R.layout.activity_first_launch_pull)
 public class FirstLaunchPullActivity extends RoboSherlockActivity {
 
     private static String TAG = "FirstLaunchPullActivity";
@@ -30,9 +33,10 @@ public class FirstLaunchPullActivity extends RoboSherlockActivity {
     @InjectView(R.id.firstLaunchPull_buttonSettings) Button buttonSettings;
     @InjectView(R.id.firstLaunchPull_buttonNext) Button buttonNext;
 
-    private boolean areQuestionsDownloaded = false;
+    @Inject QuestionsStorage questionsStorage;
+    @Inject StatusManager statusManager;
 
-    private StatusManager status;
+    private boolean areQuestionsDownloaded = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,9 +47,6 @@ public class FirstLaunchPullActivity extends RoboSherlockActivity {
         }
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_first_launch_pull);
-
-        status = StatusManager.getInstance(this);
     }
 
     @Override
@@ -91,7 +92,7 @@ public class FirstLaunchPullActivity extends RoboSherlockActivity {
             Log.d(TAG, "[fn] checkFirstLaunch");
         }
 
-        if (status.isFirstLaunchCompleted()) {
+        if (statusManager.isFirstLaunchCompleted()) {
             finish();
         }
     }
@@ -104,7 +105,7 @@ public class FirstLaunchPullActivity extends RoboSherlockActivity {
         }
 
         dataEnabled.setCompoundDrawablesWithIntrinsicBounds(
-                (status.isDataEnabled() | Build.FINGERPRINT.startsWith("generic")) ?
+                (statusManager.isDataEnabled() | Build.FINGERPRINT.startsWith("generic")) ?
                         R.drawable.ic_check : R.drawable.ic_cross, 0, 0, 0);
         textDownloading.setCompoundDrawablesWithIntrinsicBounds(
                 areQuestionsDownloaded ? R.drawable.ic_check : R.drawable.ic_cross, 0, 0, 0);
@@ -117,7 +118,7 @@ public class FirstLaunchPullActivity extends RoboSherlockActivity {
             if (areQuestionsDownloaded) {
                 Toast.makeText(this, "Questions already downloaded", Toast.LENGTH_LONG).show();
             } else {
-                if (status.isDataEnabled()){
+                if (statusManager.isDataEnabled()){
                     Toast.makeText(this, "Downloading questions", Toast.LENGTH_LONG).show();
 
                     loadQuestionsFromRes();
@@ -137,7 +138,7 @@ public class FirstLaunchPullActivity extends RoboSherlockActivity {
         if (Build.FINGERPRINT.startsWith("generic")){
                 setAdjustSettingsOff();
         } else {
-            if  (status.isDataEnabled()) {
+            if  (statusManager.isDataEnabled()) {
                 setAdjustSettingsOff();
             } else {
                 setAdjustSettingsNecessary();
@@ -173,6 +174,7 @@ public class FirstLaunchPullActivity extends RoboSherlockActivity {
         } else {
             buttonNext.setVisibility(View.INVISIBLE);
         }
+
         buttonNext.setClickable(false);
     }
 
@@ -189,6 +191,7 @@ public class FirstLaunchPullActivity extends RoboSherlockActivity {
         } else {
             buttonNext.setVisibility(View.VISIBLE);
         }
+
         buttonNext.setClickable(true);
 
         Toast.makeText(this, "Allowing next button", Toast.LENGTH_LONG).show();
@@ -273,7 +276,6 @@ public class FirstLaunchPullActivity extends RoboSherlockActivity {
         } else {
             try {
                 // TODO: change this to download from the Internet
-                QuestionsStorage questionsStorage = QuestionsStorage.getInstance(this);
                 InputStream questionsIS = getResources().openRawResource(R.raw.questions);
                 questionsStorage.importQuestions(Util.convertStreamToString(questionsIS));
                 questionsIS.close();

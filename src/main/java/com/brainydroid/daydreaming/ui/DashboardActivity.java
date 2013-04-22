@@ -5,21 +5,22 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
-import com.actionbarsherlock.app.SherlockActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.SchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
+import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockActivity;
+import com.google.inject.Inject;
+import roboguice.inject.ContentView;
 
-public class DashboardActivity extends SherlockActivity {
+@ContentView(R.layout.activity_dashboard)
+public class DashboardActivity extends RoboSherlockActivity {
 
 	private static String TAG = "DashboardActivity";
 
 	public static String EXTRA_COMES_FROM_FIRST_LAUNCH = "comesFromFirstLaunch";
 
-	private StatusManager status;
+    @Inject StatusManager statusManager;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -30,29 +31,24 @@ public class DashboardActivity extends SherlockActivity {
 		}
 
 		super.onCreate(savedInstanceState);
-
-		status = StatusManager.getInstance(this);
-
-		setContentView(R.layout.activity_dashboard);
-        //updateRunningTime();
     }
 
-    // TODO: check this is ok with real ActionBar API
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] onCreateOptionsMenu");
-		}
-
-		MenuInflater menuInflater = getSupportMenuInflater();
-		menuInflater.inflate(R.menu.dashboard, menu);
-
-		// Calling super after populating the menu is necessary here to ensure that the
-		// action bar helpers have a chance to handle this event.
-		return super.onCreateOptionsMenu(menu);
-	}
+//    // TODO: check this is ok with real ActionBar API
+//	@Override
+//	public boolean onCreateOptionsMenu(Menu menu) {
+//
+//		// Debug
+//		if (Config.LOGD) {
+//			Log.d(TAG, "[fn] onCreateOptionsMenu");
+//		}
+//
+//		MenuInflater menuInflater = getSupportMenuInflater();
+//		menuInflater.inflate(R.menu.dashboard, menu);
+//
+//		// Calling super after populating the menu is necessary here to ensure that the
+//		// action bar helpers have a chance to handle this event.
+//		return super.onCreateOptionsMenu(menu);
+//	}
 
 	@Override
 	public void onStart() {
@@ -63,6 +59,7 @@ public class DashboardActivity extends SherlockActivity {
 		}
 
 		checkFirstRun();
+        //updateRunningTime();
 		super.onStart();
 	}
 
@@ -97,18 +94,18 @@ public class DashboardActivity extends SherlockActivity {
 		}
 
 		switch (item.getItemId()) {
-		case android.R.id.home:
-			break;
-
 		case R.id.menu_settings:
 			Intent intent = new Intent(this, SettingsActivity.class);
 			startActivity(intent);
 			break;
+
+        // No other cases for now
 		}
+
 		return super.onOptionsItemSelected(item);
 	}
 
-    // TODO: clean this up
+//    // TODO: clean this up
 //    private void updateRunningTime() {
 //
 //        // Debug
@@ -152,7 +149,7 @@ public class DashboardActivity extends SherlockActivity {
 			Log.d(TAG, "[fn] checkFirstRun");
 		}
 
-		if (!status.isFirstLaunchCompleted()) {
+		if (!statusManager.isFirstLaunchCompleted()) {
 			Intent intent = new Intent(this, FirstLaunchWelcomeActivity.class);
 			intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
 			startActivity(intent);

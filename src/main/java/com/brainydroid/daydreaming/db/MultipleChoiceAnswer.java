@@ -1,39 +1,27 @@
 package com.brainydroid.daydreaming.db;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.ui.Config;
 import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
+import com.google.inject.Inject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 
 public class MultipleChoiceAnswer implements Answer {
 
 	private static String TAG = "MultipleChoiceAnswer";
 
-	private transient Gson gson;
-	@Expose private final HashMap<String,HashSet<String>> choices;
-
-	public MultipleChoiceAnswer() {
-
-		//Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] MultipleChoiceAnswer");
-		}
-
-		choices = new HashMap<String,HashSet<String>>();
-		gson = new Gson();
-	}
+	@Expose @Inject private HashMap<String,HashSet<String>> choices;
+    @Inject private transient Gson gson;
 
 	@Override
 	public String toJson() {
@@ -55,10 +43,8 @@ public class MultipleChoiceAnswer implements Answer {
 		}
 
 		ArrayList<View> subQuestions = Question.getViewsByTag(questionLinearLayout, "subquestion");
-		Iterator<View> subQuestionsIt = subQuestions.iterator();
 
-		while (subQuestionsIt.hasNext()) {
-			View subQuestion = subQuestionsIt.next();
+		for (View subQuestion : subQuestions) {
 			TextView mainTextView = (TextView)subQuestion.findViewById(R.id.question_multiple_choice_mainText);
 			String mainText = mainTextView.getText().toString();
 			addSubquestion(mainText);

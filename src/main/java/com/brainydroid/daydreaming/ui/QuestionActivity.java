@@ -1,8 +1,5 @@
 package com.brainydroid.daydreaming.ui;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ComponentName;
@@ -20,9 +17,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.actionbarsherlock.app.SherlockDialogFragment;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.LocationCallback;
 import com.brainydroid.daydreaming.background.LocationServiceConnection;
@@ -33,8 +28,15 @@ import com.brainydroid.daydreaming.db.PollsStorage;
 import com.brainydroid.daydreaming.db.Question;
 import com.brainydroid.daydreaming.network.SntpClient;
 import com.brainydroid.daydreaming.network.SntpClientCallback;
+import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockFragmentActivity;
+import com.google.inject.Inject;
+import roboguice.inject.ContentView;
 
-public class QuestionActivity extends SherlockFragmentActivity {
+import java.util.ArrayList;
+import java.util.Iterator;
+
+@ContentView(R.layout.activity_question)
+public class QuestionActivity extends RoboSherlockFragmentActivity {
 
 	private static String TAG = "QuestionActivity";
 
@@ -51,9 +53,11 @@ public class QuestionActivity extends SherlockFragmentActivity {
 	private boolean isContinuingOrFinishing = false;
 	private long lastBackTime = 0;
 	private LinearLayout questionLinearLayout;
-	private StatusManager status;
 
 	private LocationServiceConnection locationServiceConnection;
+
+    @Inject PollsStorage pollsStorage;
+    @Inject StatusManager statusManager;
 
 	public static class LocationAlertDialogFragment extends SherlockDialogFragment {
 
@@ -112,8 +116,6 @@ public class QuestionActivity extends SherlockFragmentActivity {
 
 		super.onCreate(savedInstanceState);
 
-		setContentView(R.layout.activity_question);
-
 		initVars();
 		setChrome();
 		populateViews();
@@ -131,7 +133,7 @@ public class QuestionActivity extends SherlockFragmentActivity {
 		poll.setStatus(Poll.STATUS_RUNNING);
 		poll.setQuestionStatus(questionIndex, Question.STATUS_ASKED);
 
-		if (status.isDataAndLocationEnabled()) {
+		if (statusManager.isDataAndLocationEnabled()) {
 			startListeningTasks();
 		}
 	}
@@ -192,15 +194,13 @@ public class QuestionActivity extends SherlockFragmentActivity {
 		}
 
 		Intent intent = getIntent();
-		PollsStorage pollsStorage = PollsStorage.getInstance(this);
 		pollId = intent.getIntExtra(EXTRA_POLL_ID, -1);
 		poll = pollsStorage.getPoll(pollId);
 		questionIndex = intent.getIntExtra(EXTRA_QUESTION_INDEX, -1);
 		question = poll.getQuestionByIndex(questionIndex);
 		nQuestions = poll.getLength();
 		questionLinearLayout = (LinearLayout)findViewById(R.id.question_linearLayout);
-		status = StatusManager.getInstance(this);
-		locationServiceConnection = new LocationServiceConnection(this);
+		locationServiceConnection = new LocationServiceConnection();
 	}
 
 	private void setChrome() {
@@ -270,7 +270,7 @@ public class QuestionActivity extends SherlockFragmentActivity {
 
 		locationServiceConnection.setQuestionLocationCallback(locationCallback);
 
-		if (!status.isLocationServiceRunning()) {
+		if (!statusManager.isLocationServiceRunning()) {
             locationServiceConnection.bindLocationService();
             locationServiceConnection.startLocationService();
 		} else {
@@ -285,7 +285,7 @@ public class QuestionActivity extends SherlockFragmentActivity {
 			Log.d(TAG, "[fn] populateViews");
 		}
 
-		ArrayList<View> views = question.createViews(this);
+		ArrayList<View> views = question.createViews();
 
 		Iterator<View> vIt = views.iterator();
 		int i = isFirstQuestion() ? 1 : 0;
@@ -302,13 +302,13 @@ public class QuestionActivity extends SherlockFragmentActivity {
 			Log.d(TAG, "[fn] onClick_nextButton");
 		}
 
-		if (question.validate(this, questionLinearLayout)) {
+		if (question.validate(questionLinearLayout)) {
             poll.setQuestionStatus(questionIndex, Question.STATUS_ANSWERED);
 			poll.saveAnswers(questionLinearLayout, questionIndex);
 			if (isLastQuestion()) {
 				finishPoll();
 			} else {
-				if (status.isDataAndLocationEnabled()) {
+				if (statusManager.isDataAndLocationEnabled()) {
 					launchNextQuestion();
 				} else {
 					launchLocationAlertDialog();
@@ -326,8 +326,8 @@ public class QuestionActivity extends SherlockFragmentActivity {
 
 		int titleId;
 		int textId;
-		if (!status.isNetworkLocEnabled()) {
-			if (!status.isDataEnabled()) {
+		if (!statusManager.isNetworkLocEnabled()) {
+			if (!statusManager.isDataEnabled()) {
 				titleId = R.string.locationAlert_title_location_and_data;
 				textId = R.string.locationAlert_text_location_and_data;
 			} else {
@@ -369,7 +369,7 @@ public class QuestionActivity extends SherlockFragmentActivity {
 		}
 
 		Intent settingsIntent;
-		if (!status.isNetworkLocEnabled()) {
+		if (!statusManager.isNetworkLocEnabled()) {
 			settingsIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
 			settingsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
 		} else {
