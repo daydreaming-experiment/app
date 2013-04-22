@@ -10,25 +10,26 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.actionbarsherlock.app.SherlockActivity;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.db.QuestionsStorage;
 import com.brainydroid.daydreaming.db.Util;
+import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockActivity;
+import roboguice.inject.InjectView;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-public class FirstLaunchPullActivity extends SherlockActivity {
+public class FirstLaunchPullActivity extends RoboSherlockActivity {
 
     private static String TAG = "FirstLaunchPullActivity";
 
-    private TextView textDownloading;
-    private TextView dataEnabled;
-    private TextView textSettings;
+    @InjectView(R.id.firstLaunchPull_text_downloading) TextView textDownloading;
+    @InjectView(R.id.firstLaunchPull_text_data_enabled) TextView dataEnabled;
+    @InjectView(R.id.firstLaunchPull_text_change_settings) TextView textSettings;
+    @InjectView(R.id.firstLaunchPull_buttonSettings) Button buttonSettings;
+    @InjectView(R.id.firstLaunchPull_buttonNext) Button buttonNext;
 
-    private Button buttonSettings;
-    private Button buttonNext;
     private boolean areQuestionsDownloaded = false;
 
     private StatusManager status;
@@ -44,12 +45,6 @@ public class FirstLaunchPullActivity extends SherlockActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_first_launch_pull);
 
-        textDownloading = (TextView)findViewById(R.id.firstLaunchPull_text_downloading);
-        textSettings = (TextView)findViewById(R.id.firstLaunchPull_text_change_settings);
-        dataEnabled = (TextView)findViewById(R.id.firstLaunchPull_text_data_enabled);
-
-        buttonSettings = (Button)findViewById(R.id.firstLaunchPull_buttonSettings);
-        buttonNext = (Button)findViewById(R.id.firstLaunchPull_buttonNext);
         status = StatusManager.getInstance(this);
     }
 

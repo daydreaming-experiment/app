@@ -7,7 +7,6 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.widget.TimePicker;
-
 import com.brainydroid.daydreaming.db.Util;
 
 // Extends DialogPreference, a preference class that pops out in a dialogbox

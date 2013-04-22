@@ -5,19 +5,21 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-import com.actionbarsherlock.app.SherlockActivity;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.db.Util;
+import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockActivity;
+import roboguice.inject.InjectView;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-public class FirstLaunchTermsActivity  extends SherlockActivity {
+public class FirstLaunchTermsActivity  extends RoboSherlockActivity {
 
     private static String TAG = "FirstLaunchTermsActivity";
 
-    TextView consent;
+    @InjectView(R.id.firstLaunchTerms_textConsent) TextView consent;
+
     private StatusManager status;
 
     @Override
@@ -31,7 +33,6 @@ public class FirstLaunchTermsActivity  extends SherlockActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_first_launch_terms);
 
-        consent = (TextView)findViewById(R.id.firstLaunchTerms_textConsent);
         status = StatusManager.getInstance(this);
         populateConsent();
     }

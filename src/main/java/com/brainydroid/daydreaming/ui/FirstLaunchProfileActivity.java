@@ -9,11 +9,12 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
-import com.actionbarsherlock.app.SherlockActivity;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.StatusManager;
+import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockActivity;
+import roboguice.inject.InjectView;
 
-public class FirstLaunchProfileActivity extends SherlockActivity {
+public class FirstLaunchProfileActivity extends RoboSherlockActivity {
 
 	private static String TAG = "FirstLaunchProfileActivity";
 
@@ -21,10 +22,10 @@ public class FirstLaunchProfileActivity extends SherlockActivity {
     public static String PROFILE_AGE = "profileAge";
     public static String PROFILE_GENDER = "profileGender";
 
-    private StatusManager status;
+    @InjectView(R.id.firstLaunchProfile_editAge) EditText ageEditText;
+    @InjectView(R.id.firstLaunchProfile_genderSpinner) Spinner genderSpinner;
 
-	private EditText ageEditText;
-	private Spinner genderSpinner;
+    private StatusManager status;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -39,8 +40,6 @@ public class FirstLaunchProfileActivity extends SherlockActivity {
 
 		status = StatusManager.getInstance(this);
 
-		ageEditText = (EditText)findViewById(R.id.firstLaunchProfile_editAge);
-		genderSpinner = (Spinner)findViewById(R.id.firstLaunchProfile_genderSpinner);
 		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
 				R.array.genders, android.R.layout.simple_spinner_item);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

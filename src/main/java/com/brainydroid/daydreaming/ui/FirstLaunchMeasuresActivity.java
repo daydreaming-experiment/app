@@ -9,20 +9,21 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import com.actionbarsherlock.app.SherlockActivity;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.LocationItemService;
 import com.brainydroid.daydreaming.background.SchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
+import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockActivity;
+import roboguice.inject.InjectView;
 
-public class FirstLaunchMeasuresActivity extends SherlockActivity {
+public class FirstLaunchMeasuresActivity extends RoboSherlockActivity {
 
 	private static String TAG = "FirstLaunchMeasuresActivity";
 
-	private TextView textNetworkLocation;
-	private TextView textSettings;
-	private Button buttonSettings;
-	private Button buttonNext;
+    @InjectView(R.id.firstLaunchMeasures_textNetworkLocation) TextView textNetworkLocation;
+    @InjectView(R.id.firstLaunchMeasures_textSettings) TextView textSettings;
+    @InjectView(R.id.firstLaunchMeasures_buttonSettings) Button buttonSettings;
+    @InjectView(R.id.firstLaunchMeasures_buttonNext) Button buttonNext;
 
 	private StatusManager status;
 
@@ -38,10 +39,6 @@ public class FirstLaunchMeasuresActivity extends SherlockActivity {
 
 		setContentView(R.layout.activity_first_launch_measures);
 
-		textNetworkLocation = (TextView)findViewById(R.id.firstLaunchMeasures_textNetworkLocation);
-		textSettings = (TextView)findViewById(R.id.firstLaunchMeasures_textSettings);
-		buttonSettings = (Button)findViewById(R.id.firstLaunchMeasures_buttonSettings);
-		buttonNext = (Button)findViewById(R.id.firstLaunchMeasures_buttonNext);
 		status = StatusManager.getInstance(this);
 
 		if (status.isNetworkLocEnabled()) {
