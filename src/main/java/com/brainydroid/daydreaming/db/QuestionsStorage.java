@@ -39,7 +39,7 @@ public class QuestionsStorage {
 	private final SQLiteDatabase wDb;
 
 	// Constructor
-	private QuestionsStorage() {
+	public QuestionsStorage() {
 
 		// Debug
 		if (Config.LOGD) {

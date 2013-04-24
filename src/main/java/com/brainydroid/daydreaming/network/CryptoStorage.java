@@ -1,31 +1,24 @@
 package com.brainydroid.daydreaming.network;
 
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import android.app.Application;
+import android.content.Context;
+import android.util.Log;
+import com.brainydroid.daydreaming.ui.Config;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import org.spongycastle.util.encoders.UrlBase64;
+
+import java.io.*;
 import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
-import java.util.Enumeration;
 import java.util.HashMap;
 
-import org.spongycastle.util.encoders.UrlBase64;
-
-import android.content.Context;
-import android.util.Log;
-
-import com.brainydroid.daydreaming.ui.Config;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
+@Singleton
 public class CryptoStorage {
 
 	private static String TAG = "CryptoStorage";
@@ -40,62 +33,23 @@ public class CryptoStorage {
 	private static final String DEFAULT_CURVE_NAME = "secp256r1"; // Corresponds to NIST256p in python-ecdsa;
 	private static final String JWS_HEADER = "{\"alg\": \"ES256\"}";
 
-	private static Crypto crypto;
-	private static ServerTalker serverTalker;
-	private static CryptoStorage csInstance;
-	private final Gson gson;
+    @Inject Crypto crypto;
+    @Inject ServerTalker serverTalker;
+    @Inject Application application;
 
-	private final File maiIdFile;
-	private final File publicFile;
-	private final File privateFile;
-	private final File storageDir;
-	private String curveName;
-	private final Context _context;
+	private final Gson gson = new GsonBuilder()
+            .excludeFieldsWithoutExposeAnnotation()
+            .create();
+    File storageDir = application.getDir(STORAGE_DIRNAME, Context.MODE_PRIVATE);
+    private final File maiIdFile = new File(storageDir, MAI_ID_FILENAME);
+    private final File publicFile = new File(storageDir, PUBLIC_FILENAME);
+    private final File privateFile = new File(storageDir, PRIVATE_FILENAME);
 
-	public static synchronized CryptoStorage getInstance(Context context, String server,
-			CryptoStorageCallback callback) {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] getInstance");
-		}
-
-		if (csInstance == null) {
-			csInstance = new CryptoStorage(context, server, callback);
-		} else {
-			csInstance.initCrypto(callback);
-		}
-
-		return csInstance;
-	}
-
-	private CryptoStorage(Context context, String server, CryptoStorageCallback callback) {
+	public void onReady(CryptoStorageCallback callback) {
 
 		// Debug
 		if (Config.LOGD) {
-			Log.d(TAG, "[fn] CryptoStorage");
-		}
-
-		crypto = Crypto.getInstance();
-		serverTalker = ServerTalker.getInstance(server, this);
-		_context = context.getApplicationContext();
-		storageDir = _context.getDir(STORAGE_DIRNAME, Context.MODE_PRIVATE);
-		gson = new GsonBuilder()
-		.excludeFieldsWithoutExposeAnnotation()
-		.create();
-		maiIdFile = new File(storageDir, MAI_ID_FILENAME);
-		publicFile = new File(storageDir, PUBLIC_FILENAME);
-		privateFile = new File(storageDir, PRIVATE_FILENAME);
-		curveName = DEFAULT_CURVE_NAME;
-
-		initCrypto(callback);
-	}
-
-	private void initCrypto(CryptoStorageCallback callback) {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] initCrypto");
+			Log.d(TAG, "[fn] onReady");
 		}
 
 		if (!hasStoredKeyPairAndMaiId()) {
@@ -105,26 +59,26 @@ public class CryptoStorage {
 		}
 	}
 
-	public synchronized void setServerName(String s) {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] setServerName");
-		}
-
-		serverTalker.setServerName(s);
-	}
-
-	public synchronized void signAndUploadData(String ea_id, String data,
-			HttpConversationCallback callback) {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] signeAndUploadData");
-		}
-
-		serverTalker.signAndUploadData(ea_id, data, callback);
-	}
+//	public synchronized void setServerName(String s) {
+//
+//		// Debug
+//		if (Config.LOGD) {
+//			Log.d(TAG, "[fn] setServerName");
+//		}
+//
+//		serverTalker.setServerName(s);
+//	}
+//
+//	public synchronized void signAndUploadData(String ea_id, String data,
+//			HttpConversationCallback callback) {
+//
+//		// Debug
+//		if (Config.LOGD) {
+//			Log.d(TAG, "[fn] signAndUploadData");
+//		}
+//
+//		serverTalker.signAndUploadData(ea_id, data, callback);
+//	}
 
 	private synchronized boolean hasStoredMaiId() {
 
@@ -156,25 +110,25 @@ public class CryptoStorage {
 		return publicFile.exists();
 	}
 
-	public synchronized Enumeration<String> getAvailableCurveNames() {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] getAvailableCurveNames");
-		}
-
-		return crypto.getAvailableCurveNames();
-	}
-
-	public synchronized void setCurveName(String s) {
-
-		// Verbose
-		if (Config.LOGV) {
-			Log.v(TAG, "[fn] setCurveName");
-		}
-
-		curveName = s;
-	}
+//	public synchronized Enumeration<String> getAvailableCurveNames() {
+//
+//		// Debug
+//		if (Config.LOGD) {
+//			Log.d(TAG, "[fn] getAvailableCurveNames");
+//		}
+//
+//		return crypto.getAvailableCurveNames();
+//	}
+//
+//	public synchronized void setCurveName(String s) {
+//
+//		// Verbose
+//		if (Config.LOGV) {
+//			Log.v(TAG, "[fn] setCurveName");
+//		}
+//
+//		curveName = s;
+//	}
 
 	public synchronized boolean hasStoredKeyPairAndMaiId() {
 
@@ -215,7 +169,7 @@ public class CryptoStorage {
 			Log.d(TAG, "[fn] register");
 		}
 
-		final KeyPair kp = crypto.generateKeyPairNamedCurve(curveName);
+		final KeyPair kp = crypto.generateKeyPairNamedCurve(DEFAULT_CURVE_NAME);
 		final CryptoStorageCallback parentCallback = callback;
 
 		final HttpConversationCallback registrationCallback = new HttpConversationCallback() {
@@ -246,7 +200,8 @@ public class CryptoStorage {
 		serverTalker.register(kp.getPublic(), registrationCallback);
 	}
 
-	private synchronized boolean storeKeyPairAndMaiId(KeyPair kp, String maiId) {
+	@SuppressWarnings("ResultOfMethodCallIgnored")
+    private synchronized boolean storeKeyPairAndMaiId(KeyPair kp, String maiId) {
 
 		// Debug
 		if (Config.LOGD) {
@@ -277,15 +232,15 @@ public class CryptoStorage {
 		}
 	}
 
-	public synchronized KeyPair getKeyPair() {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] getKeyPair");
-		}
-
-		return new KeyPair(getPublicKey(), getPrivateKey());
-	}
+//	public synchronized KeyPair getKeyPair() {
+//
+//		// Debug
+//		if (Config.LOGD) {
+//			Log.d(TAG, "[fn] getKeyPair");
+//		}
+//
+//		return new KeyPair(getPublicKey(), getPrivateKey());
+//	}
 
 	public synchronized String getMaiId() {
 
@@ -329,27 +284,27 @@ public class CryptoStorage {
 		}
 	}
 
-	public synchronized PublicKey getPublicKey() {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] getPublicKey");
-		}
-
-		try {
-			BufferedReader buf;
-			buf = new BufferedReader(new FileReader(publicFile));
-			String keyStr = buf.readLine();
-			buf.close();
-			return crypto.readPublicKey(keyStr);
-		} catch (FileNotFoundException e) {
-			throw new RuntimeException(e);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		} catch (InvalidKeySpecException e) {
-			throw new RuntimeException(e);
-		}
-	}
+//	public synchronized PublicKey getPublicKey() {
+//
+//		// Debug
+//		if (Config.LOGD) {
+//			Log.d(TAG, "[fn] getPublicKey");
+//		}
+//
+//		try {
+//			BufferedReader buf;
+//			buf = new BufferedReader(new FileReader(publicFile));
+//			String keyStr = buf.readLine();
+//			buf.close();
+//			return crypto.readPublicKey(keyStr);
+//		} catch (FileNotFoundException e) {
+//			throw new RuntimeException(e);
+//		} catch (IOException e) {
+//			throw new RuntimeException(e);
+//		} catch (InvalidKeySpecException e) {
+//			throw new RuntimeException(e);
+//		}
+//	}
 
 	public synchronized boolean clearStore() {
 
@@ -413,15 +368,15 @@ public class CryptoStorage {
 		return Crypto.armorPublicKey(publicKey);
 	}
 
-	public synchronized String getPrivateKeyString() {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] getPrivateKeyString");
-		}
-
-		return Crypto.base64Encode(getPrivateKey().getEncoded());
-	}
+//	public synchronized String getPrivateKeyString() {
+//
+//		// Debug
+//		if (Config.LOGD) {
+//			Log.d(TAG, "[fn] getPrivateKeyString");
+//		}
+//
+//		return Crypto.base64Encode(getPrivateKey().getEncoded());
+//	}
 
 	public synchronized String signJws(String data) {
 
@@ -452,31 +407,31 @@ public class CryptoStorage {
 		return padded_b64url.replace(".", "");
 	}
 
-	public synchronized SignedDataFiles createSignedDataFiles(String data) {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] createSignedDataFiles");
-		}
-
-		try {
-			byte[] signature = sign(data.getBytes());
-
-			File dataFile = File.createTempFile("data",	".json", storageDir);
-			FileWriter dataFileWriter = new FileWriter(dataFile);
-			dataFileWriter.write(data);
-			dataFileWriter.close();
-
-			File sigFile;
-			sigFile = File.createTempFile("data", ".json.sig", storageDir);
-			BufferedOutputStream sigOut = new BufferedOutputStream(new FileOutputStream(sigFile));
-			sigOut.write(signature);
-			sigOut.close();
-
-			SignedDataFiles sdf = new SignedDataFiles(dataFile, sigFile);
-			return sdf;
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-	}
+//	public synchronized SignedDataFiles createSignedDataFiles(String data) {
+//
+//		// Debug
+//		if (Config.LOGD) {
+//			Log.d(TAG, "[fn] createSignedDataFiles");
+//		}
+//
+//		try {
+//			byte[] signature = sign(data.getBytes());
+//
+//			File dataFile = File.createTempFile("data",	".json", storageDir);
+//			FileWriter dataFileWriter = new FileWriter(dataFile);
+//			dataFileWriter.write(data);
+//			dataFileWriter.close();
+//
+//			File sigFile;
+//			sigFile = File.createTempFile("data", ".json.sig", storageDir);
+//			BufferedOutputStream sigOut = new BufferedOutputStream(new FileOutputStream(sigFile));
+//			sigOut.write(signature);
+//			sigOut.close();
+//
+//			SignedDataFiles sdf = new SignedDataFiles(dataFile, sigFile);
+//			return sdf;
+//		} catch (IOException e) {
+//			throw new RuntimeException(e);
+//		}
+//	}
 }

@@ -35,7 +35,7 @@ public class StatusManager {
 	 * Constructor.
 	 * loads context, assign initial preferences
 	 */
-	private StatusManager(Context context) {
+	public StatusManager() {
 
 		// Debug
 		if (Config.LOGD) {

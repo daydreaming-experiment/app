@@ -1,32 +1,20 @@
 package com.brainydroid.daydreaming.network;
 
+import android.util.Log;
+import com.brainydroid.daydreaming.ui.Config;
+import com.google.inject.Singleton;
+import org.spongycastle.jce.ECNamedCurveTable;
+import org.spongycastle.util.encoders.Base64;
+
 import java.io.UnsupportedEncodingException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.KeyFactory;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.Security;
-import java.security.Signature;
-import java.security.SignatureException;
+import java.security.*;
 import java.security.spec.ECGenParameterSpec;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Enumeration;
 
-import org.spongycastle.jce.ECNamedCurveTable;
-import org.spongycastle.util.encoders.Base64;
-import org.spongycastle.util.encoders.Hex;
-
-import android.util.Log;
-
-import com.brainydroid.daydreaming.ui.Config;
-
+@Singleton
 public class Crypto {
 
 	private static String TAG = "Crypto";
@@ -39,29 +27,13 @@ public class Crypto {
 	private static final String END_KEY_BLOCK = "-----END PUBLIC KEY-----";
 	private static final int LINEWIDTH = 64;
 
-	private static Crypto cInstance;
-
-	static {
-		Security.addProvider(new org.spongycastle.jce.provider.BouncyCastleProvider());
-	}
-
 	private KeyFactory kf;
 	private KeyPairGenerator kpg;
 	private Signature sg;
 
-	public static synchronized Crypto getInstance() {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] getInstance");
-		}
-
-		if (cInstance == null) {
-			cInstance = new Crypto();
-		}
-
-		return cInstance;
-	}
+    static {
+        Security.addProvider(new org.spongycastle.jce.provider.BouncyCastleProvider());
+    }
 
 	private Crypto() {
 
@@ -81,7 +53,6 @@ public class Crypto {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	public synchronized Enumeration<String> getAvailableCurveNames() {
 
 		// Debug
@@ -89,7 +60,8 @@ public class Crypto {
 			Log.d(TAG, "[fn] getAvailableCurveNames");
 		}
 
-		return ECNamedCurveTable.getNames();
+        //noinspection unchecked
+        return ECNamedCurveTable.getNames();
 	}
 
 	public synchronized KeyPair generateKeyPairNamedCurve(String curveName) {
@@ -123,29 +95,29 @@ public class Crypto {
 		}
 	}
 
-	public static String hex(byte[] bytes) {
-
-		// Verbose
-		if (Config.LOGV) {
-			Log.v(TAG, "[fn] hex");
-		}
-
-		try {
-			return new String(Hex.encode(bytes), "ASCII");
-		} catch (UnsupportedEncodingException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	public static byte[] base64Decode(String str) {
-
-		// Verbose
-		if (Config.LOGV) {
-			Log.v(TAG, "[fn] base64Decode");
-		}
-
-		return Base64.decode(str);
-	}
+//	public static String hex(byte[] bytes) {
+//
+//		// Verbose
+//		if (Config.LOGV) {
+//			Log.v(TAG, "[fn] hex");
+//		}
+//
+//		try {
+//			return new String(Hex.encode(bytes), "ASCII");
+//		} catch (UnsupportedEncodingException e) {
+//			throw new RuntimeException(e);
+//		}
+//	}
+//
+//	public static byte[] base64Decode(String str) {
+//
+//		// Verbose
+//		if (Config.LOGV) {
+//			Log.v(TAG, "[fn] base64Decode");
+//		}
+//
+//		return Base64.decode(str);
+//	}
 
 	public synchronized PublicKey readPublicKey(String keyStr) throws InvalidKeySpecException {
 
@@ -159,16 +131,16 @@ public class Crypto {
 		return kf.generatePublic(x509ks);
 	}
 
-	public synchronized PublicKey readPublicKey(byte[] key) throws InvalidKeySpecException {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] readPublicKey (from byte[])");
-		}
-
-		X509EncodedKeySpec x509ks = new X509EncodedKeySpec(key);
-		return kf.generatePublic(x509ks);
-	}
+//	public synchronized PublicKey readPublicKey(byte[] key) throws InvalidKeySpecException {
+//
+//		// Debug
+//		if (Config.LOGD) {
+//			Log.d(TAG, "[fn] readPublicKey (from byte[])");
+//		}
+//
+//		X509EncodedKeySpec x509ks = new X509EncodedKeySpec(key);
+//		return kf.generatePublic(x509ks);
+//	}
 
 	public synchronized PrivateKey readPrivateKey(String keyStr) throws InvalidKeySpecException {
 
@@ -182,36 +154,36 @@ public class Crypto {
 		return kf.generatePrivate(p8ks);
 	}
 
-	public synchronized PrivateKey readPrivateKey(byte[] key) throws InvalidKeySpecException {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] readPrivateKey (from byte[])");
-		}
-
-		PKCS8EncodedKeySpec p8ks = new PKCS8EncodedKeySpec(key);
-		return kf.generatePrivate(p8ks);
-	}
-
-	public synchronized KeyPair readKeyPair(String pubKeyStr, String privKeyStr) throws InvalidKeySpecException {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] readKeyPair (from String, String)");
-		}
-
-		return new KeyPair(readPublicKey(pubKeyStr), readPrivateKey(privKeyStr));
-	}
-
-	public synchronized KeyPair readKeyPair(byte[] pubKey, byte[] privKey) throws InvalidKeySpecException {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] readKeyPair (from byte[], byte[])");
-		}
-
-		return new KeyPair(readPublicKey(pubKey), readPrivateKey(privKey));
-	}
+//	public synchronized PrivateKey readPrivateKey(byte[] key) throws InvalidKeySpecException {
+//
+//		// Debug
+//		if (Config.LOGD) {
+//			Log.d(TAG, "[fn] readPrivateKey (from byte[])");
+//		}
+//
+//		PKCS8EncodedKeySpec p8ks = new PKCS8EncodedKeySpec(key);
+//		return kf.generatePrivate(p8ks);
+//	}
+//
+//	public synchronized KeyPair readKeyPair(String pubKeyStr, String privKeyStr) throws InvalidKeySpecException {
+//
+//		// Debug
+//		if (Config.LOGD) {
+//			Log.d(TAG, "[fn] readKeyPair (from String, String)");
+//		}
+//
+//		return new KeyPair(readPublicKey(pubKeyStr), readPrivateKey(privKeyStr));
+//	}
+//
+//	public synchronized KeyPair readKeyPair(byte[] pubKey, byte[] privKey) throws InvalidKeySpecException {
+//
+//		// Debug
+//		if (Config.LOGD) {
+//			Log.d(TAG, "[fn] readKeyPair (from byte[], byte[])");
+//		}
+//
+//		return new KeyPair(readPublicKey(pubKey), readPrivateKey(privKey));
+//	}
 
 	private static String wrapString(String str, int lineWidth) {
 
@@ -263,4 +235,5 @@ public class Crypto {
 			throw new RuntimeException(e);
 		}
 	}
+
 }

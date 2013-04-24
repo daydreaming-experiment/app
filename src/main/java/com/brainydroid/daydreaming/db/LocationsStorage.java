@@ -33,7 +33,7 @@ public class LocationsStorage {
 	private final SQLiteDatabase wDb;
 
 	// Constructor from context
-	private LocationsStorage() {
+	public LocationsStorage() {
 
 		// Debug
 		if (Config.LOGD) {

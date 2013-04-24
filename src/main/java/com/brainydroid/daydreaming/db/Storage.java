@@ -19,7 +19,7 @@ public class Storage extends SQLiteOpenHelper {
 
     @Inject static Application application;
 
-	private Storage() {
+	public Storage() {
 
         super(application, DATABASE_NAME, null, DATABASE_VERSION);
 
@@ -37,6 +37,7 @@ public class Storage extends SQLiteOpenHelper {
 			Log.d(TAG, "[fn] onCreate");
 		}
 
+        // Do nothing
 	}
 
 	@Override
@@ -47,5 +48,7 @@ public class Storage extends SQLiteOpenHelper {
 			Log.d(TAG, "[fn] onUpgrade");
 		}
 
+        // Do nothing
 	}
+
 }

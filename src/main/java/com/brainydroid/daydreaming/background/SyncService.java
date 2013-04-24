@@ -19,12 +19,6 @@ public class SyncService extends RoboService {
 
 	private static String TAG = "SyncService";
 
-	private static String EXP_ID = "6cb5e7782ca43681d6349a2280a8f99f74479d142971ac6c91dbd155ac58b4b3";
-	private static String SERVER_NAME = "http://naja.cc";
-
-	public static String QUESTIONS_VERSION_URL = "http://mehho.net:5001/questionsVersion";
-	private static String QUESTIONS_URL = "http://mehho.net:5001/questions.json";
-
     @Inject StatusManager statusManager;
     @Inject PollsStorage pollsStorage;
     @Inject LocationsStorage locationsStorage;
@@ -32,7 +26,9 @@ public class SyncService extends RoboService {
     @Inject CryptoStorage cryptoStorage;
     @Inject ServerTalker serverTalker;
 
-    private Gson gson;
+    private Gson gson  = new GsonBuilder()
+            .excludeFieldsWithoutExposeAnnotation()
+            .create();
     private HashSet<Integer> pollsLeftToUpload;
     private HashSet<Integer> locationItemsLeftToUpload;
 
@@ -50,7 +46,7 @@ public class SyncService extends RoboService {
 
 		super.onCreate();
 
-		initVarsAndUpdates();
+		startUpdates();
 	}
 
 	@Override
@@ -91,11 +87,11 @@ public class SyncService extends RoboService {
 
 	// FIXME: if the servers don't answer, does the connection time out and does the
 	// service exit?
-	private void initVarsAndUpdates() {
+	private void startUpdates() {
 
 		// Debug
 		if (Config.LOGD) {
-			Log.d(TAG, "[fn] initVarsAndUpdates");
+			Log.d(TAG, "[fn] startUpdates");
 		}
 
 		if (statusManager.isDataEnabled()) {
@@ -107,10 +103,6 @@ public class SyncService extends RoboService {
 				Toast.makeText(this, "SyncService: starting sync...",
 						Toast.LENGTH_SHORT).show();
 			}
-
-			gson = new GsonBuilder()
-			.excludeFieldsWithoutExposeAnnotation()
-			.create();
 
 			CryptoStorageCallback callback = new CryptoStorageCallback() {
 
@@ -124,8 +116,6 @@ public class SyncService extends RoboService {
 						Log.d(TAG, "(callback) onCryptoStorageReady");
 					}
 
-					serverTalker = ServerTalker.getInstance(SERVER_NAME, cryptoStorage);
-
 					if (hasKeyPairAndMaiId && statusManager.isDataEnabled()) {
 						//asyncUpdateQuestions(); // Line commented not to update questions at each launch of the SyncService
 						asyncUploadPolls();
@@ -136,7 +126,8 @@ public class SyncService extends RoboService {
 			};
 
 			// This will launch all calls through the callbacks
-			cryptoStorage = CryptoStorage.getInstance(this, SERVER_NAME, callback);
+			cryptoStorage.onReady(callback);
+
 		} else {
 
 			// Info
@@ -146,6 +137,7 @@ public class SyncService extends RoboService {
 				Toast.makeText(this, "SyncService: no internet connection",
 						Toast.LENGTH_SHORT).show();
 			}
+
 			stopSelf();
 		}
 	}
@@ -232,16 +224,19 @@ public class SyncService extends RoboService {
 
 							willGetQuestions = true;
 
-							HttpGetData updateQuestionsData = new HttpGetData(QUESTIONS_URL,
+							HttpGetData updateQuestionsData = new HttpGetData(ServerConfig.QUESTIONS_URL,
 									updateQuestionsCallback);
 							HttpGetTask updateQuestionsTask = new HttpGetTask();
 							updateQuestionsTask.execute(updateQuestionsData);
+
 						} else {
+
 							if (Config.TOASTD) {
 								Toast.makeText(SyncService.this,
 										"SyncService: no new questions to download",
 										Toast.LENGTH_SHORT).show();
 							}
+
 						}
 					} catch (Exception e) {
 						// Warning
@@ -259,7 +254,7 @@ public class SyncService extends RoboService {
 
 		};
 
-		HttpGetData getQuestionsVersionData = new HttpGetData(QUESTIONS_VERSION_URL,
+		HttpGetData getQuestionsVersionData = new HttpGetData(ServerConfig.QUESTIONS_VERSION_URL,
 				fullCallback);
 		HttpGetTask getQuestionsVersionTask = new HttpGetTask();
 		getQuestionsVersionTask.execute(getQuestionsVersionData);
@@ -351,7 +346,7 @@ public class SyncService extends RoboService {
 
 			};
 
-			serverTalker.signAndUploadData(EXP_ID, gson.toJson(poll), callback);
+			serverTalker.signAndUploadData(ServerConfig.EXP_ID, gson.toJson(poll), callback);
 		}
 	}
 
@@ -441,7 +436,7 @@ public class SyncService extends RoboService {
 
             };
 
-            serverTalker.signAndUploadData(EXP_ID, gson.toJson(locationItem), callback);
+            serverTalker.signAndUploadData(ServerConfig.EXP_ID, gson.toJson(locationItem), callback);
         }
     }
 

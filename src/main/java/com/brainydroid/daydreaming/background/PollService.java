@@ -3,7 +3,6 @@ package com.brainydroid.daydreaming.background;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.IBinder;
@@ -16,10 +15,11 @@ import com.brainydroid.daydreaming.db.PollsStorage;
 import com.brainydroid.daydreaming.ui.Config;
 import com.brainydroid.daydreaming.ui.QuestionActivity;
 import com.google.inject.Inject;
+import roboguice.service.RoboService;
 
 import java.util.ArrayList;
 
-public class PollService extends Service {
+public class PollService extends RoboService {
 
 	private static String TAG = "PollService";
 

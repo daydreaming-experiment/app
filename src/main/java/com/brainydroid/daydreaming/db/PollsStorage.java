@@ -48,7 +48,7 @@ public class PollsStorage {
 	private final SQLiteDatabase wDb;
 
 	// Constructor from context
-	private PollsStorage() {
+	public PollsStorage() {
 
 		// Debug
 		if (Config.LOGD) {
