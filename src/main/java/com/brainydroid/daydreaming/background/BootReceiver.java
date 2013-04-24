@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
-
 import com.brainydroid.daydreaming.ui.Config;
 import com.google.inject.Inject;
 
@@ -33,15 +32,23 @@ public class BootReceiver extends BroadcastReceiver {
 
 				// Info
 				Log.i(TAG, "first launch is completed");
-				Log.i(TAG, "starting SchedulerService");
-                Log.i(TAG, "starting LocationItemService");
+
+                // Info
+                Log.i(TAG, "starting SchedulerService");
 
 				Intent schedulerIntent = new Intent(context, SchedulerService.class);
 				context.startService(schedulerIntent);
 
-                Intent locationItemServiceIntent = new Intent(context, LocationItemService.class);
+                // Info
+                Log.i(TAG, "starting LocationPointService");
+
+                Intent locationItemServiceIntent = new Intent(context, LocationPointService.class);
                 context.startService(locationItemServiceIntent);
+
 			}
+
 		}
+
 	}
+
 }

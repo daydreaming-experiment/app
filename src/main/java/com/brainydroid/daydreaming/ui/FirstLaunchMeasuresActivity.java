@@ -10,7 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import com.brainydroid.daydreaming.R;
-import com.brainydroid.daydreaming.background.LocationItemService;
+import com.brainydroid.daydreaming.background.LocationPointService;
 import com.brainydroid.daydreaming.background.SchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
 import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockActivity;
@@ -232,7 +232,7 @@ public class FirstLaunchMeasuresActivity extends RoboSherlockActivity {
 		Intent schedulerServiceIntent = new Intent(this, SchedulerService.class);
 		startService(schedulerServiceIntent);
 
-        Intent locationItemServiceIntent = new Intent(this, LocationItemService.class);
+        Intent locationItemServiceIntent = new Intent(this, LocationPointService.class);
         if (!(Build.FINGERPRINT.startsWith("generic"))) {
             startService(locationItemServiceIntent);
         }

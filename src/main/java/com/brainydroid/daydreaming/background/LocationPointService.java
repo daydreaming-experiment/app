@@ -14,9 +14,9 @@ import com.brainydroid.daydreaming.ui.Config;
 import com.google.inject.Inject;
 import roboguice.service.RoboService;
 
-public class LocationItemService extends RoboService {
+public class LocationPointService extends RoboService {
 
-	private static String TAG = "LocationItemService";
+	private static String TAG = "LocationPointService";
 
     private static String STOP_LOCATION_LISTENING = "stopLocationListening";
     public static long SAMPLE_INTERVAL = 18 * 60 * 1000; // 18 minutes (in milliseconds)
@@ -111,7 +111,7 @@ public class LocationItemService extends RoboService {
                     Log.d(TAG, "[fn] onServiceConnected");
                 }
 
-                LocationItemService.this.setServiceConnectionDone();
+                LocationPointService.this.setServiceConnectionDone();
             }
 
         };
@@ -145,7 +145,7 @@ public class LocationItemService extends RoboService {
                     Log.d(TAG, "[fn] onServiceConnected");
                 }
 
-                LocationItemService.this.setServiceConnectionDone();
+                LocationPointService.this.setServiceConnectionDone();
             }
 
         };
@@ -191,7 +191,7 @@ public class LocationItemService extends RoboService {
                     // save() is called from saveAndStopSelfIfAllDone
                 }
 
-                LocationItemService.this.setSntpRequestDone();
+                LocationPointService.this.setSntpRequestDone();
             }
 
         };
@@ -217,7 +217,7 @@ public class LocationItemService extends RoboService {
         }
 
         long scheduledTime = SystemClock.elapsedRealtime() + SAMPLE_INTERVAL;
-        Intent intent = new Intent(this, LocationItemService.class);
+        Intent intent = new Intent(this, LocationPointService.class);
         PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
                 scheduledTime, pendingIntent);
@@ -231,7 +231,7 @@ public class LocationItemService extends RoboService {
         }
 
         long scheduledTime = SystemClock.elapsedRealtime() + LISTENING_TIME;
-        Intent intent = new Intent(this, LocationItemService.class);
+        Intent intent = new Intent(this, LocationPointService.class);
         intent.putExtra(STOP_LOCATION_LISTENING, true);
         PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,

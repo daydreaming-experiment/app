@@ -89,7 +89,7 @@
         <service android:name=".background.SchedulerService"
                  android:exported="false"/>
 
-        <service android:name=".background.LocationItemService"
+        <service android:name=".background.LocationPointService"
                  android:exported="false"/>
 
     </application>
