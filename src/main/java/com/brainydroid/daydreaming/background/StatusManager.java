@@ -2,15 +2,11 @@ package com.brainydroid.daydreaming.background;
 
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
-import android.app.Application;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Build;
 import android.util.Log;
-
 import com.brainydroid.daydreaming.ui.Config;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -26,7 +22,6 @@ public class StatusManager {
     @Inject LocationManager locationManager;
     @Inject ConnectivityManager connectivityManager;
     @Inject ActivityManager activityManager;
-    @Inject Application application;
 
 	private final SharedPreferences.Editor eSharedPreferences; // editor of expStatus
 	private NetworkInfo networkInfo;
@@ -104,8 +99,7 @@ public class StatusManager {
 		}
 
 		networkInfo = connectivityManager.getActiveNetworkInfo();
-        return ((networkInfo != null && networkInfo.isConnectedOrConnecting()) ||
-                (Build.FINGERPRINT.startsWith("generic")));
+        return (networkInfo != null && networkInfo.isConnectedOrConnecting());
     }
 
 	public boolean isDataAndLocationEnabled() {

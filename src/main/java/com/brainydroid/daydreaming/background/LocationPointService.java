@@ -7,7 +7,7 @@ import android.location.Location;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.util.Log;
-import com.brainydroid.daydreaming.db.LocationItem;
+import com.brainydroid.daydreaming.db.LocationPoint;
 import com.brainydroid.daydreaming.network.SntpClient;
 import com.brainydroid.daydreaming.network.SntpClientCallback;
 import com.brainydroid.daydreaming.ui.Config;
@@ -18,13 +18,13 @@ public class LocationPointService extends RoboService {
 
 	private static String TAG = "LocationPointService";
 
-    private static String STOP_LOCATION_LISTENING = "stopLocationListening";
-    public static long SAMPLE_INTERVAL = 18 * 60 * 1000; // 18 minutes (in milliseconds)
-    public static long LISTENING_TIME = 2 * 60 * 1000; // 2 minutes (in milliseconds)
+    public static String STOP_LOCATION_LISTENING = "stopLocationListening";
+    public static long SAMPLE_INTERVAL = 18 * 60 * 1000;    // 18 minutes (in milliseconds)
+    public static long LISTENING_TIME = 2 * 60 * 1000;      // 2 minutes (in milliseconds)
 
     private boolean sntpRequestDone = false;
     private boolean serviceConnectionDone = false;
-    private LocationItem locationItem = null;
+    private LocationPoint locationPoint = null;
 
     @Inject AlarmManager alarmManager;
     @Inject StatusManager statusManager;
@@ -52,13 +52,18 @@ public class LocationPointService extends RoboService {
 		super.onStartCommand(intent, flags, startId);
 
         if (intent.getBooleanExtra(STOP_LOCATION_LISTENING, false)) {
+
             stopLocationListening();
             scheduleNextService();
+
         } else {
+
             if (statusManager.isDataAndLocationEnabled()) {
                 startLocationListening();
             }
+
             scheduleStopLocationListening();
+
         }
 
 		// The service stops itself through callbacks set in stopLocationListening or startLocationListening
@@ -119,10 +124,12 @@ public class LocationPointService extends RoboService {
         locationServiceConnection.setOnServiceConnectedCallback(serviceConnectionCallback);
 
         if (statusManager.isLocationServiceRunning()) {
+
             locationServiceConnection.bindLocationService();
             // The serviceConnectionCallback stops this service, which calls onDestroy.
             // unBind happens in onDestroy, and the LocationService finishes if nobody else has listeners registered
             locationServiceConnection.clearLocationItemCallback();
+
         }
     }
 
@@ -146,13 +153,14 @@ public class LocationPointService extends RoboService {
                 }
 
                 LocationPointService.this.setServiceConnectionDone();
+
             }
 
         };
 
         locationServiceConnection.setOnServiceConnectedCallback(serviceConnectionCallback);
 
-        locationItem = new LocationItem();
+        locationPoint = new LocationPoint();
 
         LocationCallback locationCallback = new LocationCallback() {
 
@@ -166,8 +174,9 @@ public class LocationPointService extends RoboService {
                     Log.d(TAG, "[fn] (locationCallback) onLocationReceived");
                 }
 
-                locationItem.setLocation(location);
+                locationPoint.setLocation(location);
                 // save() is called from saveAndStopSelfIfAllDone
+
             }
 
         };
@@ -187,11 +196,12 @@ public class LocationPointService extends RoboService {
                 }
 
                 if (sntpClient != null) {
-                    locationItem.setTimestamp(sntpClient.getNow());
+                    locationPoint.setTimestamp(sntpClient.getNow());
                     // save() is called from saveAndStopSelfIfAllDone
                 }
 
                 LocationPointService.this.setSntpRequestDone();
+
             }
 
         };
@@ -200,13 +210,16 @@ public class LocationPointService extends RoboService {
         sntpClient.asyncRequestTime(sntpCallback);
 
         if (!statusManager.isLocationServiceRunning()) {
+
             locationServiceConnection.bindLocationService();
-            // The serviceConnectionCallback stops this service, which calls onDestroy.
-            // unBind happens in onDestroy, and the LocationService finishes if nobody else has listeners registered
             locationServiceConnection.startLocationService();
+
         } else {
+
             locationServiceConnection.bindLocationService();
+
         }
+
     }
 
     private void scheduleNextService() {
@@ -267,12 +280,13 @@ public class LocationPointService extends RoboService {
             Log.d(TAG, "[fn] saveAndStopSelfIfAllDone");
         }
 
-        if (locationItem != null) {
-            locationItem.save();
+        if (locationPoint != null) {
+            locationPoint.save();
         }
 
         if (sntpRequestDone && serviceConnectionDone) {
             stopSelf();
         }
     }
+
 }

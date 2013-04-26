@@ -74,7 +74,6 @@ public class LocationServiceConnection implements ServiceConnection {
         if (!sBound) {
             Intent locationServiceIntent = new Intent(context, LocationService.class);
             context.bindService(locationServiceIntent, this, 0);
-            // Why is this here and not in onServiceConnected?
             sBound = true;
         }
 	}
@@ -88,7 +87,6 @@ public class LocationServiceConnection implements ServiceConnection {
 
 		if (sBound) {
 			context.unbindService(this);
-            // Why is this here and not in onServiceDisconnected?
 			sBound = false;
 		}
 	}
@@ -176,4 +174,5 @@ public class LocationServiceConnection implements ServiceConnection {
 
         setQuestionLocationCallback(null);
     }
+
 }

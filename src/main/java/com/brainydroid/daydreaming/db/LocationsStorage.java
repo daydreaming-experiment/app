@@ -19,12 +19,12 @@ public class LocationsStorage {
 
 	private static final String SQL_CREATE_TABLE_LOCATIONS =
 			"CREATE TABLE IF NOT EXISTS " + TABLE_LOCATIONS + " (" +
-                    LocationItem.COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-					LocationItem.COL_LOCATION_LATITUDE + " REAL, " +
-                    LocationItem.COL_LOCATION_LONGITUDE + " REAL, " +
-                    LocationItem.COL_LOCATION_ALTITUDE + " REAL, " +
-                    LocationItem.COL_LOCATION_ACCURACY + " REAL, " +
-                    LocationItem.COL_TIMESTAMP + " REAL" +
+                    LocationPoint.COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+					LocationPoint.COL_LOCATION_LATITUDE + " REAL, " +
+                    LocationPoint.COL_LOCATION_LONGITUDE + " REAL, " +
+                    LocationPoint.COL_LOCATION_ALTITUDE + " REAL, " +
+                    LocationPoint.COL_LOCATION_ACCURACY + " REAL, " +
+                    LocationPoint.COL_TIMESTAMP + " REAL" +
 					");";
 
     @Inject Storage storage;
@@ -45,7 +45,7 @@ public class LocationsStorage {
 		wDb.execSQL(SQL_CREATE_TABLE_LOCATIONS); // creates db fields
 	}
 
-	private ContentValues getLocationItemContentValues(LocationItem locationItem) {
+	private ContentValues getLocationItemContentValues(LocationPoint locationPoint) {
 
 		// Debug
 		if (Config.LOGD) {
@@ -53,83 +53,83 @@ public class LocationsStorage {
 		}
 
 		ContentValues locationItemValues = new ContentValues();
-        locationItemValues.put(LocationItem.COL_LOCATION_LATITUDE, locationItem.getLocationLatitude());
-        locationItemValues.put(LocationItem.COL_LOCATION_LONGITUDE, locationItem.getLocationLongitude());
-        locationItemValues.put(LocationItem.COL_LOCATION_ALTITUDE, locationItem.getLocationAltitude());
-        locationItemValues.put(LocationItem.COL_LOCATION_ACCURACY, locationItem.getLocationAccuracy());
-        locationItemValues.put(LocationItem.COL_TIMESTAMP, locationItem.getTimestamp());
+        locationItemValues.put(LocationPoint.COL_LOCATION_LATITUDE, locationPoint.getLocationLatitude());
+        locationItemValues.put(LocationPoint.COL_LOCATION_LONGITUDE, locationPoint.getLocationLongitude());
+        locationItemValues.put(LocationPoint.COL_LOCATION_ALTITUDE, locationPoint.getLocationAltitude());
+        locationItemValues.put(LocationPoint.COL_LOCATION_ACCURACY, locationPoint.getLocationAccuracy());
+        locationItemValues.put(LocationPoint.COL_TIMESTAMP, locationPoint.getTimestamp());
 		return locationItemValues;
 	}
 
-	private ContentValues getLocationItemContentValuesWithId(LocationItem locationItem) {
+	private ContentValues getLocationItemContentValuesWithId(LocationPoint locationPoint) {
 
 		// Debug
 		if (Config.LOGD) {
 			Log.d(TAG, "[fn] getLocationItemContentValuesWithId");
 		}
 
-		ContentValues locationItemValues = getLocationItemContentValues(locationItem);
-		locationItemValues.put(LocationItem.COL_ID, locationItem.getId());
+		ContentValues locationItemValues = getLocationItemContentValues(locationPoint);
+		locationItemValues.put(LocationPoint.COL_ID, locationPoint.getId());
 		return locationItemValues;
 	}
 
-	public void storeLocationItemGetId(LocationItem locationItem) {
+	public void storeLocationItemGetId(LocationPoint locationPoint) {
 
 		// Debug
 		if (Config.LOGD) {
 			Log.d(TAG, "[fn] storeLocationItemGetId");
 		}
 
-		ContentValues locationItemValues = getLocationItemContentValues(locationItem);
+		ContentValues locationItemValues = getLocationItemContentValues(locationPoint);
 		wDb.insert(TABLE_LOCATIONS, null, locationItemValues);
-		Cursor res = rDb.query(TABLE_LOCATIONS, new String[] {LocationItem.COL_ID}, null,
-				null, null, null, LocationItem.COL_ID + " DESC", "1");
+		Cursor res = rDb.query(TABLE_LOCATIONS, new String[] {LocationPoint.COL_ID}, null,
+				null, null, null, LocationPoint.COL_ID + " DESC", "1");
 		res.moveToFirst();
-		int locationItemId = res.getInt(res.getColumnIndex(LocationItem.COL_ID));
+		int locationItemId = res.getInt(res.getColumnIndex(LocationPoint.COL_ID));
 		res.close();
-		locationItem.setId(locationItemId);
+		locationPoint.setId(locationItemId);
 	}
 
-	public void updateLocationItem(LocationItem locationItem) {
+	public void updateLocationItem(LocationPoint locationPoint) {
 
 		// Debug
 		if (Config.LOGD) {
 			Log.d(TAG, "[fn] updateLocationItem");
 		}
 
-		ContentValues locationItemValues = getLocationItemContentValuesWithId(locationItem);
-		int locationItemId = locationItem.getId();
-		wDb.update(TABLE_LOCATIONS, locationItemValues, LocationItem.COL_ID + "=?",
+		ContentValues locationItemValues = getLocationItemContentValuesWithId(locationPoint);
+		int locationItemId = locationPoint.getId();
+		wDb.update(TABLE_LOCATIONS, locationItemValues, LocationPoint.COL_ID + "=?",
 				new String[] {Integer.toString(locationItemId)});
 	}
 
-	public LocationItem getLocationItem(int locationItemId) {
+	public LocationPoint getLocationItem(int locationItemId) {
 
 		// Debug
 		if (Config.LOGD) {
 			Log.d(TAG, "[fn] getLocationItem");
 		}
 
-		Cursor res = rDb.query(TABLE_LOCATIONS, null, LocationItem.COL_ID + "=?",
+		Cursor res = rDb.query(TABLE_LOCATIONS, null, LocationPoint.COL_ID + "=?",
 				new String[] {Integer.toString(locationItemId)}, null, null, null);
 		if (!res.moveToFirst()) {
 			res.close();
 			return null;
 		}
 
-		LocationItem locationItem = new LocationItem();
-		locationItem.setId(res.getInt(res.getColumnIndex(LocationItem.COL_ID)));
-        locationItem.setLocationLatitude(res.getDouble(res.getColumnIndex(LocationItem.COL_LOCATION_LATITUDE)));
-        locationItem.setLocationLongitude(res.getDouble(res.getColumnIndex(LocationItem.COL_LOCATION_LONGITUDE)));
-        locationItem.setLocationAltitude(res.getDouble(res.getColumnIndex(LocationItem.COL_LOCATION_ALTITUDE)));
-        locationItem.setLocationAccuracy(res.getDouble(res.getColumnIndex(LocationItem.COL_LOCATION_ACCURACY)));
-        locationItem.setTimestamp(res.getLong(res.getColumnIndex(LocationItem.COL_TIMESTAMP)));
+		LocationPoint locationPoint = new LocationPoint();
+		locationPoint.setId(res.getInt(res.getColumnIndex(LocationPoint.COL_ID)));
+        locationPoint.setLocationLatitude(res.getDouble(res.getColumnIndex(LocationPoint.COL_LOCATION_LATITUDE)));
+        locationPoint.setLocationLongitude(res.getDouble(res.getColumnIndex(LocationPoint.COL_LOCATION_LONGITUDE)));
+        locationPoint.setLocationAltitude(res.getDouble(res.getColumnIndex(LocationPoint.COL_LOCATION_ALTITUDE)));
+        locationPoint.setLocationAccuracy(res.getDouble(res.getColumnIndex(LocationPoint.COL_LOCATION_ACCURACY)));
+        locationPoint.setTimestamp(res.getLong(res.getColumnIndex(LocationPoint.COL_TIMESTAMP)));
 		res.close();
 
-		return locationItem;
+		return locationPoint;
 	}
 
-	public ArrayList<LocationItem> getUploadableLocationItems() {
+	public ArrayList<LocationPoint> getUploadableLocationItems() {
 
 		// Debug
 		if (Config.LOGD) {
@@ -146,7 +146,7 @@ public class LocationsStorage {
 			Log.d(TAG, "[fn] getAllLocationItemIds");
 		}
 
-		Cursor res = rDb.query(TABLE_LOCATIONS, new String[] {LocationItem.COL_ID}, null, null,
+		Cursor res = rDb.query(TABLE_LOCATIONS, new String[] {LocationPoint.COL_ID}, null, null,
 				null, null, null);
 
 		if (!res.moveToFirst()) {
@@ -156,13 +156,13 @@ public class LocationsStorage {
 
 		ArrayList<Integer> locationItemIds = new ArrayList<Integer>();
 		do {
-			locationItemIds.add(res.getInt(res.getColumnIndex(LocationItem.COL_ID)));
+			locationItemIds.add(res.getInt(res.getColumnIndex(LocationPoint.COL_ID)));
 		} while (res.moveToNext());
 
 		return locationItemIds;
 	}
 
-	private ArrayList<LocationItem> getAllLocationItems() {
+	private ArrayList<LocationPoint> getAllLocationItems() {
 
 		// Debug
 		if (Config.LOGD) {
@@ -175,13 +175,13 @@ public class LocationsStorage {
 			return null;
 		}
 
-		ArrayList<LocationItem> locationItems = new ArrayList<LocationItem>();
+		ArrayList<LocationPoint> locationPoints = new ArrayList<LocationPoint>();
 
 		for (int locationItemId : locationItemIds) {
-			locationItems.add(getLocationItem(locationItemId));
+			locationPoints.add(getLocationItem(locationItemId));
 		}
 
-		return locationItems;
+		return locationPoints;
 	}
 
 	public void removeLocationItem(int locationItemId) {
@@ -191,6 +191,6 @@ public class LocationsStorage {
 			Log.d(TAG, "[fn] removeLocationItem");
 		}
 
-		wDb.delete(TABLE_LOCATIONS, LocationItem.COL_ID + "=?", new String[] {Integer.toString(locationItemId)});
+		wDb.delete(TABLE_LOCATIONS, LocationPoint.COL_ID + "=?", new String[] {Integer.toString(locationItemId)});
 	}
 }

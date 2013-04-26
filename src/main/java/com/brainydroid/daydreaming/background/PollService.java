@@ -23,14 +23,10 @@ public class PollService extends RoboService {
 
 	private static String TAG = "PollService";
 
-	//	public static String POLL_EXPIRE_ID = "pollExpireId";
-	//	public static int EXPIRY_DELAY = 5 * 60 * 1000; // 5 minutes (in milliseconds)
-
-	public static int nQuestionsPerPoll = 3;
+	public static int N_QUESTIONS_PER_POLL = 3;
 
     @Inject NotificationManager notificationManager;
     @Inject PollsStorage pollsStorage;
-    // @Inject AlarmManager alarmManager;
     @Inject SharedPreferences sharedPreferences;
 
 	@Override
@@ -55,13 +51,7 @@ public class PollService extends RoboService {
 		super.onStartCommand(intent, flags, startId);
 
 		pollsStorage.cleanPolls();
-
-		//		int pollExpireId = intent.getIntExtra(POLL_EXPIRE_ID, -1);
-		//		if (pollExpireId == -1) {
 		createAndLaunchPoll();
-		//		} else {
-		//			expirePoll(pollExpireId);
-		//		}
 		stopSelf();
 		return START_REDELIVER_INTENT;
 	}
@@ -89,20 +79,6 @@ public class PollService extends RoboService {
 		return null;
 	}
 
-	//	private void expirePoll(int id) {
-	//
-	//		// Debug
-	//		if (Config.LOGD){
-	//			Log.d(TAG, "[fn] expirePoll");
-	//		}
-	//
-	//		notificationManager.cancel(id);
-	//		Poll poll = pollsStorage.getPoll(id);
-	//		if (poll != null) {
-	//			poll.setStatus(Poll.STATUS_EXPIRED);
-	//		}
-	//	}
-
 	private void createAndLaunchPoll() {
 
 		// Debug
@@ -125,7 +101,8 @@ public class PollService extends RoboService {
 		Intent intent = new Intent(this, QuestionActivity.class);
 		intent.putExtra(QuestionActivity.EXTRA_POLL_ID, poll.getId());
 		intent.putExtra(QuestionActivity.EXTRA_QUESTION_INDEX, 0);
-		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
 		return intent;
 	}
 
@@ -166,15 +143,6 @@ public class PollService extends RoboService {
 		.build();
 
 		notificationManager.notify(poll.getId(), notification);
-
-		// Build notification expirer
-		//		Intent expirerIntent = new Intent(this, PollService.class);
-		//		expirerIntent.putExtra(POLL_EXPIRE_ID, poll.getId());
-		//		PendingIntent expirerPendingIntent = PendingIntent.getService(this, 0,
-		//				expirerIntent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_ONE_SHOT);
-		//		long expiry = SystemClock.elapsedRealtime() + EXPIRY_DELAY;
-		//		alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-		//				expiry, expirerPendingIntent);
 	}
 
 	private Poll createPoll() {
@@ -190,7 +158,7 @@ public class PollService extends RoboService {
 		if (pendingPolls != null) {
 			poll = pendingPolls.get(0);
 		} else {
-			poll = Poll.create(nQuestionsPerPoll);
+			poll = Poll.create(N_QUESTIONS_PER_POLL);
 		}
 
 		poll.setStatus(Poll.STATUS_PENDING);
@@ -209,4 +177,5 @@ public class PollService extends RoboService {
 		Intent schedulerIntent = new Intent(this, SchedulerService.class);
 		startService(schedulerIntent);
 	}
+
 }

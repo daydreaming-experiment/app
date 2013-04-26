@@ -6,9 +6,9 @@ import com.brainydroid.daydreaming.ui.Config;
 import com.google.gson.annotations.Expose;
 import com.google.inject.Inject;
 
-public class LocationItem {
+public class LocationPoint {
 
-	private static String TAG = "LocationItem";
+	private static String TAG = "LocationPoint";
 
 	private transient int _id;
 
@@ -27,11 +27,11 @@ public class LocationItem {
 
     @Inject transient LocationsStorage locationsStorage;
 
-	public LocationItem() {
+	public LocationPoint() {
 
 		// Debug
 		if (Config.LOGD) {
-			Log.d(TAG, "[fn] LocationItem");
+			Log.d(TAG, "[fn] LocationPoint");
 		}
 
 		_id = -1;

@@ -220,7 +220,8 @@ public class SyncService extends RoboService {
 						if (serverQuestionsVersion != questionsStorage.getQuestionsVersion()) {
 
 							// Info
-							Log.i(TAG, "server's questionsVersion is different from the local one -> trying to update questions");
+							Log.i(TAG, "server's questionsVersion is different from the local one " +
+                                    "-> trying to update questions");
 
 							willGetQuestions = true;
 
@@ -362,9 +363,9 @@ public class SyncService extends RoboService {
         // See http://developer.android.com/guide/components/processes-and-threads.html ,
         // right above the "Thread-safe methods" title.
 
-        ArrayList<LocationItem> uploadableLocationItems = locationsStorage.getUploadableLocationItems();
+        ArrayList<LocationPoint> uploadableLocationPoints = locationsStorage.getUploadableLocationItems();
 
-        if (uploadableLocationItems == null) {
+        if (uploadableLocationPoints == null) {
 
             // Info
             Log.i(TAG, "no locationItems to upload -> exiting");
@@ -380,22 +381,22 @@ public class SyncService extends RoboService {
         }
 
         // Info
-        Log.i(TAG, "trying to upload " + uploadableLocationItems.size() + " locationItems");
+        Log.i(TAG, "trying to upload " + uploadableLocationPoints.size() + " locationItems");
 
         if (Config.TOASTD) {
             Toast.makeText(this,
-                    "SyncService: trying to upload " + uploadableLocationItems.size() + " locationItems",
+                    "SyncService: trying to upload " + uploadableLocationPoints.size() + " locationItems",
                     Toast.LENGTH_SHORT).show();
         }
 
         locationItemsLeftToUpload = new HashSet<Integer>();
-        for (LocationItem locationItem : uploadableLocationItems) {
-            locationItemsLeftToUpload.add(locationItem.getId());
+        for (LocationPoint locationPoint : uploadableLocationPoints) {
+            locationItemsLeftToUpload.add(locationPoint.getId());
         }
 
-        for (LocationItem locationItem : uploadableLocationItems) {
+        for (LocationPoint locationPoint : uploadableLocationPoints) {
 
-            final int locationItemId = locationItem.getId();
+            final int locationItemId = locationPoint.getId();
 
             HttpConversationCallback callback = new HttpConversationCallback() {
 
@@ -412,13 +413,13 @@ public class SyncService extends RoboService {
                     if (success) {
 
                         // Info
-                        Log.i(TAG, "successfully uploaded locationItem (id: " +
+                        Log.i(TAG, "successfully uploaded locationPoint (id: " +
                                 locationItemId + ") to server (serverAnswer: " +
                                 serverAnswer + ")");
 
                         if (Config.TOASTD) {
                             Toast.makeText(SyncService.this,
-                                    "SyncService: uploaded locationItem (id: " + locationItemId +
+                                    "SyncService: uploaded locationPoint (id: " + locationItemId +
                                             ") (serverAnswer: " + serverAnswer + ")",
                                     Toast.LENGTH_LONG).show();
                         }
@@ -428,7 +429,7 @@ public class SyncService extends RoboService {
                     } else {
 
                         // Warning
-                        Log.w(TAG, "error while upload locationItem (id: " + locationItemId + ") to server");
+                        Log.w(TAG, "error while upload locationPoint (id: " + locationItemId + ") to server");
 
                         setUploadLocationItemDone(locationItemId);
                     }
@@ -436,7 +437,7 @@ public class SyncService extends RoboService {
 
             };
 
-            serverTalker.signAndUploadData(ServerConfig.EXP_ID, gson.toJson(locationItem), callback);
+            serverTalker.signAndUploadData(ServerConfig.EXP_ID, gson.toJson(locationPoint), callback);
         }
     }
 
@@ -512,4 +513,5 @@ public class SyncService extends RoboService {
 			stopSelf();
 		}
 	}
+
 }
