@@ -35,7 +35,7 @@ public class Crypto {
         Security.addProvider(new org.spongycastle.jce.provider.BouncyCastleProvider());
     }
 
-	private Crypto() {
+	public Crypto() {
 
 		// Debug
 		if (Config.LOGD) {

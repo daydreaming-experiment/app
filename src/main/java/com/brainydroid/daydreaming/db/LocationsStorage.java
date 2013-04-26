@@ -27,13 +27,12 @@ public class LocationsStorage {
                     LocationPoint.COL_TIMESTAMP + " REAL" +
 					");";
 
-    @Inject Storage storage;
-
 	private final SQLiteDatabase rDb;
 	private final SQLiteDatabase wDb;
 
 	// Constructor from context
-	public LocationsStorage() {
+    @Inject
+	public LocationsStorage(Storage storage) {
 
 		// Debug
 		if (Config.LOGD) {

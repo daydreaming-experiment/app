@@ -23,27 +23,9 @@ public class StatusManager {
     @Inject ConnectivityManager connectivityManager;
     @Inject ActivityManager activityManager;
 
-	private final SharedPreferences.Editor eSharedPreferences; // editor of expStatus
-	private NetworkInfo networkInfo;
-
-	/*
-	 * Constructor.
-	 * loads context, assign initial preferences
-	 */
-	public StatusManager() {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] StatusManager");
-		}
-
-		eSharedPreferences = sharedPreferences.edit();
-		networkInfo = connectivityManager.getActiveNetworkInfo();
-	}
-
-	/*
-	 * Check if first launch is completed
-	 */
+    /*
+     * Check if first launch is completed
+     */
 	public boolean isFirstLaunchCompleted() {
 
 		// Debug
@@ -61,6 +43,7 @@ public class StatusManager {
 			Log.d(TAG, "[fn] setFirstLaunchCompleted");
 		}
 
+        SharedPreferences.Editor eSharedPreferences = sharedPreferences.edit();
 		eSharedPreferences.putBoolean(EXP_STATUS_FL_COMPLETED, true);
 		eSharedPreferences.commit();
 	}
@@ -98,7 +81,7 @@ public class StatusManager {
 			Log.d(TAG, "[fn] isDataEnabled");
 		}
 
-		networkInfo = connectivityManager.getActiveNetworkInfo();
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         return (networkInfo != null && networkInfo.isConnectedOrConnecting());
     }
 

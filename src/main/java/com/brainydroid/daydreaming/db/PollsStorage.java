@@ -40,7 +40,6 @@ public class PollsStorage {
 					Question.COL_TIMESTAMP + " REAL" +
 					");";
 
-    @Inject Storage storage;
     @Inject QuestionsStorage questionsStorage;
     @Inject SparseArray<Poll> pollInstances;
 
@@ -48,7 +47,8 @@ public class PollsStorage {
 	private final SQLiteDatabase wDb;
 
 	// Constructor from context
-	public PollsStorage() {
+    @Inject
+	public PollsStorage(Storage storage) {
 
 		// Debug
 		if (Config.LOGD) {

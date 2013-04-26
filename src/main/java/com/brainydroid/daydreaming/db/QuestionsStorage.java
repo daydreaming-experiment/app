@@ -31,7 +31,6 @@ public class QuestionsStorage {
 					Question.COL_QUESTIONS_VERSION + " INTEGER NOT NULL" +
 					");";
 
-    @Inject Storage storage;
     @Inject Gson gson;
     @Inject Random random;
 
@@ -39,7 +38,8 @@ public class QuestionsStorage {
 	private final SQLiteDatabase wDb;
 
 	// Constructor
-	public QuestionsStorage() {
+    @Inject
+	public QuestionsStorage(Storage storage) {
 
 		// Debug
 		if (Config.LOGD) {
