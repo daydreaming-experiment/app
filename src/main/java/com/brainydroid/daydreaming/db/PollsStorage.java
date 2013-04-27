@@ -42,11 +42,11 @@ public class PollsStorage {
 
     @Inject QuestionsStorage questionsStorage;
     @Inject SparseArray<Poll> pollInstances;
+    @Inject PollFactory pollFactory;
 
 	private final SQLiteDatabase rDb;
 	private final SQLiteDatabase wDb;
 
-	// Constructor from context
     @Inject
 	public PollsStorage(Storage storage) {
 
@@ -107,15 +107,16 @@ public class PollsStorage {
 		return qValues;
 	}
 
-	public void storePollGetId(Poll poll) {
+	public void storePollSetId(Poll poll) {
 
 		// Debug
 		if (Config.LOGD) {
-			Log.d(TAG, "[fn] storePollGetId");
+			Log.d(TAG, "[fn] storePollSetId");
 		}
 
 		ContentValues pollValues = getPollContentValues(poll);
 		wDb.insert(TABLE_POLLS, null, pollValues);
+
 		Cursor res = rDb.query(TABLE_POLLS, new String[] {Poll.COL_ID}, null,
 				null, null, null, Poll.COL_ID + " DESC", "1");
 		res.moveToFirst();
@@ -129,8 +130,6 @@ public class PollsStorage {
 			ContentValues qValues = getQuestionContentValues(pollId, q);
 			wDb.insert(TABLE_POLL_QUESTIONS, null, qValues);
 		}
-
-		//		checkNetworkReceiver();
 	}
 
 	public void updatePoll(Poll poll) {
@@ -151,8 +150,6 @@ public class PollsStorage {
 					Poll.COL_ID + "=? AND " + Question.COL_ID + "=?",
 					new String[] {Integer.toString(pollId), q.getId()});
 		}
-
-		//		checkNetworkReceiver();
 	}
 
 	public Poll getPoll(int pollId) {
@@ -166,6 +163,7 @@ public class PollsStorage {
 		if (cachedPoll != null) {
 			return cachedPoll;
 		}
+
 		Cursor res = rDb.query(TABLE_POLLS, null, Poll.COL_ID + "=?",
 				new String[] {Integer.toString(pollId)}, null, null, null);
 		if (!res.moveToFirst()) {
@@ -173,11 +171,12 @@ public class PollsStorage {
 			return null;
 		}
 
-		Poll poll = new Poll();
-		poll.setId(res.getInt(res.getColumnIndex(Poll.COL_ID)));
+		Poll poll = pollFactory.create();
 		poll.setStatus(res.getString(res.getColumnIndex(Poll.COL_STATUS)));
 		poll.setNotificationTimestamp(res.getLong(res.getColumnIndex(Poll.COL_NOTIFICATION_TIMESTAMP)));
 		poll.setQuestionsVersion(res.getInt(res.getColumnIndex(Poll.COL_QUESTIONS_VERSION)));
+        // Setting the id at the end ensures we don't save the Poll to DB again
+        poll.setId(res.getInt(res.getColumnIndex(Poll.COL_ID)));
 		res.close();
 
 		Cursor qRes = rDb.query(TABLE_POLL_QUESTIONS, null, Poll.COL_ID + "=?",
@@ -230,36 +229,6 @@ public class PollsStorage {
 		return getPollsWithStatuses(new String[] {Poll.STATUS_PENDING});
 	}
 
-	public void cleanPolls() {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] cleanPolls");
-		}
-
-		ArrayList<Integer> pollIdsToClean = getPollIdsWithStatuses(
-				new String[] {Poll.STATUS_EXPIRED});
-
-		if (pollIdsToClean != null) {
-			for (int pollId : pollIdsToClean) {
-				removePoll(pollId);
-			}
-		}
-	}
-
-	//	private boolean hasUploadablePolls() {
-	//		return hasPollsWithStatuses(
-	//				new String[] {Poll.STATUS_COMPLETED, Poll.STATUS_PARTIALLY_COMPLETED});
-	//	}
-
-	//	private boolean hasPollsWithStatuses(String[] statuses) {
-	//
-	//		// Debug
-	//		if (Config.LOGD) Log.d(TAG, "[fn] hasPollsWithStatuses");
-	//
-	//		return getPollIdsWithStatuses(statuses, "LIMIT 1") != null;
-	//	}
-
 	private ArrayList<Integer> getPollIdsWithStatuses(String[] statuses) {
 
 		// Debug
@@ -280,7 +249,6 @@ public class PollsStorage {
 		String query = Util.multiplyString(Poll.COL_STATUS + "=?", statuses.length, " OR ");
 		Cursor res = rDb.query(TABLE_POLLS, new String[] {Poll.COL_ID}, query, statuses,
 				null, null, null, limit);
-
 		if (!res.moveToFirst()) {
 			res.close();
 			return null;
@@ -327,16 +295,6 @@ public class PollsStorage {
 		wDb.delete(TABLE_POLL_QUESTIONS, Poll.COL_ID + "=?",
                 new String[]{Integer.toString(pollId)});
 		pollInstances.delete(pollId);
-
-		//		checkNetworkReceiver();
 	}
 
-	//	private void checkNetworkReceiver() {
-	//
-	//		// Debug
-	//		if (Config.LOGD) Log.d(TAG, "[fn] checkNetworkReceiver");
-	//
-	//		// Unregister or re-register the NetworkReceiver depending on whether
-	//		// there are any uploadable polls
-	//	}
 }

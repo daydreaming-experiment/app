@@ -7,7 +7,6 @@ import android.util.Log;
 import com.brainydroid.daydreaming.ui.Config;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import roboguice.RoboGuice;
 
 // Class to create SQLite database for both polls and questions
 @Singleton

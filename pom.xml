@@ -96,6 +96,12 @@
             <version>1.5</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.mycila.com.google.inject.extensions</groupId>
+            <artifactId>guice-assisted-inject</artifactId>
+            <version>3.0-20100927</version>
+        </dependency>
+
         <!-- Make sure this is below the android dependencies -->
         <dependency>
             <groupId>com.pivotallabs</groupId>

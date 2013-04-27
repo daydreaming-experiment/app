@@ -33,6 +33,7 @@ public class QuestionsStorage {
 
     @Inject Gson gson;
     @Inject Random random;
+    @Inject QuestionFactory questionFactory;
 
 	private final SQLiteDatabase rDb;
 	private final SQLiteDatabase wDb;
@@ -60,7 +61,6 @@ public class QuestionsStorage {
 
 		Cursor res = rDb.query(TABLE_QUESTIONS, new String[] {Question.COL_QUESTIONS_VERSION},
 				null, null, null, null, null, "1");
-
 		if (!res.moveToFirst()) {
 			res.close();
 			return -1;
@@ -87,8 +87,7 @@ public class QuestionsStorage {
 			return null;
 		}
 
-		Question q = new Question();
-		q.setId(res.getString(res.getColumnIndex(Question.COL_ID)));
+		Question q = questionFactory.create();
 		q.setCategory(res.getString(res.getColumnIndex(Question.COL_CATEGORY)));
 		q.setSubcategory(res.getString(res.getColumnIndex(Question.COL_SUBCATEGORY)));
 		q.setType(res.getString(res.getColumnIndex(Question.COL_TYPE)));
@@ -97,6 +96,8 @@ public class QuestionsStorage {
 		q.setDefaultPosition(res.getInt(res.getColumnIndex(Question.COL_DEFAULT_POSITION)));
 		q.setQuestionsVersion(
 				Integer.parseInt(res.getString(res.getColumnIndex(Question.COL_QUESTIONS_VERSION))));
+        // Setting the id at the end ensures we don't save the Question to DB again
+        q.setId(res.getString(res.getColumnIndex(Question.COL_ID)));
 		res.close();
 
 		return q;
@@ -139,6 +140,7 @@ public class QuestionsStorage {
 
 		ArrayList<Question> randomQuestions = new ArrayList<Question>();
 		int rIndex;
+
 		for (int i = 0; i < nQuestions && i < nIds; i++) {
 			rIndex = random.nextInt(questionIds.size());
 			randomQuestions.add(getQuestion(questionIds.get(rIndex)));
@@ -212,4 +214,5 @@ public class QuestionsStorage {
 		flushAll();
 		addQuestions(jsonQuestions.getQuestionsArrayList());
 	}
+
 }

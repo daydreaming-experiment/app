@@ -20,8 +20,8 @@ public class MultipleChoiceAnswer implements Answer {
 
 	private static String TAG = "MultipleChoiceAnswer";
 
-	@Expose @Inject private HashMap<String,HashSet<String>> choices;
-    @Inject private transient Gson gson;
+	@Expose @Inject HashMap<String,HashSet<String>> choices;
+    @Inject transient Gson gson;
 
 	@Override
 	public String toJson() {
@@ -42,12 +42,12 @@ public class MultipleChoiceAnswer implements Answer {
 			Log.d(TAG, "[fn] getAnswersFromLayout");
 		}
 
-		ArrayList<View> subQuestions = Question.getViewsByTag(questionLinearLayout, "subquestion");
+		ArrayList<View> subQuestions = Question.getViewsByTag(questionLinearLayout, "subQuestion");
 
 		for (View subQuestion : subQuestions) {
 			TextView mainTextView = (TextView)subQuestion.findViewById(R.id.question_multiple_choice_mainText);
 			String mainText = mainTextView.getText().toString();
-			addSubquestion(mainText);
+			addSubQuestion(mainText);
 
 			LinearLayout rootChoices = (LinearLayout)subQuestion.findViewById(
 					R.id.question_multiple_choice_rootChoices);
@@ -63,10 +63,10 @@ public class MultipleChoiceAnswer implements Answer {
 
 			// Get the "Other" field
 			CheckBox otherCheck = (CheckBox)subQuestion.findViewById(
-					R.id.question_multiple_choices_otherCheckBox);
+					R.id.question_multiple_choice_otherCheckBox);
 			if (otherCheck.isChecked()) {
 				EditText otherEditText = (EditText)subQuestion.findViewById(
-						R.id.question_multiple_choices_otherEditText);
+						R.id.question_multiple_choice_otherEditText);
 				String otherText = otherEditText.getText().toString();
 
 				addChoice(mainText, "Other: " + otherText);
@@ -74,11 +74,11 @@ public class MultipleChoiceAnswer implements Answer {
 		}
 	}
 
-	private void addSubquestion(String questionString) {
+	private void addSubQuestion(String questionString) {
 
 		//Debug
 		if (Config.LOGD) {
-			Log.d(TAG, "[fn] addSubquestion");
+			Log.d(TAG, "[fn] addSubQuestion");
 		}
 
 		choices.put(questionString, new HashSet<String>());
@@ -93,4 +93,5 @@ public class MultipleChoiceAnswer implements Answer {
 
 		choices.get(subQuestionString).add(choice);
 	}
+
 }

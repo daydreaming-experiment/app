@@ -28,6 +28,7 @@ public class PollService extends RoboService {
     @Inject NotificationManager notificationManager;
     @Inject PollsStorage pollsStorage;
     @Inject SharedPreferences sharedPreferences;
+    @Inject Poll poll;
 
 	@Override
 	public void onCreate() {
@@ -50,8 +51,7 @@ public class PollService extends RoboService {
 
 		super.onStartCommand(intent, flags, startId);
 
-		pollsStorage.cleanPolls();
-		createAndLaunchPoll();
+		populateAndLaunchPoll();
 		stopSelf();
 		return START_REDELIVER_INTENT;
 	}
@@ -79,19 +79,19 @@ public class PollService extends RoboService {
 		return null;
 	}
 
-	private void createAndLaunchPoll() {
+	private void populateAndLaunchPoll() {
 
 		// Debug
 		if (Config.LOGD) {
-			Log.d(TAG, "[fn] createAndLaunchPoll");
+			Log.d(TAG, "[fn] populateAndLaunchPoll");
 		}
 
-		Poll poll = createPoll();
+		populatePoll();
 		startSchedulerService();
-		notifyPoll(poll);
+		notifyPoll();
 	}
 
-	private Intent createPollIntent(Poll poll) {
+	private Intent createPollIntent() {
 
 		// Debug
 		if (Config.LOGD) {
@@ -106,7 +106,7 @@ public class PollService extends RoboService {
 		return intent;
 	}
 
-	private void notifyPoll(Poll poll) {
+	private void notifyPoll() {
 
 		// Debug
 		if (Config.LOGD) {
@@ -114,7 +114,7 @@ public class PollService extends RoboService {
 		}
 
 		// Build notification
-		Intent intent = createPollIntent(poll);
+		Intent intent = createPollIntent();
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent,
 				PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_ONE_SHOT);
 
@@ -145,26 +145,24 @@ public class PollService extends RoboService {
 		notificationManager.notify(poll.getId(), notification);
 	}
 
-	private Poll createPoll() {
+	private void populatePoll() {
 
 		// Debug
 		if (Config.LOGD) {
-			Log.d(TAG, "[fn] createPoll");
+			Log.d(TAG, "[fn] populatePoll");
 		}
 
 		ArrayList<Poll> pendingPolls = pollsStorage.getPendingPolls();
-		Poll poll;
 
 		if (pendingPolls != null) {
 			poll = pendingPolls.get(0);
 		} else {
-			poll = Poll.create(N_QUESTIONS_PER_POLL);
+			poll.populateQuestions(N_QUESTIONS_PER_POLL);
 		}
 
 		poll.setStatus(Poll.STATUS_PENDING);
 		poll.setNotificationTimestamp(SystemClock.elapsedRealtime());
 		poll.save();
-		return poll;
 	}
 
 	private void startSchedulerService() {

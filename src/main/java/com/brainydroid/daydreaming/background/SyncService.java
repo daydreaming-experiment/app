@@ -21,7 +21,8 @@ public class SyncService extends RoboService {
 
     @Inject StatusManager statusManager;
     @Inject PollsStorage pollsStorage;
-    @Inject LocationsStorage locationsStorage;
+    @Inject
+    LocationPointsStorage locationPointsStorage;
     @Inject QuestionsStorage questionsStorage;
     @Inject CryptoStorage cryptoStorage;
     @Inject ServerTalker serverTalker;
@@ -363,7 +364,7 @@ public class SyncService extends RoboService {
         // See http://developer.android.com/guide/components/processes-and-threads.html ,
         // right above the "Thread-safe methods" title.
 
-        ArrayList<LocationPoint> uploadableLocationPoints = locationsStorage.getUploadableLocationItems();
+        ArrayList<LocationPoint> uploadableLocationPoints = locationPointsStorage.getUploadableLocationPoints();
 
         if (uploadableLocationPoints == null) {
 
@@ -424,7 +425,7 @@ public class SyncService extends RoboService {
                                     Toast.LENGTH_LONG).show();
                         }
 
-                        locationsStorage.removeLocationItem(locationItemId);
+                        locationPointsStorage.removeLocationPoint(locationItemId);
                         setUploadLocationItemDone(locationItemId);
                     } else {
 
