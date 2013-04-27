@@ -20,6 +20,7 @@ public class AnswerValidator {
 
     @Inject android.content.Context context;
 
+    @Inject
     public AnswerValidator(@Assisted Question question, @Assisted LinearLayout questionLinearLayout) {
 
         // Debug
