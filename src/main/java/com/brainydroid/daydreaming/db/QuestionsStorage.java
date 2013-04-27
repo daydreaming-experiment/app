@@ -111,7 +111,7 @@ public class QuestionsStorage {
 			Log.d(TAG, "[fn] getQuestionIds");
 		}
 
-		Cursor res = rDb.query(TABLE_QUESTIONS, new String[]{Question.COL_ID}, null, null,
+		Cursor res = rDb.query(TABLE_QUESTIONS, new String[] {Question.COL_ID}, null, null,
                 null, null, null);
 		if (!res.moveToFirst()) {
 			res.close();
