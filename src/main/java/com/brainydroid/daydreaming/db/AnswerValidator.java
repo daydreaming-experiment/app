@@ -5,7 +5,7 @@ import android.view.View;
 import android.widget.*;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.ui.Config;
-import com.brainydroid.daydreaming.ui.QuestionViewInterface;
+import com.brainydroid.daydreaming.ui.QuestionViewAdapter;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 
@@ -61,7 +61,7 @@ public class AnswerValidator {
             Log.d(TAG, "[fn] validateSlider");
         }
 
-        ArrayList<View> subquestions = QuestionViewInterface.getViewsByTag(questionsLinearLayout, "subQuestion");
+        ArrayList<View> subquestions = QuestionViewAdapter.getViewsByTag(questionsLinearLayout, "subQuestion");
         boolean isMultiple = subquestions.size() > 1;
 
         for (View subquestion : subquestions) {
@@ -91,7 +91,7 @@ public class AnswerValidator {
             Log.d(TAG, "[fn] validateMultipleChoice");
         }
 
-        ArrayList<View> subquestions = QuestionViewInterface.getViewsByTag(questionsLinearLayout, "subQuestion");
+        ArrayList<View> subquestions = QuestionViewAdapter.getViewsByTag(questionsLinearLayout, "subQuestion");
 
         for (View subquestionLinearLayout : subquestions) {
 

@@ -21,9 +21,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 
-public class QuestionViewInterface {
+public class QuestionViewAdapter {
 
-    private static String TAG = "QuestionViewInterface";
+    private static String TAG = "QuestionViewAdapter";
 
     @Inject LayoutInflater layoutInflater;
 
@@ -31,11 +31,11 @@ public class QuestionViewInterface {
     private LinearLayout questionLinearLayout;
 
     @Inject
-    public QuestionViewInterface(@Assisted Question question, @Assisted LinearLayout questionLinearLayout) {
+    public QuestionViewAdapter(@Assisted Question question, @Assisted LinearLayout questionLinearLayout) {
 
         // Debug
         if (Config.LOGD) {
-            Log.d(TAG, "[fn] QuestionViewInterface");
+            Log.d(TAG, "[fn] QuestionViewAdapter");
         }
 
         this.question = question;

@@ -22,7 +22,7 @@ public class AppModule implements Module {
 
         binder.install(new FactoryModuleBuilder().build(PollFactory.class));
         binder.install(new FactoryModuleBuilder().build(QuestionFactory.class));
-        binder.install(new FactoryModuleBuilder().build(QuestionViewInterfaceFactory.class));
+        binder.install(new FactoryModuleBuilder().build(QuestionViewAdapterFactory.class));
         binder.install(new FactoryModuleBuilder().build(AnswerValidatorFactory.class));
     }
 

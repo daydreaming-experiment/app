@@ -7,7 +7,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.ui.Config;
-import com.brainydroid.daydreaming.ui.QuestionViewInterface;
+import com.brainydroid.daydreaming.ui.QuestionViewAdapter;
 import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 import com.google.inject.Inject;
@@ -41,7 +41,7 @@ public class SliderAnswer implements Answer {
 			Log.d(TAG, "[fn] getAnswersFromLayout");
 		}
 
-		ArrayList<View> subQuestions = QuestionViewInterface.getViewsByTag(questionLinearLayout, "subQuestion");
+		ArrayList<View> subQuestions = QuestionViewAdapter.getViewsByTag(questionLinearLayout, "subQuestion");
 
 		for (View subQuestion : subQuestions) {
 			SeekBar seekBar = (SeekBar)subQuestion.findViewById(
