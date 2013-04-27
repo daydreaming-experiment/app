@@ -25,10 +25,10 @@ public class QuestionViewAdapter {
 
     private static String TAG = "QuestionViewAdapter";
 
-    @Inject LayoutInflater layoutInflater;
-
     private Question question;
     private LinearLayout questionLinearLayout;
+
+    @Inject LayoutInflater layoutInflater;
 
     @Inject
     public QuestionViewAdapter(@Assisted Question question, @Assisted LinearLayout questionLinearLayout) {

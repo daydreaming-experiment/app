@@ -29,6 +29,7 @@ import com.brainydroid.daydreaming.network.SntpClientCallback;
 import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockFragmentActivity;
 import com.google.inject.Inject;
 import roboguice.inject.ContentView;
+import roboguice.inject.InjectResource;
 import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_question)
@@ -51,6 +52,8 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
     private QuestionViewAdapter questionViewAdapter;
 
 	@InjectView(R.id.question_linearLayout) LinearLayout questionLinearLayout;
+    @InjectView(R.id.question_nextButton) Button nextButton;
+    @InjectResource(R.string.question_button_finish) String nextButtonFinishText;
 
 	@Inject LocationServiceConnection locationServiceConnection;
     @Inject PollsStorage pollsStorage;
@@ -103,6 +106,7 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
 
 			return alertSettings.create();
 		}
+
 	}
 
 	@Override
@@ -129,6 +133,7 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
 		}
 
 		super.onStart();
+
 		poll.setStatus(Poll.STATUS_RUNNING);
 		poll.setQuestionStatus(questionIndex, Question.STATUS_ASKED);
 
@@ -168,6 +173,7 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
 					Toast.LENGTH_SHORT).show();
 			return;
 		}
+
 		finish();
 		super.onBackPressed();
 	}
@@ -211,13 +217,11 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
 		setTitle(getString(R.string.app_name) + " " + (questionIndex + 1) + "/" + nQuestions);
 
 		if (!isFirstQuestion()) {
-			LinearLayout question_linearLayout = (LinearLayout)findViewById(R.id.question_linearLayout);
-			TextView welcomeText = (TextView)question_linearLayout.findViewById(R.id.question_welcomeText);
-			question_linearLayout.removeView(welcomeText);
+			TextView welcomeText = (TextView)questionLinearLayout.findViewById(R.id.question_welcomeText);
+			questionLinearLayout.removeView(welcomeText);
 
 			if (isLastQuestion()) {
-				Button nextButton = (Button)findViewById(R.id.question_nextButton);
-				nextButton.setText(getString(R.string.question_button_finish));
+				nextButton.setText(nextButtonFinishText);
 			}
 		}
 	}
@@ -287,16 +291,20 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
 
 		if (answerValidator.validate()) {
 			questionViewAdapter.saveAnswers();
-            question.setStatus(Question.STATUS_ANSWERED);
-            poll.save();
+            poll.setQuestionStatus(questionIndex, Question.STATUS_ANSWERED);
+
 			if (isLastQuestion()) {
+
 				finishPoll();
+
 			} else {
+
 				if (statusManager.isDataAndLocationEnabled()) {
 					launchNextQuestion();
 				} else {
 					launchLocationAlertDialog();
 				}
+
 			}
 		}
 	}
@@ -310,7 +318,9 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
 
 		int titleId;
 		int textId;
+
 		if (!statusManager.isNetworkLocEnabled()) {
+
 			if (!statusManager.isDataEnabled()) {
 				titleId = R.string.locationAlert_title_location_and_data;
 				textId = R.string.locationAlert_text_location_and_data;
@@ -318,9 +328,12 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
 				titleId = R.string.locationAlert_title_location;
 				textId = R.string.locationAlert_text_location;
 			}
+
 		} else {
+
 			titleId = R.string.locationAlert_title_data;
 			textId = R.string.locationAlert_text_data;
+
 		}
 
 		DialogFragment locationAlert = LocationAlertDialogFragment.newInstance(
@@ -336,11 +349,13 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
 		}
 
 		setIsContinuingOrFinishing();
+
 		Intent intent = new Intent(this, QuestionActivity.class);
 		intent.putExtra(EXTRA_POLL_ID, pollId);
 		intent.putExtra(EXTRA_QUESTION_INDEX, questionIndex + 1);
 		intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
 		startActivity(intent);
+
 		overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
 		finish();
 	}
@@ -353,17 +368,24 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
 		}
 
 		Intent settingsIntent;
+
 		if (!statusManager.isNetworkLocEnabled()) {
+
 			settingsIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
 			settingsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+
 		} else {
+
 			settingsIntent = new Intent(Settings.ACTION_DATA_ROAMING_SETTINGS);
+
 			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
 				ComponentName cName = new ComponentName("com.android.phone", "com.android.phone.Settings");
 				settingsIntent.setComponent(cName);
 			}
+
 			settingsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
 		}
+
 		startActivity(settingsIntent);
 	}
 
@@ -376,6 +398,7 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
 
 		poll.setStatus(Poll.STATUS_PARTIALLY_COMPLETED);
 		poll.setQuestionStatus(questionIndex, Question.STATUS_ASKED_DISMISSED);
+
 		startSyncService();
 	}
 
@@ -387,8 +410,10 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
 		}
 
 		setIsContinuingOrFinishing();
+
 		Toast.makeText(this, getString(R.string.question_thank_you), Toast.LENGTH_SHORT).show();
 		poll.setStatus(Poll.STATUS_COMPLETED);
+
 		startSyncService();
 		finish();
 	}

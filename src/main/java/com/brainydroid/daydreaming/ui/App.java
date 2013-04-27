@@ -6,6 +6,7 @@ import roboguice.RoboGuice;
 
 public class App extends Application {
 
+    @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "App";
 
     @Override

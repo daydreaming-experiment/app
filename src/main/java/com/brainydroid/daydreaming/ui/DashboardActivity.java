@@ -1,88 +1,48 @@
 package com.brainydroid.daydreaming.ui;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.SchedulerService;
-import com.brainydroid.daydreaming.background.StatusManager;
-import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockActivity;
-import com.google.inject.Inject;
 import roboguice.inject.ContentView;
 
 @ContentView(R.layout.activity_dashboard)
-public class DashboardActivity extends RoboSherlockActivity {
+public class DashboardActivity extends FirstLaunchActivity {
 
 	private static String TAG = "DashboardActivity";
 
-	public static String EXTRA_COMES_FROM_FIRST_LAUNCH = "comesFromFirstLaunch";
+    @Override
+    public void onStart() {
 
-    @Inject StatusManager statusManager;
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] onStart");
+        }
 
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] onCreate");
-		}
-
-		super.onCreate(savedInstanceState);
+        //updateRunningTime();
+        super.onStart();
     }
 
-//    // TODO: check this is ok with real ActionBar API
-//	@Override
-//	public boolean onCreateOptionsMenu(Menu menu) {
-//
-//		// Debug
-//		if (Config.LOGD) {
-//			Log.d(TAG, "[fn] onCreateOptionsMenu");
-//		}
-//
-//		MenuInflater menuInflater = getSupportMenuInflater();
-//		menuInflater.inflate(R.menu.dashboard, menu);
-//
-//		// Calling super after populating the menu is necessary here to ensure that the
-//		// action bar helpers have a chance to handle this event.
-//		return super.onCreateOptionsMenu(menu);
-//	}
-
+    // TODO: check this is ok with real ActionBar API
 	@Override
-	public void onStart() {
+	public boolean onCreateOptionsMenu(Menu menu) {
 
 		// Debug
 		if (Config.LOGD) {
-			Log.d(TAG, "[fn] onStart");
+			Log.d(TAG, "[fn] onCreateOptionsMenu");
 		}
 
-		checkFirstRun();
-        //updateRunningTime();
-		super.onStart();
-	}
+		MenuInflater menuInflater = getSupportMenuInflater();
+		menuInflater.inflate(R.menu.dashboard, menu);
 
-	@Override
-	public void onResume() {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] onResume");
-		}
-
-		super.onResume();
-	}
-
-	@Override
-	public void onStop() {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] onStop");
-		}
-
-		super.onStop();
+		// Calling super after populating the menu is necessary here to ensure that the
+		// action bar helpers have a chance to handle this event.
+		return super.onCreateOptionsMenu(menu);
 	}
 
 	@Override
@@ -104,6 +64,18 @@ public class DashboardActivity extends RoboSherlockActivity {
 
 		return super.onOptionsItemSelected(item);
 	}
+
+    @Override
+    public void onBackPressed() {
+
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] onBackPressed");
+        }
+
+        super.onBackPressed();
+        // Don't overridePendingTransition
+    }
 
 //    // TODO: clean this up
 //    private void updateRunningTime() {
@@ -142,20 +114,21 @@ public class DashboardActivity extends RoboSherlockActivity {
 //        }
 //    }
 
-	private void checkFirstRun() {
+    @Override
+    protected void checkFirstLaunch() {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] checkFirstRun");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] checkFirstRun");
+        }
 
-		if (!statusManager.isFirstLaunchCompleted()) {
-			Intent intent = new Intent(this, FirstLaunchWelcomeActivity.class);
-			intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-			startActivity(intent);
-			finish();
-		}
-	}
+        if (!statusManager.isFirstLaunchCompleted()) {
+            Intent intent = new Intent(this, FirstLaunchWelcomeActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+            startActivity(intent);
+            finish();
+        }
+    }
 
 	public void runPollNow(@SuppressWarnings("UnusedParameters") View view) {
 
@@ -170,4 +143,5 @@ public class DashboardActivity extends RoboSherlockActivity {
 
 		Toast.makeText(this, "Now wait for 5 secs", Toast.LENGTH_SHORT).show();
 	}
+
 }

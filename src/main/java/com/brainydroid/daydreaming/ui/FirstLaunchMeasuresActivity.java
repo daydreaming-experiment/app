@@ -10,16 +10,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import com.brainydroid.daydreaming.R;
-import com.brainydroid.daydreaming.background.LocationPointService;
-import com.brainydroid.daydreaming.background.SchedulerService;
-import com.brainydroid.daydreaming.background.StatusManager;
-import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockActivity;
-import com.google.inject.Inject;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_first_launch_measures)
-public class FirstLaunchMeasuresActivity extends RoboSherlockActivity {
+public class FirstLaunchMeasuresActivity extends FirstLaunchActivity {
 
 	private static String TAG = "FirstLaunchMeasuresActivity";
 
@@ -27,7 +22,6 @@ public class FirstLaunchMeasuresActivity extends RoboSherlockActivity {
     @InjectView(R.id.firstLaunchMeasures_textSettings) TextView textSettings;
     @InjectView(R.id.firstLaunchMeasures_buttonSettings) Button buttonSettings;
     @InjectView(R.id.firstLaunchMeasures_buttonNext) Button buttonNext;
-    @Inject StatusManager statusManager;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -54,7 +48,6 @@ public class FirstLaunchMeasuresActivity extends RoboSherlockActivity {
 
 		super.onStart();
 		updateView();
-		checkFirstLaunch();
 	}
 
 	@Override
@@ -67,30 +60,6 @@ public class FirstLaunchMeasuresActivity extends RoboSherlockActivity {
 
 		super.onResume();
         updateView();
-	}
-
-	@Override
-	public void onBackPressed() {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] onBackPressed");
-		}
-
-		super.onBackPressed();
-		overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
-	}
-
-	private void checkFirstLaunch() {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] checkFirstLaunch");
-		}
-
-		if (statusManager.isFirstLaunchCompleted()) {
-			finish();
-		}
 	}
 
 	private void updateView() {
@@ -204,38 +173,8 @@ public class FirstLaunchMeasuresActivity extends RoboSherlockActivity {
 
 		finishFirstLaunch(); // when everything is ok, first launch is set to completed
 		Intent dashboardIntent = new Intent(this, DashboardActivity.class);
-		dashboardIntent.putExtra(DashboardActivity.EXTRA_COMES_FROM_FIRST_LAUNCH, true);
 		startActivity(dashboardIntent);
 		finish();
-	}
-
-	private void finishFirstLaunch() {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] finishFirstLaunch");
-		}
-
-		statusManager.setFirstLaunchCompleted();
-
-//        // TODO: clean this up and re-activate counterpart in DashboardActivity
-//        // saving actual date to string in sharedPreferences
-//        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd G 'at' HH:mm:ss z");//("MM/dd/yyyy");
-//        String StartDateString = dateFormat.format(new Date());
-//        SharedPreferences sharedPrefs = getSharedPreferences("startDatePrefs", 0);
-//        SharedPreferences.Editor editor = sharedPrefs.edit();
-//        editor.putString("startDateString", StartDateString);
-//        editor.commit();
-//        //-----------------------
-
-
-		Intent schedulerServiceIntent = new Intent(this, SchedulerService.class);
-		startService(schedulerServiceIntent);
-
-        Intent locationItemServiceIntent = new Intent(this, LocationPointService.class);
-        if (!(Build.FINGERPRINT.startsWith("generic"))) {
-            startService(locationItemServiceIntent);
-        }
 	}
 
 }

@@ -3,70 +3,19 @@ package com.brainydroid.daydreaming.ui;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import com.actionbarsherlock.app.SherlockDialogFragment;
 import com.brainydroid.daydreaming.R;
-import com.brainydroid.daydreaming.background.StatusManager;
-import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockFragmentActivity;
-import com.google.inject.Inject;
 import roboguice.inject.ContentView;
 
 @ContentView(R.layout.activity_first_launch_description)
-public class FirstLaunchDescriptionActivity extends RoboSherlockFragmentActivity {
+public class FirstLaunchDescriptionActivity extends FirstLaunchActivity {
 
-	private static String TAG = "FirstLaunchDescriptionActivity";
-
-	@Inject StatusManager statusManager;
-
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] onCreate");
-		}
-
-		super.onCreate(savedInstanceState);
-	}
-
-	@Override
-	public void onStart() {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] onStart");
-		}
-
-		super.onStart();
-		checkFirstLaunch();
-	}
-
-	@Override
-	public void onResume() {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] onResume");
-		}
-
-		super.onResume();
-	}
-
-	@Override
-	public void onBackPressed() {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] onBackPressed");
-		}
-
-		super.onBackPressed();
-		overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
-	}
+	@SuppressWarnings("FieldCanBeLocal")
+    private static String TAG = "FirstLaunchDescriptionActivity";
 
 	public void onClick_buttonNext(@SuppressWarnings("UnusedParameters") View view) {
 
@@ -81,31 +30,6 @@ public class FirstLaunchDescriptionActivity extends RoboSherlockFragmentActivity
 				R.string.consentAlert_button_no_consent,
 				R.string.consentAlert_button_consent);
 		consentAlert.show(getSupportFragmentManager(), "consentAlert");
-	}
-
-	private void launchTermsActivity() {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] launchTermsActivity");
-		}
-
-		Intent intent = new Intent(this, FirstLaunchTermsActivity.class);
-		intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-		startActivity(intent);
-		overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
-	}
-
-	private void checkFirstLaunch() {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] checkFirstLaunch");
-		}
-
-		if (statusManager.isFirstLaunchCompleted()) {
-			finish();
-		}
 	}
 
 	public static class ConsentAlertDialogFragment extends SherlockDialogFragment {
@@ -155,12 +79,15 @@ public class FirstLaunchDescriptionActivity extends RoboSherlockFragmentActivity
 			.setPositiveButton(posText,
 					new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int whichButton) {
-					((FirstLaunchDescriptionActivity)getActivity()).launchTermsActivity();
+					((FirstLaunchDescriptionActivity)getActivity()).
+                            launchNextActivity(FirstLaunchTermsActivity.class);
 				}
 			}).setIcon(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ?
 					R.drawable.ic_action_about_holo_light : R.drawable.ic_action_about_holo_dark);
 
 			return alertSettings.create();
 		}
+
 	}
+
 }

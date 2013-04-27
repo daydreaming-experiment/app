@@ -1,15 +1,11 @@
 package com.brainydroid.daydreaming.ui;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import com.brainydroid.daydreaming.R;
-import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.db.Util;
-import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockActivity;
-import com.google.inject.Inject;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
@@ -17,12 +13,11 @@ import java.io.IOException;
 import java.io.InputStream;
 
 @ContentView(R.layout.activity_first_launch_terms)
-public class FirstLaunchTermsActivity  extends RoboSherlockActivity {
+public class FirstLaunchTermsActivity  extends FirstLaunchActivity {
 
     private static String TAG = "FirstLaunchTermsActivity";
 
     @InjectView(R.id.firstLaunchTerms_textConsent) TextView consent;
-    @Inject StatusManager statusManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -37,41 +32,6 @@ public class FirstLaunchTermsActivity  extends RoboSherlockActivity {
         populateConsent();
     }
 
-    @Override
-    public void onStart() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onStart");
-        }
-
-        super.onStart();
-        checkFirstLaunch();
-    }
-
-    @Override
-    public void onResume() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onResume");
-        }
-
-        super.onResume();
-    }
-
-    @Override
-    public void onBackPressed() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onBackPressed");
-        }
-
-        super.onBackPressed();
-        overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
-    }
-
     public void onClick_buttonNext(@SuppressWarnings("UnusedParameters") View view) {
 
         // Debug
@@ -79,41 +39,16 @@ public class FirstLaunchTermsActivity  extends RoboSherlockActivity {
             Log.d(TAG, "[fn] onClick_buttonNext");
         }
 
-        launchProfileActivity();
-    }
-
-    private void launchProfileActivity() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] launchProfileActivity");
-        }
-
-        Intent intent = new Intent(this, FirstLaunchProfileActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-        startActivity(intent);
-        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+        launchNextActivity(FirstLaunchProfileActivity.class);
     }
 
     private void populateConsent() {
         try {
-            InputStream termsIS = getResources().openRawResource(R.raw.terms);
-            consent.setText(Util.convertStreamToString(termsIS));
-            termsIS.close();
+            InputStream termsInputStream = getResources().openRawResource(R.raw.terms);
+            consent.setText(Util.convertStreamToString(termsInputStream));
+            termsInputStream.close();
         } catch (IOException e) {
             e.printStackTrace();
-        }
-    }
-
-    private void checkFirstLaunch() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] checkFirstLaunch");
-        }
-
-        if (statusManager.isFirstLaunchCompleted()) {
-            finish();
         }
     }
 

@@ -10,6 +10,7 @@ import com.google.inject.assistedinject.FactoryModuleBuilder;
 
 public class AppModule implements Module {
 
+    @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "AppModule";
 
     @Override

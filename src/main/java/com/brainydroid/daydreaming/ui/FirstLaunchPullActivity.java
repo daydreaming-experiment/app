@@ -3,7 +3,6 @@ package com.brainydroid.daydreaming.ui;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
-import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
@@ -11,10 +10,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.brainydroid.daydreaming.R;
-import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.db.QuestionsStorage;
 import com.brainydroid.daydreaming.db.Util;
-import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockActivity;
 import com.google.inject.Inject;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
@@ -23,7 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 @ContentView(R.layout.activity_first_launch_pull)
-public class FirstLaunchPullActivity extends RoboSherlockActivity {
+public class FirstLaunchPullActivity extends FirstLaunchActivity {
 
     private static String TAG = "FirstLaunchPullActivity";
 
@@ -34,20 +31,8 @@ public class FirstLaunchPullActivity extends RoboSherlockActivity {
     @InjectView(R.id.firstLaunchPull_buttonNext) Button buttonNext;
 
     @Inject QuestionsStorage questionsStorage;
-    @Inject StatusManager statusManager;
 
     private boolean areQuestionsDownloaded = false;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onCreate");
-        }
-
-        super.onCreate(savedInstanceState);
-    }
 
     @Override
     public void onStart() {
@@ -58,45 +43,10 @@ public class FirstLaunchPullActivity extends RoboSherlockActivity {
         }
 
         super.onStart();
-        checkFirstLaunch();
         updateView();
     }
 
-    @Override
-    public void onResume() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onResume");
-        }
-
-        super.onResume();
-    }
-
-    @Override
-    public void onBackPressed() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onBackPressed");
-        }
-
-        super.onBackPressed();
-        overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
-    }
-
-    private void checkFirstLaunch() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] checkFirstLaunch");
-        }
-
-        if (statusManager.isFirstLaunchCompleted()) {
-            finish();
-        }
-    }
-
+    // FIXME : what does this do?
     private void updateView() {
 
         // Debug
@@ -107,14 +57,18 @@ public class FirstLaunchPullActivity extends RoboSherlockActivity {
         dataEnabled.setCompoundDrawablesWithIntrinsicBounds(
                 (statusManager.isDataEnabled() | Build.FINGERPRINT.startsWith("generic")) ?
                         R.drawable.ic_check : R.drawable.ic_cross, 0, 0, 0);
+
         textDownloading.setCompoundDrawablesWithIntrinsicBounds(
                 areQuestionsDownloaded ? R.drawable.ic_check : R.drawable.ic_cross, 0, 0, 0);
 
         if (Build.FINGERPRINT.startsWith("generic")) {
+
             if (!areQuestionsDownloaded) {
                 loadQuestionsFromRes();
             }
+
         } else {
+
             if (areQuestionsDownloaded) {
                 Toast.makeText(this, "Questions already downloaded", Toast.LENGTH_LONG).show();
             } else {
@@ -125,6 +79,7 @@ public class FirstLaunchPullActivity extends RoboSherlockActivity {
                     updateRequestAdjustSettings();
                 }
             }
+
         }
     }
 
@@ -239,22 +194,10 @@ public class FirstLaunchPullActivity extends RoboSherlockActivity {
             Log.d(TAG, "[fn] onClick_buttonNext");
         }
 
-        launchMeasuresActivity();
+        launchNextActivity(FirstLaunchMeasuresActivity.class);
     }
 
-    private void launchMeasuresActivity() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] launchProfileActivity");
-        }
-
-        Intent intent = new Intent(this, FirstLaunchMeasuresActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-        startActivity(intent);
-        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
-    }
-
+    // FIXME: this is already in QuestionsStorage
     private void loadQuestionsFromRes() {
 
         // Debug
@@ -269,8 +212,7 @@ public class FirstLaunchPullActivity extends RoboSherlockActivity {
 
             areQuestionsDownloaded = true;
             textDownloading.setText("Questions loaded from resource");
-            textDownloading.setCompoundDrawablesWithIntrinsicBounds(
-                    areQuestionsDownloaded ? R.drawable.ic_check : R.drawable.ic_cross, 0, 0, 0);
+            textDownloading.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_check, 0, 0, 0);
 
             allowNextButton();
         } else {

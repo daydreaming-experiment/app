@@ -1,6 +1,5 @@
 package com.brainydroid.daydreaming.ui;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,14 +9,12 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 import com.brainydroid.daydreaming.R;
-import com.brainydroid.daydreaming.background.StatusManager;
-import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockActivity;
 import com.google.inject.Inject;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_first_launch_profile)
-public class FirstLaunchProfileActivity extends RoboSherlockActivity {
+public class FirstLaunchProfileActivity extends FirstLaunchActivity {
 
 	private static String TAG = "FirstLaunchProfileActivity";
 
@@ -27,7 +24,6 @@ public class FirstLaunchProfileActivity extends RoboSherlockActivity {
     @InjectView(R.id.firstLaunchProfile_editAge) EditText ageEditText;
     @InjectView(R.id.firstLaunchProfile_genderSpinner) Spinner genderSpinner;
     @Inject SharedPreferences sharedPreferences;
-    @Inject StatusManager statusManager;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -43,53 +39,6 @@ public class FirstLaunchProfileActivity extends RoboSherlockActivity {
 				R.array.genders, android.R.layout.simple_spinner_item);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		genderSpinner.setAdapter(adapter);
-	}
-
-	@Override
-	public void onStart() {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] onStart");
-		}
-
-		super.onStart();
-		checkFirstLaunch();
-	}
-
-	@Override
-	public void onResume() {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] onResume");
-		}
-
-		super.onResume();
-	}
-
-	@Override
-	public void onBackPressed() {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] onBackPressed");
-		}
-
-		super.onBackPressed();
-		overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
-	}
-
-	private void checkFirstLaunch() {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] checkFirstLaunch");
-		}
-
-		if (statusManager.isFirstLaunchCompleted()) {
-			finish();
-		}
 	}
 
 	public void onClick_buttonNext(@SuppressWarnings("UnusedParameters") View view) {
@@ -111,7 +60,7 @@ public class FirstLaunchProfileActivity extends RoboSherlockActivity {
 
             Toast.makeText(this, genderSpinner.getSelectedItem().toString() +
                     ", " + ageEditText.getText().toString(), Toast.LENGTH_LONG).show();
-            launchPullActivity();
+            launchNextActivity(FirstLaunchPullActivity.class);
 		}
 	}
 
@@ -130,16 +79,4 @@ public class FirstLaunchProfileActivity extends RoboSherlockActivity {
 		}
 	}
 
-    private void launchPullActivity() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] launchPullActivity");
-        }
-
-        Intent intent = new Intent(this, FirstLaunchPullActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-        startActivity(intent);
-        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
-    }
 }
