@@ -1,21 +1,21 @@
 package com.brainydroid.daydreaming.background;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.util.Log;
 import com.brainydroid.daydreaming.ui.Config;
 import com.google.inject.Inject;
+import roboguice.receiver.RoboBroadcastReceiver;
 
-public class NetworkReceiver extends BroadcastReceiver {
+public class NetworkReceiver extends RoboBroadcastReceiver {
 
 	public static String TAG = "NetworkReceiver";
 
     @Inject StatusManager statusManager;
 
 	@Override
-	public void onReceive(Context context, Intent intent) {
+	public void handleReceive(Context context, Intent intent) {
 
 		// Debug
 		if (Config.LOGD) {
