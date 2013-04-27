@@ -35,15 +35,27 @@ public class CryptoStorage {
 
     @Inject Crypto crypto;
     @Inject ServerTalker serverTalker;
-    @Inject Application application;
 
 	private final Gson gson = new GsonBuilder()
             .excludeFieldsWithoutExposeAnnotation()
             .create();
-    File storageDir = application.getDir(STORAGE_DIRNAME, Context.MODE_PRIVATE);
-    private final File maiIdFile = new File(storageDir, MAI_ID_FILENAME);
-    private final File publicFile = new File(storageDir, PUBLIC_FILENAME);
-    private final File privateFile = new File(storageDir, PRIVATE_FILENAME);
+    private final File maiIdFile;
+    private final File publicFile;
+    private final File privateFile;
+
+    @Inject
+    public CryptoStorage(Application application) {
+
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] CryptoStorage");
+        }
+
+        File storageDir = application.getDir(STORAGE_DIRNAME, Context.MODE_PRIVATE);
+        maiIdFile = new File(storageDir, MAI_ID_FILENAME);
+        publicFile = new File(storageDir, PUBLIC_FILENAME);
+        privateFile = new File(storageDir, PRIVATE_FILENAME);
+    }
 
 	public void onReady(CryptoStorageCallback callback) {
 

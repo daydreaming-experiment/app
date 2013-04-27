@@ -21,8 +21,7 @@ public class SyncService extends RoboService {
 
     @Inject StatusManager statusManager;
     @Inject PollsStorage pollsStorage;
-    @Inject
-    LocationPointsStorage locationPointsStorage;
+    @Inject LocationPointsStorage locationPointsStorage;
     @Inject QuestionsStorage questionsStorage;
     @Inject CryptoStorage cryptoStorage;
     @Inject ServerTalker serverTalker;
