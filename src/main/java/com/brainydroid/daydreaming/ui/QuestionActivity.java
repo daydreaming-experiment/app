@@ -23,17 +23,13 @@ import com.brainydroid.daydreaming.background.LocationCallback;
 import com.brainydroid.daydreaming.background.LocationServiceConnection;
 import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.background.SyncService;
-import com.brainydroid.daydreaming.db.Poll;
-import com.brainydroid.daydreaming.db.PollsStorage;
-import com.brainydroid.daydreaming.db.Question;
+import com.brainydroid.daydreaming.db.*;
 import com.brainydroid.daydreaming.network.SntpClient;
 import com.brainydroid.daydreaming.network.SntpClientCallback;
 import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockFragmentActivity;
 import com.google.inject.Inject;
 import roboguice.inject.ContentView;
-
-import java.util.ArrayList;
-import java.util.Iterator;
+import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_question)
 public class QuestionActivity extends RoboSherlockFragmentActivity {
@@ -52,12 +48,15 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
 	private int nQuestions;
 	private boolean isContinuingOrFinishing = false;
 	private long lastBackTime = 0;
-	private LinearLayout questionLinearLayout;
+    private QuestionViewInterface questionViewInterface;
 
-	private LocationServiceConnection locationServiceConnection;
+	@InjectView(R.id.question_linearLayout) LinearLayout questionLinearLayout;
 
+	@Inject LocationServiceConnection locationServiceConnection;
     @Inject PollsStorage pollsStorage;
     @Inject StatusManager statusManager;
+    @Inject QuestionViewInterfaceFactory questionViewInterfaceFactory;
+    @Inject AnswerValidatorFactory answerValidatorFactory;
 
 	public static class LocationAlertDialogFragment extends SherlockDialogFragment {
 
@@ -118,7 +117,7 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
 
 		initVars();
 		setChrome();
-		populateViews();
+		questionViewInterface.populateViews(isFirstQuestion());
 	}
 
 	@Override
@@ -199,8 +198,7 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
 		questionIndex = intent.getIntExtra(EXTRA_QUESTION_INDEX, -1);
 		question = poll.getQuestionByIndex(questionIndex);
 		nQuestions = poll.getLength();
-		questionLinearLayout = (LinearLayout)findViewById(R.id.question_linearLayout);
-		locationServiceConnection = new LocationServiceConnection();
+        questionViewInterface = questionViewInterfaceFactory.create(question, questionLinearLayout);
 	}
 
 	private void setChrome() {
@@ -278,23 +276,6 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
 		}
 	}
 
-	private void populateViews() {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] populateViews");
-		}
-
-		ArrayList<View> views = question.createViews();
-
-		Iterator<View> vIt = views.iterator();
-		int i = isFirstQuestion() ? 1 : 0;
-		while (vIt.hasNext()) {
-			questionLinearLayout.addView(vIt.next(), i, questionLinearLayout.getLayoutParams());
-			i++;
-		}
-	}
-
 	public void onClick_nextButton(@SuppressWarnings("UnusedParameters") View view) {
 
 		// Debug
@@ -302,9 +283,12 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
 			Log.d(TAG, "[fn] onClick_nextButton");
 		}
 
-		if (question.validate(questionLinearLayout)) {
-            poll.setQuestionStatus(questionIndex, Question.STATUS_ANSWERED);
-			poll.saveAnswers(questionLinearLayout, questionIndex);
+        AnswerValidator answerValidator = answerValidatorFactory.create(question, questionLinearLayout);
+
+		if (answerValidator.validate()) {
+			questionViewInterface.saveAnswers();
+            question.setStatus(Question.STATUS_ANSWERED);
+            poll.save();
 			if (isLastQuestion()) {
 				finishPoll();
 			} else {
@@ -449,4 +433,5 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
 		Intent syncIntent = new Intent(this, SyncService.class);
 		startService(syncIntent);
 	}
+
 }

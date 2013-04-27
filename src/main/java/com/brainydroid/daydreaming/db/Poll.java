@@ -1,7 +1,6 @@
 package com.brainydroid.daydreaming.db;
 
 import android.util.Log;
-import android.widget.LinearLayout;
 import com.brainydroid.daydreaming.ui.Config;
 import com.google.gson.annotations.Expose;
 import com.google.inject.Inject;
@@ -213,18 +212,6 @@ public class Poll {
 		} else {
 			pollsStorage.storePollSetId(this);
 		}
-	}
-
-	public void saveAnswers(LinearLayout questionLinearLayout, int index) {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] saveAnswers");
-		}
-
-		// Location and Timestamp are set by callbacks defined in QuestionActivity
-		questions.get(index).saveAnswers(questionLinearLayout);
-		save();
 	}
 
 }
