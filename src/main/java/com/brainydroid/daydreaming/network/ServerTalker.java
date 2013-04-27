@@ -26,8 +26,9 @@ public class ServerTalker {
 			Log.d(TAG, "[fn] register");
 		}
 
-		final String jsonKey = cryptoStorage.createArmoredPublicKeyJson(publicKey);
+		String jsonKey = cryptoStorage.createArmoredPublicKeyJson(publicKey);
 		String postUrl = ServerConfig.SERVER_NAME + ServerConfig.YE_URL_DEVICES;
+
 		HttpPostData postData = new HttpPostData(postUrl, callback);
 		postData.setPostString(jsonKey);
 		postData.setContentType("application/json");
@@ -45,6 +46,7 @@ public class ServerTalker {
 		}
 
 		String signedData = cryptoStorage.signJws(data);
+
 		HttpPostData postData = new HttpPostData(getPostResultUrl(expId), callback);
 		postData.setPostString(signedData);
 		postData.setContentType("application/jws");

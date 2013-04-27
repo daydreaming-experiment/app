@@ -8,7 +8,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import org.spongycastle.util.encoders.UrlBase64;
 
 import java.io.*;
 import java.security.InvalidKeyException;
@@ -71,26 +70,44 @@ public class CryptoStorage {
 		}
 	}
 
-//	public synchronized void setServerName(String s) {
-//
-//		// Debug
-//		if (Config.LOGD) {
-//			Log.d(TAG, "[fn] setServerName");
-//		}
-//
-//		serverTalker.setServerName(s);
-//	}
-//
-//	public synchronized void signAndUploadData(String ea_id, String data,
-//			HttpConversationCallback callback) {
-//
-//		// Debug
-//		if (Config.LOGD) {
-//			Log.d(TAG, "[fn] signAndUploadData");
-//		}
-//
-//		serverTalker.signAndUploadData(ea_id, data, callback);
-//	}
+    public synchronized void register(CryptoStorageCallback callback) {
+
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] register");
+        }
+
+        final KeyPair kp = crypto.generateKeyPairNamedCurve(DEFAULT_CURVE_NAME);
+        final CryptoStorageCallback parentCallback = callback;
+
+        final HttpConversationCallback registrationCallback = new HttpConversationCallback() {
+
+            private final String TAG = "HttpConversationCallback";
+
+            @Override
+            public void onHttpConversationFinished(boolean success, String serverAnswer) {
+
+                // Debug
+                if (Config.LOGD) {
+                    Log.d(TAG, "[fn] (registrationCallback) onHttpConversationFinished");
+                }
+
+                boolean storageSuccess = false;
+
+                if (success) {
+                    RegistrationAnswer registrationAnswer = gson.fromJson(serverAnswer,
+                            RegistrationAnswer.class);
+                    String maiId = registrationAnswer.getId();
+                    storageSuccess = storeKeyPairAndMaiId(kp, maiId);
+                }
+
+                parentCallback.onCryptoStorageReady(success && storageSuccess);
+            }
+
+        };
+
+        serverTalker.register(kp.getPublic(), registrationCallback);
+    }
 
 	private synchronized boolean hasStoredMaiId() {
 
@@ -122,26 +139,6 @@ public class CryptoStorage {
 		return publicFile.exists();
 	}
 
-//	public synchronized Enumeration<String> getAvailableCurveNames() {
-//
-//		// Debug
-//		if (Config.LOGD) {
-//			Log.d(TAG, "[fn] getAvailableCurveNames");
-//		}
-//
-//		return crypto.getAvailableCurveNames();
-//	}
-//
-//	public synchronized void setCurveName(String s) {
-//
-//		// Verbose
-//		if (Config.LOGV) {
-//			Log.v(TAG, "[fn] setCurveName");
-//		}
-//
-//		curveName = s;
-//	}
-
 	public synchronized boolean hasStoredKeyPairAndMaiId() {
 
 		// Debug
@@ -155,61 +152,6 @@ public class CryptoStorage {
 			clearStore();
 			return false;
 		}
-	}
-
-	private synchronized byte[] sign(byte[] data) {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] sign");
-		}
-
-		if (! hasStoredKeyPairAndMaiId()) {
-			throw new RuntimeException(NOKP_EXCEPTION_MSG);
-		}
-		try {
-			return crypto.sign(getPrivateKey(), data);
-		} catch (InvalidKeyException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	public synchronized void register(CryptoStorageCallback callback) {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] register");
-		}
-
-		final KeyPair kp = crypto.generateKeyPairNamedCurve(DEFAULT_CURVE_NAME);
-		final CryptoStorageCallback parentCallback = callback;
-
-		final HttpConversationCallback registrationCallback = new HttpConversationCallback() {
-
-			private final String TAG = "HttpConversationCallback";
-
-			@Override
-			public void onHttpConversationFinished(boolean success, String serverAnswer) {
-
-				// Debug
-				if (Config.LOGD) {
-					Log.d(TAG, "[fn] (registrationCallback) onHttpConversationFinished");
-				}
-
-				boolean storageSuccess = false;
-				if (success) {
-					RegistrationAnswer registrationAnswer = gson.fromJson(serverAnswer,
-							RegistrationAnswer.class);
-					String maiId = registrationAnswer.getId();
-					storageSuccess = storeKeyPairAndMaiId(kp, maiId);
-				}
-
-				parentCallback.onCryptoStorageReady(success && storageSuccess);
-			}
-
-		};
-
-		serverTalker.register(kp.getPublic(), registrationCallback);
 	}
 
 	@SuppressWarnings("ResultOfMethodCallIgnored")
@@ -243,16 +185,6 @@ public class CryptoStorage {
 			throw new RuntimeException(e);
 		}
 	}
-
-//	public synchronized KeyPair getKeyPair() {
-//
-//		// Debug
-//		if (Config.LOGD) {
-//			Log.d(TAG, "[fn] getKeyPair");
-//		}
-//
-//		return new KeyPair(getPublicKey(), getPrivateKey());
-//	}
 
 	public synchronized String getMaiId() {
 
@@ -296,37 +228,38 @@ public class CryptoStorage {
 		}
 	}
 
-//	public synchronized PublicKey getPublicKey() {
-//
-//		// Debug
-//		if (Config.LOGD) {
-//			Log.d(TAG, "[fn] getPublicKey");
-//		}
-//
-//		try {
-//			BufferedReader buf;
-//			buf = new BufferedReader(new FileReader(publicFile));
-//			String keyStr = buf.readLine();
-//			buf.close();
-//			return crypto.readPublicKey(keyStr);
-//		} catch (FileNotFoundException e) {
-//			throw new RuntimeException(e);
-//		} catch (IOException e) {
-//			throw new RuntimeException(e);
-//		} catch (InvalidKeySpecException e) {
-//			throw new RuntimeException(e);
-//		}
-//	}
-
-	public synchronized boolean clearStore() {
+	public synchronized PublicKey getPublicKey() {
 
 		// Debug
 		if (Config.LOGD) {
-			Log.d(TAG, "[fn] clearStore");
+			Log.d(TAG, "[fn] getPublicKey");
 		}
 
-		return clearPrivateKey() && clearPublicKey() && clearMaiId();
+		try {
+			BufferedReader buf;
+			buf = new BufferedReader(new FileReader(publicFile));
+			String keyStr = buf.readLine();
+			buf.close();
+			return crypto.readPublicKey(keyStr);
+		} catch (FileNotFoundException e) {
+			throw new RuntimeException(e);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		} catch (InvalidKeySpecException e) {
+			throw new RuntimeException(e);
+		}
 	}
+
+    @SuppressWarnings("UnusedDeclaration")
+    public synchronized KeyPair getKeyPair() {
+
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] getKeyPair");
+        }
+
+        return new KeyPair(getPublicKey(), getPrivateKey());
+    }
 
 	private synchronized boolean clearMaiId() {
 
@@ -358,92 +291,60 @@ public class CryptoStorage {
 		return publicFile.delete();
 	}
 
+    public synchronized boolean clearStore() {
+
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] clearStore");
+        }
+
+        return clearPrivateKey() && clearPublicKey() && clearMaiId();
+    }
+
 	public synchronized String createArmoredPublicKeyJson(PublicKey publicKey) {
 
 		// Debug
 		if (Config.LOGD) {
-			Log.d(TAG, "[fn] createArmoredPublicKeyFile");
+			Log.d(TAG, "[fn] createArmoredPublicKeyJson");
 		}
 
 		HashMap<String, String> pkMap = new HashMap<String, String>();
-		pkMap.put("vk_pem", getArmoredPublicKeyString(publicKey));
+		pkMap.put("vk_pem", Crypto.armorPublicKey(publicKey));
 		return gson.toJson(pkMap);
 	}
 
-	public synchronized String getArmoredPublicKeyString(PublicKey publicKey) {
+    private synchronized byte[] sign(byte[] data) {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] getArmoredPublicKeyString");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] sign");
+        }
 
-		return Crypto.armorPublicKey(publicKey);
-	}
+        if (!hasStoredKeyPairAndMaiId()) {
+            throw new RuntimeException(NOKP_EXCEPTION_MSG);
+        }
 
-//	public synchronized String getPrivateKeyString() {
-//
-//		// Debug
-//		if (Config.LOGD) {
-//			Log.d(TAG, "[fn] getPrivateKeyString");
-//		}
-//
-//		return Crypto.base64Encode(getPrivateKey().getEncoded());
-//	}
+        try {
+            return crypto.sign(getPrivateKey(), data);
+        } catch (InvalidKeyException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-	public synchronized String signJws(String data) {
+    public synchronized String signJws(String data) {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] signJws");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] signJws");
+        }
 
-		String b64Header = base64urlEncode(JWS_HEADER.getBytes());
-		String b64Payload = base64urlEncode(data.getBytes());
+        String b64Header = Crypto.base64urlEncode(JWS_HEADER.getBytes());
+        String b64Payload = Crypto.base64urlEncode(data.getBytes());
 
-		String b64Input = b64Header + "." + b64Payload;
-		String b64sig = base64urlEncode(sign(b64Input.getBytes()));
+        String b64Input = b64Header + "." + b64Payload;
+        String b64sig = Crypto.base64urlEncode(sign(b64Input.getBytes()));
 
-		return b64Input + "." + b64sig;
-	}
+        return b64Input + "." + b64sig;
+    }
 
-	public static String base64urlEncode(byte[] data) {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] base64urlEncode");
-		}
-
-		String padded_b64url = new String(UrlBase64.encode(data));
-
-		// Remove padding
-		return padded_b64url.replace(".", "");
-	}
-
-//	public synchronized SignedDataFiles createSignedDataFiles(String data) {
-//
-//		// Debug
-//		if (Config.LOGD) {
-//			Log.d(TAG, "[fn] createSignedDataFiles");
-//		}
-//
-//		try {
-//			byte[] signature = sign(data.getBytes());
-//
-//			File dataFile = File.createTempFile("data",	".json", storageDir);
-//			FileWriter dataFileWriter = new FileWriter(dataFile);
-//			dataFileWriter.write(data);
-//			dataFileWriter.close();
-//
-//			File sigFile;
-//			sigFile = File.createTempFile("data", ".json.sig", storageDir);
-//			BufferedOutputStream sigOut = new BufferedOutputStream(new FileOutputStream(sigFile));
-//			sigOut.write(signature);
-//			sigOut.close();
-//
-//			SignedDataFiles sdf = new SignedDataFiles(dataFile, sigFile);
-//			return sdf;
-//		} catch (IOException e) {
-//			throw new RuntimeException(e);
-//		}
-//	}
 }

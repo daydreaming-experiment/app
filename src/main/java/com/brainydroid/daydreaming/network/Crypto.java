@@ -5,6 +5,7 @@ import com.brainydroid.daydreaming.ui.Config;
 import com.google.inject.Singleton;
 import org.spongycastle.jce.ECNamedCurveTable;
 import org.spongycastle.util.encoders.Base64;
+import org.spongycastle.util.encoders.UrlBase64;
 
 import java.io.UnsupportedEncodingException;
 import java.security.*;
@@ -53,7 +54,8 @@ public class Crypto {
 		}
 	}
 
-	public synchronized Enumeration<String> getAvailableCurveNames() {
+	@SuppressWarnings("UnusedDeclaration")
+    public synchronized Enumeration<String> getAvailableCurveNames() {
 
 		// Debug
 		if (Config.LOGD) {
@@ -81,45 +83,8 @@ public class Crypto {
 		return kpg.generateKeyPair();
 	}
 
-	public static String base64Encode(byte[] b) {
-
-		// Verbose
-		if (Config.LOGV) {
-			Log.v(TAG, "[fn] base64Encode");
-		}
-
-		try {
-			return new String(Base64.encode(b), "ASCII");
-		} catch (UnsupportedEncodingException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-//	public static String hex(byte[] bytes) {
-//
-//		// Verbose
-//		if (Config.LOGV) {
-//			Log.v(TAG, "[fn] hex");
-//		}
-//
-//		try {
-//			return new String(Hex.encode(bytes), "ASCII");
-//		} catch (UnsupportedEncodingException e) {
-//			throw new RuntimeException(e);
-//		}
-//	}
-//
-//	public static byte[] base64Decode(String str) {
-//
-//		// Verbose
-//		if (Config.LOGV) {
-//			Log.v(TAG, "[fn] base64Decode");
-//		}
-//
-//		return Base64.decode(str);
-//	}
-
-	public synchronized PublicKey readPublicKey(String keyStr) throws InvalidKeySpecException {
+	@SuppressWarnings("UnusedDeclaration")
+    public synchronized PublicKey readPublicKey(String keyStr) throws InvalidKeySpecException {
 
 		// Debug
 		if (Config.LOGD) {
@@ -131,16 +96,17 @@ public class Crypto {
 		return kf.generatePublic(x509ks);
 	}
 
-//	public synchronized PublicKey readPublicKey(byte[] key) throws InvalidKeySpecException {
-//
-//		// Debug
-//		if (Config.LOGD) {
-//			Log.d(TAG, "[fn] readPublicKey (from byte[])");
-//		}
-//
-//		X509EncodedKeySpec x509ks = new X509EncodedKeySpec(key);
-//		return kf.generatePublic(x509ks);
-//	}
+	@SuppressWarnings("UnusedDeclaration")
+    public synchronized PublicKey readPublicKey(byte[] key) throws InvalidKeySpecException {
+
+		// Debug
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] readPublicKey (from byte[])");
+		}
+
+		X509EncodedKeySpec x509ks = new X509EncodedKeySpec(key);
+		return kf.generatePublic(x509ks);
+	}
 
 	public synchronized PrivateKey readPrivateKey(String keyStr) throws InvalidKeySpecException {
 
@@ -154,36 +120,55 @@ public class Crypto {
 		return kf.generatePrivate(p8ks);
 	}
 
-//	public synchronized PrivateKey readPrivateKey(byte[] key) throws InvalidKeySpecException {
-//
-//		// Debug
-//		if (Config.LOGD) {
-//			Log.d(TAG, "[fn] readPrivateKey (from byte[])");
-//		}
-//
-//		PKCS8EncodedKeySpec p8ks = new PKCS8EncodedKeySpec(key);
-//		return kf.generatePrivate(p8ks);
-//	}
-//
-//	public synchronized KeyPair readKeyPair(String pubKeyStr, String privKeyStr) throws InvalidKeySpecException {
-//
-//		// Debug
-//		if (Config.LOGD) {
-//			Log.d(TAG, "[fn] readKeyPair (from String, String)");
-//		}
-//
-//		return new KeyPair(readPublicKey(pubKeyStr), readPrivateKey(privKeyStr));
-//	}
-//
-//	public synchronized KeyPair readKeyPair(byte[] pubKey, byte[] privKey) throws InvalidKeySpecException {
-//
-//		// Debug
-//		if (Config.LOGD) {
-//			Log.d(TAG, "[fn] readKeyPair (from byte[], byte[])");
-//		}
-//
-//		return new KeyPair(readPublicKey(pubKey), readPrivateKey(privKey));
-//	}
+	public synchronized PrivateKey readPrivateKey(byte[] key) throws InvalidKeySpecException {
+
+		// Debug
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] readPrivateKey (from byte[])");
+		}
+
+		PKCS8EncodedKeySpec p8ks = new PKCS8EncodedKeySpec(key);
+		return kf.generatePrivate(p8ks);
+	}
+
+	@SuppressWarnings("UnusedDeclaration")
+    public synchronized KeyPair readKeyPair(String pubKeyStr, String privKeyStr) throws InvalidKeySpecException {
+
+		// Debug
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] readKeyPair (from String, String)");
+		}
+
+		return new KeyPair(readPublicKey(pubKeyStr), readPrivateKey(privKeyStr));
+	}
+
+	@SuppressWarnings("UnusedDeclaration")
+    public synchronized KeyPair readKeyPair(byte[] pubKey, byte[] privKey) throws InvalidKeySpecException {
+
+		// Debug
+		if (Config.LOGD) {
+			Log.d(TAG, "[fn] readKeyPair (from byte[], byte[])");
+		}
+
+		return new KeyPair(readPublicKey(pubKey), readPrivateKey(privKey));
+	}
+
+    public synchronized byte[] sign(PrivateKey privateKey, byte[] data)
+            throws InvalidKeyException {
+
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] sign");
+        }
+
+        try {
+            sg.initSign(privateKey);
+            sg.update(data);
+            return sg.sign();
+        } catch (SignatureException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 	private static String wrapString(String str, int lineWidth) {
 
@@ -219,21 +204,31 @@ public class Crypto {
 		return formatKeyString(base64Encode(publicKey.getEncoded()));
 	}
 
-	public synchronized byte[] sign(PrivateKey privateKey, byte[] data)
-			throws InvalidKeyException {
+    public static String base64Encode(byte[] b) {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] sign");
-		}
+        // Verbose
+        if (Config.LOGV) {
+            Log.v(TAG, "[fn] base64Encode");
+        }
 
-		try {
-			sg.initSign(privateKey);
-			sg.update(data);
-			return sg.sign();
-		} catch (SignatureException e) {
-			throw new RuntimeException(e);
-		}
-	}
+        try {
+            return new String(Base64.encode(b), "ASCII");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static String base64urlEncode(byte[] data) {
+
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] base64urlEncode");
+        }
+
+        String padded_b64url = new String(UrlBase64.encode(data));
+
+        // Remove padding
+        return padded_b64url.replace(".", "");
+    }
 
 }

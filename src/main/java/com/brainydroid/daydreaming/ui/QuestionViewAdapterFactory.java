@@ -5,6 +5,6 @@ import com.brainydroid.daydreaming.db.Question;
 
 public interface QuestionViewAdapterFactory {
 
-    QuestionViewAdapter create(Question question, LinearLayout questionLinearLayout);
+    public QuestionViewAdapter create(Question question, LinearLayout questionLinearLayout);
 
 }

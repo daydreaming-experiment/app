@@ -12,4 +12,5 @@ public class ServerConfig {
     public static String YE_URL_DEVICES = YE_URL_API + "/devices/";
     public static String YE_EXPS = "/exps/";
     public static String YE_RESULTS = "/results/";
+
 }
