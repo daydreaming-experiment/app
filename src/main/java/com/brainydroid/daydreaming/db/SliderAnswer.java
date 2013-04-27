@@ -1,37 +1,26 @@
 package com.brainydroid.daydreaming.db;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
-
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.ui.Config;
+import com.brainydroid.daydreaming.ui.QuestionViewAdapter;
 import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
+import com.google.inject.Inject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class SliderAnswer implements Answer {
 
 	private static String TAG = "SliderAnswer";
 
-	private transient Gson gson;
-	@Expose private final HashMap<String,Integer> sliders;
-
-	public SliderAnswer() {
-
-		//Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] SliderAnswer");
-		}
-
-		sliders = new HashMap<String,Integer>();
-		gson = new Gson();
-	}
+	@Expose @Inject HashMap<String,Integer> sliders;
+    @Inject transient Gson gson;
 
 	@Override
 	public String toJson() {
@@ -52,11 +41,9 @@ public class SliderAnswer implements Answer {
 			Log.d(TAG, "[fn] getAnswersFromLayout");
 		}
 
-		ArrayList<View> subQuestions = Question.getViewsByTag(questionLinearLayout, "subquestion");
-		Iterator<View> subQuestionsIt = subQuestions.iterator();
+		ArrayList<View> subQuestions = QuestionViewAdapter.getViewsByTag(questionLinearLayout, "subQuestion");
 
-		while (subQuestionsIt.hasNext()) {
-			View subQuestion = subQuestionsIt.next();
+		for (View subQuestion : subQuestions) {
 			SeekBar seekBar = (SeekBar)subQuestion.findViewById(
 					R.id.question_slider_seekBar);
 			TextView mainTextView = (TextView)subQuestion.findViewById(R.id.question_slider_mainText);
@@ -74,4 +61,5 @@ public class SliderAnswer implements Answer {
 
 		sliders.put(questionString, answer);
 	}
+
 }

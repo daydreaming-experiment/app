@@ -1,22 +1,20 @@
 package com.brainydroid.daydreaming.db;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import android.util.SparseArray;
-
 import com.brainydroid.daydreaming.ui.Config;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+import java.util.ArrayList;
+
+@Singleton
 public class PollsStorage {
 
 	private static String TAG = "PollsStorage";
-
-	private static PollsStorage psInstance = null;
 
 	private static final String TABLE_POLLS = "polls";
 	private static final String TABLE_POLL_QUESTIONS = "pollQuestions";
@@ -42,44 +40,22 @@ public class PollsStorage {
 					Question.COL_TIMESTAMP + " REAL" +
 					");";
 
-	private static final String SQL_DROP_TABLE_POLLS =
-			"DROP TABLE IF EXISTS " + TABLE_POLLS + ";";
-	private static final String SQL_DROP_TABLE_POLL_QUESTIONS =
-			"DROP TABLE IF EXISTS " + TABLE_POLL_QUESTIONS + ";";
+    @Inject QuestionsStorage questionsStorage;
+    @Inject SparseArray<Poll> pollInstances;
+    @Inject PollFactory pollFactory;
 
-	private final Storage storage;
 	private final SQLiteDatabase rDb;
 	private final SQLiteDatabase wDb;
-	private final Context _context;
-	private final QuestionsStorage _questionsStorage;
-	private final SparseArray<Poll> _pollInstances;
 
-	public static synchronized PollsStorage getInstance(Context context) {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] getInstance");
-		}
-
-		if (psInstance == null) {
-			psInstance = new PollsStorage(context);
-		}
-		return psInstance;
-	}
-
-	// Constructor from context
-	private PollsStorage(Context context) {
+    @Inject
+	public PollsStorage(Storage storage) {
 
 		// Debug
 		if (Config.LOGD) {
 			Log.d(TAG, "[fn] PollsStorage");
 		}
 
-		_context = context.getApplicationContext();
-		storage = Storage.getInstance(_context);
-		_questionsStorage = QuestionsStorage.getInstance(_context);
-		_pollInstances = new SparseArray<Poll>();
-		rDb = storage.getWritableDatabase();
+		rDb = storage.getReadableDatabase();
 		wDb = storage.getWritableDatabase();
 		wDb.execSQL(SQL_CREATE_TABLE_POLLS); // creates db fields
 		wDb.execSQL(SQL_CREATE_TABLE_POLL_QUESTIONS); // creates db fields
@@ -131,30 +107,29 @@ public class PollsStorage {
 		return qValues;
 	}
 
-	public void storePollGetId(Poll poll) {
+	public void storePollSetId(Poll poll) {
 
 		// Debug
 		if (Config.LOGD) {
-			Log.d(TAG, "[fn] storePollGetId");
+			Log.d(TAG, "[fn] storePollSetId");
 		}
 
 		ContentValues pollValues = getPollContentValues(poll);
 		wDb.insert(TABLE_POLLS, null, pollValues);
+
 		Cursor res = rDb.query(TABLE_POLLS, new String[] {Poll.COL_ID}, null,
 				null, null, null, Poll.COL_ID + " DESC", "1");
 		res.moveToFirst();
 		int pollId = res.getInt(res.getColumnIndex(Poll.COL_ID));
 		res.close();
-		poll.setId(pollId);
-		_pollInstances.put(pollId, poll);
 
-		Iterator<Question> qIterator = poll.getQuestions().iterator();
-		while (qIterator.hasNext()) {
-			ContentValues qValues = getQuestionContentValues(pollId, qIterator.next());
+		poll.setId(pollId);
+		pollInstances.put(pollId, poll);
+
+		for (Question q : poll.getQuestions()) {
+			ContentValues qValues = getQuestionContentValues(pollId, q);
 			wDb.insert(TABLE_POLL_QUESTIONS, null, qValues);
 		}
-
-		//		checkNetworkReceiver();
 	}
 
 	public void updatePoll(Poll poll) {
@@ -169,16 +144,12 @@ public class PollsStorage {
 		wDb.update(TABLE_POLLS, pollValues, Poll.COL_ID + "=?",
 				new String[] {Integer.toString(pollId)});
 
-		Iterator<Question> qIterator = poll.getQuestions().iterator();
-		while (qIterator.hasNext()) {
-			Question q = qIterator.next();
+		for (Question q : poll.getQuestions()) {
 			ContentValues qValues = getQuestionContentValues(pollId, q);
 			wDb.update(TABLE_POLL_QUESTIONS, qValues,
 					Poll.COL_ID + "=? AND " + Question.COL_ID + "=?",
 					new String[] {Integer.toString(pollId), q.getId()});
 		}
-
-		//		checkNetworkReceiver();
 	}
 
 	public Poll getPoll(int pollId) {
@@ -188,10 +159,11 @@ public class PollsStorage {
 			Log.d(TAG, "[fn] getPoll");
 		}
 
-		Poll cachedPoll = _pollInstances.get(pollId, null);
+		Poll cachedPoll = pollInstances.get(pollId, null);
 		if (cachedPoll != null) {
 			return cachedPoll;
 		}
+
 		Cursor res = rDb.query(TABLE_POLLS, null, Poll.COL_ID + "=?",
 				new String[] {Integer.toString(pollId)}, null, null, null);
 		if (!res.moveToFirst()) {
@@ -199,11 +171,12 @@ public class PollsStorage {
 			return null;
 		}
 
-		Poll poll = new Poll(_context);
-		poll.setId(res.getInt(res.getColumnIndex(Poll.COL_ID)));
+		Poll poll = pollFactory.create();
 		poll.setStatus(res.getString(res.getColumnIndex(Poll.COL_STATUS)));
 		poll.setNotificationTimestamp(res.getLong(res.getColumnIndex(Poll.COL_NOTIFICATION_TIMESTAMP)));
 		poll.setQuestionsVersion(res.getInt(res.getColumnIndex(Poll.COL_QUESTIONS_VERSION)));
+        // Setting the id at the end ensures we don't save the Poll to DB again
+        poll.setId(res.getInt(res.getColumnIndex(Poll.COL_ID)));
 		res.close();
 
 		Cursor qRes = rDb.query(TABLE_POLL_QUESTIONS, null, Poll.COL_ID + "=?",
@@ -214,7 +187,7 @@ public class PollsStorage {
 		}
 
 		do {
-			Question q = _questionsStorage.getQuestion(
+			Question q = questionsStorage.getQuestion(
 					qRes.getString(qRes.getColumnIndex(Question.COL_ID)));
 			q.setStatus(qRes.getString(qRes.getColumnIndex(Question.COL_STATUS)));
 			q.setAnswer(qRes.getString(qRes.getColumnIndex(Question.COL_ANSWER)));
@@ -256,36 +229,6 @@ public class PollsStorage {
 		return getPollsWithStatuses(new String[] {Poll.STATUS_PENDING});
 	}
 
-	public void cleanPolls() {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] cleanPolls");
-		}
-
-		ArrayList<Integer> pollIdsToClean = getPollIdsWithStatuses(
-				new String[] {Poll.STATUS_EXPIRED});
-
-		if (pollIdsToClean != null) {
-			for (int pollId : pollIdsToClean) {
-				removePoll(pollId);
-			}
-		}
-	}
-
-	//	private boolean hasUploadablePolls() {
-	//		return hasPollsWithStatuses(
-	//				new String[] {Poll.STATUS_COMPLETED, Poll.STATUS_PARTIALLY_COMPLETED});
-	//	}
-
-	//	private boolean hasPollsWithStatuses(String[] statuses) {
-	//
-	//		// Debug
-	//		if (Config.LOGD) Log.d(TAG, "[fn] hasPollsWithStatuses");
-	//
-	//		return getPollIdsWithStatuses(statuses, "LIMIT 1") != null;
-	//	}
-
 	private ArrayList<Integer> getPollIdsWithStatuses(String[] statuses) {
 
 		// Debug
@@ -305,8 +248,7 @@ public class PollsStorage {
 
 		String query = Util.multiplyString(Poll.COL_STATUS + "=?", statuses.length, " OR ");
 		Cursor res = rDb.query(TABLE_POLLS, new String[] {Poll.COL_ID}, query, statuses,
-				null, null, null);
-
+				null, null, null, limit);
 		if (!res.moveToFirst()) {
 			res.close();
 			return null;
@@ -349,45 +291,10 @@ public class PollsStorage {
 			Log.d(TAG, "[fn] removePoll");
 		}
 
-		wDb.delete(TABLE_POLLS, Poll.COL_ID + "=?", new String[] {Integer.toString(pollId)});
+		wDb.delete(TABLE_POLLS, Poll.COL_ID + "=?", new String[]{Integer.toString(pollId)});
 		wDb.delete(TABLE_POLL_QUESTIONS, Poll.COL_ID + "=?",
-				new String[] {Integer.toString(pollId)});
-		_pollInstances.delete(pollId);
-
-		//		checkNetworkReceiver();
+                new String[]{Integer.toString(pollId)});
+		pollInstances.delete(pollId);
 	}
 
-	public void flushAll() {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] flushAll");
-		}
-
-		wDb.delete(TABLE_POLLS, null, null);
-		wDb.delete(TABLE_POLL_QUESTIONS, null, null);
-		_pollInstances.clear();
-	}
-
-	public void dropAll() {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] dropAll");
-		}
-
-		wDb.execSQL(SQL_DROP_TABLE_POLLS);
-		wDb.execSQL(SQL_DROP_TABLE_POLL_QUESTIONS);
-		_pollInstances.clear();
-		psInstance = null;
-	}
-
-	//	private void checkNetworkReceiver() {
-	//
-	//		// Debug
-	//		if (Config.LOGD) Log.d(TAG, "[fn] checkNetworkReceiver");
-	//
-	//		// Unregister or re-register the NetworkReceiver depending on whether
-	//		// there are any uploadable polls
-	//	}
 }

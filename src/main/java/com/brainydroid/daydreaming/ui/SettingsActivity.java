@@ -4,15 +4,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
-import android.preference.PreferenceActivity;
 import android.preference.PreferenceScreen;
 import android.util.Log;
 import android.widget.Toast;
-
 import com.actionbarsherlock.app.SherlockPreferenceActivity;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.SchedulerService;
 import com.brainydroid.daydreaming.db.Util;
+import roboguice.inject.InjectResource;
 
 public class SettingsActivity extends SherlockPreferenceActivity
 implements OnSharedPreferenceChangeListener {
@@ -21,10 +20,14 @@ implements OnSharedPreferenceChangeListener {
 
 	private static int MIN_WINDOW_HOURS = 5; // 5 hours (in hours)
 
-	private PreferenceScreen prefScreen;
-	private SharedPreferences sharedPrefs;
-	private TimePreference timepreference_max;
-	private TimePreference timepreference_min;
+    private SharedPreferences sharedPreferences;
+	private TimePreference timePreferenceMax;
+	private TimePreference timePreferenceMin;
+
+    @InjectResource(R.pref.settings_time_window_lb_default) String defaultTimePreferenceMin;
+    @InjectResource(R.pref.settings_time_window_ub_default) String defaultTimePreferenceMax;
+    @InjectResource(R.string.settings_time_corrected_1) String timeCorrectedText1;
+    @InjectResource(R.string.settings_time_corrected_2) String timeCorrectedText2;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -49,8 +52,8 @@ implements OnSharedPreferenceChangeListener {
 
 		super.onResume();
 
-		// Set up a listener whenever a key changes
-		sharedPrefs.registerOnSharedPreferenceChangeListener(this);
+		// Set up a listener for whenever a key changes
+		sharedPreferences.registerOnSharedPreferenceChangeListener(this);
 	}
 
 	@Override
@@ -62,7 +65,7 @@ implements OnSharedPreferenceChangeListener {
 		}
 
 		super.onStop();
-		sharedPrefs.unregisterOnSharedPreferenceChangeListener(this);
+		sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
 	}
 
 	@SuppressWarnings("deprecation")
@@ -76,16 +79,15 @@ implements OnSharedPreferenceChangeListener {
 		// Load the XML preferences file
 		addPreferencesFromResource(R.layout.preferences);
 
-		prefScreen = getPreferenceScreen();
-		sharedPrefs = prefScreen.getSharedPreferences();
+        PreferenceScreen preferenceScreen = getPreferenceScreen();
+		sharedPreferences = preferenceScreen.getSharedPreferences();
 
 		// Get a reference to the preferences
-		timepreference_min = (TimePreference)prefScreen.findPreference("time_window_lb_key");
-		timepreference_max = (TimePreference)prefScreen.findPreference("time_window_ub_key");
+		timePreferenceMin = (TimePreference)preferenceScreen.findPreference("time_window_lb_key");
+		timePreferenceMax = (TimePreference)preferenceScreen.findPreference("time_window_ub_key");
 
-		timepreference_min.setSummary(timepreference_min.getTimeString());
-		timepreference_max.setSummary(timepreference_max.getTimeString());
-
+		timePreferenceMin.setSummary(timePreferenceMin.getTimeString());
+		timePreferenceMax.setSummary(timePreferenceMax.getTimeString());
 	}
 
 	@Override
@@ -96,14 +98,10 @@ implements OnSharedPreferenceChangeListener {
 			Log.d(TAG, "[fn] onSharedPreferenceChanged");
 		}
 
-		// TODO: check that the final time is after the starting time
-		// TODO: check that the allowed time window is longer than a certain minimum (e.g. 3 hours)
-
-		// Let's do something a preference value changes
 		if (key.equals("time_window_ub_key") || key.equals("time_window_lb_key")) {
 			correctTimeWindow();
-			timepreference_max.setSummary(timepreference_max.getTimeString());
-			timepreference_min.setSummary(timepreference_min.getTimeString());
+			timePreferenceMax.setSummary(timePreferenceMax.getTimeString());
+			timePreferenceMin.setSummary(timePreferenceMin.getTimeString());
 			startSchedulerService();
 		}
 	}
@@ -116,11 +114,10 @@ implements OnSharedPreferenceChangeListener {
 		}
 
 		if (!checkTimeWindow()) {
-			timepreference_min.setTime(getString(R.pref.settings_time_window_lb_default));
-			timepreference_max.setTime(getString(R.pref.settings_time_window_ub_default));
-			Toast.makeText(this, getString(R.string.settings_time_corrected_1) + " " +
-					MIN_WINDOW_HOURS + " " + getString(R.string.settings_time_corrected_2),
-					Toast.LENGTH_LONG).show();
+			timePreferenceMin.setTime(defaultTimePreferenceMin);
+			timePreferenceMax.setTime(defaultTimePreferenceMax);
+			Toast.makeText(this, timeCorrectedText1 + " " + MIN_WINDOW_HOURS +
+                    " " + timeCorrectedText2, Toast.LENGTH_LONG).show();
 		}
 	}
 
@@ -131,12 +128,12 @@ implements OnSharedPreferenceChangeListener {
 			Log.d(TAG, "[fn] checkTimeWindow");
 		}
 
-		String timeFirst = timepreference_min.getTimeString();
+		String timeFirst = timePreferenceMin.getTimeString();
 		int firstHour = Util.getHour(timeFirst);
 		int firstMinute = Util.getMinute(timeFirst);
 		int first = firstHour * 60 + firstMinute;
 
-		String timeLast = timepreference_max.getTimeString();
+		String timeLast = timePreferenceMax.getTimeString();
 		int lastHour = Util.getHour(timeLast);
 		int lastMinute = Util.getMinute(timeLast);
 		int last = lastHour * 60 + lastMinute;
@@ -159,4 +156,5 @@ implements OnSharedPreferenceChangeListener {
 		Intent schedulerIntent = new Intent(this, SchedulerService.class);
 		startService(schedulerIntent);
 	}
+
 }

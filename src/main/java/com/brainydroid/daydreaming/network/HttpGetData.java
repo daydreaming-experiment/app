@@ -8,8 +8,8 @@ public class HttpGetData {
 
 	private static String TAG = "HttpGetData";
 
-	private final String _getUrl;
-	private final HttpConversationCallback _httpConversationCallback;
+	private final String getUrl;
+	private final HttpConversationCallback httpConversationCallback;
 
 	public HttpGetData(String getUrl, HttpConversationCallback httpConversationCallback) {
 
@@ -18,8 +18,8 @@ public class HttpGetData {
 			Log.d(TAG, "[fn] HttpGetData");
 		}
 
-		_getUrl = getUrl;
-		_httpConversationCallback = httpConversationCallback;
+		this.getUrl = getUrl;
+		this.httpConversationCallback = httpConversationCallback;
 	}
 
 	public String getGetUrl() {
@@ -29,7 +29,7 @@ public class HttpGetData {
 			Log.v(TAG, "[fn] getGetUrl");
 		}
 
-		return _getUrl;
+		return getUrl;
 	}
 
 	public HttpConversationCallback getHttpConversationCallback() {
@@ -39,6 +39,7 @@ public class HttpGetData {
 			Log.v(TAG, "[fn] getHttpConversationCallback");
 		}
 
-		return _httpConversationCallback;
+		return httpConversationCallback;
 	}
+
 }

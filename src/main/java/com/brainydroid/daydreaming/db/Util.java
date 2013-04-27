@@ -1,34 +1,32 @@
 package com.brainydroid.daydreaming.db;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-
 import android.util.Log;
-
 import com.brainydroid.daydreaming.ui.Config;
+
+import java.io.InputStream;
 
 public class Util {
 
 	private static String TAG = "Util";
 
-	public static String joinStrings(ArrayList<String> strings, String joinString) {
-
-		// Verbose
-		if (Config.LOGV) {
-			Log.v(TAG, "[fn] joinStrings");
-		}
-
-		StringBuilder sb = new StringBuilder();
-
-		for (String s : strings) {
-			sb.append(s);
-			sb.append(joinString);
-		}
-
-		int sbLength = sb.length();
-		sb.delete(sbLength - joinString.length(), sbLength);
-		return sb.toString();
-	}
+//	public static String joinStrings(ArrayList<String> strings, String joinString) {
+//
+//		// Verbose
+//		if (Config.LOGV) {
+//			Log.v(TAG, "[fn] joinStrings");
+//		}
+//
+//		StringBuilder sb = new StringBuilder();
+//
+//		for (String s : strings) {
+//			sb.append(s);
+//			sb.append(joinString);
+//		}
+//
+//		int sbLength = sb.length();
+//		sb.delete(sbLength - joinString.length(), sbLength);
+//		return sb.toString();
+//	}
 
 	public static String multiplyString(String string, int times, String joinString) {
 
@@ -86,4 +84,5 @@ public class Util {
 		String[] pieces = time.split(":");
 		return(Integer.parseInt(pieces[1]));
 	}
+
 }

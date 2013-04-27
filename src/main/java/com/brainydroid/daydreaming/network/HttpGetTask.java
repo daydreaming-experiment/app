@@ -18,11 +18,7 @@ public class HttpGetTask extends AsyncTask<HttpGetData, Void, Boolean> {
 
 	private HttpClient client;
 	private String serverAnswer;
-	private HttpGetData getData;
-	private HttpGet httpGet;
-	private HttpResponse response;
-	private HttpEntity resEntity;
-	private HttpConversationCallback httpConversationCallback;
+    private HttpConversationCallback httpConversationCallback;
 
 	@Override
 	protected void onPreExecute() {
@@ -44,17 +40,18 @@ public class HttpGetTask extends AsyncTask<HttpGetData, Void, Boolean> {
 		}
 
 		try {
-			getData = getDatas[0];
+            HttpGetData getData = getDatas[0];
 			httpConversationCallback = getData.getHttpConversationCallback();
-			httpGet = new HttpGet(getData.getGetUrl());
+            HttpGet httpGet = new HttpGet(getData.getGetUrl());
 
-			response = client.execute(httpGet);
-			resEntity = response.getEntity();
+            HttpResponse response = client.execute(httpGet);
+            HttpEntity resEntity = response.getEntity();
 
 			if (resEntity != null) {
 				serverAnswer = EntityUtils.toString(resEntity);
 			}
 		} catch (Exception e) {
+            // FIXME: properly inform about errors that happen
 			serverAnswer = null;
 			return false;
 		}
@@ -70,6 +67,9 @@ public class HttpGetTask extends AsyncTask<HttpGetData, Void, Boolean> {
 			Log.d(TAG, "[fn] onPostExecute");
 		}
 
-		httpConversationCallback.onHttpConversationFinished(success, serverAnswer);
+        if (httpConversationCallback != null) {
+		    httpConversationCallback.onHttpConversationFinished(success, serverAnswer);
+        }
 	}
+
 }

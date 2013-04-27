@@ -16,19 +16,16 @@
 
 package com.brainydroid.daydreaming.network;
 
+import android.os.AsyncTask;
+import android.os.SystemClock;
+import android.util.Log;
+import com.brainydroid.daydreaming.ui.Config;
+
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
-import android.os.AsyncTask;
-import android.os.SystemClock;
-import android.util.Log;
-
-import com.brainydroid.daydreaming.ui.Config;
-
 /**
- * {@hide}
- *
  * Simple SNTP client class for retrieving network time.
  *
  * Sample usage:
@@ -39,6 +36,7 @@ import com.brainydroid.daydreaming.ui.Config;
  * </pre>
  */
 public class SntpClient {
+
 	private static final String TAG = "SntpClient";
 
 	private static final int ORIGINATE_TIME_OFFSET = 24;
@@ -67,7 +65,7 @@ public class SntpClient {
 
 		private final String TAG = "RequestTimeTask";
 
-		private SntpClientCallback _callback = null;
+		private SntpClientCallback callback = null;
 
 		protected void setSntpClientCallback(SntpClientCallback callback) {
 
@@ -76,7 +74,7 @@ public class SntpClient {
 				Log.v(TAG, "[fn] setSntpClientCallback");
 			}
 
-			_callback = callback;
+			this.callback = callback;
 		}
 
 		@Override
@@ -91,6 +89,7 @@ public class SntpClient {
 			if (sntpClient.requestTime("0.pool.ntp.org", 5000)) {
 				return sntpClient;
 			}
+
 			return null;
 		}
 
@@ -102,7 +101,7 @@ public class SntpClient {
 				Log.d(TAG, "[fn] onPostExecute");
 			}
 
-			_callback.onTimeReceived(sntpClient);
+			callback.onTimeReceived(sntpClient);
 		}
 	}
 
@@ -160,18 +159,25 @@ public class SntpClient {
 			//             = (transit + skew - transit + skew)/2
 			//             = (2 * skew)/2 = skew
 			long clockOffset = ((receiveTime - originateTime) + (transmitTime - responseTime))/2;
-			// if (Config.LOGD) if (Config.LOGD) Log.d(TAG, "round trip: " + roundTripTime + " ms");
-			// if (Config.LOGD) if (Config.LOGD) Log.d(TAG, "clock offset: " + clockOffset + " ms");
+
+            // Debug
+			if (Config.LOGD) {
+                Log.d(TAG, "round trip: " + roundTripTime + " ms");
+                Log.d(TAG, "clock offset: " + clockOffset + " ms");
+            }
 
 			// save our results - use the times on this side of the network latency
 			// (response rather than request time)
 			mNtpTime = responseTime + clockOffset;
 			mNtpTimeReference = responseTicks;
 			mRoundTripTime = roundTripTime;
+
 		} catch (Exception e) {
+
 			if (Config.LOGD) {
 				Log.d(TAG, "request time failed: " + e);
 			}
+
 			return false;
 		}
 
@@ -236,7 +242,8 @@ public class SntpClient {
 	 *
 	 * @return round trip time in milliseconds.
 	 */
-	public long getRoundTripTime() {
+	@SuppressWarnings("UnusedDeclaration")
+    public long getRoundTripTime() {
 
 		// Verbose
 		if (Config.LOGV) {
@@ -305,7 +312,8 @@ public class SntpClient {
 		buffer[offset++] = (byte)(seconds >> 24);
 		buffer[offset++] = (byte)(seconds >> 16);
 		buffer[offset++] = (byte)(seconds >> 8);
-		buffer[offset++] = (byte)(seconds >> 0);
+        //noinspection PointlessBitwiseExpression
+        buffer[offset++] = (byte)(seconds >> 0);
 
 		long fraction = milliseconds * 0x100000000L / 1000L;
 		// write fraction in big endian format
@@ -313,6 +321,8 @@ public class SntpClient {
 		buffer[offset++] = (byte)(fraction >> 16);
 		buffer[offset++] = (byte)(fraction >> 8);
 		// low order bits should be random data
-		buffer[offset++] = (byte)(Math.random() * 255.0);
+        //noinspection UnusedAssignment
+        buffer[offset++] = (byte)(Math.random() * 255.0);
 	}
+
 }

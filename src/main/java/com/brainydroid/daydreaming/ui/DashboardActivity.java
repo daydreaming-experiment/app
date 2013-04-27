@@ -1,40 +1,31 @@
 package com.brainydroid.daydreaming.ui;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
-import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.SchedulerService;
-import com.brainydroid.daydreaming.background.StatusManager;
+import roboguice.inject.ContentView;
 
-public class DashboardActivity extends SherlockActivity {
+@ContentView(R.layout.activity_dashboard)
+public class DashboardActivity extends FirstLaunchActivity {
 
 	private static String TAG = "DashboardActivity";
 
-	public static String EXTRA_COMES_FROM_FIRST_LAUNCH = "comesFromFirstLaunch";
+    @Override
+    public void onStart() {
 
-	private StatusManager status;
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] onStart");
+        }
 
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] onCreate");
-		}
-
-		super.onCreate(savedInstanceState);
-
-		status = StatusManager.getInstance(this);
-
-		setContentView(R.layout.activity_dashboard);
         //updateRunningTime();
+        super.onStart();
     }
 
     // TODO: check this is ok with real ActionBar API
@@ -55,40 +46,6 @@ public class DashboardActivity extends SherlockActivity {
 	}
 
 	@Override
-	public void onStart() {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] onStart");
-		}
-
-		checkFirstRun();
-		super.onStart();
-	}
-
-	@Override
-	public void onResume() {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] onResume");
-		}
-
-		super.onResume();
-	}
-
-	@Override
-	public void onStop() {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] onStop");
-		}
-
-		super.onStop();
-	}
-
-	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 
 		// Debug
@@ -97,18 +54,30 @@ public class DashboardActivity extends SherlockActivity {
 		}
 
 		switch (item.getItemId()) {
-		case android.R.id.home:
-			break;
-
 		case R.id.menu_settings:
 			Intent intent = new Intent(this, SettingsActivity.class);
 			startActivity(intent);
 			break;
+
+        // No other cases for now
 		}
+
 		return super.onOptionsItemSelected(item);
 	}
 
-    // TODO: clean this up
+    @Override
+    public void onBackPressed() {
+
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] onBackPressed");
+        }
+
+        super.onBackPressed();
+        // Don't overridePendingTransition
+    }
+
+//    // TODO: clean this up
 //    private void updateRunningTime() {
 //
 //        // Debug
@@ -145,20 +114,21 @@ public class DashboardActivity extends SherlockActivity {
 //        }
 //    }
 
-	private void checkFirstRun() {
+    @Override
+    protected void checkFirstLaunch() {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] checkFirstRun");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] checkFirstRun");
+        }
 
-		if (!status.isFirstLaunchCompleted()) {
-			Intent intent = new Intent(this, FirstLaunchWelcomeActivity.class);
-			intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-			startActivity(intent);
-			finish();
-		}
-	}
+        if (!statusManager.isFirstLaunchCompleted()) {
+            Intent intent = new Intent(this, FirstLaunchWelcomeActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+            startActivity(intent);
+            finish();
+        }
+    }
 
 	public void runPollNow(@SuppressWarnings("UnusedParameters") View view) {
 
@@ -173,4 +143,5 @@ public class DashboardActivity extends SherlockActivity {
 
 		Toast.makeText(this, "Now wait for 5 secs", Toast.LENGTH_SHORT).show();
 	}
+
 }

@@ -1,6 +1,5 @@
 package com.brainydroid.daydreaming.background;
 
-import android.app.Service;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
@@ -9,19 +8,21 @@ import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
-
 import com.brainydroid.daydreaming.ui.Config;
+import com.google.inject.Inject;
+import roboguice.service.RoboService;
 
-public class LocationService extends Service {
+public class LocationService extends RoboService {
 
 	private static String TAG = "LocationService";
 
-	private LocationManager locationManager;
 	private LocationListener locationListener;
 	private final IBinder mBinder = new LocationServiceBinder();
-	private LocationCallback _questionLocationCallback = null;
-    private LocationCallback _locationItemCallback = null;
+	private LocationCallback questionLocationCallback = null;
+    private LocationCallback locationItemCallback = null;
 	private Location lastLocation;
+
+    @Inject LocationManager locationManager;
 
 	public class LocationServiceBinder extends Binder {
 
@@ -37,6 +38,7 @@ public class LocationService extends Service {
 			// Return this instance of LocationService so clients can call public methods
 			return LocationService.this;
 		}
+
 	}
 
 	public void setLocationItemCallback(LocationCallback callback) {
@@ -46,10 +48,10 @@ public class LocationService extends Service {
 			Log.d(TAG, "[fn] setLocationItemCallback");
 		}
 
-		_locationItemCallback = callback;
+		locationItemCallback = callback;
 
-		if (lastLocation != null && _locationItemCallback != null) {
-			_locationItemCallback.onLocationReceived(lastLocation);
+		if (lastLocation != null && locationItemCallback != null) {
+			locationItemCallback.onLocationReceived(lastLocation);
 		}
 	}
 
@@ -60,10 +62,10 @@ public class LocationService extends Service {
             Log.d(TAG, "[fn] setQuestionLocationCallback");
         }
 
-        _questionLocationCallback = callback;
+        questionLocationCallback = callback;
 
-        if (lastLocation != null && _questionLocationCallback != null) {
-            _questionLocationCallback.onLocationReceived(lastLocation);
+        if (lastLocation != null && questionLocationCallback != null) {
+            questionLocationCallback.onLocationReceived(lastLocation);
         }
     }
 
@@ -76,7 +78,6 @@ public class LocationService extends Service {
 		}
 
 		super.onCreate();
-		initVars();
 		startLocationListener();
 	}
 
@@ -137,22 +138,12 @@ public class LocationService extends Service {
 
 		super.onUnbind(intent);
 
-        if (_locationItemCallback == null && _questionLocationCallback == null) {
+        if (locationItemCallback == null && questionLocationCallback == null) {
 			stopSelf();
 		}
 
         // Make sur onUnbind is called again if some clients rebind and re-unbind
 		return true;
-	}
-
-	private void initVars() {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] initVars");
-		}
-
-		locationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
 	}
 
 	private void startLocationListener() {
@@ -178,12 +169,12 @@ public class LocationService extends Service {
 
 				lastLocation = location;
 
-				if (_locationItemCallback != null) {
-					_locationItemCallback.onLocationReceived(location);
+				if (locationItemCallback != null) {
+					locationItemCallback.onLocationReceived(location);
 				}
 
-                if (_questionLocationCallback != null) {
-                    _questionLocationCallback.onLocationReceived(location);
+                if (questionLocationCallback != null) {
+                    questionLocationCallback.onLocationReceived(location);
                 }
 			}
 
@@ -195,6 +186,7 @@ public class LocationService extends Service {
 
 			@Override
 			public void onProviderDisabled(String provider) {}
+
 		};
 
 		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
@@ -213,4 +205,5 @@ public class LocationService extends Service {
 			locationListener = null;
 		}
 	}
+
 }

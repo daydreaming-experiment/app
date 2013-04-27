@@ -9,6 +9,7 @@ import android.util.Log;
 
 import com.brainydroid.daydreaming.background.LocationService.LocationServiceBinder;
 import com.brainydroid.daydreaming.ui.Config;
+import com.google.inject.Inject;
 
 public class LocationServiceConnection implements ServiceConnection {
 
@@ -21,18 +22,8 @@ public class LocationServiceConnection implements ServiceConnection {
     private boolean setQuestionLocationCallback = false;
 	private LocationService locationService;
 	private boolean sBound = false;
-	private final Context _context;
 
-	public LocationServiceConnection(Context context) {
-		super();
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] LocationServiceConnection");
-		}
-
-		_context = context;
-	}
+    @Inject Context context;
 
 	@Override
 	public void onServiceConnected(ComponentName name, IBinder service) {
@@ -69,8 +60,8 @@ public class LocationServiceConnection implements ServiceConnection {
 			Log.d(TAG, "[fn] startLocationService");
 		}
 
-		Intent locationServiceIntent = new Intent(_context, LocationService.class);
-		_context.startService(locationServiceIntent);
+		Intent locationServiceIntent = new Intent(context, LocationService.class);
+		context.startService(locationServiceIntent);
 	}
 
 	public void bindLocationService() {
@@ -81,9 +72,8 @@ public class LocationServiceConnection implements ServiceConnection {
 		}
 
         if (!sBound) {
-            Intent locationServiceIntent = new Intent(_context, LocationService.class);
-            _context.bindService(locationServiceIntent, this, 0);
-            // Why is this here and not in onServiceConnected?
+            Intent locationServiceIntent = new Intent(context, LocationService.class);
+            context.bindService(locationServiceIntent, this, 0);
             sBound = true;
         }
 	}
@@ -96,8 +86,7 @@ public class LocationServiceConnection implements ServiceConnection {
 		}
 
 		if (sBound) {
-			_context.unbindService(this);
-            // Why is this here and not in onServiceDisconnected?
+			context.unbindService(this);
 			sBound = false;
 		}
 	}
@@ -185,4 +174,5 @@ public class LocationServiceConnection implements ServiceConnection {
 
         setQuestionLocationCallback(null);
     }
+
 }

@@ -1,4 +1,10 @@
 language: java
+
+# Make sure the whole app can be built, not just compiled
+# (checks for pom.xml errors)
+script: mvn package
+
+# Install our dependencies
 before_install:
   # Don't mess with the main repository
   - export MAIN_REPO="$(pwd)"

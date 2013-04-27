@@ -59,9 +59,9 @@
     <string name="questionSlider_sliders_untouched_single">Please answer using the slider</string>
     <string name="questionSlider_sliders_untouched_multiple">Please answer on all the sliders</string>
     <string name="questionMultipleChoice_check_all_that_apply">Check all that apply</string>
-    <string name="questionMultipleChoices_other_hint">Other</string>
-    <string name="questionMultipleChoices_other_please_fill">Please tell us more in the \"Other\" box</string>
-    <string name="questionMultipleChoices_please_check_one">Please check at least one option</string>
+    <string name="questionMultipleChoice_other_hint">Other</string>
+    <string name="questionMultipleChoice_other_please_fill">Please tell us more in the \"Other\" box</string>
+    <string name="questionMultipleChoice_please_check_one">Please check at least one option</string>
     <string name="locationAlert_title_location">Enable location</string>
     <string name="locationAlert_title_data">Enable data connection</string>
     <string name="locationAlert_title_location_and_data">Enable location and data</string>

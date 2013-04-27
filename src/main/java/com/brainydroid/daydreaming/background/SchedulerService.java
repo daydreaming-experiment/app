@@ -1,40 +1,39 @@
 package com.brainydroid.daydreaming.background;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Random;
-
 import android.app.AlarmManager;
 import android.app.PendingIntent;
-import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.os.SystemClock;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
-
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.db.Util;
 import com.brainydroid.daydreaming.ui.Config;
+import com.google.inject.Inject;
+import roboguice.service.RoboService;
 
-public class SchedulerService extends Service {
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Random;
+
+public class SchedulerService extends RoboService {
 
 	private static String TAG = "SchedulerService";
 
 	public static String SCHEDULER_DEBUGGING = "schedulerDebugging";
 
-	private static long DEBUG_DELAY = 5 * 1000; // 5 seconds (in milliseconds)
-	private static long SAMPLE_TIME_MEAN = 2 * 60 * 60 * 1000; // 2 hours (in milliseconds)
-	private static long SAMPLE_TIME_STD = 1 * 60 * 60 * 1000; // 1 hour (in milliseconds)
-	private static long SAMPLE_TIME_MIN = 10 * 60 * 1000; // 10 minutes (in milliseconds)
+	public static long DEBUG_DELAY = 5 * 1000; // 5 seconds (in milliseconds)
+	public static long SAMPLE_TIME_MEAN = 2 * 60 * 60 * 1000; // 2 hours (in milliseconds)
+	public static long SAMPLE_TIME_STD = 1 * 60 * 60 * 1000; // 1 hour (in milliseconds)
+	public static long SAMPLE_TIME_MIN = 10 * 60 * 1000; // 10 minutes (in milliseconds)
 
-	private SharedPreferences sharedPrefs;
-	private Random random;
-	private AlarmManager alarmManager;
-	private SimpleDateFormat sdf;
+    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
+    @Inject SharedPreferences sharedPreferences;
+	@Inject Random random;
+	@Inject AlarmManager alarmManager;
 
 	@Override
 	public void onCreate() {
@@ -60,7 +59,6 @@ public class SchedulerService extends Service {
 		// Since the poll gets created when the notification shows up, there's a good chance
 		// the questions will have finished updating (if internet connection is available)
 		// before poll creation.
-		initVars();
 		startSyncService();
 		schedulePoll(intent.getBooleanExtra(SCHEDULER_DEBUGGING, false));
 		stopSelf();
@@ -88,19 +86,6 @@ public class SchedulerService extends Service {
 
 		// Don't allow binding
 		return null;
-	}
-
-	private void initVars() {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] initVars");
-		}
-
-		alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
-		random = new Random(System.currentTimeMillis());
-		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-		sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 	}
 
 	private void schedulePoll(boolean debugging) {
@@ -183,9 +168,9 @@ public class SchedulerService extends Service {
 			Log.d(TAG, "[fn] shiftWaitTime");
 		}
 
-		String startString = sharedPrefs.getString("time_window_lb_key",
+		String startString = sharedPreferences.getString("time_window_lb_key",
 				getString(R.pref.settings_time_window_lb_default));
-		String endString = sharedPrefs.getString("time_window_ub_key",
+		String endString = sharedPreferences.getString("time_window_ub_key",
 				getString(R.pref.settings_time_window_ub_default));
 
 		int startHour = Util.getHour(startString);
@@ -301,16 +286,16 @@ public class SchedulerService extends Service {
 
 		// Debug
 		if (Config.LOGD) {
-
-			long tmpshift = shift;
-			long hours = tmpshift / (60 * 60 * 1000);
-			tmpshift -= hours * 60 * 60 * 1000;
-			long minutes = tmpshift / (60 * 1000);
-			tmpshift -= minutes * 60 * 1000;
-			long seconds = tmpshift / 1000;
+			long tmpShift = shift;
+			long hours = tmpShift / (60 * 60 * 1000);
+			tmpShift -= hours * 60 * 60 * 1000;
+			long minutes = tmpShift / (60 * 1000);
+			tmpShift -= minutes * 60 * 1000;
+			long seconds = tmpShift / 1000;
 			Log.d(TAG, "shift: " + hours + ":" + minutes + ":" + seconds);
 		}
 
 		return wait + shift;
 	}
+
 }

@@ -1,8 +1,5 @@
 package com.brainydroid.daydreaming.ui;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ComponentName;
@@ -20,21 +17,23 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.actionbarsherlock.app.SherlockDialogFragment;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.LocationCallback;
 import com.brainydroid.daydreaming.background.LocationServiceConnection;
 import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.background.SyncService;
-import com.brainydroid.daydreaming.db.Poll;
-import com.brainydroid.daydreaming.db.PollsStorage;
-import com.brainydroid.daydreaming.db.Question;
+import com.brainydroid.daydreaming.db.*;
 import com.brainydroid.daydreaming.network.SntpClient;
 import com.brainydroid.daydreaming.network.SntpClientCallback;
+import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockFragmentActivity;
+import com.google.inject.Inject;
+import roboguice.inject.ContentView;
+import roboguice.inject.InjectResource;
+import roboguice.inject.InjectView;
 
-public class QuestionActivity extends SherlockFragmentActivity {
+@ContentView(R.layout.activity_question)
+public class QuestionActivity extends RoboSherlockFragmentActivity {
 
 	private static String TAG = "QuestionActivity";
 
@@ -50,10 +49,17 @@ public class QuestionActivity extends SherlockFragmentActivity {
 	private int nQuestions;
 	private boolean isContinuingOrFinishing = false;
 	private long lastBackTime = 0;
-	private LinearLayout questionLinearLayout;
-	private StatusManager status;
+    private QuestionViewAdapter questionViewAdapter;
 
-	private LocationServiceConnection locationServiceConnection;
+	@InjectView(R.id.question_linearLayout) LinearLayout questionLinearLayout;
+    @InjectView(R.id.question_nextButton) Button nextButton;
+    @InjectResource(R.string.question_button_finish) String nextButtonFinishText;
+
+	@Inject LocationServiceConnection locationServiceConnection;
+    @Inject PollsStorage pollsStorage;
+    @Inject StatusManager statusManager;
+    @Inject QuestionViewAdapterFactory questionViewAdapterFactory;
+    @Inject AnswerValidatorFactory answerValidatorFactory;
 
 	public static class LocationAlertDialogFragment extends SherlockDialogFragment {
 
@@ -100,6 +106,7 @@ public class QuestionActivity extends SherlockFragmentActivity {
 
 			return alertSettings.create();
 		}
+
 	}
 
 	@Override
@@ -112,11 +119,9 @@ public class QuestionActivity extends SherlockFragmentActivity {
 
 		super.onCreate(savedInstanceState);
 
-		setContentView(R.layout.activity_question);
-
 		initVars();
 		setChrome();
-		populateViews();
+		questionViewAdapter.populateViews(isFirstQuestion());
 	}
 
 	@Override
@@ -128,10 +133,11 @@ public class QuestionActivity extends SherlockFragmentActivity {
 		}
 
 		super.onStart();
+
 		poll.setStatus(Poll.STATUS_RUNNING);
 		poll.setQuestionStatus(questionIndex, Question.STATUS_ASKED);
 
-		if (status.isDataAndLocationEnabled()) {
+		if (statusManager.isDataAndLocationEnabled()) {
 			startListeningTasks();
 		}
 	}
@@ -167,6 +173,7 @@ public class QuestionActivity extends SherlockFragmentActivity {
 					Toast.LENGTH_SHORT).show();
 			return;
 		}
+
 		finish();
 		super.onBackPressed();
 	}
@@ -192,15 +199,12 @@ public class QuestionActivity extends SherlockFragmentActivity {
 		}
 
 		Intent intent = getIntent();
-		PollsStorage pollsStorage = PollsStorage.getInstance(this);
 		pollId = intent.getIntExtra(EXTRA_POLL_ID, -1);
 		poll = pollsStorage.getPoll(pollId);
 		questionIndex = intent.getIntExtra(EXTRA_QUESTION_INDEX, -1);
 		question = poll.getQuestionByIndex(questionIndex);
 		nQuestions = poll.getLength();
-		questionLinearLayout = (LinearLayout)findViewById(R.id.question_linearLayout);
-		status = StatusManager.getInstance(this);
-		locationServiceConnection = new LocationServiceConnection(this);
+        questionViewAdapter = questionViewAdapterFactory.create(question, questionLinearLayout);
 	}
 
 	private void setChrome() {
@@ -213,13 +217,11 @@ public class QuestionActivity extends SherlockFragmentActivity {
 		setTitle(getString(R.string.app_name) + " " + (questionIndex + 1) + "/" + nQuestions);
 
 		if (!isFirstQuestion()) {
-			LinearLayout question_linearLayout = (LinearLayout)findViewById(R.id.question_linearLayout);
-			TextView welcomeText = (TextView)question_linearLayout.findViewById(R.id.question_welcomeText);
-			question_linearLayout.removeView(welcomeText);
+			TextView welcomeText = (TextView)questionLinearLayout.findViewById(R.id.question_welcomeText);
+			questionLinearLayout.removeView(welcomeText);
 
 			if (isLastQuestion()) {
-				Button nextButton = (Button)findViewById(R.id.question_nextButton);
-				nextButton.setText(getString(R.string.question_button_finish));
+				nextButton.setText(nextButtonFinishText);
 			}
 		}
 	}
@@ -270,28 +272,11 @@ public class QuestionActivity extends SherlockFragmentActivity {
 
 		locationServiceConnection.setQuestionLocationCallback(locationCallback);
 
-		if (!status.isLocationServiceRunning()) {
+		if (!statusManager.isLocationServiceRunning()) {
             locationServiceConnection.bindLocationService();
             locationServiceConnection.startLocationService();
 		} else {
 			locationServiceConnection.bindLocationService();
-		}
-	}
-
-	private void populateViews() {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] populateViews");
-		}
-
-		ArrayList<View> views = question.createViews(this);
-
-		Iterator<View> vIt = views.iterator();
-		int i = isFirstQuestion() ? 1 : 0;
-		while (vIt.hasNext()) {
-			questionLinearLayout.addView(vIt.next(), i, questionLinearLayout.getLayoutParams());
-			i++;
 		}
 	}
 
@@ -302,17 +287,24 @@ public class QuestionActivity extends SherlockFragmentActivity {
 			Log.d(TAG, "[fn] onClick_nextButton");
 		}
 
-		if (question.validate(this, questionLinearLayout)) {
+        AnswerValidator answerValidator = answerValidatorFactory.create(question, questionLinearLayout);
+
+		if (answerValidator.validate()) {
+			questionViewAdapter.saveAnswers();
             poll.setQuestionStatus(questionIndex, Question.STATUS_ANSWERED);
-			poll.saveAnswers(questionLinearLayout, questionIndex);
+
 			if (isLastQuestion()) {
+
 				finishPoll();
+
 			} else {
-				if (status.isDataAndLocationEnabled()) {
+
+				if (statusManager.isDataAndLocationEnabled()) {
 					launchNextQuestion();
 				} else {
 					launchLocationAlertDialog();
 				}
+
 			}
 		}
 	}
@@ -326,17 +318,22 @@ public class QuestionActivity extends SherlockFragmentActivity {
 
 		int titleId;
 		int textId;
-		if (!status.isNetworkLocEnabled()) {
-			if (!status.isDataEnabled()) {
+
+		if (!statusManager.isNetworkLocEnabled()) {
+
+			if (!statusManager.isDataEnabled()) {
 				titleId = R.string.locationAlert_title_location_and_data;
 				textId = R.string.locationAlert_text_location_and_data;
 			} else {
 				titleId = R.string.locationAlert_title_location;
 				textId = R.string.locationAlert_text_location;
 			}
+
 		} else {
+
 			titleId = R.string.locationAlert_title_data;
 			textId = R.string.locationAlert_text_data;
+
 		}
 
 		DialogFragment locationAlert = LocationAlertDialogFragment.newInstance(
@@ -352,11 +349,13 @@ public class QuestionActivity extends SherlockFragmentActivity {
 		}
 
 		setIsContinuingOrFinishing();
+
 		Intent intent = new Intent(this, QuestionActivity.class);
 		intent.putExtra(EXTRA_POLL_ID, pollId);
 		intent.putExtra(EXTRA_QUESTION_INDEX, questionIndex + 1);
 		intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
 		startActivity(intent);
+
 		overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
 		finish();
 	}
@@ -369,17 +368,24 @@ public class QuestionActivity extends SherlockFragmentActivity {
 		}
 
 		Intent settingsIntent;
-		if (!status.isNetworkLocEnabled()) {
+
+		if (!statusManager.isNetworkLocEnabled()) {
+
 			settingsIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
 			settingsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+
 		} else {
+
 			settingsIntent = new Intent(Settings.ACTION_DATA_ROAMING_SETTINGS);
+
 			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
 				ComponentName cName = new ComponentName("com.android.phone", "com.android.phone.Settings");
 				settingsIntent.setComponent(cName);
 			}
+
 			settingsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
 		}
+
 		startActivity(settingsIntent);
 	}
 
@@ -392,6 +398,7 @@ public class QuestionActivity extends SherlockFragmentActivity {
 
 		poll.setStatus(Poll.STATUS_PARTIALLY_COMPLETED);
 		poll.setQuestionStatus(questionIndex, Question.STATUS_ASKED_DISMISSED);
+
 		startSyncService();
 	}
 
@@ -403,8 +410,10 @@ public class QuestionActivity extends SherlockFragmentActivity {
 		}
 
 		setIsContinuingOrFinishing();
+
 		Toast.makeText(this, getString(R.string.question_thank_you), Toast.LENGTH_SHORT).show();
 		poll.setStatus(Poll.STATUS_COMPLETED);
+
 		startSyncService();
 		finish();
 	}
@@ -449,4 +458,5 @@ public class QuestionActivity extends SherlockFragmentActivity {
 		Intent syncIntent = new Intent(this, SyncService.class);
 		startService(syncIntent);
 	}
+
 }

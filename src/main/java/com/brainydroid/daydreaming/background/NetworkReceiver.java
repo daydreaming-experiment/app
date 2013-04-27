@@ -1,28 +1,27 @@
 package com.brainydroid.daydreaming.background;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.util.Log;
-
 import com.brainydroid.daydreaming.ui.Config;
+import com.google.inject.Inject;
+import roboguice.receiver.RoboBroadcastReceiver;
 
-public class NetworkReceiver extends BroadcastReceiver {
+public class NetworkReceiver extends RoboBroadcastReceiver {
 
-	private static String TAG = "NetworkReceiver";
+	public static String TAG = "NetworkReceiver";
 
-	private StatusManager status;
+    @Inject StatusManager statusManager;
 
 	@Override
-	public void onReceive(Context context, Intent intent) {
+	public void handleReceive(Context context, Intent intent) {
 
 		// Debug
 		if (Config.LOGD) {
 			Log.d(TAG, "[fn] onReceive");
 		}
 
-		status = StatusManager.getInstance(context);
 		String action = intent.getAction();
 
 		if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
@@ -30,7 +29,7 @@ public class NetworkReceiver extends BroadcastReceiver {
 			// Info
 			Log.i(TAG, "Received CONNECTIVITY_ACTION");
 
-			if (status.isFirstLaunchCompleted() && status.isDataEnabled()) {
+			if (statusManager.isFirstLaunchCompleted() && statusManager.isDataEnabled()) {
 
 				// Info
 				Log.i(TAG, "first launch is completed");
@@ -41,4 +40,5 @@ public class NetworkReceiver extends BroadcastReceiver {
 			}
 		}
 	}
+
 }

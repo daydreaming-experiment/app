@@ -19,12 +19,7 @@ public class HttpPostTask extends AsyncTask<HttpPostData, Void, Boolean> {
 
 	private HttpClient client;
 	private String serverAnswer;
-	private HttpPostData postData;
-	private HttpPost httpPost;
-	private StringEntity stringEntity;
-	private HttpResponse response;
-	private HttpEntity resEntity;
-	private HttpConversationCallback httpConversationCallback;
+    private HttpConversationCallback httpConversationCallback;
 
 	@Override
 	protected void onPreExecute() {
@@ -46,21 +41,22 @@ public class HttpPostTask extends AsyncTask<HttpPostData, Void, Boolean> {
 		}
 
 		try {
-			postData = postDatas[0];
+            HttpPostData postData = postDatas[0];
 			httpConversationCallback = postData.getHttpConversationCallback();
-			httpPost = new HttpPost(postData.getPostUrl());
-			stringEntity = new StringEntity(postData.getPostString());
+            HttpPost httpPost = new HttpPost(postData.getPostUrl());
+            StringEntity stringEntity = new StringEntity(postData.getPostString());
 
 			httpPost.setHeader("Content-Type", postData.getContentType());
 			httpPost.setEntity(stringEntity);
 
-			response = client.execute(httpPost);
-			resEntity = response.getEntity();
+            HttpResponse response = client.execute(httpPost);
+            HttpEntity resEntity = response.getEntity();
 
 			if (resEntity != null) {
 				serverAnswer = EntityUtils.toString(resEntity);
 			}
 		} catch (Exception e) {
+            // FIXME: properly inform about errors that happen
 			serverAnswer = null;
 			return false;
 		}
@@ -76,6 +72,9 @@ public class HttpPostTask extends AsyncTask<HttpPostData, Void, Boolean> {
 			Log.d(TAG, "[fn] onPostExecute");
 		}
 
-		httpConversationCallback.onHttpConversationFinished(success, serverAnswer);
+        if (httpConversationCallback != null) {
+		    httpConversationCallback.onHttpConversationFinished(success, serverAnswer);
+        }
 	}
+
 }

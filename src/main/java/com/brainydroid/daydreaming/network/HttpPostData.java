@@ -1,17 +1,16 @@
 package com.brainydroid.daydreaming.network;
 
 import android.util.Log;
-
 import com.brainydroid.daydreaming.ui.Config;
 
 public class HttpPostData {
 
 	private static String TAG = "HttpPostData";
 
-	private final String _postUrl;
-	private String _postString;
-	private String _contentType;
-	private final HttpConversationCallback _httpConversationCallback;
+	private final String postUrl;
+	private String postString = null;
+	private String contentType = null;
+	private final HttpConversationCallback httpConversationCallback;
 
 	public HttpPostData(String postUrl, HttpConversationCallback httpConversationCallback) {
 
@@ -20,24 +19,8 @@ public class HttpPostData {
 			Log.d(TAG, "[fn] HttpPostData (argset 1: small)");
 		}
 
-		_postUrl = postUrl;
-		_postString = null;
-		_contentType = null;
-		_httpConversationCallback = httpConversationCallback;
-	}
-
-	public HttpPostData(String postUrl, String postString, String contentType,
-			HttpConversationCallback httpConversationCallback) {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] HttpPostData (argset 2: full)");
-		}
-
-		_postUrl = postUrl;
-		_postString = postString;
-		_contentType = contentType;
-		_httpConversationCallback = httpConversationCallback;
+		this.postUrl = postUrl;
+		this.httpConversationCallback = httpConversationCallback;
 	}
 
 	public String getPostUrl() {
@@ -47,7 +30,7 @@ public class HttpPostData {
 			Log.v(TAG, "[fn] getPostUrl");
 		}
 
-		return _postUrl;
+		return postUrl;
 	}
 
 	public String getPostString() {
@@ -57,7 +40,7 @@ public class HttpPostData {
 			Log.v(TAG, "[fn] getPostString");
 		}
 
-		return _postString;
+		return postString;
 	}
 
 	public void setPostString(String postString) {
@@ -67,7 +50,7 @@ public class HttpPostData {
 			Log.d(TAG, "[fn] addPostString");
 		}
 
-		_postString = postString;
+		this.postString = postString;
 	}
 
 	public String getContentType() {
@@ -77,7 +60,7 @@ public class HttpPostData {
 			Log.v(TAG, "[fn] getContentType");
 		}
 
-		return _contentType;
+		return contentType;
 	}
 
 	public void setContentType(String contentType) {
@@ -87,7 +70,7 @@ public class HttpPostData {
 			Log.d(TAG, "[fn] setContentType");
 		}
 
-		_contentType = contentType;
+		this.contentType = contentType;
 	}
 
 	public HttpConversationCallback getHttpConversationCallback() {
@@ -97,6 +80,7 @@ public class HttpPostData {
 			Log.v(TAG, "[fn] getHttpConversationCallback");
 		}
 
-		return _httpConversationCallback;
+		return httpConversationCallback;
 	}
+
 }

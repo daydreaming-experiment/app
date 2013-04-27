@@ -1,27 +1,26 @@
 package com.brainydroid.daydreaming.background;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
-
 import com.brainydroid.daydreaming.ui.Config;
+import com.google.inject.Inject;
+import roboguice.receiver.RoboBroadcastReceiver;
 
-public class TimeReceiver extends BroadcastReceiver {
+public class TimeReceiver extends RoboBroadcastReceiver {
 
-	private static String TAG = "TimeReceiver";
+	public static String TAG = "TimeReceiver";
 
-	private StatusManager status;
+    @Inject StatusManager statusManager;
 
 	@Override
-	public void onReceive(Context context, Intent intent) {
+	public void handleReceive(Context context, Intent intent) {
 
 		// Debug
 		if (Config.LOGD) {
 			Log.d(TAG, "[fn] onReceive");
 		}
 
-		status = StatusManager.getInstance(context);
 		String action = intent.getAction();
 
 		if (action.equals(Intent.ACTION_TIME_CHANGED) || action.equals(Intent.ACTION_TIMEZONE_CHANGED)) {
@@ -29,7 +28,7 @@ public class TimeReceiver extends BroadcastReceiver {
 			// Info
 			Log.i(TAG, "Received ACTION_TIME_CHANGED or ACTION_TIMEZONE_CHANGED");
 
-			if (status.isFirstLaunchCompleted()) {
+			if (statusManager.isFirstLaunchCompleted()) {
 
 				// Info
 				Log.i(TAG, "first launch is completed");
@@ -40,4 +39,5 @@ public class TimeReceiver extends BroadcastReceiver {
 			}
 		}
 	}
+
 }

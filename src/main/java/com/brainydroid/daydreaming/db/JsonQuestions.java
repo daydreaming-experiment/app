@@ -1,29 +1,17 @@
 package com.brainydroid.daydreaming.db;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
 import android.util.Log;
-
 import com.brainydroid.daydreaming.ui.Config;
+import com.google.inject.Inject;
+
+import java.util.ArrayList;
 
 public class JsonQuestions {
 
 	private static String TAG = "JsonQuestions";
 
-	private final int questionsVersion;
-	private final ArrayList<Question> questions;
-
-	public JsonQuestions() {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] JsonQuestions");
-		}
-
-		questionsVersion = -1;
-		questions = new ArrayList<Question>();
-	}
+	public int questionsVersion = -1;
+    @Inject ArrayList<Question> questions;
 
 	private void completeQuestions() {
 
@@ -32,10 +20,7 @@ public class JsonQuestions {
 			Log.d(TAG, "[fn] completeQuestions");
 		}
 
-		Iterator<Question> qIt = questions.iterator();
-
-		while (qIt.hasNext()) {
-			Question q = qIt.next();
+		for (Question q : questions) {
 			q.setQuestionsVersion(questionsVersion);
 		}
 	}

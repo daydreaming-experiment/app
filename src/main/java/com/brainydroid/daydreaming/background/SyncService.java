@@ -1,47 +1,38 @@
 package com.brainydroid.daydreaming.background;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-
-import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
-
 import com.brainydroid.daydreaming.db.*;
-import com.brainydroid.daydreaming.network.CryptoStorage;
-import com.brainydroid.daydreaming.network.CryptoStorageCallback;
-import com.brainydroid.daydreaming.network.HttpConversationCallback;
-import com.brainydroid.daydreaming.network.HttpGetData;
-import com.brainydroid.daydreaming.network.HttpGetTask;
-import com.brainydroid.daydreaming.network.ServerTalker;
+import com.brainydroid.daydreaming.network.*;
 import com.brainydroid.daydreaming.ui.Config;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.inject.Inject;
+import roboguice.service.RoboService;
 
-public class SyncService extends Service {
+import java.util.ArrayList;
+import java.util.HashSet;
+
+public class SyncService extends RoboService {
 
 	private static String TAG = "SyncService";
 
-	private static String EXP_ID = "6cb5e7782ca43681d6349a2280a8f99f74479d142971ac6c91dbd155ac58b4b3";
-	private static String SERVER_NAME = "http://naja.cc";
+    @Inject StatusManager statusManager;
+    @Inject PollsStorage pollsStorage;
+    @Inject LocationPointsStorage locationPointsStorage;
+    @Inject QuestionsStorage questionsStorage;
+    @Inject CryptoStorage cryptoStorage;
+    @Inject ServerTalker serverTalker;
 
-	private static String QUESTIONS_VERSION_URL = "http://mehho.net:5001/questionsVersion";
-	private static String QUESTIONS_URL = "http://mehho.net:5001/questions.json";
-
-	private StatusManager status;
-	private PollsStorage pollsStorage;
-    private LocationsStorage locationsStorage;
-	private QuestionsStorage questionsStorage;
-	private CryptoStorage cryptoStorage;
-	private ServerTalker serverTalker;
-	private Gson gson;
-	private ArrayList<Poll> uploadablePolls;
-    private ArrayList<LocationItem> uploadableLocationItems;
-	private HashSet<Integer> pollsLeftToUpload;
+    private Gson gson  = new GsonBuilder()
+            .excludeFieldsWithoutExposeAnnotation()
+            .create();
+    private HashSet<Integer> pollsLeftToUpload;
     private HashSet<Integer> locationItemsLeftToUpload;
-	private boolean updateQuestionsDone = false;
+
+    private boolean updateQuestionsDone = false;
 	private boolean uploadPollsDone = false;
     private boolean uploadLocationItemsDone = false;
 
@@ -55,7 +46,7 @@ public class SyncService extends Service {
 
 		super.onCreate();
 
-		initVarsAndUpdates();
+		startUpdates();
 	}
 
 	@Override
@@ -96,16 +87,14 @@ public class SyncService extends Service {
 
 	// FIXME: if the servers don't answer, does the connection time out and does the
 	// service exit?
-	private void initVarsAndUpdates() {
+	private void startUpdates() {
 
 		// Debug
 		if (Config.LOGD) {
-			Log.d(TAG, "[fn] initVarsAndUpdates");
+			Log.d(TAG, "[fn] startUpdates");
 		}
 
-		status = StatusManager.getInstance(this);
-
-		if (status.isDataEnabled()) {
+		if (statusManager.isDataEnabled()) {
 
 			// Info
 			Log.i(TAG, "data connection enabled -> starting sync tasks");
@@ -114,13 +103,6 @@ public class SyncService extends Service {
 				Toast.makeText(this, "SyncService: starting sync...",
 						Toast.LENGTH_SHORT).show();
 			}
-
-			pollsStorage = PollsStorage.getInstance(this);
-			questionsStorage = QuestionsStorage.getInstance(this);
-            locationsStorage = LocationsStorage.getInstance(this);
-			gson = new GsonBuilder()
-			.excludeFieldsWithoutExposeAnnotation()
-			.create();
 
 			CryptoStorageCallback callback = new CryptoStorageCallback() {
 
@@ -134,9 +116,7 @@ public class SyncService extends Service {
 						Log.d(TAG, "(callback) onCryptoStorageReady");
 					}
 
-					serverTalker = ServerTalker.getInstance(SERVER_NAME, cryptoStorage);
-
-					if (hasKeyPairAndMaiId && status.isDataEnabled()) {
+					if (hasKeyPairAndMaiId && statusManager.isDataEnabled()) {
 						//asyncUpdateQuestions(); // Line commented not to update questions at each launch of the SyncService
 						asyncUploadPolls();
                         asyncUploadLocationItems();
@@ -146,7 +126,8 @@ public class SyncService extends Service {
 			};
 
 			// This will launch all calls through the callbacks
-			cryptoStorage = CryptoStorage.getInstance(this, SERVER_NAME, callback);
+			cryptoStorage.onReady(callback);
+
 		} else {
 
 			// Info
@@ -156,11 +137,13 @@ public class SyncService extends Service {
 				Toast.makeText(this, "SyncService: no internet connection",
 						Toast.LENGTH_SHORT).show();
 			}
+
 			stopSelf();
 		}
 	}
 
-	private void asyncUpdateQuestions() {
+	@SuppressWarnings("UnusedDeclaration")
+    private void asyncUpdateQuestions() {
 
 		// Debug
 		if (Config.LOGD) {
@@ -237,20 +220,24 @@ public class SyncService extends Service {
 						if (serverQuestionsVersion != questionsStorage.getQuestionsVersion()) {
 
 							// Info
-							Log.i(TAG, "server's questionsVersion is different from the local one -> trying to update questions");
+							Log.i(TAG, "server's questionsVersion is different from the local one " +
+                                    "-> trying to update questions");
 
 							willGetQuestions = true;
 
-							HttpGetData updateQuestionsData = new HttpGetData(QUESTIONS_URL,
+							HttpGetData updateQuestionsData = new HttpGetData(ServerConfig.QUESTIONS_URL,
 									updateQuestionsCallback);
 							HttpGetTask updateQuestionsTask = new HttpGetTask();
 							updateQuestionsTask.execute(updateQuestionsData);
+
 						} else {
+
 							if (Config.TOASTD) {
 								Toast.makeText(SyncService.this,
 										"SyncService: no new questions to download",
 										Toast.LENGTH_SHORT).show();
 							}
+
 						}
 					} catch (Exception e) {
 						// Warning
@@ -268,7 +255,7 @@ public class SyncService extends Service {
 
 		};
 
-		HttpGetData getQuestionsVersionData = new HttpGetData(QUESTIONS_VERSION_URL,
+		HttpGetData getQuestionsVersionData = new HttpGetData(ServerConfig.QUESTIONS_VERSION_URL,
 				fullCallback);
 		HttpGetTask getQuestionsVersionTask = new HttpGetTask();
 		getQuestionsVersionTask.execute(getQuestionsVersionData);
@@ -286,7 +273,7 @@ public class SyncService extends Service {
 		// See http://developer.android.com/guide/components/processes-and-threads.html ,
 		// right above the "Thread-safe methods" title.
 
-		uploadablePolls = pollsStorage.getUploadablePolls();
+        ArrayList<Poll> uploadablePolls = pollsStorage.getUploadablePolls();
 
 		if (uploadablePolls == null) {
 
@@ -360,7 +347,7 @@ public class SyncService extends Service {
 
 			};
 
-			serverTalker.signAndUploadData(EXP_ID, gson.toJson(poll), callback);
+			serverTalker.signAndUploadData(ServerConfig.EXP_ID, gson.toJson(poll), callback);
 		}
 	}
 
@@ -376,9 +363,9 @@ public class SyncService extends Service {
         // See http://developer.android.com/guide/components/processes-and-threads.html ,
         // right above the "Thread-safe methods" title.
 
-        uploadableLocationItems = locationsStorage.getUploadableLocationItems();
+        ArrayList<LocationPoint> uploadableLocationPoints = locationPointsStorage.getUploadableLocationPoints();
 
-        if (uploadableLocationItems == null) {
+        if (uploadableLocationPoints == null) {
 
             // Info
             Log.i(TAG, "no locationItems to upload -> exiting");
@@ -394,22 +381,22 @@ public class SyncService extends Service {
         }
 
         // Info
-        Log.i(TAG, "trying to upload " + uploadableLocationItems.size() + " locationItems");
+        Log.i(TAG, "trying to upload " + uploadableLocationPoints.size() + " locationItems");
 
         if (Config.TOASTD) {
             Toast.makeText(this,
-                    "SyncService: trying to upload " + uploadableLocationItems.size() + " locationItems",
+                    "SyncService: trying to upload " + uploadableLocationPoints.size() + " locationItems",
                     Toast.LENGTH_SHORT).show();
         }
 
         locationItemsLeftToUpload = new HashSet<Integer>();
-        for (LocationItem locationItem : uploadableLocationItems) {
-            locationItemsLeftToUpload.add(locationItem.getId());
+        for (LocationPoint locationPoint : uploadableLocationPoints) {
+            locationItemsLeftToUpload.add(locationPoint.getId());
         }
 
-        for (LocationItem locationItem : uploadableLocationItems) {
+        for (LocationPoint locationPoint : uploadableLocationPoints) {
 
-            final int locationItemId = locationItem.getId();
+            final int locationItemId = locationPoint.getId();
 
             HttpConversationCallback callback = new HttpConversationCallback() {
 
@@ -426,23 +413,23 @@ public class SyncService extends Service {
                     if (success) {
 
                         // Info
-                        Log.i(TAG, "successfully uploaded locationItem (id: " +
+                        Log.i(TAG, "successfully uploaded locationPoint (id: " +
                                 locationItemId + ") to server (serverAnswer: " +
                                 serverAnswer + ")");
 
                         if (Config.TOASTD) {
                             Toast.makeText(SyncService.this,
-                                    "SyncService: uploaded locationItem (id: " + locationItemId +
+                                    "SyncService: uploaded locationPoint (id: " + locationItemId +
                                             ") (serverAnswer: " + serverAnswer + ")",
                                     Toast.LENGTH_LONG).show();
                         }
 
-                        locationsStorage.removeLocationItem(locationItemId);
+                        locationPointsStorage.removeLocationPoint(locationItemId);
                         setUploadLocationItemDone(locationItemId);
                     } else {
 
                         // Warning
-                        Log.w(TAG, "error while upload locationItem (id: " + locationItemId + ") to server");
+                        Log.w(TAG, "error while upload locationPoint (id: " + locationItemId + ") to server");
 
                         setUploadLocationItemDone(locationItemId);
                     }
@@ -450,7 +437,7 @@ public class SyncService extends Service {
 
             };
 
-            serverTalker.signAndUploadData(EXP_ID, gson.toJson(locationItem), callback);
+            serverTalker.signAndUploadData(ServerConfig.EXP_ID, gson.toJson(locationPoint), callback);
         }
     }
 
@@ -526,4 +513,5 @@ public class SyncService extends Service {
 			stopSelf();
 		}
 	}
+
 }

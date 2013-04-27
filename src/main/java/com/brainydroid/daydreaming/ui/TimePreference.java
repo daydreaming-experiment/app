@@ -7,10 +7,9 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.widget.TimePicker;
-
 import com.brainydroid.daydreaming.db.Util;
 
-// Extends DialogPreference, a preference class that pops out in a dialogbox
+// Extends DialogPreference, a preference class that pops out in a dialog box
 public class TimePreference extends DialogPreference {
 
 	private static String TAG = "TimePreference";
@@ -20,9 +19,10 @@ public class TimePreference extends DialogPreference {
 	private TimePicker picker = null;
 
 	// constructor from context
-	public TimePreference(Context ctxt) {
+	@SuppressWarnings("UnusedDeclaration")
+    public TimePreference(Context context) {
 
-		super(ctxt, null); // constructor from superclass DialogPreference
+		super(context, null); // constructor from superclass DialogPreference
 
 		// Debug
 		if (Config.LOGD) {
@@ -31,8 +31,9 @@ public class TimePreference extends DialogPreference {
 	}
 
 	// constructor from context and attributes
-	public TimePreference(Context ctxt, AttributeSet attrs) {
-		super(ctxt, attrs, 0);
+	@SuppressWarnings("UnusedDeclaration")
+    public TimePreference(Context context, AttributeSet attributeSet) {
+		super(context, attributeSet, 0);
 
 		// Debug
 		if (Config.LOGD) {
@@ -41,8 +42,9 @@ public class TimePreference extends DialogPreference {
 	}
 
 	// constructor from context and attributes and style
-	public TimePreference(Context ctxt, AttributeSet attrs, int defStyle) {
-		super(ctxt, attrs, defStyle);
+	@SuppressWarnings("UnusedDeclaration")
+    public TimePreference(Context context, AttributeSet attributeSet, int defStyle) {
+		super(context, attributeSet, defStyle);
 
 		// Debug
 		if (Config.LOGD) {
@@ -65,14 +67,14 @@ public class TimePreference extends DialogPreference {
 
 	// bind dialog to current view
 	@Override
-	protected void onBindDialogView(View v) {
+	protected void onBindDialogView(View view) {
 
 		// Debug
 		if (Config.LOGD) {
 			Log.d(TAG, "[fn] onBindDialogView");
 		}
 
-		super.onBindDialogView(v);
+		super.onBindDialogView(view);
 		picker.setCurrentHour(lastHour);
 		picker.setCurrentMinute(lastMinute);
 	}
@@ -96,14 +98,14 @@ public class TimePreference extends DialogPreference {
 	}
 
 	@Override
-	protected Object onGetDefaultValue(TypedArray a, int index) {
+	protected Object onGetDefaultValue(TypedArray typedArray, int index) {
 
 		// Debug
 		if (Config.LOGD) {
 			Log.d(TAG, "[fn] onGetDefaultValue");
 		}
 
-		return a.getString(index);
+		return typedArray.getString(index);
 	}
 
 	@Override
@@ -114,14 +116,16 @@ public class TimePreference extends DialogPreference {
 			Log.d(TAG, "[fn] onSetInitialValue");
 		}
 
-		String time = null;
+		String time;
 
 		if (restoreValue) {
+
 			if (defaultValue == null) {
 				time = getPersistedString("00:00");
 			} else {
 				time = getPersistedString(defaultValue.toString());
 			}
+
 		} else {
 			time = defaultValue.toString();
 		}
@@ -149,10 +153,7 @@ public class TimePreference extends DialogPreference {
 			Log.d(TAG, "[fn] getTimeString");
 		}
 
-		//        lastHour = picker.getCurrentHour();
-		//        lastMinute = picker.getCurrentMinute();
-		String time = pad(lastHour) + ":" + pad(lastMinute);
-		return time;
+		return pad(lastHour) + ":" + pad(lastMinute);
 	}
 
 	public void setTime(String time) {
@@ -162,9 +163,8 @@ public class TimePreference extends DialogPreference {
 			Log.d(TAG, "[fn] setTime");
 		}
 
-		String[] pieces = time.split(":");
-		lastHour = Integer.parseInt(pieces[0]);
-		lastMinute = Integer.parseInt(pieces[1]);
+		lastHour = Util.getHour(time);
+		lastMinute = Util.getMinute(time);
 
 		saveTime(time);
 	}
@@ -182,4 +182,5 @@ public class TimePreference extends DialogPreference {
 			return "0" + String.valueOf(c);
 		}
 	}
+
 }

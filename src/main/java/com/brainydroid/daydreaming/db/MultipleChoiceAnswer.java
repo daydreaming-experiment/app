@@ -1,39 +1,28 @@
 package com.brainydroid.daydreaming.db;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.ui.Config;
+import com.brainydroid.daydreaming.ui.QuestionViewAdapter;
 import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
+import com.google.inject.Inject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 
 public class MultipleChoiceAnswer implements Answer {
 
 	private static String TAG = "MultipleChoiceAnswer";
 
-	private transient Gson gson;
-	@Expose private final HashMap<String,HashSet<String>> choices;
-
-	public MultipleChoiceAnswer() {
-
-		//Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] MultipleChoiceAnswer");
-		}
-
-		choices = new HashMap<String,HashSet<String>>();
-		gson = new Gson();
-	}
+	@Expose @Inject HashMap<String,HashSet<String>> choices;
+    @Inject transient Gson gson;
 
 	@Override
 	public String toJson() {
@@ -54,14 +43,12 @@ public class MultipleChoiceAnswer implements Answer {
 			Log.d(TAG, "[fn] getAnswersFromLayout");
 		}
 
-		ArrayList<View> subQuestions = Question.getViewsByTag(questionLinearLayout, "subquestion");
-		Iterator<View> subQuestionsIt = subQuestions.iterator();
+		ArrayList<View> subQuestions = QuestionViewAdapter.getViewsByTag(questionLinearLayout, "subQuestion");
 
-		while (subQuestionsIt.hasNext()) {
-			View subQuestion = subQuestionsIt.next();
+		for (View subQuestion : subQuestions) {
 			TextView mainTextView = (TextView)subQuestion.findViewById(R.id.question_multiple_choice_mainText);
 			String mainText = mainTextView.getText().toString();
-			addSubquestion(mainText);
+			addSubQuestion(mainText);
 
 			LinearLayout rootChoices = (LinearLayout)subQuestion.findViewById(
 					R.id.question_multiple_choice_rootChoices);
@@ -77,10 +64,10 @@ public class MultipleChoiceAnswer implements Answer {
 
 			// Get the "Other" field
 			CheckBox otherCheck = (CheckBox)subQuestion.findViewById(
-					R.id.question_multiple_choices_otherCheckBox);
+					R.id.question_multiple_choice_otherCheckBox);
 			if (otherCheck.isChecked()) {
 				EditText otherEditText = (EditText)subQuestion.findViewById(
-						R.id.question_multiple_choices_otherEditText);
+						R.id.question_multiple_choice_otherEditText);
 				String otherText = otherEditText.getText().toString();
 
 				addChoice(mainText, "Other: " + otherText);
@@ -88,11 +75,11 @@ public class MultipleChoiceAnswer implements Answer {
 		}
 	}
 
-	private void addSubquestion(String questionString) {
+	private void addSubQuestion(String questionString) {
 
 		//Debug
 		if (Config.LOGD) {
-			Log.d(TAG, "[fn] addSubquestion");
+			Log.d(TAG, "[fn] addSubQuestion");
 		}
 
 		choices.put(questionString, new HashSet<String>());
@@ -107,4 +94,5 @@ public class MultipleChoiceAnswer implements Answer {
 
 		choices.get(subQuestionString).add(choice);
 	}
+
 }

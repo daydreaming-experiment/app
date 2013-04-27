@@ -2,69 +2,30 @@ package com.brainydroid.daydreaming.background;
 
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Build;
 import android.util.Log;
-
 import com.brainydroid.daydreaming.ui.Config;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
-// Class to create, maintain and update data (SharedPreferences) associated to the app
+@Singleton
 public class StatusManager {
 
 	private static String TAG = "StatusManager";
 
-	private static StatusManager smInstance = null;
-
-	private static final String EXP_STATUS = "expStatus"; // status of experiment
 	private static final String EXP_STATUS_FL_COMPLETED = "expStatusFlCompleted"; // first launch completed
 
-	private final SharedPreferences expStatus; // file containing status of exp
-	private final SharedPreferences.Editor eExpStatus; // editor of expStatus
+    @Inject SharedPreferences sharedPreferences;
+    @Inject LocationManager locationManager;
+    @Inject ConnectivityManager connectivityManager;
+    @Inject ActivityManager activityManager;
 
-	private final LocationManager locationManager;
-	private final ConnectivityManager connManager;
-	private NetworkInfo networkInfo;
-	private final Context context; // application environment
-
-	public static synchronized StatusManager getInstance(Context context) {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] getInstance");
-		}
-
-		if (smInstance == null) {
-			smInstance = new StatusManager(context);
-		}
-		return smInstance;
-	}
-
-	/*
-	 * Constructor.
-	 * loads context, assign initial preferences
-	 */
-	private StatusManager(Context context) {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] StatusManager");
-		}
-
-		this.context = context.getApplicationContext();
-		expStatus = this.context.getSharedPreferences(EXP_STATUS, Context.MODE_PRIVATE);
-		eExpStatus = expStatus.edit();
-		locationManager = (LocationManager)this.context.getSystemService(Context.LOCATION_SERVICE);
-		connManager = (ConnectivityManager)this.context.getSystemService(Context.CONNECTIVITY_SERVICE);
-		networkInfo = connManager.getActiveNetworkInfo();
-	}
-
-	/*
-	 * Check if first launch is completed
-	 */
+    /*
+     * Check if first launch is completed
+     */
 	public boolean isFirstLaunchCompleted() {
 
 		// Debug
@@ -72,7 +33,7 @@ public class StatusManager {
 			Log.d(TAG, "[fn] isFirstLaunchCompleted");
 		}
 
-		return expStatus.getBoolean(EXP_STATUS_FL_COMPLETED, false);
+		return sharedPreferences.getBoolean(EXP_STATUS_FL_COMPLETED, false);
 	}
 
 	public void setFirstLaunchCompleted() {
@@ -82,8 +43,9 @@ public class StatusManager {
 			Log.d(TAG, "[fn] setFirstLaunchCompleted");
 		}
 
-		eExpStatus.putBoolean(EXP_STATUS_FL_COMPLETED, true);
-		eExpStatus.commit();
+        SharedPreferences.Editor eSharedPreferences = sharedPreferences.edit();
+		eSharedPreferences.putBoolean(EXP_STATUS_FL_COMPLETED, true);
+		eSharedPreferences.commit();
 	}
 
 	public boolean isLocationServiceRunning() {
@@ -93,12 +55,12 @@ public class StatusManager {
 			Log.d(TAG, "[fn] isLocationServiceRunning");
 		}
 
-		ActivityManager manager = (ActivityManager)context.getSystemService(Context.ACTIVITY_SERVICE);
-		for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+		for (RunningServiceInfo service : activityManager.getRunningServices(Integer.MAX_VALUE)) {
 			if (LocationService.class.getName().equals(service.service.getClassName())) {
 				return true;
 			}
 		}
+
 		return false;
 	}
 
@@ -119,8 +81,9 @@ public class StatusManager {
 			Log.d(TAG, "[fn] isDataEnabled");
 		}
 
-		networkInfo = connManager.getActiveNetworkInfo();
-        return ( ( networkInfo != null && networkInfo.isConnectedOrConnecting() )||( Build.FINGERPRINT.startsWith("generic") ) );	}
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        return (networkInfo != null && networkInfo.isConnectedOrConnecting());
+    }
 
 	public boolean isDataAndLocationEnabled() {
 

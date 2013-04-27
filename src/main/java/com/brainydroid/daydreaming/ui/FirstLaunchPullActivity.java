@@ -3,55 +3,36 @@ package com.brainydroid.daydreaming.ui;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
-import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.actionbarsherlock.app.SherlockActivity;
 import com.brainydroid.daydreaming.R;
-import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.db.QuestionsStorage;
 import com.brainydroid.daydreaming.db.Util;
+import com.google.inject.Inject;
+import roboguice.inject.ContentView;
+import roboguice.inject.InjectView;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-public class FirstLaunchPullActivity extends SherlockActivity {
+@ContentView(R.layout.activity_first_launch_pull)
+public class FirstLaunchPullActivity extends FirstLaunchActivity {
 
     private static String TAG = "FirstLaunchPullActivity";
 
-    private TextView textDownloading;
-    private TextView dataEnabled;
-    private TextView textSettings;
+    @InjectView(R.id.firstLaunchPull_text_downloading) TextView textDownloading;
+    @InjectView(R.id.firstLaunchPull_text_data_enabled) TextView dataEnabled;
+    @InjectView(R.id.firstLaunchPull_text_change_settings) TextView textSettings;
+    @InjectView(R.id.firstLaunchPull_buttonSettings) Button buttonSettings;
+    @InjectView(R.id.firstLaunchPull_buttonNext) Button buttonNext;
 
-    private Button buttonSettings;
-    private Button buttonNext;
+    @Inject QuestionsStorage questionsStorage;
+
     private boolean areQuestionsDownloaded = false;
-
-    private StatusManager status;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onCreate");
-        }
-
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_first_launch_pull);
-
-        textDownloading = (TextView)findViewById(R.id.firstLaunchPull_text_downloading);
-        textSettings = (TextView)findViewById(R.id.firstLaunchPull_text_change_settings);
-        dataEnabled = (TextView)findViewById(R.id.firstLaunchPull_text_data_enabled);
-
-        buttonSettings = (Button)findViewById(R.id.firstLaunchPull_buttonSettings);
-        buttonNext = (Button)findViewById(R.id.firstLaunchPull_buttonNext);
-        status = StatusManager.getInstance(this);
-    }
 
     @Override
     public void onStart() {
@@ -62,45 +43,10 @@ public class FirstLaunchPullActivity extends SherlockActivity {
         }
 
         super.onStart();
-        checkFirstLaunch();
         updateView();
     }
 
-    @Override
-    public void onResume() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onResume");
-        }
-
-        super.onResume();
-    }
-
-    @Override
-    public void onBackPressed() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onBackPressed");
-        }
-
-        super.onBackPressed();
-        overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
-    }
-
-    private void checkFirstLaunch() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] checkFirstLaunch");
-        }
-
-        if (status.isFirstLaunchCompleted()) {
-            finish();
-        }
-    }
-
+    // FIXME : what does this do?
     private void updateView() {
 
         // Debug
@@ -109,26 +55,31 @@ public class FirstLaunchPullActivity extends SherlockActivity {
         }
 
         dataEnabled.setCompoundDrawablesWithIntrinsicBounds(
-                (status.isDataEnabled() | Build.FINGERPRINT.startsWith("generic")) ?
+                (statusManager.isDataEnabled() | Build.FINGERPRINT.startsWith("generic")) ?
                         R.drawable.ic_check : R.drawable.ic_cross, 0, 0, 0);
+
         textDownloading.setCompoundDrawablesWithIntrinsicBounds(
                 areQuestionsDownloaded ? R.drawable.ic_check : R.drawable.ic_cross, 0, 0, 0);
 
         if (Build.FINGERPRINT.startsWith("generic")) {
+
             if (!areQuestionsDownloaded) {
                 loadQuestionsFromRes();
             }
+
         } else {
+
             if (areQuestionsDownloaded) {
                 Toast.makeText(this, "Questions already downloaded", Toast.LENGTH_LONG).show();
             } else {
-                if (status.isDataEnabled()){
+                if (statusManager.isDataEnabled()){
                     Toast.makeText(this, "Downloading questions", Toast.LENGTH_LONG).show();
 
                     loadQuestionsFromRes();
                     updateRequestAdjustSettings();
                 }
             }
+
         }
     }
 
@@ -142,7 +93,7 @@ public class FirstLaunchPullActivity extends SherlockActivity {
         if (Build.FINGERPRINT.startsWith("generic")){
                 setAdjustSettingsOff();
         } else {
-            if  (status.isDataEnabled()) {
+            if  (statusManager.isDataEnabled()) {
                 setAdjustSettingsOff();
             } else {
                 setAdjustSettingsNecessary();
@@ -178,6 +129,7 @@ public class FirstLaunchPullActivity extends SherlockActivity {
         } else {
             buttonNext.setVisibility(View.INVISIBLE);
         }
+
         buttonNext.setClickable(false);
     }
 
@@ -194,6 +146,7 @@ public class FirstLaunchPullActivity extends SherlockActivity {
         } else {
             buttonNext.setVisibility(View.VISIBLE);
         }
+
         buttonNext.setClickable(true);
 
         Toast.makeText(this, "Allowing next button", Toast.LENGTH_LONG).show();
@@ -241,22 +194,10 @@ public class FirstLaunchPullActivity extends SherlockActivity {
             Log.d(TAG, "[fn] onClick_buttonNext");
         }
 
-        launchMeasuresActivity();
+        launchNextActivity(FirstLaunchMeasuresActivity.class);
     }
 
-    private void launchMeasuresActivity() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] launchProfileActivity");
-        }
-
-        Intent intent = new Intent(this, FirstLaunchMeasuresActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-        startActivity(intent);
-        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
-    }
-
+    // FIXME: this is already in QuestionsStorage
     private void loadQuestionsFromRes() {
 
         // Debug
@@ -271,14 +212,12 @@ public class FirstLaunchPullActivity extends SherlockActivity {
 
             areQuestionsDownloaded = true;
             textDownloading.setText("Questions loaded from resource");
-            textDownloading.setCompoundDrawablesWithIntrinsicBounds(
-                    areQuestionsDownloaded ? R.drawable.ic_check : R.drawable.ic_cross, 0, 0, 0);
+            textDownloading.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_check, 0, 0, 0);
 
             allowNextButton();
         } else {
             try {
                 // TODO: change this to download from the Internet
-                QuestionsStorage questionsStorage = QuestionsStorage.getInstance(this);
                 InputStream questionsIS = getResources().openRawResource(R.raw.questions);
                 questionsStorage.importQuestions(Util.convertStreamToString(questionsIS));
                 questionsIS.close();

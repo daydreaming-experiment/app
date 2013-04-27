@@ -90,6 +90,24 @@
             </exclusions>
         </dependency>
 
+        <dependency>
+            <groupId>com.github.rtyley</groupId>
+            <artifactId>roboguice-sherlock</artifactId>
+            <version>1.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.inject.extensions</groupId>
+            <artifactId>guice-assistedinject</artifactId>
+            <version>3.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.google.inject</groupId>
+                    <artifactId>guice</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
         <!-- Make sure this is below the android dependencies -->
         <dependency>
             <groupId>com.pivotallabs</groupId>
