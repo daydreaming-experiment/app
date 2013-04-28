@@ -7,7 +7,7 @@
     <artifactId>daydreaming</artifactId>
     <version>0.4+next</version>
     <packaging>apk</packaging>
-    <name>Day Dreaming</name>
+    <name>Daydreaming</name>
 
     <properties>
         <platform.version>4.1.1.4</platform.version>
@@ -156,6 +156,16 @@
                     <source>1.6</source>
                     <target>1.6</target>
                     <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9</version>
+                <configuration>
+                    <doctitle>${project.name} (${project.version})</doctitle>
+                    <excludePackageNames>android.support:com.actionbarsherlock</excludePackageNames>
                 </configuration>
             </plugin>
         </plugins>

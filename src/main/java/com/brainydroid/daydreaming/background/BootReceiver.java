@@ -7,6 +7,11 @@ import com.brainydroid.daydreaming.ui.Config;
 import com.google.inject.Inject;
 import roboguice.receiver.RoboBroadcastReceiver;
 
+/**
+ * Receive {@code Intent.ACTION_BOOT_COMPLETED} action
+ *
+ * @author Sébastien Lerique <sl@mehho.net>
+ */
 public class BootReceiver extends RoboBroadcastReceiver {
 
 	public static String TAG = "BootReceiver";
