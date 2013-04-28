@@ -19,7 +19,7 @@ public class LocationService extends RoboService {
 	private LocationListener locationListener;
 	private final IBinder mBinder = new LocationServiceBinder();
 	private LocationCallback questionLocationCallback = null;
-    private LocationCallback locationItemCallback = null;
+    private LocationCallback locationPointCallback = null;
 	private Location lastLocation;
 
     @Inject LocationManager locationManager;
@@ -41,17 +41,17 @@ public class LocationService extends RoboService {
 
 	}
 
-	public void setLocationItemCallback(LocationCallback callback) {
+	public void setLocationPointCallback(LocationCallback callback) {
 
 		// Debug
 		if (Config.LOGD) {
-			Log.d(TAG, "[fn] setLocationItemCallback");
+			Log.d(TAG, "[fn] setLocationPointCallback");
 		}
 
-		locationItemCallback = callback;
+		locationPointCallback = callback;
 
-		if (lastLocation != null && locationItemCallback != null) {
-			locationItemCallback.onLocationReceived(lastLocation);
+		if (lastLocation != null && locationPointCallback != null) {
+			locationPointCallback.onLocationReceived(lastLocation);
 		}
 	}
 
@@ -138,7 +138,7 @@ public class LocationService extends RoboService {
 
 		super.onUnbind(intent);
 
-        if (locationItemCallback == null && questionLocationCallback == null) {
+        if (locationPointCallback == null && questionLocationCallback == null) {
 			stopSelf();
 		}
 
@@ -169,8 +169,8 @@ public class LocationService extends RoboService {
 
 				lastLocation = location;
 
-				if (locationItemCallback != null) {
-					locationItemCallback.onLocationReceived(location);
+				if (locationPointCallback != null) {
+					locationPointCallback.onLocationReceived(location);
 				}
 
                 if (questionLocationCallback != null) {

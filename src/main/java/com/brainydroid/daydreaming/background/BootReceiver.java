@@ -8,13 +8,19 @@ import com.google.inject.Inject;
 import roboguice.receiver.RoboBroadcastReceiver;
 
 /**
- * Receive {@code Intent.ACTION_BOOT_COMPLETED} action
+ * Start {@link SchedulerService} and {@link LocationPointService} when boot
+ * is completed.
+ * <p/>
+ * These services are only started if the first launch has been completed
+ * (i.e. the user has registered and is participating in the experiment).
  *
- * @author Sébastien Lerique <sl@mehho.net>
+ * @author Sébastien Lerique
+ * @author Vincent Adam
  */
 public class BootReceiver extends RoboBroadcastReceiver {
 
-	public static String TAG = "BootReceiver";
+	@SuppressWarnings("FieldCanBeLocal")
+    private static String TAG = "BootReceiver";
 
 	@Inject StatusManager statusManager;
 
@@ -28,27 +34,32 @@ public class BootReceiver extends RoboBroadcastReceiver {
 
 		String action = intent.getAction();
 
+        // Were we called because the boot just completed?
 		if (action.equals(Intent.ACTION_BOOT_COMPLETED)) {
 
 			// Info
 			Log.i(TAG, "Received ACTION_BOOT_COMPLETED");
 
+            // If first launch hasn't been completed, the user doesn't want
+            // anything yet
 			if (statusManager.isFirstLaunchCompleted()) {
 
 				// Info
 				Log.i(TAG, "first launch is completed");
-
-                // Info
                 Log.i(TAG, "starting SchedulerService");
 
-				Intent schedulerIntent = new Intent(context, SchedulerService.class);
+                // Start scheduling polls
+				Intent schedulerIntent = new Intent(context,
+                        SchedulerService.class);
 				context.startService(schedulerIntent);
 
                 // Info
                 Log.i(TAG, "starting LocationPointService");
 
-                Intent locationItemServiceIntent = new Intent(context, LocationPointService.class);
-                context.startService(locationItemServiceIntent);
+                // Start synchronizing answers
+                Intent locationPointServiceIntent = new Intent(context,
+                        LocationPointService.class);
+                context.startService(locationPointServiceIntent);
 			}
 		}
 	}

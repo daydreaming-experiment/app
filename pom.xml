@@ -165,7 +165,8 @@
                 <version>2.9</version>
                 <configuration>
                     <doctitle>${project.name} (${project.version})</doctitle>
-                    <excludePackageNames>android.support:com.actionbarsherlock</excludePackageNames>
+                    <subpackages>com.brainydroid.daydreaming.db:com.brainydroid.daydreaming.background:com.brainydroid.daydreaming.network:com.brainydroid.daydreaming.ui</subpackages>
+                    <excludePackageNames>android.support:com.actionbarsherlock:com.brainydroid.daydreaming</excludePackageNames>
                 </configuration>
             </plugin>
         </plugins>

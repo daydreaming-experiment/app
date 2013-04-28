@@ -16,8 +16,8 @@ public class LocationServiceConnection implements ServiceConnection {
 	private static String TAG = "LocationServiceConnection";
 
     private ServiceConnectionCallback serviceConnectionCallback = null;
-	private LocationCallback locationItemCallbackToSet = null;
-    private boolean setLocationItemCallback = false;
+	private LocationCallback locationPointCallbackToSet = null;
+    private boolean setLocationPointCallback = false;
     private LocationCallback questionLocationCallbackToSet = null;
     private boolean setQuestionLocationCallback = false;
 	private LocationService locationService;
@@ -98,10 +98,10 @@ public class LocationServiceConnection implements ServiceConnection {
 			Log.d(TAG, "[fn] setLocationServiceCallbacks");
 		}
 
-		if (setLocationItemCallback) {
-			locationService.setLocationItemCallback(locationItemCallbackToSet);
-			locationItemCallbackToSet = null;
-            setLocationItemCallback = false;
+		if (setLocationPointCallback) {
+			locationService.setLocationPointCallback(locationPointCallbackToSet);
+			locationPointCallbackToSet = null;
+            setLocationPointCallback = false;
 		}
 
         if (setQuestionLocationCallback) {
@@ -121,20 +121,20 @@ public class LocationServiceConnection implements ServiceConnection {
         this.serviceConnectionCallback = serviceConnectionCallback;
     }
 
-    public void setLocationItemCallback(LocationCallback callback) {
+    public void setLocationPointCallback(LocationCallback callback) {
 
         // Debug
         if (Config.LOGD) {
-            Log.d(TAG, "[fn] setLocationItemCallback");
+            Log.d(TAG, "[fn] setLocationPointCallback");
         }
 
         if (sBound && locationService != null) {
-            locationService.setLocationItemCallback(callback);
-            locationItemCallbackToSet = null;
-            setLocationItemCallback = false;
+            locationService.setLocationPointCallback(callback);
+            locationPointCallbackToSet = null;
+            setLocationPointCallback = false;
         } else {
-            locationItemCallbackToSet = callback;
-            setLocationItemCallback = true;
+            locationPointCallbackToSet = callback;
+            setLocationPointCallback = true;
         }
     }
 
@@ -155,14 +155,14 @@ public class LocationServiceConnection implements ServiceConnection {
 		}
 	}
 
-    public void clearLocationItemCallback() {
+    public void clearLocationPointCallback() {
 
         // Debug
         if (Config.LOGD) {
-            Log.d(TAG, "[fn] clearLocationItemCallback");
+            Log.d(TAG, "[fn] clearLocationPointCallback");
         }
 
-        setLocationItemCallback(null);
+        setLocationPointCallback(null);
     }
 
     public void clearQuestionLocationCallback() {
