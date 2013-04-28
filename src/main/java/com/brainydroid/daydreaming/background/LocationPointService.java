@@ -241,7 +241,12 @@ public class LocationPointService extends RoboService {
                 }
 
                 locationPoint.setLocation(location);
-                // save() is called from saveAndStopSelfIfAllDone
+
+                // Only save if both timestamp and location have been
+                // found. Otherwise it would create unusable data.
+                if (locationPoint.hasTimestamp()) {
+                    locationPoint.save();
+                }
             }
 
         };
@@ -264,7 +269,12 @@ public class LocationPointService extends RoboService {
 
                 if (sntpClient != null) {
                     locationPoint.setTimestamp(sntpClient.getNow());
-                    // save() is called from saveAndStopSelfIfAllDone
+
+                    // Only save if both timestamp and location have been
+                    // found. Otherwise it would create unusable data.
+                    if (locationPoint.hasLocation()) {
+                        locationPoint.save();
+                    }
                 }
 
                 // Tell LocationPointService that we're done
@@ -376,7 +386,7 @@ public class LocationPointService extends RoboService {
     }
 
     /**
-     * Save {@link LocationPoint} and stop ourselves if everything is done.
+     * Stop ourselves if everything is done.
      */
     private void saveAndStopSelfIfAllDone() {
 
@@ -386,9 +396,6 @@ public class LocationPointService extends RoboService {
         }
 
         if (sntpRequestDone && serviceConnectionDone) {
-            if (locationPoint != null) {
-                locationPoint.save();
-            }
             stopSelf();
         }
     }

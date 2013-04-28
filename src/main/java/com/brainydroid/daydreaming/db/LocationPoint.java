@@ -12,11 +12,11 @@ public class LocationPoint {
 
     private transient int id = -1;
 
-    @Expose private double locationLatitude;
-    @Expose private double locationLongitude;
-    @Expose private double locationAltitude;
-    @Expose private double locationAccuracy;
-    @Expose private long timestamp;
+    @Expose private double locationLatitude = -1;
+    @Expose private double locationLongitude = -1;
+    @Expose private double locationAltitude = -1;
+    @Expose private double locationAccuracy = -1;
+    @Expose private long timestamp = -1;
 
     public static final String COL_ID = "locationId";
     public static final String COL_LOCATION_LATITUDE = "locationLocationLatitude";
@@ -150,6 +150,17 @@ public class LocationPoint {
         saveIfSync();
     }
 
+    public boolean hasLocation() {
+
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] hasLocation");
+        }
+
+        return locationLatitude != -1 && locationLongitude != -1 &&
+                locationAltitude != -1 && locationAccuracy != -1;
+    }
+
     public long getTimestamp() {
 
         // Verbose
@@ -169,6 +180,16 @@ public class LocationPoint {
 
         this.timestamp = timestamp;
         saveIfSync();
+    }
+
+    public boolean hasTimestamp() {
+
+        // Verbose
+        if (Config.LOGV) {
+            Log.v(TAG, "[fn hasTimestamp");
+        }
+
+        return timestamp != -1;
     }
 
     private void saveIfSync() {
