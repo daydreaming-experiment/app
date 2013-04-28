@@ -12,10 +12,9 @@
 bin/
 gen/
 
-# maven-genereated files
+# maven-generated files
 tmp/
 target/
-gen-external-apklibs/
 
 # Local configuration file (sdk path, etc)
 local.properties
@@ -29,6 +28,9 @@ docs/_build
 .settings
 
 # IntelliJ IDEA files
+.idea/
+gen-external-apklibs/
+out/
 *.iml
 *.ipr
 *.iws
