@@ -18,17 +18,17 @@ import roboguice.inject.ContentView;
 @ContentView(R.layout.activity_first_launch_welcome)
 public class FirstLaunchWelcomeActivity extends FirstLaunchActivity {
 
-	@SuppressWarnings("FieldCanBeLocal")
+    @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "FirstLaunchWelcomeActivity";
 
-	public void onClick_start(@SuppressWarnings("UnusedParameters") View view) {
+    public void onClick_start(@SuppressWarnings("UnusedParameters") View view) {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] onClick_start");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] onClick_start");
+        }
 
         launchNextActivity(FirstLaunchDescriptionActivity.class);
-	}
+    }
 
 }

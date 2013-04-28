@@ -9,209 +9,209 @@ import java.util.ArrayList;
 
 public class Poll {
 
-	private static String TAG = "Poll";
+    private static String TAG = "Poll";
 
-	@Expose private String status = null;
-	@Expose private int questionsVersion;
-	@Expose @Inject private ArrayList<Question> questions;
-	@Expose private long notificationTimestamp;
-	private transient int id = -1;
+    @Expose private String status = null;
+    @Expose private int questionsVersion;
+    @Expose @Inject private ArrayList<Question> questions;
+    @Expose private long notificationTimestamp;
+    private transient int id = -1;
 
-	public static final String COL_ID = "pollId";
-	public static final String COL_STATUS = "pollStatus";
-	public static final String COL_NOTIFICATION_TIMESTAMP = "pollNotificationTimestamp";
-	public static final String COL_QUESTIONS_VERSION = "pollQuestionsVersion";
+    public static final String COL_ID = "pollId";
+    public static final String COL_STATUS = "pollStatus";
+    public static final String COL_NOTIFICATION_TIMESTAMP = "pollNotificationTimestamp";
+    public static final String COL_QUESTIONS_VERSION = "pollQuestionsVersion";
 
-	public static final String STATUS_PENDING = "pollPending"; // Notification has appeared
-	public static final String STATUS_RUNNING = "pollRunning"; // QuestionActivity is running
-	public static final String STATUS_PARTIALLY_COMPLETED = "pollPartiallyCompleted"; // QuestionActivity was stopped, and Poll expired
-	public static final String STATUS_COMPLETED = "pollCompleted"; // QuestionActivity completed
+    public static final String STATUS_PENDING = "pollPending"; // Notification has appeared
+    public static final String STATUS_RUNNING = "pollRunning"; // QuestionActivity is running
+    public static final String STATUS_PARTIALLY_COMPLETED = "pollPartiallyCompleted"; // QuestionActivity was stopped, and Poll expired
+    public static final String STATUS_COMPLETED = "pollCompleted"; // QuestionActivity completed
 
     @Inject transient PollsStorage pollsStorage;
     @Inject transient QuestionsStorage questionsStorage;
 
     @Inject
-	public Poll(QuestionsStorage questionsStorage) {
+    public Poll(QuestionsStorage questionsStorage) {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] Poll (from questionsStorage)");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] Poll (from questionsStorage)");
+        }
 
-		questionsVersion = questionsStorage.getQuestionsVersion();
-	}
+        questionsVersion = questionsStorage.getQuestionsVersion();
+    }
 
-	public void populateQuestions(int nQuestions) {
+    public void populateQuestions(int nQuestions) {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] populateQuestions");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] populateQuestions");
+        }
 
-		questions = questionsStorage.getRandomQuestions(nQuestions);
-	}
+        questions = questionsStorage.getRandomQuestions(nQuestions);
+    }
 
-	public void addQuestion(Question question) {
+    public void addQuestion(Question question) {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] addQuestion");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] addQuestion");
+        }
 
-		questions.add(question);
-	}
+        questions.add(question);
+    }
 
-	public ArrayList<Question> getQuestions() {
+    public ArrayList<Question> getQuestions() {
 
-		// Verbose
-		if (Config.LOGV) {
-			Log.v(TAG, "[fn] getQuestion");
-		}
+        // Verbose
+        if (Config.LOGV) {
+            Log.v(TAG, "[fn] getQuestion");
+        }
 
-		return questions;
-	}
+        return questions;
+    }
 
-	public Question getQuestionByIndex(int index) {
+    public Question getQuestionByIndex(int index) {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] getQuestionByIndex");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] getQuestionByIndex");
+        }
 
-		return questions.get(index);
-	}
+        return questions.get(index);
+    }
 
-	public int getLength() {
+    public int getLength() {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] getLength");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] getLength");
+        }
 
-		return questions.size();
-	}
+        return questions.size();
+    }
 
-	public int getId() {
+    public int getId() {
 
-		// Verbose
-		if (Config.LOGV) {
-			Log.v(TAG, "[fn] getId");
-		}
+        // Verbose
+        if (Config.LOGV) {
+            Log.v(TAG, "[fn] getId");
+        }
 
-		return id;
-	}
+        return id;
+    }
 
-	public void setId(int id) {
+    public void setId(int id) {
 
-		// Verbose
-		if (Config.LOGV) {
-			Log.v(TAG, "[fn] setId");
-		}
+        // Verbose
+        if (Config.LOGV) {
+            Log.v(TAG, "[fn] setId");
+        }
 
         // This method is called either from PollsStorage.storePollSetId(...) or
         // from PollsStorage.getPoll(...), and in both cases calling saveIfSync() would
         // trigger an unnecessary save. So we don't call it, contrary to other setters below.
-		this.id = id;
-	}
+        this.id = id;
+    }
 
-	public String getStatus() {
+    public String getStatus() {
 
-		// Verbose
-		if (Config.LOGV) {
-			Log.v(TAG, "[fn] getStatus");
-		}
+        // Verbose
+        if (Config.LOGV) {
+            Log.v(TAG, "[fn] getStatus");
+        }
 
-		return status;
-	}
+        return status;
+    }
 
-	public void setStatus(String status) {
+    public void setStatus(String status) {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] setStatus");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] setStatus");
+        }
 
-		this.status = status;
-		saveIfSync();
-	}
-
-	public void setQuestionStatus(int questionIndex, String status) {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] setQuestionStatus");
-		}
-
-		questions.get(questionIndex).setStatus(status);
-		saveIfSync();
-	}
-
-	public long getNotificationTimestamp() {
-
-		// Verbose
-		if (Config.LOGV) {
-			Log.v(TAG, "[fn] getNotificationTimestamp");
-		}
-
-		return notificationTimestamp;
-	}
-
-	public void setNotificationTimestamp(long notificationTimestamp) {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] setNotificationTimestamp");
-		}
-
-		this.notificationTimestamp = notificationTimestamp;
+        this.status = status;
         saveIfSync();
-	}
+    }
 
-	public int getQuestionsVersion() {
+    public void setQuestionStatus(int questionIndex, String status) {
 
-		// Verbose
-		if (Config.LOGV) {
-			Log.v(TAG, "[fn] getQuestionsVersion");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] setQuestionStatus");
+        }
 
-		return questionsVersion;
-	}
+        questions.get(questionIndex).setStatus(status);
+        saveIfSync();
+    }
 
-	public void setQuestionsVersion(int questionsVersion) {
+    public long getNotificationTimestamp() {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] setQuestionsVersion");
-		}
+        // Verbose
+        if (Config.LOGV) {
+            Log.v(TAG, "[fn] getNotificationTimestamp");
+        }
 
-		this.questionsVersion = questionsVersion;
-		saveIfSync();
-	}
+        return notificationTimestamp;
+    }
 
-	private void saveIfSync() {
+    public void setNotificationTimestamp(long notificationTimestamp) {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] saveIfSync");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] setNotificationTimestamp");
+        }
 
-		if (id != -1) {
-			save();
-		}
-	}
+        this.notificationTimestamp = notificationTimestamp;
+        saveIfSync();
+    }
 
-	public void save() {
+    public int getQuestionsVersion() {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] save");
-		}
+        // Verbose
+        if (Config.LOGV) {
+            Log.v(TAG, "[fn] getQuestionsVersion");
+        }
 
-		if (id != -1) {
-			pollsStorage.updatePoll(this);
-		} else {
-			pollsStorage.storePollSetId(this);
-		}
-	}
+        return questionsVersion;
+    }
+
+    public void setQuestionsVersion(int questionsVersion) {
+
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] setQuestionsVersion");
+        }
+
+        this.questionsVersion = questionsVersion;
+        saveIfSync();
+    }
+
+    private void saveIfSync() {
+
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] saveIfSync");
+        }
+
+        if (id != -1) {
+            save();
+        }
+    }
+
+    public void save() {
+
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] save");
+        }
+
+        if (id != -1) {
+            pollsStorage.updatePoll(this);
+        } else {
+            pollsStorage.storePollSetId(this);
+        }
+    }
 
 }

@@ -12,42 +12,42 @@ import com.google.inject.Singleton;
 @Singleton
 public class Storage extends SQLiteOpenHelper {
 
-	private static String TAG = "Storage";
+    private static String TAG = "Storage";
 
-	private static final int DATABASE_VERSION = 2;
-	private static final String DATABASE_NAME = "Storage";
+    private static final int DATABASE_VERSION = 2;
+    private static final String DATABASE_NAME = "Storage";
 
     @Inject
-	public Storage(Application application) {
+    public Storage(Application application) {
 
         super(application, DATABASE_NAME, null, DATABASE_VERSION);
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] Storage");
-		}
-	}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] Storage");
+        }
+    }
 
-	@Override
-	public void onCreate(SQLiteDatabase db) {
+    @Override
+    public void onCreate(SQLiteDatabase db) {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] onCreate");
-		}
-
-        // Do nothing
-	}
-
-	@Override
-	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] onUpgrade");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] onCreate");
+        }
 
         // Do nothing
-	}
+    }
+
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] onUpgrade");
+        }
+
+        // Do nothing
+    }
 
 }

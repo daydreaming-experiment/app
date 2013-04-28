@@ -16,165 +16,165 @@ import roboguice.inject.InjectView;
 @ContentView(R.layout.activity_first_launch_measures)
 public class FirstLaunchMeasuresActivity extends FirstLaunchActivity {
 
-	private static String TAG = "FirstLaunchMeasuresActivity";
+    private static String TAG = "FirstLaunchMeasuresActivity";
 
     @InjectView(R.id.firstLaunchMeasures_textNetworkLocation) TextView textNetworkLocation;
     @InjectView(R.id.firstLaunchMeasures_textSettings) TextView textSettings;
     @InjectView(R.id.firstLaunchMeasures_buttonSettings) Button buttonSettings;
     @InjectView(R.id.firstLaunchMeasures_buttonNext) Button buttonNext;
 
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] onCreate");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] onCreate");
+        }
 
-		super.onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState);
 
-		if (statusManager.isNetworkLocEnabled()) {
-			launchDashboard();
-		}
-	}
+        if (statusManager.isNetworkLocEnabled()) {
+            launchDashboard();
+        }
+    }
 
-	@Override
-	public void onStart() {
+    @Override
+    public void onStart() {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] onStart");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] onStart");
+        }
 
-		super.onStart();
-		updateView();
-	}
-
-	@Override
-	public void onResume() {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] onResume");
-		}
-
-		super.onResume();
+        super.onStart();
         updateView();
-	}
+    }
 
-	private void updateView() {
+    @Override
+    public void onResume() {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] updateView");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] onResume");
+        }
 
-		textNetworkLocation.setCompoundDrawablesWithIntrinsicBounds(
-				statusManager.isNetworkLocEnabled() ? R.drawable.ic_check : R.drawable.ic_cross, 0, 0, 0);
+        super.onResume();
+        updateView();
+    }
 
-		updateRequestAdjustSettings();
-	}
+    private void updateView() {
 
-	private void updateRequestAdjustSettings() {
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] updateView");
+        }
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] updateRequestAdjustSettings");
-		}
+        textNetworkLocation.setCompoundDrawablesWithIntrinsicBounds(
+                statusManager.isNetworkLocEnabled() ? R.drawable.ic_check : R.drawable.ic_cross, 0, 0, 0);
 
-		if ((statusManager.isNetworkLocEnabled()) || (Build.FINGERPRINT.startsWith("generic"))) {
-			setAdjustSettingsOff();
-		} else {
-			setAdjustSettingsNecessary();
-		}
-	}
+        updateRequestAdjustSettings();
+    }
 
-	@TargetApi(11)
-	private void setAdjustSettingsNecessary() {
+    private void updateRequestAdjustSettings() {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] setAdjustSettingsNecessary");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] updateRequestAdjustSettings");
+        }
 
-		textSettings.setText(R.string.firstLaunchMeasures_text_settings_necessary);
-		textSettings.setVisibility(View.VISIBLE);
-		buttonSettings.setVisibility(View.VISIBLE);
-		buttonSettings.setClickable(true);
+        if ((statusManager.isNetworkLocEnabled()) || (Build.FINGERPRINT.startsWith("generic"))) {
+            setAdjustSettingsOff();
+        } else {
+            setAdjustSettingsNecessary();
+        }
+    }
 
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			buttonNext.setAlpha(0.3f);
-		} else {
-			buttonNext.setVisibility(View.INVISIBLE);
-		}
+    @TargetApi(11)
+    private void setAdjustSettingsNecessary() {
 
-		buttonNext.setClickable(false);
-	}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] setAdjustSettingsNecessary");
+        }
 
-	@TargetApi(11)
-	private void setAdjustSettingsOff() {
+        textSettings.setText(R.string.firstLaunchMeasures_text_settings_necessary);
+        textSettings.setVisibility(View.VISIBLE);
+        buttonSettings.setVisibility(View.VISIBLE);
+        buttonSettings.setClickable(true);
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] setAdjustSettingsOff");
-		}
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            buttonNext.setAlpha(0.3f);
+        } else {
+            buttonNext.setVisibility(View.INVISIBLE);
+        }
 
-		textSettings.setVisibility(View.INVISIBLE);
-		buttonSettings.setVisibility(View.INVISIBLE);
-		buttonSettings.setClickable(false);
+        buttonNext.setClickable(false);
+    }
 
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			buttonNext.setAlpha(1f);
-		} else {
-			buttonNext.setVisibility(View.VISIBLE);
-		}
+    @TargetApi(11)
+    private void setAdjustSettingsOff() {
 
-		buttonNext.setClickable(true);
-	}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] setAdjustSettingsOff");
+        }
 
-	public void onClick_buttonSettings(@SuppressWarnings("UnusedParameters") View view) {
+        textSettings.setVisibility(View.INVISIBLE);
+        buttonSettings.setVisibility(View.INVISIBLE);
+        buttonSettings.setClickable(false);
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] onClick_buttonSettings");
-		}
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            buttonNext.setAlpha(1f);
+        } else {
+            buttonNext.setVisibility(View.VISIBLE);
+        }
 
-		launchSettings();
-	}
+        buttonNext.setClickable(true);
+    }
 
-	private void launchSettings() {
+    public void onClick_buttonSettings(@SuppressWarnings("UnusedParameters") View view) {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] launchSettings");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] onClick_buttonSettings");
+        }
 
-		Intent settingsIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-		settingsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-		startActivity(settingsIntent);
-	}
+        launchSettings();
+    }
 
-	public void onClick_buttonNext(@SuppressWarnings("UnusedParameters") View view) {
+    private void launchSettings() {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] onClick_buttonNext");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] launchSettings");
+        }
 
-		launchDashboard();
-	}
+        Intent settingsIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+        settingsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+        startActivity(settingsIntent);
+    }
 
-	private void launchDashboard() {
+    public void onClick_buttonNext(@SuppressWarnings("UnusedParameters") View view) {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] launchDashboard");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] onClick_buttonNext");
+        }
 
-		finishFirstLaunch(); // when everything is ok, first launch is set to completed
-		Intent dashboardIntent = new Intent(this, DashboardActivity.class);
-		startActivity(dashboardIntent);
-		finish();
-	}
+        launchDashboard();
+    }
+
+    private void launchDashboard() {
+
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] launchDashboard");
+        }
+
+        finishFirstLaunch(); // when everything is ok, first launch is set to completed
+        Intent dashboardIntent = new Intent(this, DashboardActivity.class);
+        startActivity(dashboardIntent);
+        finish();
+    }
 
 }

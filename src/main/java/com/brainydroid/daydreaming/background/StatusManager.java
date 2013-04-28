@@ -14,9 +14,9 @@ import com.google.inject.Singleton;
 @Singleton
 public class StatusManager {
 
-	private static String TAG = "StatusManager";
+    private static String TAG = "StatusManager";
 
-	private static final String EXP_STATUS_FL_COMPLETED = "expStatusFlCompleted"; // first launch completed
+    private static final String EXP_STATUS_FL_COMPLETED = "expStatusFlCompleted"; // first launch completed
 
     @Inject SharedPreferences sharedPreferences;
     @Inject LocationManager locationManager;
@@ -26,72 +26,72 @@ public class StatusManager {
     /*
      * Check if first launch is completed
      */
-	public boolean isFirstLaunchCompleted() {
+    public boolean isFirstLaunchCompleted() {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] isFirstLaunchCompleted");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] isFirstLaunchCompleted");
+        }
 
-		return sharedPreferences.getBoolean(EXP_STATUS_FL_COMPLETED, false);
-	}
+        return sharedPreferences.getBoolean(EXP_STATUS_FL_COMPLETED, false);
+    }
 
-	public void setFirstLaunchCompleted() {
+    public void setFirstLaunchCompleted() {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] setFirstLaunchCompleted");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] setFirstLaunchCompleted");
+        }
 
         SharedPreferences.Editor eSharedPreferences = sharedPreferences.edit();
-		eSharedPreferences.putBoolean(EXP_STATUS_FL_COMPLETED, true);
-		eSharedPreferences.commit();
-	}
+        eSharedPreferences.putBoolean(EXP_STATUS_FL_COMPLETED, true);
+        eSharedPreferences.commit();
+    }
 
-	public boolean isLocationServiceRunning() {
+    public boolean isLocationServiceRunning() {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] isLocationServiceRunning");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] isLocationServiceRunning");
+        }
 
-		for (RunningServiceInfo service : activityManager.getRunningServices(Integer.MAX_VALUE)) {
-			if (LocationService.class.getName().equals(service.service.getClassName())) {
-				return true;
-			}
-		}
+        for (RunningServiceInfo service : activityManager.getRunningServices(Integer.MAX_VALUE)) {
+            if (LocationService.class.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	public boolean isNetworkLocEnabled() {
+    public boolean isNetworkLocEnabled() {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] isNetworkEnabled");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] isNetworkEnabled");
+        }
 
-		return locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-	}
+        return locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+    }
 
-	public boolean isDataEnabled() {
+    public boolean isDataEnabled() {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] isDataEnabled");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] isDataEnabled");
+        }
 
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         return (networkInfo != null && networkInfo.isConnectedOrConnecting());
     }
 
-	public boolean isDataAndLocationEnabled() {
+    public boolean isDataAndLocationEnabled() {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] isDataAndLocationEnabled");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] isDataAndLocationEnabled");
+        }
 
-		return isNetworkLocEnabled() && isDataEnabled();
-	}
+        return isNetworkLocEnabled() && isDataEnabled();
+    }
 }

@@ -14,7 +14,7 @@ import roboguice.inject.ContentView;
 @ContentView(R.layout.activity_dashboard)
 public class DashboardActivity extends FirstLaunchActivity {
 
-	private static String TAG = "DashboardActivity";
+    private static String TAG = "DashboardActivity";
 
     @Override
     public void onStart() {
@@ -29,41 +29,41 @@ public class DashboardActivity extends FirstLaunchActivity {
     }
 
     // TODO: check this is ok with real ActionBar API
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] onCreateOptionsMenu");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] onCreateOptionsMenu");
+        }
 
-		MenuInflater menuInflater = getSupportMenuInflater();
-		menuInflater.inflate(R.menu.dashboard, menu);
+        MenuInflater menuInflater = getSupportMenuInflater();
+        menuInflater.inflate(R.menu.dashboard, menu);
 
-		// Calling super after populating the menu is necessary here to ensure that the
-		// action bar helpers have a chance to handle this event.
-		return super.onCreateOptionsMenu(menu);
-	}
+        // Calling super after populating the menu is necessary here to ensure that the
+        // action bar helpers have a chance to handle this event.
+        return super.onCreateOptionsMenu(menu);
+    }
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] onOptionsItemSelected");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] onOptionsItemSelected");
+        }
 
-		switch (item.getItemId()) {
-		case R.id.menu_settings:
-			Intent intent = new Intent(this, SettingsActivity.class);
-			startActivity(intent);
-			break;
+        switch (item.getItemId()) {
+        case R.id.menu_settings:
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
+            break;
 
         // No other cases for now
-		}
+        }
 
-		return super.onOptionsItemSelected(item);
-	}
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     public void onBackPressed() {
@@ -130,18 +130,18 @@ public class DashboardActivity extends FirstLaunchActivity {
         }
     }
 
-	public void runPollNow(@SuppressWarnings("UnusedParameters") View view) {
+    public void runPollNow(@SuppressWarnings("UnusedParameters") View view) {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] runPollNow");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] runPollNow");
+        }
 
-		Intent pollIntent = new Intent(this, SchedulerService.class);
-		pollIntent.putExtra(SchedulerService.SCHEDULER_DEBUGGING, true);
-		startService(pollIntent);
+        Intent pollIntent = new Intent(this, SchedulerService.class);
+        pollIntent.putExtra(SchedulerService.SCHEDULER_DEBUGGING, true);
+        startService(pollIntent);
 
-		Toast.makeText(this, "Now wait for 5 secs", Toast.LENGTH_SHORT).show();
-	}
+        Toast.makeText(this, "Now wait for 5 secs", Toast.LENGTH_SHORT).show();
+    }
 
 }

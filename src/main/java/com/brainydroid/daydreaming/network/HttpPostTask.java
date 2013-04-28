@@ -15,66 +15,66 @@ import com.brainydroid.daydreaming.ui.Config;
 
 public class HttpPostTask extends AsyncTask<HttpPostData, Void, Boolean> {
 
-	private static String TAG = "HttpPostTask";
+    private static String TAG = "HttpPostTask";
 
-	private HttpClient client;
-	private String serverAnswer;
+    private HttpClient client;
+    private String serverAnswer;
     private HttpConversationCallback httpConversationCallback;
 
-	@Override
-	protected void onPreExecute() {
+    @Override
+    protected void onPreExecute() {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] onPreExecute");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] onPreExecute");
+        }
 
-		client = new DefaultHttpClient();
-	}
+        client = new DefaultHttpClient();
+    }
 
-	@Override
-	protected Boolean doInBackground(HttpPostData... postDatas) {
+    @Override
+    protected Boolean doInBackground(HttpPostData... postDatas) {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] doInBackground");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] doInBackground");
+        }
 
-		try {
+        try {
             HttpPostData postData = postDatas[0];
-			httpConversationCallback = postData.getHttpConversationCallback();
+            httpConversationCallback = postData.getHttpConversationCallback();
             HttpPost httpPost = new HttpPost(postData.getPostUrl());
             StringEntity stringEntity = new StringEntity(postData.getPostString());
 
-			httpPost.setHeader("Content-Type", postData.getContentType());
-			httpPost.setEntity(stringEntity);
+            httpPost.setHeader("Content-Type", postData.getContentType());
+            httpPost.setEntity(stringEntity);
 
             HttpResponse response = client.execute(httpPost);
             HttpEntity resEntity = response.getEntity();
 
-			if (resEntity != null) {
-				serverAnswer = EntityUtils.toString(resEntity);
-			}
-		} catch (Exception e) {
+            if (resEntity != null) {
+                serverAnswer = EntityUtils.toString(resEntity);
+            }
+        } catch (Exception e) {
             // FIXME: properly inform about errors that happen
-			serverAnswer = null;
-			return false;
-		}
+            serverAnswer = null;
+            return false;
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	@Override
-	protected void onPostExecute(Boolean success) {
+    @Override
+    protected void onPostExecute(Boolean success) {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] onPostExecute");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] onPostExecute");
+        }
 
         if (httpConversationCallback != null) {
-		    httpConversationCallback.onHttpConversationFinished(success, serverAnswer);
+            httpConversationCallback.onHttpConversationFinished(success, serverAnswer);
         }
-	}
+    }
 
 }

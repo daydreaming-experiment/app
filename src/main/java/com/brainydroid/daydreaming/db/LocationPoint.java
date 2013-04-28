@@ -8,9 +8,9 @@ import com.google.inject.Inject;
 
 public class LocationPoint {
 
-	private static String TAG = "LocationPoint";
+    private static String TAG = "LocationPoint";
 
-	private transient int id = -1;
+    private transient int id = -1;
 
     @Expose private double locationLatitude;
     @Expose private double locationLongitude;
@@ -40,15 +40,15 @@ public class LocationPoint {
         this.id = id;
     }
 
-	public int getId() {
+    public int getId() {
 
-		// Verbose
-		if (Config.LOGV) {
-			Log.v(TAG, "[fn] getId");
-		}
+        // Verbose
+        if (Config.LOGV) {
+            Log.v(TAG, "[fn] getId");
+        }
 
-		return id;
-	}
+        return id;
+    }
 
     public double getLocationLatitude() {
 
@@ -171,30 +171,30 @@ public class LocationPoint {
         saveIfSync();
     }
 
-	private void saveIfSync() {
+    private void saveIfSync() {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] saveIfSync");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] saveIfSync");
+        }
 
-		if (id != -1) {
-			save();
-		}
-	}
+        if (id != -1) {
+            save();
+        }
+    }
 
-	public void save() {
+    public void save() {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] save");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] save");
+        }
 
-		if (id != -1) {
-			locationPointsStorage.updateLocationPoint(this);
-		} else {
-			locationPointsStorage.storeLocationPointSetId(this);
-		}
-	}
+        if (id != -1) {
+            locationPointsStorage.updateLocationPoint(this);
+        } else {
+            locationPointsStorage.storeLocationPointSetId(this);
+        }
+    }
 
 }

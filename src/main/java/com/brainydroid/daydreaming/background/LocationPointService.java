@@ -34,7 +34,7 @@ import roboguice.service.RoboService;
  */
 public class LocationPointService extends RoboService {
 
-	private static String TAG = "LocationPointService";
+    private static String TAG = "LocationPointService";
 
     /** Duration to listen for location updates. */
     public static long LISTENING_TIME = 2 * 60 * 1000;    // 2 min (in ms)
@@ -52,27 +52,27 @@ public class LocationPointService extends RoboService {
     @Inject StatusManager statusManager;
     @Inject LocationServiceConnection locationServiceConnection;
 
-	@Override
-	public void onCreate() {
+    @Override
+    public void onCreate() {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] onCreate");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] onCreate");
+        }
 
-		super.onCreate();
+        super.onCreate();
         // Do nothing else here, the logic is i onStartCommand
-	}
+    }
 
-	@Override
-	public int onStartCommand(Intent intent, int flags, int startId) {
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] onStartCommand");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] onStartCommand");
+        }
 
-		super.onStartCommand(intent, flags, startId);
+        super.onStartCommand(intent, flags, startId);
 
         // Were we started to start or to stop the listening?
         if (intent.getBooleanExtra(STOP_LOCATION_LISTENING, false)) {
@@ -89,36 +89,36 @@ public class LocationPointService extends RoboService {
             scheduleStopLocationListening();
         }
 
-		// The service stops itself through callbacks set in
-		// stopLocationListening or startLocationListening,
-		// so no need to stop ourselves here.
-		return START_REDELIVER_INTENT;
-	}
+        // The service stops itself through callbacks set in
+        // stopLocationListening or startLocationListening,
+        // so no need to stop ourselves here.
+        return START_REDELIVER_INTENT;
+    }
 
     @Override
-	public void onDestroy() {
+    public void onDestroy() {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] onDestroy");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] onDestroy");
+        }
 
         // Don't forget to unbind from the LocationService
         locationServiceConnection.unbindLocationService();
-		super.onDestroy();
-	}
+        super.onDestroy();
+    }
 
-	@Override
-	public IBinder onBind(Intent intent) {
+    @Override
+    public IBinder onBind(Intent intent) {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] onBind");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] onBind");
+        }
 
-		// Don't allow binding to ourselves
-		return null;
-	}
+        // Don't allow binding to ourselves
+        return null;
+    }
 
     /**
      * Stop the {@link LocationService} service and stop ourselves when

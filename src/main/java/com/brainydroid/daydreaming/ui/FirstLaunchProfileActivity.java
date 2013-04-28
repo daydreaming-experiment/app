@@ -16,7 +16,7 @@ import roboguice.inject.InjectView;
 @ContentView(R.layout.activity_first_launch_profile)
 public class FirstLaunchProfileActivity extends FirstLaunchActivity {
 
-	private static String TAG = "FirstLaunchProfileActivity";
+    private static String TAG = "FirstLaunchProfileActivity";
 
     public static String PROFILE_AGE = "profileAge";
     public static String PROFILE_GENDER = "profileGender";
@@ -25,33 +25,33 @@ public class FirstLaunchProfileActivity extends FirstLaunchActivity {
     @InjectView(R.id.firstLaunchProfile_genderSpinner) Spinner genderSpinner;
     @Inject SharedPreferences sharedPreferences;
 
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] onCreate");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] onCreate");
+        }
 
-		super.onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState);
 
-		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-				R.array.genders, android.R.layout.simple_spinner_item);
-		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		genderSpinner.setAdapter(adapter);
-	}
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.genders, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        genderSpinner.setAdapter(adapter);
+    }
 
-	public void onClick_buttonNext(@SuppressWarnings("UnusedParameters") View view) {
+    public void onClick_buttonNext(@SuppressWarnings("UnusedParameters") View view) {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] onClick_buttonNext");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] onClick_buttonNext");
+        }
 
-		if (!checkForm()) {
-			Toast.makeText(this, getString(R.string.firstLaunchProfile_fix_age),
-					Toast.LENGTH_SHORT).show();
-		} else {
+        if (!checkForm()) {
+            Toast.makeText(this, getString(R.string.firstLaunchProfile_fix_age),
+                    Toast.LENGTH_SHORT).show();
+        } else {
 
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putInt(PROFILE_AGE, Integer.parseInt(ageEditText.getText().toString()));
@@ -61,22 +61,22 @@ public class FirstLaunchProfileActivity extends FirstLaunchActivity {
             Toast.makeText(this, genderSpinner.getSelectedItem().toString() +
                     ", " + ageEditText.getText().toString(), Toast.LENGTH_LONG).show();
             launchNextActivity(FirstLaunchPullActivity.class);
-		}
-	}
+        }
+    }
 
-	private boolean checkForm() {
+    private boolean checkForm() {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] checkForm");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] checkForm");
+        }
 
-		try {
-			int age = Integer.parseInt(ageEditText.getText().toString());
-			return (5 <= age && age <= 100);
-		} catch (NumberFormatException e) {
-			return false;
-		}
-	}
+        try {
+            int age = Integer.parseInt(ageEditText.getText().toString());
+            return (5 <= age && age <= 100);
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
 
 }

@@ -4,10 +4,10 @@ import com.google.gson.annotations.Expose;
 
 public class RegistrationAnswer {
 
-	@Expose private String id;
+    @Expose private String id;
 
-	public String getId() {
-		return id;
-	}
+    public String getId() {
+        return id;
+    }
 
 }

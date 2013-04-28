@@ -14,46 +14,46 @@ import roboguice.service.RoboService;
 
 public class LocationService extends RoboService {
 
-	private static String TAG = "LocationService";
+    private static String TAG = "LocationService";
 
-	private LocationListener locationListener;
-	private final IBinder mBinder = new LocationServiceBinder();
-	private LocationCallback questionLocationCallback = null;
+    private LocationListener locationListener;
+    private final IBinder mBinder = new LocationServiceBinder();
+    private LocationCallback questionLocationCallback = null;
     private LocationCallback locationPointCallback = null;
-	private Location lastLocation;
+    private Location lastLocation;
 
     @Inject LocationManager locationManager;
 
-	public class LocationServiceBinder extends Binder {
+    public class LocationServiceBinder extends Binder {
 
-		private final String TAG = "LocationServiceBinder";
+        private final String TAG = "LocationServiceBinder";
 
-		LocationService getService() {
+        LocationService getService() {
 
-			// Verbose
-			if (Config.LOGV) {
-				Log.v(TAG, "[fn] getService");
-			}
+            // Verbose
+            if (Config.LOGV) {
+                Log.v(TAG, "[fn] getService");
+            }
 
-			// Return this instance of LocationService so clients can call public methods
-			return LocationService.this;
-		}
+            // Return this instance of LocationService so clients can call public methods
+            return LocationService.this;
+        }
 
-	}
+    }
 
-	public void setLocationPointCallback(LocationCallback callback) {
+    public void setLocationPointCallback(LocationCallback callback) {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] setLocationPointCallback");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] setLocationPointCallback");
+        }
 
-		locationPointCallback = callback;
+        locationPointCallback = callback;
 
-		if (lastLocation != null && locationPointCallback != null) {
-			locationPointCallback.onLocationReceived(lastLocation);
-		}
-	}
+        if (lastLocation != null && locationPointCallback != null) {
+            locationPointCallback.onLocationReceived(lastLocation);
+        }
+    }
 
     public void setQuestionLocationCallback(LocationCallback callback) {
 
@@ -69,141 +69,141 @@ public class LocationService extends RoboService {
         }
     }
 
-	@Override
-	public void onCreate() {
+    @Override
+    public void onCreate() {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] onCreate");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] onCreate");
+        }
 
-		super.onCreate();
-		startLocationListener();
-	}
+        super.onCreate();
+        startLocationListener();
+    }
 
-	@Override
-	public int onStartCommand(Intent intent, int flags, int startId) {
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] onStartCommand");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] onStartCommand");
+        }
 
-		super.onStartCommand(intent, flags, startId);
+        super.onStartCommand(intent, flags, startId);
 
-		return START_REDELIVER_INTENT;
-	}
+        return START_REDELIVER_INTENT;
+    }
 
-	@Override
-	public void onDestroy() {
+    @Override
+    public void onDestroy() {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] onDestroy");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] onDestroy");
+        }
 
-		stopLocationListenerIfExists();
-		super.onDestroy();
-	}
+        stopLocationListenerIfExists();
+        super.onDestroy();
+    }
 
-	@Override
-	public IBinder onBind(Intent intent) {
+    @Override
+    public IBinder onBind(Intent intent) {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] onBind");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] onBind");
+        }
 
-		return mBinder;
-	}
+        return mBinder;
+    }
 
-	@Override
-	public void onRebind(Intent intent) {
+    @Override
+    public void onRebind(Intent intent) {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] onRebind");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] onRebind");
+        }
 
-		super.onRebind(intent);
-	}
+        super.onRebind(intent);
+    }
 
-	@Override
-	public boolean onUnbind(Intent intent) {
+    @Override
+    public boolean onUnbind(Intent intent) {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] onUnbind");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] onUnbind");
+        }
 
-		super.onUnbind(intent);
+        super.onUnbind(intent);
 
         if (locationPointCallback == null && questionLocationCallback == null) {
-			stopSelf();
-		}
+            stopSelf();
+        }
 
         // Make sur onUnbind is called again if some clients rebind and re-unbind
-		return true;
-	}
+        return true;
+    }
 
-	private void startLocationListener() {
+    private void startLocationListener() {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] updateLocationListener");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] updateLocationListener");
+        }
 
-		stopLocationListenerIfExists();
+        stopLocationListenerIfExists();
 
-		locationListener = new LocationListener() {
+        locationListener = new LocationListener() {
 
-			private final String TAG = "LocationListener";
+            private final String TAG = "LocationListener";
 
-			@Override
-			public void onLocationChanged(Location location) {
+            @Override
+            public void onLocationChanged(Location location) {
 
-				// Debug
-				if (Config.LOGD) {
-					Log.d(TAG, "[fn] (locationListener) onLocationChanged");
-				}
+                // Debug
+                if (Config.LOGD) {
+                    Log.d(TAG, "[fn] (locationListener) onLocationChanged");
+                }
 
-				lastLocation = location;
+                lastLocation = location;
 
-				if (locationPointCallback != null) {
-					locationPointCallback.onLocationReceived(location);
-				}
+                if (locationPointCallback != null) {
+                    locationPointCallback.onLocationReceived(location);
+                }
 
                 if (questionLocationCallback != null) {
                     questionLocationCallback.onLocationReceived(location);
                 }
-			}
+            }
 
-			@Override
-			public void onStatusChanged(String provider, int status, Bundle extras) {}
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {}
 
-			@Override
-			public void onProviderEnabled(String provider) {}
+            @Override
+            public void onProviderEnabled(String provider) {}
 
-			@Override
-			public void onProviderDisabled(String provider) {}
+            @Override
+            public void onProviderDisabled(String provider) {}
 
-		};
+        };
 
-		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
-				0, 0, locationListener);
-	}
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
+                0, 0, locationListener);
+    }
 
-	private void stopLocationListenerIfExists() {
+    private void stopLocationListenerIfExists() {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] removeLocationListenerIfExists");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] removeLocationListenerIfExists");
+        }
 
-		if (locationListener != null) {
-			locationManager.removeUpdates(locationListener);
-			locationListener = null;
-		}
-	}
+        if (locationListener != null) {
+            locationManager.removeUpdates(locationListener);
+            locationListener = null;
+        }
+    }
 
 }

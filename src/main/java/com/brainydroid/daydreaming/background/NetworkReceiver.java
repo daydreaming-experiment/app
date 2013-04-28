@@ -10,35 +10,35 @@ import roboguice.receiver.RoboBroadcastReceiver;
 
 public class NetworkReceiver extends RoboBroadcastReceiver {
 
-	public static String TAG = "NetworkReceiver";
+    public static String TAG = "NetworkReceiver";
 
     @Inject StatusManager statusManager;
 
-	@Override
-	public void handleReceive(Context context, Intent intent) {
+    @Override
+    public void handleReceive(Context context, Intent intent) {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] onReceive");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] onReceive");
+        }
 
-		String action = intent.getAction();
+        String action = intent.getAction();
 
-		if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
+        if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
 
-			// Info
-			Log.i(TAG, "Received CONNECTIVITY_ACTION");
+            // Info
+            Log.i(TAG, "Received CONNECTIVITY_ACTION");
 
-			if (statusManager.isFirstLaunchCompleted() && statusManager.isDataEnabled()) {
+            if (statusManager.isFirstLaunchCompleted() && statusManager.isDataEnabled()) {
 
-				// Info
-				Log.i(TAG, "first launch is completed");
-				Log.i(TAG, "starting SyncService");
+                // Info
+                Log.i(TAG, "first launch is completed");
+                Log.i(TAG, "starting SyncService");
 
-				Intent syncIntent = new Intent(context, SyncService.class);
-				context.startService(syncIntent);
-			}
-		}
-	}
+                Intent syncIntent = new Intent(context, SyncService.class);
+                context.startService(syncIntent);
+            }
+        }
+    }
 
 }

@@ -13,103 +13,103 @@ import com.google.inject.Inject;
 
 public class LocationServiceConnection implements ServiceConnection {
 
-	private static String TAG = "LocationServiceConnection";
+    private static String TAG = "LocationServiceConnection";
 
     private ServiceConnectionCallback serviceConnectionCallback = null;
-	private LocationCallback locationPointCallbackToSet = null;
+    private LocationCallback locationPointCallbackToSet = null;
     private boolean setLocationPointCallback = false;
     private LocationCallback questionLocationCallbackToSet = null;
     private boolean setQuestionLocationCallback = false;
-	private LocationService locationService;
-	private boolean sBound = false;
+    private LocationService locationService;
+    private boolean sBound = false;
 
     @Inject Context context;
 
-	@Override
-	public void onServiceConnected(ComponentName name, IBinder service) {
+    @Override
+    public void onServiceConnected(ComponentName name, IBinder service) {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] onServiceConnected");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] onServiceConnected");
+        }
 
-		LocationServiceBinder binder = (LocationServiceBinder)service;
-		locationService = binder.getService();
-		setLocationServiceCallbacks();
+        LocationServiceBinder binder = (LocationServiceBinder)service;
+        locationService = binder.getService();
+        setLocationServiceCallbacks();
 
         if (serviceConnectionCallback != null) {
             serviceConnectionCallback.onServiceConnected();
         }
-	}
+    }
 
-	@Override
-	public void onServiceDisconnected(ComponentName name) {
+    @Override
+    public void onServiceDisconnected(ComponentName name) {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] onServiceDisconnected");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] onServiceDisconnected");
+        }
 
-		locationService = null;
-	}
+        locationService = null;
+    }
 
-	public void startLocationService() {
+    public void startLocationService() {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] startLocationService");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] startLocationService");
+        }
 
-		Intent locationServiceIntent = new Intent(context, LocationService.class);
-		context.startService(locationServiceIntent);
-	}
+        Intent locationServiceIntent = new Intent(context, LocationService.class);
+        context.startService(locationServiceIntent);
+    }
 
-	public void bindLocationService() {
+    public void bindLocationService() {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] bindLocationService");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] bindLocationService");
+        }
 
         if (!sBound) {
             Intent locationServiceIntent = new Intent(context, LocationService.class);
             context.bindService(locationServiceIntent, this, 0);
             sBound = true;
         }
-	}
+    }
 
-	public void unbindLocationService() {
+    public void unbindLocationService() {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] unbindLocationService");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] unbindLocationService");
+        }
 
-		if (sBound) {
-			context.unbindService(this);
-			sBound = false;
-		}
-	}
+        if (sBound) {
+            context.unbindService(this);
+            sBound = false;
+        }
+    }
 
-	private void setLocationServiceCallbacks() {
+    private void setLocationServiceCallbacks() {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] setLocationServiceCallbacks");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] setLocationServiceCallbacks");
+        }
 
-		if (setLocationPointCallback) {
-			locationService.setLocationPointCallback(locationPointCallbackToSet);
-			locationPointCallbackToSet = null;
+        if (setLocationPointCallback) {
+            locationService.setLocationPointCallback(locationPointCallbackToSet);
+            locationPointCallbackToSet = null;
             setLocationPointCallback = false;
-		}
+        }
 
         if (setQuestionLocationCallback) {
             locationService.setQuestionLocationCallback(questionLocationCallbackToSet);
             questionLocationCallbackToSet = null;
             setQuestionLocationCallback = false;
         }
-	}
+    }
 
     public void setOnServiceConnectedCallback(ServiceConnectionCallback serviceConnectionCallback) {
 
@@ -138,22 +138,22 @@ public class LocationServiceConnection implements ServiceConnection {
         }
     }
 
-	public void setQuestionLocationCallback(LocationCallback callback) {
+    public void setQuestionLocationCallback(LocationCallback callback) {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] setQuestionLocationCallback");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] setQuestionLocationCallback");
+        }
 
-		if (sBound && locationService != null) {
-			locationService.setQuestionLocationCallback(callback);
-			questionLocationCallbackToSet = null;
+        if (sBound && locationService != null) {
+            locationService.setQuestionLocationCallback(callback);
+            questionLocationCallbackToSet = null;
             setQuestionLocationCallback = false;
-		} else {
-			questionLocationCallbackToSet = callback;
+        } else {
+            questionLocationCallbackToSet = callback;
             setQuestionLocationCallback = true;
-		}
-	}
+        }
+    }
 
     public void clearLocationPointCallback() {
 

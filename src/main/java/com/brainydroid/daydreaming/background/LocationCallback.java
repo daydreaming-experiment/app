@@ -15,6 +15,6 @@ public interface LocationCallback {
      *
      * @param location The {@code Location} received.
      */
-	public void onLocationReceived(Location location);
+    public void onLocationReceived(Location location);
 
 }

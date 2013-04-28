@@ -14,62 +14,62 @@ import com.brainydroid.daydreaming.ui.Config;
 
 public class HttpGetTask extends AsyncTask<HttpGetData, Void, Boolean> {
 
-	private static String TAG = "HttpGetTask";
+    private static String TAG = "HttpGetTask";
 
-	private HttpClient client;
-	private String serverAnswer;
+    private HttpClient client;
+    private String serverAnswer;
     private HttpConversationCallback httpConversationCallback;
 
-	@Override
-	protected void onPreExecute() {
+    @Override
+    protected void onPreExecute() {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] onPreExecute");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] onPreExecute");
+        }
 
-		client = new DefaultHttpClient();
-	}
+        client = new DefaultHttpClient();
+    }
 
-	@Override
-	protected Boolean doInBackground(HttpGetData... getDatas) {
+    @Override
+    protected Boolean doInBackground(HttpGetData... getDatas) {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] doInBackground");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] doInBackground");
+        }
 
-		try {
+        try {
             HttpGetData getData = getDatas[0];
-			httpConversationCallback = getData.getHttpConversationCallback();
+            httpConversationCallback = getData.getHttpConversationCallback();
             HttpGet httpGet = new HttpGet(getData.getGetUrl());
 
             HttpResponse response = client.execute(httpGet);
             HttpEntity resEntity = response.getEntity();
 
-			if (resEntity != null) {
-				serverAnswer = EntityUtils.toString(resEntity);
-			}
-		} catch (Exception e) {
+            if (resEntity != null) {
+                serverAnswer = EntityUtils.toString(resEntity);
+            }
+        } catch (Exception e) {
             // FIXME: properly inform about errors that happen
-			serverAnswer = null;
-			return false;
-		}
+            serverAnswer = null;
+            return false;
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	@Override
-	protected void onPostExecute(Boolean success) {
+    @Override
+    protected void onPostExecute(Boolean success) {
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] onPostExecute");
-		}
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] onPostExecute");
+        }
 
         if (httpConversationCallback != null) {
-		    httpConversationCallback.onHttpConversationFinished(success, serverAnswer);
+            httpConversationCallback.onHttpConversationFinished(success, serverAnswer);
         }
-	}
+    }
 
 }

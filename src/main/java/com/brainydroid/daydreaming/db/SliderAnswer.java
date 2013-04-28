@@ -17,49 +17,49 @@ import java.util.HashMap;
 
 public class SliderAnswer implements Answer {
 
-	private static String TAG = "SliderAnswer";
+    private static String TAG = "SliderAnswer";
 
-	@Expose @Inject HashMap<String,Integer> sliders;
+    @Expose @Inject HashMap<String,Integer> sliders;
     @Inject transient Gson gson;
 
-	@Override
-	public String toJson() {
+    @Override
+    public String toJson() {
 
-		//Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] toJson");
-		}
+        //Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] toJson");
+        }
 
-		return gson.toJson(this, this.getClass());
-	}
+        return gson.toJson(this, this.getClass());
+    }
 
-	@Override
-	public void getAnswersFromLayout(LinearLayout questionLinearLayout) {
+    @Override
+    public void getAnswersFromLayout(LinearLayout questionLinearLayout) {
 
-		//Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] getAnswersFromLayout");
-		}
+        //Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] getAnswersFromLayout");
+        }
 
-		ArrayList<View> subQuestions = QuestionViewAdapter.getViewsByTag(questionLinearLayout, "subQuestion");
+        ArrayList<View> subQuestions = QuestionViewAdapter.getViewsByTag(questionLinearLayout, "subQuestion");
 
-		for (View subQuestion : subQuestions) {
-			SeekBar seekBar = (SeekBar)subQuestion.findViewById(
-					R.id.question_slider_seekBar);
-			TextView mainTextView = (TextView)subQuestion.findViewById(R.id.question_slider_mainText);
-			String mainText = mainTextView.getText().toString();
-			addAnswer(mainText, seekBar.getProgress());
-		}
-	}
+        for (View subQuestion : subQuestions) {
+            SeekBar seekBar = (SeekBar)subQuestion.findViewById(
+                    R.id.question_slider_seekBar);
+            TextView mainTextView = (TextView)subQuestion.findViewById(R.id.question_slider_mainText);
+            String mainText = mainTextView.getText().toString();
+            addAnswer(mainText, seekBar.getProgress());
+        }
+    }
 
-	private void addAnswer(String questionString, int answer) {
+    private void addAnswer(String questionString, int answer) {
 
-		//Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] addAnswer");
-		}
+        //Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] addAnswer");
+        }
 
-		sliders.put(questionString, answer);
-	}
+        sliders.put(questionString, answer);
+    }
 
 }
