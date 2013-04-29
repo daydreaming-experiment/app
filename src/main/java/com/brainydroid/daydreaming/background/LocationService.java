@@ -12,22 +12,61 @@ import com.brainydroid.daydreaming.ui.Config;
 import com.google.inject.Inject;
 import roboguice.service.RoboService;
 
+/**
+ * Listen for location updates and pass them on to any registered callbacks.
+ * <p/>
+ * This service is started by using {@link LocationServiceConnection},
+ * which can bind, start, unbind. Callbacks for the location updates are
+ * also registered through the {@code LocationServiceConnection}.
+ * <p/>
+ * The lifecycle is as follows: a {@code Service} or an {@code Activity} (in
+ * practice {@link LocationPointService} or {@link com.brainydroid
+ * .daydreaming.ui.QuestionActivity} wants to obtain some location data. To
+ * do so it needs to listen for a given period of time to leave the time to
+ * the location backend to acquire a proper location. So it will start
+ * {@code LocationService} (through the {@code LocationServiceConnection})
+ * and register a callback to be called when location updates are received.
+ * When it has waited long enough, it will un-register its callback on the
+ * {@code LocationService} (again through the {@code
+ * LocationServiceConnection}). The {@code LocationService} will stop
+ * itself if no other callback is registered (indeed,
+ * a {@code QuestionActivity} and a {@code LocationPointService} could be
+ * listening for location updates at the same time ; when one of the
+ * finishes and un-registers, the other one doesn't want {@code
+ * LocationService} to stop until it is also done).
+ * <p/>
+ * For further details on how exactly the {@code LocationService} should be
+ * started and how to register callbacks on it,
+ * see {@link LocationServiceConnection}.
+ *
+ * @author Sébastien Lerique
+ * @author Vincent Adam
+ */
 public class LocationService extends RoboService {
 
     private static String TAG = "LocationService";
 
     private LocationListener locationListener;
-    private final IBinder mBinder = new LocationServiceBinder();
     private LocationCallback questionLocationCallback = null;
     private LocationCallback locationPointCallback = null;
     private Location lastLocation;
 
+    @Inject LocationServiceBinder mBinder;
     @Inject LocationManager locationManager;
 
+    /**
+     * {@code IBinder} interface used by {@link LocationServiceConnection}
+     * to get a handle on the {@code LocationService} after binding.
+     */
     public class LocationServiceBinder extends Binder {
 
         private final String TAG = "LocationServiceBinder";
 
+        /**
+         * Get a handle to the bound {@code LocationService}.
+         *
+         * @return The currently bound {@code LocationService}
+         */
         LocationService getService() {
 
             // Verbose
@@ -35,12 +74,20 @@ public class LocationService extends RoboService {
                 Log.v(TAG, "[fn] getService");
             }
 
-            // Return this instance of LocationService so clients can call public methods
+            // Return this instance of LocationService so clients can call
+            // public methods
             return LocationService.this;
         }
 
     }
 
+    /**
+     * Set the {@link com.brainydroid.daydreaming.db.LocationPoint}-tagged
+     * callback for location updates. This callback should be created by
+     * {@link LocationPointService}.
+     *
+     * @param callback The callback to set
+     */
     public void setLocationPointCallback(LocationCallback callback) {
 
         // Debug
@@ -48,13 +95,24 @@ public class LocationService extends RoboService {
             Log.d(TAG, "[fn] setLocationPointCallback");
         }
 
+        // Set the callback
         locationPointCallback = callback;
 
+        // If we already received location data, forward it straight away
+        // to the callback.
         if (lastLocation != null && locationPointCallback != null) {
             locationPointCallback.onLocationReceived(lastLocation);
         }
     }
 
+    /**
+     * Set the {@link com.brainydroid.daydreaming.ui
+     * .QuestionActivity}-tagged callback for location updates. This
+     * callback should be created by {@link com.brainydroid.daydreaming.ui
+     * .QuestionActivity}.
+     *
+     * @param callback The callback to set
+     */
     public void setQuestionLocationCallback(LocationCallback callback) {
 
         // Debug
@@ -62,8 +120,11 @@ public class LocationService extends RoboService {
             Log.d(TAG, "[fn] setQuestionLocationCallback");
         }
 
+        // Set the callback
         questionLocationCallback = callback;
 
+        // If we already received location data, forward it straight away
+        // to the callback.
         if (lastLocation != null && questionLocationCallback != null) {
             questionLocationCallback.onLocationReceived(lastLocation);
         }
@@ -78,6 +139,8 @@ public class LocationService extends RoboService {
         }
 
         super.onCreate();
+
+        // Start listening for location updates
         startLocationListener();
     }
 
@@ -91,6 +154,8 @@ public class LocationService extends RoboService {
 
         super.onStartCommand(intent, flags, startId);
 
+        // Nothing to do here, the logic is in onCreate
+
         return START_REDELIVER_INTENT;
     }
 
@@ -102,7 +167,9 @@ public class LocationService extends RoboService {
             Log.d(TAG, "[fn] onDestroy");
         }
 
+        // Stop listening for location updates
         stopLocationListenerIfExists();
+
         super.onDestroy();
     }
 
@@ -114,6 +181,7 @@ public class LocationService extends RoboService {
             Log.d(TAG, "[fn] onBind");
         }
 
+        // Allow binding. Will be used by the LocationServiceConnection.
         return mBinder;
     }
 
@@ -126,6 +194,8 @@ public class LocationService extends RoboService {
         }
 
         super.onRebind(intent);
+        // This function is for logging purposes. This way we can see
+        // rebinds in the logs.
     }
 
     @Override
@@ -138,14 +208,22 @@ public class LocationService extends RoboService {
 
         super.onUnbind(intent);
 
-        if (locationPointCallback == null && questionLocationCallback == null) {
+        // If we neither a callback for LocationPointService nor for
+        // QuestionActivity, stop ourselves.
+        if (locationPointCallback == null &&
+                questionLocationCallback == null) {
             stopSelf();
         }
 
-        // Make sur onUnbind is called again if some clients rebind and re-unbind
+        // Make sure onUnbind is called again if some clients rebind and
+        // re-unbind.
         return true;
     }
 
+    /**
+     * Start listening to location updates. This is done by registering a
+     * {@code LocationListener} on the {@code LocationManager}.
+     */
     private void startLocationListener() {
 
         // Debug
@@ -153,6 +231,8 @@ public class LocationService extends RoboService {
             Log.d(TAG, "[fn] updateLocationListener");
         }
 
+        // If we're already listening, stop it and start from scratch to
+        // make sure we have the right callbacks. (Is this really useful?)
         stopLocationListenerIfExists();
 
         locationListener = new LocationListener() {
@@ -167,19 +247,23 @@ public class LocationService extends RoboService {
                     Log.d(TAG, "[fn] (locationListener) onLocationChanged");
                 }
 
+                // Remember location
                 lastLocation = location;
 
+                // Send the location data to the LocationPointService
                 if (locationPointCallback != null) {
                     locationPointCallback.onLocationReceived(location);
                 }
 
+                // Send the location data to the QuestionActivity
                 if (questionLocationCallback != null) {
                     questionLocationCallback.onLocationReceived(location);
                 }
             }
 
             @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {}
+            public void onStatusChanged(String provider, int status,
+                                        Bundle extras) {}
 
             @Override
             public void onProviderEnabled(String provider) {}
@@ -189,10 +273,14 @@ public class LocationService extends RoboService {
 
         };
 
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
-                0, 0, locationListener);
+        // Register our listener
+        locationManager.requestLocationUpdates(
+                LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
     }
 
+    /**
+     * Stop listening to location updates, if we were listening.
+     */
     private void stopLocationListenerIfExists() {
 
         // Debug
