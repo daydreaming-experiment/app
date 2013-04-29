@@ -43,9 +43,6 @@ public class LocationPointService extends RoboService {
     /** Extra to set to {@code true} to stop the listening. */
     public static String STOP_LOCATION_LISTENING = "stopLocationListening";
 
-    private boolean sntpRequestDone = false;
-    private boolean serviceConnectionDone = false;
-
     @Inject SntpClient sntpClient;
     @Inject LocationPoint locationPoint;
     @Inject AlarmManager alarmManager;
@@ -131,9 +128,6 @@ public class LocationPointService extends RoboService {
             Log.d(TAG, "[fn] stopLocationListening");
         }
 
-        // No need for an NTP request since we're shutting down
-        setSntpRequestDone();
-
         // locationServiceConnection will clear our listener (registered on
         // the LocationService) when it binds to LocationService. We do
         // this even if the LocationService is not running (see test below),
@@ -144,7 +138,7 @@ public class LocationPointService extends RoboService {
         // If LocationService is not running there's no need to stop it
         if (statusManager.isLocationServiceRunning()) {
             // We're not doing a service connection, so we're all done
-            setServiceConnectionDone();
+            stopSelf();
             return;
         }
 
@@ -163,8 +157,9 @@ public class LocationPointService extends RoboService {
                     Log.d(TAG, "[fn] onServiceConnected");
                 }
 
-                // Tell LocationPointService that we're done
-                LocationPointService.this.setServiceConnectionDone();
+                // Stop LocationPointService, we're done. This in turn will
+                // trigger the unbind through LocationPointService.onDestroy.
+                LocationPointService.this.stopSelf();
             }
 
         };
@@ -181,11 +176,11 @@ public class LocationPointService extends RoboService {
         // registered.
         //
         // This sounds terribly complicated but it's the only way to deal
-        // with the callbacks on a single thread (calling
+        // with the callbacks on a single thread. Calling
         // locationServiceConnection.unbindLocationService() right here
         // would unbind before the connection to LocationService has taken
         // place: indeed, the connection is made after this function
-        // returns).
+        // returns.
         locationServiceConnection.bindLocationService();
 
     }
@@ -204,7 +199,7 @@ public class LocationPointService extends RoboService {
         // Same mechanism as in stopLocationListening: when we ask the
         // locationServiceConnection to bind,
         // it registers the locationCallback (below) on the LocationService.
-        // When the binding is done, locationServiceConnection tells us so
+        // When the binding is done, locationServiceConnection stops us
         // through this serviceConnectionCallback.
         ServiceConnectionCallback serviceConnectionCallback =
                 new ServiceConnectionCallback() {
@@ -219,8 +214,9 @@ public class LocationPointService extends RoboService {
                     Log.d(TAG, "[fn] onServiceConnected");
                 }
 
-                // Tell LocationPointService that we're done
-                LocationPointService.this.setServiceConnectionDone();
+                // Stop LocationPointService, we're done. This in turn will
+                // trigger the unbind trough LocationPointService.onDestroy.
+                LocationPointService.this.stopSelf();
             }
 
         };
@@ -276,9 +272,6 @@ public class LocationPointService extends RoboService {
                         locationPoint.save();
                     }
                 }
-
-                // Tell LocationPointService that we're done
-                LocationPointService.this.setSntpRequestDone();
             }
 
         };
@@ -349,55 +342,6 @@ public class LocationPointService extends RoboService {
         // And set the alarm
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
                 scheduledTime, pendingIntent);
-    }
-
-    /**
-     * Record that {@link SntpClient}'s NTP request has completed,
-     * and stop ourselves if everything else has completed also.
-     */
-    private void setSntpRequestDone() {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] setSntpRequestDone");
-        }
-
-        sntpRequestDone = true;
-
-        // If we're all done, we can stop ourselves
-        saveAndStopSelfIfAllDone();
-    }
-
-    /**
-     * Record that {@link LocationServiceConnection}'s service connection has
-     * completed and stop ourselves if everything else has completed also.
-     */
-    private void setServiceConnectionDone() {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] setServiceConnectionDone");
-        }
-
-        serviceConnectionDone = true;
-
-        // If we're all done, we can stop ourselves
-        saveAndStopSelfIfAllDone();
-    }
-
-    /**
-     * Stop ourselves if everything is done.
-     */
-    private void saveAndStopSelfIfAllDone() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] saveAndStopSelfIfAllDone");
-        }
-
-        if (sntpRequestDone && serviceConnectionDone) {
-            stopSelf();
-        }
     }
 
 }

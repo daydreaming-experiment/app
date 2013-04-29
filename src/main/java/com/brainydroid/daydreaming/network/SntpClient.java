@@ -39,6 +39,8 @@ public class SntpClient {
 
     private static final String TAG = "SntpClient";
 
+    private static final int NETWORK_TIMEOUT = 30 * 1000; // 30 secs (in ms)
+
     private static final int ORIGINATE_TIME_OFFSET = 24;
     private static final int RECEIVE_TIME_OFFSET = 32;
     private static final int TRANSMIT_TIME_OFFSET = 40;
@@ -86,7 +88,7 @@ public class SntpClient {
             }
 
             SntpClient sntpClient = sntpClients[0];
-            if (sntpClient.requestTime("0.pool.ntp.org", 5000)) {
+            if (sntpClient.requestTime("0.pool.ntp.org", NETWORK_TIMEOUT)) {
                 return sntpClient;
             }
 
