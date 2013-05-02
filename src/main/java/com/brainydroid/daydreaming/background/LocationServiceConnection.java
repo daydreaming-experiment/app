@@ -11,6 +11,17 @@ import com.brainydroid.daydreaming.background.LocationService.LocationServiceBin
 import com.brainydroid.daydreaming.ui.Config;
 import com.google.inject.Inject;
 
+/**
+ * Manage the lifecycle of {@link LocationService} and pass messages
+ * on to it.
+ * <p/>
+ * Use this class as the handler for {@code LocationService}. You can
+ * start, stop, bind and unbind to the service using this interface. The
+ * main use is to pass callbacks to a running or to-be-started {@code
+ * LocationService} so as to receive location updates on the right objects.
+ * <p/>
+ * TODO: fill this up
+ */
 public class LocationServiceConnection implements ServiceConnection {
 
     private static String TAG = "LocationServiceConnection";
