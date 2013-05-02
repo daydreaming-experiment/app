@@ -37,9 +37,9 @@ public class LocationPointService extends RoboService {
     private static String TAG = "LocationPointService";
 
     /** Duration to listen for location updates. */
-    public static long LISTENING_TIME = 30 * 1000;    // 2 min (in ms)
+    public static long LISTENING_TIME = 2 * 60 * 1000;    // 2 min (in ms)
     /** Time to wait before starting to listen again. */
-    public static long SAMPLE_INTERVAL = 1 * 60 * 1000;  // 18 min (in ms)
+    public static long SAMPLE_INTERVAL = 18 * 60 * 1000;  // 18 min (in ms)
     /** Extra to set to {@code true} to stop the listening. */
     public static String STOP_LOCATION_LISTENING = "stopLocationListening";
 
