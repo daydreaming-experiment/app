@@ -114,7 +114,8 @@ public class PollService extends RoboService {
         // Set the index of the question to open
         intent.putExtra(QuestionActivity.EXTRA_QUESTION_INDEX, 0);
 
-        // Create a new task and don't show up in various Android UI screens
+        // Create a new task and don't show up in various Android UI
+        // screens
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
                 Intent.FLAG_ACTIVITY_CLEAR_TASK |
                 Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
@@ -145,7 +146,8 @@ public class PollService extends RoboService {
         }
 
         // Should we vibrate?
-        if (sharedPreferences.getBoolean("notification_vibrator_key", true)) {
+        if (sharedPreferences.getBoolean("notification_vibrator_key",
+                true)) {
             flags |= Notification.DEFAULT_VIBRATE;
         }
 
