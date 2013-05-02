@@ -150,17 +150,6 @@ public class LocationPoint {
         saveIfSync();
     }
 
-    public boolean hasLocation() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] hasLocation");
-        }
-
-        return locationLatitude != -1 && locationLongitude != -1 &&
-                locationAltitude != -1 && locationAccuracy != -1;
-    }
-
     public long getTimestamp() {
 
         // Verbose
@@ -182,14 +171,19 @@ public class LocationPoint {
         saveIfSync();
     }
 
-    public boolean hasTimestamp() {
+    public boolean isOkToSave() {
 
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn hasTimestamp");
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] isOkToSave");
         }
 
-        return timestamp != -1;
+        boolean hasLocation = locationLatitude != -1 &&
+                locationLongitude !=-1 &&
+                locationAltitude != -1 &&
+                locationAccuracy != -1;
+        return timestamp != -1 && hasLocation;
+
     }
 
     private void saveIfSync() {

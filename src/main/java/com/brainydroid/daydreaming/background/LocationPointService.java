@@ -37,9 +37,9 @@ public class LocationPointService extends RoboService {
     private static String TAG = "LocationPointService";
 
     /** Duration to listen for location updates. */
-    public static long LISTENING_TIME = 2 * 60 * 1000;    // 2 min (in ms)
+    public static long LISTENING_TIME = 30 * 1000;    // 2 min (in ms)
     /** Time to wait before starting to listen again. */
-    public static long SAMPLE_INTERVAL = 18 * 60 * 1000;  // 18 min (in ms)
+    public static long SAMPLE_INTERVAL = 1 * 60 * 1000;  // 18 min (in ms)
     /** Extra to set to {@code true} to stop the listening. */
     public static String STOP_LOCATION_LISTENING = "stopLocationListening";
 
@@ -48,6 +48,31 @@ public class LocationPointService extends RoboService {
     @Inject AlarmManager alarmManager;
     @Inject StatusManager statusManager;
     @Inject LocationServiceConnection locationServiceConnection;
+
+    // Callback for LocationServiceConnection to stop us and unbind
+    // from LocationService.
+    private ServiceConnectionCallback serviceConnectionCallback =
+            new ServiceConnectionCallback() {
+
+        private final String TAG = "ServiceConnectionCallback";
+
+        @Override
+        public void onServiceConnected() {
+
+            // Debug
+            if (Config.LOGD) {
+                Log.d(TAG, "[fn] onServiceConnected");
+            }
+
+            // Stop LocationPointService, we're done. This in turn will
+            // trigger the unbind through LocationPointService.onDestroy.
+            LocationPointService.this.stopSelf();
+
+            // Don't forget to unbind from the LocationService
+            locationServiceConnection.unbindLocationService();
+        }
+
+    };
 
     @Override
     public void onCreate() {
@@ -58,7 +83,7 @@ public class LocationPointService extends RoboService {
         }
 
         super.onCreate();
-        // Do nothing else here, the logic is i onStartCommand
+        // Do nothing else here, the logic is in onStartCommand
     }
 
     @Override
@@ -80,10 +105,14 @@ public class LocationPointService extends RoboService {
             // Only start listening if there a chance to obtain something
             if (statusManager.isDataAndLocationEnabled()) {
                 startLocationListening();
-            }
 
-            // Don't forget to stop listening after a few minutes
-            scheduleStopLocationListening();
+                // Don't forget to stop listening after a few minutes
+                scheduleStopLocationListening();
+            } else {
+                // If we can't get any location now,
+                // wait for the next occasion
+                scheduleNextService();
+            }
         }
 
         // The service stops itself through callbacks set in
@@ -100,9 +129,8 @@ public class LocationPointService extends RoboService {
             Log.d(TAG, "[fn] onDestroy");
         }
 
-        // Don't forget to unbind from the LocationService
-        locationServiceConnection.unbindLocationService();
         super.onDestroy();
+        // Do nothing. This override is for logging purposes.
     }
 
     @Override
@@ -136,34 +164,13 @@ public class LocationPointService extends RoboService {
         locationServiceConnection.clearLocationPointCallback();
 
         // If LocationService is not running there's no need to stop it
-        if (statusManager.isLocationServiceRunning()) {
+        if (!statusManager.isLocationServiceRunning()) {
             // We're not doing a service connection, so we're all done
             stopSelf();
             return;
         }
 
-        // Once it's connected to LocationService, locationServiceConnection
-        // will also stop us through the following callback.
-        ServiceConnectionCallback serviceConnectionCallback =
-                new ServiceConnectionCallback() {
-
-            private final String TAG = "ServiceConnectionCallback";
-
-            @Override
-            public void onServiceConnected() {
-
-                // Debug
-                if (Config.LOGD) {
-                    Log.d(TAG, "[fn] onServiceConnected");
-                }
-
-                // Stop LocationPointService, we're done. This in turn will
-                // trigger the unbind through LocationPointService.onDestroy.
-                LocationPointService.this.stopSelf();
-            }
-
-        };
-
+        // When bound, locationServiceConnection will stop us and unbind
         locationServiceConnection.setOnServiceConnectedCallback(
                 serviceConnectionCallback);
 
@@ -196,31 +203,6 @@ public class LocationPointService extends RoboService {
             Log.d(TAG, "[fn] startLocationListening");
         }
 
-        // Same mechanism as in stopLocationListening: when we ask the
-        // locationServiceConnection to bind,
-        // it registers the locationCallback (below) on the LocationService.
-        // When the binding is done, locationServiceConnection stops us
-        // through this serviceConnectionCallback.
-        ServiceConnectionCallback serviceConnectionCallback =
-                new ServiceConnectionCallback() {
-
-            private final String TAG = "ServiceConnectionCallback";
-
-            @Override
-            public void onServiceConnected() {
-
-                // Debug
-                if (Config.LOGD) {
-                    Log.d(TAG, "[fn] onServiceConnected");
-                }
-
-                // Stop LocationPointService, we're done. This in turn will
-                // trigger the unbind trough LocationPointService.onDestroy.
-                LocationPointService.this.stopSelf();
-            }
-
-        };
-
         // This will be called by LocationService when it receives location
         // data. It gets registered on the LocationService when the
         // locationServiceConnection binds.
@@ -240,7 +222,7 @@ public class LocationPointService extends RoboService {
 
                 // Only save if both timestamp and location have been
                 // found. Otherwise it would create unusable data.
-                if (locationPoint.hasTimestamp()) {
+                if (locationPoint.isOkToSave()) {
                     locationPoint.save();
                 }
             }
@@ -268,7 +250,7 @@ public class LocationPointService extends RoboService {
 
                     // Only save if both timestamp and location have been
                     // found. Otherwise it would create unusable data.
-                    if (locationPoint.hasLocation()) {
+                    if (locationPoint.isOkToSave()) {
                         locationPoint.save();
                     }
                 }
