@@ -94,4 +94,5 @@ public class StatusManager {
 
         return isNetworkLocEnabled() && isDataEnabled();
     }
+
 }

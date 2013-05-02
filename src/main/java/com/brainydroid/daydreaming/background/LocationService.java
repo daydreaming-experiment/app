@@ -51,7 +51,9 @@ public class LocationService extends RoboService {
     private LocationCallback locationPointCallback = null;
     private Location lastLocation;
 
-    @Inject LocationServiceBinder mBinder;
+    // We can't inject an inner class using Guice
+    private IBinder mBinder = new LocationServiceBinder();
+
     @Inject LocationManager locationManager;
 
     /**
