@@ -56,7 +56,7 @@ public class BootReceiver extends RoboBroadcastReceiver {
                 // Info
                 Log.i(TAG, "starting LocationPointService");
 
-                // Start synchronizing answers
+                // Start getting location updates
                 Intent locationPointServiceIntent = new Intent(context,
                         LocationPointService.class);
                 context.startService(locationPointServiceIntent);
