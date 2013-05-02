@@ -126,7 +126,7 @@ public class LocationServiceConnection implements ServiceConnection {
     }
 
     /**
-     * Start the {@link LocationService}
+     * Start the {@link LocationService}.
      */
     public void startLocationService() {
 
@@ -142,7 +142,7 @@ public class LocationServiceConnection implements ServiceConnection {
     }
 
     /**
-     * Bind to the {@link LocationService}
+     * Bind to the {@link LocationService}.
      */
     public void bindLocationService() {
 
@@ -162,7 +162,7 @@ public class LocationServiceConnection implements ServiceConnection {
     }
 
     /**
-     * Unbind from the {@link LocationService}
+     * Unbind from the {@link LocationService}.
      */
     public void unbindLocationService() {
 
@@ -180,7 +180,7 @@ public class LocationServiceConnection implements ServiceConnection {
     }
 
     /**
-     * Register recorded callbacks on the {@link LocationService}
+     * Register recorded callbacks on the {@link LocationService}.
      */
     private void setLocationServiceCallbacks() {
 
@@ -209,7 +209,7 @@ public class LocationServiceConnection implements ServiceConnection {
     }
 
     /**
-     * Register a {@link ServiceConnectionCallback}
+     * Register a {@link ServiceConnectionCallback}.
      *
      * @param serviceConnectionCallback The callback to register.
      */
@@ -225,7 +225,7 @@ public class LocationServiceConnection implements ServiceConnection {
     }
 
     /**
-     * Remember to set a {@code LocationPoint} callback when possible
+     * Remember to set a {@code LocationPoint} callback when possible.
      *
      * @param callback The callback to remember
      */
@@ -249,7 +249,7 @@ public class LocationServiceConnection implements ServiceConnection {
     }
 
     /**
-     * Remember to set a {@code QuestionLocation} callback when possible
+     * Remember to set a {@code QuestionLocation} callback when possible.
      *
      * @param callback The callback to remember
      */
@@ -273,7 +273,7 @@ public class LocationServiceConnection implements ServiceConnection {
     }
 
     /**
-     * Remember to clear {@code LocationPoint} callback when possible
+     * Remember to clear {@code LocationPoint} callback when possible.
      */
     public void clearLocationPointCallback() {
 
@@ -286,7 +286,7 @@ public class LocationServiceConnection implements ServiceConnection {
     }
 
     /**
-     * Remember to clear {@code QuestionLocation} callback when possible
+     * Remember to clear {@code QuestionLocation} callback when possible.
      */
     public void clearQuestionLocationCallback() {
 

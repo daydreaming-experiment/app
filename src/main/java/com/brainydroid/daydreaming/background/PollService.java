@@ -19,10 +19,17 @@ import roboguice.service.RoboService;
 
 import java.util.ArrayList;
 
+/**
+ * Create and populate a {@link Poll}, then notify it to the user.
+ *
+ * @author Sébastien Lerique
+ * @author Vincent Adam
+ */
 public class PollService extends RoboService {
 
     private static String TAG = "PollService";
 
+    /** Number of questions per {@link Poll} */
     public static int N_QUESTIONS_PER_POLL = 3;
 
     @Inject NotificationManager notificationManager;
@@ -39,6 +46,7 @@ public class PollService extends RoboService {
         }
 
         super.onCreate();
+        // Do nothing. Logging purposes.
     }
 
     @Override
@@ -51,7 +59,13 @@ public class PollService extends RoboService {
 
         super.onStartCommand(intent, flags, startId);
 
-        populateAndLaunchPoll();
+        // Populate and notify the poll
+        populatePoll();
+        notifyPoll();
+
+        // Reschedule the next poll
+        startSchedulerService();
+
         stopSelf();
         return START_REDELIVER_INTENT;
     }
@@ -65,6 +79,7 @@ public class PollService extends RoboService {
         }
 
         super.onDestroy();
+        // Do nothing. Logging purposes.
     }
 
     @Override
@@ -79,18 +94,11 @@ public class PollService extends RoboService {
         return null;
     }
 
-    private void populateAndLaunchPoll() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] populateAndLaunchPoll");
-        }
-
-        populatePoll();
-        startSchedulerService();
-        notifyPoll();
-    }
-
+    /**
+     * Create the {@link QuestionActivity} {@code Intent}.
+     *
+     * @return The {@code Intent} to launch our {@link Poll}
+     */
     private Intent createPollIntent() {
 
         // Debug
@@ -99,13 +107,23 @@ public class PollService extends RoboService {
         }
 
         Intent intent = new Intent(this, QuestionActivity.class);
+
+        // Set the id of the poll to start
         intent.putExtra(QuestionActivity.EXTRA_POLL_ID, poll.getId());
+
+        // Set the index of the question to open
         intent.putExtra(QuestionActivity.EXTRA_QUESTION_INDEX, 0);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK |
+
+        // Create a new task and don't show up in various Android UI screens
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                Intent.FLAG_ACTIVITY_CLEAR_TASK |
                 Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         return intent;
     }
 
+    /**
+     * Notify our poll to the user.
+     */
     private void notifyPoll() {
 
         // Debug
@@ -113,24 +131,30 @@ public class PollService extends RoboService {
             Log.d(TAG, "[fn] notifyPoll");
         }
 
-        // Build notification
+        // Create the PendingIntent
         Intent intent = createPollIntent();
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent,
-                PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
+                intent, PendingIntent.FLAG_CANCEL_CURRENT |
+                PendingIntent.FLAG_ONE_SHOT);
 
         int flags = 0;
+
+        // Should we flash the LED?
         if (sharedPreferences.getBoolean("notification_blink_key", true)) {
             flags |= Notification.DEFAULT_LIGHTS;
         }
 
+        // Should we vibrate?
         if (sharedPreferences.getBoolean("notification_vibrator_key", true)) {
             flags |= Notification.DEFAULT_VIBRATE;
         }
 
+        // Should we beep?
         if (sharedPreferences.getBoolean("notification_sound_key", true)) {
             flags |= Notification.DEFAULT_SOUND;
         }
 
+        // Create our notification
         Notification notification = new NotificationCompat.Builder(this)
         .setTicker(getString(R.string.pollNotification_ticker))
         .setContentTitle(getString(R.string.pollNotification_title))
@@ -142,9 +166,13 @@ public class PollService extends RoboService {
         .setDefaults(flags)
         .build();
 
+        // And send it to the system
         notificationManager.notify(poll.getId(), notification);
     }
 
+    /**
+     * Fill our {@link Poll} with questions.
+     */
     private void populatePoll() {
 
         // Debug
@@ -152,6 +180,8 @@ public class PollService extends RoboService {
             Log.d(TAG, "[fn] populatePoll");
         }
 
+        // Pick from already created polls that were never shown to the
+        // user, if there are any
         ArrayList<Poll> pendingPolls = pollsStorage.getPendingPolls();
 
         if (pendingPolls != null) {
@@ -160,11 +190,15 @@ public class PollService extends RoboService {
             poll.populateQuestions(N_QUESTIONS_PER_POLL);
         }
 
+        // Update the poll's status
         poll.setStatus(Poll.STATUS_PENDING);
         poll.setNotificationTimestamp(SystemClock.elapsedRealtime());
         poll.save();
     }
 
+    /**
+     * Start {@link SchedulerService} for the next {@link Poll}.
+     */
     private void startSchedulerService() {
 
         // Debug
