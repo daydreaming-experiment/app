@@ -20,19 +20,19 @@ import roboguice.service.RoboService;
  * also registered through the {@code LocationServiceConnection}.
  * <p/>
  * The lifecycle is as follows: a {@code Service} or an {@code Activity} (in
- * practice {@link LocationPointService} or {@link com.brainydroid
- * .daydreaming.ui.QuestionActivity} wants to obtain some location data. To
- * do so it needs to listen for a given period of time to leave the time to
- * the location backend to acquire a proper location. So it will start
- * {@code LocationService} (through the {@code LocationServiceConnection})
- * and register a callback to be called when location updates are received.
- * When it has waited long enough, it will un-register its callback on the
- * {@code LocationService} (again through the {@code
- * LocationServiceConnection}). The {@code LocationService} will stop
- * itself if no other callback is registered (indeed,
- * a {@code QuestionActivity} and a {@code LocationPointService} could be
- * listening for location updates at the same time ; when one of the
- * finishes and un-registers, the other one doesn't want {@code
+ * practice {@link LocationPointService} or {@link
+ * com.brainydroid.daydreaming.ui.QuestionActivity} wants to obtain some
+ * location data. To do so it needs to listen for a given period of time to
+ * leave the time to the location backend to acquire a proper location. So
+ * it will start {@code LocationService} (through the {@code
+ * LocationServiceConnection}) and register a callback to be called when
+ * location updates are received. When it has waited long enough,
+ * it will un-register its callback on the {@code LocationService} (again
+ * through the {@code LocationServiceConnection}). The {@code
+ * LocationService} will stop itself if no other callback is registered
+ * (indeed, a {@code QuestionActivity} and a {@code LocationPointService}
+ * could be listening for location updates at the same time ; when one of
+ * the finishes and un-registers, the other one doesn't want {@code
  * LocationService} to stop until it is also done).
  * <p/>
  * For further details on how exactly the {@code LocationService} should be
