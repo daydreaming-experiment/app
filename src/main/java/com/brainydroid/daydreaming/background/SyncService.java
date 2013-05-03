@@ -13,8 +13,20 @@ import com.google.inject.Inject;
 import roboguice.service.RoboService;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 
+// FIXME: Worker thread restart on runtime configuration change.
+// There might be a problem if the service is started from an
+// Activity, and the orientation of the display changes. That will stop and
+// restart the worker thread. See
+// http://developer.android.com/guide/components/processes-and-threads.html
+// right above the "Thread-safe methods" title.
+
+/**
+ * Update the question pool, upload answers and location points.
+ *
+ * @author Sébastien Lerique
+ * @author Vincent Adam
+ */
 public class SyncService extends RoboService {
 
     private static String TAG = "SyncService";
@@ -26,15 +38,89 @@ public class SyncService extends RoboService {
     @Inject CryptoStorage cryptoStorage;
     @Inject ServerTalker serverTalker;
 
+    // Only include exposed members when jsonifying
     private Gson gson  = new GsonBuilder()
             .excludeFieldsWithoutExposeAnnotation()
             .create();
-    private HashSet<Integer> pollsLeftToUpload;
-    private HashSet<Integer> locationItemsLeftToUpload;
 
-    private boolean updateQuestionsDone = false;
-    private boolean uploadPollsDone = false;
-    private boolean uploadLocationItemsDone = false;
+    /**
+     * Callback called once the {@link CryptoStorage} is ready,
+     * launching the synchronization tasks.
+     */
+    CryptoStorageCallback cryptoStorageCallback =
+            new CryptoStorageCallback() {
+
+        private String TAG = "CryptoStorageCallback";
+
+        @Override
+        public void onCryptoStorageReady(
+                boolean hasKeyPairAndMaiId) {
+
+            // Debug
+            if (Config.LOGD) {
+                Log.d(TAG, "(callback) onCryptoStorageReady");
+            }
+
+            // Only launch the synchronization tasks if CryptoStorage is
+            // really ready and we have Internet access.
+            if (hasKeyPairAndMaiId && statusManager.isDataEnabled()) {
+                // We only update questions once in the experiment's
+                // lifecycle.
+                if (!statusManager.areQuestionsUpdated()) {
+                    asyncUpdateQuestions();
+                }
+
+                asyncUploadPolls();
+                asyncUploadLocationItems();
+            }
+        }
+
+    };
+
+    /**
+     * Callback called when the questions are finished downloading,
+     * to import them into the {@link QuestionsStorage}.
+     */
+    HttpConversationCallback updateQuestionsCallback =
+            new HttpConversationCallback() {
+
+        private String TAG = "HttpConversationCallback";
+
+        @Override
+        public void onHttpConversationFinished(boolean success,
+                                               String serverAnswer) {
+
+            // Debug
+            if (Config.LOGD) {
+                Log.d(TAG, "[fn] (updateQuestionsCallback) " +
+                        "onHttpConversationFinished");
+            }
+
+            if (success) {
+                // Info
+                Log.i(TAG, "successfully retrieved questions.json " +
+                        "from server");
+
+                // Toast debug
+                if (Config.TOASTD) {
+                    Toast.makeText(SyncService.this,
+                            "SyncService: new questions downloaded " +
+                                    "from server",
+                            Toast.LENGTH_SHORT).show();
+                }
+
+                // Import the questions, and remember not to update
+                // questions again.
+                questionsStorage.importQuestions(serverAnswer);
+                statusManager.setQuestionsUpdated();
+            } else {
+                // Warning
+                Log.w(TAG, "error while retrieving new questions.json " +
+                        "from server");
+            }
+        }
+
+    };
 
     @Override
     public void onCreate() {
@@ -46,6 +132,7 @@ public class SyncService extends RoboService {
 
         super.onCreate();
 
+        // Launch synchronization tasks
         startUpdates();
     }
 
@@ -59,6 +146,7 @@ public class SyncService extends RoboService {
 
         super.onStartCommand(intent, flags, startId);
 
+        // Do nothing. Logging purposes.
         return START_REDELIVER_INTENT;
     }
 
@@ -71,6 +159,7 @@ public class SyncService extends RoboService {
         }
 
         super.onDestroy();
+        // Do nothing. Logging purposes.
     }
 
     @Override
@@ -85,8 +174,6 @@ public class SyncService extends RoboService {
         return null;
     }
 
-    // FIXME: if the servers don't answer, does the connection time out and does the
-    // service exit?
     private void startUpdates() {
 
         // Debug
@@ -95,54 +182,37 @@ public class SyncService extends RoboService {
         }
 
         if (statusManager.isDataEnabled()) {
-
             // Info
             Log.i(TAG, "data connection enabled -> starting sync tasks");
 
+            // Toast debug
             if (Config.TOASTD) {
                 Toast.makeText(this, "SyncService: starting sync...",
                         Toast.LENGTH_SHORT).show();
             }
 
-            CryptoStorageCallback callback = new CryptoStorageCallback() {
-
-                private final String TAG = "CryptoStorageCallback";
-
-                @Override
-                public void onCryptoStorageReady(boolean hasKeyPairAndMaiId) {
-
-                    // Debug
-                    if (Config.LOGD) {
-                        Log.d(TAG, "(callback) onCryptoStorageReady");
-                    }
-
-                    if (hasKeyPairAndMaiId && statusManager.isDataEnabled()) {
-                        //asyncUpdateQuestions(); // Line commented not to update questions at each launch of the SyncService
-                        asyncUploadPolls();
-                        asyncUploadLocationItems();
-                    }
-                }
-
-            };
-
-            // This will launch all calls through the callbacks
-            cryptoStorage.onReady(callback);
-
+            // This will launch all the calls through the callback
+            cryptoStorage.onReady(cryptoStorageCallback);
         } else {
-
             // Info
             Log.i(TAG, "no data connection available -> exiting");
 
+            // Toast debug
             if (Config.TOASTD) {
                 Toast.makeText(this, "SyncService: no internet connection",
                         Toast.LENGTH_SHORT).show();
             }
-
-            stopSelf();
         }
+
+        // We stop immediately, but the worker threads keep running until
+        // they finish or time out.
+        stopSelf();
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    /**
+     * Download and import {@link Question}s from the server into our pool of
+     * questions, asynchronously.
+     */
     private void asyncUpdateQuestions() {
 
         // Debug
@@ -150,117 +220,18 @@ public class SyncService extends RoboService {
             Log.d(TAG, "[fn] asyncUpdateQuestions");
         }
 
-        // FIXME: There might be a problem if the service is started from an Activity, and the
-        // orientation of the display changes. That will stop and restart the worker process.
-        // See http://developer.android.com/guide/components/processes-and-threads.html ,
-        // right above the "Thread-safe methods" title.
-
-//        // Use this:
-//        // set the connection timeout value to 30 seconds (30000 milliseconds)
-//        final HttpParams httpParams = new BasicHttpParams();
-//        HttpConnectionParams.setConnectionTimeout(httpParams, 30000);
-//        client = new DefaultHttpClient(httpParams);
-
-
-        final HttpConversationCallback updateQuestionsCallback = new HttpConversationCallback() {
-
-            private final String TAG = "HttpConversationCallback";
-
-            @Override
-            public void onHttpConversationFinished(boolean success, String serverAnswer) {
-
-                // Debug
-                if (Config.LOGD) {
-                    Log.d(TAG, "[fn] (updateQuestionsCallback) onHttpConversationFinished");
-                }
-
-                if (success) {
-
-                    // Info
-                    Log.i(TAG, "successfully retrieved new questions.json from server");
-
-                    if (Config.TOASTD) {
-                        Toast.makeText(SyncService.this,
-                                "SyncService: new questions downloaded from server",
-                                Toast.LENGTH_SHORT).show();
-                    }
-                    questionsStorage.importQuestions(serverAnswer);
-                } else {
-                    // Warning
-                    Log.w(TAG, "error while retrieving new questions.json from server");
-                }
-
-                setUpdateQuestionsDone();
-            }
-
-        };
-
-        HttpConversationCallback fullCallback = new HttpConversationCallback() {
-
-            private final String TAG = "HttpConversationCallback";
-
-            @Override
-            public void onHttpConversationFinished(boolean success, String serverAnswer) {
-
-                // Debug
-                if (Config.LOGD) {
-                    Log.d(TAG, "[fn] (fullCallback) onHttpConversationFinished");
-                }
-
-                boolean willGetQuestions = false;
-
-                if (success) {
-
-                    // Info
-                    Log.i(TAG, "successfully retrieved questionsVersion from server");
-
-                    try {
-                        int serverQuestionsVersion = Integer.parseInt(serverAnswer.split("\n")[0]);
-
-                        if (serverQuestionsVersion != questionsStorage.getQuestionsVersion()) {
-
-                            // Info
-                            Log.i(TAG, "server's questionsVersion is different from the local one " +
-                                    "-> trying to update questions");
-
-                            willGetQuestions = true;
-
-                            HttpGetData updateQuestionsData = new HttpGetData(ServerConfig.QUESTIONS_URL,
-                                    updateQuestionsCallback);
-                            HttpGetTask updateQuestionsTask = new HttpGetTask();
-                            updateQuestionsTask.execute(updateQuestionsData);
-
-                        } else {
-
-                            if (Config.TOASTD) {
-                                Toast.makeText(SyncService.this,
-                                        "SyncService: no new questions to download",
-                                        Toast.LENGTH_SHORT).show();
-                            }
-
-                        }
-                    } catch (Exception e) {
-                        // Warning
-                        Log.w(TAG, "error while parsing questionsVersion answer from server");
-                    }
-                } else {
-                    // Warning
-                    Log.w(TAG, "error while retrieving questionsVersion from server");
-                }
-
-                if (!willGetQuestions) {
-                    setUpdateQuestionsDone();
-                }
-            }
-
-        };
-
-        HttpGetData getQuestionsVersionData = new HttpGetData(ServerConfig.QUESTIONS_VERSION_URL,
-                fullCallback);
-        HttpGetTask getQuestionsVersionTask = new HttpGetTask();
-        getQuestionsVersionTask.execute(getQuestionsVersionData);
+        // Self-evident
+        HttpGetData updateQuestionsData =
+                new HttpGetData(ServerConfig.QUESTIONS_URL,
+                        updateQuestionsCallback);
+        HttpGetTask updateQuestionsTask = new HttpGetTask();
+        updateQuestionsTask.execute(updateQuestionsData);
     }
 
+    /**
+     * Upload answered {@link Poll}s to the server and remove them from local
+     * storage, asynchronously.
+     */
     private void asyncUploadPolls() {
 
         // Debug
@@ -268,89 +239,71 @@ public class SyncService extends RoboService {
             Log.d(TAG, "[fn] asyncUploadPolls");
         }
 
-        // FIXME: There might be a problem if the service is started from an Activity, and the
-        // orientation of the display changes. That will stop and restart the worker process.
-        // See http://developer.android.com/guide/components/processes-and-threads.html ,
-        // right above the "Thread-safe methods" title.
-
+        // Do we have any polls to upload?
         ArrayList<Poll> uploadablePolls = pollsStorage.getUploadablePolls();
-
         if (uploadablePolls == null) {
-
             // Info
             Log.i(TAG, "no polls to upload -> exiting");
 
+            // Toast debug
             if (Config.TOASTD) {
-                Toast.makeText(this,
-                        "SyncService: no polls to upload",
+                Toast.makeText(this, "SyncService: no polls to upload",
                         Toast.LENGTH_SHORT).show();
             }
 
-            setUploadPollsDone();
             return;
         }
 
-        // Info
-        Log.i(TAG, "trying to upload " + uploadablePolls.size() + " polls");
+        // Wrap uploadable polls in a single structure to provide a root
+        // node when jsonifying
+        final PollArray pollArray = new PollArray(uploadablePolls);
 
-        if (Config.TOASTD) {
-            Toast.makeText(this,
-                    "SyncService: trying to upload " + uploadablePolls.size() + " polls",
-                    Toast.LENGTH_SHORT).show();
-        }
+        // Called once the HttpPostTask completes or times out
+        HttpConversationCallback callback = new HttpConversationCallback() {
 
-        pollsLeftToUpload = new HashSet<Integer>();
-        for (Poll poll : uploadablePolls) {
-            pollsLeftToUpload.add(poll.getId());
-        }
+            private String TAG = "HttpConversationCallback";
 
-        for (Poll poll : uploadablePolls) {
+            @Override
+            public void onHttpConversationFinished(boolean success,
+                                                   String serverAnswer) {
 
-            final int pollId = poll.getId();
-
-            HttpConversationCallback callback = new HttpConversationCallback() {
-
-                private final String TAG = "HttpConversationCallback";
-
-                @Override
-                public void onHttpConversationFinished(boolean success, String serverAnswer) {
-
-                    // Debug
-                    if (Config.LOGD) {
-                        Log.d(TAG, "(callback) onHttpConversationFinished");
-                    }
-
-                    if (success) {
-
-                        // Info
-                        Log.i(TAG, "successfully uploaded poll (id: " +
-                                pollId + ") to server (serverAnswer: " +
-                                serverAnswer + ")");
-
-                        if (Config.TOASTD) {
-                            Toast.makeText(SyncService.this,
-                                    "SyncService: uploaded poll (id: " + pollId +
-                                    ") (serverAnswer: " + serverAnswer + ")",
-                                    Toast.LENGTH_LONG).show();
-                        }
-
-                        pollsStorage.removePoll(pollId);
-                        setUploadPollDone(pollId);
-                    } else {
-
-                        // Warning
-                        Log.w(TAG, "error while upload poll (id: " + pollId + ") to server");
-
-                        setUploadPollDone(pollId);
-                    }
+                // Debug
+                if (Config.LOGD) {
+                    Log.d(TAG, "(callback) onHttpConversationFinished");
                 }
 
-            };
+                if (success) {
+                    // Info
+                    Log.i(TAG, "successfully uploaded polls to server " +
+                            "(serverAnswer: " + serverAnswer + ")");
 
-            serverTalker.signAndUploadData(ServerConfig.EXP_ID, gson.toJson(poll), callback);
-        }
+                    // Toast debug
+                    if (Config.TOASTD) {
+                        Toast.makeText(SyncService.this,
+                                "SyncService: uploaded polls " +
+                                        "(serverAnswer: " +
+                                        serverAnswer + ")",
+                                Toast.LENGTH_LONG).show();
+                    }
+
+                    pollsStorage.removePolls(pollArray.getPolls());
+                } else {
+                    // Warning
+                    Log.w(TAG, "error while uploading polls to server");
+                }
+            }
+
+        };
+
+        // Sign our data to identify us, and upload
+        serverTalker.signAndUploadData(ServerConfig.EXP_ID,
+                gson.toJson(pollArray), callback);
     }
 
+    /**
+     * Upload collected {@link LocationPoint}s to the server and remove
+     * them from local storage, asynchronously.
+     */
     private void asyncUploadLocationItems() {
 
         // Debug
@@ -358,160 +311,69 @@ public class SyncService extends RoboService {
             Log.d(TAG, "[fn] asyncUploadLocationItems");
         }
 
-        // FIXME: There might be a problem if the service is started from an Activity, and the
-        // orientation of the display changes. That will stop and restart the worker process.
-        // See http://developer.android.com/guide/components/processes-and-threads.html ,
-        // right above the "Thread-safe methods" title.
-
-        ArrayList<LocationPoint> uploadableLocationPoints = locationPointsStorage.getUploadableLocationPoints();
-
+        // Do we have any location points to upload?
+        ArrayList<LocationPoint> uploadableLocationPoints =
+                locationPointsStorage.getUploadableLocationPoints();
         if (uploadableLocationPoints == null) {
-
             // Info
             Log.i(TAG, "no locationItems to upload -> exiting");
 
+            // Toast debug
             if (Config.TOASTD) {
                 Toast.makeText(this,
                         "SyncService: no locationItems to upload",
                         Toast.LENGTH_SHORT).show();
             }
 
-            setUploadLocationItemsDone();
             return;
         }
 
-        // Info
-        Log.i(TAG, "trying to upload " + uploadableLocationPoints.size() + " locationItems");
+        // Wrap uploadable location points in a single structure to provide
+        // a root node when jsonifying.
+        final LocationPointArray locationPoints =
+                new LocationPointArray(uploadableLocationPoints);
 
-        if (Config.TOASTD) {
-            Toast.makeText(this,
-                    "SyncService: trying to upload " + uploadableLocationPoints.size() + " locationItems",
-                    Toast.LENGTH_SHORT).show();
-        }
+        // Called when the HttPPostTask finishes or times out
+        HttpConversationCallback callback = new HttpConversationCallback() {
 
-        locationItemsLeftToUpload = new HashSet<Integer>();
-        for (LocationPoint locationPoint : uploadableLocationPoints) {
-            locationItemsLeftToUpload.add(locationPoint.getId());
-        }
+            private final String TAG = "HttpConversationCallback";
 
-        for (LocationPoint locationPoint : uploadableLocationPoints) {
+            @Override
+            public void onHttpConversationFinished(boolean success,
+                                                   String serverAnswer) {
 
-            final int locationItemId = locationPoint.getId();
-
-            HttpConversationCallback callback = new HttpConversationCallback() {
-
-                private final String TAG = "HttpConversationCallback";
-
-                @Override
-                public void onHttpConversationFinished(boolean success, String serverAnswer) {
-
-                    // Debug
-                    if (Config.LOGD) {
-                        Log.d(TAG, "(callback) onHttpConversationFinished");
-                    }
-
-                    if (success) {
-
-                        // Info
-                        Log.i(TAG, "successfully uploaded locationPoint (id: " +
-                                locationItemId + ") to server (serverAnswer: " +
-                                serverAnswer + ")");
-
-                        if (Config.TOASTD) {
-                            Toast.makeText(SyncService.this,
-                                    "SyncService: uploaded locationPoint (id: " + locationItemId +
-                                            ") (serverAnswer: " + serverAnswer + ")",
-                                    Toast.LENGTH_LONG).show();
-                        }
-
-                        locationPointsStorage.removeLocationPoint(locationItemId);
-                        setUploadLocationItemDone(locationItemId);
-                    } else {
-
-                        // Warning
-                        Log.w(TAG, "error while upload locationPoint (id: " + locationItemId + ") to server");
-
-                        setUploadLocationItemDone(locationItemId);
-                    }
+                // Debug
+                if (Config.LOGD) {
+                    Log.d(TAG, "(callback) onHttpConversationFinished");
                 }
 
-            };
+                if (success) {
+                    // Info
+                    Log.i(TAG, "successfully uploaded locationPoints to " +
+                            "server (serverAnswer: " + serverAnswer + ")");
 
-            serverTalker.signAndUploadData(ServerConfig.EXP_ID, gson.toJson(locationPoint), callback);
-        }
-    }
+                    if (Config.TOASTD) {
+                        Toast.makeText(SyncService.this,
+                                "SyncService: uploaded locationPoints " +
+                                        "(serverAnswer: " +
+                                        serverAnswer + ")",
+                                Toast.LENGTH_LONG).show();
+                    }
 
-    private void setUpdateQuestionsDone() {
+                    locationPointsStorage.removeLocationPoints(
+                            locationPoints.getLocationPoints());
+                } else {
+                    // Warning
+                    Log.w(TAG, "error while uploading locationPoints " +
+                            "to server");
+                }
+            }
 
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] setUpdateQuestionsDone");
-        }
+        };
 
-        updateQuestionsDone = true;
-        stopSelfIfAllDone();
-    }
-
-    private void setUploadPollDone(int pollId) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] setUploadPollDone");
-        }
-
-        pollsLeftToUpload.remove(pollId);
-
-        if (pollsLeftToUpload.size() == 0) {
-            setUploadPollsDone();
-        }
-    }
-
-    private void setUploadPollsDone() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] setUploadPollsDone");
-        }
-
-        uploadPollsDone = true;
-        stopSelfIfAllDone();
-    }
-
-    private void setUploadLocationItemDone(int locationItemId) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] setUploadLocationItemDone");
-        }
-
-        locationItemsLeftToUpload.remove(locationItemId);
-
-        if (locationItemsLeftToUpload.size() == 0) {
-            setUploadLocationItemsDone();
-        }
-    }
-
-    private void setUploadLocationItemsDone() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] setUploadLocationItemsDone");
-        }
-
-        uploadLocationItemsDone = true;
-        stopSelfIfAllDone();
-    }
-
-    private void stopSelfIfAllDone() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] stopSelfIfAllDone");
-        }
-
-        if (updateQuestionsDone && uploadPollsDone && uploadLocationItemsDone) {
-            stopSelf();
-        }
+        // Sign our data to identify us, and upload
+        serverTalker.signAndUploadData(ServerConfig.EXP_ID,
+                gson.toJson(locationPoints), callback);
     }
 
 }

@@ -62,12 +62,12 @@ public class LocationService extends RoboService {
      */
     public class LocationServiceBinder extends Binder {
 
-        private final String TAG = "LocationServiceBinder";
+        private String TAG = "LocationServiceBinder";
 
         /**
          * Get a handle to the bound {@code LocationService}.
          *
-         * @return The currently bound {@code LocationService}
+         * @return Currently bound {@code LocationService}
          */
         LocationService getService() {
 
@@ -88,7 +88,7 @@ public class LocationService extends RoboService {
      * callback for location updates. This callback should be created by
      * {@link LocationPointService}.
      *
-     * @param callback The callback to set
+     * @param callback Callback to set
      */
     public void setLocationPointCallback(LocationCallback callback) {
 
@@ -113,7 +113,7 @@ public class LocationService extends RoboService {
      * callback should be created by {@link com.brainydroid.daydreaming.ui
      * .QuestionActivity}.
      *
-     * @param callback The callback to set
+     * @param callback Callback to set
      */
     public void setQuestionLocationCallback(LocationCallback callback) {
 
@@ -239,7 +239,7 @@ public class LocationService extends RoboService {
 
         locationListener = new LocationListener() {
 
-            private final String TAG = "LocationListener";
+            private String TAG = "LocationListener";
 
             @Override
             public void onLocationChanged(Location location) {

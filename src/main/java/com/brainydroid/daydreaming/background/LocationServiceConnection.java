@@ -211,7 +211,7 @@ public class LocationServiceConnection implements ServiceConnection {
     /**
      * Register a {@link ServiceConnectionCallback}.
      *
-     * @param serviceConnectionCallback The callback to register.
+     * @param serviceConnectionCallback Callback to register
      */
     public void setOnServiceConnectedCallback(
             ServiceConnectionCallback serviceConnectionCallback) {
@@ -227,7 +227,7 @@ public class LocationServiceConnection implements ServiceConnection {
     /**
      * Remember to set a {@code LocationPoint} callback when possible.
      *
-     * @param callback The callback to remember
+     * @param callback Callback to remember
      */
     public void setLocationPointCallback(LocationCallback callback) {
 
@@ -251,7 +251,7 @@ public class LocationServiceConnection implements ServiceConnection {
     /**
      * Remember to set a {@code QuestionLocation} callback when possible.
      *
-     * @param callback The callback to remember
+     * @param callback Callback to remember
      */
     public void setQuestionLocationCallback(LocationCallback callback) {
 

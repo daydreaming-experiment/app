@@ -10,6 +10,7 @@ import com.google.inject.Singleton;
 
 import java.util.ArrayList;
 
+// TODO: factor most of this into Storage
 @Singleton
 public class LocationPointsStorage {
 
@@ -20,6 +21,7 @@ public class LocationPointsStorage {
     private static final String SQL_CREATE_TABLE_LOCATIONS =
             "CREATE TABLE IF NOT EXISTS " + TABLE_LOCATIONS + " (" +
                     LocationPoint.COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    LocationPoint.COL_STATUS + " TEXT NOT NULL, " +
                     LocationPoint.COL_LOCATION_LATITUDE + " REAL, " +
                     LocationPoint.COL_LOCATION_LONGITUDE + " REAL, " +
                     LocationPoint.COL_LOCATION_ALTITUDE + " REAL, " +
@@ -52,6 +54,7 @@ public class LocationPointsStorage {
         }
 
         ContentValues locationPointValues = new ContentValues();
+        locationPointValues.put(LocationPoint.COL_STATUS, locationPoint.getStatus());
         locationPointValues.put(LocationPoint.COL_LOCATION_LATITUDE, locationPoint.getLocationLatitude());
         locationPointValues.put(LocationPoint.COL_LOCATION_LONGITUDE, locationPoint.getLocationLongitude());
         locationPointValues.put(LocationPoint.COL_LOCATION_ALTITUDE, locationPoint.getLocationAltitude());
@@ -119,6 +122,7 @@ public class LocationPointsStorage {
         }
 
         LocationPoint locationPoint = new LocationPoint();
+        locationPoint.setStatus(res.getString(res.getColumnIndex(LocationPoint.COL_STATUS)));
         locationPoint.setLocationLatitude(res.getDouble(res.getColumnIndex(LocationPoint.COL_LOCATION_LATITUDE)));
         locationPoint.setLocationLongitude(res.getDouble(res.getColumnIndex(LocationPoint.COL_LOCATION_LONGITUDE)));
         locationPoint.setLocationAltitude(res.getDouble(res.getColumnIndex(LocationPoint.COL_LOCATION_ALTITUDE)));
@@ -138,51 +142,82 @@ public class LocationPointsStorage {
             Log.d(TAG, "[fn] getUploadableLocationPoints");
         }
 
-        return getAllLocationPoints();
+        return getLocationPointsWithStatuses(
+                new String[] {LocationPoint.STATUS_COMPLETED});
     }
 
-    private ArrayList<Integer> getAllLocationPointIds() {
+    public ArrayList<LocationPoint> getCollectingLocationPoints() {
 
         // Debug
         if (Config.LOGD) {
-            Log.d(TAG, "[fn] getAllLocationPointIds");
+            Log.d(TAG, "[fn] getCollectingLocationPoints");
         }
 
-        Cursor res = rDb.query(TABLE_LOCATIONS, new String[] {LocationPoint.COL_ID}, null, null,
-                null, null, null);
+        return getLocationPointsWithStatuses(
+                new String[] {LocationPoint.STATUS_COLLECTING});
+    }
+
+    private ArrayList<Integer> getLocationPointIdsWithStatuses(
+            String[] statuses) {
+
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] getLocationPointIdsWithStatuses " +
+                    "(from String[])");
+        }
+
+        return getLocationPointIdsWithStatuses(statuses, null);
+    }
+
+    private ArrayList<Integer> getLocationPointIdsWithStatuses(
+            String[] statuses, String limit) {
+
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] getLocationPointIdsWithStatuses (from " +
+                    "String[], String)");
+        }
+
+        String query = Util.multiplyString(LocationPoint.COL_STATUS + "=?",
+                statuses.length, " OR ");
+        Cursor res = rDb.query(TABLE_LOCATIONS, new String[] {LocationPoint.COL_ID},
+                query, statuses, null, null, null, limit);
         if (!res.moveToFirst()) {
             res.close();
             return null;
         }
 
-        ArrayList<Integer> locationPointIds = new ArrayList<Integer>();
+        ArrayList<Integer> statusLocationPointIds = new ArrayList<Integer>();
         do {
-            locationPointIds.add(res.getInt(res.getColumnIndex(LocationPoint.COL_ID)));
+            statusLocationPointIds.add(res.getInt(res.getColumnIndex(LocationPoint.COL_ID)));
         } while (res.moveToNext());
 
-        return locationPointIds;
+        return statusLocationPointIds;
     }
 
-    private ArrayList<LocationPoint> getAllLocationPoints() {
+    private ArrayList<LocationPoint> getLocationPointsWithStatuses(
+            String[] statuses) {
 
         // Debug
         if (Config.LOGD) {
-            Log.d(TAG, "[fn] getAllLocationPoints");
+            Log.d(TAG, "[fn] getLocationPointsWithStatuses");
         }
 
-        ArrayList<Integer> locationPointIds = getAllLocationPointIds();
+        ArrayList<Integer> statusLocationPointIds =
+                getLocationPointIdsWithStatuses(statuses);
 
-        if (locationPointIds == null) {
+        if (statusLocationPointIds == null) {
             return null;
         }
 
-        ArrayList<LocationPoint> locationPoints = new ArrayList<LocationPoint>();
+        ArrayList<LocationPoint> statusLocationPoints =
+                new ArrayList<LocationPoint>();
 
-        for (int locationPointId : locationPointIds) {
-            locationPoints.add(getLocationPoint(locationPointId));
+        for (int locationPointId : statusLocationPointIds) {
+            statusLocationPoints.add(getLocationPoint(locationPointId));
         }
 
-        return locationPoints;
+        return statusLocationPoints;
     }
 
     public void removeLocationPoint(int locationPointId) {
@@ -193,6 +228,19 @@ public class LocationPointsStorage {
         }
 
         wDb.delete(TABLE_LOCATIONS, LocationPoint.COL_ID + "=?", new String[] {Integer.toString(locationPointId)});
+    }
+
+    public void removeLocationPoints(
+            ArrayList<LocationPoint> locationPoints) {
+
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] removeLocationPoints");
+        }
+
+        for (LocationPoint locationPoint : locationPoints) {
+            removeLocationPoint(locationPoint.getId());
+        }
     }
 
 }

@@ -63,7 +63,7 @@ public class PollService extends RoboService {
         populatePoll();
         notifyPoll();
 
-        // Reschedule the next poll
+        // Schedule the next poll
         startSchedulerService();
 
         stopSelf();
@@ -97,7 +97,7 @@ public class PollService extends RoboService {
     /**
      * Create the {@link QuestionActivity} {@code Intent}.
      *
-     * @return The {@code Intent} to launch our {@link Poll}
+     * @return An {@code Intent} to launch our {@link Poll}
      */
     private Intent createPollIntent() {
 

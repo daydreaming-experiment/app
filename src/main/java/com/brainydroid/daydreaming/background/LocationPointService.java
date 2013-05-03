@@ -8,11 +8,14 @@ import android.os.IBinder;
 import android.os.SystemClock;
 import android.util.Log;
 import com.brainydroid.daydreaming.db.LocationPoint;
+import com.brainydroid.daydreaming.db.LocationPointsStorage;
 import com.brainydroid.daydreaming.network.SntpClient;
 import com.brainydroid.daydreaming.network.SntpClientCallback;
 import com.brainydroid.daydreaming.ui.Config;
 import com.google.inject.Inject;
 import roboguice.service.RoboService;
+
+import java.util.ArrayList;
 
 /**
  * Start and manage {@link LocationService} to obtain a {@link
@@ -45,6 +48,7 @@ public class LocationPointService extends RoboService {
 
     @Inject SntpClient sntpClient;
     @Inject LocationPoint locationPoint;
+    @Inject LocationPointsStorage locationPointsStorage;
     @Inject AlarmManager alarmManager;
     @Inject StatusManager statusManager;
     @Inject LocationServiceConnection locationServiceConnection;
@@ -54,7 +58,7 @@ public class LocationPointService extends RoboService {
     private ServiceConnectionCallback serviceConnectionCallback =
             new ServiceConnectionCallback() {
 
-        private final String TAG = "ServiceConnectionCallback";
+        private String TAG = "ServiceConnectionCallback";
 
         @Override
         public void onServiceConnected() {
@@ -163,7 +167,25 @@ public class LocationPointService extends RoboService {
         // waiting to be transferred to the LocationService on bind.
         locationServiceConnection.clearLocationPointCallback();
 
-        // If LocationService is not running there's no need to stop it
+        // Mark all location points as uploadable. Only complete ones will
+        // have been saved to DB. This ArrayList should in fact always be
+        // reduced to only one item.
+        ArrayList<LocationPoint> collectingLocationPoints =
+                locationPointsStorage.getCollectingLocationPoints();
+        for (LocationPoint collectingLocationPoint :
+                collectingLocationPoints) {
+            collectingLocationPoint.setStatus(LocationPoint.STATUS_COMPLETED);
+        }
+
+        // Try and spot bugs
+        if (collectingLocationPoints.size() != 1) {
+            // Warning
+            Log.w(TAG, "collectingLocationPoints.size() should be 1, " +
+                    "but is " + collectingLocationPoints.size());
+        }
+
+        // If LocationService is not running there's no need to stop it,
+        // we can exit.
         if (!statusManager.isLocationServiceRunning()) {
             // We're not doing a service connection, so we're all done
             stopSelf();
@@ -203,12 +225,15 @@ public class LocationPointService extends RoboService {
             Log.d(TAG, "[fn] startLocationListening");
         }
 
+        // Mark the location point as not yet uploadable
+        locationPoint.setStatus(LocationPoint.STATUS_COLLECTING);
+
         // This will be called by LocationService when it receives location
         // data. It gets registered on the LocationService when the
         // locationServiceConnection binds.
         LocationCallback locationCallback = new LocationCallback() {
 
-            private final String TAG = "LocationCallback";
+            private String TAG = "LocationCallback";
 
             @Override
             public void onLocationReceived(Location location) {
@@ -222,7 +247,7 @@ public class LocationPointService extends RoboService {
 
                 // Only save if both timestamp and location have been
                 // found. Otherwise it would create unusable data.
-                if (locationPoint.isOkToSave()) {
+                if (locationPoint.isComplete()) {
                     locationPoint.save();
                 }
             }
@@ -235,7 +260,7 @@ public class LocationPointService extends RoboService {
         // completes.
         SntpClientCallback sntpCallback = new SntpClientCallback() {
 
-            private final String TAG = "SntpClientCallback";
+            private String TAG = "SntpClientCallback";
 
             @Override
             public void onTimeReceived(SntpClient sntpClient) {
@@ -250,7 +275,7 @@ public class LocationPointService extends RoboService {
 
                     // Only save if both timestamp and location have been
                     // found. Otherwise it would create unusable data.
-                    if (locationPoint.isOkToSave()) {
+                    if (locationPoint.isComplete()) {
                         locationPoint.save();
                     }
                 }

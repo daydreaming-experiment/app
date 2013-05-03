@@ -11,6 +11,7 @@ import com.google.inject.Singleton;
 
 import java.util.ArrayList;
 
+// TODO: factor most of this into Storage
 @Singleton
 public class PollsStorage {
 
@@ -295,6 +296,18 @@ public class PollsStorage {
         wDb.delete(TABLE_POLL_QUESTIONS, Poll.COL_ID + "=?",
                 new String[]{Integer.toString(pollId)});
         pollInstances.delete(pollId);
+    }
+
+    public void removePolls(ArrayList<Poll> polls) {
+
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] removePolls");
+        }
+
+        for (Poll poll : polls) {
+            removePoll(poll.getId());
+        }
     }
 
 }

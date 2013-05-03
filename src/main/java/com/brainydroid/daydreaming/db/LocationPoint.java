@@ -11,6 +11,7 @@ public class LocationPoint {
     private static String TAG = "LocationPoint";
 
     private transient int id = -1;
+    private transient String status;
 
     @Expose private double locationLatitude = -1;
     @Expose private double locationLongitude = -1;
@@ -19,11 +20,15 @@ public class LocationPoint {
     @Expose private long timestamp = -1;
 
     public static final String COL_ID = "locationId";
+    public static final String COL_STATUS = "locationStatus";
     public static final String COL_LOCATION_LATITUDE = "locationLocationLatitude";
     public static final String COL_LOCATION_LONGITUDE = "locationLocationLongitude";
     public static final String COL_LOCATION_ALTITUDE = "locationLocationAltitude";
     public static final String COL_LOCATION_ACCURACY = "locationLocationAccuracy";
     public static final String COL_TIMESTAMP = "locationTimestamp";
+
+    public static final String STATUS_COLLECTING = "statusCollecting";
+    public static final String STATUS_COMPLETED = "statusCompleted";
 
     @Inject transient LocationPointsStorage locationPointsStorage;
 
@@ -48,6 +53,26 @@ public class LocationPoint {
         }
 
         return id;
+    }
+
+    public void setStatus(String status) {
+
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn setStatus");
+        }
+
+        this.status = status;
+    }
+
+    public String getStatus() {
+
+        // Verbose
+        if (Config.LOGV) {
+            Log.v(TAG, "[fn] getStatus");
+        }
+
+        return status;
     }
 
     public double getLocationLatitude() {
@@ -171,11 +196,11 @@ public class LocationPoint {
         saveIfSync();
     }
 
-    public boolean isOkToSave() {
+    public boolean isComplete() {
 
         // Debug
         if (Config.LOGD) {
-            Log.d(TAG, "[fn] isOkToSave");
+            Log.d(TAG, "[fn] isComplete");
         }
 
         boolean hasLocation = locationLatitude != -1 &&
