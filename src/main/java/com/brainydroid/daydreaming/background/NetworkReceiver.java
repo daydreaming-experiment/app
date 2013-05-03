@@ -11,7 +11,7 @@ import roboguice.receiver.RoboBroadcastReceiver;
 /**
  * Start {@link SyncService} when Internet becomes available.
  * <p/>
- * These services are only started if the first launch has been completed
+ * This service is only started if the first launch has been completed
  * (i.e. the user has registered and is participating in the experiment).
  *
  * @author Sébastien Lerique
