@@ -27,6 +27,10 @@ public class StatusManager {
     private static final String EXP_STATUS_FL_COMPLETED =
             "expStatusFlCompleted";
 
+    /** Preference key storing the status of initial questions download */
+    private static final String EXP_STATUS_QUESTIONS_DOWNLOADED =
+            "expStatusQuestionsDownloaded";
+
     @Inject SharedPreferences sharedPreferences;
     @Inject LocationManager locationManager;
     @Inject ConnectivityManager connectivityManager;
@@ -61,6 +65,39 @@ public class StatusManager {
         SharedPreferences.Editor eSharedPreferences =
                 sharedPreferences.edit();
         eSharedPreferences.putBoolean(EXP_STATUS_FL_COMPLETED, true);
+        eSharedPreferences.commit();
+    }
+
+    /**
+     * Check if the questions have been downloaded.
+     *
+     * @return {@code true} if the questions have been downloaded,
+     *         {@code false} otherwise
+     */
+    public boolean areQuestionsDownloaded() {
+
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] areQuestionsDownloaded");
+        }
+
+        return sharedPreferences.getBoolean(EXP_STATUS_QUESTIONS_DOWNLOADED,
+                false);
+    }
+
+    /**
+     * Set the downloaded questions flag to completed.
+     */
+    public void setQuestionsDownloaded() {
+
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] setQuestionsDownloaded");
+        }
+
+        SharedPreferences.Editor eSharedPreferences =
+                sharedPreferences.edit();
+        eSharedPreferences.putBoolean(EXP_STATUS_QUESTIONS_DOWNLOADED, true);
         eSharedPreferences.commit();
     }
 
