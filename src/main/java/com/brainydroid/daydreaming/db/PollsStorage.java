@@ -11,6 +11,7 @@ import com.google.inject.Singleton;
 
 import java.util.ArrayList;
 
+// TODO: factor most of this into Storage
 @Singleton
 public class PollsStorage {
 
