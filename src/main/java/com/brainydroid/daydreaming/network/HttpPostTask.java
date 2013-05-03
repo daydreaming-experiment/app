@@ -6,6 +6,9 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
 
 import android.os.AsyncTask;
@@ -29,7 +32,10 @@ public class HttpPostTask extends AsyncTask<HttpPostData, Void, Boolean> {
             Log.d(TAG, "[fn] onPreExecute");
         }
 
-        client = new DefaultHttpClient();
+        HttpParams httpParams = new BasicHttpParams();
+        HttpConnectionParams.setConnectionTimeout(httpParams,
+                ServerConfig.HTTP_TIMEOUT);
+        client = new DefaultHttpClient(httpParams);
     }
 
     @Override
