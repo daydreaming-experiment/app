@@ -62,7 +62,7 @@ public class LocationService extends RoboService {
      */
     public class LocationServiceBinder extends Binder {
 
-        private final String TAG = "LocationServiceBinder";
+        private String TAG = "LocationServiceBinder";
 
         /**
          * Get a handle to the bound {@code LocationService}.
@@ -239,7 +239,7 @@ public class LocationService extends RoboService {
 
         locationListener = new LocationListener() {
 
-            private final String TAG = "LocationListener";
+            private String TAG = "LocationListener";
 
             @Override
             public void onLocationChanged(Location location) {

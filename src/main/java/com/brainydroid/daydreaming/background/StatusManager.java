@@ -24,11 +24,11 @@ public class StatusManager {
     private static String TAG = "StatusManager";
 
     /** Preference key storing the first launch status */
-    private static final String EXP_STATUS_FL_COMPLETED =
+    private static String EXP_STATUS_FL_COMPLETED =
             "expStatusFlCompleted";
 
     /** Preference key storing the status of initial questions update */
-    private static final String EXP_STATUS_QUESTIONS_UPDATED =
+    private static String EXP_STATUS_QUESTIONS_UPDATED =
             "expStatusQuestionsUpdated";
 
     @Inject SharedPreferences sharedPreferences;

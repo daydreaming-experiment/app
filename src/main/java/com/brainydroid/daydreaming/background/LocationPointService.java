@@ -54,7 +54,7 @@ public class LocationPointService extends RoboService {
     private ServiceConnectionCallback serviceConnectionCallback =
             new ServiceConnectionCallback() {
 
-        private final String TAG = "ServiceConnectionCallback";
+        private String TAG = "ServiceConnectionCallback";
 
         @Override
         public void onServiceConnected() {
@@ -208,7 +208,7 @@ public class LocationPointService extends RoboService {
         // locationServiceConnection binds.
         LocationCallback locationCallback = new LocationCallback() {
 
-            private final String TAG = "LocationCallback";
+            private String TAG = "LocationCallback";
 
             @Override
             public void onLocationReceived(Location location) {
@@ -235,7 +235,7 @@ public class LocationPointService extends RoboService {
         // completes.
         SntpClientCallback sntpCallback = new SntpClientCallback() {
 
-            private final String TAG = "SntpClientCallback";
+            private String TAG = "SntpClientCallback";
 
             @Override
             public void onTimeReceived(SntpClient sntpClient) {
