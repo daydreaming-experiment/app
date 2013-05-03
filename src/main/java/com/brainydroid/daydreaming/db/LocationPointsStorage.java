@@ -195,4 +195,17 @@ public class LocationPointsStorage {
         wDb.delete(TABLE_LOCATIONS, LocationPoint.COL_ID + "=?", new String[] {Integer.toString(locationPointId)});
     }
 
+    public void removeLocationPoints(
+            ArrayList<LocationPoint> locationPoints) {
+
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] removeLocationPoints");
+        }
+
+        for (LocationPoint locationPoint : locationPoints) {
+            removeLocationPoint(locationPoint.getId());
+        }
+    }
+
 }

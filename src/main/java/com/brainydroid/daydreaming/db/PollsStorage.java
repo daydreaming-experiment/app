@@ -297,4 +297,16 @@ public class PollsStorage {
         pollInstances.delete(pollId);
     }
 
+    public void removePolls(ArrayList<Poll> polls) {
+
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] removePolls");
+        }
+
+        for (Poll poll : polls) {
+            removePoll(poll.getId());
+        }
+    }
+
 }
