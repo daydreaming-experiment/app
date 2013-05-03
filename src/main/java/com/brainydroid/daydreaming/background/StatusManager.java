@@ -27,9 +27,9 @@ public class StatusManager {
     private static final String EXP_STATUS_FL_COMPLETED =
             "expStatusFlCompleted";
 
-    /** Preference key storing the status of initial questions download */
-    private static final String EXP_STATUS_QUESTIONS_DOWNLOADED =
-            "expStatusQuestionsDownloaded";
+    /** Preference key storing the status of initial questions update */
+    private static final String EXP_STATUS_QUESTIONS_UPDATED =
+            "expStatusQuestionsUpdated";
 
     @Inject SharedPreferences sharedPreferences;
     @Inject LocationManager locationManager;
@@ -69,35 +69,35 @@ public class StatusManager {
     }
 
     /**
-     * Check if the questions have been downloaded.
+     * Check if the questions have been updated.
      *
-     * @return {@code true} if the questions have been downloaded,
+     * @return {@code true} if the questions have been updated,
      *         {@code false} otherwise
      */
-    public boolean areQuestionsDownloaded() {
+    public boolean areQuestionsUpdated() {
 
         // Debug
         if (Config.LOGD) {
-            Log.d(TAG, "[fn] areQuestionsDownloaded");
+            Log.d(TAG, "[fn] areQuestionsUpdated");
         }
 
-        return sharedPreferences.getBoolean(EXP_STATUS_QUESTIONS_DOWNLOADED,
+        return sharedPreferences.getBoolean(EXP_STATUS_QUESTIONS_UPDATED,
                 false);
     }
 
     /**
-     * Set the downloaded questions flag to completed.
+     * Set the updated questions flag to completed.
      */
-    public void setQuestionsDownloaded() {
+    public void setQuestionsUpdated() {
 
         // Debug
         if (Config.LOGD) {
-            Log.d(TAG, "[fn] setQuestionsDownloaded");
+            Log.d(TAG, "[fn] setQuestionsUpdated");
         }
 
         SharedPreferences.Editor eSharedPreferences =
                 sharedPreferences.edit();
-        eSharedPreferences.putBoolean(EXP_STATUS_QUESTIONS_DOWNLOADED, true);
+        eSharedPreferences.putBoolean(EXP_STATUS_QUESTIONS_UPDATED, true);
         eSharedPreferences.commit();
     }
 
