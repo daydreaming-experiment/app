@@ -30,6 +30,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="50dp"
                     android:gravity="center_horizontal"
+                    android:background="@drawable/text_box"
                     android:text="" />
 
             <LinearLayout
