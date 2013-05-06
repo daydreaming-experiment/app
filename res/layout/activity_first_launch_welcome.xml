@@ -17,7 +17,8 @@
             android:layout_marginBottom="50dp"
             android:gravity="center_horizontal"
             android:text="@string/firstLaunchWelcome_text_welcome"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:background="@drawable/text_box"/>
 
         <TextView
             android:id="@+id/firstLaunchWelcome_imageWelcome"
@@ -26,6 +27,13 @@
             android:layout_marginBottom="50dp"
             android:gravity="center_horizontal"
             android:text="*an image here*" />
+
+        <ImageView
+                android:id="@+id/myImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"/>
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -43,8 +51,8 @@
                 android:layout_weight="1"
                 android:drawableRight="@drawable/navigation_next_item"
                 android:onClick="onClick_start"
-                android:text="@string/firstLaunchWelcome_button_start" />
-
+                android:text="@string/firstLaunchWelcome_button_start"
+                android:background="@drawable/nuage"/>
         </LinearLayout>
 
     </LinearLayout>
