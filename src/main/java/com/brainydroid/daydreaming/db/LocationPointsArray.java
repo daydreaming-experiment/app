@@ -6,17 +6,17 @@ import com.google.gson.annotations.Expose;
 
 import java.util.ArrayList;
 
-public class LocationPointArray {
+public class LocationPointsArray {
 
-    private static String TAG = "PollArray";
+    private static String TAG = "PollsArray";
 
     @Expose private ArrayList<LocationPoint> locationPoints;
 
-    public LocationPointArray(ArrayList<LocationPoint> locationPoints) {
+    public LocationPointsArray(ArrayList<LocationPoint> locationPoints) {
 
         // Debug
         if (Config.LOGD) {
-            Log.d(TAG, "[fn] LocationPointArray");
+            Log.d(TAG, "[fn] LocationPointsArray");
         }
 
         this.locationPoints = locationPoints;

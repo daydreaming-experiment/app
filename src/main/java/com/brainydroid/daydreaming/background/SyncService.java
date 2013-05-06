@@ -256,7 +256,7 @@ public class SyncService extends RoboService {
 
         // Wrap uploadable polls in a single structure to provide a root
         // node when jsonifying
-        final PollArray pollArray = new PollArray(uploadablePolls);
+        final PollsArray pollsArray = new PollsArray(uploadablePolls);
 
         // Called once the HttpPostTask completes or times out
         HttpConversationCallback callback = new HttpConversationCallback() {
@@ -286,7 +286,7 @@ public class SyncService extends RoboService {
                                 Toast.LENGTH_LONG).show();
                     }
 
-                    pollsStorage.removePolls(pollArray.getPolls());
+                    pollsStorage.removePolls(pollsArray.getPolls());
                 } else {
                     // Warning
                     Log.w(TAG, "error while uploading polls to server");
@@ -297,7 +297,7 @@ public class SyncService extends RoboService {
 
         // Sign our data to identify us, and upload
         serverTalker.signAndUploadData(ServerConfig.EXP_ID,
-                gson.toJson(pollArray), callback);
+                gson.toJson(pollsArray), callback);
     }
 
     /**
@@ -330,8 +330,8 @@ public class SyncService extends RoboService {
 
         // Wrap uploadable location points in a single structure to provide
         // a root node when jsonifying.
-        final LocationPointArray locationPoints =
-                new LocationPointArray(uploadableLocationPoints);
+        final LocationPointsArray locationPoints =
+                new LocationPointsArray(uploadableLocationPoints);
 
         // Called when the HttPPostTask finishes or times out
         HttpConversationCallback callback = new HttpConversationCallback() {
