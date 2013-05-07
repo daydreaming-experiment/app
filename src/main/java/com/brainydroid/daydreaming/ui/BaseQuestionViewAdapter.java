@@ -6,13 +6,11 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.db.*;
 import com.google.inject.Inject;
-import com.google.inject.assistedinject.Assisted;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,12 +21,12 @@ public abstract class BaseQuestionViewAdapter
 
     private static String TAG = "QuestionViewAdapter";
 
-    private IQuestion question;
-    private LinearLayout layout;
+    protected Question question;
+    protected LinearLayout layout;
 
     @Inject LayoutInflater layoutInflater;
 
-    public void setAdapters(IQuestion question, LinearLayout layout) {
+    public void setAdapters(Question question, LinearLayout layout) {
 
         // Debug
         if (Config.LOGD) {
@@ -57,77 +55,6 @@ public abstract class BaseQuestionViewAdapter
 
     protected abstract ArrayList<View> inflateViews();
 
-    private View createViewSlider(String mainText, final ArrayList<String> parametersTexts) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] createViewSlider");
-        }
-
-        View view = layoutInflater.inflate(R.layout.question_slider, null);
-
-        TextView qText = (TextView)view.findViewById(R.id.question_slider_mainText);
-        qText.setText(mainText);
-
-        TextView leftHintText = (TextView)view.findViewById(R.id.question_slider_leftHint);
-        leftHintText.setText(parametersTexts.get(0));
-
-        TextView rightHintText = (TextView)view.findViewById(R.id.question_slider_rightHint);
-        rightHintText.setText(parametersTexts.get(parametersTexts.size() - 1));
-
-        SeekBar seekBar = (SeekBar)view.findViewById(R.id.question_slider_seekBar);
-        final TextView selectedSeek = (TextView)view.findViewById(R.id.question_slider_selectedSeek);
-        final int maxSeek = parametersTexts.size();
-
-        SeekBar.OnSeekBarChangeListener listener = new SeekBar.OnSeekBarChangeListener() {
-
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress,
-                                          boolean fromUser) {
-                int index = (int) FloatMath.floor((progress / 101f) * maxSeek);
-                selectedSeek.setText(parametersTexts.get(index));
-                seekBar.setBackgroundColor(Color.TRANSPARENT);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {}
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {}
-        };
-
-        int defaultPosition = question.getDefaultPosition();
-        if (defaultPosition != -1) {
-            seekBar.setProgress(defaultPosition);
-        }
-
-        seekBar.setBackgroundColor(Color.argb(255,255,205,205));
-        seekBar.setOnSeekBarChangeListener(listener);
-
-        return view;
-    }
-
-    private ArrayList<View> createViewsSlider() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] createViewsSlider");
-        }
-
-        ArrayList<View> views = new ArrayList<View>();
-
-        ArrayList<String> mainTexts = getParsedMainText();
-        ArrayList<ArrayList<String>> allParametersTexts = getParsedParametersText();
-        Iterator<ArrayList<String>> ptsIt = allParametersTexts.iterator();
-
-        for (String mainText : mainTexts) {
-            ArrayList<String> parametersTexts = ptsIt.next();
-            View view = createViewSlider(mainText, parametersTexts);
-            views.add(view);
-        }
-
-        return views;
-    }
 
     private View createViewMultipleChoice(String mainText, ArrayList<String> parametersTexts) {
 
@@ -249,7 +176,7 @@ public abstract class BaseQuestionViewAdapter
             Log.d(TAG, "[fn] getParsedMainText");
         }
 
-        return parseString(question.getMainText(), BaseQuestion.PARAMETER_SPLITTER);
+        return parseString(question.getMainText(), Question.PARAMETER_SPLITTER);
     }
 
     private ArrayList<ArrayList<String>> getParsedParametersText() {
@@ -260,10 +187,10 @@ public abstract class BaseQuestionViewAdapter
         }
 
         ArrayList<ArrayList<String>> parsedParametersText = new ArrayList<ArrayList<String>>();
-        ArrayList<String> preParsed = parseString(question.getParametersText(), BaseQuestion.PARAMETER_SPLITTER);
+        ArrayList<String> preParsed = parseString(question.getParametersText(), Question.PARAMETER_SPLITTER);
 
         for (String subParametersToParse : preParsed) {
-            ArrayList<String> subParameters = parseString(subParametersToParse, BaseQuestion.SUBPARAMETER_SPLITTER);
+            ArrayList<String> subParameters = parseString(subParametersToParse, Question.SUBPARAMETER_SPLITTER);
             parsedParametersText.add(subParameters);
         }
 

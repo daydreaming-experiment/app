@@ -3,7 +3,7 @@ package com.brainydroid.daydreaming.db;
 import android.widget.LinearLayout;
 
 /**
- * Interface for answers to {@link Poll} {@link BaseQuestion}s,
+ * Interface for answers to {@link Poll} {@link Question}s,
  * sent to server once filled.
  *
  * @author Sébastien Lerique

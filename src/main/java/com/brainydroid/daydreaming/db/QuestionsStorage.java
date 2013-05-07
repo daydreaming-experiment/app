@@ -22,11 +22,10 @@ public class QuestionsStorage {
 
     private static final String SQL_CREATE_TABLE_QUESTIONS =
             "CREATE TABLE IF NOT EXISTS " + TABLE_QUESTIONS + " (" +
-                    BaseQuestion.COL_NAME + " TEXT NOT NULL, " +
-                    BaseQuestion.COL_CATEGORY + " TEXT NOT NULL, " +
-                    BaseQuestion.COL_SUB_CATEGORY + " TEXT, " +
-                    BaseQuestion.COL_CLASS_NAME + " TEXT NOT NULL, " +
-                    BaseQuestion.COL_DETAILS + " TEXT NOT NULL, " +
+                    Question.COL_NAME + " TEXT NOT NULL, " +
+                    Question.COL_CATEGORY + " TEXT NOT NULL, " +
+                    Question.COL_SUB_CATEGORY + " TEXT, " +
+                    Question.COL_DETAILS + " TEXT NOT NULL, " +
                     ");";
 
     @Inject Json json;
@@ -83,7 +82,7 @@ public class QuestionsStorage {
     }
 
     // get question from id in db
-    public IQuestion getQuestion(String questionName) {
+    public Question getQuestion(String questionName) {
 
         // Debug
         if (Config.LOGD) {
@@ -91,25 +90,20 @@ public class QuestionsStorage {
         }
 
         Cursor res = rDb.query(TABLE_QUESTIONS, null,
-                BaseQuestion.COL_NAME + "=?", new String[] {questionName},
+                Question.COL_NAME + "=?", new String[] {questionName},
                 null, null, null);
         if (!res.moveToFirst()) {
             res.close();
             return null;
         }
 
-        String className = res.getString(res.getColumnIndex(BaseQuestion
-                .COL_CLASS_NAME));
-        IQuestion q = questionFactory.create(className);
-
-        q.setName(res.getString(res.getColumnIndex(BaseQuestion.COL_NAME)));
-        q.setCategory(res.getString(res.getColumnIndex(BaseQuestion.COL_CATEGORY)));
+        Question q = questionFactory.create();
+        q.setName(res.getString(res.getColumnIndex(Question.COL_NAME)));
+        q.setCategory(res.getString(res.getColumnIndex(Question.COL_CATEGORY)));
         q.setSubCategory(res.getString(
-                res.getColumnIndex(BaseQuestion.COL_SUB_CATEGORY)));
-        q.setClassName(res.getString(
-                res.getColumnIndex(BaseQuestion.COL_CLASS_NAME)));
+                res.getColumnIndex(Question.COL_SUB_CATEGORY)));
         q.setDetailsFromJson(res.getString(
-                res.getColumnIndex(BaseQuestion.COL_DETAILS)));
+                res.getColumnIndex(Question.COL_DETAILS)));
         res.close();
 
         return q;
@@ -124,7 +118,7 @@ public class QuestionsStorage {
         }
 
         Cursor res = rDb.query(TABLE_QUESTIONS,
-                new String[] {BaseQuestion.COL_NAME}, null, null, null,
+                new String[] {Question.COL_NAME}, null, null, null,
                 null, null);
         if (!res.moveToFirst()) {
             res.close();
@@ -134,7 +128,7 @@ public class QuestionsStorage {
         ArrayList<String> questionNames = new ArrayList<String>();
         do {
             questionNames.add(res.getString(
-                    res.getColumnIndex(BaseQuestion.COL_NAME)));
+                    res.getColumnIndex(Question.COL_NAME)));
         } while (res.moveToNext());
         res.close();
 
@@ -142,7 +136,7 @@ public class QuestionsStorage {
     }
 
     // getRandomQuestions
-    public ArrayList<IQuestion> getRandomQuestions(int nQuestions) {
+    public ArrayList<Question> getRandomQuestions(int nQuestions) {
 
         // Debug
         if (Config.LOGD) {
@@ -152,7 +146,7 @@ public class QuestionsStorage {
         ArrayList<String> questionNames = getQuestionNames();
         int nIds = questionNames.size();
 
-        ArrayList<IQuestion> randomQuestions = new ArrayList<IQuestion>();
+        ArrayList<Question> randomQuestions = new ArrayList<Question>();
         int rIndex;
 
         for (int i = 0; i < nQuestions && i < nIds; i++) {
@@ -174,20 +168,20 @@ public class QuestionsStorage {
         wDb.delete(TABLE_QUESTIONS, null, null);
     }
 
-    private void addQuestions(ArrayList<IQuestion> questions) {
+    private void addQuestions(ArrayList<Question> questions) {
 
         // Debug
         if (Config.LOGD) {
             Log.d(TAG, "[fn] addQuestions");
         }
 
-        for (IQuestion q : questions) {
+        for (Question q : questions) {
             addQuestion(q);
         }
     }
 
     // add question in database
-    private void addQuestion(IQuestion question) {
+    private void addQuestion(Question question) {
 
         // Debug
         if (Config.LOGD) {
@@ -197,7 +191,7 @@ public class QuestionsStorage {
         wDb.insert(TABLE_QUESTIONS, null, getQuestionContentValues(question));
     }
 
-    private ContentValues getQuestionContentValues(IQuestion question) {
+    private ContentValues getQuestionContentValues(Question question) {
 
         // Debug
         if (Config.LOGD) {
@@ -205,12 +199,11 @@ public class QuestionsStorage {
         }
 
         ContentValues qValues = new ContentValues();
-        qValues.put(BaseQuestion.COL_NAME, question.getName());
-        qValues.put(BaseQuestion.COL_CATEGORY, question.getCategory());
-        qValues.put(BaseQuestion.COL_SUB_CATEGORY,
+        qValues.put(Question.COL_NAME, question.getName());
+        qValues.put(Question.COL_CATEGORY, question.getCategory());
+        qValues.put(Question.COL_SUB_CATEGORY,
                 question.getSubCategory());
-        qValues.put(BaseQuestion.COL_CLASS_NAME, question.getClassName());
-        qValues.put(BaseQuestion.COL_DETAILS, question.getDetailsAsJson());
+        qValues.put(Question.COL_DETAILS, question.getDetailsAsJson());
         return qValues;
     }
 

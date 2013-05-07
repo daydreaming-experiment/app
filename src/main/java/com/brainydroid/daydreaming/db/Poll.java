@@ -12,7 +12,7 @@ public class Poll {
     private static String TAG = "Poll";
 
     @Expose private String status = null;
-    @Expose @Inject private ArrayList<IQuestion> questions;
+    @Expose @Inject private ArrayList<Question> questions;
     @Expose private long notificationTimestamp;
     private transient int id = -1;
 
@@ -38,7 +38,7 @@ public class Poll {
         questions = questionsStorage.getRandomQuestions(nQuestions);
     }
 
-    public void addQuestion(IQuestion question) {
+    public void addQuestion(Question question) {
 
         // Debug
         if (Config.LOGD) {
@@ -48,7 +48,7 @@ public class Poll {
         questions.add(question);
     }
 
-    public ArrayList<IQuestion> getQuestions() {
+    public ArrayList<Question> getQuestions() {
 
         // Verbose
         if (Config.LOGV) {
@@ -58,7 +58,7 @@ public class Poll {
         return questions;
     }
 
-    public IQuestion getQuestionByIndex(int index) {
+    public Question getQuestionByIndex(int index) {
 
         // Debug
         if (Config.LOGD) {

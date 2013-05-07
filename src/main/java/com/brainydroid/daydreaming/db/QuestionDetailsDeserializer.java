@@ -6,15 +6,16 @@ import com.google.gson.*;
 
 import java.lang.reflect.Type;
 
-public class AnswerDeserializer implements JsonDeserializer<IAnswer> {
+public class QuestionDetailsDeserializer
+        implements JsonDeserializer<IQuestionDetails> {
 
-    private static String TAG = "AnswerDeserializer";
+    private static String TAG = "QuestionDetailsDeserializer";
 
-    private static String ANSWER_SUFFIX = "Answer";
+    private static String QUESTION_DETAILS_SUFFIX = "QuestionDetails";
 
     @Override
-    public IAnswer deserialize(JsonElement json, Type typeOfT,
-                              JsonDeserializationContext context)
+    public IQuestionDetails deserialize(JsonElement json, Type typeOfT,
+                                        JsonDeserializationContext context)
             throws JsonParseException {
 
         // Debug
@@ -25,8 +26,8 @@ public class AnswerDeserializer implements JsonDeserializer<IAnswer> {
         try {
             JsonObject obj = (JsonObject)json;
             Class klass = Class.forName(obj.get("type").getAsString() +
-                    ANSWER_SUFFIX);
-            return (IAnswer)context.deserialize(json, klass);
+                    QUESTION_DETAILS_SUFFIX);
+            return (IQuestionDetails)context.deserialize(json, klass);
         } catch (Exception e) {
             throw new JsonParseException(e.getMessage());
         }

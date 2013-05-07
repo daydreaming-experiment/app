@@ -11,9 +11,9 @@ public class ServerQuestionsJson {
     private static String TAG = "ServerQuestionsJson";
 
     public int version = -1;
-    @Inject ArrayList<IQuestion> questions;
+    @Inject ArrayList<Question> questions;
 
-    public ArrayList<IQuestion> getQuestionsArrayList() {
+    public ArrayList<Question> getQuestionsArrayList() {
 
         // Verbose
         if (Config.LOGV) {

@@ -2,25 +2,20 @@ package com.brainydroid.daydreaming.db;
 
 import android.location.Location;
 import android.util.Log;
-import android.view.View;
-import android.widget.LinearLayout;
 import com.brainydroid.daydreaming.ui.Config;
 import com.google.gson.annotations.Expose;
 import com.google.inject.Inject;
 
-import java.util.ArrayList;
-
 // TODO: add some way to save the phone's timezone and the user's preferences
 // about what times he allowed notifications to appear at.
 
-public abstract class BaseQuestion implements IQuestion {
+public class Question {
 
-    private static String TAG = "BaseQuestion";
+    private static String TAG = "Question";
 
     public static final String COL_NAME = "questionName";
     public static final String COL_CATEGORY = "questionCategory";
     public static final String COL_SUB_CATEGORY = "questionSubCategory";
-    public static final String COL_CLASS_NAME = "questionClassName";
     public static final String COL_DETAILS = "questionDetails";
 
     public static final String COL_STATUS = "questionStatus";
@@ -37,7 +32,6 @@ public abstract class BaseQuestion implements IQuestion {
     @Expose protected String name = null;
     protected String category = null;
     protected String subCategory = null;
-    protected String className = null;
     protected IQuestionDetails details = null;
 
     @Expose protected String status = null;
@@ -103,26 +97,6 @@ public abstract class BaseQuestion implements IQuestion {
         }
 
         this.subCategory = subCategory;
-    }
-
-    public String getClassName() {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] getClassName");
-        }
-
-        return className;
-    }
-
-    public void setClassName(String className) {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] getClassName");
-        }
-
-        this.className = className;
     }
 
     public String getDetailsAsJson() {

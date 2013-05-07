@@ -30,11 +30,11 @@ public class PollsStorage {
     private static final String SQL_CREATE_TABLE_POLL_QUESTIONS =
             "CREATE TABLE IF NOT EXISTS " + TABLE_POLL_QUESTIONS + " (" +
                     Poll.COL_ID + " INTEGER NOT NULL, " +
-                    BaseQuestion.COL_NAME + " TEXT NOT NULL, " +
-                    BaseQuestion.COL_STATUS + " TEXT, " +
-                    BaseQuestion.COL_ANSWER + " TEXT, " +
-                    BaseQuestion.COL_LOCATION + " TEXT, " +
-                    BaseQuestion.COL_TIMESTAMP + " REAL" +
+                    Question.COL_NAME + " TEXT NOT NULL, " +
+                    Question.COL_STATUS + " TEXT, " +
+                    Question.COL_ANSWER + " TEXT, " +
+                    Question.COL_LOCATION + " TEXT, " +
+                    Question.COL_TIMESTAMP + " REAL" +
                     ");";
 
     @Inject QuestionsStorage questionsStorage;
@@ -84,7 +84,7 @@ public class PollsStorage {
     }
 
     private ContentValues getQuestionContentValues(int pollId,
-                                                   IQuestion question) {
+                                                   Question question) {
 
         // Debug
         if (Config.LOGD) {
@@ -93,11 +93,11 @@ public class PollsStorage {
 
         ContentValues qValues = new ContentValues();
         qValues.put(Poll.COL_ID, pollId);
-        qValues.put(BaseQuestion.COL_NAME, question.getName());
-        qValues.put(BaseQuestion.COL_STATUS, question.getStatus());
-        qValues.put(BaseQuestion.COL_ANSWER, question.getAnswerAsJson());
-        qValues.put(BaseQuestion.COL_LOCATION, question.getLocationAsJson());
-        qValues.put(BaseQuestion.COL_TIMESTAMP, question.getTimestamp());
+        qValues.put(Question.COL_NAME, question.getName());
+        qValues.put(Question.COL_STATUS, question.getStatus());
+        qValues.put(Question.COL_ANSWER, question.getAnswerAsJson());
+        qValues.put(Question.COL_LOCATION, question.getLocationAsJson());
+        qValues.put(Question.COL_TIMESTAMP, question.getTimestamp());
         return qValues;
     }
 
@@ -120,7 +120,7 @@ public class PollsStorage {
         poll.setId(pollId);
         pollInstances.put(pollId, poll);
 
-        for (IQuestion q : poll.getQuestions()) {
+        for (Question q : poll.getQuestions()) {
             ContentValues qValues = getQuestionContentValues(pollId, q);
             wDb.insert(TABLE_POLL_QUESTIONS, null, qValues);
         }
@@ -138,10 +138,10 @@ public class PollsStorage {
         wDb.update(TABLE_POLLS, pollValues, Poll.COL_ID + "=?",
                 new String[] {Integer.toString(pollId)});
 
-        for (IQuestion q : poll.getQuestions()) {
+        for (Question q : poll.getQuestions()) {
             ContentValues qValues = getQuestionContentValues(pollId, q);
             wDb.update(TABLE_POLL_QUESTIONS, qValues,
-                    Poll.COL_ID + "=? AND " + BaseQuestion.COL_NAME + "=?",
+                    Poll.COL_ID + "=? AND " + Question.COL_NAME + "=?",
                     new String[] {Integer.toString(pollId), q.getName()});
         }
     }
@@ -180,16 +180,16 @@ public class PollsStorage {
         }
 
         do {
-            IQuestion q = questionsStorage.getQuestion(qRes.getString(
-                    qRes.getColumnIndex(BaseQuestion.COL_NAME)));
+            Question q = questionsStorage.getQuestion(qRes.getString(
+                    qRes.getColumnIndex(Question.COL_NAME)));
             q.setStatus(qRes.getString(
-                    qRes.getColumnIndex(BaseQuestion.COL_STATUS)));
+                    qRes.getColumnIndex(Question.COL_STATUS)));
             q.setAnswerFromJson(qRes.getString(
-                    qRes.getColumnIndex(BaseQuestion.COL_ANSWER)));
+                    qRes.getColumnIndex(Question.COL_ANSWER)));
             q.setLocationFromJson(qRes.getString(
-                    qRes.getColumnIndex(BaseQuestion.COL_LOCATION)));
+                    qRes.getColumnIndex(Question.COL_LOCATION)));
             q.setTimestamp(qRes.getLong(
-                    qRes.getColumnIndex(BaseQuestion.COL_TIMESTAMP)));
+                    qRes.getColumnIndex(Question.COL_TIMESTAMP)));
 
             poll.addQuestion(q);
         } while (qRes.moveToNext());

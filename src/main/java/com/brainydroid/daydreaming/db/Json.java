@@ -10,6 +10,8 @@ public class Json {
 
     @Inject Gson gson;
 
+    // TODO: add another set of methods only taking @exposed members
+
     public Json() {
         // Do our registering here
     }

@@ -2,22 +2,25 @@ package com.brainydroid.daydreaming.ui;
 
 import android.util.Log;
 import android.widget.LinearLayout;
-import com.brainydroid.daydreaming.db.BaseQuestion;
-import com.brainydroid.daydreaming.db.IQuestion;
+import com.brainydroid.daydreaming.db.Question;
 
 public class QuestionViewAdapterFactory {
 
     private static String TAG = "QuestionViewAdapterFactory";
 
-    public IQuestionViewAdapter create(IQuestion question,
-                                      LinearLayout layout) {
+    private static String QUESTION_VIEW_ADAPTER_SUFFIX =
+            "QuestionViewAdapter";
+
+    public IQuestionViewAdapter create(Question question,
+                                       LinearLayout layout) {
 
         // Debug
         if (Config.LOGD) {
             Log.d(TAG, "[fn] create");
         }
 
-        String className = question.getClassName() + "ViewAdapter";
+        String className = question.getDetails().getType() +
+                QUESTION_VIEW_ADAPTER_SUFFIX;
         try {
             Class klass = Class.forName(className);
             return (IQuestionViewAdapter)klass.newInstance();
