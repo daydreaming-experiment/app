@@ -16,9 +16,8 @@ public abstract class BaseQuestion implements IQuestion {
     public static final String COL_NAME = "questionName";
     public static final String COL_CATEGORY = "questionCategory";
     public static final String COL_SUB_CATEGORY = "questionSubCategory";
-    public static final String COL_KLASS = "questionKlass";
+    public static final String COL_CLASS_NAME = "questionClassName";
     public static final String COL_DETAILS = "questionDetails";
-    public static final String COL_QUESTIONS_VERSION = "questionQuestionsVersion";
 
     public static final String COL_STATUS = "questionStatus";
     public static final String COL_ANSWER = "questionAnswer";
@@ -29,15 +28,12 @@ public abstract class BaseQuestion implements IQuestion {
     public static final String STATUS_ASKED_DISMISSED = "questionAskedDismissed";
     public static final String STATUS_ANSWERED = "questionAnswered";
 
-    public static final String TYPE_SLIDER = "slider";
-    public static final String TYPE_MULTIPLE_CHOICE = "multipleChoice";
-
     @Inject transient Json json;
 
     @Expose protected String name = null;
     protected String category = null;
     protected String subCategory = null;
-    protected String klass = null;
+    protected String className = null;
     protected IQuestionDetails details = null;
 
     @Expose protected String status = null;
@@ -105,14 +101,24 @@ public abstract class BaseQuestion implements IQuestion {
         this.subCategory = subCategory;
     }
 
-    public String getKlass() {
+    public String getClassName() {
 
         // Verbose
         if (Config.LOGV) {
-            Log.v(TAG, "[fn] getKlass");
+            Log.v(TAG, "[fn] getClassName");
         }
 
-        return klass;
+        return className;
+    }
+
+    public void setClassName(String className) {
+
+        // Verbose
+        if (Config.LOGV) {
+            Log.v(TAG, "[fn] getClassName");
+        }
+
+        this.className = className;
     }
 
     public String getDetailsAsJson() {
@@ -221,6 +227,26 @@ public abstract class BaseQuestion implements IQuestion {
         }
 
         this.answer = answer;
+    }
+
+    public String getLocationAsJson() {
+
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] getLocationAsJson");
+        }
+
+        return json.toJson(location);
+    }
+
+    public void setLocationFromJson(String jsonLocation) {
+
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] setLocation");
+        }
+
+        this.location = json.fromJson(jsonLocation, Location.class);
     }
 
     public Location getLocation() {

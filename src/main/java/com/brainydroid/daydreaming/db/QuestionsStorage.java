@@ -1,11 +1,11 @@
 package com.brainydroid.daydreaming.db;
 
 import android.content.ContentValues;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import com.brainydroid.daydreaming.ui.Config;
-import com.google.gson.Gson;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -17,24 +17,24 @@ public class QuestionsStorage {
 
     private static String TAG = "QuestionsStorage";
 
-    private static final String TABLE_QUESTIONS = "questions";
+    private static String QUESTIONS_VERSION = "questionsVersion";
+    private static String TABLE_QUESTIONS = "questions";
 
     private static final String SQL_CREATE_TABLE_QUESTIONS =
             "CREATE TABLE IF NOT EXISTS " + TABLE_QUESTIONS + " (" +
-                    Question.COL_ID + " TEXT NOT NULL, " +
-                    Question.COL_CATEGORY + " TEXT NOT NULL, " +
-                    Question.COL_SUBCATEGORY + " TEXT, " +
-                    Question.COL_TYPE + " TEXT NOT NULL, " +
-                    Question.COL_MAIN_TEXT + " TEXT NOT NULL, " +
-                    Question.COL_PARAMETERS_TEXT + " TEXT NOT NULL, " +
-                    Question.COL_DEFAULT_POSITION + " INTEGER NOT NULL, " +
-                    Question.COL_QUESTIONS_VERSION + " INTEGER NOT NULL" +
+                    BaseQuestion.COL_NAME + " TEXT NOT NULL, " +
+                    BaseQuestion.COL_CATEGORY + " TEXT NOT NULL, " +
+                    BaseQuestion.COL_SUB_CATEGORY + " TEXT, " +
+                    BaseQuestion.COL_CLASS_NAME + " TEXT NOT NULL, " +
+                    BaseQuestion.COL_DETAILS + " TEXT NOT NULL, " +
                     ");";
 
-    @Inject Gson gson;
+    @Inject Json json;
     @Inject Random random;
     @Inject QuestionFactory questionFactory;
+    @Inject SharedPreferences sharedPreferences;
 
+    private final SharedPreferences.Editor eSharedPreferences;
     private final SQLiteDatabase rDb;
     private final SQLiteDatabase wDb;
 
@@ -47,6 +47,7 @@ public class QuestionsStorage {
             Log.d(TAG, "[fn] QuestionsStorage");
         }
 
+        eSharedPreferences = sharedPreferences.edit();
         rDb = storage.getReadableDatabase();
         wDb = storage.getWritableDatabase();
         wDb.execSQL(SQL_CREATE_TABLE_QUESTIONS);
@@ -59,92 +60,105 @@ public class QuestionsStorage {
             Log.d(TAG, "[fn] getQuestionsVersion");
         }
 
-        Cursor res = rDb.query(TABLE_QUESTIONS, new String[] {Question.COL_QUESTIONS_VERSION},
-                null, null, null, null, null, "1");
-        if (!res.moveToFirst()) {
-            res.close();
-            return -1;
-        }
+        int questionsVersion = sharedPreferences.getInt(QUESTIONS_VERSION,
+                -1);
 
-        int questionsVersion = Integer.parseInt(res.getString(res.getColumnIndex(Question.COL_QUESTIONS_VERSION)));
-        res.close();
+        if (questionsVersion == -1) {
+            throw new RuntimeException("questionsVersion is not set, " +
+                    "meaning questions were never loaded");
+        }
 
         return questionsVersion;
     }
 
+    private void setQuestionsVersion(int questionsVersion) {
+
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] setQuestionsVersion");
+        }
+
+        eSharedPreferences.putInt(QUESTIONS_VERSION, questionsVersion);
+        eSharedPreferences.commit();
+    }
+
     // get question from id in db
-    public Question getQuestion(String questionId) {
+    public IQuestion getQuestion(String questionName) {
 
         // Debug
         if (Config.LOGD) {
             Log.d(TAG, "[fn] getQuestion");
         }
 
-        Cursor res = rDb.query(TABLE_QUESTIONS, null, Question.COL_ID + "=?",
-                new String[] {questionId}, null, null, null);
-        if (!res.moveToFirst()) {
-            res.close();
-            return null;
-        }
-
-        Question q = questionFactory.create();
-        q.setCategory(res.getString(res.getColumnIndex(Question.COL_CATEGORY)));
-        q.setSubcategory(res.getString(res.getColumnIndex(Question.COL_SUBCATEGORY)));
-        q.setType(res.getString(res.getColumnIndex(Question.COL_TYPE)));
-        q.setMainText(res.getString(res.getColumnIndex(Question.COL_MAIN_TEXT)));
-        q.setParametersText(res.getString(res.getColumnIndex(Question.COL_PARAMETERS_TEXT)));
-        q.setDefaultPosition(res.getInt(res.getColumnIndex(Question.COL_DEFAULT_POSITION)));
-        q.setQuestionsVersion(
-                Integer.parseInt(res.getString(res.getColumnIndex(Question.COL_QUESTIONS_VERSION))));
-        // Setting the id at the end ensures we don't save the Question to DB again
-        q.setId(res.getString(res.getColumnIndex(Question.COL_ID)));
-        res.close();
-
-        return q;
-    }
-
-    // get questions ids in questions db
-    public ArrayList<String> getQuestionIds() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] getQuestionIds");
-        }
-
-        Cursor res = rDb.query(TABLE_QUESTIONS, new String[] {Question.COL_ID}, null, null,
+        Cursor res = rDb.query(TABLE_QUESTIONS, null,
+                BaseQuestion.COL_NAME + "=?", new String[] {questionName},
                 null, null, null);
         if (!res.moveToFirst()) {
             res.close();
             return null;
         }
 
-        ArrayList<String> questionIds = new ArrayList<String>();
+        String className = res.getString(res.getColumnIndex(BaseQuestion
+                .COL_CLASS_NAME));
+        IQuestion q = questionFactory.create(className);
+
+        q.setName(res.getString(res.getColumnIndex(BaseQuestion.COL_NAME)));
+        q.setCategory(res.getString(res.getColumnIndex(BaseQuestion.COL_CATEGORY)));
+        q.setSubCategory(res.getString(
+                res.getColumnIndex(BaseQuestion.COL_SUB_CATEGORY)));
+        q.setClassName(res.getString(
+                res.getColumnIndex(BaseQuestion.COL_CLASS_NAME)));
+        q.setDetailsFromJson(res.getString(
+                res.getColumnIndex(BaseQuestion.COL_DETAILS)));
+        res.close();
+
+        return q;
+    }
+
+    // get questions ids in questions db
+    public ArrayList<String> getQuestionNames() {
+
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] getQuestionNames");
+        }
+
+        Cursor res = rDb.query(TABLE_QUESTIONS,
+                new String[] {BaseQuestion.COL_NAME}, null, null, null,
+                null, null);
+        if (!res.moveToFirst()) {
+            res.close();
+            return null;
+        }
+
+        ArrayList<String> questionNames = new ArrayList<String>();
         do {
-            questionIds.add(res.getString(res.getColumnIndex(Question.COL_ID)));
+            questionNames.add(res.getString(
+                    res.getColumnIndex(BaseQuestion.COL_NAME)));
         } while (res.moveToNext());
         res.close();
 
-        return questionIds;
+        return questionNames;
     }
 
     // getRandomQuestions
-    public ArrayList<Question> getRandomQuestions(int nQuestions) {
+    public ArrayList<IQuestion> getRandomQuestions(int nQuestions) {
 
         // Debug
         if (Config.LOGD) {
             Log.d(TAG, "[fn] getRandomQuestions");
         }
 
-        ArrayList<String> questionIds = getQuestionIds();
-        int nIds = questionIds.size();
+        ArrayList<String> questionNames = getQuestionNames();
+        int nIds = questionNames.size();
 
-        ArrayList<Question> randomQuestions = new ArrayList<Question>();
+        ArrayList<IQuestion> randomQuestions = new ArrayList<IQuestion>();
         int rIndex;
 
         for (int i = 0; i < nQuestions && i < nIds; i++) {
-            rIndex = random.nextInt(questionIds.size());
-            randomQuestions.add(getQuestion(questionIds.get(rIndex)));
-            questionIds.remove(rIndex);
+            rIndex = random.nextInt(questionNames.size());
+            randomQuestions.add(getQuestion(questionNames.get(rIndex)));
+            questionNames.remove(rIndex);
         }
 
         return randomQuestions;
@@ -160,20 +174,20 @@ public class QuestionsStorage {
         wDb.delete(TABLE_QUESTIONS, null, null);
     }
 
-    private void addQuestions(ArrayList<Question> questions) {
+    private void addQuestions(ArrayList<IQuestion> questions) {
 
         // Debug
         if (Config.LOGD) {
             Log.d(TAG, "[fn] addQuestions");
         }
 
-        for (Question q : questions) {
+        for (IQuestion q : questions) {
             addQuestion(q);
         }
     }
 
     // add question in database
-    private void addQuestion(Question question) {
+    private void addQuestion(IQuestion question) {
 
         // Debug
         if (Config.LOGD) {
@@ -183,7 +197,7 @@ public class QuestionsStorage {
         wDb.insert(TABLE_QUESTIONS, null, getQuestionContentValues(question));
     }
 
-    private ContentValues getQuestionContentValues(Question question) {
+    private ContentValues getQuestionContentValues(IQuestion question) {
 
         // Debug
         if (Config.LOGD) {
@@ -191,14 +205,12 @@ public class QuestionsStorage {
         }
 
         ContentValues qValues = new ContentValues();
-        qValues.put(Question.COL_ID, question.getId());
-        qValues.put(Question.COL_CATEGORY, question.getCategory());
-        qValues.put(Question.COL_SUBCATEGORY, question.getSubcategory());
-        qValues.put(Question.COL_TYPE, question.getType());
-        qValues.put(Question.COL_MAIN_TEXT, question.getMainText());
-        qValues.put(Question.COL_PARAMETERS_TEXT, question.getParametersText());
-        qValues.put(Question.COL_DEFAULT_POSITION, question.getDefaultPosition());
-        qValues.put(Question.COL_QUESTIONS_VERSION, question.getQuestionsVersion());
+        qValues.put(BaseQuestion.COL_NAME, question.getName());
+        qValues.put(BaseQuestion.COL_CATEGORY, question.getCategory());
+        qValues.put(BaseQuestion.COL_SUB_CATEGORY,
+                question.getSubCategory());
+        qValues.put(BaseQuestion.COL_CLASS_NAME, question.getClassName());
+        qValues.put(BaseQuestion.COL_DETAILS, question.getDetailsAsJson());
         return qValues;
     }
 
@@ -210,9 +222,11 @@ public class QuestionsStorage {
             Log.d(TAG, "[fn] importQuestions");
         }
 
-        JsonQuestions jsonQuestions = gson.fromJson(jsonQuestionsString, JsonQuestions.class);
+        ServerQuestionsJson serverQuestionsJson = json.fromJson(
+                jsonQuestionsString, ServerQuestionsJson.class);
         flushAll();
-        addQuestions(jsonQuestions.getQuestionsArrayList());
+        setQuestionsVersion(serverQuestionsJson.getVersion());
+        addQuestions(serverQuestionsJson.getQuestionsArrayList());
     }
 
 }

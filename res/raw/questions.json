@@ -5,7 +5,7 @@
             "name": "mindWandering_onOffTask",
             "category": "mindWandering",
             "subCategory": "content",
-            "klass": "SliderQuestion",
+            "className": "SliderQuestion",
             "details": {
                 "subQuestions": [
                     {
@@ -20,7 +20,7 @@
             "name": "mindWandering_temporal",
             "category": "mindWandering",
             "subCategory": "content",
-            "klass": "SliderQuestion",
+            "className": "SliderQuestion",
             "details": {
                 "subQuestions": [
                     {
@@ -36,7 +36,7 @@
             "name": "mindWandering_social",
             "category": "mindWandering",
             "subCategory": "content",
-            "klass": "SliderQuestion",
+            "className": "SliderQuestion",
             "details": {
                 "subQuestions": [
                     {
@@ -56,7 +56,7 @@
             "name": "mindWandering_qualities",
             "category": "mindWandering",
             "subCategory": "qualities",
-            "klass": "SliderQuestion",
+            "className": "SliderQuestion",
             "details": {
                 "subQuestions": [
                     {
@@ -71,7 +71,7 @@
             "name": "currentActivity_doing",
             "category": "currentActivity",
             "subCategory": "null",
-            "klass": "MultipleChoiceQuestion",
+            "className": "MultipleChoiceQuestion",
             "details": {
                 "text": "What were you doing just before the probe interrupted you?",
                 "choices": ["Commuting", "Working", "Shopping",

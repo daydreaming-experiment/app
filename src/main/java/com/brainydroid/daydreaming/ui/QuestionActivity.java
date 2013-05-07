@@ -45,7 +45,7 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
     private int pollId;
     private Poll poll;
     private int questionIndex;
-    private Question question;
+    private BaseQuestion question;
     private int nQuestions;
     private boolean isContinuingOrFinishing = false;
     private long lastBackTime = 0;
@@ -135,7 +135,7 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
         super.onStart();
 
         poll.setStatus(Poll.STATUS_RUNNING);
-        poll.setQuestionStatus(questionIndex, Question.STATUS_ASKED);
+        poll.setQuestionStatus(questionIndex, BaseQuestion.STATUS_ASKED);
 
         if (statusManager.isDataAndLocationEnabled()) {
             startListeningTasks();
@@ -291,7 +291,7 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
 
         if (answerValidator.validate()) {
             questionViewAdapter.saveAnswers();
-            poll.setQuestionStatus(questionIndex, Question.STATUS_ANSWERED);
+            poll.setQuestionStatus(questionIndex, BaseQuestion.STATUS_ANSWERED);
 
             if (isLastQuestion()) {
 
@@ -397,7 +397,7 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
         }
 
         poll.setStatus(Poll.STATUS_PARTIALLY_COMPLETED);
-        poll.setQuestionStatus(questionIndex, Question.STATUS_ASKED_DISMISSED);
+        poll.setQuestionStatus(questionIndex, BaseQuestion.STATUS_ASKED_DISMISSED);
 
         startSyncService();
     }

@@ -9,7 +9,6 @@ import android.widget.TextView;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.ui.Config;
 import com.brainydroid.daydreaming.ui.QuestionViewAdapter;
-import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 import com.google.inject.Inject;
 
@@ -22,18 +21,6 @@ public class MultipleChoiceAnswer implements Answer {
     private static String TAG = "MultipleChoiceAnswer";
 
     @Expose @Inject HashMap<String,HashSet<String>> choices;
-    @Inject transient Gson gson;
-
-    @Override
-    public String toJson() {
-
-        //Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] toJson");
-        }
-
-        return gson.toJson(this, this.getClass());
-    }
 
     @Override
     public void getAnswersFromLayout(LinearLayout questionLinearLayout) {

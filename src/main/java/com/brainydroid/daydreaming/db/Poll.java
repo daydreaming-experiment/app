@@ -12,15 +12,13 @@ public class Poll {
     private static String TAG = "Poll";
 
     @Expose private String status = null;
-    @Expose private int questionsVersion;
-    @Expose @Inject private ArrayList<Question> questions;
+    @Expose @Inject private ArrayList<IQuestion> questions;
     @Expose private long notificationTimestamp;
     private transient int id = -1;
 
     public static final String COL_ID = "pollId";
     public static final String COL_STATUS = "pollStatus";
     public static final String COL_NOTIFICATION_TIMESTAMP = "pollNotificationTimestamp";
-    public static final String COL_QUESTIONS_VERSION = "pollQuestionsVersion";
 
     public static final String STATUS_PENDING = "pollPending"; // Notification has appeared
     public static final String STATUS_RUNNING = "pollRunning"; // QuestionActivity is running
@@ -29,17 +27,6 @@ public class Poll {
 
     @Inject transient PollsStorage pollsStorage;
     @Inject transient QuestionsStorage questionsStorage;
-
-    @Inject
-    public Poll(QuestionsStorage questionsStorage) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] Poll (from questionsStorage)");
-        }
-
-        questionsVersion = questionsStorage.getQuestionsVersion();
-    }
 
     public void populateQuestions(int nQuestions) {
 
@@ -51,7 +38,7 @@ public class Poll {
         questions = questionsStorage.getRandomQuestions(nQuestions);
     }
 
-    public void addQuestion(Question question) {
+    public void addQuestion(IQuestion question) {
 
         // Debug
         if (Config.LOGD) {
@@ -61,7 +48,7 @@ public class Poll {
         questions.add(question);
     }
 
-    public ArrayList<Question> getQuestions() {
+    public ArrayList<IQuestion> getQuestions() {
 
         // Verbose
         if (Config.LOGV) {
@@ -71,7 +58,7 @@ public class Poll {
         return questions;
     }
 
-    public Question getQuestionByIndex(int index) {
+    public IQuestion getQuestionByIndex(int index) {
 
         // Debug
         if (Config.LOGD) {
@@ -164,27 +151,6 @@ public class Poll {
         }
 
         this.notificationTimestamp = notificationTimestamp;
-        saveIfSync();
-    }
-
-    public int getQuestionsVersion() {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] getQuestionsVersion");
-        }
-
-        return questionsVersion;
-    }
-
-    public void setQuestionsVersion(int questionsVersion) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] setQuestionsVersion");
-        }
-
-        this.questionsVersion = questionsVersion;
         saveIfSync();
     }
 

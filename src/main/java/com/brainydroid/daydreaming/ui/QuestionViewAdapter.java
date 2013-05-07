@@ -12,7 +12,7 @@ import android.widget.*;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.db.Answer;
 import com.brainydroid.daydreaming.db.MultipleChoiceAnswer;
-import com.brainydroid.daydreaming.db.Question;
+import com.brainydroid.daydreaming.db.BaseQuestion;
 import com.brainydroid.daydreaming.db.SliderAnswer;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
@@ -25,13 +25,13 @@ public class QuestionViewAdapter {
 
     private static String TAG = "QuestionViewAdapter";
 
-    private Question question;
+    private BaseQuestion question;
     private LinearLayout questionLinearLayout;
 
     @Inject LayoutInflater layoutInflater;
 
     @Inject
-    public QuestionViewAdapter(@Assisted Question question, @Assisted LinearLayout questionLinearLayout) {
+    public QuestionViewAdapter(@Assisted BaseQuestion question, @Assisted LinearLayout questionLinearLayout) {
 
         // Debug
         if (Config.LOGD) {
@@ -80,13 +80,13 @@ public class QuestionViewAdapter {
         String type = question.getType();
 
         if (type == null) {
-            throw new RuntimeException("Question type not set");
-        } else if (type.equals(Question.TYPE_SLIDER)) {
+            throw new RuntimeException("BaseQuestion type not set");
+        } else if (type.equals(BaseQuestion.TYPE_SLIDER)) {
             views = createViewsSlider();
-        } else if (type.equals(Question.TYPE_MULTIPLE_CHOICE)) {
+        } else if (type.equals(BaseQuestion.TYPE_MULTIPLE_CHOICE)) {
             views = createViewsMultipleChoice();
         } else {
-            throw new RuntimeException("Question type not recognized");
+            throw new RuntimeException("BaseQuestion type not recognized");
         }
 
         int index = isFirstQuestion ? 1 : 0;
@@ -288,7 +288,7 @@ public class QuestionViewAdapter {
             Log.d(TAG, "[fn] getParsedMainText");
         }
 
-        return parseString(question.getMainText(), Question.PARAMETER_SPLITTER);
+        return parseString(question.getMainText(), BaseQuestion.PARAMETER_SPLITTER);
     }
 
     private ArrayList<ArrayList<String>> getParsedParametersText() {
@@ -299,10 +299,10 @@ public class QuestionViewAdapter {
         }
 
         ArrayList<ArrayList<String>> parsedParametersText = new ArrayList<ArrayList<String>>();
-        ArrayList<String> preParsed = parseString(question.getParametersText(), Question.PARAMETER_SPLITTER);
+        ArrayList<String> preParsed = parseString(question.getParametersText(), BaseQuestion.PARAMETER_SPLITTER);
 
         for (String subParametersToParse : preParsed) {
-            ArrayList<String> subParameters = parseString(subParametersToParse, Question.SUBPARAMETER_SPLITTER);
+            ArrayList<String> subParameters = parseString(subParametersToParse, BaseQuestion.SUBPARAMETER_SPLITTER);
             parsedParametersText.add(subParameters);
         }
 
@@ -320,13 +320,13 @@ public class QuestionViewAdapter {
 
         String type = question.getType();
         if (type == null) {
-            throw new RuntimeException("Question type not set");
-        } else if (type.equals(Question.TYPE_MULTIPLE_CHOICE)) {
+            throw new RuntimeException("BaseQuestion type not set");
+        } else if (type.equals(BaseQuestion.TYPE_MULTIPLE_CHOICE)) {
             return new MultipleChoiceAnswer();
-        } else if (type.equals(Question.TYPE_SLIDER)) {
+        } else if (type.equals(BaseQuestion.TYPE_SLIDER)) {
             return new SliderAnswer();
         } else {
-            throw new RuntimeException("Question type not recognized");
+            throw new RuntimeException("BaseQuestion type not recognized");
         }
     }
 

@@ -4,6 +4,6 @@ import android.widget.LinearLayout;
 
 public interface AnswerValidatorFactory {
 
-    public AnswerValidator create(Question question, LinearLayout questionLinearLayout);
+    public AnswerValidator create(BaseQuestion question, LinearLayout questionLinearLayout);
 
 }

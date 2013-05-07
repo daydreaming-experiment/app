@@ -13,7 +13,8 @@ public interface IQuestion {
     public String getSubCategory();
     public void setSubCategory(String subCategory);
 
-    public String getKlass();
+    public String getClassName();
+    public void setClassName(String className);
 
     public String getDetailsAsJson();
     public void setDetailsFromJson(String jsonDetails);
@@ -29,6 +30,9 @@ public interface IQuestion {
 
     public IAnswer getAnswer();
     public void setAnswer(IAnswer answer);
+
+    public String getLocationAsJson();
+    public void setLocationFromJson(String jsonLocation);
 
     public Location getLocation();
     public void setLocation(Location location);

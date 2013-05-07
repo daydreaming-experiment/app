@@ -210,7 +210,7 @@ public class SyncService extends RoboService {
     }
 
     /**
-     * Download and import {@link Question}s from the server into our pool of
+     * Download and import {@link com.brainydroid.daydreaming.db.BaseQuestion}s from the server into our pool of
      * questions, asynchronously.
      */
     private void asyncUpdateQuestions() {

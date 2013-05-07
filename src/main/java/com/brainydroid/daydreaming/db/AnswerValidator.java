@@ -15,13 +15,13 @@ public class AnswerValidator {
 
     private static String TAG = "AnswerValidator";
 
-    private Question question;
+    private BaseQuestion question;
     private LinearLayout questionLinearLayout;
 
     @Inject android.content.Context context;
 
     @Inject
-    public AnswerValidator(@Assisted Question question, @Assisted LinearLayout questionLinearLayout) {
+    public AnswerValidator(@Assisted BaseQuestion question, @Assisted LinearLayout questionLinearLayout) {
 
         // Debug
         if (Config.LOGD) {
@@ -43,13 +43,13 @@ public class AnswerValidator {
 
         String type = question.getType();
         if (type == null) {
-            throw new RuntimeException("Question type not set");
-        } else if (type.equals(Question.TYPE_SLIDER)) {
+            throw new RuntimeException("BaseQuestion type not set");
+        } else if (type.equals(BaseQuestion.TYPE_SLIDER)) {
             return validateSlider(questionLinearLayout);
-        } else if (type.equals(Question.TYPE_MULTIPLE_CHOICE)) {
+        } else if (type.equals(BaseQuestion.TYPE_MULTIPLE_CHOICE)) {
             return validateMultipleChoice(questionLinearLayout);
         } else {
-            throw new RuntimeException("Question type not recognized");
+            throw new RuntimeException("BaseQuestion type not recognized");
         }
     }
 
