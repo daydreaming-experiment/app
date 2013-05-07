@@ -1,6 +1,7 @@
 package com.brainydroid.daydreaming.db;
 
 import android.location.Location;
+import android.widget.LinearLayout;
 
 public interface IQuestion {
 

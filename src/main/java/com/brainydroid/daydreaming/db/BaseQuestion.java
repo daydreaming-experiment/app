@@ -2,9 +2,13 @@ package com.brainydroid.daydreaming.db;
 
 import android.location.Location;
 import android.util.Log;
+import android.view.View;
+import android.widget.LinearLayout;
 import com.brainydroid.daydreaming.ui.Config;
 import com.google.gson.annotations.Expose;
 import com.google.inject.Inject;
+
+import java.util.ArrayList;
 
 // TODO: add some way to save the phone's timezone and the user's preferences
 // about what times he allowed notifications to appear at.

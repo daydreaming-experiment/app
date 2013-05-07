@@ -1,9 +1,12 @@
 package com.brainydroid.daydreaming.db;
 
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
 import com.brainydroid.daydreaming.ui.Config;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 
 public class Util {
 
@@ -83,6 +86,33 @@ public class Util {
 
         String[] pieces = time.split(":");
         return(Integer.parseInt(pieces[1]));
+    }
+
+    // Select questions by tags.
+    // Tags only used to identify subquestions when they exist
+    public static ArrayList<View> getViewsByTag(ViewGroup root, String tag) {
+
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] getViewsByTag");
+        }
+
+        ArrayList<View> views = new ArrayList<View>();
+        final int childCount = root.getChildCount();
+
+        for (int i = 0; i < childCount; i++) {
+            View child = root.getChildAt(i);
+            if (child instanceof ViewGroup) {
+                views.addAll(getViewsByTag((ViewGroup)child, tag));
+            }
+
+            Object tagObj = child.getTag();
+            if (tagObj != null && tagObj.equals(tag)) {
+                views.add(child);
+            }
+        }
+
+        return views;
     }
 
 }

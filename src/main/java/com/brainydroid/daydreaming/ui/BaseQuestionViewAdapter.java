@@ -10,10 +10,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 import com.brainydroid.daydreaming.R;
-import com.brainydroid.daydreaming.db.Answer;
-import com.brainydroid.daydreaming.db.MultipleChoiceAnswer;
-import com.brainydroid.daydreaming.db.BaseQuestion;
-import com.brainydroid.daydreaming.db.SliderAnswer;
+import com.brainydroid.daydreaming.db.*;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 
@@ -21,80 +18,44 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 
-public class QuestionViewAdapter {
+public abstract class BaseQuestionViewAdapter
+        implements IQuestionViewAdapter {
 
     private static String TAG = "QuestionViewAdapter";
 
-    private BaseQuestion question;
-    private LinearLayout questionLinearLayout;
+    private IQuestion question;
+    private LinearLayout layout;
 
     @Inject LayoutInflater layoutInflater;
 
-    @Inject
-    public QuestionViewAdapter(@Assisted BaseQuestion question, @Assisted LinearLayout questionLinearLayout) {
+    public void setAdapters(IQuestion question, LinearLayout layout) {
 
         // Debug
         if (Config.LOGD) {
-            Log.d(TAG, "[fn] QuestionViewAdapter");
+            Log.d(TAG, "[fn] setAdapters");
         }
 
         this.question = question;
-        this.questionLinearLayout = questionLinearLayout;
+        this.layout = layout;
     }
 
-    // Select questions by tags.
-    // Tags only used to identify subquestions when they exist
-    public static ArrayList<View> getViewsByTag(ViewGroup root, String tag) {
+    public void inflate(boolean isFirstQuestion) {
 
         // Debug
         if (Config.LOGD) {
-            Log.d(TAG, "[fn] getViewsByTag");
-        }
-
-        ArrayList<View> views = new ArrayList<View>();
-        final int childCount = root.getChildCount();
-
-        for (int i = 0; i < childCount; i++) {
-            View child = root.getChildAt(i);
-            if (child instanceof ViewGroup) {
-                views.addAll(getViewsByTag((ViewGroup)child, tag));
-            }
-
-            Object tagObj = child.getTag();
-            if (tagObj != null && tagObj.equals(tag)) {
-                views.add(child);
-            }
-        }
-
-        return views;
-    }
-
-    public void populateViews(Boolean isFirstQuestion) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] populateViews");
-        }
-
-        ArrayList<View> views;
-        String type = question.getType();
-
-        if (type == null) {
-            throw new RuntimeException("BaseQuestion type not set");
-        } else if (type.equals(BaseQuestion.TYPE_SLIDER)) {
-            views = createViewsSlider();
-        } else if (type.equals(BaseQuestion.TYPE_MULTIPLE_CHOICE)) {
-            views = createViewsMultipleChoice();
-        } else {
-            throw new RuntimeException("BaseQuestion type not recognized");
+            Log.d(TAG, "[fn] inflate");
         }
 
         int index = isFirstQuestion ? 1 : 0;
+        ArrayList<View> views = inflateViews();
+
         for (View view : views) {
-            questionLinearLayout.addView(view, index, questionLinearLayout.getLayoutParams());
+            layout.addView(view, index, layout.getLayoutParams());
             index++;
         }
     }
+
+    protected abstract ArrayList<View> inflateViews();
 
     private View createViewSlider(String mainText, final ArrayList<String> parametersTexts) {
 
@@ -307,27 +268,6 @@ public class QuestionViewAdapter {
         }
 
         return parsedParametersText;
-    }
-
-    // Answer saving
-
-    private Answer newAnswerType() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] newAnswerType");
-        }
-
-        String type = question.getType();
-        if (type == null) {
-            throw new RuntimeException("BaseQuestion type not set");
-        } else if (type.equals(BaseQuestion.TYPE_MULTIPLE_CHOICE)) {
-            return new MultipleChoiceAnswer();
-        } else if (type.equals(BaseQuestion.TYPE_SLIDER)) {
-            return new SliderAnswer();
-        } else {
-            throw new RuntimeException("BaseQuestion type not recognized");
-        }
     }
 
     public void saveAnswers() {
