@@ -291,6 +291,7 @@ public class LocationService extends RoboService {
         }
 
         if (locationListener != null) {
+            Log.i(TAG, "removing existing location updates");
             locationManager.removeUpdates(locationListener);
             locationListener = null;
         }

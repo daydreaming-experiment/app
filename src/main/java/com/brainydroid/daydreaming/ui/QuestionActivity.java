@@ -59,6 +59,7 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
     @Inject PollsStorage pollsStorage;
     @Inject StatusManager statusManager;
     @Inject QuestionViewAdapterFactory questionViewAdapterFactory;
+    @Inject SntpClient sntpClient;
 
     public static class LocationAlertDialogFragment extends SherlockDialogFragment {
 
@@ -134,7 +135,7 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
         super.onStart();
 
         poll.setStatus(Poll.STATUS_RUNNING);
-        poll.setQuestionStatus(questionIndex, Question.STATUS_ASKED);
+        question.setStatus(Question.STATUS_ASKED);
 
         if (statusManager.isDataAndLocationEnabled()) {
             startListeningTasks();
@@ -233,10 +234,28 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
             Log.d(TAG, "[fn] startListeningTasks");
         }
 
+        LocationCallback locationCallback = new LocationCallback() {
+
+            private final String TAG = "LocationCallback";
+
+            @Override
+            public void onLocationReceived(Location location) {
+
+                // Debug
+                if (Config.LOGD) {
+                    Log.d(TAG, "[fn] (locationCallback) onLocationReceived");
+                }
+
+                question.setLocation(location);
+            }
+
+        };
+
         SntpClientCallback sntpCallback = new SntpClientCallback() {
 
             private final String TAG = "SntpClientCallback";
 
+            @Override
             public void onTimeReceived(SntpClient sntpClient) {
 
                 // Debug
@@ -251,26 +270,9 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
 
         };
 
-        SntpClient sntpClient = new SntpClient();
-        sntpClient.asyncRequestTime(sntpCallback);
-
-        LocationCallback locationCallback = new LocationCallback() {
-
-            private final String TAG = "LocationCallback";
-
-            public void onLocationReceived(Location location) {
-
-                // Debug
-                if (Config.LOGD) {
-                    Log.d(TAG, "[fn] (locationCallback) onLocationReceived");
-                }
-
-                question.setLocation(location);
-            }
-
-        };
-
         locationServiceConnection.setQuestionLocationCallback(locationCallback);
+
+        sntpClient.asyncRequestTime(sntpCallback);
 
         if (!statusManager.isLocationServiceRunning()) {
             locationServiceConnection.bindLocationService();
@@ -289,7 +291,7 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
 
         if (questionViewAdapter.validate()) {
             questionViewAdapter.saveAnswer();
-            poll.setQuestionStatus(questionIndex, Question.STATUS_ANSWERED);
+            question.setStatus(Question.STATUS_ANSWERED);
 
             if (isLastQuestion()) {
 
@@ -394,8 +396,8 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
             Log.d(TAG, "[fn] dismissPoll");
         }
 
+        question.setStatus(Question.STATUS_ASKED_DISMISSED);
         poll.setStatus(Poll.STATUS_PARTIALLY_COMPLETED);
-        poll.setQuestionStatus(questionIndex, Question.STATUS_ASKED_DISMISSED);
 
         startSyncService();
     }

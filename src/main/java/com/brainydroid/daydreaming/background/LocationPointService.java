@@ -172,16 +172,18 @@ public class LocationPointService extends RoboService {
         // reduced to only one item.
         ArrayList<LocationPoint> collectingLocationPoints =
                 locationPointsStorage.getCollectingLocationPoints();
-        for (LocationPoint collectingLocationPoint :
-                collectingLocationPoints) {
-            collectingLocationPoint.setStatus(LocationPoint.STATUS_COMPLETED);
-        }
+        if (collectingLocationPoints != null) {
+            for (LocationPoint collectingLocationPoint :
+                    collectingLocationPoints) {
+                collectingLocationPoint.setStatus(LocationPoint.STATUS_COMPLETED);
+            }
 
-        // Try and spot bugs
-        if (collectingLocationPoints.size() != 1) {
-            // Warning
-            Log.w(TAG, "collectingLocationPoints.size() should be 1, " +
-                    "but is " + collectingLocationPoints.size());
+            // Try and spot bugs
+            if (collectingLocationPoints.size() != 1) {
+                // Warning
+                Log.w(TAG, "collectingLocationPoints.size() should be 1, " +
+                        "but is " + collectingLocationPoints.size());
+            }
         }
 
         // If LocationService is not running there's no need to stop it,

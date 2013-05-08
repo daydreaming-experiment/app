@@ -16,10 +16,10 @@ public class LocationPointsStorage {
 
     private static String TAG = "LocationPointsStorage";
 
-    private static final String TABLE_LOCATIONS = "locations";
+    private static final String TABLE_LOCATION_POINTS = "locationPoints";
 
     private static final String SQL_CREATE_TABLE_LOCATIONS =
-            "CREATE TABLE IF NOT EXISTS " + TABLE_LOCATIONS + " (" +
+            "CREATE TABLE IF NOT EXISTS " + TABLE_LOCATION_POINTS + " (" +
                     LocationPoint.COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     LocationPoint.COL_STATUS + " TEXT NOT NULL, " +
                     LocationPoint.COL_LOCATION_LATITUDE + " REAL, " +
@@ -28,6 +28,8 @@ public class LocationPointsStorage {
                     LocationPoint.COL_LOCATION_ACCURACY + " REAL, " +
                     LocationPoint.COL_TIMESTAMP + " REAL" +
                     ");";
+
+    @Inject LocationPointFactory locationPointFactory;
 
     private final SQLiteDatabase rDb;
     private final SQLiteDatabase wDb;
@@ -83,9 +85,9 @@ public class LocationPointsStorage {
         }
 
         ContentValues locationPointValues = getLocationPointContentValues(locationPoint);
-        wDb.insert(TABLE_LOCATIONS, null, locationPointValues);
+        wDb.insert(TABLE_LOCATION_POINTS, null, locationPointValues);
 
-        Cursor res = rDb.query(TABLE_LOCATIONS, new String[] {LocationPoint.COL_ID}, null,
+        Cursor res = rDb.query(TABLE_LOCATION_POINTS, new String[] {LocationPoint.COL_ID}, null,
                 null, null, null, LocationPoint.COL_ID + " DESC", "1");
         res.moveToFirst();
         int locationPointId = res.getInt(res.getColumnIndex(LocationPoint.COL_ID));
@@ -103,7 +105,7 @@ public class LocationPointsStorage {
 
         ContentValues locationItemValues = getLocationPointContentValuesWithId(locationPoint);
         int locationItemId = locationPoint.getId();
-        wDb.update(TABLE_LOCATIONS, locationItemValues, LocationPoint.COL_ID + "=?",
+        wDb.update(TABLE_LOCATION_POINTS, locationItemValues, LocationPoint.COL_ID + "=?",
                 new String[] {Integer.toString(locationItemId)});
     }
 
@@ -114,14 +116,14 @@ public class LocationPointsStorage {
             Log.d(TAG, "[fn] getLocationPoint");
         }
 
-        Cursor res = rDb.query(TABLE_LOCATIONS, null, LocationPoint.COL_ID + "=?",
+        Cursor res = rDb.query(TABLE_LOCATION_POINTS, null, LocationPoint.COL_ID + "=?",
                 new String[] {Integer.toString(locationPointId)}, null, null, null);
         if (!res.moveToFirst()) {
             res.close();
             return null;
         }
 
-        LocationPoint locationPoint = new LocationPoint();
+        LocationPoint locationPoint = locationPointFactory.create();
         locationPoint.setStatus(res.getString(res.getColumnIndex(LocationPoint.COL_STATUS)));
         locationPoint.setLocationLatitude(res.getDouble(res.getColumnIndex(LocationPoint.COL_LOCATION_LATITUDE)));
         locationPoint.setLocationLongitude(res.getDouble(res.getColumnIndex(LocationPoint.COL_LOCATION_LONGITUDE)));
@@ -180,7 +182,7 @@ public class LocationPointsStorage {
 
         String query = Util.multiplyString(LocationPoint.COL_STATUS + "=?",
                 statuses.length, " OR ");
-        Cursor res = rDb.query(TABLE_LOCATIONS, new String[] {LocationPoint.COL_ID},
+        Cursor res = rDb.query(TABLE_LOCATION_POINTS, new String[] {LocationPoint.COL_ID},
                 query, statuses, null, null, null, limit);
         if (!res.moveToFirst()) {
             res.close();
@@ -227,7 +229,7 @@ public class LocationPointsStorage {
             Log.d(TAG, "[fn] removeLocationPoint");
         }
 
-        wDb.delete(TABLE_LOCATIONS, LocationPoint.COL_ID + "=?", new String[] {Integer.toString(locationPointId)});
+        wDb.delete(TABLE_LOCATION_POINTS, LocationPoint.COL_ID + "=?", new String[] {Integer.toString(locationPointId)});
     }
 
     public void removeLocationPoints(

@@ -38,7 +38,6 @@ public class PollsStorage {
                     ");";
 
     @Inject QuestionsStorage questionsStorage;
-    @Inject SparseArray<Poll> pollInstances;
     @Inject PollFactory pollFactory;
 
     private final SQLiteDatabase rDb;
@@ -118,7 +117,6 @@ public class PollsStorage {
         res.close();
 
         poll.setId(pollId);
-        pollInstances.put(pollId, poll);
 
         for (Question q : poll.getQuestions()) {
             ContentValues qValues = getQuestionContentValues(pollId, q);
@@ -151,11 +149,6 @@ public class PollsStorage {
         // Debug
         if (Config.LOGD) {
             Log.d(TAG, "[fn] getPoll");
-        }
-
-        Poll cachedPoll = pollInstances.get(pollId, null);
-        if (cachedPoll != null) {
-            return cachedPoll;
         }
 
         Cursor res = rDb.query(TABLE_POLLS, null, Poll.COL_ID + "=?",
@@ -284,7 +277,6 @@ public class PollsStorage {
         wDb.delete(TABLE_POLLS, Poll.COL_ID + "=?", new String[]{Integer.toString(pollId)});
         wDb.delete(TABLE_POLL_QUESTIONS, Poll.COL_ID + "=?",
                 new String[]{Integer.toString(pollId)});
-        pollInstances.delete(pollId);
     }
 
     public void removePolls(ArrayList<Poll> polls) {
