@@ -19,7 +19,8 @@ public class QuestionViewAdapterFactory {
             Log.d(TAG, "[fn] create");
         }
 
-        String className = question.getDetails().getType() +
+        String PACKAGE_PREFIX = getClass().getPackage().getName() + ".";
+        String className = PACKAGE_PREFIX + question.getDetails().getType() +
                 QUESTION_VIEW_ADAPTER_SUFFIX;
         try {
             Class klass = Class.forName(className);
