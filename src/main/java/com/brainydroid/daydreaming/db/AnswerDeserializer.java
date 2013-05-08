@@ -8,8 +8,10 @@ import java.lang.reflect.Type;
 
 public class AnswerDeserializer implements JsonDeserializer<IAnswer> {
 
+    @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "AnswerDeserializer";
 
+    @SuppressWarnings("FieldCanBeLocal")
     private static String ANSWER_SUFFIX = "Answer";
 
     @Override
@@ -26,7 +28,7 @@ public class AnswerDeserializer implements JsonDeserializer<IAnswer> {
             JsonObject obj = (JsonObject)json;
             Class klass = Class.forName(obj.get("type").getAsString() +
                     ANSWER_SUFFIX);
-            return (IAnswer)context.deserialize(json, klass);
+            return context.deserialize(json, klass);
         } catch (Exception e) {
             throw new JsonParseException(e.getMessage());
         }

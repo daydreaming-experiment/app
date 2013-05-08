@@ -9,8 +9,11 @@ public class MultipleChoiceQuestionDetails implements IQuestionDetails {
 
     private static String TAG = "MultipleChoiceQuestionDetails";
 
-    private String type;
+    @SuppressWarnings("FieldCanBeLocal")
+    private String type = "MultipleChoice";
+    @SuppressWarnings("UnusedDeclaration")
     private String text;
+    @SuppressWarnings("UnusedDeclaration")
     private ArrayList<String> choices;
 
     @Override

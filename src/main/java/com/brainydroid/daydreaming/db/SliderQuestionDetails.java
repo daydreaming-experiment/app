@@ -9,7 +9,9 @@ public class SliderQuestionDetails implements IQuestionDetails {
 
     private static String TAG = "SliderQuestionDetails";
 
+    @SuppressWarnings("FieldCanBeLocal")
     private String type = "Slider";
+    @SuppressWarnings("UnusedDeclaration")
     private ArrayList<SliderSubQuestion> subQuestions;
 
     @Override

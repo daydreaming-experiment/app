@@ -7,8 +7,6 @@ import android.widget.Toast;
 import com.brainydroid.daydreaming.db.*;
 import com.brainydroid.daydreaming.network.*;
 import com.brainydroid.daydreaming.ui.Config;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.inject.Inject;
 import roboguice.service.RoboService;
 
@@ -37,11 +35,7 @@ public class SyncService extends RoboService {
     @Inject QuestionsStorage questionsStorage;
     @Inject CryptoStorage cryptoStorage;
     @Inject ServerTalker serverTalker;
-
-    // Only include exposed members when jsonifying
-    private Gson gson  = new GsonBuilder()
-            .excludeFieldsWithoutExposeAnnotation()
-            .create();
+    @Inject Json json;
 
     /**
      * Callback called once the {@link CryptoStorage} is ready,
@@ -297,7 +291,7 @@ public class SyncService extends RoboService {
 
         // Sign our data to identify us, and upload
         serverTalker.signAndUploadData(ServerConfig.EXP_ID,
-                gson.toJson(pollsArray), callback);
+                json.toJsonExposed(pollsArray), callback);
     }
 
     /**
@@ -373,7 +367,7 @@ public class SyncService extends RoboService {
 
         // Sign our data to identify us, and upload
         serverTalker.signAndUploadData(ServerConfig.EXP_ID,
-                gson.toJson(locationPoints), callback);
+                json.toJsonExposed(locationPoints), callback);
     }
 
 }

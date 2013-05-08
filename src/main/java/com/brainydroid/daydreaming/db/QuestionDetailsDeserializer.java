@@ -9,8 +9,10 @@ import java.lang.reflect.Type;
 public class QuestionDetailsDeserializer
         implements JsonDeserializer<IQuestionDetails> {
 
+    @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "QuestionDetailsDeserializer";
 
+    @SuppressWarnings("FieldCanBeLocal")
     private static String QUESTION_DETAILS_SUFFIX = "QuestionDetails";
 
     @Override
@@ -27,7 +29,7 @@ public class QuestionDetailsDeserializer
             JsonObject obj = (JsonObject)json;
             Class klass = Class.forName(obj.get("type").getAsString() +
                     QUESTION_DETAILS_SUFFIX);
-            return (IQuestionDetails)context.deserialize(json, klass);
+            return context.deserialize(json, klass);
         } catch (Exception e) {
             throw new JsonParseException(e.getMessage());
         }

@@ -9,8 +9,10 @@ import java.util.HashMap;
 
 public class SliderAnswer implements IAnswer {
 
+    @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "SliderAnswer";
 
+    @SuppressWarnings("UnusedDeclaration")
     private String type = "Slider";
     @Expose @Inject HashMap<String,Integer> sliders;
 
