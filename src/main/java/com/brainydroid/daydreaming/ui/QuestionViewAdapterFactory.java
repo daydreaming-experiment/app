@@ -3,13 +3,19 @@ package com.brainydroid.daydreaming.ui;
 import android.util.Log;
 import android.widget.LinearLayout;
 import com.brainydroid.daydreaming.db.Question;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
 
 public class QuestionViewAdapterFactory {
 
+    @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "QuestionViewAdapterFactory";
 
+    @SuppressWarnings("FieldCanBeLocal")
     private static String QUESTION_VIEW_ADAPTER_SUFFIX =
             "QuestionViewAdapter";
+
+    @Inject Injector injector;
 
     public IQuestionViewAdapter create(Question question,
                                        LinearLayout layout) {
@@ -24,7 +30,11 @@ public class QuestionViewAdapterFactory {
                 QUESTION_VIEW_ADAPTER_SUFFIX;
         try {
             Class klass = Class.forName(className);
-            return (IQuestionViewAdapter)klass.newInstance();
+            IQuestionViewAdapter questionViewAdapter =
+                    (IQuestionViewAdapter)klass.newInstance();
+            injector.injectMembers(questionViewAdapter);
+            questionViewAdapter.setAdapters(question, layout);
+            return questionViewAdapter;
         } catch (ClassNotFoundException e) {
             throw new RuntimeException("Class " + className + " was not " +
                     "found");

@@ -20,7 +20,7 @@ public class AnswerDeserializer implements JsonDeserializer<IAnswer> {
 
     @Override
     public IAnswer deserialize(JsonElement json, Type typeOfT,
-                              JsonDeserializationContext context)
+                               JsonDeserializationContext context)
             throws JsonParseException {
 
         // Debug
