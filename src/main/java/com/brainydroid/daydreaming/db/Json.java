@@ -2,7 +2,6 @@ package com.brainydroid.daydreaming.db;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.inject.Injector;
 import com.google.inject.Singleton;
 
 import javax.inject.Inject;
@@ -10,17 +9,19 @@ import javax.inject.Inject;
 @Singleton
 public class Json {
 
-    @Inject Injector injector;
-
     private Gson gson;
     private Gson gsonExposed;
 
     @Inject
-    public Json(GsonBuilder gsonBuilder) {
-        gsonBuilder.registerTypeAdapter(IAnswer.class,
-                new AnswerDeserializer());
+    public Json(GsonBuilder gsonBuilder,
+                AnswerDeserializer answerDeserializer,
+                QuestionDetailsDeserializer questionDetailsDeserializer,
+                QuestionInstanceCreator questionInstanceCreator) {
+        gsonBuilder.registerTypeAdapter(IAnswer.class, answerDeserializer);
         gsonBuilder.registerTypeAdapter(IQuestionDetails.class,
-                new QuestionDetailsDeserializer());
+                questionDetailsDeserializer);
+        gsonBuilder.registerTypeAdapter(Question.class,
+                questionInstanceCreator);
 
         gson = gsonBuilder.create();
         gsonExposed = gsonBuilder.excludeFieldsWithoutExposeAnnotation()
@@ -36,9 +37,7 @@ public class Json {
     }
 
     public <T> T fromJson(String json, Class<T> classOfT) {
-        T obj = gson.fromJson(json, classOfT);
-        injector.injectMembers(obj);
-        return obj;
+        return gson.fromJson(json, classOfT);
     }
 
 }

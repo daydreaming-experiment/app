@@ -16,6 +16,8 @@ public class AnswerDeserializer implements JsonDeserializer<IAnswer> {
     @SuppressWarnings("FieldCanBeLocal")
     private static String ANSWER_SUFFIX = "Answer";
 
+    @Inject Injector injector;
+
     @Override
     public IAnswer deserialize(JsonElement json, Type typeOfT,
                               JsonDeserializationContext context)
@@ -31,7 +33,9 @@ public class AnswerDeserializer implements JsonDeserializer<IAnswer> {
             JsonObject obj = (JsonObject)json;
             Class klass = Class.forName(PACKAGE_PREFIX +
                     obj.get("type").getAsString() + ANSWER_SUFFIX);
-            return context.deserialize(json, klass);
+            IAnswer answer = context.deserialize(json, klass);
+            injector.injectMembers(answer);
+            return answer;
         } catch (Exception e) {
             throw new JsonParseException(e.getMessage());
         }

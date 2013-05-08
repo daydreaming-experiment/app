@@ -11,7 +11,7 @@ public class ServerQuestionsJson {
     private static String TAG = "ServerQuestionsJson";
 
     public int version = -1;
-    @Inject ArrayList<Question> questions;
+    ArrayList<Question> questions = new ArrayList<Question>();
 
     public ArrayList<Question> getQuestionsArrayList() {
 

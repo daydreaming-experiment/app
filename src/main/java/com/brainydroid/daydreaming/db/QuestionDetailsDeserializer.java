@@ -17,6 +17,8 @@ public class QuestionDetailsDeserializer
     @SuppressWarnings("FieldCanBeLocal")
     private static String QUESTION_DETAILS_SUFFIX = "QuestionDetails";
 
+    @Inject Injector injector;
+
     @Override
     public IQuestionDetails deserialize(JsonElement json, Type typeOfT,
                                         JsonDeserializationContext context)
@@ -32,7 +34,10 @@ public class QuestionDetailsDeserializer
             JsonObject obj = (JsonObject)json;
             Class klass = Class.forName(PACKAGE_PREFIX +
                     obj.get("type").getAsString() + QUESTION_DETAILS_SUFFIX);
-            return context.deserialize(json, klass);
+            IQuestionDetails questionDetails = context.deserialize(json,
+                    klass);
+            injector.injectMembers(questionDetails);
+            return questionDetails;
         } catch (ClassNotFoundException e) {
             throw new JsonParseException(e);
         }
