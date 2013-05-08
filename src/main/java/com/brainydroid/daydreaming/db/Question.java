@@ -3,14 +3,8 @@ package com.brainydroid.daydreaming.db;
 import android.location.Location;
 import android.util.Log;
 import com.brainydroid.daydreaming.ui.Config;
-import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 import com.google.inject.Inject;
-
-import java.lang.reflect.Type;
-
-// this class defines the general structure of questions and their answer.
-// These attributes will be saved
 
 // TODO: add some way to save the phone's timezone and the user's preferences
 // about what times he allowed notifications to appear at.
@@ -19,85 +13,50 @@ public class Question {
 
     private static String TAG = "Question";
 
-    // attributes inherent to the question
-    @Expose private String id = null;
-    private String category = null;
-    private String subcategory = null;
-    private String type = null;
-    private String mainText = null;
-    private String parametersText = null;
-    private int defaultPosition = -1;
-    private int questionsVersion = -1;
-
-    // attributes dependent on the answer
-    @Expose private String status = null;
-    @Expose private Answer answer = null;
-    @Expose private double locationLatitude = -1;
-    @Expose private double locationLongitude = -1;
-    @Expose private double locationAltitude = -1;
-    @Expose private double locationAccuracy = -1;
-    @Expose private long timestamp = -1;
-
-    public static final String PARAMETER_SPLITTER = "\\{s\\}";
-    public static final String SUBPARAMETER_SPLITTER = "\\{ss\\}";
-
-    public static final String COL_ID = "questionId";
+    public static final String COL_NAME = "questionName";
     public static final String COL_CATEGORY = "questionCategory";
-    public static final String COL_SUBCATEGORY = "questionSubcategory";
-    public static final String COL_TYPE = "questionType";
-    public static final String COL_MAIN_TEXT = "mainText";
-    public static final String COL_PARAMETERS_TEXT = "parametersText";
-    public static final String COL_DEFAULT_POSITION = "defaultPosition";
+    public static final String COL_SUB_CATEGORY = "questionSubCategory";
+    public static final String COL_DETAILS = "questionDetails";
+
     public static final String COL_STATUS = "questionStatus";
     public static final String COL_ANSWER = "questionAnswer";
-    public static final String COL_LOCATION_LATITUDE = "questionLocationLatitude";
-    public static final String COL_LOCATION_LONGITUDE = "questionLocationLongitude";
-    public static final String COL_LOCATION_ALTITUDE = "questionLocationAltitude";
-    public static final String COL_LOCATION_ACCURACY = "questionLocationAccuracy";
+    public static final String COL_LOCATION = "questionLocation";
     public static final String COL_TIMESTAMP = "questionTimestamp";
-    public static final String COL_QUESTIONS_VERSION = "questionQuestionsVersion";
 
     public static final String STATUS_ASKED = "questionAsked";
     public static final String STATUS_ASKED_DISMISSED = "questionAskedDismissed";
     public static final String STATUS_ANSWERED = "questionAnswered";
 
-    public static final String TYPE_SLIDER = "slider";
-    public static final String TYPE_MULTIPLE_CHOICE = "multipleChoice";
+    @Inject transient Json json;
 
-    @Inject transient Gson gson;
+    @Expose protected String name = null;
+    protected String category = null;
+    protected String subCategory = null;
+    protected IQuestionDetails details = null;
 
-    // constructor : sets default values
-    @Inject
-    public Question(QuestionsStorage questionsStorage) {
+    @Expose protected String status = null;
+    @Expose protected IAnswer answer = null;
+    @Expose protected Location location;
+    @Expose protected long timestamp = -1;
 
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] Question");
-        }
-
-        questionsVersion = questionsStorage.getQuestionsVersion();
-    }
-
-    //-------------------------- set / get functions
-
-    public String getId() {
+    public String getName() {
 
         // Verbose
         if (Config.LOGV) {
-            Log.v(TAG, "[fn] getId");
+            Log.v(TAG, "[fn] getName");
         }
 
-        return id;
+        return name;
     }
 
-    public void setId(String id) {
+    public void setName(String name) {
 
         // Verbose
         if (Config.LOGV) {
-            Log.v(TAG, "[fn] setId");
+            Log.v(TAG, "[fn] setName");
         }
 
-        this.id = id;
+        this.name = name;
     }
 
     public String getCategory() {
@@ -120,62 +79,68 @@ public class Question {
         this.category = category;
     }
 
-    public String getSubcategory() {
+    public String getSubCategory() {
 
         // Verbose
         if (Config.LOGV) {
-            Log.v(TAG, "[fn] getSubcategory");
+            Log.v(TAG, "[fn] getSubCategory");
         }
 
-        return subcategory;
+        return subCategory;
     }
 
-    public void setSubcategory(String subcategory) {
+    public void setSubCategory(String subCategory) {
 
         // Verbose
         if (Config.LOGV) {
-            Log.v(TAG, "[fn] setSubcategory");
+            Log.v(TAG, "[fn] setSubCategory");
         }
 
-        this.subcategory = subcategory;
+        this.subCategory = subCategory;
     }
 
-    public String getType() {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] getType");
-        }
-
-        return type;
-    }
-
-    private Type getTypeType() {
+    public String getDetailsAsJson() {
 
         // Debug
         if (Config.LOGD) {
-            Log.d(TAG, "[fn] getTypeType");
+            Log.d(TAG, "[fn] getDetailsAsJson");
         }
 
-        if (type == null) {
-            throw new RuntimeException("Question type not set");
-        } else if (type.equals(TYPE_MULTIPLE_CHOICE)) {
-            return MultipleChoiceAnswer.class;
-        } else if (type.equals(TYPE_SLIDER)) {
-            return SliderAnswer.class;
+        if (details != null) {
+            return json.toJson(details);
         } else {
-            throw new RuntimeException("Question type not recognized");
+            return null;
         }
     }
 
-    public void setType(String type) {
+    public void setDetailsFromJson(String jsonDetails) {
+
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] setDetailsFromJson");
+        }
+
+        details = json.fromJson(jsonDetails, IQuestionDetails.class);
+    }
+
+    public IQuestionDetails getDetails() {
 
         // Verbose
         if (Config.LOGV) {
-            Log.v(TAG, "[fn] setType");
+            Log.v(TAG, "[fn] getDetails");
         }
 
-        this.type = type;
+        return details;
+    }
+
+    public void setDetails(IQuestionDetails details) {
+
+        // Verbose
+        if (Config.LOGV) {
+            Log.v(TAG, "[fn] setDetails");
+        }
+
+        this.details = details;
     }
 
     public String getStatus() {
@@ -198,197 +163,88 @@ public class Question {
         this.status = status;
     }
 
-    public String getMainText() {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] getMainText");
-        }
-
-        return mainText;
-    }
-
-    public void setMainText(String mainText) {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] setMainText");
-        }
-
-        this.mainText = mainText;
-    }
-
-    public String getParametersText() {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] getParametersText");
-        }
-
-        return parametersText;
-    }
-
-    public void setParametersText(String parametersText) {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] setParametersText");
-        }
-
-        this.parametersText = parametersText;
-    }
-
-    public int getDefaultPosition() {
-
-        // Verbose
-        if (Config.LOGV){
-            Log.v(TAG, "[fn] getDefaultPosition");
-        }
-
-        return defaultPosition;
-    }
-
-    public void setDefaultPosition(int defaultPosition) {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] setDefaultPosition");
-        }
-
-        this.defaultPosition = defaultPosition;
-    }
-
-    public String getAnswer() {
+    public String getAnswerAsJson() {
 
         // Debug
         if (Config.LOGD) {
-            Log.d(TAG, "[fn] getAnswer");
+            Log.d(TAG, "[fn] getAnswerAsJson");
         }
 
         if (answer != null) {
-            return answer.toJson();
+            return json.toJson(answer);
         } else {
             return null;
         }
     }
 
-    public void setAnswer(Answer answer) {
+    public void setAnswerFromJson(String jsonAnswer) {
+
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] setAnswerFromJson");
+        }
+
+        answer = json.fromJson(jsonAnswer, IAnswer.class);
+    }
+
+    public IAnswer getAnswer() {
 
         // Verbose
         if (Config.LOGV) {
-            Log.v(TAG, "[fn] setAnswer (from Answer)");
+            Log.v(TAG, "[fn] getAnswer");
+        }
+
+        return answer;
+    }
+
+    public void setAnswer(IAnswer answer) {
+
+        // Verbose
+        if (Config.LOGV) {
+            Log.v(TAG, "[fn] setAnswer");
         }
 
         this.answer = answer;
     }
 
-    public void setAnswer(String jsonAnswer) {
+    public String getLocationAsJson() {
 
         // Debug
         if (Config.LOGD) {
-            Log.d(TAG, "[fn] setAnswer (from String)");
+            Log.d(TAG, "[fn] getLocationAsJson");
         }
 
-        if (jsonAnswer != null && jsonAnswer.length() != 0) {
-            Type typeType = getTypeType();
-            Answer answer = gson.fromJson(jsonAnswer, typeType);
-            setAnswer(answer);
-        }
+        return json.toJson(location);
     }
 
-    public double getLocationLatitude() {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] getLocationLatitude");
-        }
-
-        return locationLatitude;
-    }
-
-    public double getLocationLongitude() {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] getLocationLongitude");
-        }
-
-        return locationLongitude;
-    }
-
-    public double getLocationAltitude() {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] getLocationAltitude");
-        }
-
-        return locationAltitude;
-    }
-
-    public double getLocationAccuracy() {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] getLocationAccuracy");
-        }
-
-        return locationAccuracy;
-    }
-
-    public void setLocationLatitude(double locationLatitude) {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] setLocationLatitude");
-        }
-
-        this.locationLatitude = locationLatitude;
-    }
-
-    public void setLocationLongitude(double locationLongitude) {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] setLocationLongitude");
-        }
-
-        this.locationLongitude = locationLongitude;
-    }
-
-    public void setLocationAltitude(double locationAltitude) {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] setLocationAltitude");
-        }
-
-        this.locationAltitude = locationAltitude;
-    }
-
-    public void setLocationAccuracy(double locationAccuracy) {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] setLocationAccuracy");
-        }
-
-        this.locationAccuracy = locationAccuracy;
-    }
-
-    public void setLocation(Location location) {
+    public void setLocationFromJson(String jsonLocation) {
 
         // Debug
         if (Config.LOGD) {
             Log.d(TAG, "[fn] setLocation");
         }
 
-        if (location != null) {
-            locationLatitude = location.getLatitude();
-            locationLongitude = location.getLongitude();
-            locationAltitude = location.getAltitude();
-            locationAccuracy = location.getAccuracy();
+        this.location = json.fromJson(jsonLocation, Location.class);
+    }
+
+    public Location getLocation() {
+
+        // Verbose
+        if (Config.LOGV) {
+            Log.v(TAG, "[fn] getLocation");
         }
+
+        return location;
+    }
+
+    public void setLocation(Location location) {
+
+        // Verbose
+        if (Config.LOGV) {
+            Log.v(TAG, "[fn] setLocation");
+        }
+
+        this.location = location;
     }
 
     public long getTimestamp() {
@@ -409,26 +265,6 @@ public class Question {
         }
 
         this.timestamp = timestamp;
-    }
-
-    public int getQuestionsVersion() {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] getQuestionsVersion");
-        }
-
-        return questionsVersion;
-    }
-
-    public void setQuestionsVersion(int questionsVersion) {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] setQuestionsVersion");
-        }
-
-        this.questionsVersion = questionsVersion;
     }
 
 }
