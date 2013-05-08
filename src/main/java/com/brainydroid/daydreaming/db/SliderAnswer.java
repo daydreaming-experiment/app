@@ -14,7 +14,10 @@ public class SliderAnswer implements IAnswer {
 
     @SuppressWarnings("UnusedDeclaration")
     private String type = "Slider";
-    @Expose @Inject HashMap<String,Integer> sliders;
+
+    // Don't inject this or it will override Json-loaded values when
+    // deserializing.
+    @Expose HashMap<String,Integer> sliders = new HashMap<String, Integer>();
 
     public void addAnswer(String text, int position) {
 

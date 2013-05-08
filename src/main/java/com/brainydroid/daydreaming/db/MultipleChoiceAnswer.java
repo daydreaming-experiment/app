@@ -14,7 +14,10 @@ public class MultipleChoiceAnswer implements IAnswer {
 
     @SuppressWarnings("UnusedDeclaration")
     private String type = "MultipleChoice";
-    @Expose @Inject HashSet<String> choices;
+
+    // Don't inject this or it will override Json-loaded values when
+    // deserializing.
+    @Expose HashSet<String> choices = new HashSet<String>();
 
     public void addChoice(String choice) {
 

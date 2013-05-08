@@ -12,9 +12,9 @@ public class MultipleChoiceQuestionDetails implements IQuestionDetails {
     @SuppressWarnings("FieldCanBeLocal")
     private String type = "MultipleChoice";
     @SuppressWarnings("UnusedDeclaration")
-    private String text;
+    private String text = null;
     @SuppressWarnings("UnusedDeclaration")
-    private ArrayList<String> choices;
+    private ArrayList<String> choices = new ArrayList<String>();
 
     @Override
     public String getType() {

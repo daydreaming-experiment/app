@@ -25,27 +25,29 @@ public class QuestionsStorage {
                     Question.COL_NAME + " TEXT NOT NULL, " +
                     Question.COL_CATEGORY + " TEXT NOT NULL, " +
                     Question.COL_SUB_CATEGORY + " TEXT, " +
-                    Question.COL_DETAILS + " TEXT NOT NULL, " +
+                    Question.COL_DETAILS + " TEXT NOT NULL" +
                     ");";
 
     @Inject Json json;
     @Inject Random random;
     @Inject QuestionFactory questionFactory;
-    @Inject SharedPreferences sharedPreferences;
 
+    private final SharedPreferences sharedPreferences;
     private final SharedPreferences.Editor eSharedPreferences;
     private final SQLiteDatabase rDb;
     private final SQLiteDatabase wDb;
 
     // Constructor
     @Inject
-    public QuestionsStorage(Storage storage) {
+    public QuestionsStorage(Storage storage,
+                            SharedPreferences sharedPreferences) {
 
         // Debug
         if (Config.LOGD) {
             Log.d(TAG, "[fn] QuestionsStorage");
         }
 
+        this.sharedPreferences = sharedPreferences;
         eSharedPreferences = sharedPreferences.edit();
         rDb = storage.getReadableDatabase();
         wDb = storage.getWritableDatabase();

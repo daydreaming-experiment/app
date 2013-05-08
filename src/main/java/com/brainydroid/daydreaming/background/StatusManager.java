@@ -31,23 +31,25 @@ public class StatusManager {
     private static String EXP_STATUS_QUESTIONS_UPDATED =
             "expStatusQuestionsUpdated";
 
-    @Inject SharedPreferences sharedPreferences;
     @Inject LocationManager locationManager;
     @Inject ConnectivityManager connectivityManager;
     @Inject ActivityManager activityManager;
 
+    private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor eSharedPreferences;
 
     /**
      * Initialize the {@code SharedPreferences} editor.
      */
-    public StatusManager() {
+    @Inject
+    public StatusManager(SharedPreferences sharedPreferences) {
 
         // Debug
         if (Config.LOGD) {
             Log.d(TAG, "[fn] StatusManager");
         }
 
+        this.sharedPreferences = sharedPreferences;
         eSharedPreferences = sharedPreferences.edit();
     }
 

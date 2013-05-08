@@ -24,7 +24,7 @@ public class PollsStorage {
             "CREATE TABLE IF NOT EXISTS " + TABLE_POLLS + " (" +
                     Poll.COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     Poll.COL_STATUS + " TEXT NOT NULL, " +
-                    Poll.COL_NOTIFICATION_TIMESTAMP + " REAL, " +
+                    Poll.COL_NOTIFICATION_TIMESTAMP + " REAL" +
                     ");";
 
     private static final String SQL_CREATE_TABLE_POLL_QUESTIONS =

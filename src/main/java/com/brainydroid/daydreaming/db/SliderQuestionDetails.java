@@ -12,7 +12,8 @@ public class SliderQuestionDetails implements IQuestionDetails {
     @SuppressWarnings("FieldCanBeLocal")
     private String type = "Slider";
     @SuppressWarnings("UnusedDeclaration")
-    private ArrayList<SliderSubQuestion> subQuestions;
+    private ArrayList<SliderSubQuestion> subQuestions =
+            new ArrayList<SliderSubQuestion>();
 
     @Override
     public String getType() {

@@ -1,6 +1,5 @@
 package com.brainydroid.daydreaming.db;
 
-import android.graphics.Bitmap;
 import android.util.Log;
 import com.brainydroid.daydreaming.ui.Config;
 
@@ -10,9 +9,10 @@ public class SliderSubQuestion {
 
     private static String TAG = "SliderSubQuestion";
 
-    private String text;
-    private ArrayList<String> hints;
-    private int initialPosition;
+    private String text = null;
+    private ArrayList<String> hints = new ArrayList<String>();
+    @SuppressWarnings("FieldCanBeLocal")
+    private int initialPosition = -1;
 
     public String getText() {
 

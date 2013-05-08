@@ -3,6 +3,8 @@ package com.brainydroid.daydreaming.db;
 import android.util.Log;
 import com.brainydroid.daydreaming.ui.Config;
 import com.google.gson.*;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
 
 import java.lang.reflect.Type;
 
@@ -25,13 +27,14 @@ public class QuestionDetailsDeserializer
             Log.d(TAG, "[fn] deserialize");
         }
 
+        String PACKAGE_PREFIX = getClass().getPackage().getName() + ".";
         try {
             JsonObject obj = (JsonObject)json;
-            Class klass = Class.forName(obj.get("type").getAsString() +
-                    QUESTION_DETAILS_SUFFIX);
+            Class klass = Class.forName(PACKAGE_PREFIX +
+                    obj.get("type").getAsString() + QUESTION_DETAILS_SUFFIX);
             return context.deserialize(json, klass);
-        } catch (Exception e) {
-            throw new JsonParseException(e.getMessage());
+        } catch (ClassNotFoundException e) {
+            throw new JsonParseException(e);
         }
     }
 
