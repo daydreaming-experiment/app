@@ -36,6 +36,9 @@ public class Poll {
         }
 
         questions = questionsStorage.getRandomQuestions(nQuestions);
+        for (Question question : questions) {
+            question.setPoll(this);
+        }
     }
 
     public void addQuestion(Question question) {
@@ -45,6 +48,7 @@ public class Poll {
             Log.d(TAG, "[fn] addQuestion");
         }
 
+        question.setPoll(this);
         questions.add(question);
     }
 
@@ -122,17 +126,6 @@ public class Poll {
         saveIfSync();
     }
 
-    public void setQuestionStatus(int questionIndex, String status) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] setQuestionStatus");
-        }
-
-        questions.get(questionIndex).setStatus(status);
-        saveIfSync();
-    }
-
     public long getNotificationTimestamp() {
 
         // Verbose
@@ -154,7 +147,7 @@ public class Poll {
         saveIfSync();
     }
 
-    private void saveIfSync() {
+    public void saveIfSync() {
 
         // Debug
         if (Config.LOGD) {

@@ -16,7 +16,6 @@
 
 package com.brainydroid.daydreaming.network;
 
-import android.os.AsyncTask;
 import android.os.SystemClock;
 import android.util.Log;
 import com.brainydroid.daydreaming.ui.Config;
@@ -39,7 +38,7 @@ public class SntpClient {
 
     private static final String TAG = "SntpClient";
 
-    private static final int NETWORK_TIMEOUT = 30 * 1000; // 30 secs (in ms)
+    private static final int NETWORK_TIMEOUT = 5 * 1000; // 30 secs (in ms)
 
     private static final int ORIGINATE_TIME_OFFSET = 24;
     private static final int RECEIVE_TIME_OFFSET = 32;
@@ -62,50 +61,6 @@ public class SntpClient {
 
     // round trip time in milliseconds
     private long mRoundTripTime;
-
-    private class RequestTimeTask extends AsyncTask<SntpClient, Integer, SntpClient> {
-
-        private final String TAG = "RequestTimeTask";
-
-        private SntpClientCallback callback = null;
-
-        protected void setSntpClientCallback(SntpClientCallback callback) {
-
-            // Verbose
-            if (Config.LOGV) {
-                Log.v(TAG, "[fn] setSntpClientCallback");
-            }
-
-            this.callback = callback;
-        }
-
-        @Override
-        protected SntpClient doInBackground(SntpClient... sntpClients) {
-
-            // Debug
-            if (Config.LOGD) {
-                Log.d(TAG, "[fn] doInBackground");
-            }
-
-            SntpClient sntpClient = sntpClients[0];
-            if (sntpClient.requestTime("0.pool.ntp.org", NETWORK_TIMEOUT)) {
-                return sntpClient;
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(SntpClient sntpClient) {
-
-            // Debug
-            if (Config.LOGD) {
-                Log.d(TAG, "[fn] onPostExecute");
-            }
-
-            callback.onTimeReceived(sntpClient);
-        }
-    }
 
     /**
      * Sends an SNTP request to the given host and processes the response.
@@ -193,9 +148,31 @@ public class SntpClient {
             Log.d(TAG, "[fn] asyncRequestTime");
         }
 
-        RequestTimeTask requestTask = new RequestTimeTask();
-        requestTask.setSntpClientCallback(callback);
-        requestTask.execute(this);
+        final SntpClientCallback finalCallback = callback;
+
+        Thread sntpWorker = new Thread(new Runnable() {
+
+            private String TAG = "sntpWorker";
+
+            @Override
+            public void run() {
+
+                // Debug
+                if (Config.LOGD) {
+                    Log.d(TAG, "[fn] run");
+                }
+
+                SntpClient sntpClient = SntpClient.this;
+                if (sntpClient.requestTime("0.pool.ntp.org", NETWORK_TIMEOUT)) {
+                    finalCallback.onTimeReceived(sntpClient);
+                } else {
+                    finalCallback.onTimeReceived(null);
+                }
+            }
+
+        });
+
+        sntpWorker.start();
     }
 
     public long getNow() {

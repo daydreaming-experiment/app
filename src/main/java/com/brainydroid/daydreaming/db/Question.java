@@ -30,14 +30,16 @@ public class Question {
     @Inject transient Json json;
 
     @Expose protected String name = null;
-    protected String category = null;
-    protected String subCategory = null;
-    protected IQuestionDetails details = null;
+    private String category = null;
+    private String subCategory = null;
+    private IQuestionDetails details = null;
 
-    @Expose protected String status = null;
-    @Expose protected IAnswer answer = null;
-    @Expose protected Location location;
-    @Expose protected long timestamp = -1;
+    @Expose private String status = null;
+    @Expose private IAnswer answer = null;
+    @Expose private Location location;
+    @Expose private long timestamp = -1;
+
+    private Poll poll = null;
 
     public String getName() {
 
@@ -57,6 +59,7 @@ public class Question {
         }
 
         this.name = name;
+        saveIfInSyncingPoll();
     }
 
     public String getCategory() {
@@ -77,6 +80,7 @@ public class Question {
         }
 
         this.category = category;
+        saveIfInSyncingPoll();
     }
 
     public String getSubCategory() {
@@ -97,6 +101,7 @@ public class Question {
         }
 
         this.subCategory = subCategory;
+        saveIfInSyncingPoll();
     }
 
     public String getDetailsAsJson() {
@@ -121,6 +126,7 @@ public class Question {
         }
 
         details = json.fromJson(jsonDetails, IQuestionDetails.class);
+        saveIfInSyncingPoll();
     }
 
     public IQuestionDetails getDetails() {
@@ -141,6 +147,7 @@ public class Question {
         }
 
         this.details = details;
+        saveIfInSyncingPoll();
     }
 
     public String getStatus() {
@@ -161,6 +168,7 @@ public class Question {
         }
 
         this.status = status;
+        saveIfInSyncingPoll();
     }
 
     public String getAnswerAsJson() {
@@ -185,6 +193,7 @@ public class Question {
         }
 
         answer = json.fromJson(jsonAnswer, IAnswer.class);
+        saveIfInSyncingPoll();
     }
 
     public IAnswer getAnswer() {
@@ -205,6 +214,7 @@ public class Question {
         }
 
         this.answer = answer;
+        saveIfInSyncingPoll();
     }
 
     public String getLocationAsJson() {
@@ -225,6 +235,7 @@ public class Question {
         }
 
         this.location = json.fromJson(jsonLocation, Location.class);
+        saveIfInSyncingPoll();
     }
 
     public Location getLocation() {
@@ -245,6 +256,7 @@ public class Question {
         }
 
         this.location = location;
+        saveIfInSyncingPoll();
     }
 
     public long getTimestamp() {
@@ -265,6 +277,42 @@ public class Question {
         }
 
         this.timestamp = timestamp;
+        saveIfInSyncingPoll();
+    }
+
+    public Poll getPoll() {
+
+        // Verbose
+        if (Config.LOGV) {
+            Log.v(TAG, "[fn] getPoll");
+        }
+
+        return poll;
+    }
+
+    public void setPoll(Poll poll) {
+
+        // Verbose
+        if (Config.LOGV) {
+            Log.v(TAG, "[fn] setPoll");
+        }
+
+        // This method is only called from Poll.addQuestion(...), and calling
+        // saveIfInSyncingPoll() would trigger an unnecessary save. So we
+        // don't call it, contrary to other setters above.
+        this.poll = poll;
+    }
+
+    private void saveIfInSyncingPoll() {
+
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] saveIfInSyncingPoll");
+        }
+
+        if (poll != null) {
+            poll.saveIfSync();
+        }
     }
 
 }

@@ -2,9 +2,8 @@ package com.brainydroid.daydreaming.db;
 
 import android.util.Log;
 import com.brainydroid.daydreaming.ui.Config;
-import com.google.gson.*;
+import com.google.gson.InstanceCreator;
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 
 import java.lang.reflect.Type;
 
@@ -13,7 +12,7 @@ public class QuestionInstanceCreator implements InstanceCreator<Question> {
     @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "QuestionInstanceCreator";
 
-    @Inject Injector injector;
+    @Inject QuestionFactory questionFactory;
 
     @Override
     public Question createInstance(Type type) {
@@ -23,8 +22,7 @@ public class QuestionInstanceCreator implements InstanceCreator<Question> {
             Log.d(TAG, "[fn] createInstance");
         }
 
-        Question question = new Question();
-        injector.injectMembers(question);
+        Question question = questionFactory.create();
         return question;
     }
 

@@ -59,10 +59,11 @@ public class LocationPoint {
 
         // Debug
         if (Config.LOGD) {
-            Log.d(TAG, "[fn setStatus");
+            Log.d(TAG, "[fn] setStatus");
         }
 
         this.status = status;
+        saveIfSync();
     }
 
     public String getStatus() {
