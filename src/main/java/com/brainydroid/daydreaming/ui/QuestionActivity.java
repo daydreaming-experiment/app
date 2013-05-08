@@ -49,7 +49,7 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
     private int nQuestions;
     private boolean isContinuingOrFinishing = false;
     private long lastBackTime = 0;
-    private QuestionViewAdapter questionViewAdapter;
+    private IQuestionViewAdapter questionViewAdapter;
 
     @InjectView(R.id.question_linearLayout) LinearLayout questionLinearLayout;
     @InjectView(R.id.question_nextButton) Button nextButton;
@@ -59,7 +59,6 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
     @Inject PollsStorage pollsStorage;
     @Inject StatusManager statusManager;
     @Inject QuestionViewAdapterFactory questionViewAdapterFactory;
-    @Inject AnswerValidatorFactory answerValidatorFactory;
 
     public static class LocationAlertDialogFragment extends SherlockDialogFragment {
 
@@ -121,7 +120,7 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
 
         initVars();
         setChrome();
-        questionViewAdapter.populateViews(isFirstQuestion());
+        questionViewAdapter.inflate(isFirstQuestion());
     }
 
     @Override
@@ -204,7 +203,8 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
         questionIndex = intent.getIntExtra(EXTRA_QUESTION_INDEX, -1);
         question = poll.getQuestionByIndex(questionIndex);
         nQuestions = poll.getLength();
-        questionViewAdapter = questionViewAdapterFactory.create(question, questionLinearLayout);
+        questionViewAdapter = questionViewAdapterFactory.create(question,
+                questionLinearLayout);
     }
 
     private void setChrome() {
@@ -287,10 +287,8 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
             Log.d(TAG, "[fn] onClick_nextButton");
         }
 
-        AnswerValidator answerValidator = answerValidatorFactory.create(question, questionLinearLayout);
-
-        if (answerValidator.validate()) {
-            questionViewAdapter.saveAnswers();
+        if (questionViewAdapter.validate()) {
+            questionViewAdapter.saveAnswer();
             poll.setQuestionStatus(questionIndex, Question.STATUS_ANSWERED);
 
             if (isLastQuestion()) {

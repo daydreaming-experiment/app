@@ -1,7 +1,6 @@
 package com.brainydroid.daydreaming.ui;
 
 import android.util.Log;
-import com.brainydroid.daydreaming.db.AnswerValidatorFactory;
 import com.brainydroid.daydreaming.db.PollFactory;
 import com.brainydroid.daydreaming.db.QuestionFactory;
 import com.google.inject.Binder;
@@ -22,9 +21,8 @@ public class AppModule implements Module {
         }
 
         binder.install(new FactoryModuleBuilder().build(PollFactory.class));
-        binder.install(new FactoryModuleBuilder().build(QuestionFactory.class));
-        binder.install(new FactoryModuleBuilder().build(QuestionViewAdapterFactory.class));
-        binder.install(new FactoryModuleBuilder().build(AnswerValidatorFactory.class));
+        binder.install(new FactoryModuleBuilder()
+                .build(QuestionFactory.class));
     }
 
 }

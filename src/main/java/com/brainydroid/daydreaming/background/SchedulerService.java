@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.IBinder;
+import android.os.SystemClock;
 import android.util.Log;
 import android.widget.Toast;
 import com.brainydroid.daydreaming.R;
@@ -37,16 +38,17 @@ public class SchedulerService extends RoboService {
     public static long DEBUG_DELAY = 5 * 1000; // 5 seconds
 
     /** Mean delay in the poisson process scheduling polls */
-    public static long MEAN_DELAY = 2 * 60 * 60 * 1000; // 2 hours
+    public static double MEAN_DELAY = 2 * 60 * 60 * 1000; // 2 hours
 
     /** Format of date and time for logging */
-    private static String DATE_FORMAT = "yyyy-MM-dd HH:mm";
+    private static String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
     // Date and time formatter for logging
     private SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
 
     // Handy object that will be holding the 'now' time
     private Calendar now;
+    private long nowUpTime;
 
     // Useful data about the user's settings
     private int startAllowedHour;
@@ -137,7 +139,7 @@ public class SchedulerService extends RoboService {
         // Create and schedule the PendingIntent for PollService
         Intent intent = new Intent(this, PollService.class);
         PendingIntent pendingIntent = PendingIntent.getService(this, 0,
-                intent, 0);
+                intent, PendingIntent.FLAG_CANCEL_CURRENT);
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
                 scheduledTime, pendingIntent);
     }
@@ -150,6 +152,7 @@ public class SchedulerService extends RoboService {
         }
 
         now = Calendar.getInstance();
+        nowUpTime = SystemClock.elapsedRealtime();
 
         // Get the user's allowed time window
         String startAllowedString = sharedPreferences.getString(
@@ -262,7 +265,7 @@ public class SchedulerService extends RoboService {
         }
 
         // The scheduled time is returned in milliseconds
-        return scheduledCalendar.getTimeInMillis();
+        return nowUpTime + respectfulDelay;
     }
 
     /**
@@ -278,7 +281,7 @@ public class SchedulerService extends RoboService {
             Log.d(TAG, "[fn] sampleDelay");
         }
 
-        return (long)(- Math.log((long)random.nextDouble()) * MEAN_DELAY);
+        return (long)(- Math.log(random.nextDouble()) * MEAN_DELAY);
     }
 
     /**

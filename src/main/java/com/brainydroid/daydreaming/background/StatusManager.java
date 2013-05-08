@@ -31,10 +31,27 @@ public class StatusManager {
     private static String EXP_STATUS_QUESTIONS_UPDATED =
             "expStatusQuestionsUpdated";
 
-    @Inject SharedPreferences sharedPreferences;
     @Inject LocationManager locationManager;
     @Inject ConnectivityManager connectivityManager;
     @Inject ActivityManager activityManager;
+
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor eSharedPreferences;
+
+    /**
+     * Initialize the {@code SharedPreferences} editor.
+     */
+    @Inject
+    public StatusManager(SharedPreferences sharedPreferences) {
+
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] StatusManager");
+        }
+
+        this.sharedPreferences = sharedPreferences;
+        eSharedPreferences = sharedPreferences.edit();
+    }
 
     /**
      * Check if first launch is completed.
@@ -62,8 +79,6 @@ public class StatusManager {
             Log.d(TAG, "[fn] setFirstLaunchCompleted");
         }
 
-        SharedPreferences.Editor eSharedPreferences =
-                sharedPreferences.edit();
         eSharedPreferences.putBoolean(EXP_STATUS_FL_COMPLETED, true);
         eSharedPreferences.commit();
     }
@@ -95,8 +110,6 @@ public class StatusManager {
             Log.d(TAG, "[fn] setQuestionsUpdated");
         }
 
-        SharedPreferences.Editor eSharedPreferences =
-                sharedPreferences.edit();
         eSharedPreferences.putBoolean(EXP_STATUS_QUESTIONS_UPDATED, true);
         eSharedPreferences.commit();
     }

@@ -7,8 +7,6 @@ import android.widget.Toast;
 import com.brainydroid.daydreaming.db.*;
 import com.brainydroid.daydreaming.network.*;
 import com.brainydroid.daydreaming.ui.Config;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.inject.Inject;
 import roboguice.service.RoboService;
 
@@ -37,11 +35,7 @@ public class SyncService extends RoboService {
     @Inject QuestionsStorage questionsStorage;
     @Inject CryptoStorage cryptoStorage;
     @Inject ServerTalker serverTalker;
-
-    // Only include exposed members when jsonifying
-    private Gson gson  = new GsonBuilder()
-            .excludeFieldsWithoutExposeAnnotation()
-            .create();
+    @Inject Json json;
 
     /**
      * Callback called once the {@link CryptoStorage} is ready,
@@ -210,7 +204,7 @@ public class SyncService extends RoboService {
     }
 
     /**
-     * Download and import {@link Question}s from the server into our pool of
+     * Download and import {@link com.brainydroid.daydreaming.db.Question}s from the server into our pool of
      * questions, asynchronously.
      */
     private void asyncUpdateQuestions() {
@@ -256,7 +250,7 @@ public class SyncService extends RoboService {
 
         // Wrap uploadable polls in a single structure to provide a root
         // node when jsonifying
-        final PollArray pollArray = new PollArray(uploadablePolls);
+        final PollsArray pollsArray = new PollsArray(uploadablePolls);
 
         // Called once the HttpPostTask completes or times out
         HttpConversationCallback callback = new HttpConversationCallback() {
@@ -286,7 +280,7 @@ public class SyncService extends RoboService {
                                 Toast.LENGTH_LONG).show();
                     }
 
-                    pollsStorage.removePolls(pollArray.getPolls());
+                    pollsStorage.removePolls(pollsArray.getPolls());
                 } else {
                     // Warning
                     Log.w(TAG, "error while uploading polls to server");
@@ -297,7 +291,7 @@ public class SyncService extends RoboService {
 
         // Sign our data to identify us, and upload
         serverTalker.signAndUploadData(ServerConfig.EXP_ID,
-                gson.toJson(pollArray), callback);
+                json.toJsonExposed(pollsArray), callback);
     }
 
     /**
@@ -330,8 +324,8 @@ public class SyncService extends RoboService {
 
         // Wrap uploadable location points in a single structure to provide
         // a root node when jsonifying.
-        final LocationPointArray locationPoints =
-                new LocationPointArray(uploadableLocationPoints);
+        final LocationPointsArray locationPoints =
+                new LocationPointsArray(uploadableLocationPoints);
 
         // Called when the HttPPostTask finishes or times out
         HttpConversationCallback callback = new HttpConversationCallback() {
@@ -373,7 +367,7 @@ public class SyncService extends RoboService {
 
         // Sign our data to identify us, and upload
         serverTalker.signAndUploadData(ServerConfig.EXP_ID,
-                gson.toJson(locationPoints), callback);
+                json.toJsonExposed(locationPoints), callback);
     }
 
 }
