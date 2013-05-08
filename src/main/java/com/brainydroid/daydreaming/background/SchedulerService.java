@@ -137,7 +137,7 @@ public class SchedulerService extends RoboService {
         // Create and schedule the PendingIntent for PollService
         Intent intent = new Intent(this, PollService.class);
         PendingIntent pendingIntent = PendingIntent.getService(this, 0,
-                intent, 0);
+                intent, PendingIntent.FLAG_CANCEL_CURRENT);
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
                 scheduledTime, pendingIntent);
     }
