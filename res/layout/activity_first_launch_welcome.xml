@@ -10,7 +10,7 @@
         android:padding="16dp"
         android:orientation="vertical" >
 
-        <TextView
+<!--        <TextView
             android:id="@+id/firstLaunchWelcome_textWelcome"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -19,6 +19,14 @@
             android:text="@string/firstLaunchWelcome_text_welcome"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:background="@drawable/text_box"/>
+-->
+        <ImageView
+                android:id="@+id/daydreaming"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/daydreaming" />
+
 
         <TextView
             android:id="@+id/firstLaunchWelcome_imageWelcome"
@@ -27,6 +35,8 @@
             android:layout_marginBottom="50dp"
             android:gravity="center_horizontal"
             android:text="*an image here*" />
+
+
 
         <ImageView
                 android:id="@+id/myImageView"
@@ -44,17 +54,22 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
 
-            <Button
-                android:id="@+id/firstLaunchWelcome_buttonStart"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:drawableRight="@drawable/navigation_next_item"
-                android:onClick="onClick_start"
-                android:text="@string/firstLaunchWelcome_button_start"
-                android:background="@drawable/nuage"/>
-        </LinearLayout>
+            <!--
 
-    </LinearLayout>
+                  <Button
+                      android:id="@+id/firstLaunchWelcome_buttonStart"
+                      android:layout_width="0dp"
+                      android:layout_height="wrap_content"
+                      android:layout_weight="1"
+                      android:drawableRight="@drawable/navigation_next_item"
+                      android:onClick="onClick_start"
+                      android:text="@string/firstLaunchWelcome_button_start"
+                      android:background="@drawable/nuage"/>
 
-</RelativeLayout>
+                      -->
+
+              </LinearLayout>
+
+          </LinearLayout>
+
+      </RelativeLayout>

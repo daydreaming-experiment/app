@@ -47,10 +47,23 @@
     <string name="firstLaunchProfile_button_next">Next</string>
     <string name="firstLaunchProfile_fix_age">Please enter an age between 5 and 100</string>
     <string name="firstLaunchProfile_text_gender">Gender</string>
+    <string name="firstLaunchProfile_text_education">Education</string>
+
     <string-array name="genders">
+        <item> -- </item>
         <item>Female</item>
         <item>Male</item>
     </string-array>
+
+    <string-array name="education">
+        <item> -- </item>
+        <item>School (GCSE or similar)</item>
+        <item>School (A-Levels, vocational, or similar)</item>
+        <item>University Degree</item>
+        <item>Advanced Degree (MA, PhD, etc.)</item>
+    </string-array>
+
+
     <string name="question_welcome_text">Here are a few quick questions:</string>
     <string name="question_button_next">Next</string>
     <string name="question_button_finish">Finish</string>

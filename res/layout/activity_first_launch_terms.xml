@@ -49,7 +49,8 @@
                         android:layout_weight="1"
                         android:drawableRight="@drawable/navigation_next_item"
                         android:onClick="onClick_buttonNext"
-                        android:text="@string/firstLaunchTerms_button_next" />
+                        android:text="@string/firstLaunchTerms_button_next"
+                        android:background="@drawable/nuage"/>
 
             </LinearLayout>
 
