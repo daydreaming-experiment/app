@@ -60,6 +60,7 @@
         <activity android:name=".ui.FirstLaunchWelcomeActivity"
                   android:label="@string/firstLaunchWelcome_title_activity"
                   android:theme="@style/MyCustomTheme"
+                  android:noHistory="true"
                   android:screenOrientation="portrait">
         </activity>
 

@@ -84,7 +84,8 @@
                 android:layout_weight="1"
                 android:onClick="onClick_buttonSettings"
                 android:text="@string/firstLaunchMeasures_button_settings"
-                android:visibility="visible" />
+                android:visibility="visible"
+                android:background="@drawable/nuage"/>
 
             <Button
                 android:id="@+id/firstLaunchMeasures_buttonNext"
@@ -94,7 +95,8 @@
                 android:alpha="0.3"
                 android:clickable="false"
                 android:onClick="onClick_buttonNext"
-                android:text="@string/firstLaunchMeasures_button_next" />
+                android:text="@string/firstLaunchMeasures_button_next"
+                android:background="@drawable/nuage"/>
         </LinearLayout>
 
     </LinearLayout>

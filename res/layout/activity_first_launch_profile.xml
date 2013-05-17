@@ -31,7 +31,9 @@
                 android:layout_marginRight="4dp"
                 android:ems="10"
                 android:hint="@string/firstLaunchProfile_hint_age"
-                android:inputType="number" >
+                android:inputType="number"
+                android:padding="8dp"
+                android:background="@drawable/input_round_corners">
 
                 <requestFocus />
             </EditText>
@@ -66,9 +68,42 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
-                android:layout_marginLeft="4dp" />
-            
+                android:layout_marginLeft="4dp"
+                android:background="@drawable/spinner_box"/>
+
+
         </LinearLayout>
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp" >
+
+            <TextView
+                    android:id="@+id/firstLaunchProfile_textEducation"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:layout_marginRight="4dp"
+                    android:hint="@string/firstLaunchProfile_text_education"
+                    android:textAppearance="?android:attr/textAppearanceMedium" >
+            </TextView>
+
+            <Spinner
+                    android:id="@+id/firstLaunchProfile_educationSpinner"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="4dp"
+                    android:background="@drawable/spinner_box"/>
+
+
+        </LinearLayout>
+
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -86,7 +121,8 @@
                 android:layout_weight="1"
                 android:drawableRight="@drawable/navigation_next_item"
                 android:onClick="onClick_buttonNext"
-                android:text="@string/firstLaunchProfile_button_next" />
+                android:text="@string/firstLaunchProfile_button_next"
+                android:background="@drawable/nuage"/>
 
         </LinearLayout>
 
