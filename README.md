@@ -16,9 +16,8 @@ The aim of the experiment is to explore some aspects of what is called
  of mind wandering. It turns out we human beings mind-wander a significant
  portion of our time.
 
-This Android app works with [Yelandur](https://github
-.com/wehlutyk/yelandur) as backend server to collect data for the
-experiment.
+This Android app works with [Yelandur](https://github.com/wehlutyk/yelandur)
+as backend server to collect data for the experiment.
 
 Any contribution is very welcome! You can get up and running by having a
 look at the `CONTRIBUTING.md` document.
