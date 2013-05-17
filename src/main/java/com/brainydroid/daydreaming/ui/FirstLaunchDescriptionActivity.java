@@ -3,6 +3,7 @@ package com.brainydroid.daydreaming.ui;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -84,6 +85,7 @@ public class FirstLaunchDescriptionActivity extends FirstLaunchActivity {
                 }
             }).setIcon(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ?
                     R.drawable.ic_action_about_holo_light : R.drawable.ic_action_about_holo_dark);
+
 
             return alertSettings.create();
         }

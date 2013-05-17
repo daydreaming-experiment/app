@@ -23,6 +23,7 @@ public class FirstLaunchProfileActivity extends FirstLaunchActivity {
 
     @InjectView(R.id.firstLaunchProfile_editAge) EditText ageEditText;
     @InjectView(R.id.firstLaunchProfile_genderSpinner) Spinner genderSpinner;
+    @InjectView(R.id.firstLaunchProfile_educationSpinner) Spinner educationSpinner;
     @Inject SharedPreferences sharedPreferences;
 
     @Override
@@ -39,6 +40,11 @@ public class FirstLaunchProfileActivity extends FirstLaunchActivity {
                 R.array.genders, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         genderSpinner.setAdapter(adapter);
+
+        ArrayAdapter<CharSequence> adapter1 = ArrayAdapter.createFromResource(this,
+                R.array.education, android.R.layout.simple_spinner_item);
+        adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        educationSpinner.setAdapter(adapter1);
     }
 
     public void onClick_buttonNext(@SuppressWarnings("UnusedParameters") View view) {
