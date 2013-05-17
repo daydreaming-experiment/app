@@ -170,4 +170,59 @@
             </plugin>
         </plugins>
     </build>
+
+    <developers>
+        <developer>
+            <id>wehlutyk</id>
+            <name>Sébastien</name>
+            <email>sl@mehho.net</email>
+            <url>https://mehho.net/sl</url>
+            <roles>
+                <role>architect</role>
+                <role>developer</role>
+            </roles>
+            <timezone>GMT+1</timezone>
+            <properties>
+                <picUrl>https://mehho.net/sl/seb-avatar.png</picUrl>
+            </properties>
+        </developer>
+
+        <developer>
+            <id>vincentadam87</id>
+            <name>Vincent</name>
+            <roles>
+                <role>architect</role>
+                <role>developer</role>
+            </roles>
+            <timezone>GMT</timezone>
+        </developer>
+    </developers>
+
+    <issueManagement>
+        <system>GitHub Issues</system>
+        <url>https://github.com/wehlutyk/daydreaming/issues</url>
+    </issueManagement>
+
+    <ciManagement>
+        <system>Travis-CI</system>
+        <url>https://travis-ci.org/wehlutyk/daydreaming</url>
+    </ciManagement>
+
+    <mailingLists>
+        <mailingList>
+            <name>Technical and developer discussion list</name>
+            <subscribe>daydreaming-join@lists.mehho.net</subscribe>
+            <unsubscribe>daydreaming-leave@lists.mehho.net</unsubscribe>
+            <post>daydreaming@lists.mehho.net</post>
+            <archive>http://lists.mehho.net/private/daydreaming/</archive>
+        </mailingList>
+    </mailingLists>
+
+    <scm>
+        <connection>scm:git:https://github.com/wehlutyk/daydreaming.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com:wehlutyk/daydreaming.git</developerConnection>
+        <tag>HEAD</tag>
+        <url>https://github.com/wehlutyk/daydreaming</url>
+    </scm>
+
 </project>
