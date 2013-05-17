@@ -3,8 +3,8 @@
 If you're thinking of contributing, be it only a tiny patch, let us hail
 you! You are very welcome.
 
-Here goes the description of the tools and workflow we use in
-development ; it should help to get up and running.
+Here goes a description of the tools and workflow we use in development
+; it should help in getting up and running.
 
 ## Development tools
 
@@ -15,9 +15,9 @@ Instructions follow on how get up and running.
 
 ### Building the project
 
-Once IntelliJ is well configured (see below) you can use it to build the
-project, but the simplest and most reproducible way is to use (Apache
-Maven)[http://maven.apache.org/]. That's what we use.
+Once IntelliJ is well configured (see below) you can use it directly to
+build the project, but the simplest and most reproducible way is to use
+[Apache Maven](http://maven.apache.org/). That's what we use.
 
 ### Version control
 
@@ -37,20 +37,21 @@ that.
 ### Related software
 
 The app needs to talk to a server to upload its answers: that role is
-fulfilled by [Yelandur](https://github.com/wehlutyk/yelandur), which in
-turn talks to a web client, [Naja](https://github.com/wehlutyk/naja).
+fulfilled by the [Yelandur](https://github.com/wehlutyk/yelandur)
+backend server, which in turn talks to an Ajax client,
+[Naja](https://github.com/wehlutyk/naja).
 
 As you will also see in the code, we use
 [ActionBarSherlock](http://actionbarsherlock.com/) to mimick the
-ActionBar API in Android API 10, we use
+ActionBar API in Android API 10,
 [RoboGuice](https://github.com/roboguice/roboguice) for dependency
 injection, and [Robolectric](http://pivotal.github.io/robolectric/) for
 automated tests.
 
 ## Detailed steps to set up your environment
 
-We do this in two steps: there are a few things to get the Maven build
-running, and once that works you can set up the IntelliJ project.
+There are two steps: first a few things to get the Maven build running,
+then the configuration of IntelliJ.
 
 ### Maven build
 
@@ -70,14 +71,14 @@ tar xzf android-sdk-linux.tgz
 ```
 
 Next, configure the environment variable telling the system where the
-Android SDK lives ; do that first by running the following commands:
+Android SDK lives ; do that by first running the following commands:
 
 ```sh
 export ANDROID_HOME="$(pwd)/android-sdk-linux"
 export PATH="${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools:${ANDROID_HOME}/build-tools/17.0.0"
 ```
 
-and add those exact two lines at the end of your `.bashrc` (or
+then by adding those same two lines at the end of your `.bashrc` (or
 `.bash_aliases`, or `.profile`, or zsh equivalents). That way the
 environment variables will be set in all your future command line
 sessions.
@@ -91,10 +92,10 @@ android update sdk --no-ui --force --filter platform-tools,build-tools-17.0.0,an
 
 (And answering `y` to the licence agreement.)
 
-Finally, there's a small workaround we need to make sure the version of
-the `maven-android-plugin` we will be using is compatible with the
-latest version of the SDK tools (otherwise we'll be facing errors like
-`aapt not found` later on):
+Finally we'll be needing a small workaround to make sure the version of
+the `maven-android-plugin` we use is compatible with the latest version
+of the SDK tools (otherwise we'll be facing errors like `aapt not found`
+later on):
 
 ```sh
 cp -r ${ANDROID_HOME}/build-tools/17.0.0/* ${ANDROID_HOME}/platform-tools/
@@ -104,8 +105,8 @@ cp -r ${ANDROID_HOME}/build-tools/17.0.0/* ${ANDROID_HOME}/platform-tools/
 
 Maven doesn't always know where your Android SDK lives, especially when
 run from IntelliJ (where the environment variables don't get set as we
-configured above). Let us enlight it: edit the `~/.m2/settings.xml` file
-in your home folder to make it look like this:
+configured above). Let us enlight it: edit `~/.m2/settings.xml` in your
+home folder to make it look like this:
 
 ```xml
 <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
@@ -117,7 +118,7 @@ in your home folder to make it look like this:
             <id>android</id>
             <properties>
                 <android.sdk.path>
-                    <!-- Replace this with something looking like
+                    <!-- Replace this with something that looks like
                     /home/wehlutyk/Code/Android/android-sdk-linux -->
                     /path/to/your/android/sdk/folder
                 </android.sdk.path>
@@ -136,15 +137,15 @@ in your home folder to make it look like this:
 Maven is great, it downloads most packages we need automatically, but
 not all packages in the Maven repository are up to date with the latest
 versions. And Android tools tend to change about once a month these
-days. To help with this we use the (Maven Android SDK
-Deployer)[https://github.com/mosabua/maven-android-sdk-deployer]:
+days. To help with this we use the [Maven Android SDK
+Deployer](https://github.com/mosabua/maven-android-sdk-deployer):
 
 ```sh
 # Get the deployer
 git clone https://github.com/mosabua/maven-android-sdk-deployer.git
 cd maven-android-sdk-deployer
 
-# And install only what we need
+# Install only what we need
 mvn install -N
 cd extras
 mvn install -N
@@ -156,50 +157,51 @@ mvn install -N
 
 Now we should be good to go for a full build of the app. `cd` into
 daydreaming's repository, and run `mvn package`. This should take a few
-minutes, and when finished there should be a complete
-`daydreaming-XXX.apk` file in the `target` folder of the repository. If
+minutes, and when finished there should be a nice
+`daydreaming-x.y.z.apk` in the `target` folder of the repository.  If
 there isn't, or if a problem appears before this stage, please file an
 issue so we can fix this document!
 
 ## Setting up IntelliJ IDEA
 
 Now that we've set up Maven and that we can build the app, it's time to
-get the IDE running. I'm using version 12.1 ; if your experience is
-different with a different version, please send us feedback!
+get the IDE running. I'm using IntelliJ IDEA Community Edition, version
+12.1 ; if your experience is different with a different version, please
+send us feedback!
 
 ### Importing the Maven project
 
 Fire up IntelliJ and choose `Import Project` from the welcome screen.
-In the popup dialog, navigate to daydreaming's repository and select the
-`pom.xml` file. Click `OK`.
+At the popup dialog, navigate to daydreaming's repository and select
+`pom.xml`. Click `OK`.
 
-At the following window, you can leave all the default options as they
-are and click `Next` directly.
+At the following window, leave all the default options as they are and
+click `Next` directly.
 
 At the following window, check the `android` profile, then click `Next`.
 
-At the following window, the `com.brainydroid.daydreaming:XXX` project
+At the following window, the `com.brainydroid.daydreaming:x.y.z` project
 should already be selected (if not, select it for import), so you can
 click `Next`.
 
-At the following window, we'll start by configuring a Java SDK (or JDK)
-if you don't already have one. Click the green `+` button (top left) and
-choose `JDK`. In the popup window, navigate the home of your default JDK
-(mine is `/usr/lib/jvm/default-java`) and click `OK` (better if it's
-version 1.7). Now click that green `+` button again, and choose `Android
-SDK` this time. In the popup window, navigate the Android SDK home
-folder (the one we configured in the `ANDROID_HOME` environment
-variable), and click `OK`. Accept the `Java SDK` version (`1.7` for me)
-and the `Build target` (`Android 4.1.2` normally) by clicking `OK` at
-the popup dialog. Now click `Next`, and then `Finish` at the next window
-to finalize the import.
+At the following window, we'll start by configuring a Java SDK (i.e.
+JDK) if you don't already have one. Click the green `+` button (top
+left) and choose `JDK`. In the popup window, navigate to the home of
+your default JDK (mine is `/usr/lib/jvm/default-java`) and click `OK`
+(better if it's version 1.7). Now click that green `+` button again, and
+choose `Android SDK` this time. In the popup window, navigate to the
+Android SDK home folder (the one we configured in the `ANDROID_HOME`
+environment variable), and click `OK`. Accept the `Java SDK` version
+(`1.7` for me) and the `Build target` (`Android 4.1.2` normally) by
+clicking `OK` at the popup dialog. Now click `Next`, and then `Finish`
+at the next window to finalize the import.
 
 The import will take a few minutes to complete, and on its way it will
 most probably give you an `Error when importing module
 '~apklib-android.support_compatibility-v7_13': Cannot find appropriate
 Android platform for API level`. Not to worry, it's [a known
 bug](http://youtrack.jetbrains.com/issue/IDEA-104800) and has no
-tangible impact (it's fixed in IntelliJ 12.1.2 if you have it)
+tangible impact (it's fixed in IntelliJ 12.1.2).
 
 ### Configuring IntelliJ
 
@@ -218,10 +220,10 @@ Application`. Now on the right side, you can name the configuration
 `Module` dropdown list. Confirm the changes by clicking `OK` at the
 bottom.
 
-You should now be up and running: you can compile and launch the app
-through IntelliJ by clicking the green triangle button in the toolbar.
-After compilation, IntelliJ will ask you to configure an Android virtual
-device if you don't already have one, unless you plug in your own phone.
-That's beyond the scope of this document :-).
+We're done! You can compile and launch the app through IntelliJ by
+clicking the green triangle button in the toolbar.  After compilation,
+IntelliJ will ask you to configure an Android virtual device if you
+don't already have one, unless you plug in your own phone.  That's
+beyond the scope of this document :-).
 
 Enjoy! And most of all, please tell us if you encounter any problem.
