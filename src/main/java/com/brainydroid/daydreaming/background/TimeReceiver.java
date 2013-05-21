@@ -39,7 +39,8 @@ public class TimeReceiver extends RoboBroadcastReceiver {
                 action.equals(Intent.ACTION_TIMEZONE_CHANGED)) {
 
             // Info
-            Log.i(TAG, "Received ACTION_TIME_CHANGED or ACTION_TIMEZONE_CHANGED");
+            Log.i(TAG, "Received ACTION_TIME_CHANGED or " +
+                    "ACTION_TIMEZONE_CHANGED");
 
             // If first launch hasn't been completed, the user doesn't want
             // anything yet
@@ -50,7 +51,8 @@ public class TimeReceiver extends RoboBroadcastReceiver {
                 Log.i(TAG, "starting SchedulerService");
 
                 // Reschedule the next poll
-                Intent schedulerIntent = new Intent(context, SchedulerService.class);
+                Intent schedulerIntent = new Intent(context,
+                        SchedulerService.class);
                 context.startService(schedulerIntent);
             }
         }

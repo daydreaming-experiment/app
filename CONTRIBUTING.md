@@ -90,7 +90,7 @@ Now, install the necessary SDK packages by running the following command
 android update sdk --no-ui --force --filter platform-tools,build-tools-17.0.0,android-14,android-16,extra-android-support
 ```
 
-(And answering `y` to the licence agreement.)
+(And answering `y` to the license agreement.)
 
 Finally we'll be needing a small workaround to make sure the version of
 the `maven-android-plugin` we use is compatible with the latest version

@@ -8,6 +8,12 @@ import com.google.gson.*;
 
 import java.lang.reflect.Type;
 
+/**
+ * Deserialize a JSON representation of a {@code Location} instance.
+ *
+ * @author Sébastien Lerique
+ * @author Vincent Adam
+ */
 public class LocationDeserializer implements JsonDeserializer<Location> {
 
     @SuppressWarnings("FieldCanBeLocal")
@@ -23,9 +29,11 @@ public class LocationDeserializer implements JsonDeserializer<Location> {
             Log.d(TAG, "deserialize");
         }
 
-        // The given provider is just a dummy, we don't use it.
+        // The given provider is just a dummy: we never use it in the rest
+        // of the code, but it's required by the constructor.
         Location location = new Location(LocationManager.NETWORK_PROVIDER);
 
+        // Fill up our Location instance
         JsonObject obj = (JsonObject)jsonElement;
         location.setLatitude(
                 obj.get(LocationSerializer.LOCATION_LATITUDE).getAsDouble());

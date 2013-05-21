@@ -175,7 +175,8 @@ public class LocationPointService extends RoboService {
         if (collectingLocationPoints != null) {
             for (LocationPoint collectingLocationPoint :
                     collectingLocationPoints) {
-                collectingLocationPoint.setStatus(LocationPoint.STATUS_COMPLETED);
+                collectingLocationPoint.setStatus(
+                        LocationPoint.STATUS_COMPLETED);
             }
 
             // Try and spot bugs
@@ -202,8 +203,8 @@ public class LocationPointService extends RoboService {
         // LocationService. Upon connection to the LocationService,
         // the locationServiceConnection also stops us through the above
         // callback. That, in turn, will make locationServiceConnection
-        // unbind from the LocationService (see onDestroy). At that point the
-        // LocationService will stop itself if it has no other listeners
+        // unbind from the LocationService (see onDestroy). At that point
+        // the LocationService will stop itself if it has no other listeners
         // registered.
         //
         // This sounds terribly complicated but it's the only way to deal
