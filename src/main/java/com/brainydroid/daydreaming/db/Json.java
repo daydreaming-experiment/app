@@ -9,12 +9,26 @@ import com.google.inject.Singleton;
 
 import javax.inject.Inject;
 
+/**
+ * Singleton JSON serializer and deserializer to centralize registration of
+ * custom adapters.
+ * <p/>
+ * Here is the place to register type adapters for custom serializing and
+ * deserializing of classes. This is used for deserializing interfaces
+ * (like {@link IAnswer}, {@link IQuestionDetails},
+ * custom instance creation ({@link Question} instances),
+ * and useful serialization and deserialization of other classes (here
+ * {@code Location} instances).
+ */
 @Singleton
 public class Json {
 
     private static String TAG = "Json";
 
+    // Standard Gson instance
     private Gson gson;
+
+    // Gson instance serializing only @Expose-annotated members
     private Gson gsonExposed;
 
     @Inject
@@ -30,6 +44,7 @@ public class Json {
             Log.d(TAG, "[fn] Json");
         }
 
+        // Register all our type adapters
         gsonBuilder.registerTypeAdapter(IAnswer.class, answerDeserializer);
         gsonBuilder.registerTypeAdapter(IQuestionDetails.class,
                 questionDetailsDeserializer);
@@ -39,11 +54,18 @@ public class Json {
                 locationDeserializer);
         gsonBuilder.registerTypeAdapter(Location.class, locationSerializer);
 
+        // Build the two Gson instances
         gson = gsonBuilder.create();
         gsonExposed = gsonBuilder.excludeFieldsWithoutExposeAnnotation()
                 .create();
     }
 
+    /**
+     * Serialize an instance by including all its members.
+     *
+     * @param src Instance to serialize
+     * @return JSON representation of {@code src}
+     */
     public String toJson(Object src) {
 
         // Debug
@@ -54,6 +76,14 @@ public class Json {
         return gson.toJson(src);
     }
 
+    /**
+     * Serialize an instance by including only its {@code @Expose}-annotated
+     * members.
+     *
+     * @param src Instance to serialize
+     * @return JSON representation of {@code src}, including only exposed
+     *         members
+     */
     public String toJsonExposed(Object src) {
 
         // Debug
@@ -64,6 +94,15 @@ public class Json {
         return gsonExposed.toJson(src);
     }
 
+    /**
+     * Deserialize a JSON representation of an instance.
+     *
+     * @param json JSON representation to deserialize
+     * @param classOfT Class to deserialize the JSON into
+     * @param <T> Again the Class to deserialize the JSON into,
+     *            if I understand well what {@code Class<T>} means
+     * @return New instance of
+     */
     public <T> T fromJson(String json, Class<T> classOfT) {
 
         // Debug
