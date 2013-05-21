@@ -9,12 +9,11 @@ import com.google.inject.Inject;
 
 import java.util.ArrayList;
 
-public abstract class ModelStorage {
+public abstract class ModelStorage<T extends Model> {
 
     private static String TAG = "ModelStorage";
 
-    private final SQLiteDatabase rDb;
-    private final SQLiteDatabase wDb;
+    private final SQLiteDatabase db;
 
     protected abstract String[] getTableCreationStrings();
 
@@ -26,16 +25,25 @@ public abstract class ModelStorage {
             Log.d(TAG, "[fn] ModelStorage");
         }
 
-        rDb = storage.getWritableDatabase();
-        wDb = storage.getWritableDatabase();
+        db = storage.getWritableDatabase();
         for (String tableCreationString : getTableCreationStrings()) {
-            wDb.execSQL(tableCreationString); // creates db fields
+            db.execSQL(tableCreationString); // creates db fields
         }
     }
 
-    protected abstract ContentValues getModelValues(Model model);
+    protected SQLiteDatabase getDb() {
 
-    private ContentValues getModelValuesWithId(Model model) {
+        // Verbose
+        if (Config.LOGV) {
+            Log.v(TAG, "[fn] getDb");
+        }
+
+        return db;
+    }
+
+    protected abstract ContentValues getModelValues(T model);
+
+    private ContentValues getModelValuesWithId(T model) {
 
         // Debug
         if (Config.LOGD) {
@@ -49,7 +57,7 @@ public abstract class ModelStorage {
 
     protected abstract String getMainTable();
 
-    public void store(Model model) {
+    public void store(T model) {
 
         // Debug
         if (Config.LOGD) {
@@ -57,9 +65,9 @@ public abstract class ModelStorage {
         }
 
         ContentValues modelValues = getModelValues(model);
-        wDb.insert(getMainTable(), null, modelValues);
+        db.insert(getMainTable(), null, modelValues);
 
-        Cursor res = rDb.query(getMainTable(), new String[] {Model.COL_ID},
+        Cursor res = db.query(getMainTable(), new String[] {Model.COL_ID},
                 null, null, null, null, Model.COL_ID + " DESC", "1");
         res.moveToFirst();
         int modelId = res.getInt(res.getColumnIndex(Model.COL_ID));
@@ -68,8 +76,7 @@ public abstract class ModelStorage {
         model.setId(modelId);
     }
 
-
-    public void update(Model model) {
+    public void update(T model) {
 
         // Debug
         if (Config.LOGD) {
@@ -78,43 +85,57 @@ public abstract class ModelStorage {
 
         ContentValues modelValues = getModelValuesWithId(model);
         int modelId = model.getId();
-        wDb.update(getMainTable(), modelValues, Model.COL_ID + "=?",
+        db.update(getMainTable(), modelValues, Model.COL_ID + "=?",
                 new String[] {Integer.toString(modelId)});
     }
 
-    private ArrayList<Integer> getModelIdsWithStatuses(String[] statuses) {
+    protected abstract IModelFactory<T> getModelFactory();
+
+    protected abstract void populateModel(T model, Cursor res);
+
+    public T get(int modelId) {
 
         // Debug
         if (Config.LOGD) {
-            Log.d(TAG, "[fn] getModelIdsWithStatuses (from String[])");
+            Log.d(TAG, "[fn] get");
         }
 
-        return getModelIdsWithStatuses(statuses, null);
-    }
-
-    private ArrayList<Integer> getModelIdsWithStatuses(String[] statuses,
-                                                       String limit) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] getModelIdsWithStatuses (from String[], " +
-                    "String)");
-        }
-
-        String query = Util.multiplyString(Model.COL_STATUS + "=?",
-                statuses.length, " OR ");
-        Cursor res = rDb.query(getMainTable(), new String[] {Model.COL_ID},
-                query, statuses, null, null, null, limit);
+        Cursor res = db.query(getMainTable(), null, Model.COL_ID + "=?",
+                new String[] {Integer.toString(modelId)}, null, null, null);
         if (!res.moveToFirst()) {
             res.close();
             return null;
         }
 
-        ArrayList<Integer> statusModelIds = new ArrayList<Integer>();
-        do {
-            statusModelIds.add(res.getInt(res.getColumnIndex(Model.COL_ID)));
-        } while (res.moveToNext());
+        T model = getModelFactory().create();
+        populateModel(model, res);
+        model.setId(res.getInt(res.getColumnIndex(Model.COL_ID)));
+        res.close();
 
-        return statusModelIds;
+        return model;
     }
+
+    public void remove(int modelId) {
+
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] remove");
+        }
+
+        db.delete(getMainTable(), LocationPoint.COL_ID + "=?",
+                new String[]{Integer.toString(modelId)});
+    }
+
+    public void remove(ArrayList<T> models) {
+
+        // Debug
+        if (Config.LOGD) {
+            Log.d(TAG, "[fn] removeLocationPoints");
+        }
+
+        for (Model model : models) {
+            remove(model.getId());
+        }
+    }
+
 }

@@ -354,7 +354,7 @@ public class SyncService extends RoboService {
                                 Toast.LENGTH_LONG).show();
                     }
 
-                    locationPointsStorage.removeLocationPoints(
+                    locationPointsStorage.remove(
                             locationPoints.getLocationPoints());
                 } else {
                     // Warning

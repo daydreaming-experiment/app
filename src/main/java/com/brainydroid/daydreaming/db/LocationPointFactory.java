@@ -11,7 +11,7 @@ package com.brainydroid.daydreaming.db;
  * @author Sébastien Lerique
  * @author Vincent Adam
  */
-public interface LocationPointFactory {
+public interface LocationPointFactory extends IModelFactory<LocationPoint> {
 
     /**
      * Create an empty {@link LocationPoint} instance with injected
