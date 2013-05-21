@@ -11,7 +11,8 @@ import java.util.ArrayList;
 
 // TODO: factor most of this into Storage
 @Singleton
-public class LocationPointsStorage extends StatusModelStorage<LocationPoint> {
+public class LocationPointsStorage extends
+        StatusModelStorage<LocationPoint,LocationPointsStorage> {
 
     private static String TAG = "LocationPointsStorage";
 
@@ -63,13 +64,15 @@ public class LocationPointsStorage extends StatusModelStorage<LocationPoint> {
     }
 
     @Override
-    protected ContentValues getModelValues(LocationPoint locationPoint) {
+    protected <Z extends Model<LocationPoint,LocationPointsStorage>>
+    ContentValues getModelValues(Z model) {
 
         // Debug
         if (Config.LOGD) {
             Log.d(TAG, "[fn] getLocationPointContentValues");
         }
 
+        LocationPoint locationPoint = (LocationPoint)model;
         ContentValues locationPointValues = new ContentValues();
         locationPointValues.put(LocationPoint.COL_STATUS,
                 locationPoint.getStatus());
@@ -86,6 +89,7 @@ public class LocationPointsStorage extends StatusModelStorage<LocationPoint> {
         return locationPointValues;
     }
 
+    @Override
     protected IModelFactory<LocationPoint> getModelFactory() {
 
         // Verbose

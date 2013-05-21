@@ -4,7 +4,8 @@ import android.util.Log;
 import com.brainydroid.daydreaming.ui.Config;
 
 // FIXME: adapt doc imported from LocationPoint
-public abstract class Model {
+public abstract class Model<T extends Model<T,S>,
+        S extends ModelStorage<T,S>> {
 
     private static String TAG = "Model";
 
@@ -13,7 +14,6 @@ public abstract class Model {
 
     // Fields used for saving a Model to a database
     public static final String COL_ID = "id";
-    public static final String COL_STATUS = "status";
 
     /**
      * Set the {@code LocationPoint}'s id, used for database ordering and
@@ -78,7 +78,7 @@ public abstract class Model {
         }
     }
 
-    protected abstract ModelStorage getStorage();
+    protected abstract S getStorage();
 
     /**
      * Save the instance to the database, regardless or the value of its

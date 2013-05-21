@@ -9,7 +9,8 @@ import com.google.inject.Inject;
 
 import java.util.ArrayList;
 
-public abstract class ModelStorage<T extends Model> {
+public abstract class ModelStorage<T extends Model<T,S>,
+        S extends ModelStorage<T,S>> {
 
     private static String TAG = "ModelStorage";
 
@@ -41,9 +42,9 @@ public abstract class ModelStorage<T extends Model> {
         return db;
     }
 
-    protected abstract ContentValues getModelValues(T model);
+    protected abstract <Z extends Model<T,S>> ContentValues getModelValues(Z model);
 
-    private ContentValues getModelValuesWithId(T model) {
+    private <Z extends Model<T,S>> ContentValues getModelValuesWithId(Z model) {
 
         // Debug
         if (Config.LOGD) {
@@ -57,7 +58,7 @@ public abstract class ModelStorage<T extends Model> {
 
     protected abstract String getMainTable();
 
-    public void store(T model) {
+    public <Z extends Model<T,S>> void store(Z model) {
 
         // Debug
         if (Config.LOGD) {
@@ -76,7 +77,7 @@ public abstract class ModelStorage<T extends Model> {
         model.setId(modelId);
     }
 
-    public void update(T model) {
+    public <Z extends Model<T,S>> void update(Z model) {
 
         // Debug
         if (Config.LOGD) {
@@ -126,7 +127,7 @@ public abstract class ModelStorage<T extends Model> {
                 new String[]{Integer.toString(modelId)});
     }
 
-    public void remove(ArrayList<T> models) {
+    public void remove(ArrayList<? extends Model<T,S>> models) {
 
         // Debug
         if (Config.LOGD) {

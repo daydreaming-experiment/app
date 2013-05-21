@@ -7,8 +7,9 @@ import com.google.inject.Inject;
 
 import java.util.ArrayList;
 
-public abstract class StatusModelStorage<T extends StatusModel>
-        extends ModelStorage<T> {
+public abstract class StatusModelStorage<T extends StatusModel<T,S>,
+        S extends StatusModelStorage<T,S>>
+        extends ModelStorage<T,S> {
 
     private static String TAG = "StatusModelStorage";
 
@@ -54,7 +55,7 @@ public abstract class StatusModelStorage<T extends StatusModel>
                     "String)");
         }
 
-        String query = Util.multiplyString(Model.COL_STATUS + "=?",
+        String query = Util.multiplyString(StatusModel.COL_STATUS + "=?",
                 statuses.length, " OR ");
         Cursor res = getDb().query(getMainTable(),
                 new String[]{Model.COL_ID}, query, statuses, null, null,
@@ -72,7 +73,8 @@ public abstract class StatusModelStorage<T extends StatusModel>
         return statusModelIds;
     }
 
-    protected ArrayList<T> getModelsWithStatuses(String[] statuses) {
+    protected ArrayList<T> getModelsWithStatuses(
+            String[] statuses) {
 
         // Debug
         if (Config.LOGD) {
