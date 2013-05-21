@@ -313,7 +313,7 @@ public class LocationPoint {
     }
 
     /**
-     * Set the {@code LocationPonit}'s timestamp, and persist to database
+     * Set the {@code LocationPoint}'s timestamp, and persist to database
      * if necessary.
      *
      * @param timestamp Timestamp to set, usually in milliseconds since epoch
