@@ -77,7 +77,8 @@ public class Json {
     }
 
     /**
-     * Serialize an instance by including all its members.
+     * Serialize an instance by including all its members (except {@code
+     * transient}s).
      *
      * @param src Instance to serialize
      * @return JSON representation of {@code src}
