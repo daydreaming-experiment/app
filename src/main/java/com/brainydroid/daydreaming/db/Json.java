@@ -19,6 +19,9 @@ import javax.inject.Inject;
  * custom instance creation ({@link Question} instances),
  * and useful serialization and deserialization of other classes (here
  * {@code Location} instances).
+ *
+ * @author Sébastien Lerique
+ * @author Vincent Adam
  */
 @Singleton
 public class Json {
@@ -31,6 +34,19 @@ public class Json {
     // Gson instance serializing only @Expose-annotated members
     private Gson gsonExposed;
 
+    /**
+     * Constructor used with dependency injection.
+     *
+     * @param gsonBuilder An instance of {@code GsonBuilder}
+     * @param answerDeserializer An instance of {@link AnswerDeserializer}
+     * @param questionDetailsDeserializer An instance of {@link
+     *                                    QuestionDetailsDeserializer}
+     * @param questionInstanceCreator An instance of {@link
+     *                                QuestionInstanceCreator}
+     * @param locationDeserializer An instance of {@link
+     *                             LocationDeserializer}
+     * @param locationSerializer An instance of {@link LocationSerializer}
+     */
     @Inject
     public Json(GsonBuilder gsonBuilder,
                 AnswerDeserializer answerDeserializer,
