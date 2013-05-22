@@ -64,18 +64,14 @@ public class LocationPointsStorage extends
     }
 
     @Override
-    protected <Z extends Model<LocationPoint,LocationPointsStorage>>
-    ContentValues getModelValues(Z model) {
+    protected ContentValues getModelValues(LocationPoint locationPoint) {
 
         // Debug
         if (Config.LOGD) {
             Log.d(TAG, "[fn] getLocationPointContentValues");
         }
 
-        LocationPoint locationPoint = (LocationPoint)model;
         ContentValues locationPointValues = new ContentValues();
-        locationPointValues.put(LocationPoint.COL_STATUS,
-                locationPoint.getStatus());
         locationPointValues.put(LocationPoint.COL_LOCATION_LATITUDE,
                 locationPoint.getLocationLatitude());
         locationPointValues.put(LocationPoint.COL_LOCATION_LONGITUDE,

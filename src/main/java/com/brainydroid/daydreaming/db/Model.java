@@ -81,7 +81,7 @@ public abstract class Model<T extends Model<T,S>,
     protected abstract S getStorage();
 
     /**
-     * Save the instance to the database, regardless or the value of its
+     * Save the instance to the database, regardless of the value of its
      * {@code id}.
      */
     public void save() {
@@ -92,9 +92,11 @@ public abstract class Model<T extends Model<T,S>,
         }
 
         if (id != -1) {
-            getStorage().update(this);
+            //noinspection unchecked
+            getStorage().update((T)this);
         } else {
-            getStorage().store(this);
+            //noinspection unchecked
+            getStorage().store((T)this);
         }
     }
 

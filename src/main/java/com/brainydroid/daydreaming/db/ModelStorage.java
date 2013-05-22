@@ -42,9 +42,9 @@ public abstract class ModelStorage<T extends Model<T,S>,
         return db;
     }
 
-    protected abstract <Z extends Model<T,S>> ContentValues getModelValues(Z model);
+    protected abstract ContentValues getModelValues(T model);
 
-    private <Z extends Model<T,S>> ContentValues getModelValuesWithId(Z model) {
+    private ContentValues getModelValuesWithId(T model) {
 
         // Debug
         if (Config.LOGD) {
@@ -58,7 +58,7 @@ public abstract class ModelStorage<T extends Model<T,S>,
 
     protected abstract String getMainTable();
 
-    public <Z extends Model<T,S>> void store(Z model) {
+    public void store(T model) {
 
         // Debug
         if (Config.LOGD) {
@@ -77,7 +77,7 @@ public abstract class ModelStorage<T extends Model<T,S>,
         model.setId(modelId);
     }
 
-    public <Z extends Model<T,S>> void update(Z model) {
+    public void update(T model) {
 
         // Debug
         if (Config.LOGD) {
@@ -127,7 +127,7 @@ public abstract class ModelStorage<T extends Model<T,S>,
                 new String[]{Integer.toString(modelId)});
     }
 
-    public void remove(ArrayList<? extends Model<T,S>> models) {
+    public void remove(ArrayList<? extends Model<? super T,S>> models) {
 
         // Debug
         if (Config.LOGD) {
