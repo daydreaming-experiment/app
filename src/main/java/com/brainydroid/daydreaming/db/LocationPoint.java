@@ -13,8 +13,8 @@ import com.google.inject.Inject;
  * @author Sébastien Lerique
  * @author Vincent Adam
  */
-public class LocationPoint
-        extends StatusModel<LocationPoint,LocationPointsStorage> {
+public final class LocationPoint extends
+        StatusModel<LocationPoint,LocationPointsStorage> {
 
     private static String TAG = "LocationPoint";
 
@@ -43,6 +43,16 @@ public class LocationPoint
 
     // Our database for LocationPoints
     @Inject transient LocationPointsStorage locationPointsStorage;
+
+    protected LocationPoint self() {
+
+        // Verbose
+        if (Config.LOGV) {
+            Log.v(TAG, "[fn] self");
+        }
+
+        return this;
+    }
 
     protected LocationPointsStorage getStorage() {
 

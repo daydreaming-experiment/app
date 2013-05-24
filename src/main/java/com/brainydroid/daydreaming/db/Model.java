@@ -4,8 +4,8 @@ import android.util.Log;
 import com.brainydroid.daydreaming.ui.Config;
 
 // FIXME: adapt doc imported from LocationPoint
-public abstract class Model<T extends Model<T,S>,
-        S extends ModelStorage<T,S>> {
+public abstract class Model<M extends Model<M,S>,
+        S extends ModelStorage<M,S>> {
 
     private static String TAG = "Model";
 
@@ -78,6 +78,8 @@ public abstract class Model<T extends Model<T,S>,
         }
     }
 
+    protected abstract M self();
+
     protected abstract S getStorage();
 
     /**
@@ -92,11 +94,9 @@ public abstract class Model<T extends Model<T,S>,
         }
 
         if (id != -1) {
-            //noinspection unchecked
-            getStorage().update((T)this);
+            getStorage().update(self());
         } else {
-            //noinspection unchecked
-            getStorage().store((T)this);
+            getStorage().store(self());
         }
     }
 

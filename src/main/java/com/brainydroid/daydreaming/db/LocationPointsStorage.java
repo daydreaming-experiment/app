@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 // TODO: factor most of this into Storage
 @Singleton
-public class LocationPointsStorage extends
+public final class LocationPointsStorage extends
         StatusModelStorage<LocationPoint,LocationPointsStorage> {
 
     private static String TAG = "LocationPointsStorage";

@@ -4,8 +4,8 @@ import android.util.Log;
 import com.brainydroid.daydreaming.ui.Config;
 
 // FIXME: adapt doc imported from LocationPoint
-public abstract class StatusModel<T extends StatusModel<T,S>,
-        S extends StatusModelStorage<T,S>> extends Model<T,S> {
+public abstract class StatusModel<M extends StatusModel<M,S>,
+        S extends StatusModelStorage<M,S>> extends Model<M,S> {
 
     private static String TAG = "StatusModel";
 

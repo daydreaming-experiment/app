@@ -9,8 +9,8 @@ import com.google.inject.Inject;
 
 import java.util.ArrayList;
 
-public abstract class ModelStorage<T extends Model<T,S>,
-        S extends ModelStorage<T,S>> {
+public abstract class ModelStorage<M extends Model<M,S>,
+        S extends ModelStorage<M,S>> {
 
     private static String TAG = "ModelStorage";
 
@@ -42,9 +42,9 @@ public abstract class ModelStorage<T extends Model<T,S>,
         return db;
     }
 
-    protected abstract ContentValues getModelValues(T model);
+    protected abstract ContentValues getModelValues(M model);
 
-    private ContentValues getModelValuesWithId(T model) {
+    private ContentValues getModelValuesWithId(M model) {
 
         // Debug
         if (Config.LOGD) {
@@ -58,7 +58,7 @@ public abstract class ModelStorage<T extends Model<T,S>,
 
     protected abstract String getMainTable();
 
-    public void store(T model) {
+    public void store(M model) {
 
         // Debug
         if (Config.LOGD) {
@@ -77,7 +77,7 @@ public abstract class ModelStorage<T extends Model<T,S>,
         model.setId(modelId);
     }
 
-    public void update(T model) {
+    public void update(M model) {
 
         // Debug
         if (Config.LOGD) {
@@ -90,11 +90,11 @@ public abstract class ModelStorage<T extends Model<T,S>,
                 new String[] {Integer.toString(modelId)});
     }
 
-    protected abstract IModelFactory<T> getModelFactory();
+    protected abstract IModelFactory<M> getModelFactory();
 
-    protected abstract void populateModel(T model, Cursor res);
+    protected abstract void populateModel(M model, Cursor res);
 
-    public T get(int modelId) {
+    public M get(int modelId) {
 
         // Debug
         if (Config.LOGD) {
@@ -108,7 +108,7 @@ public abstract class ModelStorage<T extends Model<T,S>,
             return null;
         }
 
-        T model = getModelFactory().create();
+        M model = getModelFactory().create();
         populateModel(model, res);
         model.setId(res.getInt(res.getColumnIndex(Model.COL_ID)));
         res.close();
@@ -127,7 +127,7 @@ public abstract class ModelStorage<T extends Model<T,S>,
                 new String[]{Integer.toString(modelId)});
     }
 
-    public void remove(ArrayList<? extends Model<? super T,S>> models) {
+    public void remove(ArrayList<? extends Model<? super M,S>> models) {
 
         // Debug
         if (Config.LOGD) {
