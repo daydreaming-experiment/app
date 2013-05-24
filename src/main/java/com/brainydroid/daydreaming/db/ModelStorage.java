@@ -92,7 +92,7 @@ public abstract class ModelStorage<M extends Model<M,S>,
 
     protected abstract IModelFactory<M> getModelFactory();
 
-    protected abstract void populateModel(M model, Cursor res);
+    protected abstract void populateModel(int modelId, M model, Cursor res);
 
     public M get(int modelId) {
 
@@ -109,7 +109,7 @@ public abstract class ModelStorage<M extends Model<M,S>,
         }
 
         M model = getModelFactory().create();
-        populateModel(model, res);
+        populateModel(modelId, model, res);
         model.setId(res.getInt(res.getColumnIndex(Model.COL_ID)));
         res.close();
 

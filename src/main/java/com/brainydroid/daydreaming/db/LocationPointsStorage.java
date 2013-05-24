@@ -71,7 +71,8 @@ public final class LocationPointsStorage extends
             Log.d(TAG, "[fn] getLocationPointContentValues");
         }
 
-        ContentValues locationPointValues = new ContentValues();
+        ContentValues locationPointValues =
+                super.getModelValues(locationPoint);
         locationPointValues.put(LocationPoint.COL_LOCATION_LATITUDE,
                 locationPoint.getLocationLatitude());
         locationPointValues.put(LocationPoint.COL_LOCATION_LONGITUDE,
@@ -97,14 +98,15 @@ public final class LocationPointsStorage extends
     }
 
     @Override
-    protected void populateModel(LocationPoint locationPoint, Cursor res) {
+    protected void populateModel(int locationPointId, LocationPoint
+                                 locationPoint, Cursor res) {
 
         // Debug
         if (Config.LOGD) {
             Log.d(TAG, "[fn] populateModel");
         }
 
-        super.populateModel(locationPoint, res);
+        super.populateModel(locationPointId, locationPoint, res);
         locationPoint.setLocationLatitude(res.getDouble(res.getColumnIndex(LocationPoint.COL_LOCATION_LATITUDE)));
         locationPoint.setLocationLongitude(res.getDouble(res.getColumnIndex(LocationPoint.COL_LOCATION_LONGITUDE)));
         locationPoint.setLocationAltitude(res.getDouble(res.getColumnIndex(LocationPoint.COL_LOCATION_ALTITUDE)));
