@@ -12,25 +12,6 @@ public class Util {
 
     private static String TAG = "Util";
 
-//    public static String joinStrings(ArrayList<String> strings, String joinString) {
-//
-//        // Verbose
-//        if (Config.LOGV) {
-//            Log.v(TAG, "[fn] joinStrings");
-//        }
-//
-//        StringBuilder sb = new StringBuilder();
-//
-//        for (String s : strings) {
-//            sb.append(s);
-//            sb.append(joinString);
-//        }
-//
-//        int sbLength = sb.length();
-//        sb.delete(sbLength - joinString.length(), sbLength);
-//        return sb.toString();
-//    }
-
     public static String multiplyString(String string, int times, String joinString) {
 
         // Verbose
