@@ -19,7 +19,7 @@ before_install:
   - tar xzf android-sdk-linux.tgz
   - export ANDROID_HOME="$(pwd)/android-sdk-linux"
   - export PATH="${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools:${ANDROID_HOME}/build-tools/17.0.0"
-  - echo "y" | android update sdk --no-ui --force --filter platform-tools,build-tools-17.0.0,android-16,extra-android-support
+  - echo "y" | android update sdk --no-ui --force --filter platform-tools,build-tools-17.0.0,android-16,android-17,extra-android-support
   # Dirty workaround here: see http://stackoverflow.com/questions/16585099/adt-22-missing-aapt-exe-after-upgrading/16608130#16608130
   # using this method because the 'git clone' method creates build errors. Once the maven-android-plugin is updated in maven central
   # this shouldn't be necessary any more
