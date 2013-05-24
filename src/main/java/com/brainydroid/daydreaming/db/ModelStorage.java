@@ -90,7 +90,7 @@ public abstract class ModelStorage<M extends Model<M,S>,
                 new String[] {Integer.toString(modelId)});
     }
 
-    protected abstract IModelFactory<M> getModelFactory();
+    protected abstract M create();
 
     protected abstract void populateModel(int modelId, M model, Cursor res);
 
@@ -108,7 +108,7 @@ public abstract class ModelStorage<M extends Model<M,S>,
             return null;
         }
 
-        M model = getModelFactory().create();
+        M model = create();
         populateModel(modelId, model, res);
         model.setId(res.getInt(res.getColumnIndex(Model.COL_ID)));
         res.close();
@@ -127,7 +127,7 @@ public abstract class ModelStorage<M extends Model<M,S>,
                 new String[]{Integer.toString(modelId)});
     }
 
-    public void remove(ArrayList<? extends Model<? super M,S>> models) {
+    public void remove(ArrayList<? extends Model<M,S>> models) {
 
         // Debug
         if (Config.LOGD) {

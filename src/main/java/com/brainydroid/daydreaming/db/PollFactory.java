@@ -1,6 +1,6 @@
 package com.brainydroid.daydreaming.db;
 
-public interface PollFactory extends IModelFactory<Poll> {
+public interface PollFactory {
 
     public Poll create();
 

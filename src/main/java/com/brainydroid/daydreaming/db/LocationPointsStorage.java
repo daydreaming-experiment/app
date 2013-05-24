@@ -87,14 +87,14 @@ public final class LocationPointsStorage extends
     }
 
     @Override
-    protected IModelFactory<LocationPoint> getModelFactory() {
+    protected LocationPoint create() {
 
         // Verbose
         if (Config.LOGV) {
-            Log.v(TAG, "[fn] getModelFactory");
+            Log.v(TAG, "[fn] create");
         }
 
-        return locationPointFactory;
+        return locationPointFactory.create();
     }
 
     @Override

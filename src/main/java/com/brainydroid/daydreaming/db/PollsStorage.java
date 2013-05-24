@@ -87,14 +87,14 @@ public final class PollsStorage extends StatusModelStorage<Poll,
     }
 
     @Override
-    protected IModelFactory<Poll> getModelFactory() {
+    protected Poll create() {
 
         // Verbose
         if (Config.LOGV) {
-            Log.v(TAG, "[fn] getModelFactory");
+            Log.v(TAG, "[fn] create");
         }
 
-        return pollFactory;
+        return pollFactory.create();
     }
 
     private ContentValues getQuestionValues(int pollId, Question question) {
