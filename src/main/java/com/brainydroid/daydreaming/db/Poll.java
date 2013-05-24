@@ -52,7 +52,7 @@ public final class Poll extends StatusModel<Poll,PollsStorage> {
 
         // Verbose
         if (Config.LOGV) {
-            Log.v(TAG, "[fn] getQuestion");
+            Log.v(TAG, "[fn] getQuestions");
         }
 
         return questions;

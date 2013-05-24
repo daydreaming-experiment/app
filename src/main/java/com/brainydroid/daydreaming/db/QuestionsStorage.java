@@ -34,8 +34,7 @@ public class QuestionsStorage {
 
     private final SharedPreferences sharedPreferences;
     private final SharedPreferences.Editor eSharedPreferences;
-    private final SQLiteDatabase rDb;
-    private final SQLiteDatabase wDb;
+    private final SQLiteDatabase db;
 
     // Constructor
     @Inject
@@ -49,9 +48,8 @@ public class QuestionsStorage {
 
         this.sharedPreferences = sharedPreferences;
         eSharedPreferences = sharedPreferences.edit();
-        rDb = storage.getReadableDatabase();
-        wDb = storage.getWritableDatabase();
-        wDb.execSQL(SQL_CREATE_TABLE_QUESTIONS);
+        db = storage.getWritableDatabase();
+        db.execSQL(SQL_CREATE_TABLE_QUESTIONS);
     }
 
     public int getQuestionsVersion() {
@@ -84,15 +82,15 @@ public class QuestionsStorage {
     }
 
     // get question from id in db
-    public Question getQuestion(String questionName) {
+    public Question get(String questionName) {
 
         // Debug
         if (Config.LOGD) {
-            Log.d(TAG, "[fn] getQuestion");
+            Log.d(TAG, "[fn] get");
         }
 
-        Cursor res = rDb.query(TABLE_QUESTIONS, null,
-                Question.COL_NAME + "=?", new String[] {questionName},
+        Cursor res = db.query(TABLE_QUESTIONS, null,
+                Question.COL_NAME + "=?", new String[]{questionName},
                 null, null, null);
         if (!res.moveToFirst()) {
             res.close();
@@ -119,7 +117,7 @@ public class QuestionsStorage {
             Log.d(TAG, "[fn] getQuestionNames");
         }
 
-        Cursor res = rDb.query(TABLE_QUESTIONS,
+        Cursor res = db.query(TABLE_QUESTIONS,
                 new String[] {Question.COL_NAME}, null, null, null,
                 null, null);
         if (!res.moveToFirst()) {
@@ -153,51 +151,51 @@ public class QuestionsStorage {
 
         for (int i = 0; i < nQuestions && i < nIds; i++) {
             rIndex = random.nextInt(questionNames.size());
-            randomQuestions.add(getQuestion(questionNames.get(rIndex)));
+            randomQuestions.add(get(questionNames.get(rIndex)));
             questionNames.remove(rIndex);
         }
 
         return randomQuestions;
     }
 
-    public void flushAll() {
+    public void flush() {
 
         // Debug
         if (Config.LOGD) {
-            Log.d(TAG, "[fn] flushAll");
+            Log.d(TAG, "[fn] flush");
         }
 
-        wDb.delete(TABLE_QUESTIONS, null, null);
+        db.delete(TABLE_QUESTIONS, null, null);
     }
 
-    private void addQuestions(ArrayList<Question> questions) {
+    private void add(ArrayList<Question> questions) {
 
         // Debug
         if (Config.LOGD) {
-            Log.d(TAG, "[fn] addQuestions");
+            Log.d(TAG, "[fn] add");
         }
 
         for (Question q : questions) {
-            addQuestion(q);
+            add(q);
         }
     }
 
     // add question in database
-    private void addQuestion(Question question) {
+    private void add(Question question) {
 
         // Debug
         if (Config.LOGD) {
-            Log.d(TAG, "[fn] addQuestion");
+            Log.d(TAG, "[fn] add");
         }
 
-        wDb.insert(TABLE_QUESTIONS, null, getQuestionContentValues(question));
+        db.insert(TABLE_QUESTIONS, null, getQuestionValues(question));
     }
 
-    private ContentValues getQuestionContentValues(Question question) {
+    private ContentValues getQuestionValues(Question question) {
 
         // Debug
         if (Config.LOGD) {
-            Log.d(TAG, "[fn] getQuestionContentValues");
+            Log.d(TAG, "[fn] getQuestionValues");
         }
 
         ContentValues qValues = new ContentValues();
@@ -219,9 +217,9 @@ public class QuestionsStorage {
 
         ServerQuestionsJson serverQuestionsJson = json.fromJson(
                 jsonQuestionsString, ServerQuestionsJson.class);
-        flushAll();
+        flush();
         setQuestionsVersion(serverQuestionsJson.getVersion());
-        addQuestions(serverQuestionsJson.getQuestionsArrayList());
+        add(serverQuestionsJson.getQuestionsArrayList());
     }
 
 }

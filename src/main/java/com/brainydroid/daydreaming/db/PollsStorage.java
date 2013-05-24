@@ -171,7 +171,7 @@ public final class PollsStorage extends StatusModelStorage<Poll,
         }
 
         do {
-            Question q = questionsStorage.getQuestion(qRes.getString(
+            Question q = questionsStorage.get(qRes.getString(
                     qRes.getColumnIndex(Question.COL_NAME)));
             q.setStatus(qRes.getString(
                     qRes.getColumnIndex(Question.COL_STATUS)));
