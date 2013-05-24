@@ -12,6 +12,10 @@ public class Util {
 
     private static String TAG = "Util";
 
+    public static String multiplyString(String string, int times) {
+        return multiplyString(string, times, null);
+    }
+
     public static String multiplyString(String string, int times, String joinString) {
 
         // Verbose
