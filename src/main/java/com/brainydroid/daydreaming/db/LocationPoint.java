@@ -13,13 +13,10 @@ import com.google.inject.Inject;
  * @author Sébastien Lerique
  * @author Vincent Adam
  */
-public class LocationPoint {
+public final class LocationPoint extends
+        StatusModel<LocationPoint,LocationPointsStorage> {
 
     private static String TAG = "LocationPoint";
-
-    // These members don't need to be serialized
-    private transient int id = -1;
-    private transient String status;
 
     // These should always be serialized
     @Expose private double locationLatitude = -1;
@@ -29,8 +26,6 @@ public class LocationPoint {
     @Expose private long timestamp = -1;
 
     // Fields used for saving a LocationPoint to a database
-    public static final String COL_ID = "locationId";
-    public static final String COL_STATUS = "locationStatus";
     public static final String COL_LOCATION_LATITUDE =
             "locationLocationLatitude";
     public static final String COL_LOCATION_LONGITUDE =
@@ -49,101 +44,24 @@ public class LocationPoint {
     // Our database for LocationPoints
     @Inject transient LocationPointsStorage locationPointsStorage;
 
-    /**
-     * Set the {@code LocationPoint}'s id, used for database ordering and
-     * indexing.
-     * <p/>
-     * {@code id} is different from {@code -1} if and only if it is
-     * persisted in the database. In that case all subsequent modifications
-     * of the object will also save the modifications to the persisted
-     * record in the database. So all the setters of this class (with the
-     * exception of this one, {@code setId()} will save their modifications
-     * to the database if {@code id} is different from {@code -1}. Setting
-     * the {@code id} back to {@code -1} amounts to disconnecting the
-     * instance from its record in the database.
-     * <p/>
-     * The {@code id} is set either when saving an instance to the
-     * database or when loading one from the database,
-     * and shouldn't be interfered with at any other moment.
-     *
-     * @param id Id to set
-     */
-    public void setId(int id) {
+    protected LocationPoint self() {
 
         // Verbose
         if (Config.LOGV) {
-            Log.v(TAG, "[fn] setId");
+            Log.v(TAG, "[fn] self");
         }
 
-        // This method is called either from
-        // LocationPointsStorage.storeLocationPointSetId() or from
-        // LocationPointsStorage.getLocationPoint(),
-        // and in both cases calling saveIfSync() would trigger an
-        // unnecessary save. So we don't call it, contrary to other setters.
-        // below.
-        this.id = id;
+        return this;
     }
 
-    /**
-     * Get the {@code LocationPoint}'s id.
-     * <p/>
-     * See {@code setId()} for details on the meaning of this id.
-     *
-     * @return Id of the {@code LocationPoint}
-     */
-    public int getId() {
+    protected LocationPointsStorage getStorage() {
 
         // Verbose
         if (Config.LOGV) {
-            Log.v(TAG, "[fn] getId");
+            Log.v(TAG, "[fn] getStorage");
         }
 
-        return id;
-    }
-
-    /**
-     * Set the status of the {@code LocationPoint}, and persist to database
-     * if necessary.
-     * <p/>
-     * A value of {@code LocationPoint.STATUS_COLLECTING} means the {@code
-     * LocationPoint} is either waiting for its timestamp or still has a
-     * listener registered on a location provider,
-     * receiving location updates. A value of {@code
-     * LocationPoint.STATUS_COMPLETED} means the instance has finished
-     * collecting its relevant data and has been closed,
-     * but not necessarily persisted to the database (that is an independent
-     * property).
-     *
-     * @param status Status to set, should be one of {@code
-     *               LocationPoint.STATUS_COLLECTING} or {@code
-     *               LocationPoint.STATUS_COMPLETED}
-     */
-    public void setStatus(String status) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] setStatus");
-        }
-
-        this.status = status;
-        saveIfSync();
-    }
-
-    /**
-     * Get the status of the {@code LocationPoint}.
-     * <p/>
-     * See {@code setStatus()} for details on the meaning of this status.
-     *
-     * @return Current status of the {@code LocationPoint}
-     */
-    public String getStatus() {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] getStatus");
-        }
-
-        return status;
+        return locationPointsStorage;
     }
 
     /**
@@ -356,42 +274,6 @@ public class LocationPoint {
                 locationAltitude != -1 &&
                 locationAccuracy != -1;
         return timestamp != -1 && hasLocation;
-
-    }
-
-    /**
-     * Save the instance to the database if the {@code id} is different from
-     * {@code -1}. (In which case it's in fact an update of an existing
-     * record in the database.)
-     */
-    private void saveIfSync() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] saveIfSync");
-        }
-
-        if (id != -1) {
-            save();
-        }
-    }
-
-    /**
-     * Save the instance to the database, regardless or the value of its
-     * {@code id}.
-     */
-    public void save() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] save");
-        }
-
-        if (id != -1) {
-            locationPointsStorage.updateLocationPoint(this);
-        } else {
-            locationPointsStorage.storeLocationPointSetId(this);
-        }
     }
 
 }

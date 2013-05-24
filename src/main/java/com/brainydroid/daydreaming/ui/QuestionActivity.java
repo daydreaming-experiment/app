@@ -200,7 +200,7 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
 
         Intent intent = getIntent();
         pollId = intent.getIntExtra(EXTRA_POLL_ID, -1);
-        poll = pollsStorage.getPoll(pollId);
+        poll = pollsStorage.get(pollId);
         questionIndex = intent.getIntExtra(EXTRA_QUESTION_INDEX, -1);
         question = poll.getQuestionByIndex(questionIndex);
         nQuestions = poll.getLength();

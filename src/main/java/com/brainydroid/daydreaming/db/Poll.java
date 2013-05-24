@@ -7,17 +7,13 @@ import com.google.inject.Inject;
 
 import java.util.ArrayList;
 
-public class Poll {
+public final class Poll extends StatusModel<Poll,PollsStorage> {
 
     private static String TAG = "Poll";
 
-    @Expose private String status = null;
     @Expose @Inject private ArrayList<Question> questions;
     @Expose private long notificationTimestamp;
-    private transient int id = -1;
 
-    public static final String COL_ID = "pollId";
-    public static final String COL_STATUS = "pollStatus";
     public static final String COL_NOTIFICATION_TIMESTAMP = "pollNotificationTimestamp";
 
     public static final String STATUS_PENDING = "pollPending"; // Notification has appeared
@@ -56,7 +52,7 @@ public class Poll {
 
         // Verbose
         if (Config.LOGV) {
-            Log.v(TAG, "[fn] getQuestion");
+            Log.v(TAG, "[fn] getQuestions");
         }
 
         return questions;
@@ -82,50 +78,6 @@ public class Poll {
         return questions.size();
     }
 
-    public int getId() {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] getId");
-        }
-
-        return id;
-    }
-
-    public void setId(int id) {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] setId");
-        }
-
-        // This method is called either from PollsStorage.storePollSetId(...) or
-        // from PollsStorage.getPoll(...), and in both cases calling saveIfSync() would
-        // trigger an unnecessary save. So we don't call it, contrary to other setters below.
-        this.id = id;
-    }
-
-    public String getStatus() {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] getStatus");
-        }
-
-        return status;
-    }
-
-    public void setStatus(String status) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] setStatus");
-        }
-
-        this.status = status;
-        saveIfSync();
-    }
-
     public long getNotificationTimestamp() {
 
         // Verbose
@@ -147,30 +99,26 @@ public class Poll {
         saveIfSync();
     }
 
-    public void saveIfSync() {
+    @Override
+    protected Poll self() {
 
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] saveIfSync");
+        // Verbose
+        if (Config.LOGV) {
+            Log.v(TAG, "[fn] self");
         }
 
-        if (id != -1) {
-            save();
-        }
+        return this;
     }
 
-    public void save() {
+    @Override
+    protected PollsStorage getStorage() {
 
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] save");
+        // Verbose
+        if (Config.LOGV) {
+            Log.v(TAG, "[fn] getStorage");
         }
 
-        if (id != -1) {
-            pollsStorage.updatePoll(this);
-        } else {
-            pollsStorage.storePollSetId(this);
-        }
+        return pollsStorage;
     }
 
 }

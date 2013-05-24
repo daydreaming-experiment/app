@@ -280,7 +280,7 @@ public class SyncService extends RoboService {
                                 Toast.LENGTH_LONG).show();
                     }
 
-                    pollsStorage.removePolls(pollsArray.getPolls());
+                    pollsStorage.remove(pollsArray.getPolls());
                 } else {
                     // Warning
                     Log.w(TAG, "error while uploading polls to server");
@@ -354,7 +354,7 @@ public class SyncService extends RoboService {
                                 Toast.LENGTH_LONG).show();
                     }
 
-                    locationPointsStorage.removeLocationPoints(
+                    locationPointsStorage.remove(
                             locationPoints.getLocationPoints());
                 } else {
                     // Warning
