@@ -122,10 +122,10 @@ public class SchedulerService extends RoboService {
         int endAllowedHour = Util.getHour(endAllowedString);
         int endAllowedMinute = Util.getMinute(endAllowedString);
 
-        Logger.d(TAG, "Allowed start: " + startAllowedHour + ":" +
-                startAllowedMinute);
-        Logger.d(TAG, "Allowed end: " + endAllowedHour + ":" +
-                endAllowedMinute);
+        Logger.d(TAG, "Allowed start: {0}:{1}",
+                startAllowedHour, startAllowedMinute);
+        Logger.d(TAG, "Allowed end: {0}:{1}",
+                endAllowedHour, endAllowedMinute);
 
         // Convert those to a usable format
         Calendar start = (Calendar)now.clone();
@@ -202,10 +202,10 @@ public class SchedulerService extends RoboService {
         long seconds = milliseconds / 1000;
 
         String scheduledString = sdf.format(scheduledCalendar.getTime());
-        Logger.i(TAG, "Poll scheduled in " + hours + " hours, " +
-                minutes + " minutes, and " + seconds + " seconds (i.e. " +
-                scheduledString + ")");
-        Logger.td(this, "New poll scheduled at " + scheduledString);
+        Logger.i(TAG, "Poll scheduled in {0} hours, {1} minutes, " +
+                "and {2} seconds (i.e. {3})",
+                hours, minutes, seconds, scheduledString);
+        Logger.td(this, "New poll scheduled at {0}", scheduledString);
 
         // The scheduled time is returned in milliseconds
         return nowUpTime + respectfulDelay;
@@ -251,8 +251,8 @@ public class SchedulerService extends RoboService {
         long minutes = milliseconds / (60 * 1000);
         milliseconds %= 60 * 1000;
         long seconds = milliseconds / 1000;
-        Logger.d(TAG, "Delay expansion: " + hours + ":" + minutes + ":" +
-                seconds);
+        Logger.d(TAG, "Delay expansion: {0}:{1}:{2}",
+                hours, minutes, seconds);
 
         return delay + expansion;
     }
@@ -296,12 +296,12 @@ public class SchedulerService extends RoboService {
         Calendar suggested = (Calendar)hypothesizedNow.clone();
         suggested.add(Calendar.MILLISECOND, (int)delay);
 
-        Logger.d(TAG, "Hypothesized now is: " +
+        Logger.d(TAG, "Hypothesized now is: {0}",
                 sdf.format(hypothesizedNow.getTime()));
-        Logger.d(TAG, "Suggested is: " + sdf.format(suggested.getTime()));
-        Logger.d(TAG, "Allowed start is: " + sdf.format(start.getTime()));
-        Logger.d(TAG, "Allowed end is: " + sdf.format(end.getTime()));
-        Logger.d(TAG, "Next allowed start is: " +
+        Logger.d(TAG, "Suggested is: {0}", sdf.format(suggested.getTime()));
+        Logger.d(TAG, "Allowed start is: {0}", sdf.format(start.getTime()));
+        Logger.d(TAG, "Allowed end is: {0}", sdf.format(end.getTime()));
+        Logger.d(TAG, "Next allowed start is: {0}",
                 sdf.format(nextStart.getTime()));
 
         if (hypothesizedNow.before(start)) {

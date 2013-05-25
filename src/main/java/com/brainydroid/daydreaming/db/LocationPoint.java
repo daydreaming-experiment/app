@@ -1,8 +1,7 @@
 package com.brainydroid.daydreaming.db;
 
 import android.location.Location;
-import android.util.Log;
-import com.brainydroid.daydreaming.ui.Config;
+import com.brainydroid.daydreaming.background.Logger;
 import com.google.gson.annotations.Expose;
 import com.google.inject.Inject;
 
@@ -16,6 +15,7 @@ import com.google.inject.Inject;
 public final class LocationPoint extends
         StatusModel<LocationPoint,LocationPointsStorage> {
 
+    @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "LocationPoint";
 
     // These should always be serialized
@@ -45,22 +45,10 @@ public final class LocationPoint extends
     @Inject transient LocationPointsStorage locationPointsStorage;
 
     protected LocationPoint self() {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] self");
-        }
-
         return this;
     }
 
     protected LocationPointsStorage getStorage() {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] getStorage");
-        }
-
         return locationPointsStorage;
     }
 
@@ -70,12 +58,6 @@ public final class LocationPoint extends
      * @return Latitude of the {@code LocationPoint}
      */
     public double getLocationLatitude() {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] getLocationLatitude");
-        }
-
         return locationLatitude;
     }
 
@@ -85,12 +67,6 @@ public final class LocationPoint extends
      * @return Longitude of the {@code LocationPoint}
      */
     public double getLocationLongitude() {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] getLocationLongitude");
-        }
-
         return locationLongitude;
     }
 
@@ -100,12 +76,6 @@ public final class LocationPoint extends
      * @return Altitude of the {@code LocationPoint} in meters
      */
     public double getLocationAltitude() {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] getLocationAltitude");
-        }
-
         return locationAltitude;
     }
 
@@ -115,12 +85,6 @@ public final class LocationPoint extends
      * @return Accuracy of the {@code LocationPoint} in meters
      */
     public double getLocationAccuracy() {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] getLocationAccuracy");
-        }
-
         return locationAccuracy;
     }
 
@@ -131,12 +95,6 @@ public final class LocationPoint extends
      * @param locationLatitude Latitude to set
      */
     public void setLocationLatitude(double locationLatitude) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] setLocationLatitude");
-        }
-
         this.locationLatitude = locationLatitude;
         saveIfSync();
     }
@@ -148,12 +106,6 @@ public final class LocationPoint extends
      * @param locationLongitude Longitude to set
      */
     public void setLocationLongitude(double locationLongitude) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] setLocationLongitude");
-        }
-
         this.locationLongitude = locationLongitude;
         saveIfSync();
     }
@@ -165,12 +117,6 @@ public final class LocationPoint extends
      * @param locationAltitude Altitude to set, in meters
      */
     public void setLocationAltitude(double locationAltitude) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] setLocationAltitude");
-        }
-
         this.locationAltitude = locationAltitude;
         saveIfSync();
     }
@@ -182,12 +128,6 @@ public final class LocationPoint extends
      * @param locationAccuracy Accuracy to set, in meters
      */
     public void setLocationAccuracy(double locationAccuracy) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] setLocationAccuracy");
-        }
-
         this.locationAccuracy = locationAccuracy;
         saveIfSync();
     }
@@ -200,12 +140,6 @@ public final class LocationPoint extends
      * @param location {@code Location} instance from which to take the data
      */
     public void setLocation(Location location) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] setLocation");
-        }
-
         if (location != null) {
             locationLatitude = location.getLatitude();
             locationLongitude = location.getLongitude();
@@ -221,12 +155,6 @@ public final class LocationPoint extends
      * @return Timestamp, usually in milliseconds since epoch
      */
     public long getTimestamp() {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] getTimestamp");
-        }
-
         return timestamp;
     }
 
@@ -237,12 +165,6 @@ public final class LocationPoint extends
      * @param timestamp Timestamp to set, usually in milliseconds since epoch
      */
     public void setTimestamp(long timestamp) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] setTimestamp");
-        }
-
         this.timestamp = timestamp;
         saveIfSync();
     }
@@ -263,17 +185,18 @@ public final class LocationPoint extends
      *         missing)
      */
     public boolean isComplete() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] isComplete");
-        }
-
         boolean hasLocation = locationLatitude != -1 &&
                 locationLongitude !=-1 &&
                 locationAltitude != -1 &&
                 locationAccuracy != -1;
-        return timestamp != -1 && hasLocation;
+        if (timestamp != -1 && hasLocation) {
+            Logger.d(TAG, "LocationPoint is complete");
+            return true;
+        } else {
+            Logger.d(TAG, "LocationPoint has missing location or " +
+                    "timestamp");
+            return false;
+        }
     }
 
 }

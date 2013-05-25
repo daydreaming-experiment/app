@@ -2,8 +2,7 @@ package com.brainydroid.daydreaming.db;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.util.Log;
-import com.brainydroid.daydreaming.ui.Config;
+import com.brainydroid.daydreaming.background.Logger;
 import com.google.inject.Inject;
 
 import java.util.ArrayList;
@@ -16,58 +15,33 @@ public abstract class StatusModelStorage<M extends StatusModel<M,S>,
 
     @Inject
     public StatusModelStorage(Storage storage) {
-
         super(storage);
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] StatusModelStorage");
-        }
     }
 
     @Override
     protected void populateModel(int modelId, M model, Cursor res) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] populateModel");
-        }
-
+        Logger.v(TAG, "Populating model {0} with status", modelId);
         model.setStatus(res.getString(
                 res.getColumnIndex(StatusModel.COL_STATUS)));
     }
 
     @Override
     protected ContentValues getModelValues(M model) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] getModelValues");
-        }
-
+        Logger.d(TAG, "Getting model values (status only)");
         ContentValues modelValues = new ContentValues();
         modelValues.put(StatusModel.COL_STATUS, model.getStatus());
         return modelValues;
     }
 
     private ArrayList<Integer> getModelIdsWithStatuses(String[] statuses) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] getModelIdsWithStatuses (from String[])");
-        }
-
+        Logger.d(TAG, "Getting model ids with statuses");
         return getModelIdsWithStatuses(statuses, null);
     }
 
     protected ArrayList<Integer> getModelIdsWithStatuses(String[] statuses,
                                                          String limit) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] getModelIdsWithStatuses (from String[], " +
-                    "String)");
-        }
+        Logger.d(TAG, "Getting model ids with statuses (with limit " +
+                "argument)");
 
         String query = Util.multiplyString(StatusModel.COL_STATUS + "=?",
                 statuses.length, " OR ");
@@ -89,20 +63,19 @@ public abstract class StatusModelStorage<M extends StatusModel<M,S>,
 
     protected ArrayList<M> getModelsWithStatuses(
             String[] statuses) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] getModelsWithStatuses");
-        }
+        String logStatuses = Util.joinStrings(statuses, ", ");
+        Logger.d(TAG, "Getting models with statuses {0}", logStatuses);
 
         ArrayList<Integer> statusModelIds = getModelIdsWithStatuses(statuses);
-
         if (statusModelIds == null) {
+            Logger.v(TAG, "No models found with statuses {0}", logStatuses);
             return null;
+        } else {
+            Logger.d(TAG, "Found {0} models with statuses {1}",
+                    statusModelIds.size(), logStatuses);
         }
 
         ArrayList<M> statusModels = new ArrayList<M>();
-
         for (int modelId : statusModelIds) {
             statusModels.add(get(modelId));
         }

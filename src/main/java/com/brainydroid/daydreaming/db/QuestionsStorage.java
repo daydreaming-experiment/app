@@ -4,8 +4,7 @@ import android.content.ContentValues;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
-import com.brainydroid.daydreaming.ui.Config;
+import com.brainydroid.daydreaming.background.Logger;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -41,10 +40,8 @@ public class QuestionsStorage {
     public QuestionsStorage(Storage storage,
                             SharedPreferences sharedPreferences) {
 
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] QuestionsStorage");
-        }
+        Logger.d(TAG, "Building QuestionsStorage: creating table if it " +
+                "doesn't exist");
 
         this.sharedPreferences = sharedPreferences;
         eSharedPreferences = sharedPreferences.edit();
@@ -53,12 +50,7 @@ public class QuestionsStorage {
     }
 
     public int getQuestionsVersion() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] getQuestionsVersion");
-        }
-
+        Logger.v(TAG, "Getting questions version");
         int questionsVersion = sharedPreferences.getInt(QUESTIONS_VERSION,
                 -1);
 
@@ -71,23 +63,14 @@ public class QuestionsStorage {
     }
 
     private void setQuestionsVersion(int questionsVersion) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] setQuestionsVersion");
-        }
-
+        Logger.d(TAG, "Setting questions version to {0}", questionsVersion);
         eSharedPreferences.putInt(QUESTIONS_VERSION, questionsVersion);
         eSharedPreferences.commit();
     }
 
     // get question from id in db
     public Question get(String questionName) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] get");
-        }
+        Logger.d(TAG, "Retrieving question {0} from db", questionName);
 
         Cursor res = db.query(TABLE_QUESTIONS, null,
                 Question.COL_NAME + "=?", new String[]{questionName},
@@ -111,11 +94,7 @@ public class QuestionsStorage {
 
     // get questions ids in questions db
     public ArrayList<String> getQuestionNames() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] getQuestionNames");
-        }
+        Logger.d(TAG, "Retrieving available question names from db");
 
         Cursor res = db.query(TABLE_QUESTIONS,
                 new String[] {Question.COL_NAME}, null, null, null,
@@ -137,11 +116,7 @@ public class QuestionsStorage {
 
     // getRandomQuestions
     public ArrayList<Question> getRandomQuestions(int nQuestions) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] getRandomQuestions");
-        }
+        Logger.d(TAG, "Retrieving {0} random questions from db", nQuestions);
 
         ArrayList<String> questionNames = getQuestionNames();
         int nIds = questionNames.size();
@@ -159,22 +134,12 @@ public class QuestionsStorage {
     }
 
     public void flush() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] flush");
-        }
-
+        Logger.d(TAG, "Flushing questions from db");
         db.delete(TABLE_QUESTIONS, null, null);
     }
 
     private void add(ArrayList<Question> questions) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] add");
-        }
-
+        Logger.d(TAG, "Storing an array of questions to db");
         for (Question q : questions) {
             add(q);
         }
@@ -182,21 +147,12 @@ public class QuestionsStorage {
 
     // add question in database
     private void add(Question question) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] add");
-        }
-
+        Logger.d(TAG, "Storing question {0} to db", question.getName());
         db.insert(TABLE_QUESTIONS, null, getQuestionValues(question));
     }
 
     private ContentValues getQuestionValues(Question question) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] getQuestionValues");
-        }
+        Logger.d(TAG, "Building question values");
 
         ContentValues qValues = new ContentValues();
         qValues.put(Question.COL_NAME, question.getName());
@@ -209,11 +165,7 @@ public class QuestionsStorage {
 
     // import questions from json file into database
     public void importQuestions(String jsonQuestionsString) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] importQuestions");
-        }
+        Logger.d(TAG, "Importing questions from JSON");
 
         ServerQuestionsJson serverQuestionsJson = json.fromJson(
                 jsonQuestionsString, ServerQuestionsJson.class);

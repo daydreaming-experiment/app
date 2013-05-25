@@ -1,12 +1,10 @@
 package com.brainydroid.daydreaming.db;
 
-import android.util.Log;
-import com.brainydroid.daydreaming.ui.Config;
-
 import java.util.ArrayList;
 
 public class SliderSubQuestion {
 
+    @SuppressWarnings("UnusedDeclaration")
     private static String TAG = "SliderSubQuestion";
 
     private String text = null;
@@ -15,32 +13,14 @@ public class SliderSubQuestion {
     private int initialPosition = -1;
 
     public String getText() {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] getText");
-        }
-
         return text;
     }
 
     public ArrayList<String> getHints() {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] getHints");
-        }
-
         return hints;
     }
 
     public int getInitialPosition() {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] getInitialPosition");
-        }
-
         return initialPosition;
     }
 

@@ -148,7 +148,7 @@ public class LocationPointService extends RoboService {
             if (collectingLocationPoints.size() != 1) {
                 // Warning
                 Logger.w(TAG, "collectingLocationPoints.size() should be 1," +
-                        " but is " + collectingLocationPoints.size());
+                        " but is {0}", collectingLocationPoints.size());
             }
         } else {
             Logger.v(TAG, "No LocationPoints to set to completed");

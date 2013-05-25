@@ -2,8 +2,7 @@ package com.brainydroid.daydreaming.db;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.util.Log;
-import com.brainydroid.daydreaming.ui.Config;
+import com.brainydroid.daydreaming.background.Logger;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -31,45 +30,22 @@ public final class LocationPointsStorage extends
 
     @Inject LocationPointFactory locationPointFactory;
 
-    // Constructor from context
     @Inject
     public LocationPointsStorage(Storage storage) {
-
         super(storage);
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] LocationPointsStorage");
-        }
     }
 
     protected String[] getTableCreationStrings() {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] getTableCreationStrings");
-        }
-
         return new String[] {SQL_CREATE_TABLE_LOCATIONS};
     }
 
     protected String getMainTable() {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] getMainTable");
-        }
-
         return TABLE_LOCATION_POINTS;
     }
 
     @Override
     protected ContentValues getModelValues(LocationPoint locationPoint) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] getLocationPointContentValues");
-        }
+        Logger.v(TAG, "Building LocationPoint values");
 
         ContentValues locationPointValues =
                 super.getModelValues(locationPoint);
@@ -88,23 +64,13 @@ public final class LocationPointsStorage extends
 
     @Override
     protected LocationPoint create() {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] create");
-        }
-
         return locationPointFactory.create();
     }
 
     @Override
     protected void populateModel(int locationPointId, LocationPoint
                                  locationPoint, Cursor res) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] populateModel");
-        }
+        Logger.d(TAG, "Populating LocationPoint model from db");
 
         super.populateModel(locationPointId, locationPoint, res);
         locationPoint.setLocationLatitude(res.getDouble(res.getColumnIndex(LocationPoint.COL_LOCATION_LATITUDE)));
@@ -115,23 +81,13 @@ public final class LocationPointsStorage extends
     }
 
     public ArrayList<LocationPoint> getUploadableLocationPoints() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] getUploadableLocationPoints");
-        }
-
+        Logger.d(TAG, "Getting uploadable LocationPoints");
         return getModelsWithStatuses(
                 new String[] {LocationPoint.STATUS_COMPLETED});
     }
 
     public ArrayList<LocationPoint> getCollectingLocationPoints() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] getCollectingLocationPoints");
-        }
-
+        Logger.d(TAG, "Getting collecting LocationPoints");
         return getModelsWithStatuses(
                 new String[] {LocationPoint.STATUS_COLLECTING});
     }

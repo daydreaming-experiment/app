@@ -186,10 +186,10 @@ public class SyncService extends RoboService {
 
                 if (success) {
                     Logger.i(TAG, "Successfully uploaded polls to server " +
-                            "(serverAnswer: " + serverAnswer + ")");
+                            "(serverAnswer: {0})", serverAnswer);
                     Logger.td(SyncService.this, SyncService.TAG + ": " +
-                            "uploaded polls (serverAnswer: " + serverAnswer
-                            + ")");
+                            "uploaded polls (serverAnswer: {0})",
+                            serverAnswer);
 
                     Logger.d(TAG, "Removing uploaded polls from db");
                     pollsStorage.remove(pollsArray.getPolls());
@@ -240,10 +240,11 @@ public class SyncService extends RoboService {
 
                 if (success) {
                     Logger.i(TAG, "Successfully uploaded locationPoints to " +
-                            "server (serverAnswer: " + serverAnswer + ")");
-                    Logger.td(SyncService.this, SyncService.TAG + ": " +
-                            "uploaded locationPoints (serverAnswer: "+
-                            serverAnswer + ")");
+                            "server (serverAnswer: {0})", serverAnswer);
+                            Logger.td(SyncService.this,
+                                    SyncService.TAG + ": uploaded " +
+                                            "locationPoints (serverAnswer: " +
+                                            "{0})", serverAnswer);
 
                     Logger.d(TAG, "Removing uploaded locationPoints from " +
                             "db");

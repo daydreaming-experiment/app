@@ -1,7 +1,6 @@
 package com.brainydroid.daydreaming.db;
 
-import android.util.Log;
-import com.brainydroid.daydreaming.ui.Config;
+import com.brainydroid.daydreaming.background.Logger;
 import com.google.gson.*;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -29,11 +28,7 @@ public class AnswerDeserializer implements JsonDeserializer<IAnswer> {
     public IAnswer deserialize(JsonElement json, Type typeOfT,
                                JsonDeserializationContext context)
             throws JsonParseException {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] deserialize");
-        }
+        Logger.v(TAG, "Deserializing answer");
 
         // Prefix specifying the package name of the class to create
         String PACKAGE_PREFIX = getClass().getPackage().getName() + ".";

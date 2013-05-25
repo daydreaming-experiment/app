@@ -1,12 +1,8 @@
 package com.brainydroid.daydreaming.db;
 
-import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
-import com.brainydroid.daydreaming.ui.Config;
+import com.brainydroid.daydreaming.background.Logger;
 
 import java.io.InputStream;
-import java.util.ArrayList;
 
 public class Util {
 
@@ -17,14 +13,9 @@ public class Util {
     }
 
     public static String multiplyString(String string, int times, String joinString) {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] multiplyString");
-        }
+        Logger.v(TAG, "Multiplying string");
 
         StringBuilder sb = new StringBuilder();
-
         for (int i = 0; i < times; i++) {
             sb.append(string);
             sb.append(joinString);
@@ -35,12 +26,22 @@ public class Util {
         return sb.toString();
     }
 
-    public static String convertStreamToString(InputStream is) {
+    public static String joinStrings(String[] strings, String joinString) {
+        Logger.v(TAG, "Joining strings");
 
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] convertStreamToString");
+        StringBuilder sb = new StringBuilder();
+        for (String string : strings) {
+            sb.append(string);
+            sb.append(joinString);
         }
+
+        int sbLength = sb.length();
+        sb.delete(sbLength - joinString.length(), sbLength);
+        return sb.toString();
+    }
+
+    public static String convertStreamToString(InputStream is) {
+        Logger.v(TAG, "Converting InputStream to String");
 
         try {
             return new java.util.Scanner(is).useDelimiter("\\A").next();
@@ -51,53 +52,16 @@ public class Util {
 
     // hour from string HH:MM
     public static int getHour(String time) {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] getHour");
-        }
-
+        Logger.v(TAG, "Getting hour value");
         String[] pieces = time.split(":");
         return(Integer.parseInt(pieces[0]));
     }
 
     // minutes from string HH:MM
     public static int getMinute(String time) {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] getMinute");
-        }
-
+        Logger.v(TAG, "Getting minute value");
         String[] pieces = time.split(":");
         return(Integer.parseInt(pieces[1]));
-    }
-
-    // Select questions by tags.
-    // Tags only used to identify subquestions when they exist
-    public static ArrayList<View> getViewsByTag(ViewGroup root, String tag) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] getViewsByTag");
-        }
-
-        ArrayList<View> views = new ArrayList<View>();
-        final int childCount = root.getChildCount();
-
-        for (int i = 0; i < childCount; i++) {
-            View child = root.getChildAt(i);
-            if (child instanceof ViewGroup) {
-                views.addAll(getViewsByTag((ViewGroup)child, tag));
-            }
-
-            Object tagObj = child.getTag();
-            if (tagObj != null && tagObj.equals(tag)) {
-                views.add(child);
-            }
-        }
-
-        return views;
     }
 
 }

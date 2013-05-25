@@ -1,7 +1,6 @@
 package com.brainydroid.daydreaming.db;
 
-import android.util.Log;
-import com.brainydroid.daydreaming.ui.Config;
+import com.brainydroid.daydreaming.background.Logger;
 import com.google.gson.annotations.Expose;
 
 import java.util.HashMap;
@@ -19,22 +18,11 @@ public class SliderAnswer implements IAnswer {
     @Expose HashMap<String,Integer> sliders = new HashMap<String, Integer>();
 
     public String getType() {
-
-        // Verbose
-        if(Config.LOGV) {
-            Log.v(TAG, "[fn] getType");
-        }
-
         return type;
     }
 
     public void addAnswer(String text, int position) {
-
-        //Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] addAnswer");
-        }
-
+        Logger.v(TAG, "Adding answer {0} at position {1}", text, position);
         sliders.put(text, position);
     }
 

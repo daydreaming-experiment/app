@@ -6,6 +6,7 @@ import android.widget.Toast;
 import com.brainydroid.daydreaming.db.Util;
 import com.brainydroid.daydreaming.ui.Config;
 
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,53 +36,81 @@ public class Logger {
     }
 
     /**
+     * Log at Error level.
+     *
+     * @param tag Tag to attach to the log message
+     * @param messagePattern Log message in MessageFormat pattern format
+     * @param messageArgs Optional arguments for the messagePattern pattern
+     */
+    public static void e(String tag, String messagePattern,
+                         Object... messageArgs) {
+        Log.e(tag, buildIndent() + MessageFormat.format(messagePattern,
+                messageArgs));
+    }
+
+    /**
      * Log at Warn level.
      *
      * @param tag Tag to attach to the log message
-     * @param message Log message
+     * @param messagePattern Log message in MessageFormat pattern format
+     * @param messageArgs Optional arguments for the messagePattern pattern
      */
-    public static void w(String tag, String message) {
-        Log.w(tag, buildIndent() + message);
+    public static void w(String tag, String messagePattern,
+                         Object... messageArgs) {
+        Log.w(tag, buildIndent() + MessageFormat.format(messagePattern,
+                messageArgs));
     }
 
     /**
      * Log at Info level.
      *
      * @param tag Tag to attach to the log message
-     * @param message Log message
+     * @param messagePattern Log message in MessageFormat pattern format
+     * @param messageArgs Optional arguments for the messagePattern pattern
      */
-    public static void i(String tag, String message) {
-        if (Config.LOGI) Log.i(tag, buildIndent() + message);
+    public static void i(String tag, String messagePattern,
+                         Object... messageArgs) {
+        if (Config.LOGI) Log.i(tag, buildIndent() +
+                MessageFormat.format(messagePattern, messageArgs));
     }
 
     /**
      * Log at Debug level.
      *
      * @param tag Tag to attach to the log message
-     * @param message Log message
+     * @param messagePattern Log message in MessageFormat pattern format
+     * @param messageArgs Optional arguments for the messagePattern pattern
      */
-    public static void d(String tag, String message) {
-        if (Config.LOGD) Log.d(tag, buildIndent() + message);
+    public static void d(String tag, String messagePattern,
+                         Object... messageArgs) {
+        if (Config.LOGD) Log.d(tag, buildIndent() +
+                MessageFormat.format(messagePattern, messageArgs));
     }
 
     /**
      * Log at Verbose level.
      *
      * @param tag Tag to attach to the log message
-     * @param message Log message
+     * @param messagePattern Log message in MessageFormat pattern format
+     * @param messageArgs Optional arguments for the messagePattern pattern
      */
-    public static void v(String tag, String message) {
-        if (Config.LOGV) Log.v(tag, buildIndent() + message);
+    public static void v(String tag, String messagePattern,
+                         Object... messageArgs) {
+        if (Config.LOGV) Log.v(tag, buildIndent() +
+                MessageFormat.format(messagePattern, messageArgs));
     }
 
     /**
      * Toast log at Debug level.
      *
      * @param context Context from which the Toast is shown
-     * @param message Log message
+     * @param messagePattern Log message in MessageFormat pattern format
+     * @param messageArgs Optional arguments for the messagePattern pattern
      */
-    public static void td(Context context, String message) {
-        if (Config.TOASTD) Toast.makeText(context, message,
+    public static void td(Context context, String messagePattern,
+                          Object... messageArgs) {
+        if (Config.TOASTD) Toast.makeText(context,
+                MessageFormat.format(messagePattern, messageArgs),
                 Toast.LENGTH_LONG).show();
     }
 

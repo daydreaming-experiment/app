@@ -1,7 +1,6 @@
 package com.brainydroid.daydreaming.db;
 
-import android.util.Log;
-import com.brainydroid.daydreaming.ui.Config;
+import com.brainydroid.daydreaming.background.Logger;
 import com.google.gson.InstanceCreator;
 import com.google.inject.Inject;
 
@@ -16,14 +15,8 @@ public class QuestionInstanceCreator implements InstanceCreator<Question> {
 
     @Override
     public Question createInstance(Type type) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] createInstance");
-        }
-
-        Question question = questionFactory.create();
-        return question;
+        Logger.v(TAG, "Creating new question instance");
+        return questionFactory.create();
     }
 
 }
