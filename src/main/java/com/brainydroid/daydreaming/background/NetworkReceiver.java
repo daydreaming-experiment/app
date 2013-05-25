@@ -41,7 +41,13 @@ public class NetworkReceiver extends RoboBroadcastReceiver {
                 Logger.d(TAG, "Starting SyncService");
                 Intent syncIntent = new Intent(context, SyncService.class);
                 context.startService(syncIntent);
+            } else {
+                Logger.v(TAG, "First launch not completed or data not " +
+                        "enabled -> exiting");
             }
+        } else {
+            Logger.v(TAG, "NetworkReceived started for something different " +
+                    "than CONNECTIVITY_ACTION -> exiting");
         }
     }
 
