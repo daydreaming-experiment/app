@@ -2,8 +2,6 @@ package com.brainydroid.daydreaming.background;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
-import com.brainydroid.daydreaming.ui.Config;
 import com.google.inject.Inject;
 import roboguice.receiver.RoboBroadcastReceiver;
 
