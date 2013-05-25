@@ -122,8 +122,6 @@ public class LocationServiceConnection implements ServiceConnection {
      */
     public void startLocationService() {
         Logger.d(TAG, "Starting LocationService");
-
-        // Self-evident
         Intent locationServiceIntent = new Intent(context,
                 LocationService.class);
         context.startService(locationServiceIntent);

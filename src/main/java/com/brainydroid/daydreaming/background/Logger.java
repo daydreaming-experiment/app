@@ -1,6 +1,8 @@
 package com.brainydroid.daydreaming.background;
 
+import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 import com.brainydroid.daydreaming.db.Util;
 import com.brainydroid.daydreaming.ui.Config;
 
@@ -70,6 +72,17 @@ public class Logger {
      */
     public static void v(String tag, String message) {
         if (Config.LOGV) Log.v(tag, buildIndent() + message);
+    }
+
+    /**
+     * Toast log at Debug level.
+     *
+     * @param context Context from which the Toast is shown
+     * @param message Log message
+     */
+    public static void td(Context context, String message) {
+        if (Config.TOASTD) Toast.makeText(context, message,
+                Toast.LENGTH_LONG).show();
     }
 
 }
