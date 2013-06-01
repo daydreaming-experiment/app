@@ -1,7 +1,7 @@
 package com.brainydroid.daydreaming.ui;
 
 import android.app.Application;
-import android.util.Log;
+import com.brainydroid.daydreaming.background.Logger;
 import roboguice.RoboGuice;
 
 public class App extends Application {
@@ -11,11 +11,7 @@ public class App extends Application {
 
     @Override
     public void onCreate() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onCreate");
-        }
+        Logger.d(TAG, "Creating Application");
 
         super.onCreate();
 
