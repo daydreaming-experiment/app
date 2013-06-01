@@ -4,9 +4,9 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.TimePicker;
+import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.Util;
 
 // Extends DialogPreference, a preference class that pops out in a dialog box
@@ -21,44 +21,24 @@ public class TimePreference extends DialogPreference {
     // constructor from context
     @SuppressWarnings("UnusedDeclaration")
     public TimePreference(Context context) {
-
         super(context, null); // constructor from superclass DialogPreference
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] TimePreference (argset 1: small)");
-        }
     }
 
     // constructor from context and attributes
     @SuppressWarnings("UnusedDeclaration")
     public TimePreference(Context context, AttributeSet attributeSet) {
         super(context, attributeSet, 0);
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] TimePreference (argset 2: medium)");
-        }
     }
 
     // constructor from context and attributes and style
     @SuppressWarnings("UnusedDeclaration")
     public TimePreference(Context context, AttributeSet attributeSet, int defStyle) {
         super(context, attributeSet, defStyle);
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] TimePreference (argset 3: full)");
-        }
     }
 
     @Override
     protected View onCreateDialogView() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onCreateDialogView");
-        }
+        Logger.d(TAG, "Creating dialog view");
 
         picker = new TimePicker(getContext());
         picker.setIs24HourView(true);
@@ -68,11 +48,7 @@ public class TimePreference extends DialogPreference {
     // bind dialog to current view
     @Override
     protected void onBindDialogView(View view) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onBindDialogView");
-        }
+        Logger.d(TAG, "Binding dialog view");
 
         super.onBindDialogView(view);
         picker.setCurrentHour(lastHour);
@@ -81,43 +57,32 @@ public class TimePreference extends DialogPreference {
 
     @Override
     protected void onDialogClosed(boolean positiveResult) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onDialogClosed");
-        }
+        Logger.d(TAG, "Dialog closed");
 
         super.onDialogClosed(positiveResult);
 
         if (positiveResult) {
+            Logger.d(TAG, "Trying to save selected time window");
             lastHour = picker.getCurrentHour();
             lastMinute = picker.getCurrentMinute();
             String time = String.valueOf(lastHour) + ":" + String.valueOf(lastMinute);
             saveTime(time);
+        } else {
+            Logger.v(TAG, "Discarding selected time window");
         }
     }
 
     @Override
     protected Object onGetDefaultValue(TypedArray typedArray, int index) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onGetDefaultValue");
-        }
-
+        Logger.v(TAG, "Getting default value");
         return typedArray.getString(index);
     }
 
     @Override
     protected void onSetInitialValue(boolean restoreValue, Object defaultValue) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onSetInitialValue");
-        }
+        Logger.v(TAG, "Setting initial value");
 
         String time;
-
         if (restoreValue) {
 
             if (defaultValue == null) {
@@ -134,48 +99,28 @@ public class TimePreference extends DialogPreference {
         lastMinute = Util.getMinute(time);
     }
 
-    private void saveTime(String time) {
-
-        // Debug
-        if (Config.LOGD){
-            Log.d(TAG, "[fn] saveTime");
-        }
-
-        if (callChangeListener(time)) {
-            persistString(time);
-        }
-    }
-
-    public String getTimeString() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] getTimeString");
-        }
-
-        return pad(lastHour) + ":" + pad(lastMinute);
-    }
-
     public void setTime(String time) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] setTime");
-        }
-
         lastHour = Util.getHour(time);
         lastMinute = Util.getMinute(time);
 
         saveTime(time);
     }
 
-    private static String pad(int c) {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] pad");
+    private void saveTime(String time) {
+        if (callChangeListener(time)) {
+            Logger.i(TAG, "Persisting selected time window (possibly " +
+                    "corrected)");
+            persistString(time);
+        } else {
+            Logger.e(TAG, "Error while calling change listener");
         }
+    }
 
+    public String getTimeString() {
+        return pad(lastHour) + ":" + pad(lastMinute);
+    }
+
+    private static String pad(int c) {
         if (c >= 10) {
             return String.valueOf(c);
         } else {

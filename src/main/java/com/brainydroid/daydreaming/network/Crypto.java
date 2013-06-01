@@ -1,7 +1,6 @@
 package com.brainydroid.daydreaming.network;
 
-import android.util.Log;
-import com.brainydroid.daydreaming.ui.Config;
+import com.brainydroid.daydreaming.background.Logger;
 import com.google.inject.Singleton;
 import org.spongycastle.jce.ECNamedCurveTable;
 import org.spongycastle.util.encoders.Base64;
@@ -37,46 +36,35 @@ public class Crypto {
     }
 
     public Crypto() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] Crypto");
-        }
+        Logger.d(TAG, "Initializing crypto");
 
         try {
             kf = KeyFactory.getInstance(KEYGEN_ALG, PROVIDER);
             kpg = KeyPairGenerator.getInstance(KEYGEN_ALG, PROVIDER);
             sg = Signature.getInstance(SIGN_ALG, PROVIDER);
         } catch (NoSuchAlgorithmException e) {
+            Logger.e(TAG, "Algorithm not found");
             throw new RuntimeException(e);
         } catch (NoSuchProviderException e) {
+            Logger.e(TAG, "Provider not found");
             throw new RuntimeException(e);
         }
     }
 
     @SuppressWarnings("UnusedDeclaration")
     public synchronized Enumeration<String> getAvailableCurveNames() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] getAvailableCurveNames");
-        }
-
         //noinspection unchecked
         return ECNamedCurveTable.getNames();
     }
 
     public synchronized KeyPair generateKeyPairNamedCurve(String curveName) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] generateKeyPairNamedCurve");
-        }
+        Logger.d(TAG, "Generating keypair");
 
         try {
             ECGenParameterSpec ecParamSpec = new ECGenParameterSpec(curveName);
             kpg.initialize(ecParamSpec);
         } catch (InvalidAlgorithmParameterException e) {
+            Logger.e(TAG, "Invalid parameters");
             throw new RuntimeException(e);
         }
 
@@ -85,12 +73,6 @@ public class Crypto {
 
     @SuppressWarnings("UnusedDeclaration")
     public synchronized PublicKey readPublicKey(String keyStr) throws InvalidKeySpecException {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] readPublicKey (from String)");
-        }
-
         X509EncodedKeySpec x509ks = new X509EncodedKeySpec(
                 Base64.decode(keyStr));
         return kf.generatePublic(x509ks);
@@ -98,85 +80,46 @@ public class Crypto {
 
     @SuppressWarnings("UnusedDeclaration")
     public synchronized PublicKey readPublicKey(byte[] key) throws InvalidKeySpecException {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] readPublicKey (from byte[])");
-        }
-
         X509EncodedKeySpec x509ks = new X509EncodedKeySpec(key);
         return kf.generatePublic(x509ks);
     }
 
     public synchronized PrivateKey readPrivateKey(String keyStr) throws InvalidKeySpecException {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] readPrivateKey (from String)");
-        }
-
         PKCS8EncodedKeySpec p8ks = new PKCS8EncodedKeySpec(
                 Base64.decode(keyStr));
         return kf.generatePrivate(p8ks);
     }
 
     public synchronized PrivateKey readPrivateKey(byte[] key) throws InvalidKeySpecException {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] readPrivateKey (from byte[])");
-        }
-
         PKCS8EncodedKeySpec p8ks = new PKCS8EncodedKeySpec(key);
         return kf.generatePrivate(p8ks);
     }
 
     @SuppressWarnings("UnusedDeclaration")
     public synchronized KeyPair readKeyPair(String pubKeyStr, String privKeyStr) throws InvalidKeySpecException {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] readKeyPair (from String, String)");
-        }
-
         return new KeyPair(readPublicKey(pubKeyStr), readPrivateKey(privKeyStr));
     }
 
     @SuppressWarnings("UnusedDeclaration")
     public synchronized KeyPair readKeyPair(byte[] pubKey, byte[] privKey) throws InvalidKeySpecException {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] readKeyPair (from byte[], byte[])");
-        }
-
         return new KeyPair(readPublicKey(pubKey), readPrivateKey(privKey));
     }
 
     public synchronized byte[] sign(PrivateKey privateKey, byte[] data)
             throws InvalidKeyException {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] sign");
-        }
+        Logger.d(TAG, "Signing data");
 
         try {
             sg.initSign(privateKey);
             sg.update(data);
             return sg.sign();
         } catch (SignatureException e) {
+            Logger.e(TAG, "Problem while signing");
             throw new RuntimeException(e);
         }
     }
 
     private static String wrapString(String str, int lineWidth) {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] wrapString");
-        }
-
         if (str.length() <= lineWidth) {
             return str;
         } else {
@@ -185,32 +128,14 @@ public class Crypto {
     }
 
     private static String formatKeyString(String keyString) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] formatKeyString");
-        }
-
         return BEGIN_KEY_BLOCK + "\n" + wrapString(keyString, LINEWIDTH) + "\n" + END_KEY_BLOCK + "\n";
     }
 
     public static String armorPublicKey(PublicKey publicKey) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] armorPublicKey");
-        }
-
         return formatKeyString(base64Encode(publicKey.getEncoded()));
     }
 
     public static String base64Encode(byte[] b) {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] base64Encode");
-        }
-
         try {
             return new String(Base64.encode(b), "ASCII");
         } catch (UnsupportedEncodingException e) {
@@ -219,12 +144,6 @@ public class Crypto {
     }
 
     public static String base64urlEncode(byte[] data) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] base64urlEncode");
-        }
-
         String padded_b64url = new String(UrlBase64.encode(data));
 
         // Remove padding

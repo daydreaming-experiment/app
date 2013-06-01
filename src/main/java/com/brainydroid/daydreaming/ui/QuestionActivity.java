@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.provider.Settings;
 import android.support.v4.app.DialogFragment;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -19,11 +18,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.actionbarsherlock.app.SherlockDialogFragment;
 import com.brainydroid.daydreaming.R;
-import com.brainydroid.daydreaming.background.LocationCallback;
-import com.brainydroid.daydreaming.background.LocationServiceConnection;
-import com.brainydroid.daydreaming.background.StatusManager;
-import com.brainydroid.daydreaming.background.SyncService;
-import com.brainydroid.daydreaming.db.*;
+import com.brainydroid.daydreaming.background.*;
+import com.brainydroid.daydreaming.db.Poll;
+import com.brainydroid.daydreaming.db.PollsStorage;
+import com.brainydroid.daydreaming.db.Question;
 import com.brainydroid.daydreaming.network.SntpClient;
 import com.brainydroid.daydreaming.network.SntpClientCallback;
 import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockFragmentActivity;
@@ -66,12 +64,6 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
         private static String TAG = "LocationAlertDialogFragment";
 
         public static LocationAlertDialogFragment newInstance(int title, int text, int posText) {
-
-            // Debug
-            if (Config.LOGD) {
-                Log.d(TAG, "[fn] newInstance");
-            }
-
             LocationAlertDialogFragment frag = new LocationAlertDialogFragment();
             Bundle args = new Bundle();
             args.putInt("title", title);
@@ -83,11 +75,7 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
-
-            // Debug
-            if (Config.LOGD) {
-                Log.d(TAG, "[fn] onCreateDialog");
-            }
+            Logger.d(TAG, "Creating location alert dialog");
 
             int title = getArguments().getInt("title");
             int text = getArguments().getInt("text");
@@ -111,12 +99,7 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onCreate");
-        }
-
+        Logger.v(TAG, "Creating");
         super.onCreate(savedInstanceState);
 
         initVars();
@@ -126,35 +109,33 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
 
     @Override
     public void onStart() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onStart");
-        }
-
+        Logger.d(TAG, "Starting");
         super.onStart();
 
         poll.setStatus(Poll.STATUS_RUNNING);
         question.setStatus(Question.STATUS_ASKED);
 
         if (statusManager.isDataAndLocationEnabled()) {
+            Logger.i(TAG, "Data and location enabled -> starting listening " +
+                    "tasks");
             startListeningTasks();
+        } else {
+            Logger.i(TAG, "No data or no location -> not starting listening" +
+                    " tasks");
         }
     }
 
     @Override
     public void onStop() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onStop");
-        }
-
+        Logger.d(TAG, "Stopping");
         super.onStop();
         if (!isContinuingOrFinishing) {
+            Logger.d(TAG, "We're not moving to next question or finishing " +
+                    "the poll -> dismissing");
             dismissPoll();
         }
 
+        Logger.d(TAG, "Clearing LocationService callback and unbinding");
         locationServiceConnection.clearQuestionLocationCallback();
         // the LocationService finishes if nobody else has listeners registered
         locationServiceConnection.unbindLocationService();
@@ -162,12 +143,7 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
 
     @Override
     public void onBackPressed() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onBackPressed");
-        }
-
+        Logger.v(TAG, "Back pressed");
         if (!isRepeatingBack()) {
             Toast.makeText(this, getString(R.string.questionActivity_catch_key),
                     Toast.LENGTH_SHORT).show();
@@ -179,12 +155,6 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
     }
 
     private boolean isRepeatingBack() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] isRepeatingBack");
-        }
-
         long now = SystemClock.elapsedRealtime();
         boolean ret = (lastBackTime != 0) && (lastBackTime + BACK_REPEAT_DELAY >= now);
         lastBackTime = now;
@@ -192,12 +162,7 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
     }
 
     private void initVars() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] initVars");
-        }
-
+        Logger.d(TAG, "Initializing variables");
         Intent intent = getIntent();
         pollId = intent.getIntExtra(EXTRA_POLL_ID, -1);
         poll = pollsStorage.get(pollId);
@@ -209,43 +174,30 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
     }
 
     private void setChrome() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] setChrome");
-        }
+        Logger.d(TAG, "Setting chrome");
 
         setTitle(getString(R.string.app_name) + " " + (questionIndex + 1) + "/" + nQuestions);
 
         if (!isFirstQuestion()) {
+            Logger.d(TAG, "Not the first question -> removing welcome text");
             TextView welcomeText = (TextView)questionLinearLayout.findViewById(R.id.question_welcomeText);
             questionLinearLayout.removeView(welcomeText);
 
             if (isLastQuestion()) {
+                Logger.d(TAG, "Last question -> setting finish button text");
                 nextButton.setText(nextButtonFinishText);
             }
         }
     }
 
     private void startListeningTasks() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] startListeningTasks");
-        }
-
         LocationCallback locationCallback = new LocationCallback() {
 
             private final String TAG = "LocationCallback";
 
             @Override
             public void onLocationReceived(Location location) {
-
-                // Debug
-                if (Config.LOGD) {
-                    Log.d(TAG, "[fn] (locationCallback) onLocationReceived");
-                }
-
+                Logger.i(TAG, "Received location for question, setting it");
                 question.setLocation(location);
             }
 
@@ -257,14 +209,13 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
 
             @Override
             public void onTimeReceived(SntpClient sntpClient) {
-
-                // Debug
-                if (Config.LOGD) {
-                    Log.d(TAG, "[fn] (sntpCallback) onTimeReceived");
-                }
-
                 if (sntpClient != null) {
                     question.setTimestamp(sntpClient.getNow());
+                    Logger.i(TAG, "Received and saved NTP time for " +
+                            "question");
+                } else {
+                    Logger.e(TAG, "Received successful NTP request but " +
+                            "sntpClient is null");
                 }
             }
 
@@ -272,68 +223,67 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
 
         locationServiceConnection.setQuestionLocationCallback(locationCallback);
 
+        Logger.i(TAG, "Launching NTP request");
         sntpClient.asyncRequestTime(sntpCallback);
 
         if (!statusManager.isLocationServiceRunning()) {
+            Logger.i(TAG, "LocationService not running -> binding and " +
+                    "starting");
             locationServiceConnection.bindLocationService();
             locationServiceConnection.startLocationService();
         } else {
+            Logger.i(TAG, "LocationService running -> binding (but not " +
+                    "starting)");
             locationServiceConnection.bindLocationService();
         }
     }
 
     public void onClick_nextButton(@SuppressWarnings("UnusedParameters") View view) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onClick_nextButton");
-        }
+        Logger.d(TAG, "Next button clicked");
 
         if (questionViewAdapter.validate()) {
+            Logger.i(TAG, "Question validation succeeded, " +
+                    "setting question status to answered");
             questionViewAdapter.saveAnswer();
             question.setStatus(Question.STATUS_ANSWERED);
 
             if (isLastQuestion()) {
-
+                Logger.d(TAG, "Last question -> finishing poll");
                 finishPoll();
-
             } else {
-
                 if (statusManager.isDataAndLocationEnabled()) {
+                    Logger.d(TAG, "Data and location enabled -> launching " +
+                            "next question");
                     launchNextQuestion();
                 } else {
+                    Logger.d(TAG, "Either data or location disabled -> " +
+                            "launching alert dialog");
                     launchLocationAlertDialog();
                 }
-
             }
         }
     }
 
     private void launchLocationAlertDialog() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] launchLocationAlertDialog");
-        }
+        Logger.d(TAG, "Launching alert dialog");
 
         int titleId;
         int textId;
 
         if (!statusManager.isNetworkLocEnabled()) {
-
             if (!statusManager.isDataEnabled()) {
+                Logger.d(TAG, "Network location and data disabled");
                 titleId = R.string.locationAlert_title_location_and_data;
                 textId = R.string.locationAlert_text_location_and_data;
             } else {
+                Logger.d(TAG, "Network location disabled, data enabled");
                 titleId = R.string.locationAlert_title_location;
                 textId = R.string.locationAlert_text_location;
             }
-
         } else {
-
+            Logger.d(TAG, "Network location enabled, location disabled");
             titleId = R.string.locationAlert_title_data;
             textId = R.string.locationAlert_text_data;
-
         }
 
         DialogFragment locationAlert = LocationAlertDialogFragment.newInstance(
@@ -342,11 +292,7 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
     }
 
     private void launchNextQuestion() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] launchNextQuestion");
-        }
+        Logger.d(TAG, "Launching next question");
 
         setIsContinuingOrFinishing();
 
@@ -361,21 +307,14 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
     }
 
     private void launchSettings() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] launchSettings");
-        }
-
         Intent settingsIntent;
 
         if (!statusManager.isNetworkLocEnabled()) {
-
+            Logger.d(TAG, "Launching location settings");
             settingsIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
             settingsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-
         } else {
-
+            Logger.d(TAG, "Launching data settings");
             settingsIntent = new Intent(Settings.ACTION_DATA_ROAMING_SETTINGS);
 
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
@@ -390,70 +329,43 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
     }
 
     private void dismissPoll() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] dismissPoll");
-        }
+        Logger.i(TAG, "Dismissing poll");
 
         question.setStatus(Question.STATUS_ASKED_DISMISSED);
         poll.setStatus(Poll.STATUS_PARTIALLY_COMPLETED);
 
+        Logger.i(TAG, "Starting sync service to sync answers");
         startSyncService();
     }
 
     private void finishPoll() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] finishPoll");
-        }
+        Logger.i(TAG, "Finishing poll");
 
         setIsContinuingOrFinishing();
 
         Toast.makeText(this, getString(R.string.question_thank_you), Toast.LENGTH_SHORT).show();
         poll.setStatus(Poll.STATUS_COMPLETED);
 
+        Logger.i(TAG, "Starting sync service to sync answers, " +
+                "and finishing self");
         startSyncService();
         finish();
     }
 
     private boolean isLastQuestion() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] isLastQuestion");
-        }
-
         return questionIndex == nQuestions - 1;
     }
 
     private boolean isFirstQuestion() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] isFirstQuestion");
-        }
-
         return questionIndex == 0;
     }
 
     private void setIsContinuingOrFinishing() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] setIsContinuingOrFinishing");
-        }
-
         isContinuingOrFinishing = true;
     }
 
     private void startSyncService() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] startSyncService");
-        }
+        Logger.d(TAG, "Starting SyncService");
 
         Intent syncIntent = new Intent(this, SyncService.class);
         startService(syncIntent);

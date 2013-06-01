@@ -7,8 +7,6 @@ import android.location.LocationManager;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.util.Log;
-import com.brainydroid.daydreaming.ui.Config;
 import com.google.inject.Inject;
 import roboguice.service.RoboService;
 
@@ -62,22 +60,12 @@ public class LocationService extends RoboService {
      */
     public class LocationServiceBinder extends Binder {
 
-        private String TAG = "LocationServiceBinder";
-
         /**
          * Get a handle to the bound {@code LocationService}.
          *
          * @return Currently bound {@code LocationService}
          */
         LocationService getService() {
-
-            // Verbose
-            if (Config.LOGV) {
-                Log.v(TAG, "[fn] getService");
-            }
-
-            // Return this instance of LocationService so clients can call
-            // public methods
             return LocationService.this;
         }
 
@@ -91,11 +79,7 @@ public class LocationService extends RoboService {
      * @param callback Callback to set
      */
     public void setLocationPointCallback(LocationCallback callback) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] setLocationPointCallback");
-        }
+        Logger.d(TAG, "Setting LocationPoint callback");
 
         // Set the callback
         locationPointCallback = callback;
@@ -103,7 +87,12 @@ public class LocationService extends RoboService {
         // If we already received location data, forward it straight away
         // to the callback.
         if (lastLocation != null && locationPointCallback != null) {
+            Logger.d(TAG, "Calling back the callback with previously " +
+                    "collected location");
             locationPointCallback.onLocationReceived(lastLocation);
+        } else {
+            Logger.v(TAG, "No previous location to call back the callback " +
+                    "for");
         }
     }
 
@@ -116,11 +105,7 @@ public class LocationService extends RoboService {
      * @param callback Callback to set
      */
     public void setQuestionLocationCallback(LocationCallback callback) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] setQuestionLocationCallback");
-        }
+        Logger.d(TAG, "Setting Question location callback");
 
         // Set the callback
         questionLocationCallback = callback;
@@ -128,60 +113,45 @@ public class LocationService extends RoboService {
         // If we already received location data, forward it straight away
         // to the callback.
         if (lastLocation != null && questionLocationCallback != null) {
+            Logger.d(TAG, "Calling back the callback with previously " +
+                    "collected location");
             questionLocationCallback.onLocationReceived(lastLocation);
+        } else {
+            Logger.v(TAG, "No previous location to call back the callback " +
+                    "for");
         }
     }
 
     @Override
     public void onCreate() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onCreate");
-        }
+        Logger.d(TAG, "LocationService created");
 
         super.onCreate();
-
         // Start listening for location updates
         startLocationListener();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onStartCommand");
-        }
-
-        super.onStartCommand(intent, flags, startId);
+        Logger.d(TAG, "LocationService started");
 
         // Nothing to do here, the logic is in onCreate
-
+        super.onStartCommand(intent, flags, startId);
         return START_REDELIVER_INTENT;
     }
 
     @Override
     public void onDestroy() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onDestroy");
-        }
+        Logger.d(TAG, "Destroying LocationService");
 
         // Stop listening for location updates
         stopLocationListenerIfExists();
-
         super.onDestroy();
     }
 
     @Override
     public IBinder onBind(Intent intent) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onBind");
-        }
+        Logger.d(TAG, "Binding to LocationService)");
 
         // Allow binding. Will be used by the LocationServiceConnection.
         return mBinder;
@@ -189,11 +159,7 @@ public class LocationService extends RoboService {
 
     @Override
     public void onRebind(Intent intent) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onRebind");
-        }
+        Logger.d(TAG, "Rebinding to LocationService");
 
         super.onRebind(intent);
         // This function is for logging purposes. This way we can see
@@ -202,11 +168,7 @@ public class LocationService extends RoboService {
 
     @Override
     public boolean onUnbind(Intent intent) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onUnbind");
-        }
+        Logger.d(TAG, "Unbinding from LocationService");
 
         super.onUnbind(intent);
 
@@ -214,7 +176,12 @@ public class LocationService extends RoboService {
         // QuestionActivity, stop ourselves.
         if (locationPointCallback == null &&
                 questionLocationCallback == null) {
+            Logger.i(TAG, "No LocationPoint callback nor Question location " +
+                    "callbacks set -> stopping self");
             stopSelf();
+        } else {
+            Logger.v(TAG, "A LocationPoint callback or a Question callback " +
+                    "is set -> continuing service");
         }
 
         // Make sure onUnbind is called again if some clients rebind and
@@ -227,11 +194,7 @@ public class LocationService extends RoboService {
      * {@code LocationListener} on the {@code LocationManager}.
      */
     private void startLocationListener() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] updateLocationListener");
-        }
+        Logger.d(TAG, "Starting location listening");
 
         // If we're already listening, stop it and start from scratch to
         // make sure we have the right callbacks. (Is this really useful?)
@@ -243,23 +206,28 @@ public class LocationService extends RoboService {
 
             @Override
             public void onLocationChanged(Location location) {
-
-                // Debug
-                if (Config.LOGD) {
-                    Log.d(TAG, "[fn] (locationListener) onLocationChanged");
-                }
+                Logger.d(TAG, "New location received");
 
                 // Remember location
                 lastLocation = location;
 
                 // Send the location data to the LocationPointService
                 if (locationPointCallback != null) {
+                    Logger.d(TAG, "Calling back LocationPoint callback with" +
+                            " new location");
                     locationPointCallback.onLocationReceived(location);
+                } else {
+                    Logger.v(TAG, "No LocationPoint callback to call back");
                 }
 
                 // Send the location data to the QuestionActivity
                 if (questionLocationCallback != null) {
+                    Logger.d(TAG, "Calling back Question location callback " +
+                            "with new location");
                     questionLocationCallback.onLocationReceived(location);
+                } else {
+                    Logger.v(TAG, "No Question location callback to call " +
+                            "back");
                 }
             }
 
@@ -284,16 +252,12 @@ public class LocationService extends RoboService {
      * Stop listening to location updates, if we were listening.
      */
     private void stopLocationListenerIfExists() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] removeLocationListenerIfExists");
-        }
-
         if (locationListener != null) {
-            Log.i(TAG, "removing existing location updates");
+            Logger.d(TAG, "Removing existing location listener");
             locationManager.removeUpdates(locationListener);
             locationListener = null;
+        } else {
+            Logger.v(TAG, "No location listener to remove");
         }
     }
 

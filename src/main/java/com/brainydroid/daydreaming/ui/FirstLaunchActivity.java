@@ -3,9 +3,9 @@ package com.brainydroid.daydreaming.ui;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.LocationPointService;
+import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.background.SchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
 import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockFragmentActivity;
@@ -19,80 +19,46 @@ public abstract class FirstLaunchActivity extends RoboSherlockFragmentActivity {
 
     @Override
     public void onStart() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onStart");
-        }
-
+        Logger.v(TAG, "Starting");
         checkFirstLaunch();
         super.onStart();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onCreate");
-        }
-
+        Logger.v(TAG, "Creating");
         super.onCreate(savedInstanceState);
     }
 
     @Override
     public void onResume() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onResume");
-        }
-
+        Logger.v(TAG, "Resuming");
         super.onResume();
     }
 
     @Override
     public void onStop() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onStop");
-        }
-
+        Logger.v(TAG, "Stopping");
         super.onStop();
     }
 
     @Override
     public void onBackPressed() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onBackPressed");
-        }
-
+        Logger.v(TAG, "Back pressed, setting slide transition");
         super.onBackPressed();
         overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
     }
 
     protected void checkFirstLaunch() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] checkFirstLaunch");
-        }
-
         if (statusManager.isFirstLaunchCompleted()) {
+            Logger.i(TAG, "First launch completed -> finishing");
             finish();
+        } else {
+            Logger.v(TAG, "First launch not completed");
         }
     }
 
     protected void launchNextActivity(Class activity) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] launchNextActivity");
-        }
-
         Intent intent = new Intent(this, activity);
         intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         startActivity(intent);
@@ -100,11 +66,7 @@ public abstract class FirstLaunchActivity extends RoboSherlockFragmentActivity {
     }
 
     protected void finishFirstLaunch() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] finishFirstLaunch");
-        }
+        Logger.i(TAG, "Setting first launch to finished");
 
         statusManager.setFirstLaunchCompleted();
 
@@ -124,6 +86,7 @@ public abstract class FirstLaunchActivity extends RoboSherlockFragmentActivity {
         // FIXME: fix all emulator-specific hacks
         Intent locationPointServiceIntent = new Intent(this, LocationPointService.class);
         if (!(Build.FINGERPRINT.startsWith("generic"))) {
+            Logger.d(TAG, "Starting LocationPointService");
             startService(locationPointServiceIntent);
         }
     }

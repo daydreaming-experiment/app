@@ -1,8 +1,7 @@
 package com.brainydroid.daydreaming.db;
 
 import android.location.Location;
-import android.util.Log;
-import com.brainydroid.daydreaming.ui.Config;
+import com.brainydroid.daydreaming.background.Logger;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.inject.Singleton;
@@ -54,11 +53,7 @@ public class Json {
                 QuestionInstanceCreator questionInstanceCreator,
                 LocationDeserializer locationDeserializer,
                 LocationSerializer locationSerializer) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] Json");
-        }
+        Logger.v(TAG, "Building Gson instances");
 
         // Register all our type adapters
         gsonBuilder.registerTypeAdapter(IAnswer.class, answerDeserializer);
@@ -84,12 +79,7 @@ public class Json {
      * @return JSON representation of {@code src}
      */
     public String toJson(Object src) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] toJson");
-        }
-
+        Logger.v(TAG, "Serializing to JSON");
         return gson.toJson(src);
     }
 
@@ -102,12 +92,7 @@ public class Json {
      *         members
      */
     public String toJsonExposed(Object src) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] toJsonExposed");
-        }
-
+        Logger.v(TAG, "Serializing to JSON with only exposed members");
         return gsonExposed.toJson(src);
     }
 
@@ -121,12 +106,7 @@ public class Json {
      * @return New instance of
      */
     public <T> T fromJson(String json, Class<T> classOfT) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] fromJson");
-        }
-
+        Logger.v(TAG, "Deserializing from JSON");
         return gson.fromJson(json, classOfT);
     }
 

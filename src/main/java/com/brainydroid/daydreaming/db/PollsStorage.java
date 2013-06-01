@@ -2,8 +2,7 @@ package com.brainydroid.daydreaming.db;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.util.Log;
-import com.brainydroid.daydreaming.ui.Config;
+import com.brainydroid.daydreaming.background.Logger;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -40,34 +39,18 @@ public final class PollsStorage extends StatusModelStorage<Poll,
 
     @Override
     protected String[] getTableCreationStrings() {
-
-        //Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] getTableCreationStrings");
-        }
-
         return new String[] {SQL_CREATE_TABLE_POLLS,
                 SQL_CREATE_TABLE_POLL_QUESTIONS};
     }
 
     @Inject
     public PollsStorage(Storage storage) {
-
         super(storage);
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] PollsStorage");
-        }
     }
 
     @Override
     protected ContentValues getModelValues(Poll poll) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] getModelValues");
-        }
+        Logger.v(TAG, "Building poll values");
 
         ContentValues pollValues = super.getModelValues(poll);
         pollValues.put(Poll.COL_NOTIFICATION_TIMESTAMP,
@@ -77,32 +60,18 @@ public final class PollsStorage extends StatusModelStorage<Poll,
 
     @Override
     protected String getMainTable() {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] getMainTable");
-        }
-
         return TABLE_POLLS;
     }
 
     @Override
     protected Poll create() {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] create");
-        }
-
+        Logger.v(TAG, "Creating new poll");
         return pollFactory.create();
     }
 
     private ContentValues getQuestionValues(int pollId, Question question) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] getQuestionValues");
-        }
+        Logger.d(TAG, "Building question values for question {0}",
+                question.getName());
 
         ContentValues qValues = new ContentValues();
         qValues.put(Poll.COL_ID, pollId);
@@ -116,11 +85,7 @@ public final class PollsStorage extends StatusModelStorage<Poll,
 
     @Override
     public void store(Poll poll) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] store");
-        }
+        Logger.d(TAG, "Storing poll (and questions) to db");
 
         super.store(poll);
         int pollId = poll.getId();
@@ -133,11 +98,7 @@ public final class PollsStorage extends StatusModelStorage<Poll,
 
     @Override
     public void update(Poll poll) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] update");
-        }
+        Logger.d(TAG, "Updating poll (and questions) in db");
 
         super.update(poll);
         int pollId = poll.getId();
@@ -152,11 +113,7 @@ public final class PollsStorage extends StatusModelStorage<Poll,
 
     @Override
     public void populateModel(int pollId, Poll poll, Cursor res) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] populateModel");
-        }
+        Logger.d(TAG, "Populating poll model from db");
 
         super.populateModel(pollId, poll, res);
         poll.setNotificationTimestamp(res.getLong(
@@ -188,34 +145,19 @@ public final class PollsStorage extends StatusModelStorage<Poll,
     }
 
     public ArrayList<Poll> getUploadablePolls() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] getUploadablePolls");
-        }
-
+        Logger.v(TAG, "Getting uploadable polls");
         return getModelsWithStatuses(
                 new String[] {Poll.STATUS_COMPLETED, Poll.STATUS_PARTIALLY_COMPLETED});
     }
 
     public ArrayList<Poll> getPendingPolls() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] getPendingPolls");
-        }
-
+        Logger.d(TAG, "Getting pending polls");
         return getModelsWithStatuses(new String[] {Poll.STATUS_PENDING});
     }
 
     @Override
     public void remove(int pollId) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] remove");
-        }
-
+        Logger.d(TAG, "Removing poll {0} from db (and questions)", pollId);
         getDb().delete(TABLE_POLL_QUESTIONS, Poll.COL_ID + "=?",
                 new String[]{Integer.toString(pollId)});
     }

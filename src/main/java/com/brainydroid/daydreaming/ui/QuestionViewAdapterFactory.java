@@ -2,6 +2,7 @@ package com.brainydroid.daydreaming.ui;
 
 import android.util.Log;
 import android.widget.LinearLayout;
+import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.Question;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -19,15 +20,11 @@ public class QuestionViewAdapterFactory {
 
     public IQuestionViewAdapter create(Question question,
                                        LinearLayout layout) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] create");
-        }
-
         String PACKAGE_PREFIX = getClass().getPackage().getName() + ".";
         String className = PACKAGE_PREFIX + question.getDetails().getType() +
                 QUESTION_VIEW_ADAPTER_SUFFIX;
+        Logger.v(TAG, "Creating new QuestionViewAdapter: {0}", className);
+
         try {
             Class klass = Class.forName(className);
             IQuestionViewAdapter questionViewAdapter =

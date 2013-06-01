@@ -2,13 +2,13 @@ package com.brainydroid.daydreaming.ui;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 import com.brainydroid.daydreaming.R;
+import com.brainydroid.daydreaming.background.Logger;
 import com.google.inject.Inject;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
@@ -28,11 +28,7 @@ public class FirstLaunchProfileActivity extends FirstLaunchActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onCreate");
-        }
+        Logger.v(TAG, "Creating");
 
         super.onCreate(savedInstanceState);
 
@@ -48,39 +44,36 @@ public class FirstLaunchProfileActivity extends FirstLaunchActivity {
     }
 
     public void onClick_buttonNext(@SuppressWarnings("UnusedParameters") View view) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onClick_buttonNext");
-        }
+        Logger.v(TAG, "Next button clicked");
 
         if (!checkForm()) {
+            Logger.d(TAG, "Form check failed");
             Toast.makeText(this, getString(R.string.firstLaunchProfile_fix_age),
                     Toast.LENGTH_SHORT).show();
         } else {
+            Logger.i(TAG, "Saving profile information to shared " +
+                    "preferences");
 
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putInt(PROFILE_AGE, Integer.parseInt(ageEditText.getText().toString()));
             editor.putString(PROFILE_GENDER, genderSpinner.toString());
             editor.commit();
 
-            Toast.makeText(this, genderSpinner.getSelectedItem().toString() +
-                    ", " + ageEditText.getText().toString(), Toast.LENGTH_LONG).show();
+            Logger.td(this, "{0}, {1}",
+                    genderSpinner.getSelectedItem().toString(),
+                    ageEditText.getText().toString());
+            Logger.d(TAG, "Launching next activity");
             launchNextActivity(FirstLaunchPullActivity.class);
         }
     }
 
     private boolean checkForm() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] checkForm");
-        }
-
         try {
             int age = Integer.parseInt(ageEditText.getText().toString());
             return (5 <= age && age <= 100);
         } catch (NumberFormatException e) {
+            Logger.d(TAG, "Form does not contain a number -> returning " +
+                    "failure");
             return false;
         }
     }

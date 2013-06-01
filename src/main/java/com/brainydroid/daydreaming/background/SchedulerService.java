@@ -6,11 +6,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.os.SystemClock;
-import android.util.Log;
-import android.widget.Toast;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.db.Util;
-import com.brainydroid.daydreaming.ui.Config;
 import com.google.inject.Inject;
 import roboguice.service.RoboService;
 
@@ -61,24 +58,8 @@ public class SchedulerService extends RoboService {
     @Inject AlarmManager alarmManager;
 
     @Override
-    public void onCreate() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onCreate");
-        }
-
-        super.onCreate();
-        // Do nothing. Logging purposes.
-    }
-
-    @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onStartCommand");
-        }
+        Logger.d(TAG, "SchedulerService started");
 
         super.onStartCommand(intent, flags, startId);
 
@@ -96,25 +77,7 @@ public class SchedulerService extends RoboService {
     }
 
     @Override
-    public void onDestroy() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onDestroy");
-        }
-
-        super.onDestroy();
-        // Do nothing. Logging purposes.
-    }
-
-    @Override
     public IBinder onBind(Intent intent) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onBind");
-        }
-
         // Don't allow binding
         return null;
     }
@@ -127,11 +90,7 @@ public class SchedulerService extends RoboService {
      *                  notification
      */
     private void schedulePoll(boolean debugging) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] schedulePoll");
-        }
+        Logger.d(TAG, "Scheduling new poll");
 
         // Generate the time at which the poll will appear
         long scheduledTime = generateTime(debugging);
@@ -145,11 +104,7 @@ public class SchedulerService extends RoboService {
     }
 
     private void fixNowAndGetAllowedWindow() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] fixNowAndGetAllowedWindow");
-        }
+        Logger.d(TAG, "Fixing now and obtaining allowed time window");
 
         now = Calendar.getInstance();
         nowUpTime = SystemClock.elapsedRealtime();
@@ -167,13 +122,10 @@ public class SchedulerService extends RoboService {
         int endAllowedHour = Util.getHour(endAllowedString);
         int endAllowedMinute = Util.getMinute(endAllowedString);
 
-        // Debug
-        if (Config.LOGD){
-            Log.d(TAG, "allowed start: " + startAllowedHour + ":" +
-                    startAllowedMinute);
-            Log.d(TAG, "allowed end: " + endAllowedHour + ":" +
-                    endAllowedMinute);
-        }
+        Logger.d(TAG, "Allowed start: {0}:{1}",
+                startAllowedHour, startAllowedMinute);
+        Logger.d(TAG, "Allowed end: {0}:{1}",
+                endAllowedHour, endAllowedMinute);
 
         // Convert those to a usable format
         Calendar start = (Calendar)now.clone();
@@ -208,7 +160,7 @@ public class SchedulerService extends RoboService {
      * moment as the end of that forbidden time window,
      * and do the scheduling on that time line ; the result of this method
      * is the same (see {@code makeRespectfulDelay()} and {@code
-     * makeRespectfulShift()} for details).
+     * makeRespectfulExpansion()} for details).
      *
      * @param debugging Set to {@code true} to get a fixed short delay for
      *                  the notification instead of a random delay
@@ -216,11 +168,7 @@ public class SchedulerService extends RoboService {
      *         in milliseconds from epoch
      */
     private long generateTime(boolean debugging) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] generateTime");
-        }
+        Logger.d(TAG, "Generating a time for schedule");
 
         // Fix what 'now' means, and retrieve the allowed time window
         fixNowAndGetAllowedWindow();
@@ -229,10 +177,12 @@ public class SchedulerService extends RoboService {
         long respectfulDelay;
         if (debugging) {
             // If we're debugging, keep it real simple.
+            Logger.d(TAG, "Using debug delay");
             respectfulDelay = DEBUG_DELAY;
         } else {
             // Sample a delay and prolong it as necessary to respect the
             // user's settings.
+            Logger.d(TAG, "Using random time-window-respectful delay");
             respectfulDelay = makeRespectfulDelay(sampleDelay());
         }
 
@@ -252,17 +202,10 @@ public class SchedulerService extends RoboService {
         long seconds = milliseconds / 1000;
 
         String scheduledString = sdf.format(scheduledCalendar.getTime());
-
-        // Info
-        Log.i(TAG, "poll scheduled in " + hours + " hours, " +
-                minutes + " minutes, and " + seconds + " seconds (i.e. " +
-                scheduledString + ")");
-
-        // Toast info
-        if (Config.TOASTI) {
-            Toast.makeText(this, "New poll scheduled at " + scheduledString,
-                    Toast.LENGTH_LONG).show();
-        }
+        Logger.i(TAG, "Poll scheduled in {0} hours, {1} minutes, " +
+                "and {2} seconds (i.e. {3})",
+                hours, minutes, seconds, scheduledString);
+        Logger.td(this, "New poll scheduled at {0}", scheduledString);
 
         // The scheduled time is returned in milliseconds
         return nowUpTime + respectfulDelay;
@@ -275,12 +218,7 @@ public class SchedulerService extends RoboService {
      * @return Sampled delay in milliseconds
      */
     private long sampleDelay() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] sampleDelay");
-        }
-
+        Logger.d(TAG, "Sampling delay");
         return (long)(- Math.log(random.nextDouble()) * MEAN_DELAY);
     }
 
@@ -297,57 +235,48 @@ public class SchedulerService extends RoboService {
      * <p/>
      * To do this, we look at each forbidden time window as if it were a
      * unique instant (we "compactify" them). This logic is implemented in
-     * a recursive call to {@code makeRespectfulShift()}.
+     * a recursive call to {@code makeRespectfulExpansion()}.
      *
      * @param delay Initial delay to make respectful of user's settings
      * @return Resulting respectful delay
      */
     private long makeRespectfulDelay(long delay) {
+        Logger.d(TAG, "Expanding delay to respect user's time window");
 
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] makeRespectfulDelay");
-        }
+        long expansion = makeRespectfulExpansion(now, delay);
 
-        long shift = makeRespectfulShift(now, delay);
+        long milliseconds = expansion;
+        long hours = milliseconds / (60 * 60 * 1000);
+        milliseconds %= 60 * 60 * 1000;
+        long minutes = milliseconds / (60 * 1000);
+        milliseconds %= 60 * 1000;
+        long seconds = milliseconds / 1000;
+        Logger.d(TAG, "Delay expansion: {0}:{1}:{2}",
+                hours, minutes, seconds);
 
-        // Debug
-        if (Config.LOGD) {
-            long milliseconds = shift;
-            long hours = milliseconds / (60 * 60 * 1000);
-            milliseconds %= 60 * 60 * 1000;
-            long minutes = milliseconds / (60 * 1000);
-            milliseconds %= 60 * 1000;
-            long seconds = milliseconds / 1000;
-            Log.d(TAG, "shift: " + hours + ":" + minutes + ":" + seconds);
-        }
-
-        return delay + shift;
+        return delay + expansion;
     }
 
     /**
-     * Compute a shift value that, added to {@code delay},
+     * Compute a expansion value that, added to {@code delay},
      * will respect the user's settings if now is {@code hypothesizedNow}.
      * <p/>
-     * The shift is computed by successively removing from {@code delay}
+     * The expansion is computed by successively removing from {@code delay}
      * all the allowed waiting time that consumes it,
      * at the same time considering forbidden time windows to be
      * compactified, and thus until {@code delay} is short enough and
      * {@code hypothesizedNow} has advanced enough to make {@code
      * hypothesizedNow + delay} fall in an allowed time window without
-     * further shift. You should really read the source to understand the
+     * further expansion. You should really read the source to understand the
      * above sentence.
      *
      * @param hypothesizedNow Time we should consider to be 'now'
      * @param delay Suggested waiting delay in milliseconds
      * @return Prolonged waiting delay respecting the user's preferences
      */
-    private long makeRespectfulShift(Calendar hypothesizedNow, long delay) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] makeRespectfulShift");
-        }
+    private long makeRespectfulExpansion(Calendar hypothesizedNow,
+                                         long delay) {
+        Logger.d(TAG, "Recursively building expansion value");
 
         // Convert our start allowed time, end allowed time,
         // next start allowed time, and suggested time, to usable objects.
@@ -367,16 +296,13 @@ public class SchedulerService extends RoboService {
         Calendar suggested = (Calendar)hypothesizedNow.clone();
         suggested.add(Calendar.MILLISECOND, (int)delay);
 
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "hypothesized now is: " +
-                    sdf.format(hypothesizedNow.getTime()));
-            Log.d(TAG, "suggested is: " + sdf.format(suggested.getTime()));
-            Log.d(TAG, "allowed start is: " + sdf.format(start.getTime()));
-            Log.d(TAG, "allowed end is: " + sdf.format(end.getTime()));
-            Log.d(TAG, "next allowed start is: " +
-                    sdf.format(nextStart.getTime()));
-        }
+        Logger.d(TAG, "Hypothesized now is: {0}",
+                sdf.format(hypothesizedNow.getTime()));
+        Logger.d(TAG, "Suggested is: {0}", sdf.format(suggested.getTime()));
+        Logger.d(TAG, "Allowed start is: {0}", sdf.format(start.getTime()));
+        Logger.d(TAG, "Allowed end is: {0}", sdf.format(end.getTime()));
+        Logger.d(TAG, "Next allowed start is: {0}",
+                sdf.format(nextStart.getTime()));
 
         if (hypothesizedNow.before(start)) {
             // hypothesizedNow is before the allowed time window. So we
@@ -384,18 +310,14 @@ public class SchedulerService extends RoboService {
             // independently of where the suggested time fell (this is
             // compactification of the forbidden time window).
 
-            // Debug
-            if (Config.LOGD) {
-                Log.d(TAG, "hypothesizedNow < start");
-            }
-
+            Logger.d(TAG, "hypothesizedNow < start");
             long delayToStart = start.getTimeInMillis() -
                     hypothesizedNow.getTimeInMillis();
 
             // Since Calendar.before() is strict (i.e. start.before(start)
             // returns false), we know we're not falling back into this
             // same case in the recursive call.
-            return delayToStart + makeRespectfulShift(start, delay);
+            return delayToStart + makeRespectfulExpansion(start, delay);
         } else if (hypothesizedNow.before(end)) {
             // hypothesizedNow is in the allowed time window. This includes
             // hypothesizedNow == start.
@@ -409,11 +331,7 @@ public class SchedulerService extends RoboService {
                 // value at each recursive call (because the allowedSpan is
                 // at least X hours).
 
-                // Debug
-                if (Config.LOGD) {
-                    Log.d(TAG, "start < hypothesizedNow, suggested < end");
-                }
-
+                Logger.d(TAG, "start < hypothesizedNow, suggested < end");
                 return 0;
             } else {
                 // Suggested schedule falls outside the allowed time window.
@@ -422,16 +340,12 @@ public class SchedulerService extends RoboService {
                 // starting from the nextStart time (again, this is
                 // compactification of the forbidden time window).
 
-                // Debug
-                if (Config.LOGD) {
-                    Log.d(TAG, "start < hypothesizedNow < end < suggested");
-                }
-
+                Logger.d(TAG, "start < hypothesizedNow < end < suggested");
                 long delayToEnd = end.getTimeInMillis() -
                         hypothesizedNow.getTimeInMillis();
                 long newDelay = delay - delayToEnd;
                 return delayToEnd + forbiddenSpan +
-                        makeRespectfulShift(nextStart, newDelay);
+                        makeRespectfulExpansion(nextStart, newDelay);
             }
         } else {
             // hypothesizedNow is after the end of the allowed time window.
@@ -439,11 +353,7 @@ public class SchedulerService extends RoboService {
             // time, independently of where the suggested time fell (this
             // is compactification of the forbidden time window).
 
-            // Debug
-            if (Config.LOGD) {
-                Log.d(TAG, "end < hypothesizedNow");
-            }
-
+            Logger.d(TAG, "end < hypothesizedNow");
             long delayToNextStart = nextStart.getTimeInMillis() -
                     hypothesizedNow.getTimeInMillis();
 
@@ -451,7 +361,7 @@ public class SchedulerService extends RoboService {
             // nextStart.before(nextStart) returns false),
             // we know we're not falling back into the top case in the
             // recursive call.
-            return delayToNextStart + makeRespectfulShift(nextStart, delay);
+            return delayToNextStart + makeRespectfulExpansion(nextStart, delay);
         }
     }
 
@@ -459,13 +369,7 @@ public class SchedulerService extends RoboService {
      * Start {@link SyncService} to synchronize answers.
      */
     private void startSyncService() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] startSyncService");
-        }
-
-        // Self-evident
+        Logger.d(TAG, "Starting SyncService");
         Intent syncIntent = new Intent(this, SyncService.class);
         startService(syncIntent);
     }
