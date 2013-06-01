@@ -1,7 +1,6 @@
 package com.brainydroid.daydreaming.db;
 
-import android.util.Log;
-import com.brainydroid.daydreaming.ui.Config;
+import com.brainydroid.daydreaming.background.Logger;
 import com.google.gson.annotations.Expose;
 import com.google.inject.Inject;
 
@@ -25,12 +24,7 @@ public final class Poll extends StatusModel<Poll,PollsStorage> {
     @Inject transient QuestionsStorage questionsStorage;
 
     public void populateQuestions(int nQuestions) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] populateQuestions");
-        }
-
+        Logger.d(TAG, "Populating poll with {0} questions", nQuestions);
         questions = questionsStorage.getRandomQuestions(nQuestions);
         for (Question question : questions) {
             question.setPoll(this);
@@ -38,86 +32,40 @@ public final class Poll extends StatusModel<Poll,PollsStorage> {
     }
 
     public void addQuestion(Question question) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] addQuestion");
-        }
-
+        Logger.d(TAG, "Adding question {0} to poll", question.getName());
         question.setPoll(this);
         questions.add(question);
     }
 
     public ArrayList<Question> getQuestions() {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] getQuestions");
-        }
-
         return questions;
     }
 
     public Question getQuestionByIndex(int index) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] getQuestionByIndex");
-        }
-
         return questions.get(index);
     }
 
     public int getLength() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] getLength");
-        }
-
         return questions.size();
     }
 
     public long getNotificationTimestamp() {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] getNotificationTimestamp");
-        }
-
         return notificationTimestamp;
     }
 
     public void setNotificationTimestamp(long notificationTimestamp) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] setNotificationTimestamp");
-        }
-
+        Logger.v(TAG, "Setting notification timestamp");
         this.notificationTimestamp = notificationTimestamp;
         saveIfSync();
     }
 
     @Override
     protected Poll self() {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] self");
-        }
-
         return this;
     }
 
     @Override
     protected PollsStorage getStorage() {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] getStorage");
-        }
-
         return pollsStorage;
     }
 

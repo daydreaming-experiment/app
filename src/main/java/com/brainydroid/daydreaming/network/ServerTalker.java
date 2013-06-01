@@ -1,7 +1,6 @@
 package com.brainydroid.daydreaming.network;
 
-import android.util.Log;
-import com.brainydroid.daydreaming.ui.Config;
+import com.brainydroid.daydreaming.background.Logger;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -20,12 +19,9 @@ public class ServerTalker {
     }
 
     public void register(PublicKey publicKey, HttpConversationCallback callback) {
+        Logger.i(TAG, "Registering at the server");
 
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] register");
-        }
-
+        Logger.d(TAG, "Getting key to register");
         String jsonKey = cryptoStorage.createArmoredPublicKeyJson(publicKey);
         String postUrl = ServerConfig.SERVER_NAME + ServerConfig.YE_URL_DEVICES;
 
@@ -34,17 +30,15 @@ public class ServerTalker {
         postData.setContentType("application/json");
 
         HttpPostTask postTask = new HttpPostTask();
+        Logger.d(TAG, "Executing POST task for registration");
         postTask.execute(postData);
     }
 
     public void signAndUploadData(String expId, String data,
             HttpConversationCallback callback) {
+        Logger.i(TAG, "Signing and uploading data to server");
 
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] signAndUploadData");
-        }
-
+        Logger.d(TAG, "Signing data");
         String signedData = cryptoStorage.signJws(data);
 
         HttpPostData postData = new HttpPostData(getPostResultUrl(expId), callback);
@@ -52,6 +46,7 @@ public class ServerTalker {
         postData.setContentType("application/jws");
 
         HttpPostTask postTask = new HttpPostTask();
+        Logger.d(TAG, "Executing POST task for data upload");
         postTask.execute(postData);
     }
 

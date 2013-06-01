@@ -1,8 +1,7 @@
 package com.brainydroid.daydreaming.db;
 
 import android.location.Location;
-import android.util.Log;
-import com.brainydroid.daydreaming.ui.Config;
+import com.brainydroid.daydreaming.background.Logger;
 import com.google.gson.annotations.Expose;
 import com.google.inject.Inject;
 
@@ -42,261 +41,138 @@ public class Question {
     private Poll poll = null;
 
     public String getName() {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] getName");
-        }
-
         return name;
     }
 
     public void setName(String name) {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] setName");
-        }
-
+        Logger.v(TAG, "Setting name");
         this.name = name;
         saveIfInSyncingPoll();
     }
 
     public String getCategory() {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] getCategory");
-        }
-
         return category;
     }
 
     public void setCategory(String category) {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] setCategory");
-        }
-
+        Logger.v(TAG, "Setting category");
         this.category = category;
         saveIfInSyncingPoll();
     }
 
     public String getSubCategory() {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] getSubCategory");
-        }
-
         return subCategory;
     }
 
     public void setSubCategory(String subCategory) {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] setSubCategory");
-        }
-
+        Logger.v(TAG, "Setting subCategory");
         this.subCategory = subCategory;
         saveIfInSyncingPoll();
     }
 
     public String getDetailsAsJson() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] getDetailsAsJson");
-        }
-
         if (details != null) {
+            Logger.v(TAG, "Getting details as JSON");
             return json.toJson(details);
         } else {
+            Logger.w(TAG, "No details to return -> returning null");
             return null;
         }
     }
 
     public void setDetailsFromJson(String jsonDetails) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] setDetailsFromJson");
-        }
-
+        Logger.v(TAG, "Setting details from JSON");
         details = json.fromJson(jsonDetails, IQuestionDetails.class);
         saveIfInSyncingPoll();
     }
 
     public IQuestionDetails getDetails() {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] getDetails");
-        }
-
         return details;
     }
 
     public void setDetails(IQuestionDetails details) {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] setDetails");
-        }
-
+        Logger.v(TAG, "Setting details");
         this.details = details;
         saveIfInSyncingPoll();
     }
 
     public String getStatus() {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] getStatus");
-        }
-
         return status;
     }
 
     public void setStatus(String status) {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] setStatus");
-        }
-
+        Logger.v(TAG, "Setting status");
         this.status = status;
         saveIfInSyncingPoll();
     }
 
     public String getAnswerAsJson() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] getAnswerAsJson");
-        }
-
         if (answer != null) {
+            Logger.v(TAG, "Getting answer as JSON");
             return json.toJson(answer);
         } else {
+            Logger.w(TAG, "No answer to return -> returning null");
             return null;
         }
     }
 
     public void setAnswerFromJson(String jsonAnswer) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] setAnswerFromJson");
-        }
-
+        Logger.v(TAG, "Setting answer from JSON");
         answer = json.fromJson(jsonAnswer, IAnswer.class);
         saveIfInSyncingPoll();
     }
 
     public IAnswer getAnswer() {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] getAnswer");
-        }
-
         return answer;
     }
 
     public void setAnswer(IAnswer answer) {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] setAnswer");
-        }
-
+        Logger.v(TAG, "Setting answer");
         this.answer = answer;
         saveIfInSyncingPoll();
     }
 
     public String getLocationAsJson() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] getLocationAsJson");
+        if (location != null) {
+            Logger.v(TAG, "Getting location as JSON");
+            return json.toJson(location);
+        } else {
+            Logger.w(TAG, "No location to return -> returning null");
+            return null;
         }
-
-        return json.toJson(location);
     }
 
     public void setLocationFromJson(String jsonLocation) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] setLocation");
-        }
-
+        Logger.v(TAG, "Setting location from JSON");
         this.location = json.fromJson(jsonLocation, Location.class);
         saveIfInSyncingPoll();
     }
 
     public Location getLocation() {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] getLocation");
-        }
-
         return location;
     }
 
     public void setLocation(Location location) {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] setLocation");
-        }
-
+        Logger.v(TAG, "Setting location");
         this.location = location;
         saveIfInSyncingPoll();
     }
 
     public long getTimestamp() {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] getTimestamp");
-        }
-
         return timestamp;
     }
 
     public void setTimestamp(long timestamp) {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] setTimestamp");
-        }
-
+        Logger.v(TAG, "Setting timestamp");
         this.timestamp = timestamp;
         saveIfInSyncingPoll();
     }
 
     public Poll getPoll() {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] getPoll");
-        }
-
         return poll;
     }
 
     public void setPoll(Poll poll) {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] setPoll");
-        }
-
         // This method is only called from Poll.addQuestion(...), and calling
         // saveIfInSyncingPoll() would trigger an unnecessary save. So we
         // don't call it, contrary to other setters above.
@@ -304,14 +180,12 @@ public class Question {
     }
 
     private void saveIfInSyncingPoll() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] saveIfInSyncingPoll");
-        }
-
         if (poll != null) {
+            Logger.d(TAG, "Question has a poll, saving if that poll is " +
+                    "syncing");
             poll.saveIfSync();
+        } else {
+            Logger.v(TAG, "Question has no poll, not saving");
         }
     }
 

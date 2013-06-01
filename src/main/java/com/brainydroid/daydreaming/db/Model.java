@@ -1,7 +1,6 @@
 package com.brainydroid.daydreaming.db;
 
-import android.util.Log;
-import com.brainydroid.daydreaming.ui.Config;
+import com.brainydroid.daydreaming.background.Logger;
 
 // FIXME: adapt doc imported from LocationPoint
 public abstract class Model<M extends Model<M,S>,
@@ -35,12 +34,7 @@ public abstract class Model<M extends Model<M,S>,
      * @param id Id to set
      */
     public void setId(int id) {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] setId");
-        }
-
+        Logger.v(TAG, "Setting id to {0}", id);
         this.id = id;
     }
 
@@ -52,12 +46,6 @@ public abstract class Model<M extends Model<M,S>,
      * @return Id of the {@code LocationPoint}
      */
     public int getId() {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] getId");
-        }
-
         return id;
     }
 
@@ -67,14 +55,11 @@ public abstract class Model<M extends Model<M,S>,
      * record in the database.)
      */
     protected void saveIfSync() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] saveIfSync");
-        }
-
         if (id != -1) {
+            Logger.d(TAG, "Model has an id, syncing to db");
             save();
+        } else {
+            Logger.v(TAG, "Model has no id, not syncing to db");
         }
     }
 
@@ -87,15 +72,11 @@ public abstract class Model<M extends Model<M,S>,
      * {@code id}.
      */
     public void save() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] save");
-        }
-
         if (id != -1) {
+            Logger.d(TAG, "Updating model in db");
             getStorage().update(self());
         } else {
+            Logger.d(TAG, "Storing model in db");
             getStorage().store(self());
         }
     }

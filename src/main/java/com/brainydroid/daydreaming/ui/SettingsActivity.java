@@ -5,10 +5,10 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.PreferenceScreen;
-import android.util.Log;
 import android.widget.Toast;
 import com.actionbarsherlock.app.SherlockPreferenceActivity;
 import com.brainydroid.daydreaming.R;
+import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.background.SchedulerService;
 import com.brainydroid.daydreaming.db.Util;
 import roboguice.inject.InjectResource;
@@ -31,12 +31,7 @@ implements OnSharedPreferenceChangeListener {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onCreate");
-        }
-
+        Logger.v(TAG, "Creating");
         super.onCreate(savedInstanceState);
 
         initVars();
@@ -44,12 +39,7 @@ implements OnSharedPreferenceChangeListener {
 
     @Override
     protected void onResume() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onResume");
-        }
-
+        Logger.v(TAG, "Resuming");
         super.onResume();
 
         // Set up a listener for whenever a key changes
@@ -58,23 +48,14 @@ implements OnSharedPreferenceChangeListener {
 
     @Override
     protected void onStop() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onStop");
-        }
-
+        Logger.v(TAG, "Stopping");
         super.onStop();
         sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
     }
 
     @SuppressWarnings("deprecation")
     private void initVars() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] initVars");
-        }
+        Logger.d(TAG, "Initializing variables");
 
         // Load the XML preferences file
         addPreferencesFromResource(R.layout.preferences);
@@ -92,13 +73,12 @@ implements OnSharedPreferenceChangeListener {
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onSharedPreferenceChanged");
-        }
+        Logger.d(TAG, "Preferences changed");
 
         if (key.equals("time_window_ub_key") || key.equals("time_window_lb_key")) {
+            Logger.d(TAG, "Time window preferences changed -> correcting " +
+                    "it, updating summaries, and starting scheduler " +
+                    "service");
             correctTimeWindow();
             timePreferenceMax.setSummary(timePreferenceMax.getTimeString());
             timePreferenceMin.setSummary(timePreferenceMin.getTimeString());
@@ -107,27 +87,19 @@ implements OnSharedPreferenceChangeListener {
     }
 
     private void correctTimeWindow() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] correctTimeWindow");
-        }
-
         if (!checkTimeWindow()) {
+            Logger.d(TAG, "Time window set by user is not allowed, " +
+                    "correcting");
             timePreferenceMin.setTime(defaultTimePreferenceMin);
             timePreferenceMax.setTime(defaultTimePreferenceMax);
             Toast.makeText(this, timeCorrectedText1 + " " + MIN_WINDOW_HOURS +
                     " " + timeCorrectedText2, Toast.LENGTH_LONG).show();
+        } else {
+            Logger.w(TAG, "Time window set by user is OK");
         }
     }
 
     private boolean checkTimeWindow() {
-
-        // Debug
-        if (Config.LOGD){
-            Log.d(TAG, "[fn] checkTimeWindow");
-        }
-
         String timeFirst = timePreferenceMin.getTimeString();
         int firstHour = Util.getHour(timeFirst);
         int firstMinute = Util.getMinute(timeFirst);
@@ -147,12 +119,7 @@ implements OnSharedPreferenceChangeListener {
     }
 
     private void startSchedulerService() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] startSchedulerService");
-        }
-
+        Logger.d(TAG, "Starting SchedulerService");
         Intent schedulerIntent = new Intent(this, SchedulerService.class);
         startService(schedulerIntent);
     }

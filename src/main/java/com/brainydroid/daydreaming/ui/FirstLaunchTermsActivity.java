@@ -1,10 +1,10 @@
 package com.brainydroid.daydreaming.ui;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import com.brainydroid.daydreaming.R;
+import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.Util;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
@@ -21,24 +21,14 @@ public class FirstLaunchTermsActivity  extends FirstLaunchActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onCreate");
-        }
-
+        Logger.v(TAG, "Creating");
         super.onCreate(savedInstanceState);
 
         populateConsent();
     }
 
     public void onClick_buttonNext(@SuppressWarnings("UnusedParameters") View view) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onClick_buttonNext");
-        }
-
+        Logger.v(TAG, "Next button clicked, launching next activity");
         launchNextActivity(FirstLaunchProfileActivity.class);
     }
 
@@ -48,6 +38,7 @@ public class FirstLaunchTermsActivity  extends FirstLaunchActivity {
             consent.setText(Util.convertStreamToString(termsInputStream));
             termsInputStream.close();
         } catch (IOException e) {
+            Logger.e(TAG, "Error reading consent file");
             e.printStackTrace();
         }
     }

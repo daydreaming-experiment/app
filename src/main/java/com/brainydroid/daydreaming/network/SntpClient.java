@@ -17,8 +17,7 @@
 package com.brainydroid.daydreaming.network;
 
 import android.os.SystemClock;
-import android.util.Log;
-import com.brainydroid.daydreaming.ui.Config;
+import com.brainydroid.daydreaming.background.Logger;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -70,11 +69,7 @@ public class SntpClient {
      * @return true if the transaction was successful.
      */
     private boolean requestTime(String host, int timeout) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] requestTime");
-        }
+        Logger.i(TAG, "Requesting NTP time from network");
 
         try {
             DatagramSocket socket = new DatagramSocket();
@@ -117,11 +112,8 @@ public class SntpClient {
             //             = (2 * skew)/2 = skew
             long clockOffset = ((receiveTime - originateTime) + (transmitTime - responseTime))/2;
 
-            // Debug
-            if (Config.LOGD) {
-                Log.d(TAG, "round trip: " + roundTripTime + " ms");
-                Log.d(TAG, "clock offset: " + clockOffset + " ms");
-            }
+            Logger.d(TAG, "Round trip: {0} ms", roundTripTime);
+            Logger.d(TAG, "Clock offset: {0} ms", clockOffset);
 
             // save our results - use the times on this side of the network latency
             // (response rather than request time)
@@ -130,24 +122,15 @@ public class SntpClient {
             mRoundTripTime = roundTripTime;
 
         } catch (Exception e) {
-
-            if (Config.LOGD) {
-                Log.d(TAG, "request time failed: " + e);
-            }
-
+            Logger.w(TAG, "NTP request failed: {0} -> returning failure", e);
             return false;
         }
 
+        Logger.d(TAG, "NTP request successful");
         return true;
     }
 
     public void asyncRequestTime(SntpClientCallback callback) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] asyncRequestTime");
-        }
-
         final SntpClientCallback finalCallback = callback;
 
         Thread sntpWorker = new Thread(new Runnable() {
@@ -156,32 +139,26 @@ public class SntpClient {
 
             @Override
             public void run() {
-
-                // Debug
-                if (Config.LOGD) {
-                    Log.d(TAG, "[fn] run");
-                }
+                Logger.d(TAG, "Worker running the NTP request");
 
                 SntpClient sntpClient = SntpClient.this;
                 if (sntpClient.requestTime("0.pool.ntp.org", NETWORK_TIMEOUT)) {
+                    Logger.d(TAG, "NTP request successful, " +
+                            "calling callback");
                     finalCallback.onTimeReceived(sntpClient);
                 } else {
+                    Logger.w(TAG, "NTP request failed, calling callback");
                     finalCallback.onTimeReceived(null);
                 }
             }
 
         });
 
+        Logger.i(TAG, "Launching asynchronous NTP time request");
         sntpWorker.start();
     }
 
     public long getNow() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] getNow");
-        }
-
         return getNtpTime() + SystemClock.elapsedRealtime() - getNtpTimeReference();
     }
 
@@ -191,12 +168,6 @@ public class SntpClient {
      * @return time value computed from NTP server response.
      */
     public long getNtpTime() {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] getNtpTime");
-        }
-
         return mNtpTime;
     }
 
@@ -207,12 +178,6 @@ public class SntpClient {
      * @return reference clock corresponding to the NTP time.
      */
     public long getNtpTimeReference() {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] getNtpTimeReference");
-        }
-
         return mNtpTimeReference;
     }
 
@@ -223,25 +188,13 @@ public class SntpClient {
      */
     @SuppressWarnings("UnusedDeclaration")
     public long getRoundTripTime() {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] getRoundTripTime");
-        }
-
         return mRoundTripTime;
     }
 
     /**
      * Reads an unsigned 32 bit big endian number from the given offset in the buffer.
      */
-    private long read32(byte[] buffer, int offset) {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] read32");
-        }
-
+    private static long read32(byte[] buffer, int offset) {
         byte b0 = buffer[offset];
         byte b1 = buffer[offset+1];
         byte b2 = buffer[offset+2];
@@ -260,13 +213,7 @@ public class SntpClient {
      * Reads the NTP time stamp at the given offset in the buffer and returns
      * it as a system time (milliseconds since January 1, 1970).
      */
-    private long readTimeStamp(byte[] buffer, int offset) {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] readTimeStamp");
-        }
-
+    private static long readTimeStamp(byte[] buffer, int offset) {
         long seconds = read32(buffer, offset);
         long fraction = read32(buffer, offset + 4);
         return ((seconds - OFFSET_1900_TO_1970) * 1000) + ((fraction * 1000L) / 0x100000000L);
@@ -276,13 +223,8 @@ public class SntpClient {
      * Writes system time (milliseconds since January 1, 1970) as an NTP time stamp
      * at the given offset in the buffer.
      */
-    private void writeTimeStamp(byte[] buffer, int offset, long time) {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] writeTimeStamp");
-        }
-
+    private static void writeTimeStamp(byte[] buffer, int offset,
+                                       long time) {
         long seconds = time / 1000L;
         long milliseconds = time - seconds * 1000L;
         seconds += OFFSET_1900_TO_1970;

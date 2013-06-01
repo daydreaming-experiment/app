@@ -1,12 +1,12 @@
 package com.brainydroid.daydreaming.db;
 
-import android.util.Log;
-import com.brainydroid.daydreaming.ui.Config;
+import com.brainydroid.daydreaming.background.Logger;
 
 // FIXME: adapt doc imported from LocationPoint
 public abstract class StatusModel<M extends StatusModel<M,S>,
         S extends StatusModelStorage<M,S>> extends Model<M,S> {
 
+    @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "StatusModel";
 
     public static final String COL_STATUS = "status";
@@ -32,12 +32,7 @@ public abstract class StatusModel<M extends StatusModel<M,S>,
      *               LocationPoint.STATUS_COMPLETED}
      */
     public void setStatus(String status) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] setStatus");
-        }
-
+        Logger.v(TAG, "Setting status");
         this.status = status;
         saveIfSync();
     }
@@ -50,12 +45,6 @@ public abstract class StatusModel<M extends StatusModel<M,S>,
      * @return Current status of the {@code LocationPoint}
      */
     public String getStatus() {
-
-        // Verbose
-        if (Config.LOGV) {
-            Log.v(TAG, "[fn] getStatus");
-        }
-
         return status;
     }
 
