@@ -46,17 +46,6 @@ public class FirstLaunchWelcomeActivity extends FirstLaunchActivity {
         }.start();
     }
 
-/*    public void onClick_start(@SuppressWarnings("UnusedParameters") View view) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onClick_start");
-        }
-
-        launchNextActivity(FirstLaunchDescriptionActivity.class);
-    }
-   */
-
     @Override
     protected void launchNextActivity(Class activity) {
         Logger.v(TAG, "Launching next activity, custom transition");

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 import com.brainydroid.daydreaming.db.Util;
-import com.brainydroid.daydreaming.ui.Config;
 
 import java.text.MessageFormat;
 import java.util.HashMap;
@@ -20,6 +19,11 @@ public class Logger {
 
     @SuppressWarnings("FieldCanBeLocal")
     private static String INDENT = "   ";
+
+    public static boolean TOASTD = true;
+    public static boolean LOGI = true;
+    public static boolean LOGD = true;
+    public static boolean LOGV = true;
 
     // Map of (thread, depth of stack) for log formatting
     private static Map<String,Integer> threadMap =
@@ -70,7 +74,7 @@ public class Logger {
      */
     public static void i(String tag, String messagePattern,
                          Object... messageArgs) {
-        if (Config.LOGI) Log.i(tag, buildIndent() +
+        if (LOGI) Log.i(tag, buildIndent() +
                 MessageFormat.format(messagePattern, messageArgs));
     }
 
@@ -83,7 +87,7 @@ public class Logger {
      */
     public static void d(String tag, String messagePattern,
                          Object... messageArgs) {
-        if (Config.LOGD) Log.d(tag, buildIndent() +
+        if (LOGD) Log.d(tag, buildIndent() +
                 MessageFormat.format(messagePattern, messageArgs));
     }
 
@@ -96,7 +100,7 @@ public class Logger {
      */
     public static void v(String tag, String messagePattern,
                          Object... messageArgs) {
-        if (Config.LOGV) Log.v(tag, buildIndent() +
+        if (LOGV) Log.v(tag, buildIndent() +
                 MessageFormat.format(messagePattern, messageArgs));
     }
 
@@ -109,7 +113,7 @@ public class Logger {
      */
     public static void td(Context context, String messagePattern,
                           Object... messageArgs) {
-        if (Config.TOASTD) Toast.makeText(context,
+        if (TOASTD) Toast.makeText(context,
                 MessageFormat.format(messagePattern, messageArgs),
                 Toast.LENGTH_LONG).show();
     }

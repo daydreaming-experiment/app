@@ -3,12 +3,12 @@ package com.brainydroid.daydreaming.ui;
 import android.content.Context;
 import android.graphics.Color;
 import android.util.FloatMath;
-import android.util.Log;
 import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.brainydroid.daydreaming.R;
+import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.SliderAnswer;
 import com.brainydroid.daydreaming.db.SliderQuestionDetails;
 import com.brainydroid.daydreaming.db.SliderSubQuestion;
@@ -36,11 +36,7 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
 
     @Override
     protected ArrayList<View> inflateViews() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] inflateViews");
-        }
+        Logger.d(TAG, "Inflating question views");
 
         ArrayList<SliderSubQuestion> subQuestions =
                 ((SliderQuestionDetails)question.getDetails())
@@ -56,11 +52,7 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
     }
 
     private View inflateView(SliderSubQuestion subQuestion) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] inflateView");
-        }
+        Logger.v(TAG, "Inflating view for subQuestion");
 
         View view = layoutInflater.inflate(R.layout.question_slider, null);
         final ArrayList<String> hints = subQuestion.getHints();
@@ -83,7 +75,9 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress,
                                           boolean fromUser) {
-                int index = (int) FloatMath.floor((progress / 101f) * hintsNumber);
+                Logger.v(TAG, "SeekBar progress changed -> changing text " +
+                        "and background");
+                int index = (int)FloatMath.floor((progress / 101f) * hintsNumber);
                 selectedSeek.setText(hints.get(index));
                 seekBar.setBackgroundColor(Color.TRANSPARENT);
             }
@@ -97,6 +91,8 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
 
         int initialPosition = subQuestion.getInitialPosition();
         if (initialPosition != -1) {
+            Logger.v(TAG, "Setting seekBar initial position to {0}",
+                    initialPosition);
             seekBar.setProgress(initialPosition);
         }
 
@@ -108,11 +104,7 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
 
     @Override
     public boolean validate() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] validate");
-        }
+        Logger.i(TAG, "Validating answer");
 
         boolean isMultiple = subQuestionsViews.size() > 1;
 
@@ -121,11 +113,11 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
                     R.id.question_slider_selectedSeek);
 
             if (selectedSeek.getText().equals(textPleaseSlide)) {
+                Logger.v(TAG, "Found an untouched slider");
                 Toast.makeText(context,
                         isMultiple ? errorUntouchedMultiple :
                                 errorUntouchedSingle,
                         Toast.LENGTH_SHORT).show();
-
                 return false;
             }
         }
@@ -135,6 +127,7 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
 
     @Override
     public void saveAnswer() {
+        Logger.i(TAG, "Saving question answer");
 
         for (View subQuestionView : subQuestionsViews) {
             SeekBar seekBar = (SeekBar)subQuestionView.findViewById(

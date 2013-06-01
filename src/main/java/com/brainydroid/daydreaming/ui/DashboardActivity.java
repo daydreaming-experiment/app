@@ -61,11 +61,6 @@ public class DashboardActivity extends FirstLaunchActivity {
 //    // TODO: clean this up
 //    private void updateRunningTime() {
 //
-//        // Debug
-//        if (Config.LOGD) {
-//            Log.d(TAG, "[fn] updateRunningTime");
-//        }
-//
 //        // Transform string to Date object
 //        SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd G 'at' HH:mm:ss z");
 //
