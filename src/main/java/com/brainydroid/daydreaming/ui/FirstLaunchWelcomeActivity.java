@@ -31,10 +31,11 @@ public class FirstLaunchWelcomeActivity extends FirstLaunchActivity {
         Logger.v(TAG, "Creating");
         super.onCreate(savedInstanceState);
 
-        ImageView MyImageView = (ImageView)findViewById(R.id.myImageView);
+        ImageView MyImageView = (ImageView)findViewById(R.id.firstLaunchWelcome_helice);
         MyImageView.setBackgroundResource(R.drawable.animated_background);
         AnimationDrawable AniFrame = (AnimationDrawable) MyImageView.getBackground();
         AniFrame.start();
+
 
         Timer =  new CountDownTimer(2000, 1000) {
             public void onTick(long millisUntilFinished) {}

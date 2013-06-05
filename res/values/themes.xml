@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="MyCustomTheme" parent="android:style/Theme.NoTitleBar.Fullscreen">
-    <item name="android:windowBackground">@drawable/my_gradient</item>
-    <item name="android:colorBackgroundCacheHint">#00000000</item>
+    <item name="android:windowBackground">@drawable/layered_background</item>
+    <item name="android:colorBackgroundCacheHint">@color/white</item>
     <item name="android:typeface">serif</item>
 </style>
 </resources>
