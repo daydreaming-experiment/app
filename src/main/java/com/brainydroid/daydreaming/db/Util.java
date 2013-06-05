@@ -8,12 +8,8 @@ public class Util {
 
     private static String TAG = "Util";
 
-    public static String multiplyString(String string, int times) {
-        return multiplyString(string, times, null);
-    }
-
     public static String multiplyString(String string, int times, String joinString) {
-        Logger.v(TAG, "Multiplying string");
+        Logger.v(TAG, "Multiplying strings");
 
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < times; i++) {

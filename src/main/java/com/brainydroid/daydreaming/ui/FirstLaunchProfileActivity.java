@@ -1,15 +1,12 @@
 package com.brainydroid.daydreaming.ui;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
-import com.google.inject.Inject;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
@@ -18,13 +15,14 @@ public class FirstLaunchProfileActivity extends FirstLaunchActivity {
 
     private static String TAG = "FirstLaunchProfileActivity";
 
-    public static String PROFILE_AGE = "profileAge";
-    public static String PROFILE_GENDER = "profileGender";
+//    public static String PROFILE_AGE = "profileAge";
+//    public static String PROFILE_GENDER = "profileGender";
 
-    @InjectView(R.id.firstLaunchProfile_editAge) EditText ageEditText;
+    //@InjectView(R.id.firstLaunchProfile_editAge) EditText ageEditText;
     @InjectView(R.id.firstLaunchProfile_genderSpinner) Spinner genderSpinner;
     @InjectView(R.id.firstLaunchProfile_educationSpinner) Spinner educationSpinner;
-    @Inject SharedPreferences sharedPreferences;
+    @InjectView(R.id.firstLaunchProfile_ageSpinner) Spinner ageSpinner;
+//    @Inject SharedPreferences sharedPreferences;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -41,6 +39,13 @@ public class FirstLaunchProfileActivity extends FirstLaunchActivity {
                 R.array.education, android.R.layout.simple_spinner_item);
         adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         educationSpinner.setAdapter(adapter1);
+
+        ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(this,
+                R.array.ages, android.R.layout.simple_spinner_item);
+        adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ageSpinner.setAdapter(adapter2);
+
+
     }
 
     public void onClick_buttonNext(@SuppressWarnings("UnusedParameters") View view) {
@@ -54,14 +59,14 @@ public class FirstLaunchProfileActivity extends FirstLaunchActivity {
             Logger.i(TAG, "Saving profile information to shared " +
                     "preferences");
 
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putInt(PROFILE_AGE, Integer.parseInt(ageEditText.getText().toString()));
-            editor.putString(PROFILE_GENDER, genderSpinner.toString());
-            editor.commit();
+      //      SharedPreferences.Editor editor = sharedPreferences.edit();
+      //      editor.putInt(PROFILE_AGE, Integer.parseInt(ageEditText.getText().toString()));
+      //      editor.putString(PROFILE_GENDER, genderSpinner.toString());
+      //      editor.commit();
 
             Logger.td(this, "{0}, {1}",
                     genderSpinner.getSelectedItem().toString(),
-                    ageEditText.getText().toString());
+                    ageSpinner.getSelectedItem().toString());
             Logger.d(TAG, "Launching next activity");
             launchNextActivity(FirstLaunchPullActivity.class);
         }
@@ -69,8 +74,9 @@ public class FirstLaunchProfileActivity extends FirstLaunchActivity {
 
     private boolean checkForm() {
         try {
-            int age = Integer.parseInt(ageEditText.getText().toString());
-            return (5 <= age && age <= 100);
+      //      int age = Integer.parseInt(ageEditText.getText().toString());
+      //      return (5 <= age && age <= 100);
+            return true; // to change
         } catch (NumberFormatException e) {
             Logger.d(TAG, "Form does not contain a number -> returning " +
                     "failure");
