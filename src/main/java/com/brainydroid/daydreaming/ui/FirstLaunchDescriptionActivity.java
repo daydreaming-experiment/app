@@ -24,13 +24,15 @@ public class FirstLaunchDescriptionActivity extends FirstLaunchActivity {
         if (Config.LOGD) {
             Log.d(TAG, "[fn] onClick_buttonNext");
         }
-
+        launchNextActivity(FirstLaunchTermsActivity.class);
+        /*
         SherlockDialogFragment consentAlert = ConsentAlertDialogFragment.newInstance(
+
                 R.string.consentAlert_title,
                 R.string.consentAlert_text,
                 R.string.consentAlert_button_no_consent,
                 R.string.consentAlert_button_consent);
-        consentAlert.show(getSupportFragmentManager(), "consentAlert");
+        consentAlert.show(getSupportFragmentManager(), "consentAlert"); */
     }
 
     public static class ConsentAlertDialogFragment extends SherlockDialogFragment {

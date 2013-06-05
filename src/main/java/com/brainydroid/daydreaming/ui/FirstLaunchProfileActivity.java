@@ -21,9 +21,10 @@ public class FirstLaunchProfileActivity extends FirstLaunchActivity {
     public static String PROFILE_AGE = "profileAge";
     public static String PROFILE_GENDER = "profileGender";
 
-    @InjectView(R.id.firstLaunchProfile_editAge) EditText ageEditText;
+    //@InjectView(R.id.firstLaunchProfile_editAge) EditText ageEditText;
     @InjectView(R.id.firstLaunchProfile_genderSpinner) Spinner genderSpinner;
     @InjectView(R.id.firstLaunchProfile_educationSpinner) Spinner educationSpinner;
+    @InjectView(R.id.firstLaunchProfile_ageSpinner) Spinner ageSpinner;
     @Inject SharedPreferences sharedPreferences;
 
     @Override
@@ -45,6 +46,13 @@ public class FirstLaunchProfileActivity extends FirstLaunchActivity {
                 R.array.education, android.R.layout.simple_spinner_item);
         adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         educationSpinner.setAdapter(adapter1);
+
+        ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(this,
+                R.array.ages, android.R.layout.simple_spinner_item);
+        adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ageSpinner.setAdapter(adapter2);
+
+
     }
 
     public void onClick_buttonNext(@SuppressWarnings("UnusedParameters") View view) {
@@ -60,12 +68,12 @@ public class FirstLaunchProfileActivity extends FirstLaunchActivity {
         } else {
 
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putInt(PROFILE_AGE, Integer.parseInt(ageEditText.getText().toString()));
-            editor.putString(PROFILE_GENDER, genderSpinner.toString());
-            editor.commit();
+      //      editor.putInt(PROFILE_AGE, Integer.parseInt(ageEditText.getText().toString()));
+      //      editor.putString(PROFILE_GENDER, genderSpinner.toString());
+      //      editor.commit();
 
             Toast.makeText(this, genderSpinner.getSelectedItem().toString() +
-                    ", " + ageEditText.getText().toString(), Toast.LENGTH_LONG).show();
+                    ", " + ageSpinner.getSelectedItem().toString(), Toast.LENGTH_LONG).show();
             launchNextActivity(FirstLaunchPullActivity.class);
         }
     }
@@ -78,8 +86,9 @@ public class FirstLaunchProfileActivity extends FirstLaunchActivity {
         }
 
         try {
-            int age = Integer.parseInt(ageEditText.getText().toString());
-            return (5 <= age && age <= 100);
+      //      int age = Integer.parseInt(ageEditText.getText().toString());
+      //      return (5 <= age && age <= 100);
+            return true; // to change
         } catch (NumberFormatException e) {
             return false;
         }

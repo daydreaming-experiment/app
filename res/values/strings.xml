@@ -24,10 +24,12 @@
     <string name="firstLaunchWelcome_title_activity">Day Dreaming</string>
     <string name="firstLaunchWelcome_text_welcome">Day Dreaming Experiment</string>
     <string name="firstLaunchWelcome_button_start">Start</string>
+
     <string name="firstLaunchDescription_title_activity">Description</string>
-    <string name="firstLaunchDescription_text_title">Explanation of the experiment</string>
-    <string name="firstLaunchDescription_text_description">*description / images*</string>
+    <string name="firstLaunchDescription_text_title">Description</string>
+    <string name="firstLaunchDescription_text_description">Explanation of the experiment</string>
     <string name="firstLaunchDescription_button_next">Next</string>
+
     <string name="consentAlert_title">Experiment consent</string>
     <string name="consentAlert_text">Bla bla bla do you consent?</string>
     <string name="consentAlert_button_consent">Agree</string>
@@ -48,11 +50,25 @@
     <string name="firstLaunchProfile_fix_age">Please enter an age between 5 and 100</string>
     <string name="firstLaunchProfile_text_gender">Gender</string>
     <string name="firstLaunchProfile_text_education">Education</string>
+    <string name="firstLaunchProfile_text_age">Age</string>
+
 
     <string-array name="genders">
         <item> -- </item>
         <item>Female</item>
         <item>Male</item>
+    </string-array>
+
+    <string-array name="ages">
+        <item> -- </item>
+        <item>Under 18</item>
+        <item>18 -24</item>
+        <item>25 -29</item>
+        <item>30 -39</item>
+        <item>40 -49</item>
+        <item>50 -59</item>
+        <item>60 -69</item>
+        <item>70+</item>
     </string-array>
 
     <string-array name="education">
@@ -98,5 +114,8 @@
     <string name="firstLaunchTerms_title_activity">Consent</string>
     <string name="firstLaunchTerms_text_title">Consent</string>
     <string name="firstLaunchTerms_text_consent">Consent</string>
-    <string name="firstLaunchTerms_button_next">Next</string>
+    <string name="firstLaunchTerms_button_agree">Agree</string>
+    <string name="firstLaunchTerms_button_disagree">Disagree</string>
+    <string name="firstLaunchTerms_text_please_scroll">Scroll down terms</string>
+
 </resources>

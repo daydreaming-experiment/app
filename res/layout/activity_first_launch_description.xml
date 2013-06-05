@@ -1,52 +1,68 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center" >
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+
+    <LinearLayout android:id="@+id/ll1"
+                  android:layout_alignParentTop="true"
+                  android:layout_width="fill_parent"
+                  android:layout_height="wrap_content"/>
+
+
+
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:orientation="vertical" >
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/firstLaunchDescription_cloud_button"
+            android:layout_alignParentBottom="true"
+            android:padding="50dp"
+            android:gravity="right">
+
+        <ImageButton
+                android:id="@+id/firstLaunchDescription_buttonNext"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="onClick_buttonNext"
+                android:text="@string/firstLaunchDescription_button_next"
+                android:background="@drawable/button_cloud_next"
+                android:layout_marginTop="100dp"
+                />
+
+    </LinearLayout>
+
+    <LinearLayout
+            android:id="@+id/firstLaunchDescription_cloud"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_below="@id/ll1"
+            android:layout_above="@id/firstLaunchDescription_cloud_button"
+            android:padding="50dp"
+            android:background="@drawable/white_background"
+            >
 
         <TextView
-            android:id="@+id/firstLaunchDescription_textTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="50dp"
-            android:gravity="center_horizontal"
-            android:text="@string/firstLaunchDescription_text_title"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+                android:id="@+id/firstLaunchDescription_textTitle"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="@string/firstLaunchDescription_text_title"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@color/blue_background_color"/>
 
         <TextView
-            android:id="@+id/firstLaunchDescription_textDescription"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="50dp"
-            android:gravity="center_horizontal"
-            android:text="@string/firstLaunchDescription_text_description" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
-
-            <android.support.v7.widget.Space
-                android:layout_width="0dp"
+                android:id="@+id/firstLaunchDescription_textDescription"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1" />
-        
-	        <Button
-	            android:id="@+id/firstLaunchDescription_buttonNext"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:drawableRight="@drawable/navigation_next_item"
-	            android:onClick="onClick_buttonNext"
-	            android:text="@string/firstLaunchDescription_button_next"
-                android:background="@drawable/nuage"/>
+                android:gravity="center_horizontal"
+                android:text="@string/firstLaunchDescription_text_description"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/blue_background_color"/>
 
-	    </LinearLayout>
+        />
+
 
     </LinearLayout>
 
