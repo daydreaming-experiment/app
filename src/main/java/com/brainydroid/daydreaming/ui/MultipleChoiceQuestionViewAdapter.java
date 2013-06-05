@@ -1,12 +1,12 @@
 package com.brainydroid.daydreaming.ui;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 import com.brainydroid.daydreaming.R;
+import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.MultipleChoiceAnswer;
 import com.brainydroid.daydreaming.db.MultipleChoiceQuestionDetails;
 import com.google.inject.Inject;
@@ -31,11 +31,7 @@ public class MultipleChoiceQuestionViewAdapter
 
     @Override
     protected ArrayList<View> inflateViews() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] inflateViews");
-        }
+        Logger.d(TAG, "Inflating question views");
 
         MultipleChoiceQuestionDetails details =
                 (MultipleChoiceQuestionDetails)question.getDetails();
@@ -59,8 +55,11 @@ public class MultipleChoiceQuestionViewAdapter
             public void onCheckedChanged(CompoundButton buttonView,
                                          boolean isChecked) {
                 if (isChecked) {
+                    Logger.v(TAG, "Other checked -> requesting focus");
                     otherEdit.requestFocus();
                 } else {
+                    Logger.v(TAG, "Other unchecked -> releasing focus and " +
+                            "emptying field");
                     ((LinearLayout)otherEdit.getParent()).requestFocus();
                     otherEdit.setText("");
                 }
@@ -73,6 +72,7 @@ public class MultipleChoiceQuestionViewAdapter
 
             @Override
             public void onClick(View view) {
+                Logger.v(TAG, "Other clicked -> checking the option");
                 otherCheck.setChecked(true);
             }
 
@@ -84,6 +84,8 @@ public class MultipleChoiceQuestionViewAdapter
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
+                    Logger.v(TAG, "Other received focus -> checking the " +
+                            "option");
                     otherCheck.setChecked(true);
                 }
             }
@@ -98,6 +100,8 @@ public class MultipleChoiceQuestionViewAdapter
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                    Logger.v(TAG, "Other received enter key -> hiding soft " +
+                            "keyboard");
                     inputMethodManager.hideSoftInputFromWindow(
                             otherEdit.getApplicationWindowToken(), 0);
                 }
@@ -114,6 +118,7 @@ public class MultipleChoiceQuestionViewAdapter
                 R.id.question_multiple_choice_rootChoices);
 
         for (String choice : choices) {
+            Logger.v(TAG, "Inflating choice {0}", choice);
             CheckBox checkBox = (CheckBox)layoutInflater.inflate(
                     R.layout.question_multiple_choice_item, null);
             checkBox.setText(choice);
@@ -128,11 +133,7 @@ public class MultipleChoiceQuestionViewAdapter
 
     @Override
     public boolean validate() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] validate");
-        }
+        Logger.i(TAG, "Validating choices");
 
         LinearLayout rootChoices = (LinearLayout)choicesView.findViewById(
                 R.id.question_multiple_choice_rootChoices);
@@ -144,8 +145,11 @@ public class MultipleChoiceQuestionViewAdapter
             CheckBox child = (CheckBox)rootChoices.getChildAt(i);
 
             if (child.isChecked()) {
+                Logger.v(TAG, "At least one option is checked");
                 hasCheck = true;
                 break;
+            } else {
+                Logger.v(TAG, "No regular option checked");
             }
         }
 
@@ -158,13 +162,17 @@ public class MultipleChoiceQuestionViewAdapter
                     R.id.question_multiple_choice_otherEditText);
 
             if (otherEditText.getText().length() == 0) {
+                Logger.v(TAG, "Other is checked but has no text");
                 Toast.makeText(context, errorFillOther,
                         Toast.LENGTH_SHORT).show();
                 return false;
+            } else {
+                Logger.v(TAG, "Other is checked and has text");
             }
         }
 
         if (!hasCheck && !hasOtherCheck) {
+            Logger.v(TAG, "Nothing checked");
             Toast.makeText(context, errorCheckOne,
                     Toast.LENGTH_SHORT).show();
             return false;
@@ -175,11 +183,7 @@ public class MultipleChoiceQuestionViewAdapter
 
     @Override
     public void saveAnswer() {
-
-        //Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] saveAnswer");
-        }
+        Logger.i(TAG, "Saving question answer");
 
         LinearLayout rootChoices = (LinearLayout)choicesView.findViewById(
                 R.id.question_multiple_choice_rootChoices);

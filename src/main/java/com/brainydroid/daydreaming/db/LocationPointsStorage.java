@@ -2,9 +2,7 @@ package com.brainydroid.daydreaming.db;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
-import com.brainydroid.daydreaming.ui.Config;
+import com.brainydroid.daydreaming.background.Logger;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -12,7 +10,8 @@ import java.util.ArrayList;
 
 // TODO: factor most of this into Storage
 @Singleton
-public class LocationPointsStorage {
+public final class LocationPointsStorage extends
+        StatusModelStorage<LocationPoint,LocationPointsStorage> {
 
     private static String TAG = "LocationPointsStorage";
 
@@ -31,218 +30,66 @@ public class LocationPointsStorage {
 
     @Inject LocationPointFactory locationPointFactory;
 
-    private final SQLiteDatabase rDb;
-    private final SQLiteDatabase wDb;
-
-    // Constructor from context
     @Inject
     public LocationPointsStorage(Storage storage) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] LocationPointsStorage");
-        }
-
-        rDb = storage.getWritableDatabase();
-        wDb = storage.getWritableDatabase();
-        wDb.execSQL(SQL_CREATE_TABLE_LOCATIONS); // creates db fields
+        super(storage);
     }
 
-    private ContentValues getLocationPointContentValues(LocationPoint locationPoint) {
+    protected String[] getTableCreationStrings() {
+        return new String[] {SQL_CREATE_TABLE_LOCATIONS};
+    }
 
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] getLocationPointContentValues");
-        }
+    protected String getMainTable() {
+        return TABLE_LOCATION_POINTS;
+    }
 
-        ContentValues locationPointValues = new ContentValues();
-        locationPointValues.put(LocationPoint.COL_STATUS, locationPoint.getStatus());
-        locationPointValues.put(LocationPoint.COL_LOCATION_LATITUDE, locationPoint.getLocationLatitude());
-        locationPointValues.put(LocationPoint.COL_LOCATION_LONGITUDE, locationPoint.getLocationLongitude());
-        locationPointValues.put(LocationPoint.COL_LOCATION_ALTITUDE, locationPoint.getLocationAltitude());
-        locationPointValues.put(LocationPoint.COL_LOCATION_ACCURACY, locationPoint.getLocationAccuracy());
-        locationPointValues.put(LocationPoint.COL_TIMESTAMP, locationPoint.getTimestamp());
+    @Override
+    protected ContentValues getModelValues(LocationPoint locationPoint) {
+        Logger.v(TAG, "Building LocationPoint values");
+
+        ContentValues locationPointValues =
+                super.getModelValues(locationPoint);
+        locationPointValues.put(LocationPoint.COL_LOCATION_LATITUDE,
+                locationPoint.getLocationLatitude());
+        locationPointValues.put(LocationPoint.COL_LOCATION_LONGITUDE,
+                locationPoint.getLocationLongitude());
+        locationPointValues.put(LocationPoint.COL_LOCATION_ALTITUDE,
+                locationPoint.getLocationAltitude());
+        locationPointValues.put(LocationPoint.COL_LOCATION_ACCURACY,
+                locationPoint.getLocationAccuracy());
+        locationPointValues.put(LocationPoint.COL_TIMESTAMP,
+                locationPoint.getTimestamp());
         return locationPointValues;
     }
 
-    private ContentValues getLocationPointContentValuesWithId(LocationPoint locationPoint) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] getLocationPointContentValuesWithId");
-        }
-
-        ContentValues locationPointValues = getLocationPointContentValues(locationPoint);
-        locationPointValues.put(LocationPoint.COL_ID, locationPoint.getId());
-        return locationPointValues;
+    @Override
+    protected LocationPoint create() {
+        return locationPointFactory.create();
     }
 
-    public void storeLocationPointSetId(LocationPoint locationPoint) {
+    @Override
+    protected void populateModel(int locationPointId, LocationPoint
+                                 locationPoint, Cursor res) {
+        Logger.d(TAG, "Populating LocationPoint model from db");
 
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] storeLocationPointSetId");
-        }
-
-        ContentValues locationPointValues = getLocationPointContentValues(locationPoint);
-        wDb.insert(TABLE_LOCATION_POINTS, null, locationPointValues);
-
-        Cursor res = rDb.query(TABLE_LOCATION_POINTS, new String[] {LocationPoint.COL_ID}, null,
-                null, null, null, LocationPoint.COL_ID + " DESC", "1");
-        res.moveToFirst();
-        int locationPointId = res.getInt(res.getColumnIndex(LocationPoint.COL_ID));
-        res.close();
-
-        locationPoint.setId(locationPointId);
-    }
-
-    public void updateLocationPoint(LocationPoint locationPoint) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] updateLocationPoint");
-        }
-
-        ContentValues locationItemValues = getLocationPointContentValuesWithId(locationPoint);
-        int locationItemId = locationPoint.getId();
-        wDb.update(TABLE_LOCATION_POINTS, locationItemValues, LocationPoint.COL_ID + "=?",
-                new String[] {Integer.toString(locationItemId)});
-    }
-
-    public LocationPoint getLocationPoint(int locationPointId) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] getLocationPoint");
-        }
-
-        Cursor res = rDb.query(TABLE_LOCATION_POINTS, null, LocationPoint.COL_ID + "=?",
-                new String[] {Integer.toString(locationPointId)}, null, null, null);
-        if (!res.moveToFirst()) {
-            res.close();
-            return null;
-        }
-
-        LocationPoint locationPoint = locationPointFactory.create();
-        locationPoint.setStatus(res.getString(res.getColumnIndex(LocationPoint.COL_STATUS)));
+        super.populateModel(locationPointId, locationPoint, res);
         locationPoint.setLocationLatitude(res.getDouble(res.getColumnIndex(LocationPoint.COL_LOCATION_LATITUDE)));
         locationPoint.setLocationLongitude(res.getDouble(res.getColumnIndex(LocationPoint.COL_LOCATION_LONGITUDE)));
         locationPoint.setLocationAltitude(res.getDouble(res.getColumnIndex(LocationPoint.COL_LOCATION_ALTITUDE)));
         locationPoint.setLocationAccuracy(res.getDouble(res.getColumnIndex(LocationPoint.COL_LOCATION_ACCURACY)));
         locationPoint.setTimestamp(res.getLong(res.getColumnIndex(LocationPoint.COL_TIMESTAMP)));
-        // Setting the id at the end ensures we don't save the LocationPoint to DB again
-        locationPoint.setId(res.getInt(res.getColumnIndex(LocationPoint.COL_ID)));
-        res.close();
-
-        return locationPoint;
     }
 
     public ArrayList<LocationPoint> getUploadableLocationPoints() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] getUploadableLocationPoints");
-        }
-
-        return getLocationPointsWithStatuses(
+        Logger.d(TAG, "Getting uploadable LocationPoints");
+        return getModelsWithStatuses(
                 new String[] {LocationPoint.STATUS_COMPLETED});
     }
 
     public ArrayList<LocationPoint> getCollectingLocationPoints() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] getCollectingLocationPoints");
-        }
-
-        return getLocationPointsWithStatuses(
+        Logger.d(TAG, "Getting collecting LocationPoints");
+        return getModelsWithStatuses(
                 new String[] {LocationPoint.STATUS_COLLECTING});
-    }
-
-    private ArrayList<Integer> getLocationPointIdsWithStatuses(
-            String[] statuses) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] getLocationPointIdsWithStatuses " +
-                    "(from String[])");
-        }
-
-        return getLocationPointIdsWithStatuses(statuses, null);
-    }
-
-    private ArrayList<Integer> getLocationPointIdsWithStatuses(
-            String[] statuses, String limit) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] getLocationPointIdsWithStatuses (from " +
-                    "String[], String)");
-        }
-
-        String query = Util.multiplyString(LocationPoint.COL_STATUS + "=?",
-                statuses.length, " OR ");
-        Cursor res = rDb.query(TABLE_LOCATION_POINTS, new String[] {LocationPoint.COL_ID},
-                query, statuses, null, null, null, limit);
-        if (!res.moveToFirst()) {
-            res.close();
-            return null;
-        }
-
-        ArrayList<Integer> statusLocationPointIds = new ArrayList<Integer>();
-        do {
-            statusLocationPointIds.add(res.getInt(res.getColumnIndex(LocationPoint.COL_ID)));
-        } while (res.moveToNext());
-
-        return statusLocationPointIds;
-    }
-
-    private ArrayList<LocationPoint> getLocationPointsWithStatuses(
-            String[] statuses) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] getLocationPointsWithStatuses");
-        }
-
-        ArrayList<Integer> statusLocationPointIds =
-                getLocationPointIdsWithStatuses(statuses);
-
-        if (statusLocationPointIds == null) {
-            return null;
-        }
-
-        ArrayList<LocationPoint> statusLocationPoints =
-                new ArrayList<LocationPoint>();
-
-        for (int locationPointId : statusLocationPointIds) {
-            statusLocationPoints.add(getLocationPoint(locationPointId));
-        }
-
-        return statusLocationPoints;
-    }
-
-    public void removeLocationPoint(int locationPointId) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] removeLocationPoint");
-        }
-
-        wDb.delete(TABLE_LOCATION_POINTS, LocationPoint.COL_ID + "=?", new String[] {Integer.toString(locationPointId)});
-    }
-
-    public void removeLocationPoints(
-            ArrayList<LocationPoint> locationPoints) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] removeLocationPoints");
-        }
-
-        for (LocationPoint locationPoint : locationPoints) {
-            removeLocationPoint(locationPoint.getId());
-        }
     }
 
 }

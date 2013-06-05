@@ -1,13 +1,13 @@
 package com.brainydroid.daydreaming.ui;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.brainydroid.daydreaming.R;
+import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.Util;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
@@ -33,12 +33,7 @@ public class FirstLaunchTermsActivity extends FirstLaunchActivity implements Scr
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onCreate");
-        }
-
+        Logger.v(TAG, "Creating");
         super.onCreate(savedInstanceState);
         Agree_button = (Button) findViewById(R.id.firstLaunchTerms_buttonAgree);
         Disagree_button = (Button) findViewById(R.id.firstLaunchTerms_buttonDisagree);
@@ -90,22 +85,13 @@ public class FirstLaunchTermsActivity extends FirstLaunchActivity implements Scr
     }
 
     public void onClick_buttonAgree(@SuppressWarnings("UnusedParameters") View view) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onClick_buttonNext");
-        }
-
+        Logger.v(TAG, "Agree button clicked, launching next activity");
         launchNextActivity(FirstLaunchProfileActivity.class);
     }
 
     public void onClick_buttonDisagree(@SuppressWarnings("UnusedParameters") View view) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onClick_buttonNext");
-        }
-        Toast.makeText(this, "Too Bad", Toast.LENGTH_SHORT).show();    }
+        Toast.makeText(this, "Too Bad", Toast.LENGTH_SHORT).show();
+    }
 
 
     private void populateConsent() {
@@ -114,6 +100,7 @@ public class FirstLaunchTermsActivity extends FirstLaunchActivity implements Scr
             consent.setText(Util.convertStreamToString(termsInputStream));
             termsInputStream.close();
         } catch (IOException e) {
+            Logger.e(TAG, "Error reading consent file");
             e.printStackTrace();
         }
     }

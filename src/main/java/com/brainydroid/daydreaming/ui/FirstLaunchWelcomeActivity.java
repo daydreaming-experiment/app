@@ -1,16 +1,12 @@
 package com.brainydroid.daydreaming.ui;
 
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.drawable.AnimationDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.util.Log;
-import android.view.View;
 import android.widget.ImageView;
 import com.brainydroid.daydreaming.R;
+import com.brainydroid.daydreaming.background.Logger;
 import roboguice.inject.ContentView;
 
 /**
@@ -32,23 +28,13 @@ public class FirstLaunchWelcomeActivity extends FirstLaunchActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
-
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onCreate");
-        }
+        Logger.v(TAG, "Creating");
         super.onCreate(savedInstanceState);
 
         ImageView MyImageView = (ImageView)findViewById(R.id.firstLaunchWelcome_helice);
-        //
         MyImageView.setBackgroundResource(R.drawable.animated_background);
         AnimationDrawable AniFrame = (AnimationDrawable) MyImageView.getBackground();
         AniFrame.start();
-        //
-
-
 
 
         Timer =  new CountDownTimer(2000, 1000) {
@@ -59,33 +45,16 @@ public class FirstLaunchWelcomeActivity extends FirstLaunchActivity {
                 //finish();
             }
         }.start();
-
-
     }
-
-/*    public void onClick_start(@SuppressWarnings("UnusedParameters") View view) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onClick_start");
-        }
-
-        launchNextActivity(FirstLaunchDescriptionActivity.class);
-    }
-   */
 
     @Override
     protected void launchNextActivity(Class activity) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] launchNextActivity");
-        }
+        Logger.v(TAG, "Launching next activity, custom transition");
 
         Intent intent = new Intent(this, activity);
+        intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         startActivity(intent);
         overridePendingTransition(R.anim.mainfadein, R.anim.splashfadeout);
-
     }
 
 }

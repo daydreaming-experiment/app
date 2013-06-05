@@ -2,12 +2,17 @@ package com.brainydroid.daydreaming.db;
 
 import android.location.Location;
 import android.location.LocationManager;
-import android.util.Log;
-import com.brainydroid.daydreaming.ui.Config;
+import com.brainydroid.daydreaming.background.Logger;
 import com.google.gson.*;
 
 import java.lang.reflect.Type;
 
+/**
+ * Deserialize a JSON representation of a {@code Location} instance.
+ *
+ * @author Sébastien Lerique
+ * @author Vincent Adam
+ */
 public class LocationDeserializer implements JsonDeserializer<Location> {
 
     @SuppressWarnings("FieldCanBeLocal")
@@ -17,15 +22,13 @@ public class LocationDeserializer implements JsonDeserializer<Location> {
     public Location deserialize(JsonElement jsonElement, Type type,
                                 JsonDeserializationContext context)
             throws JsonParseException {
+        Logger.v(TAG, "Deserializing location");
 
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "deserialize");
-        }
-
-        // The given provider is just a dummy, we don't use it.
+        // The given provider is just a dummy: we never use it in the rest
+        // of the code, but it's required by the constructor.
         Location location = new Location(LocationManager.NETWORK_PROVIDER);
 
+        // Fill up our Location instance
         JsonObject obj = (JsonObject)jsonElement;
         location.setLatitude(
                 obj.get(LocationSerializer.LOCATION_LATITUDE).getAsDouble());

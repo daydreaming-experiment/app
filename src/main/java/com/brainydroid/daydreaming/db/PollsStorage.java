@@ -2,18 +2,15 @@ package com.brainydroid.daydreaming.db;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
-import android.util.SparseArray;
-import com.brainydroid.daydreaming.ui.Config;
+import com.brainydroid.daydreaming.background.Logger;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import java.util.ArrayList;
 
-// TODO: factor most of this into Storage
 @Singleton
-public class PollsStorage {
+public final class PollsStorage extends StatusModelStorage<Poll,
+        PollsStorage> {
 
     private static String TAG = "PollsStorage";
 
@@ -40,55 +37,41 @@ public class PollsStorage {
     @Inject QuestionsStorage questionsStorage;
     @Inject PollFactory pollFactory;
 
-    private final SQLiteDatabase rDb;
-    private final SQLiteDatabase wDb;
+    @Override
+    protected String[] getTableCreationStrings() {
+        return new String[] {SQL_CREATE_TABLE_POLLS,
+                SQL_CREATE_TABLE_POLL_QUESTIONS};
+    }
 
     @Inject
     public PollsStorage(Storage storage) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] PollsStorage");
-        }
-
-        rDb = storage.getReadableDatabase();
-        wDb = storage.getWritableDatabase();
-        wDb.execSQL(SQL_CREATE_TABLE_POLLS); // creates db fields
-        wDb.execSQL(SQL_CREATE_TABLE_POLL_QUESTIONS); // creates db fields
+        super(storage);
     }
 
-    private ContentValues getPollContentValues(Poll poll) {
+    @Override
+    protected ContentValues getModelValues(Poll poll) {
+        Logger.v(TAG, "Building poll values");
 
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] getPollContentValues");
-        }
-
-        ContentValues pollValues = new ContentValues();
-        pollValues.put(Poll.COL_STATUS, poll.getStatus());
-        pollValues.put(Poll.COL_NOTIFICATION_TIMESTAMP, poll.getNotificationTimestamp());
+        ContentValues pollValues = super.getModelValues(poll);
+        pollValues.put(Poll.COL_NOTIFICATION_TIMESTAMP,
+                poll.getNotificationTimestamp());
         return pollValues;
     }
 
-    private ContentValues getPollContentValuesWithId(Poll poll) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] getPollContentValuesWithId");
-        }
-
-        ContentValues pollValues = getPollContentValues(poll);
-        pollValues.put(Poll.COL_ID, poll.getId());
-        return pollValues;
+    @Override
+    protected String getMainTable() {
+        return TABLE_POLLS;
     }
 
-    private ContentValues getQuestionContentValues(int pollId,
-                                                   Question question) {
+    @Override
+    protected Poll create() {
+        Logger.v(TAG, "Creating new poll");
+        return pollFactory.create();
+    }
 
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] getQuestionContentValues");
-        }
+    private ContentValues getQuestionValues(int pollId, Question question) {
+        Logger.d(TAG, "Building question values for question {0}",
+                question.getName());
 
         ContentValues qValues = new ContentValues();
         qValues.put(Poll.COL_ID, pollId);
@@ -100,80 +83,52 @@ public class PollsStorage {
         return qValues;
     }
 
-    public void storePollSetId(Poll poll) {
+    @Override
+    public void store(Poll poll) {
+        Logger.d(TAG, "Storing poll (and questions) to db");
 
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] storePollSetId");
-        }
-
-        ContentValues pollValues = getPollContentValues(poll);
-        wDb.insert(TABLE_POLLS, null, pollValues);
-
-        Cursor res = rDb.query(TABLE_POLLS, new String[] {Poll.COL_ID}, null,
-                null, null, null, Poll.COL_ID + " DESC", "1");
-        res.moveToFirst();
-        int pollId = res.getInt(res.getColumnIndex(Poll.COL_ID));
-        res.close();
-
-        poll.setId(pollId);
+        super.store(poll);
+        int pollId = poll.getId();
 
         for (Question q : poll.getQuestions()) {
-            ContentValues qValues = getQuestionContentValues(pollId, q);
-            wDb.insert(TABLE_POLL_QUESTIONS, null, qValues);
+            ContentValues qValues = getQuestionValues(pollId, q);
+            getDb().insert(TABLE_POLL_QUESTIONS, null, qValues);
         }
     }
 
-    public void updatePoll(Poll poll) {
+    @Override
+    public void update(Poll poll) {
+        Logger.d(TAG, "Updating poll (and questions) in db");
 
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] updatePoll");
-        }
-
-        ContentValues pollValues = getPollContentValuesWithId(poll);
+        super.update(poll);
         int pollId = poll.getId();
-        wDb.update(TABLE_POLLS, pollValues, Poll.COL_ID + "=?",
-                new String[] {Integer.toString(pollId)});
 
         for (Question q : poll.getQuestions()) {
-            ContentValues qValues = getQuestionContentValues(pollId, q);
-            wDb.update(TABLE_POLL_QUESTIONS, qValues,
+            ContentValues qValues = getQuestionValues(pollId, q);
+            getDb().update(TABLE_POLL_QUESTIONS, qValues,
                     Poll.COL_ID + "=? AND " + Question.COL_NAME + "=?",
                     new String[] {Integer.toString(pollId), q.getName()});
         }
     }
 
-    public Poll getPoll(int pollId) {
+    @Override
+    public void populateModel(int pollId, Poll poll, Cursor res) {
+        Logger.d(TAG, "Populating poll model from db");
 
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] getPoll");
-        }
+        super.populateModel(pollId, poll, res);
+        poll.setNotificationTimestamp(res.getLong(
+                res.getColumnIndex(Poll.COL_NOTIFICATION_TIMESTAMP)));
 
-        Cursor res = rDb.query(TABLE_POLLS, null, Poll.COL_ID + "=?",
-                new String[] {Integer.toString(pollId)}, null, null, null);
-        if (!res.moveToFirst()) {
-            res.close();
-            return null;
-        }
-
-        Poll poll = pollFactory.create();
-        poll.setStatus(res.getString(res.getColumnIndex(Poll.COL_STATUS)));
-        poll.setNotificationTimestamp(res.getLong(res.getColumnIndex(Poll.COL_NOTIFICATION_TIMESTAMP)));
-        // Setting the id at the end ensures we don't save the Poll to DB again
-        poll.setId(res.getInt(res.getColumnIndex(Poll.COL_ID)));
-        res.close();
-
-        Cursor qRes = rDb.query(TABLE_POLL_QUESTIONS, null, Poll.COL_ID + "=?",
+        Cursor qRes = getDb().query(TABLE_POLL_QUESTIONS, null,
+                Poll.COL_ID + "=?",
                 new String[] {Integer.toString(pollId)}, null, null, null);
         if (!qRes.moveToFirst()) {
             qRes.close();
-            return null;
+            return;
         }
 
         do {
-            Question q = questionsStorage.getQuestion(qRes.getString(
+            Question q = questionsStorage.get(qRes.getString(
                     qRes.getColumnIndex(Question.COL_NAME)));
             q.setStatus(qRes.getString(
                     qRes.getColumnIndex(Question.COL_STATUS)));
@@ -187,108 +142,24 @@ public class PollsStorage {
             poll.addQuestion(q);
         } while (qRes.moveToNext());
         qRes.close();
-
-        return poll;
     }
 
     public ArrayList<Poll> getUploadablePolls() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] getUploadablePolls");
-        }
-
-        return getPollsWithStatuses(
+        Logger.v(TAG, "Getting uploadable polls");
+        return getModelsWithStatuses(
                 new String[] {Poll.STATUS_COMPLETED, Poll.STATUS_PARTIALLY_COMPLETED});
     }
 
     public ArrayList<Poll> getPendingPolls() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] getPendingPolls");
-        }
-
-        return getPollsWithStatuses(new String[] {Poll.STATUS_PENDING});
+        Logger.d(TAG, "Getting pending polls");
+        return getModelsWithStatuses(new String[] {Poll.STATUS_PENDING});
     }
 
-    private ArrayList<Integer> getPollIdsWithStatuses(String[] statuses) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] getPollIdsWithStatuses (from String[])");
-        }
-
-        return getPollIdsWithStatuses(statuses, null);
-    }
-
-    private ArrayList<Integer> getPollIdsWithStatuses(String[] statuses, String limit) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] getPollIdsWithStatuses (from String[], String)");
-        }
-
-        String query = Util.multiplyString(Poll.COL_STATUS + "=?", statuses.length, " OR ");
-        Cursor res = rDb.query(TABLE_POLLS, new String[] {Poll.COL_ID}, query, statuses,
-                null, null, null, limit);
-        if (!res.moveToFirst()) {
-            res.close();
-            return null;
-        }
-
-        ArrayList<Integer> statusPollIds = new ArrayList<Integer>();
-        do {
-            statusPollIds.add(res.getInt(res.getColumnIndex(Poll.COL_ID)));
-        } while (res.moveToNext());
-
-        return statusPollIds;
-    }
-
-    private ArrayList<Poll> getPollsWithStatuses(String[] statuses) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] getPollsWithStatuses");
-        }
-
-        ArrayList<Integer> statusPollIds = getPollIdsWithStatuses(statuses);
-
-        if (statusPollIds == null) {
-            return null;
-        }
-
-        ArrayList<Poll> statusPolls = new ArrayList<Poll>();
-
-        for (int pollId : statusPollIds) {
-            statusPolls.add(getPoll(pollId));
-        }
-
-        return statusPolls;
-    }
-
-    public void removePoll(int pollId) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] removePoll");
-        }
-
-        wDb.delete(TABLE_POLLS, Poll.COL_ID + "=?", new String[]{Integer.toString(pollId)});
-        wDb.delete(TABLE_POLL_QUESTIONS, Poll.COL_ID + "=?",
+    @Override
+    public void remove(int pollId) {
+        Logger.d(TAG, "Removing poll {0} from db (and questions)", pollId);
+        getDb().delete(TABLE_POLL_QUESTIONS, Poll.COL_ID + "=?",
                 new String[]{Integer.toString(pollId)});
-    }
-
-    public void removePolls(ArrayList<Poll> polls) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] removePolls");
-        }
-
-        for (Poll poll : polls) {
-            removePoll(poll.getId());
-        }
     }
 
 }

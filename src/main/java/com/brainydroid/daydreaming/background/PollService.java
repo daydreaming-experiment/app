@@ -8,11 +8,9 @@ import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.db.Poll;
 import com.brainydroid.daydreaming.db.PollsStorage;
-import com.brainydroid.daydreaming.ui.Config;
 import com.brainydroid.daydreaming.ui.QuestionActivity;
 import com.google.inject.Inject;
 import roboguice.service.RoboService;
@@ -38,24 +36,8 @@ public class PollService extends RoboService {
     @Inject Poll poll;
 
     @Override
-    public void onCreate() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onCreate");
-        }
-
-        super.onCreate();
-        // Do nothing. Logging purposes.
-    }
-
-    @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onStartCommand");
-        }
+        Logger.d(TAG, "PollService started");
 
         super.onStartCommand(intent, flags, startId);
 
@@ -71,25 +53,7 @@ public class PollService extends RoboService {
     }
 
     @Override
-    public void onDestroy() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onDestroy");
-        }
-
-        super.onDestroy();
-        // Do nothing. Logging purposes.
-    }
-
-    @Override
     public IBinder onBind(Intent intent) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onBind");
-        }
-
         // Don't allow binding
         return null;
     }
@@ -100,11 +64,7 @@ public class PollService extends RoboService {
      * @return An {@code Intent} to launch our {@link Poll}
      */
     private Intent createPollIntent() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] createPollIntent");
-        }
+        Logger.d(TAG, "Creating poll Intent");
 
         Intent intent = new Intent(this, QuestionActivity.class);
 
@@ -126,11 +86,7 @@ public class PollService extends RoboService {
      * Notify our poll to the user.
      */
     private void notifyPoll() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] notifyPoll");
-        }
+        Logger.d(TAG, "Notifying poll");
 
         // Create the PendingIntent
         Intent intent = createPollIntent();
@@ -142,17 +98,20 @@ public class PollService extends RoboService {
 
         // Should we flash the LED?
         if (sharedPreferences.getBoolean("notification_blink_key", true)) {
+            Logger.v(TAG, "Activating lights");
             flags |= Notification.DEFAULT_LIGHTS;
         }
 
         // Should we vibrate?
         if (sharedPreferences.getBoolean("notification_vibrator_key",
                 true)) {
+            Logger.v(TAG, "Activating vibration");
             flags |= Notification.DEFAULT_VIBRATE;
         }
 
         // Should we beep?
         if (sharedPreferences.getBoolean("notification_sound_key", true)) {
+            Logger.v(TAG, "Activating sound");
             flags |= Notification.DEFAULT_SOUND;
         }
 
@@ -176,23 +135,22 @@ public class PollService extends RoboService {
      * Fill our {@link Poll} with questions.
      */
     private void populatePoll() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] populatePoll");
-        }
+        Logger.d(TAG, "Populating poll with questions");
 
         // Pick from already created polls that were never shown to the
         // user, if there are any
         ArrayList<Poll> pendingPolls = pollsStorage.getPendingPolls();
 
         if (pendingPolls != null) {
+            Logger.d(TAG, "Reusing previously pending poll");
             poll = pendingPolls.get(0);
         } else {
+            Logger.d(TAG, "Sampling new questions for poll");
             poll.populateQuestions(N_QUESTIONS_PER_POLL);
         }
 
         // Update the poll's status
+        Logger.d(TAG, "Setting poll status and timestamp, and saving");
         poll.setStatus(Poll.STATUS_PENDING);
         poll.setNotificationTimestamp(SystemClock.elapsedRealtime());
         poll.save();
@@ -202,11 +160,7 @@ public class PollService extends RoboService {
      * Start {@link SchedulerService} for the next {@link Poll}.
      */
     private void startSchedulerService() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] startSchedulerService");
-        }
+        Logger.d(TAG, "Starting SchedulerService");
 
         Intent schedulerIntent = new Intent(this, SchedulerService.class);
         startService(schedulerIntent);

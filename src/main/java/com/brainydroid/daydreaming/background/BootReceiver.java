@@ -2,8 +2,6 @@ package com.brainydroid.daydreaming.background;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
-import com.brainydroid.daydreaming.ui.Config;
 import com.google.inject.Inject;
 import roboguice.receiver.RoboBroadcastReceiver;
 
@@ -27,40 +25,33 @@ public class BootReceiver extends RoboBroadcastReceiver {
     @Override
     public void handleReceive(Context context, Intent intent) {
 
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onReceive");
-        }
-
-        String action = intent.getAction();
-
         // Were we called because the boot just completed?
+        String action = intent.getAction();
         if (action.equals(Intent.ACTION_BOOT_COMPLETED)) {
-
-            // Info
-            Log.i(TAG, "Received ACTION_BOOT_COMPLETED");
+            Logger.d(TAG, "BootReceiver started for ACTION_BOOT_COMPLETED");
 
             // If first launch hasn't been completed, the user doesn't want
             // anything yet
             if (statusManager.isFirstLaunchCompleted()) {
-
-                // Info
-                Log.i(TAG, "first launch is completed");
-                Log.i(TAG, "starting SchedulerService");
+                Logger.d(TAG, "First launch is completed");
 
                 // Start scheduling polls
+                Logger.d(TAG, "Starting SchedulerService");
                 Intent schedulerIntent = new Intent(context,
                         SchedulerService.class);
                 context.startService(schedulerIntent);
 
-                // Info
-                Log.i(TAG, "starting LocationPointService");
-
                 // Start getting location updates
+                Logger.d(TAG, "Starting LocationPointService");
                 Intent locationPointServiceIntent = new Intent(context,
                         LocationPointService.class);
                 context.startService(locationPointServiceIntent);
+            } else {
+                Logger.v(TAG, "First launch not completed -> exiting");
             }
+        } else {
+            Logger.v(TAG, "BootReceiver started for something different " +
+                    "than ACTION_BOOT_COMPLETED -> exiting");
         }
     }
 

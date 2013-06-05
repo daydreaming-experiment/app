@@ -4,8 +4,7 @@ import android.content.ContentValues;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
-import com.brainydroid.daydreaming.ui.Config;
+import com.brainydroid.daydreaming.background.Logger;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -34,33 +33,24 @@ public class QuestionsStorage {
 
     private final SharedPreferences sharedPreferences;
     private final SharedPreferences.Editor eSharedPreferences;
-    private final SQLiteDatabase rDb;
-    private final SQLiteDatabase wDb;
+    private final SQLiteDatabase db;
 
     // Constructor
     @Inject
     public QuestionsStorage(Storage storage,
                             SharedPreferences sharedPreferences) {
 
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] QuestionsStorage");
-        }
+        Logger.d(TAG, "Building QuestionsStorage: creating table if it " +
+                "doesn't exist");
 
         this.sharedPreferences = sharedPreferences;
         eSharedPreferences = sharedPreferences.edit();
-        rDb = storage.getReadableDatabase();
-        wDb = storage.getWritableDatabase();
-        wDb.execSQL(SQL_CREATE_TABLE_QUESTIONS);
+        db = storage.getWritableDatabase();
+        db.execSQL(SQL_CREATE_TABLE_QUESTIONS);
     }
 
     public int getQuestionsVersion() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] getQuestionsVersion");
-        }
-
+        Logger.v(TAG, "Getting questions version");
         int questionsVersion = sharedPreferences.getInt(QUESTIONS_VERSION,
                 -1);
 
@@ -73,26 +63,17 @@ public class QuestionsStorage {
     }
 
     private void setQuestionsVersion(int questionsVersion) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] setQuestionsVersion");
-        }
-
+        Logger.d(TAG, "Setting questions version to {0}", questionsVersion);
         eSharedPreferences.putInt(QUESTIONS_VERSION, questionsVersion);
         eSharedPreferences.commit();
     }
 
     // get question from id in db
-    public Question getQuestion(String questionName) {
+    public Question get(String questionName) {
+        Logger.d(TAG, "Retrieving question {0} from db", questionName);
 
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] getQuestion");
-        }
-
-        Cursor res = rDb.query(TABLE_QUESTIONS, null,
-                Question.COL_NAME + "=?", new String[] {questionName},
+        Cursor res = db.query(TABLE_QUESTIONS, null,
+                Question.COL_NAME + "=?", new String[]{questionName},
                 null, null, null);
         if (!res.moveToFirst()) {
             res.close();
@@ -113,13 +94,9 @@ public class QuestionsStorage {
 
     // get questions ids in questions db
     public ArrayList<String> getQuestionNames() {
+        Logger.d(TAG, "Retrieving available question names from db");
 
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] getQuestionNames");
-        }
-
-        Cursor res = rDb.query(TABLE_QUESTIONS,
+        Cursor res = db.query(TABLE_QUESTIONS,
                 new String[] {Question.COL_NAME}, null, null, null,
                 null, null);
         if (!res.moveToFirst()) {
@@ -139,11 +116,7 @@ public class QuestionsStorage {
 
     // getRandomQuestions
     public ArrayList<Question> getRandomQuestions(int nQuestions) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] getRandomQuestions");
-        }
+        Logger.d(TAG, "Retrieving {0} random questions from db", nQuestions);
 
         ArrayList<String> questionNames = getQuestionNames();
         int nIds = questionNames.size();
@@ -153,52 +126,33 @@ public class QuestionsStorage {
 
         for (int i = 0; i < nQuestions && i < nIds; i++) {
             rIndex = random.nextInt(questionNames.size());
-            randomQuestions.add(getQuestion(questionNames.get(rIndex)));
+            randomQuestions.add(get(questionNames.get(rIndex)));
             questionNames.remove(rIndex);
         }
 
         return randomQuestions;
     }
 
-    public void flushAll() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] flushAll");
-        }
-
-        wDb.delete(TABLE_QUESTIONS, null, null);
+    public void flush() {
+        Logger.d(TAG, "Flushing questions from db");
+        db.delete(TABLE_QUESTIONS, null, null);
     }
 
-    private void addQuestions(ArrayList<Question> questions) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] addQuestions");
-        }
-
+    private void add(ArrayList<Question> questions) {
+        Logger.d(TAG, "Storing an array of questions to db");
         for (Question q : questions) {
-            addQuestion(q);
+            add(q);
         }
     }
 
     // add question in database
-    private void addQuestion(Question question) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] addQuestion");
-        }
-
-        wDb.insert(TABLE_QUESTIONS, null, getQuestionContentValues(question));
+    private void add(Question question) {
+        Logger.d(TAG, "Storing question {0} to db", question.getName());
+        db.insert(TABLE_QUESTIONS, null, getQuestionValues(question));
     }
 
-    private ContentValues getQuestionContentValues(Question question) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] getQuestionContentValues");
-        }
+    private ContentValues getQuestionValues(Question question) {
+        Logger.d(TAG, "Building question values");
 
         ContentValues qValues = new ContentValues();
         qValues.put(Question.COL_NAME, question.getName());
@@ -211,17 +165,13 @@ public class QuestionsStorage {
 
     // import questions from json file into database
     public void importQuestions(String jsonQuestionsString) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] importQuestions");
-        }
+        Logger.d(TAG, "Importing questions from JSON");
 
         ServerQuestionsJson serverQuestionsJson = json.fromJson(
                 jsonQuestionsString, ServerQuestionsJson.class);
-        flushAll();
+        flush();
         setQuestionsVersion(serverQuestionsJson.getVersion());
-        addQuestions(serverQuestionsJson.getQuestionsArrayList());
+        add(serverQuestionsJson.getQuestionsArrayList());
     }
 
 }

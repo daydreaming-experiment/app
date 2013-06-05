@@ -19,6 +19,7 @@ import roboguice.inject.InjectView;
 import java.io.IOException;
 import java.io.InputStream;
 
+// FIXME: all this activity should go in the background
 @ContentView(R.layout.activity_first_launch_pull)
 public class FirstLaunchPullActivity extends FirstLaunchActivity {
 
@@ -36,23 +37,12 @@ public class FirstLaunchPullActivity extends FirstLaunchActivity {
 
     @Override
     public void onStart() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onStart");
-        }
-
         super.onStart();
         updateView();
     }
 
     // FIXME : what does this do?
     private void updateView() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] updateView");
-        }
 
         dataEnabled.setCompoundDrawablesWithIntrinsicBounds(
                 (statusManager.isDataEnabled() | Build.FINGERPRINT.startsWith("generic")) ?
@@ -85,11 +75,6 @@ public class FirstLaunchPullActivity extends FirstLaunchActivity {
 
     private void updateRequestAdjustSettings() {
 
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] updateRequestAdjustSettings");
-        }
-
         if (Build.FINGERPRINT.startsWith("generic")){
                 setAdjustSettingsOff();
         } else {
@@ -104,11 +89,6 @@ public class FirstLaunchPullActivity extends FirstLaunchActivity {
     @TargetApi(11)
     private void setAdjustSettingsNecessary() {
 
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] setAdjustSettingsNecessary");
-        }
-
         textSettings.setText(R.string.firstLaunchPull_text_settings_necessary);
         textSettings.setVisibility(View.VISIBLE);
         buttonSettings.setVisibility(View.VISIBLE);
@@ -118,11 +98,6 @@ public class FirstLaunchPullActivity extends FirstLaunchActivity {
 
     @TargetApi(11)
     private void forbidNextButton() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] forbidNext");
-        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             buttonNext.setAlpha(0.3f);
@@ -135,12 +110,6 @@ public class FirstLaunchPullActivity extends FirstLaunchActivity {
 
     @TargetApi(11)
     private void allowNextButton() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] allowNext");
-        }
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             buttonNext.setAlpha(1f);
         } else {
@@ -155,56 +124,27 @@ public class FirstLaunchPullActivity extends FirstLaunchActivity {
     @TargetApi(11)
     private void setAdjustSettingsOff() {
 
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] setAdjustSettingsOff");
-        }
-
         textSettings.setVisibility(View.INVISIBLE);
         buttonSettings.setVisibility(View.INVISIBLE);
         buttonSettings.setClickable(false);
     }
 
     public void onClick_buttonSettings(@SuppressWarnings("UnusedParameters") View view) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onClick_buttonSettings");
-        }
-
         launchSettings();
     }
 
     private void launchSettings() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] launchSettings");
-        }
-
         Intent settingsIntent = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
         settingsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         startActivity(settingsIntent);
     }
 
     public void onClick_buttonNext(@SuppressWarnings("UnusedParameters") View view) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onClick_buttonNext");
-        }
-
         launchNextActivity(FirstLaunchMeasuresActivity.class);
     }
 
     // FIXME: this is already in QuestionsStorage
     private void loadQuestionsFromRes() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] loadQuestionsFromRes");
-        }
-
         textDownloading.setText("Downloading...");
 
         if (Build.FINGERPRINT.startsWith("generic") ) {

@@ -1,8 +1,7 @@
 package com.brainydroid.daydreaming.db;
 
 import android.location.Location;
-import android.util.Log;
-import com.brainydroid.daydreaming.ui.Config;
+import com.brainydroid.daydreaming.background.Logger;
 import com.google.gson.*;
 
 import java.lang.reflect.Type;
@@ -21,11 +20,7 @@ public class LocationSerializer implements JsonSerializer<Location> {
     public JsonElement serialize(Location src, Type typeOfSrc,
                                  JsonSerializationContext context)
             throws JsonParseException {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "serialize");
-        }
+        Logger.v(TAG, "Serializing location");
 
         JsonObject jsonSrc = new JsonObject();
         jsonSrc.addProperty(LOCATION_LATITUDE, src.getLatitude());

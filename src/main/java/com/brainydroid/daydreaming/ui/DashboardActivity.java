@@ -1,13 +1,13 @@
 package com.brainydroid.daydreaming.ui;
 
 import android.content.Intent;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.brainydroid.daydreaming.R;
+import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.background.SchedulerService;
 import roboguice.inject.ContentView;
 
@@ -18,12 +18,7 @@ public class DashboardActivity extends FirstLaunchActivity {
 
     @Override
     public void onStart() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onStart");
-        }
-
+        Logger.v(TAG, "Starting");
         //updateRunningTime();
         super.onStart();
     }
@@ -31,12 +26,7 @@ public class DashboardActivity extends FirstLaunchActivity {
     // TODO: check this is ok with real ActionBar API
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onCreateOptionsMenu");
-        }
-
+        Logger.v(TAG, "Creating options menu");
         MenuInflater menuInflater = getSupportMenuInflater();
         menuInflater.inflate(R.menu.dashboard, menu);
 
@@ -47,14 +37,11 @@ public class DashboardActivity extends FirstLaunchActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onOptionsItemSelected");
-        }
+        Logger.d(TAG, "OptionsItem selected");
 
         switch (item.getItemId()) {
         case R.id.menu_settings:
+            Logger.d(TAG, "Launching settings");
             Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
             break;
@@ -67,23 +54,12 @@ public class DashboardActivity extends FirstLaunchActivity {
 
     @Override
     public void onBackPressed() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onBackPressed");
-        }
-
-        super.onBackPressed();
-        // Don't overridePendingTransition
+        Logger.v(TAG, "Back pressed");
+        // Don't overridePendingTransition (not calling super)
     }
 
 //    // TODO: clean this up
 //    private void updateRunningTime() {
-//
-//        // Debug
-//        if (Config.LOGD) {
-//            Log.d(TAG, "[fn] updateRunningTime");
-//        }
 //
 //        // Transform string to Date object
 //        SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd G 'at' HH:mm:ss z");
@@ -116,26 +92,20 @@ public class DashboardActivity extends FirstLaunchActivity {
 
     @Override
     protected void checkFirstLaunch() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] checkFirstRun");
-        }
-
         if (!statusManager.isFirstLaunchCompleted()) {
+            Logger.i(TAG, "First launch not completed -> starting first " +
+                    "launch sequence and finishing this activity");
             Intent intent = new Intent(this, FirstLaunchWelcomeActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
             startActivity(intent);
             finish();
+        } else {
+            Logger.v(TAG, "First launch completed");
         }
     }
 
     public void runPollNow(@SuppressWarnings("UnusedParameters") View view) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] runPollNow");
-        }
+        Logger.d(TAG, "Launching a debug poll");
 
         Intent pollIntent = new Intent(this, SchedulerService.class);
         pollIntent.putExtra(SchedulerService.SCHEDULER_DEBUGGING, true);

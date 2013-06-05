@@ -3,8 +3,6 @@ package com.brainydroid.daydreaming.background;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
-import android.util.Log;
-import com.brainydroid.daydreaming.ui.Config;
 import com.google.inject.Inject;
 import roboguice.receiver.RoboBroadcastReceiver;
 
@@ -27,32 +25,29 @@ public class NetworkReceiver extends RoboBroadcastReceiver {
     @Override
     public void handleReceive(Context context, Intent intent) {
 
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onReceive");
-        }
-
-        String action = intent.getAction();
-
         // Were we called because Internet just became available?
+        String action = intent.getAction();
         if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
-
-            // Info
-            Log.i(TAG, "Received CONNECTIVITY_ACTION");
+            Logger.d(TAG, "NetworkReceiver started for CONNECTIVITY_ACTION");
 
             // If first launch hasn't been completed, the user doesn't want
             // anything yet. We also want Internet to be available.
             if (statusManager.isFirstLaunchCompleted() &&
                     statusManager.isDataEnabled()) {
-
-                // Info
-                Log.i(TAG, "first launch is completed");
-                Log.i(TAG, "starting SyncService");
+                Logger.d(TAG, "First launch is completed and data is " +
+                        "enabled");
 
                 // Start synchronizing answers
+                Logger.d(TAG, "Starting SyncService");
                 Intent syncIntent = new Intent(context, SyncService.class);
                 context.startService(syncIntent);
+            } else {
+                Logger.v(TAG, "First launch not completed or data not " +
+                        "enabled -> exiting");
             }
+        } else {
+            Logger.v(TAG, "NetworkReceived started for something different " +
+                    "than CONNECTIVITY_ACTION -> exiting");
         }
     }
 

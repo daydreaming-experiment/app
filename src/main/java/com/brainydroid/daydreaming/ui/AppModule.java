@@ -1,6 +1,6 @@
 package com.brainydroid.daydreaming.ui;
 
-import android.util.Log;
+import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.LocationPointFactory;
 import com.brainydroid.daydreaming.db.PollFactory;
 import com.brainydroid.daydreaming.db.QuestionFactory;
@@ -15,11 +15,7 @@ public class AppModule implements Module {
 
     @Override
     public void configure(Binder binder) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] configure");
-        }
+        Logger.d(TAG, "Configuring application module");
 
         binder.install(new FactoryModuleBuilder().build(PollFactory.class));
         binder.install(new FactoryModuleBuilder()

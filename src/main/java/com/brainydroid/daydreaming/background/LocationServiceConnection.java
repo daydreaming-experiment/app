@@ -5,10 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
-import android.util.Log;
-
 import com.brainydroid.daydreaming.background.LocationService.LocationServiceBinder;
-import com.brainydroid.daydreaming.ui.Config;
 import com.google.inject.Inject;
 
 /**
@@ -97,11 +94,7 @@ public class LocationServiceConnection implements ServiceConnection {
 
     @Override
     public void onServiceConnected(ComponentName name, IBinder binder) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onServiceConnected");
-        }
+        Logger.d(TAG, "LocationService connected");
 
         // Get our service and set our callbacks
         locationService = ((LocationServiceBinder)binder).getService();
@@ -109,17 +102,16 @@ public class LocationServiceConnection implements ServiceConnection {
 
         // If we can, call our ServiceConnectionCallback
         if (serviceConnectionCallback != null) {
+            Logger.d(TAG, "Calling back serviceConnectionCallback");
             serviceConnectionCallback.onServiceConnected();
+        } else {
+            Logger.v(TAG, "No serviceConnectionCallback to call");
         }
     }
 
     @Override
     public void onServiceDisconnected(ComponentName name) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onServiceDisconnected");
-        }
+        Logger.d(TAG, "LocationService disconnected");
 
         // The service is dead, forget about it
         locationService = null;
@@ -129,13 +121,7 @@ public class LocationServiceConnection implements ServiceConnection {
      * Start the {@link LocationService}.
      */
     public void startLocationService() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] startLocationService");
-        }
-
-        // Self-evident
+        Logger.d(TAG, "Starting LocationService");
         Intent locationServiceIntent = new Intent(context,
                 LocationService.class);
         context.startService(locationServiceIntent);
@@ -145,11 +131,7 @@ public class LocationServiceConnection implements ServiceConnection {
      * Bind to the {@link LocationService}.
      */
     public void bindLocationService() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] bindLocationService");
-        }
+        Logger.d(TAG, "Binding to LocationService");
 
         // Only bind if we're not waiting for a previous bindService() to
         // complete
@@ -158,6 +140,9 @@ public class LocationServiceConnection implements ServiceConnection {
                     LocationService.class);
             context.bindService(locationServiceIntent, this, 0);
             sBound = true;
+        } else {
+            Logger.v(TAG, "LocationService already binding or bound -> " +
+                    "leaving it so");
         }
     }
 
@@ -165,17 +150,16 @@ public class LocationServiceConnection implements ServiceConnection {
      * Unbind from the {@link LocationService}.
      */
     public void unbindLocationService() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] unbindLocationService");
-        }
+        Logger.d(TAG, "Unbinding from LocationService");
 
         // Only unbind if we're not waiting for a previous unbindService()
         // to complete
         if (sBound) {
             context.unbindService(this);
             sBound = false;
+        } else {
+            Logger.w(TAG, "Already unbinding or unbound from " +
+                    "LocationService -> leaving it so");
         }
     }
 
@@ -183,28 +167,30 @@ public class LocationServiceConnection implements ServiceConnection {
      * Register recorded callbacks on the {@link LocationService}.
      */
     private void setLocationServiceCallbacks() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] setLocationServiceCallbacks");
-        }
+        Logger.d(TAG, "Setting callbacks on LocationService");
 
         // If we remembered to set a LocationPoint callback,
         // do so. Then flush our memory of this.
         if (setLocationPointCallback) {
+            Logger.d(TAG, "Setting locationPointCallback");
             locationService.setLocationPointCallback(
                     locationPointCallbackToSet);
             locationPointCallbackToSet = null;
             setLocationPointCallback = false;
+        } else {
+            Logger.v(TAG, "No locationPointCallback to set");
         }
 
         // If we remembered to set a QuestionLocation callback,
         // do so. Then flush our memory of this.
         if (setQuestionLocationCallback) {
+            Logger.d(TAG, "Setting questionLocationCallback");
             locationService.setQuestionLocationCallback(
                     questionLocationCallbackToSet);
             questionLocationCallbackToSet = null;
             setQuestionLocationCallback = false;
+        } else {
+            Logger.v(TAG, "No questionLocationCallback to set");
         }
     }
 
@@ -215,12 +201,6 @@ public class LocationServiceConnection implements ServiceConnection {
      */
     public void setOnServiceConnectedCallback(
             ServiceConnectionCallback serviceConnectionCallback) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] setOnServiceConnectedCallback");
-        }
-
         this.serviceConnectionCallback = serviceConnectionCallback;
     }
 
@@ -230,19 +210,16 @@ public class LocationServiceConnection implements ServiceConnection {
      * @param callback Callback to remember
      */
     public void setLocationPointCallback(LocationCallback callback) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] setLocationPointCallback");
-        }
-
         // Set the callback straight away if possible. If not possible,
         // remember to do it later.
         if (sBound && locationService != null) {
+            Logger.d(TAG, "Setting locationPointCallback");
             locationService.setLocationPointCallback(callback);
             locationPointCallbackToSet = null;
             setLocationPointCallback = false;
         } else {
+            Logger.d(TAG, "Recording locationPointCallback for later " +
+                    "setting");
             locationPointCallbackToSet = callback;
             setLocationPointCallback = true;
         }
@@ -254,19 +231,16 @@ public class LocationServiceConnection implements ServiceConnection {
      * @param callback Callback to remember
      */
     public void setQuestionLocationCallback(LocationCallback callback) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] setQuestionLocationCallback");
-        }
-
         // Set the callback straight away if possible. If not possible,
         // remember to do it later.
         if (sBound && locationService != null) {
+            Logger.d(TAG, "Setting questionLocationCallback");
             locationService.setQuestionLocationCallback(callback);
             questionLocationCallbackToSet = null;
             setQuestionLocationCallback = false;
         } else {
+            Logger.d(TAG, "Recording questionLocationCallback for later " +
+                    "setting");
             questionLocationCallbackToSet = callback;
             setQuestionLocationCallback = true;
         }
@@ -276,12 +250,7 @@ public class LocationServiceConnection implements ServiceConnection {
      * Remember to clear {@code LocationPoint} callback when possible.
      */
     public void clearLocationPointCallback() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] clearLocationPointCallback");
-        }
-
+        Logger.d(TAG, "Clearing locationPointCallback");
         setLocationPointCallback(null);
     }
 
@@ -289,12 +258,7 @@ public class LocationServiceConnection implements ServiceConnection {
      * Remember to clear {@code QuestionLocation} callback when possible.
      */
     public void clearQuestionLocationCallback() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] clearQuestionLocationCallback");
-        }
-
+        Logger.d(TAG, "Clearing questionLocationCallback");
         setQuestionLocationCallback(null);
     }
 

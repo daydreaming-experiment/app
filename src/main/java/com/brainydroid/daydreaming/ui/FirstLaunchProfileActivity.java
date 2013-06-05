@@ -1,15 +1,12 @@
 package com.brainydroid.daydreaming.ui;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 import com.brainydroid.daydreaming.R;
-import com.google.inject.Inject;
+import com.brainydroid.daydreaming.background.Logger;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
@@ -18,22 +15,18 @@ public class FirstLaunchProfileActivity extends FirstLaunchActivity {
 
     private static String TAG = "FirstLaunchProfileActivity";
 
-    public static String PROFILE_AGE = "profileAge";
-    public static String PROFILE_GENDER = "profileGender";
+//    public static String PROFILE_AGE = "profileAge";
+//    public static String PROFILE_GENDER = "profileGender";
 
     //@InjectView(R.id.firstLaunchProfile_editAge) EditText ageEditText;
     @InjectView(R.id.firstLaunchProfile_genderSpinner) Spinner genderSpinner;
     @InjectView(R.id.firstLaunchProfile_educationSpinner) Spinner educationSpinner;
     @InjectView(R.id.firstLaunchProfile_ageSpinner) Spinner ageSpinner;
-    @Inject SharedPreferences sharedPreferences;
+//    @Inject SharedPreferences sharedPreferences;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onCreate");
-        }
+        Logger.v(TAG, "Creating");
 
         super.onCreate(savedInstanceState);
 
@@ -56,40 +49,37 @@ public class FirstLaunchProfileActivity extends FirstLaunchActivity {
     }
 
     public void onClick_buttonNext(@SuppressWarnings("UnusedParameters") View view) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] onClick_buttonNext");
-        }
+        Logger.v(TAG, "Next button clicked");
 
         if (!checkForm()) {
+            Logger.d(TAG, "Form check failed");
             Toast.makeText(this, getString(R.string.firstLaunchProfile_fix_age),
                     Toast.LENGTH_SHORT).show();
         } else {
+            Logger.i(TAG, "Saving profile information to shared " +
+                    "preferences");
 
-            SharedPreferences.Editor editor = sharedPreferences.edit();
+      //      SharedPreferences.Editor editor = sharedPreferences.edit();
       //      editor.putInt(PROFILE_AGE, Integer.parseInt(ageEditText.getText().toString()));
       //      editor.putString(PROFILE_GENDER, genderSpinner.toString());
       //      editor.commit();
 
-            Toast.makeText(this, genderSpinner.getSelectedItem().toString() +
-                    ", " + ageSpinner.getSelectedItem().toString(), Toast.LENGTH_LONG).show();
+            Logger.td(this, "{0}, {1}",
+                    genderSpinner.getSelectedItem().toString(),
+                    ageSpinner.getSelectedItem().toString());
+            Logger.d(TAG, "Launching next activity");
             launchNextActivity(FirstLaunchPullActivity.class);
         }
     }
 
     private boolean checkForm() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] checkForm");
-        }
-
         try {
       //      int age = Integer.parseInt(ageEditText.getText().toString());
       //      return (5 <= age && age <= 100);
             return true; // to change
         } catch (NumberFormatException e) {
+            Logger.d(TAG, "Form does not contain a number -> returning " +
+                    "failure");
             return false;
         }
     }
