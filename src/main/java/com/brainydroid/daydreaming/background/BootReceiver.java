@@ -14,6 +14,8 @@ import roboguice.receiver.RoboBroadcastReceiver;
  *
  * @author Sébastien Lerique
  * @author Vincent Adam
+ * @see SchedulerService
+ * @see LocationPointService
  */
 public class BootReceiver extends RoboBroadcastReceiver {
 

@@ -37,7 +37,7 @@ public class StatusManager {
     private SharedPreferences.Editor eSharedPreferences;
 
     /**
-     * Initialize the {@code SharedPreferences} editor.
+     * Initialize the {@link SharedPreferences} editor.
      */
     @Inject
     public StatusManager(SharedPreferences sharedPreferences) {
@@ -102,7 +102,7 @@ public class StatusManager {
     /**
      * Check if {@link LocationService} is running.
      *
-     * @return {@code true} if {@code LocationService} is running,
+     * @return {@code true} if {@link LocationService} is running,
      *         {@code false} otherwise
      */
     public boolean isLocationServiceRunning() {

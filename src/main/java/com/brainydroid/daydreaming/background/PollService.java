@@ -22,6 +22,9 @@ import java.util.ArrayList;
  *
  * @author Sébastien Lerique
  * @author Vincent Adam
+ * @see Poll
+ * @see SchedulerService
+ * @see SyncService
  */
 public class PollService extends RoboService {
 
@@ -59,9 +62,9 @@ public class PollService extends RoboService {
     }
 
     /**
-     * Create the {@link QuestionActivity} {@code Intent}.
+     * Create the {@link QuestionActivity} {@link Intent}.
      *
-     * @return An {@code Intent} to launch our {@link Poll}
+     * @return An {@link Intent} to launch our {@link Poll}
      */
     private Intent createPollIntent() {
         Logger.d(TAG, "Creating poll Intent");
