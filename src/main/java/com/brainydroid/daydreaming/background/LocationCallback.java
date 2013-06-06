@@ -7,6 +7,10 @@ import android.location.Location;
  *
  * @author Sébastien Lerique
  * @author Vincent Adam
+ * @see com.brainydroid.daydreaming.db.LocationPoint
+ * @see com.brainydroid.daydreaming.db.Question
+ * @see LocationService
+ * @see LocationServiceConnection
  */
 public interface LocationCallback {
 

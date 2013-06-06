@@ -12,6 +12,12 @@ import com.google.inject.Inject;
  *
  * @author Sébastien Lerique
  * @author Vincent Adam
+ * @see Model
+ * @see StatusModel
+ * @see ModelStorage
+ * @see StatusModelStorage
+ * @see LocationPointsStorage
+ * @see com.brainydroid.daydreaming.background.LocationPointService
  */
 public final class LocationPoint extends
         StatusModel<LocationPoint,LocationPointsStorage> {
@@ -26,20 +32,28 @@ public final class LocationPoint extends
     @Expose private double locationAccuracy = -1;
     @Expose private long timestamp = -1;
 
-    // Fields used for saving a LocationPoint to a database
+    /** Column name for location latitude in the database */
     public static final String COL_LOCATION_LATITUDE =
             "locationLocationLatitude";
+    /** Column name for location longitude in the database */
     public static final String COL_LOCATION_LONGITUDE =
             "locationLocationLongitude";
+    /** Column name for location altitude in the database */
     public static final String COL_LOCATION_ALTITUDE =
             "locationLocationAltitude";
+    /** Column name for location accuracy in the database */
     public static final String COL_LOCATION_ACCURACY =
             "locationLocationAccuracy";
+    /** Column name for location timestamp in the database */
     public static final String COL_TIMESTAMP = "locationTimestamp";
 
-    // Represents the current state of the LocationPoint: being collected,
-    // or finished.
+    /** Status string if the {@link LocationPoint} is collecting location
+     * data
+     */
     public static final String STATUS_COLLECTING = "statusCollecting";
+    /** Status string if the {@link LocationPoint} is done collecting
+     * location data
+     */
     public static final String STATUS_COMPLETED = "statusCompleted";
 
     // Our database for LocationPoints

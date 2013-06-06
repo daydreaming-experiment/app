@@ -12,6 +12,8 @@ import java.lang.reflect.Type;
  *
  * @author Sébastien Lerique
  * @author Vincent Adam
+ * @see Location
+ * @see LocationSerializer
  */
 public class LocationDeserializer implements JsonDeserializer<Location> {
 

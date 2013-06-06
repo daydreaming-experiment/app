@@ -10,6 +10,7 @@ package com.brainydroid.daydreaming.db;
  *
  * @author Sébastien Lerique
  * @author Vincent Adam
+ * @see LocationPoint
  */
 public interface LocationPointFactory {
 

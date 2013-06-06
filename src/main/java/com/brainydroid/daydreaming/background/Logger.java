@@ -14,9 +14,13 @@ import java.text.MessageFormat;
  */
 public class Logger {
 
+    /** Whether to show debug toasts or not */
     public static boolean TOASTD = true;
+    /** Whether to log at info level or not */
     public static boolean LOGI = true;
+    /** Whether to log at debug level or not */
     public static boolean LOGD = true;
+    /** Whether to log at verbose level or not */
     public static boolean LOGV = true;
 
     /**

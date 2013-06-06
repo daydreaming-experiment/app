@@ -11,6 +11,7 @@ import java.util.ArrayList;
  *
  * @author Sébastien Lerique
  * @author Vincent Adam
+ * @see LocationPoint
  */
 public class LocationPointsArray {
 

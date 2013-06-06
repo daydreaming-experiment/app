@@ -15,6 +15,11 @@ import java.util.ArrayList;
  *
  * @author Sébastien Lerique
  * @author Vincent Adam
+ * @see Model
+ * @see StatusModel
+ * @see ModelStorage
+ * @see StatusModelStorage
+ * @see LocationPoint
  */
 @Singleton
 public final class LocationPointsStorage extends
@@ -105,8 +110,8 @@ public final class LocationPointsStorage extends
 
     /**
      * Retrieve uploadable {@link LocationPoint}s,
-     * that is {@link LocationPoint}s that have a status of {@code
-     * STATUS_COMPLETED}.
+     * that is {@link LocationPoint}s that have a status of {@link
+     * LocationPoint#STATUS_COMPLETED}.
      *
      * @return An {@link ArrayList} of completed {@link LocationPoint}s
      */
@@ -118,8 +123,8 @@ public final class LocationPointsStorage extends
 
     /**
      * Retrieve {@link LocationPoint}s marked as currently collecting
-     * location data. Those are the {@link LocationPoint}s that have a {@code
-     * STATUS_COLLECTING} status.
+     * location data. Those are the {@link LocationPoint}s that have a {@link
+     * LocationPoint#STATUS_COLLECTING} status.
      *
      * @return An {@link ArrayList} of currently collecting {@link
      *         LocationPoint}s

@@ -23,6 +23,8 @@ import java.util.Random;
  *
  * @author Sébastien Lerique
  * @author Vincent Adam
+ * @see SyncService
+ * @see PollService
  */
 public class SchedulerService extends RoboService {
 
@@ -159,8 +161,8 @@ public class SchedulerService extends RoboService {
      * time line where the beginning of a forbidden time window is the same
      * moment as the end of that forbidden time window,
      * and do the scheduling on that time line ; the result of this method
-     * is the same (see {@code makeRespectfulDelay()} and {@code
-     * makeRespectfulExpansion()} for details).
+     * is the same (see {@link #makeRespectfulDelay} and {@link
+     * #makeRespectfulExpansion} for details).
      *
      * @param debugging Set to {@link true} to get a fixed short delay for
      *                  the notification instead of a random delay
@@ -235,7 +237,7 @@ public class SchedulerService extends RoboService {
      * <p/>
      * To do this, we look at each forbidden time window as if it were a
      * unique instant (we "compactify" them). This logic is implemented in
-     * a recursive call to {@code makeRespectfulExpansion()}.
+     * a recursive call to {@link #makeRespectfulExpansion}.
      *
      * @param delay Initial delay to make respectful of user's settings
      * @return Resulting respectful delay

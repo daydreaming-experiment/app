@@ -40,6 +40,11 @@ import roboguice.service.RoboService;
  *
  * @author Sébastien Lerique
  * @author Vincent Adam
+ * @see LocationServiceConnection
+ * @see LocationCallback
+ * @see ServiceConnectionCallback
+ * @see com.brainydroid.daydreaming.db.LocationPoint
+ * @see com.brainydroid.daydreaming.db.Question
  */
 public class LocationService extends RoboService {
 

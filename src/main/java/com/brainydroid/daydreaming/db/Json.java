@@ -21,6 +21,11 @@ import javax.inject.Inject;
  *
  * @author Sébastien Lerique
  * @author Vincent Adam
+ * @see AnswerDeserializer
+ * @see QuestionDetailsDeserializer
+ * @see QuestionInstanceCreator
+ * @see LocationDeserializer
+ * @see LocationSerializer
  */
 @Singleton
 public class Json {

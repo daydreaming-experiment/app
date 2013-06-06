@@ -22,6 +22,9 @@ import java.util.ArrayList;
  *
  * @author Sébastien Lerique
  * @author Vincent Adam
+ * @see Poll
+ * @see SchedulerService
+ * @see SyncService
  */
 public class PollService extends RoboService {
 

@@ -24,19 +24,19 @@ import com.google.inject.Inject;
  * There are two use cases:
  * <ul>
  *     <li>{@link LocationPointService}: needs to start the {@link
- *     LocationService} ({@code startLocationService()}),
+ *     LocationService} ({@link #startLocationService}),
  *     register a callback on it and stop itself. Registering the callback
  *     is done through this {@link LocationServiceConnection}, as follows:
  *     <ol>
- *         <li>Record the callback to be set, with {@code
- *         setLocationPointCallback()}</li>
- *         <li>Create and register ({@code
- *         setOnServiceConnectionCallback()}) a {@link
+ *         <li>Record the callback to be set, with {@link
+ *         #setLocationPointCallback}</li>
+ *         <li>Create and register ({@link
+ *         #setOnServiceConnectedCallback}) a {@link
  *         ServiceConnectionCallback} to stop the {@link
- *         LocationPointService} and unbind ({@code
- *         unbindLocationService()})</li>
+ *         LocationPointService} and unbind ({@link
+ *         #unbindLocationService})</li>
  *         <li>Bind the {@link LocationService} to pass the message
- *         ({@code bindLocationService()}) ; once bound,
+ *         ({@link #bindLocationService}) ; once bound,
  *         the {@link ServiceConnectionCallback} stops the
  *         {@link LocationPointService} and unbinds. The {@link
  *         LocationService} keeps running on its own,
@@ -47,7 +47,7 @@ import com.google.inject.Inject;
  *     if no other listeners are registered (i.e. if no {@link
  *     com.brainydroid.daydreaming.ui.QuestionActivity} is listening for
  *     updates). This is done with the same procedure: record the message
- *     to pass ({@code clearLocationPointCallback()}),
+ *     to pass ({@link #clearLocationPointCallback}),
  *     set a {@link ServiceConnectionCallback} to stop the {@link
  *     LocationPointService} and unbind, then bind to start the chain of
  *     callbacks.</li>
@@ -67,6 +67,11 @@ import com.google.inject.Inject;
  *
  * @author Sébastien Lerique
  * @author Vincent Adam
+ * @see LocationService
+ * @see LocationCallback
+ * @see ServiceConnectionCallback
+ * @see com.brainydroid.daydreaming.db.LocationPoint
+ * @see com.brainydroid.daydreaming.db.Question
  */
 public class LocationServiceConnection implements ServiceConnection {
 

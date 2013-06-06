@@ -19,12 +19,12 @@ import java.util.ArrayList;
  * Start and manage {@link LocationService} to obtain a {@link
  * LocationPoint}.
  * <p/>
- * The service starts {@link LocationService} and lets it listen for {@code
- * LISTENING_TIME} milliseconds. That is, it starts the {@link
+ * The service starts {@link LocationService} and lets it listen for {@link
+ * #LISTENING_TIME} milliseconds. That is, it starts the {@link
  * LocationService} and schedules itself ({@link LocationPointService}) to
  * start again later to stop that same {@link LocationService} after the
  * listening period. When stopping the listener, it also schedules itself
- * to start again after {@code SAMPLE_INTERVAL} milliseconds for the next
+ * to start again after {@link #SAMPLE_INTERVAL} milliseconds for the next
  * listening period.
  * <p/>
  * {@link LocationService} is only ever started if data and location
@@ -32,6 +32,9 @@ import java.util.ArrayList;
  *
  * @author Sébastien Lerique
  * @author Vincent Adam
+ * @see LocationPoint
+ * @see LocationService
+ * @see LocationServiceConnection
  */
 public class LocationPointService extends RoboService {
 
