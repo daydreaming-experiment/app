@@ -13,7 +13,7 @@ public interface LocationCallback {
     /**
      * Should be called by the class having received location information.
      *
-     * @param location The {@code Location} received.
+     * @param location The {@link Location} received
      */
     public void onLocationReceived(Location location);
 
