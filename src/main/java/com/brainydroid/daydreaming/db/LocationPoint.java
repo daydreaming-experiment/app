@@ -7,7 +7,8 @@ import com.google.inject.Inject;
 
 /**
  * Hold information about a collected location, including GPS coordinates and
- * timestamp.
+ * timestamp. This class inherits its model-oriented logic from {@link
+ * StatusModel}.
  *
  * @author Sébastien Lerique
  * @author Vincent Adam
