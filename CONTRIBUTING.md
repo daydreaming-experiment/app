@@ -74,14 +74,21 @@ Next, configure the environment variable telling the system where the
 Android SDK lives ; do that by first running the following commands:
 
 ```sh
-export ANDROID_HOME="$(pwd)/android-sdk-linux"
+export ANDROID_HOME="<absolute-path-to-parent-folder-of-android-sdk>/android-sdk-linux"
 export PATH="${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools:${ANDROID_HOME}/build-tools/17.0.0"
 ```
 
-then by adding those same two lines at the end of your `.bashrc` (or
-`.bash_aliases`, or `.profile`, or zsh equivalents). That way the
-environment variables will be set in all your future command line
-sessions.
+where you replace `<absolute-path-to-parent-folder-of-android-sdk>` by
+the absolute path to the folder containing your Android SDK folder,
+obviously (that should be the output of the `pwd` command, if you
+haven't moved from where you untared the SDK). Next, add those same two
+lines at the end of your `.bashrc` (or `.bash_aliases`, or `.profile`,
+or zsh equivalents). That way the environment variables will be set in
+all your future command line sessions. Once you've done that you should
+be able to call the `android` command from any folder at the command
+line, and it will show you some help on that command (it comes from the
+SDK). If instead you're greeted with a `command not found`, something's
+wrong with that part of the configuration.
 
 Now, install the necessary SDK packages by running the following command
 (from any folder):

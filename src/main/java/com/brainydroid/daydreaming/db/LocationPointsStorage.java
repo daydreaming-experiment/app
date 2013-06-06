@@ -27,20 +27,34 @@ public final class LocationPointsStorage extends
 
     private static String TAG = "LocationPointsStorage";
 
+    /** Column name for {@link LocationPoint} latitude in the database */
+    public static final String COL_LOCATION_LATITUDE =
+            "locationLocationLatitude";
+    /** Column name for {@link LocationPoint} longitude in the database */
+    public static final String COL_LOCATION_LONGITUDE =
+            "locationLocationLongitude";
+    /** Column name for {@link LocationPoint} altitude in the database */
+    public static final String COL_LOCATION_ALTITUDE =
+            "locationLocationAltitude";
+    /** Column name for {@link LocationPoint} accuracy in the database */
+    public static final String COL_LOCATION_ACCURACY =
+            "locationLocationAccuracy";
+    /** Column name for {@link LocationPoint} timestamp in the database */
+    public static final String COL_TIMESTAMP = "locationTimestamp";
+
     // Table name for our location points
     private static final String TABLE_LOCATION_POINTS = "locationPoints";
 
     // SQL command to create the table
     private static final String SQL_CREATE_TABLE_LOCATIONS =
             "CREATE TABLE IF NOT EXISTS " + TABLE_LOCATION_POINTS + " (" +
-                    LocationPoint.COL_ID +
-                        " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    LocationPoint.COL_STATUS + " TEXT NOT NULL, " +
-                    LocationPoint.COL_LOCATION_LATITUDE + " REAL, " +
-                    LocationPoint.COL_LOCATION_LONGITUDE + " REAL, " +
-                    LocationPoint.COL_LOCATION_ALTITUDE + " REAL, " +
-                    LocationPoint.COL_LOCATION_ACCURACY + " REAL, " +
-                    LocationPoint.COL_TIMESTAMP + " REAL" +
+                    COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    COL_STATUS + " TEXT NOT NULL, " +
+                    COL_LOCATION_LATITUDE + " REAL, " +
+                    COL_LOCATION_LONGITUDE + " REAL, " +
+                    COL_LOCATION_ALTITUDE + " REAL, " +
+                    COL_LOCATION_ACCURACY + " REAL, " +
+                    COL_TIMESTAMP + " REAL" +
                     ");";
 
     @Inject LocationPointFactory locationPointFactory;
@@ -69,15 +83,15 @@ public final class LocationPointsStorage extends
 
         // Only add values relative to this level. I.e. id and status are set
         // in the parent classes.
-        locationPointValues.put(LocationPoint.COL_LOCATION_LATITUDE,
+        locationPointValues.put(COL_LOCATION_LATITUDE,
                 locationPoint.getLocationLatitude());
-        locationPointValues.put(LocationPoint.COL_LOCATION_LONGITUDE,
+        locationPointValues.put(COL_LOCATION_LONGITUDE,
                 locationPoint.getLocationLongitude());
-        locationPointValues.put(LocationPoint.COL_LOCATION_ALTITUDE,
+        locationPointValues.put(COL_LOCATION_ALTITUDE,
                 locationPoint.getLocationAltitude());
-        locationPointValues.put(LocationPoint.COL_LOCATION_ACCURACY,
+        locationPointValues.put(COL_LOCATION_ACCURACY,
                 locationPoint.getLocationAccuracy());
-        locationPointValues.put(LocationPoint.COL_TIMESTAMP,
+        locationPointValues.put(COL_TIMESTAMP,
                 locationPoint.getTimestamp());
         return locationPointValues;
     }
@@ -97,15 +111,15 @@ public final class LocationPointsStorage extends
         // Only populate with values relative to this level. As in
         // getModelValues(), id and status are set in the parent classes.
         locationPoint.setLocationLatitude(res.getDouble(
-                res.getColumnIndex(LocationPoint.COL_LOCATION_LATITUDE)));
+                res.getColumnIndex(COL_LOCATION_LATITUDE)));
         locationPoint.setLocationLongitude(res.getDouble(
-                res.getColumnIndex(LocationPoint.COL_LOCATION_LONGITUDE)));
+                res.getColumnIndex(COL_LOCATION_LONGITUDE)));
         locationPoint.setLocationAltitude(res.getDouble(
-                res.getColumnIndex(LocationPoint.COL_LOCATION_ALTITUDE)));
+                res.getColumnIndex(COL_LOCATION_ALTITUDE)));
         locationPoint.setLocationAccuracy(res.getDouble(
-                res.getColumnIndex(LocationPoint.COL_LOCATION_ACCURACY)));
+                res.getColumnIndex(COL_LOCATION_ACCURACY)));
         locationPoint.setTimestamp(res.getLong(
-                res.getColumnIndex(LocationPoint.COL_TIMESTAMP)));
+                res.getColumnIndex(COL_TIMESTAMP)));
     }
 
     /**

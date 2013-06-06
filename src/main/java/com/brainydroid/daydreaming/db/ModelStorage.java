@@ -13,6 +13,9 @@ public abstract class ModelStorage<M extends Model<M,S>,
 
     private static String TAG = "ModelStorage";
 
+    /** Column name for the {@link Model#id} in the database */
+    public static final String COL_ID = "id";
+
     private final SQLiteDatabase db;
 
     protected abstract String[] getTableCreationStrings();
@@ -37,7 +40,7 @@ public abstract class ModelStorage<M extends Model<M,S>,
         Logger.v(TAG, "Getting model values with id");
 
         ContentValues modelValues = getModelValues(model);
-        modelValues.put(Model.COL_ID, model.getId());
+        modelValues.put(COL_ID, model.getId());
         return modelValues;
     }
 
@@ -49,10 +52,10 @@ public abstract class ModelStorage<M extends Model<M,S>,
         ContentValues modelValues = getModelValues(model);
         db.insert(getMainTable(), null, modelValues);
 
-        Cursor res = db.query(getMainTable(), new String[] {Model.COL_ID},
-                null, null, null, null, Model.COL_ID + " DESC", "1");
+        Cursor res = db.query(getMainTable(), new String[] {COL_ID},
+                null, null, null, null, COL_ID + " DESC", "1");
         res.moveToFirst();
-        int modelId = res.getInt(res.getColumnIndex(Model.COL_ID));
+        int modelId = res.getInt(res.getColumnIndex(COL_ID));
         res.close();
 
         Logger.v(TAG, "New model id is {0}", modelId);
@@ -63,7 +66,7 @@ public abstract class ModelStorage<M extends Model<M,S>,
         int modelId = model.getId();
         Logger.d(TAG, "Updating model {0} in db", modelId);
         ContentValues modelValues = getModelValuesWithId(model);
-        db.update(getMainTable(), modelValues, Model.COL_ID + "=?",
+        db.update(getMainTable(), modelValues, COL_ID + "=?",
                 new String[]{Integer.toString(modelId)});
     }
 
@@ -74,7 +77,7 @@ public abstract class ModelStorage<M extends Model<M,S>,
     public M get(int modelId) {
         Logger.d(TAG, "Retrieving model {0} from db", modelId);
 
-        Cursor res = db.query(getMainTable(), null, Model.COL_ID + "=?",
+        Cursor res = db.query(getMainTable(), null, COL_ID + "=?",
                 new String[] {Integer.toString(modelId)}, null, null, null);
         if (!res.moveToFirst()) {
             res.close();
@@ -83,7 +86,7 @@ public abstract class ModelStorage<M extends Model<M,S>,
 
         M model = create();
         populateModel(modelId, model, res);
-        model.setId(res.getInt(res.getColumnIndex(Model.COL_ID)));
+        model.setId(res.getInt(res.getColumnIndex(COL_ID)));
         res.close();
 
         return model;
@@ -91,7 +94,7 @@ public abstract class ModelStorage<M extends Model<M,S>,
 
     public void remove(int modelId) {
         Logger.d(TAG, "Removing model {0} from db", modelId);
-        db.delete(getMainTable(), LocationPoint.COL_ID + "=?",
+        db.delete(getMainTable(), COL_ID + "=?",
                 new String[]{Integer.toString(modelId)});
     }
 

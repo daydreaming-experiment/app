@@ -38,9 +38,6 @@ public abstract class Model<M extends Model<M,S>,
     // These members don't need to be serialized
     private transient int id = -1;
 
-    /** Column name for {@link #id} member in the database */
-    public static final String COL_ID = "id";
-
     /**
      * Set the {@link Model}'s id, used for database ordering and indexing.
      * <p/>
