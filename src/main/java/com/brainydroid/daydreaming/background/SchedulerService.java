@@ -17,12 +17,14 @@ import java.util.Random;
 
 /**
  * Schedule a {@link com.brainydroid.daydreaming.db.Poll} to be created and
- * notified later on. The delay before creation-notification of the {@code
- * Poll} is both well randomized (a Poisson process) and respectful of the
- * user's notification settings.
+ * notified later on. The delay before creation-notification of the {@link
+ * com.brainydroid.daydreaming.db.Poll} is both well randomized (a Poisson
+ * process) and respectful of the user's notification settings.
  *
  * @author Sébastien Lerique
  * @author Vincent Adam
+ * @see SyncService
+ * @see PollService
  */
 public class SchedulerService extends RoboService {
 
@@ -86,7 +88,7 @@ public class SchedulerService extends RoboService {
      * Schedule a {@link com.brainydroid.daydreaming.db.Poll} to be created
      * and notified by {@link PollService} later on.
      *
-     * @param debugging Set to {@code true} for a fixed short delay before
+     * @param debugging Set to {@link true} for a fixed short delay before
      *                  notification
      */
     private void schedulePoll(boolean debugging) {
@@ -153,16 +155,16 @@ public class SchedulerService extends RoboService {
      * com.brainydroid.daydreaming.db.Poll} should appear.
      * <p/>
      * A delay is sampled from an exponential distribution with parameter
-     * {@code 1 / MEAN_DELAY}, and is then prolonged to observe the user's
+     * {@link 1 / MEAN_DELAY}, and is then prolonged to observe the user's
      * preferences in notification time window. This is done by
      * "compactifying" each prohibited time window to one point: imagine a
      * time line where the beginning of a forbidden time window is the same
      * moment as the end of that forbidden time window,
      * and do the scheduling on that time line ; the result of this method
-     * is the same (see {@code makeRespectfulDelay()} and {@code
-     * makeRespectfulExpansion()} for details).
+     * is the same (see {@link #makeRespectfulDelay} and {@link
+     * #makeRespectfulExpansion} for details).
      *
-     * @param debugging Set to {@code true} to get a fixed short delay for
+     * @param debugging Set to {@link true} to get a fixed short delay for
      *                  the notification instead of a random delay
      * @return Scheduled (and shifted) moment for the poll to appear,
      *         in milliseconds from epoch
@@ -213,7 +215,7 @@ public class SchedulerService extends RoboService {
 
     /**
      * Sample a delay following an exponential distribution with parameter
-     * {@code 1 / MEAN_DELAY}.
+     * {@link 1 / MEAN_DELAY}.
      *
      * @return Sampled delay in milliseconds
      */
@@ -235,7 +237,7 @@ public class SchedulerService extends RoboService {
      * <p/>
      * To do this, we look at each forbidden time window as if it were a
      * unique instant (we "compactify" them). This logic is implemented in
-     * a recursive call to {@code makeRespectfulExpansion()}.
+     * a recursive call to {@link #makeRespectfulExpansion}.
      *
      * @param delay Initial delay to make respectful of user's settings
      * @return Resulting respectful delay

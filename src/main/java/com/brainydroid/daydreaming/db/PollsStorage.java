@@ -14,24 +14,26 @@ public final class PollsStorage extends StatusModelStorage<Poll,
 
     private static String TAG = "PollsStorage";
 
+    public static final String COL_NOTIFICATION_TIMESTAMP = "pollNotificationTimestamp";
+
     private static final String TABLE_POLLS = "polls";
     private static final String TABLE_POLL_QUESTIONS = "pollQuestions";
 
     private static final String SQL_CREATE_TABLE_POLLS =
             "CREATE TABLE IF NOT EXISTS " + TABLE_POLLS + " (" +
-                    Poll.COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    Poll.COL_STATUS + " TEXT NOT NULL, " +
-                    Poll.COL_NOTIFICATION_TIMESTAMP + " REAL" +
+                    COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    COL_STATUS + " TEXT NOT NULL, " +
+                    COL_NOTIFICATION_TIMESTAMP + " REAL" +
                     ");";
 
     private static final String SQL_CREATE_TABLE_POLL_QUESTIONS =
             "CREATE TABLE IF NOT EXISTS " + TABLE_POLL_QUESTIONS + " (" +
-                    Poll.COL_ID + " INTEGER NOT NULL, " +
-                    Question.COL_NAME + " TEXT NOT NULL, " +
-                    Question.COL_STATUS + " TEXT, " +
-                    Question.COL_ANSWER + " TEXT, " +
-                    Question.COL_LOCATION + " TEXT, " +
-                    Question.COL_TIMESTAMP + " REAL" +
+                    COL_ID + " INTEGER NOT NULL, " +
+                    QuestionsStorage.COL_NAME + " TEXT NOT NULL, " +
+                    QuestionsStorage.COL_STATUS + " TEXT, " +
+                    QuestionsStorage.COL_ANSWER + " TEXT, " +
+                    QuestionsStorage.COL_LOCATION + " TEXT, " +
+                    QuestionsStorage.COL_TIMESTAMP + " REAL" +
                     ");";
 
     @Inject QuestionsStorage questionsStorage;
@@ -53,7 +55,7 @@ public final class PollsStorage extends StatusModelStorage<Poll,
         Logger.v(TAG, "Building poll values");
 
         ContentValues pollValues = super.getModelValues(poll);
-        pollValues.put(Poll.COL_NOTIFICATION_TIMESTAMP,
+        pollValues.put(COL_NOTIFICATION_TIMESTAMP,
                 poll.getNotificationTimestamp());
         return pollValues;
     }
@@ -74,12 +76,12 @@ public final class PollsStorage extends StatusModelStorage<Poll,
                 question.getName());
 
         ContentValues qValues = new ContentValues();
-        qValues.put(Poll.COL_ID, pollId);
-        qValues.put(Question.COL_NAME, question.getName());
-        qValues.put(Question.COL_STATUS, question.getStatus());
-        qValues.put(Question.COL_ANSWER, question.getAnswerAsJson());
-        qValues.put(Question.COL_LOCATION, question.getLocationAsJson());
-        qValues.put(Question.COL_TIMESTAMP, question.getTimestamp());
+        qValues.put(COL_ID, pollId);
+        qValues.put(QuestionsStorage.COL_NAME, question.getName());
+        qValues.put(QuestionsStorage.COL_STATUS, question.getStatus());
+        qValues.put(QuestionsStorage.COL_ANSWER, question.getAnswerAsJson());
+        qValues.put(QuestionsStorage.COL_LOCATION, question.getLocationAsJson());
+        qValues.put(QuestionsStorage.COL_TIMESTAMP, question.getTimestamp());
         return qValues;
     }
 
@@ -106,7 +108,7 @@ public final class PollsStorage extends StatusModelStorage<Poll,
         for (Question q : poll.getQuestions()) {
             ContentValues qValues = getQuestionValues(pollId, q);
             getDb().update(TABLE_POLL_QUESTIONS, qValues,
-                    Poll.COL_ID + "=? AND " + Question.COL_NAME + "=?",
+                    COL_ID + "=? AND " + QuestionsStorage.COL_NAME + "=?",
                     new String[] {Integer.toString(pollId), q.getName()});
         }
     }
@@ -117,10 +119,10 @@ public final class PollsStorage extends StatusModelStorage<Poll,
 
         super.populateModel(pollId, poll, res);
         poll.setNotificationTimestamp(res.getLong(
-                res.getColumnIndex(Poll.COL_NOTIFICATION_TIMESTAMP)));
+                res.getColumnIndex(COL_NOTIFICATION_TIMESTAMP)));
 
         Cursor qRes = getDb().query(TABLE_POLL_QUESTIONS, null,
-                Poll.COL_ID + "=?",
+                COL_ID + "=?",
                 new String[] {Integer.toString(pollId)}, null, null, null);
         if (!qRes.moveToFirst()) {
             qRes.close();
@@ -129,15 +131,15 @@ public final class PollsStorage extends StatusModelStorage<Poll,
 
         do {
             Question q = questionsStorage.get(qRes.getString(
-                    qRes.getColumnIndex(Question.COL_NAME)));
+                    qRes.getColumnIndex(QuestionsStorage.COL_NAME)));
             q.setStatus(qRes.getString(
-                    qRes.getColumnIndex(Question.COL_STATUS)));
+                    qRes.getColumnIndex(QuestionsStorage.COL_STATUS)));
             q.setAnswerFromJson(qRes.getString(
-                    qRes.getColumnIndex(Question.COL_ANSWER)));
+                    qRes.getColumnIndex(QuestionsStorage.COL_ANSWER)));
             q.setLocationFromJson(qRes.getString(
-                    qRes.getColumnIndex(Question.COL_LOCATION)));
+                    qRes.getColumnIndex(QuestionsStorage.COL_LOCATION)));
             q.setTimestamp(qRes.getLong(
-                    qRes.getColumnIndex(Question.COL_TIMESTAMP)));
+                    qRes.getColumnIndex(QuestionsStorage.COL_TIMESTAMP)));
 
             poll.addQuestion(q);
         } while (qRes.moveToNext());
@@ -158,7 +160,7 @@ public final class PollsStorage extends StatusModelStorage<Poll,
     @Override
     public void remove(int pollId) {
         Logger.d(TAG, "Removing poll {0} from db (and questions)", pollId);
-        getDb().delete(TABLE_POLL_QUESTIONS, Poll.COL_ID + "=?",
+        getDb().delete(TABLE_POLL_QUESTIONS, COL_ID + "=?",
                 new String[]{Integer.toString(pollId)});
     }
 

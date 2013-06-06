@@ -15,30 +15,36 @@ import roboguice.service.RoboService;
  * <p/>
  * This service is started by using {@link LocationServiceConnection},
  * which can bind, start, unbind. Callbacks for the location updates are
- * also registered through the {@code LocationServiceConnection}.
+ * also registered through the {@link LocationServiceConnection}.
  * <p/>
  * The lifecycle is as follows: a {@code Service} or an {@code Activity} (in
  * practice {@link LocationPointService} or {@link
  * com.brainydroid.daydreaming.ui.QuestionActivity} wants to obtain some
  * location data. To do so it needs to listen for a given period of time to
  * leave the time to the location backend to acquire a proper location. So
- * it will start {@code LocationService} (through the {@code
+ * it will start {@link LocationService} (through the {@link
  * LocationServiceConnection}) and register a callback to be called when
  * location updates are received. When it has waited long enough,
- * it will un-register its callback on the {@code LocationService} (again
- * through the {@code LocationServiceConnection}). The {@code
+ * it will un-register its callback on the {@link LocationService} (again
+ * through the {@link LocationServiceConnection}). The {@link
  * LocationService} will stop itself if no other callback is registered
- * (indeed, a {@code QuestionActivity} and a {@code LocationPointService}
- * could be listening for location updates at the same time ; when one of
- * the finishes and un-registers, the other one doesn't want {@code
- * LocationService} to stop until it is also done).
+ * (indeed, a {@link com.brainydroid.daydreaming.ui.QuestionActivity} and a
+ * {@link LocationPointService} could be listening for location updates at
+ * the same time ; when one of the finishes and un-registers,
+ * the other one doesn't want {@link LocationService} to stop until it is
+ * also done).
  * <p/>
- * For further details on how exactly the {@code LocationService} should be
+ * For further details on how exactly the {@link LocationService} should be
  * started and how to register callbacks on it,
  * see {@link LocationServiceConnection}.
  *
  * @author Sébastien Lerique
  * @author Vincent Adam
+ * @see LocationServiceConnection
+ * @see LocationCallback
+ * @see ServiceConnectionCallback
+ * @see com.brainydroid.daydreaming.db.LocationPoint
+ * @see com.brainydroid.daydreaming.db.Question
  */
 public class LocationService extends RoboService {
 
@@ -55,15 +61,15 @@ public class LocationService extends RoboService {
     @Inject LocationManager locationManager;
 
     /**
-     * {@code IBinder} interface used by {@link LocationServiceConnection}
-     * to get a handle on the {@code LocationService} after binding.
+     * {@link IBinder} interface used by {@link LocationServiceConnection}
+     * to get a handle on the {@link LocationService} after binding.
      */
     public class LocationServiceBinder extends Binder {
 
         /**
-         * Get a handle to the bound {@code LocationService}.
+         * Get a handle to the bound {@link LocationService}.
          *
-         * @return Currently bound {@code LocationService}
+         * @return Currently bound {@link LocationService}
          */
         LocationService getService() {
             return LocationService.this;
@@ -191,7 +197,7 @@ public class LocationService extends RoboService {
 
     /**
      * Start listening to location updates. This is done by registering a
-     * {@code LocationListener} on the {@code LocationManager}.
+     * {@link LocationListener} on the {@link LocationManager}.
      */
     private void startLocationListener() {
         Logger.d(TAG, "Starting location listening");

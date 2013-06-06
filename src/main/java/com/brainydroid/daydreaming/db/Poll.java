@@ -13,8 +13,6 @@ public final class Poll extends StatusModel<Poll,PollsStorage> {
     @Expose @Inject private ArrayList<Question> questions;
     @Expose private long notificationTimestamp;
 
-    public static final String COL_NOTIFICATION_TIMESTAMP = "pollNotificationTimestamp";
-
     public static final String STATUS_PENDING = "pollPending"; // Notification has appeared
     public static final String STATUS_RUNNING = "pollRunning"; // QuestionActivity is running
     public static final String STATUS_PARTIALLY_COMPLETED = "pollPartiallyCompleted"; // QuestionActivity was stopped, and Poll expired

@@ -6,6 +6,14 @@ import com.google.gson.*;
 
 import java.lang.reflect.Type;
 
+/**
+ * Serialize a {@link Location} instance to JSON.
+ *
+ * @author Sébastien Lerique
+ * @author Vincent Adam
+ * @see Location
+ * @see LocationSerializer
+ */
 public class LocationSerializer implements JsonSerializer<Location> {
 
     @SuppressWarnings("FieldCanBeLocal")
@@ -22,6 +30,7 @@ public class LocationSerializer implements JsonSerializer<Location> {
             throws JsonParseException {
         Logger.v(TAG, "Serializing location");
 
+        // Serialize the properties we're interested in, nothing else
         JsonObject jsonSrc = new JsonObject();
         jsonSrc.addProperty(LOCATION_LATITUDE, src.getLatitude());
         jsonSrc.addProperty(LOCATION_LONGITUDE, src.getLongitude());

@@ -8,6 +8,7 @@ package com.brainydroid.daydreaming.db;
  *
  * @author Sébastien Lerique
  * @author Vincent Adam
+ * @see Question
  */
 public interface IQuestionDetails {
 

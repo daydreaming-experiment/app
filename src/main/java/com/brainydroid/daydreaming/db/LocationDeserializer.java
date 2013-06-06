@@ -8,10 +8,12 @@ import com.google.gson.*;
 import java.lang.reflect.Type;
 
 /**
- * Deserialize a JSON representation of a {@code Location} instance.
+ * Deserialize a JSON representation of a {@link Location} instance.
  *
  * @author Sébastien Lerique
  * @author Vincent Adam
+ * @see Location
+ * @see LocationSerializer
  */
 public class LocationDeserializer implements JsonDeserializer<Location> {
 

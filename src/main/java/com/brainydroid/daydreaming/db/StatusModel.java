@@ -9,8 +9,6 @@ public abstract class StatusModel<M extends StatusModel<M,S>,
     @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "StatusModel";
 
-    public static final String COL_STATUS = "status";
-
     // These members don't need to be serialized
     private transient String status;
 
