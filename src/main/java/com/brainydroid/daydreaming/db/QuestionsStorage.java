@@ -16,15 +16,25 @@ public class QuestionsStorage {
 
     private static String TAG = "QuestionsStorage";
 
+    public static final String COL_NAME = "questionName";
+    public static final String COL_CATEGORY = "questionCategory";
+    public static final String COL_SUB_CATEGORY = "questionSubCategory";
+    public static final String COL_DETAILS = "questionDetails";
+
+    public static final String COL_STATUS = "questionStatus";
+    public static final String COL_ANSWER = "questionAnswer";
+    public static final String COL_LOCATION = "questionLocation";
+    public static final String COL_TIMESTAMP = "questionTimestamp";
+
     private static String QUESTIONS_VERSION = "questionsVersion";
     private static String TABLE_QUESTIONS = "questions";
 
     private static final String SQL_CREATE_TABLE_QUESTIONS =
             "CREATE TABLE IF NOT EXISTS " + TABLE_QUESTIONS + " (" +
-                    Question.COL_NAME + " TEXT NOT NULL, " +
-                    Question.COL_CATEGORY + " TEXT NOT NULL, " +
-                    Question.COL_SUB_CATEGORY + " TEXT, " +
-                    Question.COL_DETAILS + " TEXT NOT NULL" +
+                    COL_NAME + " TEXT NOT NULL, " +
+                    COL_CATEGORY + " TEXT NOT NULL, " +
+                    COL_SUB_CATEGORY + " TEXT, " +
+                    COL_DETAILS + " TEXT NOT NULL" +
                     ");";
 
     @Inject Json json;
@@ -73,7 +83,7 @@ public class QuestionsStorage {
         Logger.d(TAG, "Retrieving question {0} from db", questionName);
 
         Cursor res = db.query(TABLE_QUESTIONS, null,
-                Question.COL_NAME + "=?", new String[]{questionName},
+                COL_NAME + "=?", new String[]{questionName},
                 null, null, null);
         if (!res.moveToFirst()) {
             res.close();
@@ -81,12 +91,12 @@ public class QuestionsStorage {
         }
 
         Question q = questionFactory.create();
-        q.setName(res.getString(res.getColumnIndex(Question.COL_NAME)));
-        q.setCategory(res.getString(res.getColumnIndex(Question.COL_CATEGORY)));
+        q.setName(res.getString(res.getColumnIndex(COL_NAME)));
+        q.setCategory(res.getString(res.getColumnIndex(COL_CATEGORY)));
         q.setSubCategory(res.getString(
-                res.getColumnIndex(Question.COL_SUB_CATEGORY)));
+                res.getColumnIndex(COL_SUB_CATEGORY)));
         q.setDetailsFromJson(res.getString(
-                res.getColumnIndex(Question.COL_DETAILS)));
+                res.getColumnIndex(COL_DETAILS)));
         res.close();
 
         return q;
@@ -97,7 +107,7 @@ public class QuestionsStorage {
         Logger.d(TAG, "Retrieving available question names from db");
 
         Cursor res = db.query(TABLE_QUESTIONS,
-                new String[] {Question.COL_NAME}, null, null, null,
+                new String[] {COL_NAME}, null, null, null,
                 null, null);
         if (!res.moveToFirst()) {
             res.close();
@@ -107,7 +117,7 @@ public class QuestionsStorage {
         ArrayList<String> questionNames = new ArrayList<String>();
         do {
             questionNames.add(res.getString(
-                    res.getColumnIndex(Question.COL_NAME)));
+                    res.getColumnIndex(COL_NAME)));
         } while (res.moveToNext());
         res.close();
 
@@ -155,11 +165,11 @@ public class QuestionsStorage {
         Logger.d(TAG, "Building question values");
 
         ContentValues qValues = new ContentValues();
-        qValues.put(Question.COL_NAME, question.getName());
-        qValues.put(Question.COL_CATEGORY, question.getCategory());
-        qValues.put(Question.COL_SUB_CATEGORY,
+        qValues.put(COL_NAME, question.getName());
+        qValues.put(COL_CATEGORY, question.getCategory());
+        qValues.put(COL_SUB_CATEGORY,
                 question.getSubCategory());
-        qValues.put(Question.COL_DETAILS, question.getDetailsAsJson());
+        qValues.put(COL_DETAILS, question.getDetailsAsJson());
         return qValues;
     }
 

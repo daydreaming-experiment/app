@@ -32,21 +32,6 @@ public final class LocationPoint extends
     @Expose private double locationAccuracy = -1;
     @Expose private long timestamp = -1;
 
-    /** Column name for location latitude in the database */
-    public static final String COL_LOCATION_LATITUDE =
-            "locationLocationLatitude";
-    /** Column name for location longitude in the database */
-    public static final String COL_LOCATION_LONGITUDE =
-            "locationLocationLongitude";
-    /** Column name for location altitude in the database */
-    public static final String COL_LOCATION_ALTITUDE =
-            "locationLocationAltitude";
-    /** Column name for location accuracy in the database */
-    public static final String COL_LOCATION_ACCURACY =
-            "locationLocationAccuracy";
-    /** Column name for location timestamp in the database */
-    public static final String COL_TIMESTAMP = "locationTimestamp";
-
     /** Status string if the {@link LocationPoint} is collecting location
      * data
      */

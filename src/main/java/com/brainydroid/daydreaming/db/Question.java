@@ -12,16 +12,6 @@ public class Question {
 
     private static String TAG = "Question";
 
-    public static final String COL_NAME = "questionName";
-    public static final String COL_CATEGORY = "questionCategory";
-    public static final String COL_SUB_CATEGORY = "questionSubCategory";
-    public static final String COL_DETAILS = "questionDetails";
-
-    public static final String COL_STATUS = "questionStatus";
-    public static final String COL_ANSWER = "questionAnswer";
-    public static final String COL_LOCATION = "questionLocation";
-    public static final String COL_TIMESTAMP = "questionTimestamp";
-
     public static final String STATUS_ASKED = "questionAsked";
     public static final String STATUS_ASKED_DISMISSED = "questionAskedDismissed";
     public static final String STATUS_ANSWERED = "questionAnswered";
