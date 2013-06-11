@@ -84,7 +84,8 @@ public class LocationService extends RoboService {
      *
      * @param callback Callback to set
      */
-    public void setLocationPointCallback(LocationCallback callback) {
+    public synchronized void setLocationPointCallback(
+            LocationCallback callback) {
         Logger.d(TAG, "Setting LocationPoint callback");
 
         // Set the callback
@@ -110,7 +111,8 @@ public class LocationService extends RoboService {
      *
      * @param callback Callback to set
      */
-    public void setQuestionLocationCallback(LocationCallback callback) {
+    public synchronized void setQuestionLocationCallback(
+            LocationCallback callback) {
         Logger.d(TAG, "Setting Question location callback");
 
         // Set the callback
@@ -129,7 +131,7 @@ public class LocationService extends RoboService {
     }
 
     @Override
-    public void onCreate() {
+    public synchronized void onCreate() {
         Logger.d(TAG, "LocationService created");
 
         super.onCreate();
@@ -138,7 +140,8 @@ public class LocationService extends RoboService {
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+    public synchronized int onStartCommand(Intent intent, int flags,
+                                           int startId) {
         Logger.d(TAG, "LocationService started");
 
         // Nothing to do here, the logic is in onCreate
@@ -147,7 +150,7 @@ public class LocationService extends RoboService {
     }
 
     @Override
-    public void onDestroy() {
+    public synchronized void onDestroy() {
         Logger.d(TAG, "Destroying LocationService");
 
         // Stop listening for location updates
@@ -156,15 +159,15 @@ public class LocationService extends RoboService {
     }
 
     @Override
-    public IBinder onBind(Intent intent) {
-        Logger.d(TAG, "Binding to LocationService)");
+    public synchronized IBinder onBind(Intent intent) {
+        Logger.d(TAG, "Binding to LocationService");
 
         // Allow binding. Will be used by the LocationServiceConnection.
         return mBinder;
     }
 
     @Override
-    public void onRebind(Intent intent) {
+    public synchronized void onRebind(Intent intent) {
         Logger.d(TAG, "Rebinding to LocationService");
 
         super.onRebind(intent);
@@ -173,7 +176,7 @@ public class LocationService extends RoboService {
     }
 
     @Override
-    public boolean onUnbind(Intent intent) {
+    public synchronized boolean onUnbind(Intent intent) {
         Logger.d(TAG, "Unbinding from LocationService");
 
         super.onUnbind(intent);
@@ -199,7 +202,7 @@ public class LocationService extends RoboService {
      * Start listening to location updates. This is done by registering a
      * {@link LocationListener} on the {@link LocationManager}.
      */
-    private void startLocationListener() {
+    private synchronized void startLocationListener() {
         Logger.d(TAG, "Starting location listening");
 
         // If we're already listening, stop it and start from scratch to
@@ -257,7 +260,7 @@ public class LocationService extends RoboService {
     /**
      * Stop listening to location updates, if we were listening.
      */
-    private void stopLocationListenerIfExists() {
+    private synchronized void stopLocationListenerIfExists() {
         if (locationListener != null) {
             Logger.d(TAG, "Removing existing location listener");
             locationManager.removeUpdates(locationListener);

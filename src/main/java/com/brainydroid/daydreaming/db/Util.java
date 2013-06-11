@@ -3,10 +3,18 @@ package com.brainydroid.daydreaming.db;
 import com.brainydroid.daydreaming.background.Logger;
 
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Util {
 
     private static String TAG = "Util";
+
+    /** Format of date and time for logging */
+    private static String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+
+    // Date and time formatter for logging
+    private static SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
 
     public static String multiplyString(String string, int times, String joinString) {
         Logger.v(TAG, "Multiplying strings");
@@ -58,6 +66,11 @@ public class Util {
         Logger.v(TAG, "Getting minute value");
         String[] pieces = time.split(":");
         return(Integer.parseInt(pieces[1]));
+    }
+
+    public static String formatDate(Date date) {
+        Logger.v(TAG, "Formatting date");
+        return sdf.format(date);
     }
 
 }

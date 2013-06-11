@@ -11,7 +11,6 @@ import com.brainydroid.daydreaming.db.Util;
 import com.google.inject.Inject;
 import roboguice.service.RoboService;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Random;
 
@@ -38,12 +37,6 @@ public class SchedulerService extends RoboService {
 
     /** Mean delay in the poisson process scheduling polls */
     public static double MEAN_DELAY = 2 * 60 * 60 * 1000; // 2 hours
-
-    /** Format of date and time for logging */
-    private static String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
-
-    // Date and time formatter for logging
-    private SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
 
     // Handy object that will be holding the 'now' time
     private Calendar now;
@@ -203,7 +196,7 @@ public class SchedulerService extends RoboService {
         milliseconds %= 60 * 1000;
         long seconds = milliseconds / 1000;
 
-        String scheduledString = sdf.format(scheduledCalendar.getTime());
+        String scheduledString = Util.formatDate(scheduledCalendar.getTime());
         Logger.i(TAG, "Poll scheduled in {0} hours, {1} minutes, " +
                 "and {2} seconds (i.e. {3})",
                 hours, minutes, seconds, scheduledString);
@@ -299,12 +292,14 @@ public class SchedulerService extends RoboService {
         suggested.add(Calendar.MILLISECOND, (int)delay);
 
         Logger.d(TAG, "Hypothesized now is: {0}",
-                sdf.format(hypothesizedNow.getTime()));
-        Logger.d(TAG, "Suggested is: {0}", sdf.format(suggested.getTime()));
-        Logger.d(TAG, "Allowed start is: {0}", sdf.format(start.getTime()));
-        Logger.d(TAG, "Allowed end is: {0}", sdf.format(end.getTime()));
+                Util.formatDate(hypothesizedNow.getTime()));
+        Logger.d(TAG, "Suggested is: {0}",
+                Util.formatDate(suggested.getTime()));
+        Logger.d(TAG, "Allowed start is: {0}",
+                Util.formatDate(start.getTime()));
+        Logger.d(TAG, "Allowed end is: {0}", Util.formatDate(end.getTime()));
         Logger.d(TAG, "Next allowed start is: {0}",
-                sdf.format(nextStart.getTime()));
+                Util.formatDate(nextStart.getTime()));
 
         if (hypothesizedNow.before(start)) {
             // hypothesizedNow is before the allowed time window. So we

@@ -57,7 +57,7 @@ public abstract class Model<M extends Model<M,S>,
      *
      * @param id Id to set
      */
-    public void setId(int id) {
+    public synchronized void setId(int id) {
         Logger.v(TAG, "Setting id to {0}", id);
         this.id = id;
         // No need to saveIfSync() here: this is called only from the
@@ -72,7 +72,7 @@ public abstract class Model<M extends Model<M,S>,
      *
      * @return Id of the {@link Model}
      */
-    public int getId() {
+    public synchronized int getId() {
         return id;
     }
 
@@ -81,7 +81,7 @@ public abstract class Model<M extends Model<M,S>,
      * {@code -1}. (In which case it's in fact an update of an existing
      * record in the database.) Otherwise do nothing.
      */
-    protected void saveIfSync() {
+    protected synchronized void saveIfSync() {
         if (id != -1) {
             Logger.d(TAG, "Model has an id, syncing to db");
             save();
@@ -113,7 +113,7 @@ public abstract class Model<M extends Model<M,S>,
      * Save the instance to the database, regardless of the value of its
      * {@link #id}.
      */
-    public void save() {
+    public synchronized void save() {
         if (id != -1) {
             Logger.d(TAG, "Updating model in db");
             getStorage().update(self());
