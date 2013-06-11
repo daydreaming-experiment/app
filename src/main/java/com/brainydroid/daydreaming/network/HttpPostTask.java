@@ -32,7 +32,7 @@ public class HttpPostTask extends AsyncTask<HttpPostData, Void, Boolean> {
 
         HttpParams httpParams = new BasicHttpParams();
         HttpConnectionParams.setConnectionTimeout(httpParams,
-                ServerConfig.HTTP_TIMEOUT);
+                ServerConfig.NETWORK_TIMEOUT);
         client = new DefaultHttpClient(httpParams);
     }
 

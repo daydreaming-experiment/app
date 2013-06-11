@@ -13,6 +13,6 @@ public class ServerConfig {
     public static String YE_EXPS = "/exps/";
     public static String YE_RESULTS = "/results/";
 
-    public static int HTTP_TIMEOUT = 10 * 1000; // 10 seconds
+    public static int NETWORK_TIMEOUT = 10 * 1000; // 10 seconds
 
 }

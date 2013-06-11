@@ -21,7 +21,7 @@ public final class Poll extends StatusModel<Poll,PollsStorage> {
     @Inject transient PollsStorage pollsStorage;
     @Inject transient QuestionsStorage questionsStorage;
 
-    public void populateQuestions(int nQuestions) {
+    public synchronized void populateQuestions(int nQuestions) {
         Logger.d(TAG, "Populating poll with {0} questions", nQuestions);
         questions = questionsStorage.getRandomQuestions(nQuestions);
         for (Question question : questions) {
@@ -29,41 +29,42 @@ public final class Poll extends StatusModel<Poll,PollsStorage> {
         }
     }
 
-    public void addQuestion(Question question) {
+    public synchronized void addQuestion(Question question) {
         Logger.d(TAG, "Adding question {0} to poll", question.getName());
         question.setPoll(this);
         questions.add(question);
     }
 
-    public ArrayList<Question> getQuestions() {
+    public synchronized ArrayList<Question> getQuestions() {
         return questions;
     }
 
-    public Question getQuestionByIndex(int index) {
+    public synchronized Question getQuestionByIndex(int index) {
         return questions.get(index);
     }
 
-    public int getLength() {
+    public synchronized int getLength() {
         return questions.size();
     }
 
-    public long getNotificationTimestamp() {
+    public synchronized long getNotificationTimestamp() {
         return notificationTimestamp;
     }
 
-    public void setNotificationTimestamp(long notificationTimestamp) {
+    public synchronized void setNotificationTimestamp(
+            long notificationTimestamp) {
         Logger.v(TAG, "Setting notification timestamp");
         this.notificationTimestamp = notificationTimestamp;
         saveIfSync();
     }
 
     @Override
-    protected Poll self() {
+    protected synchronized Poll self() {
         return this;
     }
 
     @Override
-    protected PollsStorage getStorage() {
+    protected synchronized PollsStorage getStorage() {
         return pollsStorage;
     }
 

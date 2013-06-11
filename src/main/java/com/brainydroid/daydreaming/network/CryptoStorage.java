@@ -51,7 +51,7 @@ public class CryptoStorage {
         privateFile = new File(storageDir, PRIVATE_FILENAME);
     }
 
-    public void onReady(CryptoStorageCallback callback) {
+    public synchronized void onReady(CryptoStorageCallback callback) {
         if (!hasStoredKeyPairAndMaiId()) {
             Logger.i(TAG, "CryptoStorage not ready -> " +
                     "registering on the server");

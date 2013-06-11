@@ -87,7 +87,7 @@ public class SyncService extends RoboService {
         @Override
         public void onHttpConversationFinished(boolean success,
                                                String serverAnswer) {
-            Logger.d(TAG, "Question updated HttpConversation finished");
+            Logger.d(TAG, "Question update HttpConversation finished");
 
             if (success) {
                 Logger.i(TAG, "Successfully retrieved questions from " +
@@ -113,8 +113,15 @@ public class SyncService extends RoboService {
         Logger.d(TAG, "SyncService created");
         super.onCreate();
 
-        // Launch synchronization tasks
-        startUpdates();
+        // Launch synchronization tasks if we haven't done so not long ago
+        if (statusManager.isLastSyncLongAgo()) {
+            Logger.d(TAG, "Last sync was long ago -> starting updates");
+            statusManager.setLastSyncToNow();
+            startUpdates();
+        } else {
+            Logger.v(TAG, "Last sync was not long ago -> exiting");
+            stopSelf();
+        }
     }
 
     @Override

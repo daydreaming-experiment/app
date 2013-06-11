@@ -65,17 +65,18 @@ public final class LocationPointsStorage extends
     }
 
     @Override
-    protected String[] getTableCreationStrings() {
+    protected synchronized String[] getTableCreationStrings() {
         return new String[] {SQL_CREATE_TABLE_LOCATIONS};
     }
 
     @Override
-    protected String getMainTable() {
+    protected synchronized String getMainTable() {
         return TABLE_LOCATION_POINTS;
     }
 
     @Override
-    protected ContentValues getModelValues(LocationPoint locationPoint) {
+    protected synchronized ContentValues getModelValues(
+            LocationPoint locationPoint) {
         Logger.v(TAG, "Building LocationPoint values");
 
         ContentValues locationPointValues =
@@ -97,13 +98,14 @@ public final class LocationPointsStorage extends
     }
 
     @Override
-    protected LocationPoint create() {
+    protected synchronized LocationPoint create() {
         return locationPointFactory.create();
     }
 
     @Override
-    protected void populateModel(int locationPointId, LocationPoint
-                                 locationPoint, Cursor res) {
+    protected synchronized void populateModel(int locationPointId,
+                                              LocationPoint locationPoint,
+                                              Cursor res) {
         Logger.d(TAG, "Populating LocationPoint model from db");
 
         super.populateModel(locationPointId, locationPoint, res);
@@ -129,7 +131,8 @@ public final class LocationPointsStorage extends
      *
      * @return An {@link ArrayList} of completed {@link LocationPoint}s
      */
-    public ArrayList<LocationPoint> getUploadableLocationPoints() {
+    public synchronized ArrayList<LocationPoint>
+    getUploadableLocationPoints() {
         Logger.d(TAG, "Getting uploadable LocationPoints");
         return getModelsWithStatuses(
                 new String[] {LocationPoint.STATUS_COMPLETED});
@@ -143,7 +146,8 @@ public final class LocationPointsStorage extends
      * @return An {@link ArrayList} of currently collecting {@link
      *         LocationPoint}s
      */
-    public ArrayList<LocationPoint> getCollectingLocationPoints() {
+    public synchronized ArrayList<LocationPoint>
+    getCollectingLocationPoints() {
         Logger.d(TAG, "Getting collecting LocationPoints");
         return getModelsWithStatuses(
                 new String[] {LocationPoint.STATUS_COLLECTING});

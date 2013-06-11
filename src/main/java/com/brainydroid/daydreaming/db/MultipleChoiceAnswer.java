@@ -17,11 +17,11 @@ public class MultipleChoiceAnswer implements IAnswer {
     // deserializing.
     @Expose HashSet<String> choices = new HashSet<String>();
 
-    public String getType() {
+    public synchronized String getType() {
         return type;
     }
 
-    public void addChoice(String choice) {
+    public synchronized void addChoice(String choice) {
         Logger.v(TAG, "Adding choice {0}", choice);
         choices.add(choice);
     }
