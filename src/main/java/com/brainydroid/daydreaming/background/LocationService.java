@@ -157,7 +157,7 @@ public class LocationService extends RoboService {
 
     @Override
     public IBinder onBind(Intent intent) {
-        Logger.d(TAG, "Binding to LocationService)");
+        Logger.d(TAG, "Binding to LocationService");
 
         // Allow binding. Will be used by the LocationServiceConnection.
         return mBinder;

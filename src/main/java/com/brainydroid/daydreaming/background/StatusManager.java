@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.SystemClock;
+import com.brainydroid.daydreaming.db.Util;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -28,6 +30,15 @@ public class StatusManager {
     /** Preference key storing the status of initial questions update */
     private static String EXP_STATUS_QUESTIONS_UPDATED =
             "expStatusQuestionsUpdated";
+
+    /** Preference key storing timestamp of the last sync operation */
+    private static String LAST_SYNC_TIMESTAMP = "lastSyncTimestamp";
+
+    /**
+     * Interval below which we don't need to re-sync data to servers (in
+     * milliseconds)
+     */
+    private static int SYNC_INTERVAL = 5 * 60 * 1000;
 
     @Inject LocationManager locationManager;
     @Inject ConnectivityManager connectivityManager;
@@ -168,6 +179,41 @@ public class StatusManager {
             return true;
         } else {
             Logger.d(TAG, "Either data or network location is disabled");
+            return false;
+        }
+    }
+
+    /**
+     * Set the timestamp of the last sync operation to now.
+     */
+    public void setLastSyncToNow() {
+        long now = SystemClock.elapsedRealtime();
+        Logger.d(TAG, "Setting last sync timestamp to now");
+        eSharedPreferences.putLong(LAST_SYNC_TIMESTAMP, now);
+        eSharedPreferences.commit();
+    }
+
+    /**
+     * Check if a sync operation was made not long ago.
+     * <p/>
+     * If a sync operation was made less than {@link #SYNC_INTERVAL}
+     * milliseconds ago, this method will return false. Otherwise it will
+     * return true. Use {@link #setLastSyncToNow} to set the timestamp of the
+     * last sync operation when syncing.
+     *
+     * @return {@code boolean} indicating if the last sync operation was long
+     *         ago or not
+     */
+    public boolean isLastSyncLongAgo() {
+        // If last sync timestamp is present, make sure now is after the
+        // threshold to force a sync.
+        long threshold = sharedPreferences.getLong(LAST_SYNC_TIMESTAMP,
+                - SYNC_INTERVAL) + SYNC_INTERVAL;
+        if (threshold < SystemClock.elapsedRealtime()) {
+            Logger.d(TAG, "Last sync was long ago");
+            return true;
+        } else {
+            Logger.d(TAG, "Last sync was not long ago");
             return false;
         }
     }
