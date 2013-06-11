@@ -13,12 +13,12 @@ public class ServerTalker {
 
     @Inject CryptoStorage cryptoStorage;
 
-    private String getPostResultUrl(String expId) {
+    private synchronized String getPostResultUrl(String expId) {
         return ServerConfig.SERVER_NAME + ServerConfig.YE_URL_DEVICES + cryptoStorage.getMaiId() +
                 ServerConfig.YE_EXPS + expId + ServerConfig.YE_RESULTS;
     }
 
-    public void register(PublicKey publicKey, HttpConversationCallback callback) {
+    public synchronized void register(PublicKey publicKey, HttpConversationCallback callback) {
         Logger.i(TAG, "Registering at the server");
 
         Logger.d(TAG, "Getting key to register");
@@ -34,7 +34,7 @@ public class ServerTalker {
         postTask.execute(postData);
     }
 
-    public void signAndUploadData(String expId, String data,
+    public synchronized void signAndUploadData(String expId, String data,
             HttpConversationCallback callback) {
         Logger.i(TAG, "Signing and uploading data to server");
 

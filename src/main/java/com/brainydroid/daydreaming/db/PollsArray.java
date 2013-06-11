@@ -15,7 +15,7 @@ public class PollsArray {
         this.polls = polls;
     }
 
-    public ArrayList<Poll> getPolls() {
+    public synchronized ArrayList<Poll> getPolls() {
         return polls;
     }
 

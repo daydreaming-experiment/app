@@ -10,32 +10,34 @@ public class HttpPostData {
     private String contentType = null;
     private final HttpConversationCallback httpConversationCallback;
 
-    public HttpPostData(String postUrl, HttpConversationCallback httpConversationCallback) {
+    public HttpPostData(String postUrl,
+                        HttpConversationCallback httpConversationCallback) {
         this.postUrl = postUrl;
         this.httpConversationCallback = httpConversationCallback;
     }
 
-    public String getPostUrl() {
+    public synchronized String getPostUrl() {
         return postUrl;
     }
 
-    public String getPostString() {
+    public synchronized String getPostString() {
         return postString;
     }
 
-    public void setPostString(String postString) {
+    public synchronized void setPostString(String postString) {
         this.postString = postString;
     }
 
-    public String getContentType() {
+    public synchronized String getContentType() {
         return contentType;
     }
 
-    public void setContentType(String contentType) {
+    public synchronized void setContentType(String contentType) {
         this.contentType = contentType;
     }
 
-    public HttpConversationCallback getHttpConversationCallback() {
+    public synchronized HttpConversationCallback
+    getHttpConversationCallback() {
         return httpConversationCallback;
     }
 

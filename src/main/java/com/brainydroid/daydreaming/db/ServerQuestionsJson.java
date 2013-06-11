@@ -10,11 +10,11 @@ public class ServerQuestionsJson {
     public int version = -1;
     ArrayList<Question> questions = new ArrayList<Question>();
 
-    public ArrayList<Question> getQuestionsArrayList() {
+    public synchronized ArrayList<Question> getQuestionsArrayList() {
         return questions;
     }
 
-    public int getVersion() {
+    public synchronized int getVersion() {
         return version;
     }
 

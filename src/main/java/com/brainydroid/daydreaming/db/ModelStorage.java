@@ -7,6 +7,7 @@ import com.brainydroid.daydreaming.background.Logger;
 import com.google.inject.Inject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public abstract class ModelStorage<M extends Model<M,S>,
         S extends ModelStorage<M,S>> {
@@ -16,6 +17,7 @@ public abstract class ModelStorage<M extends Model<M,S>,
     /** Column name for the {@link Model#id} in the database */
     public static final String COL_ID = "id";
 
+    @Inject HashMap<Integer,M> modelsCache;
     private final SQLiteDatabase db;
 
     protected abstract String[] getTableCreationStrings();
@@ -30,13 +32,13 @@ public abstract class ModelStorage<M extends Model<M,S>,
         }
     }
 
-    protected SQLiteDatabase getDb() {
+    protected synchronized SQLiteDatabase getDb() {
         return db;
     }
 
     protected abstract ContentValues getModelValues(M model);
 
-    private ContentValues getModelValuesWithId(M model) {
+    private synchronized ContentValues getModelValuesWithId(M model) {
         Logger.v(TAG, "Getting model values with id");
 
         ContentValues modelValues = getModelValues(model);
@@ -46,7 +48,7 @@ public abstract class ModelStorage<M extends Model<M,S>,
 
     protected abstract String getMainTable();
 
-    public void store(M model) {
+    public synchronized void store(M model) {
         Logger.d(TAG, "Storing model to db (obtaining an id)");
 
         ContentValues modelValues = getModelValues(model);
@@ -60,9 +62,12 @@ public abstract class ModelStorage<M extends Model<M,S>,
 
         Logger.v(TAG, "New model id is {0}", modelId);
         model.setId(modelId);
+
+        Logger.d(TAG, "Saving new model {0} to cache", modelId);
+        modelsCache.put(modelId, model);
     }
 
-    public void update(M model) {
+    public synchronized void update(M model) {
         int modelId = model.getId();
         Logger.d(TAG, "Updating model {0} in db", modelId);
         ContentValues modelValues = getModelValuesWithId(model);
@@ -74,11 +79,19 @@ public abstract class ModelStorage<M extends Model<M,S>,
 
     protected abstract void populateModel(int modelId, M model, Cursor res);
 
-    public M get(int modelId) {
+    public synchronized M get(int modelId) {
+
+        // If we already retrieved the model, return the cached instance
+        M cachedModel = modelsCache.get(modelId);
+        if (cachedModel!= null) {
+            Logger.d(TAG, "Retrieving model {0} from cache", modelId);
+            return cachedModel;
+        }
+
         Logger.d(TAG, "Retrieving model {0} from db", modelId);
 
         Cursor res = db.query(getMainTable(), null, COL_ID + "=?",
-                new String[] {Integer.toString(modelId)}, null, null, null);
+                new String[]{Integer.toString(modelId)}, null, null, null);
         if (!res.moveToFirst()) {
             res.close();
             return null;
@@ -89,17 +102,20 @@ public abstract class ModelStorage<M extends Model<M,S>,
         model.setId(res.getInt(res.getColumnIndex(COL_ID)));
         res.close();
 
+        Logger.d(TAG, "Saving model {0} to cache", modelId);
+        modelsCache.put(modelId, model);
         return model;
     }
 
-    public void remove(int modelId) {
-        Logger.d(TAG, "Removing model {0} from db", modelId);
+    public synchronized void remove(int modelId) {
+        Logger.d(TAG, "Removing model {0} from cache and db", modelId);
+        modelsCache.remove(modelId);
         db.delete(getMainTable(), COL_ID + "=?",
                 new String[]{Integer.toString(modelId)});
     }
 
-    public void remove(ArrayList<? extends Model<M,S>> models) {
-        Logger.d(TAG, "Removing an array of models from db");
+    public synchronized void remove(ArrayList<? extends Model<M,S>> models) {
+        Logger.d(TAG, "Removing an array of models from cache and db");
         for (Model model : models) {
             remove(model.getId());
         }

@@ -7,7 +7,6 @@ import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.SystemClock;
-import com.brainydroid.daydreaming.db.Util;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -38,6 +37,7 @@ public class StatusManager {
      * Interval below which we don't need to re-sync data to servers (in
      * milliseconds)
      */
+    @SuppressWarnings("FieldCanBeLocal")
     private static int SYNC_INTERVAL = 5 * 60 * 1000;
 
     @Inject LocationManager locationManager;
@@ -63,7 +63,7 @@ public class StatusManager {
      * @return {@code true} if first launch has completed,
      *         {@code false} otherwise
      */
-    public boolean isFirstLaunchCompleted() {
+    public synchronized boolean isFirstLaunchCompleted() {
         if (sharedPreferences.getBoolean(EXP_STATUS_FL_COMPLETED, false)) {
             Logger.d(TAG, "First launch is completed");
             return true;
@@ -76,7 +76,7 @@ public class StatusManager {
     /**
      * Set the first launch flag to completed.
      */
-    public void setFirstLaunchCompleted() {
+    public synchronized void setFirstLaunchCompleted() {
         Logger.d(TAG, "Setting first launch to completed");
 
         eSharedPreferences.putBoolean(EXP_STATUS_FL_COMPLETED, true);
@@ -89,7 +89,7 @@ public class StatusManager {
      * @return {@code true} if the questions have been updated,
      *         {@code false} otherwise
      */
-    public boolean areQuestionsUpdated() {
+    public synchronized boolean areQuestionsUpdated() {
         if (sharedPreferences.getBoolean(EXP_STATUS_QUESTIONS_UPDATED,
                 false)) {
             Logger.d(TAG, "Questions are updated");
@@ -103,7 +103,7 @@ public class StatusManager {
     /**
      * Set the updated questions flag to completed.
      */
-    public void setQuestionsUpdated() {
+    public synchronized void setQuestionsUpdated() {
         Logger.d(TAG, "Setting questions to updated");
 
         eSharedPreferences.putBoolean(EXP_STATUS_QUESTIONS_UPDATED, true);
@@ -116,7 +116,7 @@ public class StatusManager {
      * @return {@code true} if {@link LocationService} is running,
      *         {@code false} otherwise
      */
-    public boolean isLocationServiceRunning() {
+    public synchronized boolean isLocationServiceRunning() {
         // This hack was found on StackOverflow
         for (RunningServiceInfo service :
                 activityManager.getRunningServices(Integer.MAX_VALUE)) {
@@ -137,7 +137,7 @@ public class StatusManager {
      * @return {@code true} if the network location provider is enabled,
      *         {@code false} otherwise
      */
-    public boolean isNetworkLocEnabled() {
+    public synchronized boolean isNetworkLocEnabled() {
         if (locationManager.isProviderEnabled(
                 LocationManager.NETWORK_PROVIDER)) {
             Logger.d(TAG, "Network location is enabled");
@@ -154,7 +154,7 @@ public class StatusManager {
      * @return {@code true} if data connection is enabled or connecting,
      *         {@code false} otherwise
      */
-    public boolean isDataEnabled() {
+    public synchronized boolean isDataEnabled() {
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnectedOrConnecting()) {
             Logger.d(TAG, "Data is enabled");
@@ -173,7 +173,7 @@ public class StatusManager {
      *         data connection is enabled or connecting,
      *         {@code false} otherwise
      */
-    public boolean isDataAndLocationEnabled() {
+    public synchronized boolean isDataAndLocationEnabled() {
         if (isNetworkLocEnabled() && isDataEnabled()) {
             Logger.d(TAG, "Data and network location are enabled");
             return true;
@@ -186,7 +186,7 @@ public class StatusManager {
     /**
      * Set the timestamp of the last sync operation to now.
      */
-    public void setLastSyncToNow() {
+    public synchronized void setLastSyncToNow() {
         long now = SystemClock.elapsedRealtime();
         Logger.d(TAG, "Setting last sync timestamp to now");
         eSharedPreferences.putLong(LAST_SYNC_TIMESTAMP, now);
@@ -204,7 +204,7 @@ public class StatusManager {
      * @return {@code boolean} indicating if the last sync operation was long
      *         ago or not
      */
-    public boolean isLastSyncLongAgo() {
+    public synchronized boolean isLastSyncLongAgo() {
         // If last sync timestamp is present, make sure now is after the
         // threshold to force a sync.
         long threshold = sharedPreferences.getLong(LAST_SYNC_TIMESTAMP,

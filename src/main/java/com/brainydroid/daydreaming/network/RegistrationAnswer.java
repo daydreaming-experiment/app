@@ -6,7 +6,7 @@ public class RegistrationAnswer {
 
     @Expose private String id;
 
-    public String getId() {
+    public synchronized String getId() {
         return id;
     }
 

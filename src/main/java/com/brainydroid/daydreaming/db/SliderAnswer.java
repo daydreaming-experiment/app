@@ -17,11 +17,11 @@ public class SliderAnswer implements IAnswer {
     // deserializing.
     @Expose HashMap<String,Integer> sliders = new HashMap<String, Integer>();
 
-    public String getType() {
+    public synchronized String getType() {
         return type;
     }
 
-    public void addAnswer(String text, int position) {
+    public synchronized void addAnswer(String text, int position) {
         Logger.v(TAG, "Adding answer {0} at position {1}", text, position);
         sliders.put(text, position);
     }

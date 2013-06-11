@@ -34,7 +34,7 @@ public class LocationPointsArray {
      *
      * @return The stored array of {@link LocationPoint}s
      */
-    public ArrayList<LocationPoint> getLocationPoints() {
+    public synchronized ArrayList<LocationPoint> getLocationPoints() {
         return locationPoints;
     }
 

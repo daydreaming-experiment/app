@@ -59,7 +59,7 @@ public class QuestionsStorage {
         db.execSQL(SQL_CREATE_TABLE_QUESTIONS);
     }
 
-    public int getQuestionsVersion() {
+    public synchronized int getQuestionsVersion() {
         Logger.v(TAG, "Getting questions version");
         int questionsVersion = sharedPreferences.getInt(QUESTIONS_VERSION,
                 -1);
@@ -72,14 +72,14 @@ public class QuestionsStorage {
         return questionsVersion;
     }
 
-    private void setQuestionsVersion(int questionsVersion) {
+    private synchronized void setQuestionsVersion(int questionsVersion) {
         Logger.d(TAG, "Setting questions version to {0}", questionsVersion);
         eSharedPreferences.putInt(QUESTIONS_VERSION, questionsVersion);
         eSharedPreferences.commit();
     }
 
     // get question from id in db
-    public Question get(String questionName) {
+    public synchronized Question create(String questionName) {
         Logger.d(TAG, "Retrieving question {0} from db", questionName);
 
         Cursor res = db.query(TABLE_QUESTIONS, null,
@@ -103,7 +103,7 @@ public class QuestionsStorage {
     }
 
     // get questions ids in questions db
-    public ArrayList<String> getQuestionNames() {
+    public synchronized ArrayList<String> getQuestionNames() {
         Logger.d(TAG, "Retrieving available question names from db");
 
         Cursor res = db.query(TABLE_QUESTIONS,
@@ -125,7 +125,8 @@ public class QuestionsStorage {
     }
 
     // getRandomQuestions
-    public ArrayList<Question> getRandomQuestions(int nQuestions) {
+    public synchronized ArrayList<Question> getRandomQuestions(
+            int nQuestions) {
         Logger.d(TAG, "Retrieving {0} random questions from db", nQuestions);
 
         ArrayList<String> questionNames = getQuestionNames();
@@ -136,19 +137,19 @@ public class QuestionsStorage {
 
         for (int i = 0; i < nQuestions && i < nIds; i++) {
             rIndex = random.nextInt(questionNames.size());
-            randomQuestions.add(get(questionNames.get(rIndex)));
+            randomQuestions.add(create(questionNames.get(rIndex)));
             questionNames.remove(rIndex);
         }
 
         return randomQuestions;
     }
 
-    public void flush() {
+    public synchronized void flush() {
         Logger.d(TAG, "Flushing questions from db");
         db.delete(TABLE_QUESTIONS, null, null);
     }
 
-    private void add(ArrayList<Question> questions) {
+    private synchronized void add(ArrayList<Question> questions) {
         Logger.d(TAG, "Storing an array of questions to db");
         for (Question q : questions) {
             add(q);
@@ -156,12 +157,12 @@ public class QuestionsStorage {
     }
 
     // add question in database
-    private void add(Question question) {
+    private synchronized void add(Question question) {
         Logger.d(TAG, "Storing question {0} to db", question.getName());
         db.insert(TABLE_QUESTIONS, null, getQuestionValues(question));
     }
 
-    private ContentValues getQuestionValues(Question question) {
+    private synchronized ContentValues getQuestionValues(Question question) {
         Logger.d(TAG, "Building question values");
 
         ContentValues qValues = new ContentValues();
@@ -174,7 +175,7 @@ public class QuestionsStorage {
     }
 
     // import questions from json file into database
-    public void importQuestions(String jsonQuestionsString) {
+    public synchronized void importQuestions(String jsonQuestionsString) {
         Logger.d(TAG, "Importing questions from JSON");
 
         ServerQuestionsJson serverQuestionsJson = json.fromJson(

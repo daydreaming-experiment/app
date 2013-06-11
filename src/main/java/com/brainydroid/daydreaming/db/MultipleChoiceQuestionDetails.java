@@ -15,15 +15,15 @@ public class MultipleChoiceQuestionDetails implements IQuestionDetails {
     private ArrayList<String> choices = new ArrayList<String>();
 
     @Override
-    public String getType() {
+    public synchronized String getType() {
         return type;
     }
 
-    public String getText() {
+    public synchronized String getText() {
         return text;
     }
 
-    public ArrayList<String> getChoices() {
+    public synchronized ArrayList<String> getChoices() {
         return choices;
     }
 

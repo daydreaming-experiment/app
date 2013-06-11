@@ -45,12 +45,12 @@ public final class LocationPoint extends
     @Inject transient LocationPointsStorage locationPointsStorage;
 
     @Override
-    protected LocationPoint self() {
+    protected synchronized LocationPoint self() {
         return this;
     }
 
     @Override
-    protected LocationPointsStorage getStorage() {
+    protected synchronized LocationPointsStorage getStorage() {
         return locationPointsStorage;
     }
 
@@ -59,7 +59,7 @@ public final class LocationPoint extends
      *
      * @return Latitude of the {@link LocationPoint}
      */
-    public double getLocationLatitude() {
+    public synchronized double getLocationLatitude() {
         return locationLatitude;
     }
 
@@ -68,7 +68,7 @@ public final class LocationPoint extends
      *
      * @return Longitude of the {@link LocationPoint}
      */
-    public double getLocationLongitude() {
+    public synchronized double getLocationLongitude() {
         return locationLongitude;
     }
 
@@ -77,7 +77,7 @@ public final class LocationPoint extends
      *
      * @return Altitude of the {@link LocationPoint} in meters
      */
-    public double getLocationAltitude() {
+    public synchronized double getLocationAltitude() {
         return locationAltitude;
     }
 
@@ -86,7 +86,7 @@ public final class LocationPoint extends
      *
      * @return Accuracy of the {@link LocationPoint} in meters
      */
-    public double getLocationAccuracy() {
+    public synchronized double getLocationAccuracy() {
         return locationAccuracy;
     }
 
@@ -96,7 +96,7 @@ public final class LocationPoint extends
      *
      * @param locationLatitude Latitude to set
      */
-    public void setLocationLatitude(double locationLatitude) {
+    public synchronized void setLocationLatitude(double locationLatitude) {
         this.locationLatitude = locationLatitude;
         saveIfSync();
     }
@@ -107,7 +107,7 @@ public final class LocationPoint extends
      *
      * @param locationLongitude Longitude to set
      */
-    public void setLocationLongitude(double locationLongitude) {
+    public synchronized void setLocationLongitude(double locationLongitude) {
         this.locationLongitude = locationLongitude;
         saveIfSync();
     }
@@ -118,7 +118,7 @@ public final class LocationPoint extends
      *
      * @param locationAltitude Altitude to set, in meters
      */
-    public void setLocationAltitude(double locationAltitude) {
+    public synchronized void setLocationAltitude(double locationAltitude) {
         this.locationAltitude = locationAltitude;
         saveIfSync();
     }
@@ -129,7 +129,7 @@ public final class LocationPoint extends
      *
      * @param locationAccuracy Accuracy to set, in meters
      */
-    public void setLocationAccuracy(double locationAccuracy) {
+    public synchronized void setLocationAccuracy(double locationAccuracy) {
         this.locationAccuracy = locationAccuracy;
         saveIfSync();
     }
@@ -141,7 +141,7 @@ public final class LocationPoint extends
      *
      * @param location {@link Location} instance from which to take the data
      */
-    public void setLocation(Location location) {
+    public synchronized void setLocation(Location location) {
         if (location != null) {
             locationLatitude = location.getLatitude();
             locationLongitude = location.getLongitude();
@@ -156,7 +156,7 @@ public final class LocationPoint extends
      *
      * @return Timestamp, usually in milliseconds since epoch
      */
-    public long getTimestamp() {
+    public synchronized long getTimestamp() {
         return timestamp;
     }
 
@@ -166,7 +166,7 @@ public final class LocationPoint extends
      *
      * @param timestamp Timestamp to set, usually in milliseconds since epoch
      */
-    public void setTimestamp(long timestamp) {
+    public synchronized void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
         saveIfSync();
     }
@@ -186,7 +186,7 @@ public final class LocationPoint extends
      *         have been set (i.e. it's {@code false} if either one is
      *         missing)
      */
-    public boolean isComplete() {
+    public synchronized boolean isComplete() {
         boolean hasLocation = locationLatitude != -1 &&
                 locationLongitude !=-1 &&
                 locationAltitude != -1 &&
