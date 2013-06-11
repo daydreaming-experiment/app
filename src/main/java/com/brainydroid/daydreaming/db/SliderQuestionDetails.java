@@ -14,11 +14,11 @@ public class SliderQuestionDetails implements IQuestionDetails {
             new ArrayList<SliderSubQuestion>();
 
     @Override
-    public String getType() {
+    public synchronized String getType() {
         return type;
     }
 
-    public ArrayList<SliderSubQuestion> getSubQuestions() {
+    public synchronized ArrayList<SliderSubQuestion> getSubQuestions() {
         return subQuestions;
     }
 

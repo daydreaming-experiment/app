@@ -52,12 +52,6 @@ public class DashboardActivity extends FirstLaunchActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onBackPressed() {
-        Logger.v(TAG, "Back pressed");
-        // Don't overridePendingTransition (not calling super)
-    }
-
 //    // TODO: clean this up
 //    private void updateRunningTime() {
 //

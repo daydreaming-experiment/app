@@ -12,15 +12,15 @@ public class SliderSubQuestion {
     @SuppressWarnings("FieldCanBeLocal")
     private int initialPosition = -1;
 
-    public String getText() {
+    public synchronized String getText() {
         return text;
     }
 
-    public ArrayList<String> getHints() {
+    public synchronized ArrayList<String> getHints() {
         return hints;
     }
 
-    public int getInitialPosition() {
+    public synchronized int getInitialPosition() {
         return initialPosition;
     }
 

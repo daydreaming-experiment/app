@@ -13,11 +13,11 @@ public class HttpGetData {
         this.httpConversationCallback = httpConversationCallback;
     }
 
-    public String getGetUrl() {
+    public synchronized String getGetUrl() {
         return getUrl;
     }
 
-    public HttpConversationCallback getHttpConversationCallback() {
+    public synchronized HttpConversationCallback getHttpConversationCallback() {
         return httpConversationCallback;
     }
 
