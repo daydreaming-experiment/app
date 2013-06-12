@@ -84,7 +84,7 @@ public class SchedulerService extends RoboService {
      * @param debugging Set to {@link true} for a fixed short delay before
      *                  notification
      */
-    private void schedulePoll(boolean debugging) {
+    private synchronized void schedulePoll(boolean debugging) {
         Logger.d(TAG, "Scheduling new poll");
 
         // Generate the time at which the poll will appear
@@ -98,7 +98,7 @@ public class SchedulerService extends RoboService {
                 scheduledTime, pendingIntent);
     }
 
-    private void fixNowAndGetAllowedWindow() {
+    private synchronized void fixNowAndGetAllowedWindow() {
         Logger.d(TAG, "Fixing now and obtaining allowed time window");
 
         now = Calendar.getInstance();
@@ -140,7 +140,7 @@ public class SchedulerService extends RoboService {
         // Compute the span of our allowed and forbidden time windows
         allowedSpan = (int)end.getTimeInMillis() -
                 (int)start.getTimeInMillis();
-        forbiddenSpan = 24 - allowedSpan;
+        forbiddenSpan = 24 * 60 * 60 * 1000 - allowedSpan;
     }
 
     /**
@@ -162,7 +162,7 @@ public class SchedulerService extends RoboService {
      * @return Scheduled (and shifted) moment for the poll to appear,
      *         in milliseconds from epoch
      */
-    private long generateTime(boolean debugging) {
+    private synchronized long generateTime(boolean debugging) {
         Logger.d(TAG, "Generating a time for schedule");
 
         // Fix what 'now' means, and retrieve the allowed time window
@@ -212,7 +212,7 @@ public class SchedulerService extends RoboService {
      *
      * @return Sampled delay in milliseconds
      */
-    private long sampleDelay() {
+    private synchronized long sampleDelay() {
         Logger.d(TAG, "Sampling delay");
         return (long)(- Math.log(random.nextDouble()) * MEAN_DELAY);
     }
@@ -235,7 +235,7 @@ public class SchedulerService extends RoboService {
      * @param delay Initial delay to make respectful of user's settings
      * @return Resulting respectful delay
      */
-    private long makeRespectfulDelay(long delay) {
+    private synchronized long makeRespectfulDelay(long delay) {
         Logger.d(TAG, "Expanding delay to respect user's time window");
 
         long expansion = makeRespectfulExpansion(now, delay);
@@ -269,7 +269,7 @@ public class SchedulerService extends RoboService {
      * @param delay Suggested waiting delay in milliseconds
      * @return Prolonged waiting delay respecting the user's preferences
      */
-    private long makeRespectfulExpansion(Calendar hypothesizedNow,
+    private synchronized long makeRespectfulExpansion(Calendar hypothesizedNow,
                                          long delay) {
         Logger.d(TAG, "Recursively building expansion value");
 
@@ -365,7 +365,7 @@ public class SchedulerService extends RoboService {
     /**
      * Start {@link SyncService} to synchronize answers.
      */
-    private void startSyncService() {
+    private synchronized void startSyncService() {
         Logger.d(TAG, "Starting SyncService");
         Intent syncIntent = new Intent(this, SyncService.class);
         startService(syncIntent);
