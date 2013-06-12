@@ -160,7 +160,8 @@ public final class PollsStorage extends StatusModelStorage<Poll,
 
     @Override
     public synchronized void remove(int pollId) {
-        Logger.d(TAG, "Removing poll {0} from db (and questions)", pollId);
+        super.remove(pollId);
+        Logger.d(TAG, "Removing questions of poll {0} from db", pollId);
         getDb().delete(TABLE_POLL_QUESTIONS, COL_ID + "=?",
                 new String[]{Integer.toString(pollId)});
     }
