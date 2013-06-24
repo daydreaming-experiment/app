@@ -40,7 +40,10 @@ public class FirstLaunchWelcomeActivity extends FirstLaunchActivity {
         Timer =  new CountDownTimer(2000, 1000) {
             public void onTick(long millisUntilFinished) {}
             public void onFinish() {
-                launchNextActivity(FirstLaunchDescriptionActivity.class);
+                //launchNextActivity(FirstLaunchDescriptionActivity.class);
+
+                launchNextActivity(FirstLaunchPersonalityQuestionnaireActivity.class);
+
                 Timer.cancel();
                 //finish();
             }

@@ -3,6 +3,7 @@ package com.brainydroid.daydreaming.ui;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.LocationPointService;
 import com.brainydroid.daydreaming.background.Logger;
@@ -59,7 +60,12 @@ public abstract class FirstLaunchActivity extends RoboSherlockFragmentActivity {
     }
 
     protected void launchNextActivity(Class activity) {
+
+        // transiting through intermediate useless activity : FirstLaunchCloudTransition
+        //Intent intent = new Intent(this, FirstLaunchCloudTransition.class);
         Intent intent = new Intent(this, activity);
+
+        intent.putExtra("nextClass", activity);
         intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         startActivity(intent);
         overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);

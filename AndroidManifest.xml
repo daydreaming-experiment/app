@@ -49,9 +49,22 @@
                   android:screenOrientation="portrait">
         </activity>
 
+
+        <activity android:name=".ui.FirstLaunchCloudTransition"
+                  android:screenOrientation="portrait">
+        </activity>
+
+
+
         <activity android:name=".ui.QuestionActivity"
                   android:label="@string/app_name"
                   android:taskAffinity=""
+                  android:screenOrientation="portrait">
+        </activity>
+
+        <activity android:name=".ui.FirstLaunchPersonalityQuestionnaireActivity"
+                  android:theme="@style/MyCustomTheme"
+                  android:noHistory="true"
                   android:screenOrientation="portrait">
         </activity>
 
@@ -61,6 +74,8 @@
                   android:noHistory="true"
                   android:screenOrientation="portrait">
         </activity>
+
+
 
         <activity android:name=".ui.FirstLaunchDescriptionActivity"
                   android:label="@string/firstLaunchDescription_title_activity"

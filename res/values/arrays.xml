@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Used for Tipi questionnaire -->
+    <string-array name="tipi_answers">
+        <item>Disagree strongly</item>
+        <item>Disagree moderately</item>
+        <item>Disagree a little</item>
+        <item>Neither agree nor disagree</item>
+        <item>Agree a little</item>
+        <item>Agree moderately</item>
+        <item>Agree strongly</item>
+    </string-array>
+</resources>

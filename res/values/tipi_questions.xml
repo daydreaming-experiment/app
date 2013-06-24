@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="Questionnaire_question1">1 - Extraverted, enthusiastic.</string>
+    <string name="Questionnaire_question2">2 - Critical, quarrelsome.</string>
+    <string name="Questionnaire_question3">3 - Dependable, self-disciplined.</string>
+    <string name="Questionnaire_question4">4 - Anxious, easily upset.</string>
+    <string name="Questionnaire_question5">5 - Open to new experiences, complex.</string>
+    <string name="Questionnaire_question6">6 - Reserved, quiet.</string>
+    <string name="Questionnaire_question7">7 - Sympathetic, warm.</string>
+    <string name="Questionnaire_question8">8 - Disorganized, careless.</string>
+    <string name="Questionnaire_question9">9 - Calm, emotionally stable.</string>
+    <string name="Questionnaire_question10">10 - Conventional, uncreative.</string>
+
+</resources>

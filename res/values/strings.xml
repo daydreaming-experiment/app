@@ -12,7 +12,9 @@
     <string name="settings_title_activity">Settings</string>
     <string name="settings_time_corrected_1">Please allow polls for at least</string>
     <string name="settings_time_corrected_2">hours in the day! The time settings have been reset to default.</string>
-    
+
+
+
     <string name="app_name">Day Dreaming</string>
     <string name="menu_settings">Settings</string>
     <string name="dashboard_title_activity">Dashboard</string>
@@ -117,5 +119,10 @@
     <string name="firstLaunchTerms_button_agree">Agree</string>
     <string name="firstLaunchTerms_button_disagree">Disagree</string>
     <string name="firstLaunchTerms_text_please_scroll">Scroll down terms</string>
+
+
+    <string name="Questionnaire_intro">Here are a number of personality traits that may or may not apply to you.  Please select the statement to indicate the extent to which you agree or disagree with each statement. You should rate the extent to which the pair of traits applies to you, even if one characteristic applies more strongly than the other. </string>
+    <string name="Questionnaire_title">Personality Questionnaire</string>
+
 
 </resources>
