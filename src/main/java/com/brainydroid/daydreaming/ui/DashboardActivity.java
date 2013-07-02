@@ -1,7 +1,16 @@
 package com.brainydroid.daydreaming.ui;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -22,6 +31,28 @@ public class DashboardActivity extends FirstLaunchActivity {
         //updateRunningTime();
         super.onStart();
     }
+
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        Logger.v(TAG, "Creating");
+        super.onCreate(savedInstanceState);
+        ViewGroup godfatherView = (ViewGroup)this.getWindow().getDecorView();
+        FontUtils.setRobotoFont(this, godfatherView);
+       // ImageView imgStartButton = (ImageView) findViewById(R.id.dashboard_ExperimentTimeElapsed);
+       // imgStartButton.setBackgroundResource(R.drawable.timeelapsed);
+
+
+
+        TextView textView = (TextView)findViewById(R.id.dashboard_textExperimentRunning);
+
+
+        Spannable WordtoSpan = new SpannableString("EXPERIMENT IS RUNNING");
+        WordtoSpan.setSpan(new ForegroundColorSpan(Color.WHITE), 14, 20,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        textView.setText(WordtoSpan);
+    }
+
 
     // TODO: check this is ok with real ActionBar API
     @Override

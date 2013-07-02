@@ -26,22 +26,25 @@
                       android:layout_marginBottom="2dp">
         <Button
                 android:id="@+id/firstLaunchTerms_buttonDisagree"
-                android:layout_width="0dp"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/firstLaunchTerms_button_disagree"
-                android:background="@drawable/consent_button"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/ui_white_text_color"
+                android:background="@drawable/dark_blue_rect_button"
                 android:layout_marginRight="10dp"/>
 
         <Button
                 android:id="@+id/firstLaunchTerms_buttonAgree"
-                android:layout_width="0dp"
-                android:layout_height="fill_parent"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_toRightOf="@id/firstLaunchTerms_buttonDisagree"
                 android:text="@string/firstLaunchTerms_button_agree"
-                android:background="@drawable/consent_button"
-
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/ui_white_text_color"
+                android:background="@drawable/light_blue_rect_button"
                 />
           </LinearLayout>
 
@@ -50,7 +53,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/firstLaunchTerms_text_please_scroll"
-                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textAppearance="@style/ui_font_caption"
                 android:layout_alignParentLeft="true"
                 android:layout_below="@id/firstLaunchTerms_buttons"/>
 
@@ -67,6 +70,7 @@
             android:paddingRight="30dp"
             android:paddingLeft="30dp"
 
+
             >
 
 
@@ -76,6 +80,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
                     android:text=""
+                    android:paddingBottom="30dp"
                     android:textAppearance="?android:attr/textAppearanceLarge" />
 
             <!--         android:background="@drawable/text_box"    -->

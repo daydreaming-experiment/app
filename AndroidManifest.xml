@@ -37,6 +37,7 @@
 
         <activity android:name=".ui.DashboardActivity"
                   android:label="@string/app_name"
+                  android:theme="@style/MyCustomTheme"
                   android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -46,19 +47,15 @@
 
         <activity android:name=".ui.SettingsActivity"
                   android:label="@string/settings_title_activity"
+                  android:theme="@style/MyCustomTheme"
                   android:screenOrientation="portrait">
         </activity>
-
-
-        <activity android:name=".ui.FirstLaunchCloudTransition"
-                  android:screenOrientation="portrait">
-        </activity>
-
 
 
         <activity android:name=".ui.QuestionActivity"
                   android:label="@string/app_name"
                   android:taskAffinity=""
+                  android:theme="@style/MyCustomTheme"
                   android:screenOrientation="portrait">
         </activity>
 

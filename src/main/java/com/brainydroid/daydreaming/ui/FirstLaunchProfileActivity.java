@@ -31,19 +31,21 @@ public class FirstLaunchProfileActivity extends FirstLaunchActivity {
         super.onCreate(savedInstanceState);
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.genders, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                R.array.genders, R.layout.spinner_layout);
+        adapter.setDropDownViewResource(R.layout.spinner_layout);
         genderSpinner.setAdapter(adapter);
 
         ArrayAdapter<CharSequence> adapter1 = ArrayAdapter.createFromResource(this,
-                R.array.education, android.R.layout.simple_spinner_item);
-        adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                R.array.education, R.layout.spinner_layout);
+        adapter1.setDropDownViewResource(R.layout.spinner_layout);
         educationSpinner.setAdapter(adapter1);
 
         ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(this,
-                R.array.ages, android.R.layout.simple_spinner_item);
-        adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                R.array.ages, R.layout.spinner_layout);
+        adapter2.setDropDownViewResource(R.layout.spinner_layout);
         ageSpinner.setAdapter(adapter2);
+
+
 
 
     }

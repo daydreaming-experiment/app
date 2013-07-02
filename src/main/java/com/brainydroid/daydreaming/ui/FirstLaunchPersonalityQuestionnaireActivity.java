@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.FloatMath;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.*;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
@@ -105,6 +106,8 @@ public class FirstLaunchPersonalityQuestionnaireActivity extends FirstLaunchActi
         for(SeekBar s : sb) {
             s.setMax(MAX_SEEKBAR);
             s.setProgress(INIT_PROGRESS_SEEKBAR);
+            s.setProgressDrawable(getResources().getDrawable(R.drawable.question_slider_progress));
+            s.setThumb(getResources().getDrawable(R.drawable.question_slider_thumb));
         }
 
 
@@ -112,6 +115,9 @@ public class FirstLaunchPersonalityQuestionnaireActivity extends FirstLaunchActi
             t.setText(hints.get(3));
         }
 
+
+   //     ViewGroup godfatherView = (ViewGroup)this.getWindow().getDecorView();
+   //     FontUtils.setRobotoFont(this, godfatherView);
 
     }
 

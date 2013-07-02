@@ -16,6 +16,10 @@
 
 <resources>
     <color name="actionbar_title_color">#224894</color>
-    <color name="blue_background_color">#2cbeea</color>
+    <color name="ui_blue_background_color">#00A2D4</color>
+    <color name="ui_background_border_color">#EBFBFF</color>
+    <color name="ui_white_text_color">#EBFBFF</color>
+    <color name="ui_dark_blue_color">#00617F</color>
     <color name="white">#FFFFFF</color>
+    <color name="transparent">#80000000</color>
 </resources>

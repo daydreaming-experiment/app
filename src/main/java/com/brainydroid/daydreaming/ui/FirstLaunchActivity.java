@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.LocationPointService;
 import com.brainydroid.daydreaming.background.Logger;
@@ -29,6 +30,9 @@ public abstract class FirstLaunchActivity extends RoboSherlockFragmentActivity {
     public void onCreate(Bundle savedInstanceState) {
         Logger.v(TAG, "Creating");
         super.onCreate(savedInstanceState);
+        ViewGroup godfatherView = (ViewGroup)this.getWindow().getDecorView();
+        FontUtils.setRobotoFont(this, godfatherView);
+
     }
 
     @Override
@@ -61,9 +65,7 @@ public abstract class FirstLaunchActivity extends RoboSherlockFragmentActivity {
 
     protected void launchNextActivity(Class activity) {
 
-        // transiting through intermediate useless activity : FirstLaunchCloudTransition
-        //Intent intent = new Intent(this, FirstLaunchCloudTransition.class);
-        Intent intent = new Intent(this, activity);
+         Intent intent = new Intent(this, activity);
 
         intent.putExtra("nextClass", activity);
         intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);

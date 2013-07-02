@@ -4,13 +4,16 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
+            android:paddingLeft="30dp"
+            android:paddingTop="30dp"
+            android:paddingRight="30dp"
             android:id="@+id/firstLaunchQuestionnaire_Scrollview" >
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                   android:orientation="vertical"
                   android:layout_width="fill_parent"
                   android:layout_height="fill_parent"
-            android:padding="30dp">
+            >
 
         <TextView
                 android:id="@+id/Questionnaire_intro"
@@ -18,6 +21,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/Questionnaire_title"
                 android:gravity="center_horizontal"
+                android:textStyle="bold"
                 android:paddingBottom="30dp"
                 android:textAppearance="?android:attr/textAppearanceLarge"/>
 
@@ -36,18 +40,24 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/Questionnaire_question1"
-                android:textAppearance="?android:attr/textAppearanceMedium"/>
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:gravity="center_horizontal"
+                android:paddingTop="20dp"
+                />
         <SeekBar
         android:id="@+id/Questionnaire_seekBar1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        />
+        android:minHeight="6dip"
+        android:maxHeight="6dip"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"/>
         <TextView
                 android:id="@+id/Questionnaire_answer1"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text=""
-                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textAppearance="@style/ui_font_caption"
                 android:gravity="center_horizontal"/>
 
 
@@ -56,18 +66,24 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/Questionnaire_question2"
-                android:textAppearance="?android:attr/textAppearanceMedium"/>
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:gravity="center_horizontal"
+                android:paddingTop="20dp"
+                />
         <SeekBar
                 android:id="@+id/Questionnaire_seekBar2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                />
+                android:minHeight="6dip"
+                android:maxHeight="6dip"
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp"/>
         <TextView
                 android:id="@+id/Questionnaire_answer2"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text=""
-                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textAppearance="@style/ui_font_caption"
                 android:gravity="center_horizontal"/>
 
 
@@ -76,18 +92,25 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/Questionnaire_question3"
-                android:textAppearance="?android:attr/textAppearanceMedium"/>
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:gravity="center_horizontal"
+                android:paddingTop="20dp"
+                />
         <SeekBar
                 android:id="@+id/Questionnaire_seekBar3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:minHeight="6dip"
+                android:maxHeight="6dip"
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp"
                 />
         <TextView
             android:id="@+id/Questionnaire_answer3"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text=""
-            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textAppearance="@style/ui_font_caption"
             android:gravity="center_horizontal"/>
 
 
@@ -96,18 +119,24 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/Questionnaire_question4"
-                android:textAppearance="?android:attr/textAppearanceMedium"/>
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:gravity="center_horizontal"
+                android:paddingTop="20dp"
+                />
         <SeekBar
                 android:id="@+id/Questionnaire_seekBar4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                />
+                android:minHeight="6dip"
+                android:maxHeight="6dip"
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp" />
         <TextView
                 android:id="@+id/Questionnaire_answer4"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text=""
-                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textAppearance="@style/ui_font_caption"
                 android:gravity="center_horizontal"/>
 
 
@@ -116,18 +145,24 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/Questionnaire_question5"
-                android:textAppearance="?android:attr/textAppearanceMedium"/>
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:gravity="center_horizontal"
+                android:paddingTop="20dp"
+                />
         <SeekBar
                 android:id="@+id/Questionnaire_seekBar5"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                />
+                android:minHeight="6dip"
+                android:maxHeight="6dip"
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp" />
         <TextView
                 android:id="@+id/Questionnaire_answer5"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text=""
-                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textAppearance="@style/ui_font_caption"
                 android:gravity="center_horizontal"/>
 
 
@@ -136,18 +171,24 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/Questionnaire_question6"
-                android:textAppearance="?android:attr/textAppearanceMedium"/>
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:gravity="center_horizontal"
+                android:paddingTop="20dp"
+                />
         <SeekBar
                 android:id="@+id/Questionnaire_seekBar6"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                />
+                android:minHeight="6dip"
+                android:maxHeight="6dip"
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp" />
         <TextView
                 android:id="@+id/Questionnaire_answer6"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text=""
-                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textAppearance="@style/ui_font_caption"
                 android:gravity="center_horizontal"/>
 
 
@@ -156,18 +197,24 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/Questionnaire_question7"
-                android:textAppearance="?android:attr/textAppearanceMedium"/>
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:gravity="center_horizontal"
+                android:paddingTop="20dp"
+                />
         <SeekBar
                 android:id="@+id/Questionnaire_seekBar7"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                />
+                android:minHeight="6dip"
+                android:maxHeight="6dip"
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp" />
         <TextView
                 android:id="@+id/Questionnaire_answer7"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text=""
-                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textAppearance="@style/ui_font_caption"
                 android:gravity="center_horizontal"/>
 
 
@@ -176,18 +223,24 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/Questionnaire_question8"
-                android:textAppearance="?android:attr/textAppearanceMedium"/>
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:gravity="center_horizontal"
+                android:paddingTop="20dp"
+                />
         <SeekBar
                 android:id="@+id/Questionnaire_seekBar8"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                />
+                android:minHeight="6dip"
+                android:maxHeight="6dip"
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp" />
         <TextView
                 android:id="@+id/Questionnaire_answer8"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text=""
-                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textAppearance="@style/ui_font_caption"
                 android:gravity="center_horizontal"/>
 
 
@@ -196,18 +249,24 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/Questionnaire_question9"
-                android:textAppearance="?android:attr/textAppearanceMedium"/>
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:gravity="center_horizontal"
+                android:paddingTop="20dp"
+                />
         <SeekBar
                 android:id="@+id/Questionnaire_seekBar9"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                />
+                android:minHeight="6dip"
+                android:maxHeight="6dip"
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp" />
         <TextView
                 android:id="@+id/Questionnaire_answer9"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text=""
-                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textAppearance="@style/ui_font_caption"
                 android:gravity="center_horizontal"/>
 
 
@@ -216,18 +275,24 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/Questionnaire_question10"
-                android:textAppearance="?android:attr/textAppearanceMedium"/>
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:gravity="center_horizontal"
+                android:paddingTop="20dp"
+                />
         <SeekBar
                 android:id="@+id/Questionnaire_seekBar10"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                />
+                android:minHeight="6dip"
+                android:maxHeight="6dip"
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp" />
         <TextView
                 android:id="@+id/Questionnaire_answer10"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text=""
-                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textAppearance="@style/ui_font_caption"
                 android:gravity="center_horizontal"/>
 
         <RelativeLayout
@@ -235,6 +300,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginTop="100dp"
                 android:gravity="right"
+                android:layout_marginBottom="30dp"
                 >
 
 

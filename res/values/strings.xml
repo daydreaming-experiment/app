@@ -45,8 +45,9 @@
     <string name="firstLaunchMeasures_text_settings_necessary">Change your settings to get location:</string>
     <string name="firstLaunchMeasures_button_settings">Settings&#8230;</string>
     <string name="firstLaunchMeasures_title_activity">Measures &amp; Privacy</string>
+
     <string name="firstLaunchProfile_title_activity">Profile</string>
-    <string name="firstLaunchProfile_title_about_you">A little about yourself:</string>
+    <string name="firstLaunchProfile_title_about_you">A little about yourself</string>
     <string name="firstLaunchProfile_hint_age">Age</string>
     <string name="firstLaunchProfile_button_next">Next</string>
     <string name="firstLaunchProfile_fix_age">Please enter an age between 5 and 100</string>
@@ -122,7 +123,7 @@
 
 
     <string name="Questionnaire_intro">Here are a number of personality traits that may or may not apply to you.  Please select the statement to indicate the extent to which you agree or disagree with each statement. You should rate the extent to which the pair of traits applies to you, even if one characteristic applies more strongly than the other. </string>
-    <string name="Questionnaire_title">Personality Questionnaire</string>
+    <string name="Questionnaire_title">PERSONALITY QUESTIONNAIRE</string>
 
 
 </resources>

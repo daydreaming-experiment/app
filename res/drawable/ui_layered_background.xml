@@ -5,13 +5,13 @@
         <shape
                 xmlns:android="http://schemas.android.com/apk/res/android"
                 android:shape="rectangle">
-            <solid android:color="@color/white"/>
+            <solid android:color="@color/ui_background_border_color"/>
         </shape>
     </item>
     <item>
         <rotate xmlns:android="http://schemas.android.com/apk/res/android"
-                android:fromDegrees="1"
-                android:toDegrees="1"
+                android:fromDegrees="0.5"
+                android:toDegrees="0.5"
                 android:pivotX="50%"
                 android:pivotY="50%"
                 android:drawable="@drawable/blue_background">

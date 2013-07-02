@@ -20,20 +20,19 @@
         
 	    <LinearLayout
 	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content" >
+	        android:layout_height="wrap_content"
+            android:gravity="right"
+            android:layout_marginBottom="30dp"
+            android:layout_marginTop="30dp">
 	
-	        <android.support.v7.widget.Space
-	            android:layout_width="0dp"
-	            android:layout_height="wrap_content"
-	            android:layout_weight="1" />
-	
-	        <Button
+
+	        <ImageButton
 	            android:id="@+id/question_nextButton"
-	            android:layout_width="0dp"
+	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
-	            android:layout_weight="1"
 	            android:onClick="onClick_nextButton"
-	            android:text="@string/question_button_next" />
+                android:background="@drawable/button_cloud_next"
+                    />
 	    
 	    </LinearLayout>
 	    

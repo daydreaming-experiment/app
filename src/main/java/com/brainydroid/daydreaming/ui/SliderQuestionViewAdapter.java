@@ -68,6 +68,9 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
         rightHintText.setText(hints.get(hintsNumber - 1));
 
         SeekBar seekBar = (SeekBar)view.findViewById(R.id.question_slider_seekBar);
+        seekBar.setProgressDrawable(view.getResources().getDrawable(R.drawable.question_slider_progress));
+        seekBar.setThumb(view.getResources().getDrawable(R.drawable.question_slider_thumb));
+
         final TextView selectedSeek = (TextView)view.findViewById(R.id.question_slider_selectedSeek);
 
         SeekBar.OnSeekBarChangeListener listener = new SeekBar.OnSeekBarChangeListener() {
@@ -79,7 +82,7 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
                         "and background");
                 int index = (int)FloatMath.floor((progress / 101f) * hintsNumber);
                 selectedSeek.setText(hints.get(index));
-                seekBar.setBackgroundColor(Color.TRANSPARENT);
+                //seekBar.setBackgroundColor(Color.TRANSPARENT);
             }
 
             @Override
@@ -96,7 +99,7 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
             seekBar.setProgress(initialPosition);
         }
 
-        seekBar.setBackgroundColor(Color.argb(255,255,205,205));
+       // seekBar.setBackgroundColor(Color.argb(255,255,205,205));
         seekBar.setOnSeekBarChangeListener(listener);
 
         return view;
