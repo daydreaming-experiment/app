@@ -4,7 +4,7 @@
     android:layout_height="fill_parent"
     >
 
-    <LinearLayout android:id="@+id/ll1"
+    <LinearLayout android:id="@+id/ll"
                   android:layout_alignParentTop="true"
                   android:layout_width="fill_parent"
                   android:layout_height="wrap_content"/>
@@ -32,6 +32,61 @@
 
     </LinearLayout>
 
+
+
+
+    <ScrollView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/firstLaunchDescription_cloud"
+            android:layout_below="@id/ll"
+            android:layout_above="@id/firstLaunchDescription_cloud_button"
+            android:paddingRight="15dp"
+            android:paddingLeft="15dp"
+            android:scrollbarSize="5dp"
+            android:background="@drawable/white_background"
+            android:scrollbarThumbVertical="@drawable/scrollbar_vertical_thumb_blue"
+
+            >
+
+        <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/firstLaunchDescription_scrollviewtext"
+                android:layout_alignParentBottom="true"
+                android:padding="50dp"
+                android:background="@drawable/white_background"
+                android:gravity="right">
+
+            <TextView
+                    android:id="@+id/firstLaunchDescription_textTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:text="@string/firstLaunchDescription_text_title"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="@color/ui_blue_background_color"/>
+
+            <TextView
+                    android:id="@+id/firstLaunchDescription_textDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:text=""
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/ui_blue_background_color"/>
+
+
+        </LinearLayout>
+
+
+        <!--         android:background="@drawable/text_box"    -->
+    </ScrollView>
+
+
+
+    <!--
+
     <LinearLayout
             android:id="@+id/firstLaunchDescription_cloud"
             android:layout_width="fill_parent"
@@ -57,7 +112,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
-                android:text="@string/firstLaunchDescription_text_description"
+                android:text=""
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/ui_blue_background_color"/>
 
@@ -65,5 +120,8 @@
 
 
     </LinearLayout>
+
+         android:background="@drawable/text_box"    -->
+
 
 </RelativeLayout>

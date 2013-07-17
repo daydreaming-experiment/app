@@ -13,11 +13,10 @@ import com.brainydroid.daydreaming.background.SchedulerService;
 import com.brainydroid.daydreaming.db.Util;
 import roboguice.inject.InjectResource;
 
-public class SettingsActivity extends SherlockPreferenceActivity
+public class AppSettingsActivity extends SherlockPreferenceActivity
 implements OnSharedPreferenceChangeListener {
 
-    private static String TAG = "SettingsActivity";
-
+    private static String TAG = "AppSettingsActivity";
     private static int MIN_WINDOW_HOURS = 5; // 5 hours (in hours)
 
     private SharedPreferences sharedPreferences;

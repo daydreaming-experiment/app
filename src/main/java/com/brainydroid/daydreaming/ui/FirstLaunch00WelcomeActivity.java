@@ -15,15 +15,15 @@ import roboguice.inject.ContentView;
  * In first launch sequence of apps
  *
  * Previous activity :  none
- * This activity     :  FirstLaunchWelcomeActivity
- * Next activity     :  FirstLaunchDescriptionActivity
+ * This activity     :  FirstLaunch00WelcomeActivity
+ * Next activity     :  FirstLaunch01DescriptionActivity
  *
  */
 @ContentView(R.layout.activity_first_launch_welcome)
-public class FirstLaunchWelcomeActivity extends FirstLaunchActivity {
+public class FirstLaunch00WelcomeActivity extends FirstLaunchActivity {
 
     @SuppressWarnings("FieldCanBeLocal")
-    private static String TAG = "FirstLaunchWelcomeActivity";
+    private static String TAG = "FirstLaunch00WelcomeActivity";
     private static CountDownTimer Timer;
 
     @Override
@@ -40,9 +40,9 @@ public class FirstLaunchWelcomeActivity extends FirstLaunchActivity {
         Timer =  new CountDownTimer(2000, 1000) {
             public void onTick(long millisUntilFinished) {}
             public void onFinish() {
-                //launchNextActivity(FirstLaunchDescriptionActivity.class);
+                launchNextActivity(FirstLaunch01DescriptionActivity.class);
 
-                launchNextActivity(FirstLaunchPersonalityQuestionnaireActivity.class);
+//                launchNextActivity(FirstLaunch04PersonalityQuestionnaireActivity.class);
 
                 Timer.cancel();
                 //finish();

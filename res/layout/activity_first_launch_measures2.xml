@@ -1,0 +1,120 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="16dp"
+                android:gravity="center" >
+
+
+    <LinearLayout
+                  android:orientation="vertical"
+                  android:layout_gravity="center_horizontal"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:id="@+id/firstLaunchMeasures2_layout_data">
+
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/firstLaunchMeasures2_text_data"
+            android:textAppearance="@style/ui_font_title_white"
+                />
+
+
+        <TextView
+            android:id="@+id/firstLaunchMeasures2_textNetworkConnection"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:drawableLeft="@drawable/ic_cross"
+            android:textAppearance="@style/ui_font_title2"
+            android:text="@string/firstLaunchMeasures2_text_network_connection"
+                />
+
+        <Button
+                android:id="@+id/firstLaunchMeasures2_buttonNetworkSettings"
+                android:padding="2dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/firstLaunchMeasures2_button_change_data_settings"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@color/ui_white_text_color"
+                android:background="@drawable/dark_blue_rectangle"
+                android:onClick="onClick_buttonNetworkSettings"
+                />
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/firstLaunchMeasures2_layout_location"
+            android:layout_below="@id/firstLaunchMeasures2_layout_data"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            >
+
+        <TextView
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="wrap_content"
+                android:text="@string/firstLaunchMeasures2_text_location"
+                android:textAppearance="@style/ui_font_title_white"
+                />
+
+
+        <TextView
+                android:id="@+id/firstLaunchMeasures2_textCoarseLocation"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="@string/firstLaunchMeasures2_text_coarse_location"
+                android:layout_gravity="center_horizontal"
+                android:drawableLeft="@drawable/ic_cross"
+                android:textAppearance="@style/ui_font_title2"
+                />
+
+        <Button
+                android:id="@+id/firstLaunchMeasures2_buttonLocationSettings"
+                android:padding="2dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/firstLaunchMeasures2_button_change_location_settings"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@color/ui_white_text_color"
+                android:background="@drawable/dark_blue_rectangle"
+                android:onClick="onClick_buttonLocationSettings"
+                />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/firstLaunchMeasures2_layout_location"
+            android:layout_marginBottom="20dp"
+            android:layout_marginRight="20dp"
+            android:gravity="right">
+
+
+        <ImageButton
+                android:id="@+id/firstLaunchMeasures2_buttonNext"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="onClick_buttonNext"
+                android:background="@drawable/button_cloud_next"
+                />
+
+
+    </LinearLayout>
+
+
+
+</RelativeLayout>

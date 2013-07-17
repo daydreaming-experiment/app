@@ -15,7 +15,7 @@
                 android:id="@+id/dashboard_quitExperiment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="onClick_quitExperiment"
+                android:onClick="onClick_openAppSettings"
                 android:src="@drawable/icon_settings"
                 android:background="@null"/>
 
@@ -79,13 +79,26 @@
         <TextView
                 android:id="@+id/dashboard_ExperimentTimeElapsed2"
                 android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_height="50dp"
                 android:layout_below="@id/dashboard_ExperimentTimeElapsed1"
                 android:textColor="@color/ui_dark_blue_color"
-                android:text="22 days"
+                android:text="XX"
+                android:textAppearance="?android:attr/textAppearanceLarge"
                 android:gravity="center"
                 android:background="@drawable/white_rectangle"
+
                 />
+
+            <TextView
+                    android:id="@+id/dashboard_ExperimentTimeElapsed2days"
+                    android:layout_width="100dp"
+                    android:layout_height="50dp"
+                    android:layout_below="@id/dashboard_ExperimentTimeElapsed2"
+                    android:textColor="@color/ui_dark_blue_color"
+                    android:text="days"
+                    android:gravity="center"
+                    android:background="@drawable/white_rectangle"/>
+
 
 
         </RelativeLayout>
@@ -125,19 +138,32 @@
         <TextView
                 android:id="@+id/dashboard_ExperimentResultsIn2"
                 android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_height="50dp"
                 android:layout_below="@id/dashboard_ExperimentResultsIn1"
                 android:textColor="@color/white"
-                android:text="22 days"
+                android:text="YY"
+                android:textAppearance="?android:attr/textAppearanceLarge"
                 android:gravity="center"
                 android:background="@drawable/dark_blue_rectangle"
                 android:src="@drawable/settings_icon"
                 />
 
+            <TextView
+                    android:id="@+id/dashboard_ExperimentResultsIn2days"
+                    android:layout_width="100dp"
+                    android:layout_height="50dp"
+                    android:layout_below="@id/dashboard_ExperimentResultsIn2"
+                    android:textColor="@color/white"
+                    android:text="days"
+                    android:gravity="center"
+                    android:background="@drawable/dark_blue_rectangle"
+                    android:src="@drawable/settings_icon"
+                    />
+
         <TextView
                 android:layout_width="100dp"
                 android:layout_height="20dp"
-                android:layout_below="@id/dashboard_ExperimentResultsIn2"
+                android:layout_below="@id/dashboard_ExperimentResultsIn2days"
                 android:layout_toRightOf="@id/dashboard_ExperimentTimeElapsed1"
                 android:textAppearance="@style/ui_font_button_dark"
                 android:text="See Results"

@@ -1,15 +1,10 @@
 package com.brainydroid.daydreaming.ui;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
-import android.graphics.Color;
-import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.FloatMath;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.*;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
@@ -25,15 +20,15 @@ import java.util.List;
  * In first launch sequence of apps
  *
  * Previous activity :  none
- * This activity     :  FirstLaunchWelcomeActivity
- * Next activity     :  FirstLaunchDescriptionActivity
+ * This activity     :  FirstLaunch00WelcomeActivity
+ * Next activity     :  FirstLaunch01DescriptionActivity
  *
  */
 @ContentView(R.layout.activity_first_launch_questionnaire)
-public class FirstLaunchPersonalityQuestionnaireActivity extends FirstLaunchActivity {
+public class FirstLaunch04PersonalityQuestionnaireActivity extends FirstLaunchActivity {
 
     @SuppressWarnings("FieldCanBeLocal")
-    private static String TAG = "FirstLaunchPersonalityQuestionnaireActivity";
+    private static String TAG = "FirstLaunch04PersonalityQuestionnaireActivity";
     private static CountDownTimer Timer;
 
 
@@ -169,7 +164,7 @@ public class FirstLaunchPersonalityQuestionnaireActivity extends FirstLaunchActi
       //        editor.commit();
 
 
-        launchNextActivity(FirstLaunchTermsActivity.class);
+        launchNextActivity(FirstLaunch05MeasuresActivity2.class);
     }
 
 

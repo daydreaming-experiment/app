@@ -3,7 +3,6 @@ package com.brainydroid.daydreaming.ui;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.brainydroid.daydreaming.R;
@@ -17,9 +16,9 @@ import java.io.InputStream;
 
 @ContentView(R.layout.activity_first_launch_terms)
 
-public class FirstLaunchTermsActivity extends FirstLaunchActivity implements ScrollViewListener{
+public class FirstLaunch02TermsActivity extends FirstLaunchActivity implements ScrollViewListener{
 
-    private static String TAG = "FirstLaunchTermsActivity";
+    private static String TAG = "FirstLaunch02TermsActivity";
 
     public ScrollViewExt sv;
     public Button Agree_button;
@@ -86,7 +85,7 @@ public class FirstLaunchTermsActivity extends FirstLaunchActivity implements Scr
 
     public void onClick_buttonAgree(@SuppressWarnings("UnusedParameters") View view) {
         Logger.v(TAG, "Agree button clicked, launching next activity");
-        launchNextActivity(FirstLaunchProfileActivity.class);
+        launchNextActivity(FirstLaunch03ProfileActivity.class);
     }
 
     public void onClick_buttonDisagree(@SuppressWarnings("UnusedParameters") View view) {

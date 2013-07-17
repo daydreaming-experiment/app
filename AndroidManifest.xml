@@ -45,7 +45,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.SettingsActivity"
+        <activity android:name=".ui.AppSettingsActivity"
                   android:label="@string/settings_title_activity"
                   android:theme="@style/MyCustomTheme"
                   android:screenOrientation="portrait">
@@ -59,13 +59,13 @@
                   android:screenOrientation="portrait">
         </activity>
 
-        <activity android:name=".ui.FirstLaunchPersonalityQuestionnaireActivity"
+        <activity android:name=".ui.FirstLaunch04PersonalityQuestionnaireActivity"
                   android:theme="@style/MyCustomTheme"
                   android:noHistory="true"
                   android:screenOrientation="portrait">
         </activity>
 
-        <activity android:name=".ui.FirstLaunchWelcomeActivity"
+        <activity android:name=".ui.FirstLaunch00WelcomeActivity"
                   android:label="@string/firstLaunchWelcome_title_activity"
                   android:theme="@style/MyCustomTheme"
                   android:noHistory="true"
@@ -74,32 +74,44 @@
 
 
 
-        <activity android:name=".ui.FirstLaunchDescriptionActivity"
+        <activity android:name=".ui.FirstLaunch01DescriptionActivity"
                   android:label="@string/firstLaunchDescription_title_activity"
                   android:theme="@style/MyCustomTheme"
                   android:screenOrientation="portrait">
         </activity>
 
-        <activity android:name=".ui.FirstLaunchProfileActivity"
+        <activity android:name=".ui.FirstLaunch03ProfileActivity"
                   android:label="@string/firstLaunchProfile_title_activity"
                   android:theme="@style/MyCustomTheme"
                   android:screenOrientation="portrait">
         </activity>
 
-        <activity android:name=".ui.FirstLaunchTermsActivity"
+        <activity android:name=".ui.FirstLaunch02TermsActivity"
                   android:label="@string/firstLaunchTerms_title_activity"
                   android:theme="@style/MyCustomTheme"
                   android:screenOrientation="portrait">
         </activity>
 
-        <activity android:name=".ui.FirstLaunchPullActivity"
+        <activity android:name=".ui.FirstLaunch06PullActivity"
                   android:label="@string/firstLaunchPull_title_activity"
                   android:theme="@style/MyCustomTheme"
                   android:screenOrientation="portrait">
         </activity>
 
-        <activity android:name=".ui.FirstLaunchMeasuresActivity"
+        <activity android:name=".ui.FirstLaunch06PullActivity2"
+                  android:label="@string/firstLaunchPull_title_activity"
+                  android:theme="@style/MyCustomTheme"
+                  android:screenOrientation="portrait">
+        </activity>
+
+        <activity android:name=".ui.FirstLaunch05MeasuresActivity"
                   android:label="@string/firstLaunchMeasures_title_activity"
+                  android:theme="@style/MyCustomTheme"
+                  android:screenOrientation="portrait">
+        </activity>
+
+        <activity android:name=".ui.FirstLaunch05MeasuresActivity2"
+                  android:label="@string/firstLaunchMeasures2_title_activity"
                   android:theme="@style/MyCustomTheme"
                   android:screenOrientation="portrait">
         </activity>

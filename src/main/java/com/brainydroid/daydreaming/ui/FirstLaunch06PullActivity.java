@@ -21,9 +21,9 @@ import java.io.InputStream;
 
 // FIXME: all this activity should go in the background
 @ContentView(R.layout.activity_first_launch_pull)
-public class FirstLaunchPullActivity extends FirstLaunchActivity {
+public class FirstLaunch06PullActivity extends FirstLaunchActivity {
 
-    private static String TAG = "FirstLaunchPullActivity";
+    private static String TAG = "FirstLaunch06PullActivity";
 
     @InjectView(R.id.firstLaunchPull_text_downloading) TextView textDownloading;
     @InjectView(R.id.firstLaunchPull_text_data_enabled) TextView dataEnabled;
@@ -140,7 +140,7 @@ public class FirstLaunchPullActivity extends FirstLaunchActivity {
     }
 
     public void onClick_buttonNext(@SuppressWarnings("UnusedParameters") View view) {
-        launchNextActivity(FirstLaunchMeasuresActivity.class);
+        launchNextActivity(DashboardActivity.class);
     }
 
     // FIXME: this is already in QuestionsStorage

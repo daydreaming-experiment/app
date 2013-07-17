@@ -11,9 +11,9 @@ import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_first_launch_profile)
-public class FirstLaunchProfileActivity extends FirstLaunchActivity {
+public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
 
-    private static String TAG = "FirstLaunchProfileActivity";
+    private static String TAG = "FirstLaunch03ProfileActivity";
 
 //    public static String PROFILE_AGE = "profileAge";
 //    public static String PROFILE_GENDER = "profileGender";
@@ -70,7 +70,7 @@ public class FirstLaunchProfileActivity extends FirstLaunchActivity {
                     genderSpinner.getSelectedItem().toString(),
                     ageSpinner.getSelectedItem().toString());
             Logger.d(TAG, "Launching next activity");
-            launchNextActivity(FirstLaunchPullActivity.class);
+            launchNextActivity(FirstLaunch04PersonalityQuestionnaireActivity.class);
         }
     }
 

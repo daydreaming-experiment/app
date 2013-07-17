@@ -67,9 +67,10 @@
             android:id="@+id/firstLaunchTerms_Scrollview"
             android:layout_below="@id/ll1"
             android:layout_above="@id/firstLaunchTerms_agreement_buttons"
-            android:paddingRight="30dp"
-            android:paddingLeft="30dp"
-
+            android:paddingRight="15dp"
+            android:paddingLeft="15dp"
+            android:scrollbarSize="5dp"
+            android:scrollbarThumbVertical="@drawable/scrollbar_vertical_thumb"
 
             >
 
@@ -81,6 +82,8 @@
                     android:gravity="center_horizontal"
                     android:text=""
                     android:paddingBottom="30dp"
+                    android:paddingRight="15dp"
+                    android:paddingLeft="15dp"
                     android:textAppearance="?android:attr/textAppearanceLarge" />
 
             <!--         android:background="@drawable/text_box"    -->

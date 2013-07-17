@@ -8,6 +8,7 @@
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="notification_sound_key"
+            android:icon="@drawable/android"
             android:persistent="true"
             android:title="@string/notification_sound" />
 
@@ -15,12 +16,14 @@
             android:defaultValue="true"
             android:key="notification_vibrator_key"
             android:persistent="true"
+            android:icon="@drawable/android"
             android:title="@string/notification_vibrator" />
 
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="notification_blink_key"
             android:persistent="true"
+            android:icon="@drawable/android"
             android:title="@string/notification_led" />
     </PreferenceCategory>
 

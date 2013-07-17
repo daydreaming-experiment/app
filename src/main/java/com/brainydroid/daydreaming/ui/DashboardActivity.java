@@ -5,11 +5,9 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableString;
-import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.actionbarsherlock.view.Menu;
@@ -73,7 +71,7 @@ public class DashboardActivity extends FirstLaunchActivity {
         switch (item.getItemId()) {
         case R.id.menu_settings:
             Logger.d(TAG, "Launching settings");
-            Intent intent = new Intent(this, SettingsActivity.class);
+            Intent intent = new Intent(this, AppSettingsActivity.class);
             startActivity(intent);
             break;
 
@@ -81,6 +79,17 @@ public class DashboardActivity extends FirstLaunchActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    public void  onClick_openAppSettings(){
+
+        Intent intent = new Intent(this, AppSettingsActivity.class);
+        intent.putExtra("nextClass", AppSettingsActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+        startActivity(intent);
+        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+
     }
 
     @Override
@@ -126,7 +135,7 @@ public class DashboardActivity extends FirstLaunchActivity {
         if (!statusManager.isFirstLaunchCompleted()) {
             Logger.i(TAG, "First launch not completed -> starting first " +
                     "launch sequence and finishing this activity");
-            Intent intent = new Intent(this, FirstLaunchWelcomeActivity.class);
+            Intent intent = new Intent(this, FirstLaunch00WelcomeActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
             startActivity(intent);
             finish();

@@ -14,9 +14,9 @@ import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_first_launch_measures)
-public class FirstLaunchMeasuresActivity extends FirstLaunchActivity {
+public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
 
-    private static String TAG = "FirstLaunchMeasuresActivity";
+    private static String TAG = "FirstLaunch05MeasuresActivity";
 
     @InjectView(R.id.firstLaunchMeasures_textNetworkLocation) TextView textNetworkLocation;
     @InjectView(R.id.firstLaunchMeasures_textSettings) TextView textSettings;
@@ -123,7 +123,7 @@ public class FirstLaunchMeasuresActivity extends FirstLaunchActivity {
     private void launchDashboard() {
         Logger.d(TAG, "Launching settings");
         finishFirstLaunch(); // when everything is ok, first launch is set to completed
-        Intent dashboardIntent = new Intent(this, DashboardActivity.class);
+        Intent dashboardIntent = new Intent(this, FirstLaunch06PullActivity.class);
         startActivity(dashboardIntent);
         Logger.d(TAG, "Finishing this activity");
         finish();

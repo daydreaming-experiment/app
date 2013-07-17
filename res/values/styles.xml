@@ -77,6 +77,12 @@
         <item name="android:textColor">@color/ui_dark_blue_color</item>
     </style>
 
+
+    <style name="ui_font_title_white" parent="@android:style/TextAppearance.Large">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/ui_white_text_color</item>
+    </style>
+
     <style name="ui_font_title2" parent="@android:style/TextAppearance.Large">
         <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/ui_white_text_color</item>
