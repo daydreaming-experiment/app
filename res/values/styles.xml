@@ -94,6 +94,11 @@
         <item name="android:textColor">@color/ui_white_text_color</item>
     </style>
 
+    <style name="ui_font_bodytext_blue" parent="@android:style/TextAppearance.Large">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/ui_blue_background_color</item>
+    </style>
+
     <style name="ui_font_caption" parent="@android:style/TextAppearance.Large">
         <item name="android:textSize">12sp</item>
         <item name="android:textColor">@color/ui_dark_blue_color</item>

@@ -62,7 +62,9 @@ public class FirstLaunch05MeasuresActivity2 extends FirstLaunchActivity {
         textNetworkConnection.setCompoundDrawablesWithIntrinsicBounds(
                 statusManager.isDataEnabled() ? R.drawable.ic_check : R.drawable.ic_cross, 0, 0, 0);
 
-        updateRequestAdjustSettings();
+        //updateRequestAdjustSettings();
+        buttonNext.setClickable(true); // just to run without data
+
     }
 
     private void updateRequestAdjustSettings() {

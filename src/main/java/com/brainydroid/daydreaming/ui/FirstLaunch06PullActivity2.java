@@ -2,15 +2,16 @@ package com.brainydroid.daydreaming.ui;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Build;
+import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 import com.brainydroid.daydreaming.R;
+import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.QuestionsStorage;
 import com.brainydroid.daydreaming.db.Util;
 import com.google.inject.Inject;
@@ -27,26 +28,55 @@ public class FirstLaunch06PullActivity2 extends FirstLaunchActivity {
     private static String TAG = "FirstLaunch06PullActivity2";
 
     @InjectView(R.id.firstLaunchPull_text_downloading) TextView textDownloading;
-    @InjectView(R.id.firstLaunchPull_text_data_enabled) TextView dataEnabled;
-    @InjectView(R.id.firstLaunchPull_text_change_settings) TextView textSettings;
+   // @InjectView(R.id.firstLaunchPull_text_data_enabled) TextView dataEnabled;
+   // @InjectView(R.id.firstLaunchPull_text_change_settings) TextView textSettings;
     @InjectView(R.id.firstLaunchPull_buttonNext) ImageButton buttonNext;
 
     @Inject QuestionsStorage questionsStorage;
 
     private boolean areQuestionsDownloaded = false;
+    private static CountDownTimer Timer;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState){
+        Logger.v(TAG, "Creating");
+        super.onCreate(savedInstanceState);
+
+        ImageView MyImageView = (ImageView)findViewById(R.id.firstLaunchPull_loading_image);
+        MyImageView.setBackgroundResource(R.drawable.animated_loading);
+        AnimationDrawable AniFrame = (AnimationDrawable) MyImageView.getBackground();
+        AniFrame.start();
+
+
+        Timer =  new CountDownTimer(2000, 1000) {
+            public void onTick(long millisUntilFinished) {}
+            public void onFinish() {
+                //launchNextActivity(FirstLaunch01DescriptionActivity.class);
+
+//                launchNextActivity(FirstLaunch04PersonalityQuestionnaireActivity.class);
+
+                updateView();
+
+                Timer.cancel();
+                //finish();
+            }
+        }.start();
+
+    }
 
     @Override
     public void onStart() {
         super.onStart();
-        updateView();
+//        updateView();
+
     }
 
     // FIXME : what does this do?
     private void updateView() {
 
-        dataEnabled.setCompoundDrawablesWithIntrinsicBounds(
-                (statusManager.isDataEnabled() | Build.FINGERPRINT.startsWith("generic")) ?
-                        R.drawable.ic_check : R.drawable.ic_cross, 0, 0, 0);
+     //   dataEnabled.setCompoundDrawablesWithIntrinsicBounds(
+      //          (statusManager.isDataEnabled() | Build.FINGERPRINT.startsWith("generic")) ?
+       //                 R.drawable.ic_check : R.drawable.ic_cross, 0, 0, 0);
 
         textDownloading.setCompoundDrawablesWithIntrinsicBounds(
                 areQuestionsDownloaded ? R.drawable.ic_check : R.drawable.ic_cross, 0, 0, 0);
@@ -89,8 +119,8 @@ public class FirstLaunch06PullActivity2 extends FirstLaunchActivity {
     @TargetApi(11)
     private void setAdjustSettingsNecessary() {
 
-        textSettings.setText(R.string.firstLaunchPull_text_settings_necessary);
-        textSettings.setVisibility(View.VISIBLE);
+//        textSettings.setText(R.string.firstLaunchPull_text_settings_necessary);
+//        textSettings.setVisibility(View.VISIBLE);
 //        buttonSettings.setVisibility(View.VISIBLE);
 //        buttonSettings.setClickable(true);
         forbidNextButton();
@@ -124,7 +154,7 @@ public class FirstLaunch06PullActivity2 extends FirstLaunchActivity {
     @TargetApi(11)
     private void setAdjustSettingsOff() {
 
-        textSettings.setVisibility(View.INVISIBLE);
+  //      textSettings.setVisibility(View.INVISIBLE);
   //      buttonSettings.setVisibility(View.INVISIBLE);
   //      buttonSettings.setClickable(false);
     }
@@ -140,6 +170,7 @@ public class FirstLaunch06PullActivity2 extends FirstLaunchActivity {
     }
 
     public void onClick_buttonNext(@SuppressWarnings("UnusedParameters") View view) {
+        statusManager.setFirstLaunchCompleted();
         launchNextActivity(DashboardActivity.class);
     }
 

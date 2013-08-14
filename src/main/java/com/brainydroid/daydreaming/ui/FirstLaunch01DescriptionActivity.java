@@ -37,7 +37,7 @@ public class FirstLaunch01DescriptionActivity extends FirstLaunchActivity {
 
     private void populateDescription() {
         try {
-            InputStream termsInputStream = getResources().openRawResource(R.raw.terms);
+            InputStream termsInputStream = getResources().openRawResource(R.raw.description);
             description.setText(Util.convertStreamToString(termsInputStream));
             termsInputStream.close();
         } catch (IOException e) {
