@@ -160,7 +160,7 @@
                     android:src="@drawable/settings_icon"
                     />
 
-        <TextView
+        <Button
                 android:layout_width="100dp"
                 android:layout_height="20dp"
                 android:layout_below="@id/dashboard_ExperimentResultsIn2days"
@@ -170,7 +170,7 @@
                 android:gravity="center"
                 android:background="@drawable/white_rectangle"
                 android:layout_marginTop="10dp"
-                android:src="@drawable/settings_icon"
+                android:onClick="onClick_SeeResults"
                 />
 
         </RelativeLayout>

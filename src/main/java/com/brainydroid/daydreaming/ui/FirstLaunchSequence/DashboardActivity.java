@@ -1,4 +1,4 @@
-package com.brainydroid.daydreaming.ui;
+package com.brainydroid.daydreaming.ui.FirstLaunchSequence;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -16,6 +16,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.background.SchedulerService;
+import com.brainydroid.daydreaming.ui.*;
 import roboguice.inject.ContentView;
 
 @ContentView(R.layout.activity_dashboard)
@@ -122,11 +123,19 @@ public class DashboardActivity extends FirstLaunchActivity {
 
     }
 
+    public void  onClick_SeeResults(View view){
+        Toast.makeText(this, "Not yet!", Toast.LENGTH_SHORT).show();
+    }
+
+
+
+
 
     @Override
     public void onBackPressed() {
         Logger.v(TAG, "Back pressed");
         // Don't overridePendingTransition (not calling super)
+        finish();
     }
 
 //    // TODO: clean this up

@@ -1,4 +1,4 @@
-package com.brainydroid.daydreaming.ui;
+package com.brainydroid.daydreaming.ui.FirstLaunchSequence;
 
 import android.os.Bundle;
 import android.view.View;
@@ -8,6 +8,8 @@ import android.widget.Toast;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.Util;
+import com.brainydroid.daydreaming.ui.ScrollViewExt;
+import com.brainydroid.daydreaming.ui.ScrollViewListener;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
@@ -16,7 +18,7 @@ import java.io.InputStream;
 
 @ContentView(R.layout.activity_first_launch_terms)
 
-public class FirstLaunch02TermsActivity extends FirstLaunchActivity implements ScrollViewListener{
+public class FirstLaunch02TermsActivity extends FirstLaunchActivity implements ScrollViewListener {
 
     private static String TAG = "FirstLaunch02TermsActivity";
 

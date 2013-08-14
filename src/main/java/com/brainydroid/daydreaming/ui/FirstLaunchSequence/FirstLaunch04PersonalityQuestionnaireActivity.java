@@ -1,4 +1,4 @@
-package com.brainydroid.daydreaming.ui;
+package com.brainydroid.daydreaming.ui.FirstLaunchSequence;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;

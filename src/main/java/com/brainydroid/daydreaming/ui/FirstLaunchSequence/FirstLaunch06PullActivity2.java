@@ -1,4 +1,4 @@
-package com.brainydroid.daydreaming.ui;
+package com.brainydroid.daydreaming.ui.FirstLaunchSequence;
 
 import android.annotation.TargetApi;
 import android.content.Intent;

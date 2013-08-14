@@ -1,4 +1,4 @@
-package com.brainydroid.daydreaming.ui;
+package com.brainydroid.daydreaming.ui.FirstLaunchSequence;
 
 import android.os.Bundle;
 import android.view.View;
