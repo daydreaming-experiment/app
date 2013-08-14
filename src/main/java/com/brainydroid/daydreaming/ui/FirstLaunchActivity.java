@@ -58,7 +58,7 @@ public abstract class FirstLaunchActivity extends RoboSherlockFragmentActivity {
         if (statusManager.isFirstLaunchCompleted()) {
             Logger.i(TAG, "First launch completed -> finishing");
             finish();
-        } else {
+       } else {
             Logger.v(TAG, "First launch not completed");
         }
     }
@@ -72,6 +72,9 @@ public abstract class FirstLaunchActivity extends RoboSherlockFragmentActivity {
         startActivity(intent);
         overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
     }
+
+
+
 
     protected void finishFirstLaunch() {
         Logger.i(TAG, "Setting first launch to finished");

@@ -82,7 +82,7 @@ public class DashboardActivity extends FirstLaunchActivity {
     }
 
 
-    public void  onClick_openAppSettings(){
+    public void  onClick_openAppSettings(View view){
 
         Intent intent = new Intent(this, AppSettingsActivity.class);
         intent.putExtra("nextClass", AppSettingsActivity.class);
@@ -91,6 +91,37 @@ public class DashboardActivity extends FirstLaunchActivity {
         overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
 
     }
+
+
+    public void  onClick_REopenTerms(View view){
+
+        Intent intent = new Intent(this, ReOpenTermsActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+        startActivity(intent);
+        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+
+    }
+
+
+
+    public void  onClick_REopenDescription(View view){
+
+        Intent intent = new Intent(this, ReOpenDescriptionActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+        startActivity(intent);
+        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+
+    }
+
+    public void  onClick_OpenAboutActivity(View view){
+
+        Intent intent = new Intent(this, AboutActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+        startActivity(intent);
+        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+
+    }
+
 
     @Override
     public void onBackPressed() {

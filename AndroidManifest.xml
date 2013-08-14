@@ -59,6 +59,8 @@
                   android:screenOrientation="portrait">
         </activity>
 
+        <!-- The FirstLauch Sequence Activities -->
+
         <activity android:name=".ui.FirstLaunch04PersonalityQuestionnaireActivity"
                   android:theme="@style/MyCustomTheme"
                   android:noHistory="true"
@@ -115,6 +117,26 @@
                   android:theme="@style/MyCustomTheme"
                   android:screenOrientation="portrait">
         </activity>
+
+
+        <!-- The Single Opening Activities -->
+
+        <activity android:name=".ui.ReOpenDescriptionActivity"
+                  android:theme="@style/MyCustomTheme"
+                  android:screenOrientation="portrait">
+        </activity>
+
+
+        <activity android:name=".ui.ReOpenTermsActivity"
+                  android:theme="@style/MyCustomTheme"
+                  android:screenOrientation="portrait">
+        </activity>
+
+        <activity android:name=".ui.AboutActivity"
+                  android:theme="@style/MyCustomTheme"
+                  android:screenOrientation="portrait">
+        </activity>
+
 
         <service android:name=".background.LocationService"
                  android:exported="false"/>
