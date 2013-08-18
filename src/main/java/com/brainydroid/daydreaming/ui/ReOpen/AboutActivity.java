@@ -1,9 +1,9 @@
-package com.brainydroid.daydreaming.ui;
+package com.brainydroid.daydreaming.ui.ReOpen;
 
 import android.os.Bundle;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
-import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockFragmentActivity;
+import com.brainydroid.daydreaming.ui.ReOpen.ReOpenActivity;
 import roboguice.inject.ContentView;
 
 /**

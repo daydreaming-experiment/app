@@ -14,6 +14,9 @@ import com.brainydroid.daydreaming.ui.FontUtils;
 import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockFragmentActivity;
 import com.google.inject.Inject;
 
+/**
+ * Class that activities FirstLaunchSequence heritate.
+ */
 public abstract class FirstLaunchActivity extends RoboSherlockFragmentActivity {
 
     private static String TAG = "FirstLaunchActivity";
@@ -55,19 +58,24 @@ public abstract class FirstLaunchActivity extends RoboSherlockFragmentActivity {
         overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
     }
 
+    /**
+     * Kills activity if first launch already fully completed.
+     */
     protected void checkFirstLaunch() {
         if (statusManager.isFirstLaunchCompleted()) {
             Logger.i(TAG, "First launch completed -> finishing");
             finish();
-       } else {
+        } else {
             Logger.v(TAG, "First launch not completed");
         }
     }
 
+    /**
+     * Launching activity in Sequence
+     * @param activity
+     */
     protected void launchNextActivity(Class activity) {
-
-         Intent intent = new Intent(this, activity);
-
+        Intent intent = new Intent(this, activity);
         intent.putExtra("nextClass", activity);
         intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         startActivity(intent);
@@ -75,8 +83,19 @@ public abstract class FirstLaunchActivity extends RoboSherlockFragmentActivity {
     }
 
 
+    /**
+     * Launching Dashboard activity
+     */
+    protected void launchDashBoardActivity() {
+        Intent intent = new Intent(this, DashboardActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+        startActivity(intent);
+    }
 
 
+    /**
+     * Saving completion of FirstLaunchSequence. Next launch shall lead to dashboard directly
+     */
     protected void finishFirstLaunch() {
         Logger.i(TAG, "Setting first launch to finished");
 

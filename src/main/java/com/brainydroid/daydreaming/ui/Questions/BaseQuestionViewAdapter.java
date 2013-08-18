@@ -1,4 +1,4 @@
-package com.brainydroid.daydreaming.ui;
+package com.brainydroid.daydreaming.ui.Questions;
 
 import android.view.LayoutInflater;
 import android.view.View;

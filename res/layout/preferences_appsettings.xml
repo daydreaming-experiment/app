@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center">
+
+ <!-- AppSettings -->
     <PreferenceCategory
         android:key="notifications_cat_key"
         android:title="@string/notifications_settings" >

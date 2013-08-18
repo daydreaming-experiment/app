@@ -16,12 +16,13 @@ import java.util.List;
 
 /**
  * Activity at first launch
+ * Asking a few questions about user
  *
  * In first launch sequence of apps
  *
- * Previous activity :  none
- * This activity     :  FirstLaunch00WelcomeActivity
- * Next activity     :  FirstLaunch01DescriptionActivity
+ * Previous activity :  FirstLaunch03ProfileActivity
+ * This activity     :  FirstLaunch04PersonalityQuestionnaireActivity
+ * Next activity     :  FirstLaunch05MeasuresActivity2
  *
  */
 @ContentView(R.layout.activity_first_launch_questionnaire)

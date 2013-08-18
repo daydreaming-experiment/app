@@ -1,6 +1,5 @@
-package com.brainydroid.daydreaming.ui;
+package com.brainydroid.daydreaming.ui.Questions;
 
-import android.util.Log;
 import android.widget.LinearLayout;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.Question;

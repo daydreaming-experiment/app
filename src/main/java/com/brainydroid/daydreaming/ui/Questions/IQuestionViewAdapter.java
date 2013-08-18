@@ -1,4 +1,4 @@
-package com.brainydroid.daydreaming.ui;
+package com.brainydroid.daydreaming.ui.Questions;
 
 import android.widget.LinearLayout;
 import com.brainydroid.daydreaming.db.Question;

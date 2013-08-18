@@ -11,6 +11,7 @@ import roboguice.inject.ContentView;
 
 /**
  * Activity at first launch
+ * Display of animation, timer to next activity
  *
  * In first launch sequence of apps
  *
@@ -26,6 +27,10 @@ public class FirstLaunch00WelcomeActivity extends FirstLaunchActivity {
     private static String TAG = "FirstLaunch00WelcomeActivity";
     private static CountDownTimer Timer;
 
+    /**
+     * onCreate
+     * @param savedInstanceState
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Logger.v(TAG, "Creating");
@@ -36,24 +41,22 @@ public class FirstLaunch00WelcomeActivity extends FirstLaunchActivity {
         AnimationDrawable AniFrame = (AnimationDrawable) MyImageView.getBackground();
         AniFrame.start();
 
-
         Timer =  new CountDownTimer(2000, 1000) {
             public void onTick(long millisUntilFinished) {}
             public void onFinish() {
                 launchNextActivity(FirstLaunch01DescriptionActivity.class);
-
-//                launchNextActivity(FirstLaunch04PersonalityQuestionnaireActivity.class);
-
                 Timer.cancel();
-                //finish();
             }
         }.start();
     }
 
+    /**
+     * Launching next activity in first launch sequence with Fade in/Fade out transition
+     * @param activity
+     */
     @Override
     protected void launchNextActivity(Class activity) {
         Logger.v(TAG, "Launching next activity, custom transition");
-
         Intent intent = new Intent(this, activity);
         intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         startActivity(intent);

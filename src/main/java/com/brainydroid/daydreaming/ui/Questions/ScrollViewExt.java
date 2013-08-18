@@ -1,8 +1,7 @@
-package com.brainydroid.daydreaming.ui;
+package com.brainydroid.daydreaming.ui.Questions;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.View;
 import android.widget.ScrollView;
 
 public class ScrollViewExt extends ScrollView {

@@ -17,6 +17,10 @@ import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.background.SchedulerService;
 import com.brainydroid.daydreaming.ui.*;
+import com.brainydroid.daydreaming.ui.ReOpen.AboutActivity;
+import com.brainydroid.daydreaming.ui.ReOpen.AppSettingsActivity;
+import com.brainydroid.daydreaming.ui.ReOpen.ReOpenDescriptionActivity;
+import com.brainydroid.daydreaming.ui.ReOpen.ReOpenTermsActivity;
 import roboguice.inject.ContentView;
 
 @ContentView(R.layout.activity_dashboard)
@@ -41,11 +45,7 @@ public class DashboardActivity extends FirstLaunchActivity {
        // ImageView imgStartButton = (ImageView) findViewById(R.id.dashboard_ExperimentTimeElapsed);
        // imgStartButton.setBackgroundResource(R.drawable.timeelapsed);
 
-
-
         TextView textView = (TextView)findViewById(R.id.dashboard_textExperimentRunning);
-
-
         Spannable WordtoSpan = new SpannableString("EXPERIMENT IS RUNNING");
         WordtoSpan.setSpan(new ForegroundColorSpan(Color.WHITE), 14, 20,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -147,7 +147,7 @@ public class DashboardActivity extends FirstLaunchActivity {
 //        // Get today just in case
 //        String todayDateString = format.format(new Date());
 //
-//        // Read Start date string from preferences
+//        // Read Start date string from preferences_appsettings
 //        SharedPreferences sharedPreferences = getSharedPreferences("startDatePref", 0);
 //        String startDateString = sharedPreferences.getString("startDateString", todayDateString);
 //

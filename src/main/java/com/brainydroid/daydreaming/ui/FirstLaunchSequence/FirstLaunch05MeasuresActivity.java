@@ -13,6 +13,17 @@ import com.brainydroid.daydreaming.background.Logger;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
+/**
+ * Activity at first launch
+ * Checking if App Settings are correctly set (connectivity, location)
+ *
+ * In first launch sequence of apps
+ *
+ * Previous activity :  FirstLaunch04PersonalityQuestionnaireActivity
+ * This activity     :  FirstLaunch05MeasuresActivity2
+ * Next activity     :  FirstLaunch06PullActivity
+ *
+ */
 @ContentView(R.layout.activity_first_launch_measures)
 public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
 

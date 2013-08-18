@@ -171,7 +171,7 @@ public class FirstLaunch06PullActivity2 extends FirstLaunchActivity {
 
     public void onClick_buttonNext(@SuppressWarnings("UnusedParameters") View view) {
         statusManager.setFirstLaunchCompleted();
-        launchNextActivity(DashboardActivity.class);
+        launchDashBoardActivity();
     }
 
     // FIXME: this is already in QuestionsStorage

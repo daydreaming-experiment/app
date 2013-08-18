@@ -154,7 +154,7 @@ public class SchedulerService extends RoboService {
      * <p/>
      * A delay is sampled from an exponential distribution with parameter
      * {@code 1 / MEAN_DELAY}, and is then prolonged to observe the user's
-     * preferences in notification time window. This is done by
+     * preferences_appsettings in notification time window. This is done by
      * "compactifying" each prohibited time window to one point: imagine a
      * time line where the beginning of a forbidden time window is the same
      * moment as the end of that forbidden time window,
@@ -223,7 +223,7 @@ public class SchedulerService extends RoboService {
     }
 
     /**
-     * Prolong the waiting delay to respect the user's preferences in
+     * Prolong the waiting delay to respect the user's preferences_appsettings in
      * notification time window.
      * <p/>
      * If the suggested scheduled time falls in the user's forbidden time
@@ -272,7 +272,7 @@ public class SchedulerService extends RoboService {
      *
      * @param hypothesizedNow Time we should consider to be 'now'
      * @param delay Suggested waiting delay in milliseconds
-     * @return Prolonged waiting delay respecting the user's preferences
+     * @return Prolonged waiting delay respecting the user's preferences_appsettings
      */
     private long makeRespectfulExpansion(Calendar hypothesizedNow,
                                          long delay) {

@@ -11,7 +11,7 @@ import android.support.v4.app.NotificationCompat;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.db.Poll;
 import com.brainydroid.daydreaming.db.PollsStorage;
-import com.brainydroid.daydreaming.ui.QuestionActivity;
+import com.brainydroid.daydreaming.ui.Questions.QuestionActivity;
 import com.google.inject.Inject;
 import roboguice.service.RoboService;
 

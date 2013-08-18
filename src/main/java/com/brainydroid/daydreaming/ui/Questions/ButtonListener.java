@@ -1,4 +1,4 @@
-package com.brainydroid.daydreaming.ui;
+package com.brainydroid.daydreaming.ui.Questions;
 
 public interface ButtonListener {
     void onScrollChanged(ScrollViewExt scrollView,

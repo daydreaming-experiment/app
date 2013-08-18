@@ -1,4 +1,4 @@
-package com.brainydroid.daydreaming.ui;
+package com.brainydroid.daydreaming.ui.ReOpen;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,6 +11,7 @@ import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.background.SchedulerService;
 import com.brainydroid.daydreaming.db.Util;
+import com.brainydroid.daydreaming.ui.TimePreference;
 import roboguice.inject.InjectResource;
 
 public class AppSettingsActivity extends SherlockPreferenceActivity
@@ -56,13 +57,13 @@ implements OnSharedPreferenceChangeListener {
     private void initVars() {
         Logger.d(TAG, "Initializing variables");
 
-        // Load the XML preferences file
-        addPreferencesFromResource(R.layout.preferences);
+        // Load the XML preferences_appsettings file
+        addPreferencesFromResource(R.layout.preferences_appsettings);
 
         PreferenceScreen preferenceScreen = getPreferenceScreen();
         sharedPreferences = preferenceScreen.getSharedPreferences();
 
-        // Get a reference to the preferences
+        // Get a reference to the preferences_appsettings
         timePreferenceMin = (TimePreference)preferenceScreen.findPreference("time_window_lb_key");
         timePreferenceMax = (TimePreference)preferenceScreen.findPreference("time_window_ub_key");
 
@@ -75,7 +76,7 @@ implements OnSharedPreferenceChangeListener {
         Logger.d(TAG, "Preferences changed");
 
         if (key.equals("time_window_ub_key") || key.equals("time_window_lb_key")) {
-            Logger.d(TAG, "Time window preferences changed -> correcting " +
+            Logger.d(TAG, "Time window preferences_appsettings changed -> correcting " +
                     "it, updating summaries, and starting scheduler " +
                     "service");
             correctTimeWindow();

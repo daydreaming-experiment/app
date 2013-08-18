@@ -4,18 +4,12 @@
     android:layout_height="fill_parent"
     >
 
-
-
-
-
-
     <LinearLayout
             android:id="@+id/firstLaunchDescription_scrollview_layout"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:background="@drawable/white_background"    >
-
 
             <ScrollView
                     android:layout_width="fill_parent"
@@ -64,14 +58,6 @@
 
     </LinearLayout>
 
-<!--
-    <LinearLayout android:id="@+id/firstLaunchDescription_button_layout"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:gravity="right"
-            >
-    </LinearLayout>
-    -->
 
     <LinearLayout android:id="@+id/firstLaunchDescription_person_layout"
                   android:layout_width="fill_parent"
@@ -101,27 +87,6 @@
                 android:background="@drawable/button_cloud_next"/>
 
     </LinearLayout>
-
-    <!--
-    <LinearLayout android:id="@+id/firstLaunchDescription_button_layout"
-                  android:layout_width="fill_parent"
-                  android:layout_height="wrap_content">
-
-
-    </LinearLayout>
-
-
-      -->
-
-
-
-
-
-    <!--
-
-
-
-         android:background="@drawable/text_box"    -->
 
 
 </RelativeLayout>

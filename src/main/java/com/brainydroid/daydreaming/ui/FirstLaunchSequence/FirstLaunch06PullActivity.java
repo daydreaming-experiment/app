@@ -18,7 +18,17 @@ import roboguice.inject.InjectView;
 
 import java.io.IOException;
 import java.io.InputStream;
-
+/**
+ * Activity at first launch
+ * Pulling questions from online ressources
+ *
+ * In first launch sequence of apps
+ *
+ * Previous activity :  FirstLaunch05MeasuresActivity2
+ * This activity     :  FirstLaunch06PullActivity
+ * Next activity     :  DashboardActivity
+ *
+ */
 // FIXME: all this activity should go in the background
 @ContentView(R.layout.activity_first_launch_pull)
 public class FirstLaunch06PullActivity extends FirstLaunchActivity {

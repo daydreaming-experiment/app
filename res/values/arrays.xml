@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+
     <!-- Used for Tipi questionnaire -->
     <string-array name="tipi_answers">
         <item>Disagree strongly</item>
@@ -12,10 +14,7 @@
     </string-array>
 
 
-
-
-
-
+    <!-- Possible answers for Profile activity Spinners -->
     <string-array name="genders">
         <item> -- </item>
         <item>Female</item>
@@ -41,15 +40,6 @@
         <item>University Degree</item>
         <item>Advanced Degree (MA, PhD, etc.)</item>
     </string-array>
-
-
-
-
-
-
-
-
-
 
 
 
