@@ -42,7 +42,7 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
     public boolean AGE_SPINNER_TOUCHED = false;
     public boolean EDUCATION_SPINNER_TOUCHED = false;
 
-    public SharedPreferences sharedPreferences;
+    public SharedPreferences prefs;
 
     @InjectView(R.id.firstLaunchProfile_genderSpinner) Spinner genderSpinner;
     @InjectView(R.id.firstLaunchProfile_educationSpinner) Spinner educationSpinner;
@@ -59,7 +59,7 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
      //   addPreferencesFromResource(R.string.profileEducation);
     //    addPreferencesFromResource(R.string.profileGender);
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        prefs = getPreferences(MODE_PRIVATE);
 
         populate_spinners();
 
@@ -79,12 +79,12 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
             Logger.i(TAG, "Saving profile information to shared " +
                     "preferences_appsettings");
 
-    /*        SharedPreferences.Editor editor = sharedPreferences.edit();
+          SharedPreferences.Editor editor = prefs.edit();
             editor.putString(PROFILE_AGE, ageSpinner.getSelectedItem().toString());
             editor.putString(PROFILE_GENDER, genderSpinner.getSelectedItem().toString());
             editor.putString(PROFILE_EDUCATION, educationSpinner.getSelectedItem().toString());
             editor.commit();
-      */
+
             Logger.td(this, "{0}, {1}",
                     genderSpinner.getSelectedItem().toString(),
                     ageSpinner.getSelectedItem().toString());
