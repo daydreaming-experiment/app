@@ -1,15 +1,15 @@
 package com.brainydroid.daydreaming.ui.FirstLaunchSequence;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
-import android.widget.Toast;
+import android.view.ViewGroup;
+import android.widget.*;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
 import roboguice.inject.ContentView;
@@ -37,6 +37,10 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
     public static String PROFILE_AGE = "profileAge";
     public static String PROFILE_GENDER = "profileGender";
     public static String PROFILE_EDUCATION = "profileEducation";
+
+    String[] strings = {"--"," Female", " Male"};
+    int arr_images[] = { R.drawable.empty ,R.drawable.icon_female, R.drawable.icon_male };
+
 
     public boolean GENDER_SPINNER_TOUCHED = false;
     public boolean AGE_SPINNER_TOUCHED = false;
@@ -109,7 +113,10 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
         ArrayAdapter<CharSequence> adapter_gender = ArrayAdapter.createFromResource(this,
                 R.array.genders, R.layout.spinner_layout);
         adapter_gender.setDropDownViewResource(R.layout.spinner_layout);
-        genderSpinner.setAdapter(adapter_gender);
+        //genderSpinner.setAdapter(adapter_gender);
+
+        genderSpinner.setAdapter(new MyAdapter(getApplicationContext(), R.layout.spinner_layout_icon, strings));
+
 
         ArrayAdapter<CharSequence> adapter_education = ArrayAdapter.createFromResource(this,
                 R.array.education, R.layout.spinner_layout);
@@ -155,5 +162,37 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
     }
 
 
+    public class MyAdapter extends ArrayAdapter<String>{
 
+        public MyAdapter(Context context, int textViewResourceId,   String[] objects) {
+            super(context, textViewResourceId, objects);
+        }
+
+        @Override
+        public View getDropDownView(int position, View convertView,ViewGroup parent) {
+            return getCustomView(position, convertView, parent);
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            return getCustomView(position, convertView, parent);
+        }
+
+        public View getCustomView(int position, View convertView, ViewGroup parent) {
+
+            LayoutInflater inflater=getLayoutInflater();
+            View row=inflater.inflate(R.layout.spinner_layout_icon, parent, false);
+            TextView label=(TextView)row.findViewById(R.id.spinnerTarget);
+            label.setText(strings[position]);
+
+
+            ImageView icon=(ImageView)row.findViewById(R.id.image);
+            icon.setImageResource(arr_images[position]);
+
+            return row;
+        }
+    }
 }
+
+
+
