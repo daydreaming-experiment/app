@@ -72,7 +72,7 @@
     <!-- Text styles GISLAIN -->
 
 
-    <style name="ui_font_title" parent="@android:style/TextAppearance.Large">
+    <style name="ui_font_title_darkblue" parent="@android:style/TextAppearance.Large">
         <item name="android:textSize">18sp</item>
         <item name="android:textColor">@color/ui_dark_blue_color</item>
     </style>
