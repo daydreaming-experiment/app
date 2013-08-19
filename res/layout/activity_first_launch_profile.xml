@@ -8,8 +8,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginLeft="20dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginLeft="30dp"
         android:layout_marginTop="20dp"
         android:orientation="vertical"
             >
@@ -26,10 +26,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:textStyle="bold"
             android:gravity="center_horizontal"
             android:text="@string/firstLaunchProfile_title_about_you"
-            android:textAppearance="@style/ui_font_title" />
+            android:textAppearance="@style/ui_font_title_white_bold" />
 
 
 
@@ -49,7 +48,7 @@
                     android:layout_weight="1"
                     android:layout_marginRight="4dp"
                     android:text="@string/firstLaunchProfile_text_age"
-                    android:textAppearance="@style/ui_font_bodytext"/>
+                    android:textAppearance="@style/ui_font_bodytext_white"/>
 
             <Spinner
                     android:id="@+id/firstLaunchProfile_ageSpinner"
@@ -80,7 +79,7 @@
                 android:layout_weight="1"
                 android:layout_marginRight="4dp"
                 android:text="@string/firstLaunchProfile_text_gender"
-                android:textAppearance="@style/ui_font_bodytext"/>
+                android:textAppearance="@style/ui_font_bodytext_white"/>
 
             <Spinner
                 android:id="@+id/firstLaunchProfile_genderSpinner"
@@ -112,7 +111,7 @@
                     android:layout_weight="1"
                     android:layout_marginRight="4dp"
                     android:text="@string/firstLaunchProfile_text_education"
-                    android:textAppearance="@style/ui_font_bodytext"/>
+                    android:textAppearance="@style/ui_font_bodytext_white"/>
 
             <Spinner
                     android:id="@+id/firstLaunchProfile_educationSpinner"

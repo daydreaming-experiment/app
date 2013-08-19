@@ -9,8 +9,9 @@
             android:paddingLeft="15dp"
             android:scrollbarSize="5dp"
             android:scrollbarThumbVertical="@drawable/scrollbar_vertical_thumb"
-
             android:id="@+id/firstLaunchQuestionnaire_Scrollview" >
+
+
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                   android:orientation="vertical"
@@ -21,21 +22,23 @@
             >
 
         <TextView
-                android:id="@+id/Questionnaire_intro"
+                android:id="@+id/Questionnaire_title"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/Questionnaire_title"
+                android:lines="2"
                 android:gravity="center_horizontal"
                 android:textStyle="bold"
                 android:paddingBottom="30dp"
                 android:textAppearance="?android:attr/textAppearanceLarge"/>
 
         <TextView
-                android:id="@+id/Questionnaire_intro"
+                android:id="@+id/Questionnaire_title"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/Questionnaire_intro"
                 android:paddingBottom="20dp"
+                android:lineSpacingExtra="+4dp"
                 android:textAppearance="?android:attr/textAppearanceMedium"/>
 
 
@@ -55,8 +58,10 @@
         android:layout_height="wrap_content"
         android:minHeight="6dip"
         android:maxHeight="6dip"
-        android:paddingLeft="30dp"
-        android:paddingRight="30dp"/>
+        android:paddingLeft="0dp"
+        android:paddingRight="0dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"/>
         <TextView
                 android:id="@+id/Questionnaire_answer1"
                 android:layout_width="fill_parent"
@@ -81,8 +86,10 @@
                 android:layout_height="wrap_content"
                 android:minHeight="6dip"
                 android:maxHeight="6dip"
-                android:paddingLeft="30dp"
-                android:paddingRight="30dp"/>
+                android:paddingLeft="0dp"
+                android:paddingRight="0dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"/>
         <TextView
                 android:id="@+id/Questionnaire_answer2"
                 android:layout_width="fill_parent"
@@ -107,8 +114,10 @@
                 android:layout_height="wrap_content"
                 android:minHeight="6dip"
                 android:maxHeight="6dip"
-                android:paddingLeft="30dp"
-                android:paddingRight="30dp"
+                android:paddingLeft="0dp"
+                android:paddingRight="0dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
                 />
         <TextView
             android:id="@+id/Questionnaire_answer3"
@@ -134,8 +143,10 @@
                 android:layout_height="wrap_content"
                 android:minHeight="6dip"
                 android:maxHeight="6dip"
-                android:paddingLeft="30dp"
-                android:paddingRight="30dp" />
+                android:paddingLeft="0dp"
+                android:paddingRight="0dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"/>
         <TextView
                 android:id="@+id/Questionnaire_answer4"
                 android:layout_width="fill_parent"
@@ -160,8 +171,10 @@
                 android:layout_height="wrap_content"
                 android:minHeight="6dip"
                 android:maxHeight="6dip"
-                android:paddingLeft="30dp"
-                android:paddingRight="30dp" />
+                android:paddingLeft="0dp"
+                android:paddingRight="0dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"/>
         <TextView
                 android:id="@+id/Questionnaire_answer5"
                 android:layout_width="fill_parent"
@@ -186,8 +199,10 @@
                 android:layout_height="wrap_content"
                 android:minHeight="6dip"
                 android:maxHeight="6dip"
-                android:paddingLeft="30dp"
-                android:paddingRight="30dp" />
+                android:paddingLeft="0dp"
+                android:paddingRight="0dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"/>
         <TextView
                 android:id="@+id/Questionnaire_answer6"
                 android:layout_width="fill_parent"
@@ -212,8 +227,10 @@
                 android:layout_height="wrap_content"
                 android:minHeight="6dip"
                 android:maxHeight="6dip"
-                android:paddingLeft="30dp"
-                android:paddingRight="30dp" />
+                android:paddingLeft="0dp"
+                android:paddingRight="0dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"/>
         <TextView
                 android:id="@+id/Questionnaire_answer7"
                 android:layout_width="fill_parent"
@@ -238,8 +255,10 @@
                 android:layout_height="wrap_content"
                 android:minHeight="6dip"
                 android:maxHeight="6dip"
-                android:paddingLeft="30dp"
-                android:paddingRight="30dp" />
+                android:paddingLeft="0dp"
+                android:paddingRight="0dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"/>
         <TextView
                 android:id="@+id/Questionnaire_answer8"
                 android:layout_width="fill_parent"
@@ -264,8 +283,10 @@
                 android:layout_height="wrap_content"
                 android:minHeight="6dip"
                 android:maxHeight="6dip"
-                android:paddingLeft="30dp"
-                android:paddingRight="30dp" />
+                android:paddingLeft="0dp"
+                android:paddingRight="0dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"/>
         <TextView
                 android:id="@+id/Questionnaire_answer9"
                 android:layout_width="fill_parent"
@@ -290,8 +311,10 @@
                 android:layout_height="wrap_content"
                 android:minHeight="6dip"
                 android:maxHeight="6dip"
-                android:paddingLeft="30dp"
-                android:paddingRight="30dp" />
+                android:paddingLeft="0dp"
+                android:paddingRight="0dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"/>
         <TextView
                 android:id="@+id/Questionnaire_answer10"
                 android:layout_width="fill_parent"
@@ -299,6 +322,8 @@
                 android:text=""
                 android:textAppearance="@style/ui_font_caption"
                 android:gravity="center_horizontal"/>
+
+
 
         <RelativeLayout
                 android:layout_width="match_parent"
@@ -316,6 +341,7 @@
                 android:layout_height="wrap_content"
                 android:onClick="onClick_buttonSkip"
                 android:background="@drawable/button_cloud_next"
+                android:visibility="gone"
                 />
         <ImageButton
                 android:id="@+id/firstLaunchQuestionnaire_buttonNext"

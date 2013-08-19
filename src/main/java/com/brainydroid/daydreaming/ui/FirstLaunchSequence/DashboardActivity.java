@@ -45,11 +45,11 @@ public class DashboardActivity extends FirstLaunchActivity {
        // ImageView imgStartButton = (ImageView) findViewById(R.id.dashboard_ExperimentTimeElapsed);
        // imgStartButton.setBackgroundResource(R.drawable.timeelapsed);
 
-        TextView textView = (TextView)findViewById(R.id.dashboard_textExperimentRunning);
-        Spannable WordtoSpan = new SpannableString("EXPERIMENT IS RUNNING");
-        WordtoSpan.setSpan(new ForegroundColorSpan(Color.WHITE), 14, 20,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        textView.setText(WordtoSpan);
+    //    TextView textView = (TextView)findViewById(R.id.dashboard_textExperimentRunning);
+    //    Spannable WordtoSpan = new SpannableString("EXPERIMENT IS RUNNING");
+    //    WordtoSpan.setSpan(new ForegroundColorSpan(Color.WHITE), 14, 20,
+    //            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+    //    textView.setText(WordtoSpan);
     }
 
 

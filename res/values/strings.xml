@@ -16,6 +16,13 @@
     <string name="dashboard_title_results">Results:</string>
     <string name="dashboard_text_results">Results will appear once the first X days are completed (that\'s in Z days).</string>
 
+    <string name="dashboard_button_text_about">About</string>
+    <string name="dashboard_button_text_terms">Terms</string>
+    <string name="dashboard_button_text_description">Description</string>
+
+
+
+
 
     <!-- Welcome Activity -->
     <string name="firstLaunchWelcome_title_activity">Day Dreaming</string>
@@ -90,7 +97,7 @@
 
     <!-- Questionnaire Activity -->
     <string name="Questionnaire_intro">Here are a number of personality traits that may or may not apply to you.  Please select the statement to indicate the extent to which you agree or disagree with each statement. You should rate the extent to which the pair of traits applies to you, even if one characteristic applies more strongly than the other. </string>
-    <string name="Questionnaire_title">PERSONALITY QUESTIONNAIRE</string>
+    <string name="Questionnaire_title">PERSONALITY\nQUESTIONNAIRE</string>
 
 
     <!-- Pulling question Activity -->
