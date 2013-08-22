@@ -50,6 +50,9 @@ public class FirstLaunch04PersonalityQuestionnaireActivity extends FirstLaunchAc
     public List<TextView> tvq = new ArrayList<TextView>();
     public List<TextView> tva = new ArrayList<TextView>();
 
+    public  LinearLayout question_layout =  (LinearLayout) this.findViewById(R.id.question_linearLayout);
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Logger.v(TAG, "Creating");
@@ -58,6 +61,16 @@ public class FirstLaunch04PersonalityQuestionnaireActivity extends FirstLaunchAc
 
 
         //sb.add((SeekBar) findViewById(R.id.Questionnaire_seekBar1));
+
+        String[] hints1 = getResources().getStringArray(R.array.tipi_answers);
+        hints = Arrays.asList(hints1);
+        hintsNumber = hints.size();
+
+
+        String[] objects = getResources().getStringArray(R.array.tipi_questions);
+        for (String s : objects) {
+
+        }
 
 
         sb1=(SeekBar) findViewById(R.id.Questionnaire_seekBar1);  sb.add(sb1);   sb1.setOnSeekBarChangeListener(OnSeekBarProgress);
@@ -95,9 +108,6 @@ public class FirstLaunch04PersonalityQuestionnaireActivity extends FirstLaunchAc
         tva10=(TextView) findViewById(R.id.Questionnaire_answer10);tva.add(tva10);
 
 
-        String[] hints1 = getResources().getStringArray(R.array.tipi_answers);
-        hints = Arrays.asList(hints1);
-        hintsNumber = hints.size();
 
         for(SeekBar s : sb) {
             s.setMax(MAX_SEEKBAR);
@@ -172,6 +182,63 @@ public class FirstLaunch04PersonalityQuestionnaireActivity extends FirstLaunchAc
 
     public void onClick_buttonSkip(@SuppressWarnings("UnusedParameters") View view) {
         Logger.d(TAG, "Skip button clicked ");
+    }
+
+    public void addQuestion(String title_text){
+
+
+
+        /*
+
+       <TextView
+                android:id="@+id/Questionnaire_question1"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/Questionnaire_question1"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:gravity="center_horizontal"
+                android:paddingTop="20dp"
+                />
+        <SeekBar
+                android:id="@+id/Questionnaire_seekBar1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="6dip"
+                android:maxHeight="6dip"
+                android:paddingLeft="0dp"
+                android:paddingRight="0dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"/>
+        <TextView
+                android:id="@+id/Questionnaire_answer1"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textAppearance="@style/ui_font_caption"
+                android:gravity="center_horizontal"/>
+
+
+      */
+
+
+        // title textview
+        TextView tv_question_title = new TextView(this);
+        tv_question_title.setText(title_text);
+        // seekbar
+        SeekBar seekBar = new SeekBar(this);
+
+        seekBar.setMax(MAX_SEEKBAR);
+        seekBar.setProgress(INIT_PROGRESS_SEEKBAR);
+        seekBar.setProgressDrawable(getResources().getDrawable(R.drawable.question_slider_progress));
+        seekBar.setThumb(getResources().getDrawable(R.drawable.question_slider_thumb));
+        seekBar.setVisibility(View.VISIBLE);
+        seekBar.setOnSeekBarChangeListener(OnSeekBarProgress);
+        setContentView(seekBar);
+
+        // selection under textview
+        TextView tv_answer = new TextView(this);
+        tv_answer.setText(hints.get(3));
+
     }
 
 }

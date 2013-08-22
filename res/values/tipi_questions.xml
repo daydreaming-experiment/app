@@ -12,4 +12,8 @@
     <string name="Questionnaire_question9">Calm / emotionally stable.</string>
     <string name="Questionnaire_question10">Conventional / uncreative.</string>
 
+
+    <string-array name="tipi_answers">
+
+
 </resources>
