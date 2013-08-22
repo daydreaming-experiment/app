@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+<!-- GENERAL -->
+
+
+    <!-- Scrollview -->
+    <dimen  name="scrollview_thumb_border_margin" >15dp</dimen>
+    <dimen  name="scrollview_content_thumb_margin" >15dp</dimen>
+
+    <!-- Image Buttons -->
+    <dimen  name="next_button_right_margin" >20dp</dimen>
+
+    <!-- Block buttons -->
+
+    <!--  -->
+
+
+
+</resources>

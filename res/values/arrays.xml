@@ -21,6 +21,13 @@
         <item>Male</item>
     </string-array>
 
+    <array name="genders_icons">
+        <item>@drawable/empty</item>
+        <item>@drawable/icon_female</item>
+        <item>@drawable/icon_male</item>
+    </array>
+
+
     <string-array name="ages">
         <item> -- </item>
         <item>Under 18</item>

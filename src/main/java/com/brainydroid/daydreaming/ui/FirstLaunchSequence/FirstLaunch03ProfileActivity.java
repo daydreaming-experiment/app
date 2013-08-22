@@ -2,6 +2,8 @@ package com.brainydroid.daydreaming.ui.FirstLaunchSequence;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
@@ -38,8 +40,9 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
     public static String PROFILE_GENDER = "profileGender";
     public static String PROFILE_EDUCATION = "profileEducation";
 
-    String[] strings = {"--"," Female", " Male"};
-    int arr_images[] = { R.drawable.empty ,R.drawable.icon_female, R.drawable.icon_male };
+    // Now imported from xml
+    //String[] strings = {"--"," Female", " Male"};
+    //int arr_images[] = { R.drawable.empty ,R.drawable.icon_female, R.drawable.icon_male };
 
 
     public boolean GENDER_SPINNER_TOUCHED = false;
@@ -51,7 +54,6 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
     @InjectView(R.id.firstLaunchProfile_genderSpinner) Spinner genderSpinner;
     @InjectView(R.id.firstLaunchProfile_educationSpinner) Spinner educationSpinner;
     @InjectView(R.id.firstLaunchProfile_ageSpinner) Spinner ageSpinner;
-    //@InjectResource(R.string.) SharedPreferences sharedPreferences;
 
 
     @Override
@@ -59,10 +61,6 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
         Logger.v(TAG, "Creating");
 
         super.onCreate(savedInstanceState);
-    //    addPreferencesFromResource(R.string.profileAge);
-     //   addPreferencesFromResource(R.string.profileEducation);
-    //    addPreferencesFromResource(R.string.profileGender);
-
         prefs = getPreferences(MODE_PRIVATE);
 
         populate_spinners();
@@ -113,10 +111,8 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
         ArrayAdapter<CharSequence> adapter_gender = ArrayAdapter.createFromResource(this,
                 R.array.genders, R.layout.spinner_layout);
         adapter_gender.setDropDownViewResource(R.layout.spinner_layout);
-        //genderSpinner.setAdapter(adapter_gender);
-
-        genderSpinner.setAdapter(new MyAdapter(getApplicationContext(), R.layout.spinner_layout_icon, strings));
-
+//      genderSpinner.setAdapter(new MyAdapter(getApplicationContext(), R.layout.spinner_layout_icon, strings));
+        genderSpinner.setAdapter(new MyAdapter(getApplicationContext(), R.layout.spinner_layout_icon, R.array.genders));
 
         ArrayAdapter<CharSequence> adapter_education = ArrayAdapter.createFromResource(this,
                 R.array.education, R.layout.spinner_layout);
@@ -164,9 +160,32 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
 
     public class MyAdapter extends ArrayAdapter<String>{
 
+
+        /**
+         * Constructor of adapter from string array
+         * @param context
+         * @param textViewResourceId
+         * @param objects
+         */
         public MyAdapter(Context context, int textViewResourceId,   String[] objects) {
             super(context, textViewResourceId, objects);
         }
+
+        /**
+         * Contructor of adapter from id of string array
+         * @param context
+         * @param textViewResourceId
+         * @param stringArrayResourceId
+         */
+        public MyAdapter(Context context, int textViewResourceId,   int stringArrayResourceId) {
+            super(context, textViewResourceId);
+            String[] objects = getResources().getStringArray(stringArrayResourceId);
+            for (String s : objects) {
+                add(s);
+            }
+
+        }
+
 
         @Override
         public View getDropDownView(int position, View convertView,ViewGroup parent) {
@@ -183,11 +202,21 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
             LayoutInflater inflater=getLayoutInflater();
             View row=inflater.inflate(R.layout.spinner_layout_icon, parent, false);
             TextView label=(TextView)row.findViewById(R.id.spinnerTarget);
-            label.setText(strings[position]);
 
+            String s = getItem(position);
+            label.setText(s);
 
             ImageView icon=(ImageView)row.findViewById(R.id.image);
-            icon.setImageResource(arr_images[position]);
+
+            TypedArray icons = getResources().obtainTypedArray(R.array.genders_icons);
+            Drawable gender_icon = icons.getDrawable(position);
+            icon.setImageDrawable(gender_icon);
+
+
+            //label.setText(strings[position]);
+            //icon.setImageResource(arr_images[position]);
+
+
 
             return row;
         }
