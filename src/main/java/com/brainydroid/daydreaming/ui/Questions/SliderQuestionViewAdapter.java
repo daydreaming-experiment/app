@@ -45,7 +45,6 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
             View view = inflateView(subQuestion);
             subQuestionsViews.add(view);
         }
-
         return subQuestionsViews;
 
     }
