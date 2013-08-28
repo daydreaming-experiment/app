@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="fill_parent"
+              android:layout_height="match_parent"
+              android:layout_margin="20dp"
+              android:gravity="center_vertical">
+
+    <!-- TITLE -->
+    <LinearLayout android:layout_height="wrap_content"
+                  android:layout_width="fill_parent"
+                  android:id="@+id/appsettings_title_layout">
+
+        <TextView
+                android:text="@string/appsettings_title"
+                android:gravity="center_horizontal"
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:textAppearance="@style/ui_font_title_white"/>
+
+    </LinearLayout>
+
+
+    <!-- SOUND / BLINK / VIBRATE -->
+
+
+        <LinearLayout android:layout_height="wrap_content"
+                      android:layout_width="wrap_content"
+                      android:orientation="vertical"
+                      android:layout_marginTop="20dp"
+                      android:id="@+id/appsettings_settings_notification">
+
+            <LinearLayout android:layout_height="fill_parent"
+                          android:layout_width="wrap_content"  >
+            <TextView
+                    android:text="@string/appsettings_notification_title"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:textAppearance="@style/ui_font_bodytext_white"
+                    />
+            </LinearLayout>
+
+
+                <RelativeLayout android:layout_height="wrap_content"
+                              android:layout_width="wrap_content"
+                              android:id="@+id/appsettings_notif_sound_layout">
+                       <ImageView
+                            android:id ="@+id/appsettings_sound_icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/icon_notif_sound"/>
+
+                    <LinearLayout android:layout_height="wrap_content"
+                                  android:layout_width="wrap_content"
+                                  android:layout_toRightOf="@id/appsettings_sound_icon"
+                            >
+                       <TextView
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:text="@string/appsettings_allow_sound_text"
+                           android:textAppearance="@style/ui_font_bodytext_white"
+                           android:gravity="center_vertical"/>
+                          </LinearLayout>
+                       <CheckBox
+                           android:id="@+id/appsettings_allow_sound_check"
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:text=""
+                           android:button="@drawable/custom_checkbox"
+                           android:layout_alignParentRight="true"/>
+                </RelativeLayout>
+
+                <RelativeLayout android:layout_height="wrap_content"
+                              android:layout_width="wrap_content"
+                              android:id="@+id/appsettings_notif_vibrate_layout">
+                    <ImageView
+                            android:id ="@+id/appsettings_vibrate_icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/icon_notif_vibrate"/>
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/appsettings_allow_vibrations_text"
+                            android:textAppearance="@style/ui_font_bodytext_white"
+                            android:layout_toRightOf="@id/appsettings_vibrate_icon"
+                            />
+                    <CheckBox
+                            android:id="@+id/appsettings_allow_vibrations_check"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=""
+                            android:button="@drawable/custom_checkbox"
+                            android:layout_alignParentRight="true"/>
+                </RelativeLayout>
+
+                <RelativeLayout android:layout_height="wrap_content"
+                              android:layout_width="wrap_content"
+                              android:id="@+id/appsettings_notif_blink_layout">
+                    <ImageView
+                            android:id ="@+id/appsettings_blink_icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/icon_notif_blink"/>
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/appsettings_allow_blink_text"
+                            android:textAppearance="@style/ui_font_bodytext_white"
+                            android:layout_toRightOf="@id/appsettings_blink_icon"
+                            />
+                    <CheckBox
+                            android:id="@+id/appsettings_allow_blink_check"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=""
+                            android:button="@drawable/custom_checkbox"
+                            android:layout_alignParentRight="true"
+                            />
+                </RelativeLayout>
+
+
+
+        </LinearLayout>
+
+        <!-- TIME SETTINGS -->
+
+        <LinearLayout android:layout_height="wrap_content"
+                      android:layout_width="wrap_content"
+                      android:orientation="vertical"
+                      android:layout_marginTop="20dp"
+                      android:id="@+id/appsettings_settings_time">
+
+            <LinearLayout android:layout_height="wrap_content"
+                          android:layout_width="fill_parent"  >
+                <TextView
+                        android:text="@string/appsettings_time_title"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:gravity="center_horizontal"
+                        android:textAppearance="@style/ui_font_bodytext_white"
+                        />
+            </LinearLayout>
+
+            <LinearLayout android:layout_height="wrap_content"
+                          android:layout_width="wrap_content"  >
+
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/icon_time_window_from"/>
+
+
+                    <TextView
+                        android:layout_height="fill_parent"
+                        android:layout_width="fill_parent"
+                        android:text="@string/appsettings_time_from"
+                        android:textAppearance="@style/ui_font_bodytext_white"
+                        android:paddingLeft="10dp"
+                        android:gravity="center_vertical"/>
+
+            </LinearLayout>
+
+
+            <LinearLayout android:layout_height="wrap_content"
+                          android:layout_width="wrap_content"
+                          android:orientation="horizontal">
+                        <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/icon_time_window_until"/>
+                        <TextView
+                                android:layout_height="fill_parent"
+                                android:layout_width="fill_parent"
+                                android:text="@string/appsettings_time_until"
+                                android:textAppearance="@style/ui_font_bodytext_white"
+                                android:paddingLeft="10dp"
+                                android:gravity="center_vertical"/>
+            </LinearLayout>
+
+
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+

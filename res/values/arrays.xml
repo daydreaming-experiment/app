@@ -3,6 +3,8 @@
 
 
     <!-- Used for Tipi questionnaire -->
+
+
     <string-array name="tipi_answers">
         <item>Disagree strongly</item>
         <item>Disagree moderately</item>
@@ -13,18 +15,17 @@
         <item>Agree strongly</item>
     </string-array>
 
-    <!-- Used for Tipi questionnaire -->
     <string-array name="tipi_questions">
-    <item>Extraverted / enthusiastic.</item>
-    <item>Critical / quarrelsome.</item>
-    <item>Dependable / self-disciplined.</item>
-    <item>Anxious / easily upset.</item>
-    <item>Open to new experiences / complex.</item>
-    <item>Reserved / quiet.</item>
-    <item>Sympathetic / warm.</item>
-    <item>Disorganized / careless.</item>
-    <item>Calm / emotionally stable.</item>
-    <item>Conventional / uncreative.</item>
+        <item>Extraverted / enthusiastic.</item>
+        <item>Critical / quarrelsome.</item>
+        <item>Dependable / self-disciplined.</item>
+        <item>Anxious / easily upset.</item>
+        <item>Open to new experiences / complex.</item>
+        <item>Reserved / quiet.</item>
+        <item>Sympathetic / warm.</item>
+        <item>Disorganized / careless.</item>
+        <item>Calm / emotionally stable.</item>
+        <item>Conventional / uncreative.</item>
     </string-array>
 
 

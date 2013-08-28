@@ -17,10 +17,7 @@ import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.background.SchedulerService;
 import com.brainydroid.daydreaming.ui.*;
-import com.brainydroid.daydreaming.ui.ReOpen.AboutActivity;
-import com.brainydroid.daydreaming.ui.ReOpen.AppSettingsActivity;
-import com.brainydroid.daydreaming.ui.ReOpen.ReOpenDescriptionActivity;
-import com.brainydroid.daydreaming.ui.ReOpen.ReOpenTermsActivity;
+import com.brainydroid.daydreaming.ui.ReOpen.*;
 import roboguice.inject.ContentView;
 
 @ContentView(R.layout.activity_dashboard)
@@ -85,8 +82,8 @@ public class DashboardActivity extends FirstLaunchActivity {
 
     public void  onClick_openAppSettings(View view){
 
-        Intent intent = new Intent(this, AppSettingsActivity.class);
-        intent.putExtra("nextClass", AppSettingsActivity.class);
+        Intent intent = new Intent(this, AppSettingsActivity2.class);
+        intent.putExtra("nextClass", AppSettingsActivity2.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         startActivity(intent);
         overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
@@ -175,7 +172,9 @@ public class DashboardActivity extends FirstLaunchActivity {
         if (!statusManager.isFirstLaunchCompleted()) {
             Logger.i(TAG, "First launch not completed -> starting first " +
                     "launch sequence and finishing this activity");
-            Intent intent = new Intent(this, FirstLaunch00WelcomeActivity.class);
+ //           Intent intent = new Intent(this, FirstLaunch00WelcomeActivity.class);
+            Intent intent = new Intent(this, AppSettingsActivity2.class);
+
             intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
             startActivity(intent);
             finish();
