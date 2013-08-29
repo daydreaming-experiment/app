@@ -142,8 +142,8 @@
     <string name="appsettings_title">SETTINGS</string>
     <string name="appsettings_notification_title">Notifications</string>
     <string name="appsettings_time_title">Time window for notifications</string>
-    <string name="appsettings_time_from">From</string>
-    <string name="appsettings_time_until">Until</string>
+    <string name="appsettings_time_from">From </string>
+    <string name="appsettings_time_until">Until </string>
 
     <string name="appsettings_allow_blink_text">Vibrates with notification</string>
     <string name="appsettings_allow_vibrations_text">Vibrates with notification</string>

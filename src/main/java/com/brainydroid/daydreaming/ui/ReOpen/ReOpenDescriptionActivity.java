@@ -2,10 +2,12 @@ package com.brainydroid.daydreaming.ui.ReOpen;
 
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.Util;
+import com.brainydroid.daydreaming.ui.FontUtils;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
@@ -25,6 +27,9 @@ public class ReOpenDescriptionActivity extends ReOpenActivity {
     public void onCreate(Bundle savedInstanceState) {
         Logger.v(TAG, "Creating");
         super.onCreate(savedInstanceState);
+        ViewGroup godfatherView = (ViewGroup)this.getWindow().getDecorView();
+        FontUtils.setRobotoFont(this, godfatherView);
+
         populateDescription();
     }
 

@@ -4,38 +4,69 @@
 
     <!-- Text styles GISLAIN -->
 
-    <style name="ui_font_title_darkblue" parent="@android:style/TextAppearance.Large">
+    <!-- Higher types -->
+
+    <style name="ui_font_title" parent="@android:style/TextAppearance.Large">
         <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="ui_font_bodytext" parent="@android:style/TextAppearance.Large">
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="ui_font_button" parent="@android:style/TextAppearance.Large">
+        <item name="android:textSize">15sp</item>
+    </style>
+
+    <style name="ui_font_spinner" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textColor">#000000</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+
+    <!-- Subtypes -->
+
+    <style name="ui_font_title_darkblue" parent="@style/ui_font_title">
         <item name="android:textColor">@color/ui_dark_blue_color</item>
     </style>
 
-
-    <style name="ui_font_title_white" parent="@android:style/TextAppearance.Large">
-        <item name="android:textSize">18sp</item>
+    <style name="ui_font_title_white" parent="@style/ui_font_title">
         <item name="android:textColor">@color/ui_white_text_color</item>
     </style>
 
-    <style name="ui_font_title_white_bold" parent="@android:style/TextAppearance.Large">
-        <item name="android:textSize">18sp</item>
+    <style name="ui_font_title_white_bold" parent="@style/ui_font_title">
         <item name="android:textColor">@color/ui_white_text_color</item>
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="ui_font_title_darkblue_bold" parent="@android:style/TextAppearance.Large">
-        <item name="android:textSize">18sp</item>
+    <style name="ui_font_title_darkblue_bold" parent="@style/ui_font_title">
         <item name="android:textColor">@color/ui_dark_blue_color</item>
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="ui_font_bodytext_white" parent="@android:style/TextAppearance.Large">
-        <item name="android:textSize">16sp</item>
+
+
+
+
+    <style name="ui_font_bodytext_white" parent="@style/ui_font_bodytext">
         <item name="android:textColor">@color/ui_white_text_color</item>
     </style>
 
-    <style name="ui_font_bodytext_blue" parent="@android:style/TextAppearance.Large">
-        <item name="android:textSize">16sp</item>
+    <style name="ui_font_bodytext_white_bold" parent="@style/ui_font_bodytext">
+        <item name="android:textColor">@color/ui_white_text_color</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="ui_font_bodytext_blue" parent="@style/ui_font_bodytext">
         <item name="android:textColor">@color/ui_blue_background_color</item>
     </style>
+
+    <style name="ui_font_bodytext_darkblue_bold" parent="@style/ui_font_bodytext">
+        <item name="android:textColor">@color/ui_dark_blue_color</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+
 
     <style name="ui_font_caption" parent="@android:style/TextAppearance.Large">
         <item name="android:textSize">12sp</item>
@@ -43,15 +74,18 @@
     </style>
 
 
-    <style name="ui_font_button_dark" parent="@android:style/TextAppearance.Large">
-        <item name="android:textSize">15sp</item>
+
+
+
+    <style name="ui_font_button_dark" parent="@style/ui_font_button">
         <item name="android:textColor">@color/ui_dark_blue_color</item>
     </style>
 
-    <style name="ui_font_button_white" parent="@android:style/TextAppearance.Large">
-        <item name="android:textSize">15sp</item>
+    <style name="ui_font_button_white" parent="@style/ui_font_button">
         <item name="android:textColor">@color/ui_white_text_color</item>
     </style>
+
+
 
 
 

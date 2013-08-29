@@ -60,7 +60,7 @@
                   android:orientation="vertical"
                   android:layout_width="fill_parent"
                   android:layout_height="fill_parent"
-                  android:paddingRight="15dp"
+                  android:layout_marginRight="@dimen/next_button_right_margin"
                   android:paddingLeft="15dp">
 
 

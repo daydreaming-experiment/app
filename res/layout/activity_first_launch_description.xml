@@ -20,23 +20,40 @@
                     android:gravity="center_horizontal"
                     android:scrollbarThumbVertical="@drawable/scrollbar_vertical_thumb_blue">
 
-                <LinearLayout
-                        android:layout_width="fill_parent"
+                <RelativeLayout
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/firstLaunchDescription_scrollviewtext"   >
 
+            <TextView
+                  android:id="@+id/firstLaunchDescription_textTitle"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="@string/firstLaunchDescription_text_title"
+                  android:textAppearance="@style/ui_font_title_darkblue_bold"
+                  android:layout_centerHorizontal="true"
+                  android:layout_marginTop="@dimen/description_text_titleTopMargin"
+                    />
 
+             <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/firstLaunchDescription_textTitle"
+                    android:layout_centerHorizontal="true"
+                     >
             <TextView
                     android:id="@+id/firstLaunchDescription_textDescription"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
                     android:text="coucou"
-                    android:padding="50dp"
+                    android:padding="@dimen/description_text_padding"
+                    android:lineSpacingExtra="@dimen/description_text_linespacing"
+                    android:layout_gravity="left"
                     android:textAppearance="@style/ui_font_title_darkblue"/>
+            </LinearLayout>
 
 
-        </LinearLayout>
+    </RelativeLayout>
         <!--         android:background="@drawable/text_box"
                                                                 -->
             </ScrollView>
@@ -81,7 +98,7 @@
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:layout_alignParentRight="true"
-                  android:layout_marginRight="50dp"
+                  android:layout_marginRight="@dimen/next_button_right_margin"
                   android:layout_below="@id/firstLaunchDescription_cloud_layout">
 
         <ImageButton

@@ -5,12 +5,14 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.PreferenceScreen;
+import android.view.ViewGroup;
 import android.widget.Toast;
 import com.actionbarsherlock.app.SherlockPreferenceActivity;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.background.SchedulerService;
 import com.brainydroid.daydreaming.db.Util;
+import com.brainydroid.daydreaming.ui.FontUtils;
 import com.brainydroid.daydreaming.ui.TimePreference;
 import roboguice.inject.InjectResource;
 
@@ -33,6 +35,8 @@ implements OnSharedPreferenceChangeListener {
     public void onCreate(Bundle savedInstanceState) {
         Logger.v(TAG, "Creating");
         super.onCreate(savedInstanceState);
+        ViewGroup godfatherView = (ViewGroup)this.getWindow().getDecorView();
+        FontUtils.setRobotoFont(this, godfatherView);
 
         initVars();
     }
