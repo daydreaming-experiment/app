@@ -112,10 +112,61 @@
 
     </LinearLayout>
 
+
+    <!-- -->
+
+
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:id="@+id/firstLaunchMeasures2_layout_pull"
             android:layout_below="@id/firstLaunchMeasures2_layout_location"
+
+            android:orientation="vertical" >
+
+
+        <TextView
+                android:id="@+id/firstLaunchMeasures2_text_intro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:text="@string/firstLaunchMeasures2_text_intro"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <ImageView
+                android:id = "@+id/firstLaunchMeasures2_loading_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"/>
+
+
+        <TextView
+                android:id="@+id/firstLaunchMeasures2_text_downloading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:drawableLeft="@drawable/ic_cross"
+                android:gravity="center_vertical"
+                android:text="@string/firstLaunchMeasures2_text_downloading" />
+
+
+
+
+    </LinearLayout>
+
+
+
+    <!-- -->
+
+
+
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/firstLaunchMeasures2_layout_pull"
             android:layout_marginBottom="20dp"
             android:layout_marginRight="@dimen/next_button_right_margin"
             android:gravity="right">

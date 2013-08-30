@@ -2,6 +2,7 @@ package com.brainydroid.daydreaming.ui.FirstLaunchSequence;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.TextView;
 import com.brainydroid.daydreaming.R;
@@ -57,6 +58,7 @@ public class FirstLaunch01DescriptionActivity extends FirstLaunchActivity {
             InputStream termsInputStream = getResources().openRawResource(R.raw.description);
             description.setText(Util.convertStreamToString(termsInputStream));
             termsInputStream.close();
+            description.setMovementMethod(LinkMovementMethod.getInstance());
         } catch (IOException e) {
             Logger.e(TAG, "Error reading description file");
             e.printStackTrace();

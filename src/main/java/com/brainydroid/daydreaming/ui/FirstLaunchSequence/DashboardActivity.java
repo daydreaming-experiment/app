@@ -89,7 +89,7 @@ public class DashboardActivity extends FirstLaunchActivity {
 
         intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         startActivity(intent);
-        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+        overridePendingTransition(R.anim.push_top_in, R.anim.push_bottom_out);
 
     }
 

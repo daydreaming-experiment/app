@@ -3,4 +3,5 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:shape="rectangle">
     <solid android:color="@color/ui_background_border_color"/>
+    <size android:height="@dimen/slider_question_bar_width"></size>
 </shape>

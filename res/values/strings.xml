@@ -65,7 +65,7 @@
 
     <!-- Profile Activity -->
     <string name="firstLaunchProfile_title_activity">Profile</string>
-    <string name="firstLaunchProfile_title_about_you">A little about yourself</string>
+    <string name="firstLaunchProfile_title_about_you">A LITTLE ABOUT YOU</string>
     <string name="firstLaunchProfile_hint_age">Age</string>
     <string name="firstLaunchProfile_button_next">Next</string>
     <string name="firstLaunchProfile_fix_age">Please enter an age between 5 and 100</string>
@@ -93,6 +93,8 @@
     <string name="firstLaunchMeasures2_text_coarse_location">Coarse location</string>
     <string name="firstLaunchMeasures2_button_change_location_settings">Change your location settings</string>
     <string name="firstLaunchMeasures2_title_activity">Measures</string>
+    <string name="firstLaunchMeasures2_text_intro">We will now fetch content from our servers.\nThis should take no more than a few seconds</string>
+    <string name="firstLaunchMeasures2_text_downloading">Download : Waiting for connection</string>
 
 
     <!-- Questionnaire Activity -->

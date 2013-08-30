@@ -17,9 +17,14 @@
     <dimen  name="block_button_horizontal_padding" >10dp</dimen>
 
 
-    <!--  -->
+    <!-- Text -->
+    <dimen  name="text_linespacing" >5dp</dimen>
 
-<!-- Individual activities -->
+    <!-- Questions -->
+    <dimen  name="slider_question_bar_width" >3dp</dimen>
+
+
+    <!-- Individual activities -->
 
 
     <!-- Aims and goals -->
@@ -39,6 +44,7 @@
 
 
     <!-- DashboardActivity -->
+    <dimen  name="dashboard_calendar_holder_width" >5dp</dimen>
     <dimen  name="dashboard_calendar_inbetween" >5dp</dimen>
     <dimen  name="dashboard_calendar_width" >120dp</dimen>
     <dimen  name="dashboard_calendarblock_number_height" >60dp</dimen>
@@ -49,21 +55,24 @@
 
     <!-- TermsActivity -->
     <dimen  name="terms_text_side_padding" >30dp</dimen>
-    <dimen  name="terms_text_linespacing" >5dp</dimen>
 
     <!-- ProfileActivity -->
     <dimen  name="profile_title_vertical_space" >30dp</dimen>
     <dimen  name="profile_field_vertical_spacing" >20dp</dimen>
-    <dimen  name="profile_text_linespacing" >5dp</dimen>
-
     <dimen  name="profile_spinner_text_vertical_padding" >10sp</dimen>
     <dimen  name="profile_spinner_text_left_padding" >20dp</dimen>
     <dimen  name="profile_spinner_icon_left_padding" >20dp</dimen>
-
     <dimen  name="profile_spinner_icon_left_padding" >20dp</dimen>
 
     <!-- MeasuresActivity -->
-    <dimen  name="measures_item_vertical_spacing" >20dp</dimen>
+    <dimen  name="measures_item_vertical_spacing" >15dp</dimen>
+
+    <!-- QuestionnaireActivity -->
+    <dimen  name="questionnaire_side_margin" >20dp</dimen>
+    <dimen  name="questionnaire_bar_width" >20dp</dimen>
+
+
+
 
 
 </resources>

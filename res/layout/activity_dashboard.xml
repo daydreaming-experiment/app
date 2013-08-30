@@ -14,7 +14,7 @@
             android:orientation="horizontal" >
 
         <ImageButton
-                android:id="@+id/dashboard_quitExperiment"
+                android:id="@+id/dashboard_openAppSettings"
                 android:layout_width="@dimen/dashboard_settings_button_size"
                 android:layout_height="@dimen/dashboard_settings_button_size"
                 android:scaleType="fitCenter"
@@ -102,7 +102,7 @@
                 android:id="@+id/dashboard_ExperimentTimeElapsed1"
                 android:layout_below="@id/dashboard_ExperimentTimeElapsed0"
                 android:layout_width="@dimen/dashboard_calendar_width"
-                android:layout_height="10dp"
+                android:layout_height="@dimen/dashboard_calendar_holder_width"
                 android:src="@drawable/dark_blue_rect_button"
                 android:layout_marginBottom="@dimen/dashboard_calendar_inbetween"
 
@@ -160,7 +160,7 @@
                 android:id="@+id/dashboard_ExperimentResultsIn1"
                 android:layout_below="@id/dashboard_ExperimentResultsIn0"
                 android:layout_width="@dimen/dashboard_calendar_width"
-                android:layout_height="10dp"
+                android:layout_height="@dimen/dashboard_calendar_holder_width"
                 android:src="@drawable/white_rectangle"
                 android:layout_marginBottom="@dimen/dashboard_calendar_inbetween"
                 />
@@ -405,4 +405,6 @@
     android:onClick="startSyncService"
     android:text="Sync" />
 -->
+
+
 </LinearLayout>

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 import com.actionbarsherlock.app.SherlockPreferenceActivity;
@@ -15,6 +16,7 @@ import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.background.SchedulerService;
 import com.brainydroid.daydreaming.db.Util;
+import com.brainydroid.daydreaming.ui.FirstLaunchSequence.DashboardActivity;
 import com.brainydroid.daydreaming.ui.FontUtils;
 import com.brainydroid.daydreaming.ui.TimePreference;
 import roboguice.inject.ContentView;
@@ -46,7 +48,7 @@ public class AppSettingsActivity2 extends Activity
         setContentView(R.layout.appsettings_layout);
         ViewGroup godfatherView = (ViewGroup)this.getWindow().getDecorView();
         FontUtils.setRobotoFont(this, godfatherView);
-        //initVars();
+        initVars();
     }
 
     @Override
@@ -55,14 +57,14 @@ public class AppSettingsActivity2 extends Activity
         super.onResume();
 
         // Set up a listener for whenever a key changes
-     //   sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
     }
 
     @Override
     protected void onStop() {
         Logger.v(TAG, "Stopping");
         super.onStop();
-       // sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
     }
 
 
@@ -146,6 +148,27 @@ public class AppSettingsActivity2 extends Activity
         Logger.d(TAG, "Starting SchedulerService");
         Intent schedulerIntent = new Intent(this, SchedulerService.class);
         startService(schedulerIntent);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Logger.v(TAG, "Back pressed, setting slide transition");
+        super.onBackPressed();
+        overridePendingTransition(R.anim.push_bottom_in, R.anim.push_top_out);
+    }
+    public void onClick_backtodashboard(View v) {
+        onBackPressed();
+
+    }
+
+
+    // see http://www.mkyong.com/android/android-time-picker-example/ for timepicker example.. we don't need time preference anymore
+    public void onClick_time_from(View v){
+
+    }
+
+    public void onClick_time_until(View v){
+
     }
 
 

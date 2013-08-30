@@ -5,20 +5,16 @@ import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.preference.Preference;
-import android.preference.PreferenceActivity;
-import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
+import com.brainydroid.daydreaming.ui.FontUtils;
+import com.brainydroid.daydreaming.ui.NoDefaultSpinner;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
-import roboguice.inject.InjectResource;
-
-import static android.view.View.*;
 
 /**
  * Activity at first launch
@@ -52,7 +48,7 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
     public SharedPreferences prefs;
 
     @InjectView(R.id.firstLaunchProfile_genderSpinner) Spinner genderSpinner;
-    @InjectView(R.id.firstLaunchProfile_educationSpinner) Spinner educationSpinner;
+    @InjectView(R.id.firstLaunchProfile_educationSpinner)   Spinner educationSpinner;
     @InjectView(R.id.firstLaunchProfile_ageSpinner) Spinner ageSpinner;
 
 
@@ -65,6 +61,8 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
 
         populate_spinners();
 
+        ViewGroup godfatherView = (ViewGroup)this.getWindow().getDecorView();    // need to be done after spinners get populated
+        FontUtils.setRobotoFont(this, godfatherView);
     }
 
 
@@ -81,7 +79,7 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
             Logger.i(TAG, "Saving profile information to shared " +
                     "preferences_appsettings");
 
-          SharedPreferences.Editor editor = prefs.edit();
+            SharedPreferences.Editor editor = prefs.edit();
             editor.putString(PROFILE_AGE, ageSpinner.getSelectedItem().toString());
             editor.putString(PROFILE_GENDER, genderSpinner.getSelectedItem().toString());
             editor.putString(PROFILE_EDUCATION, educationSpinner.getSelectedItem().toString());
@@ -98,7 +96,7 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
     private boolean checkForm() {
         boolean b =   GENDER_SPINNER_TOUCHED && AGE_SPINNER_TOUCHED && EDUCATION_SPINNER_TOUCHED;
         if (!b){ Logger.d(TAG, "At least one untouched spinner");
-              Toast.makeText(this,"Please answer all fields",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,"Please answer all fields",Toast.LENGTH_SHORT).show();
         }
         return b;
     }
@@ -111,23 +109,29 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
         ArrayAdapter<CharSequence> adapter_gender = ArrayAdapter.createFromResource(this,
                 R.array.genders, R.layout.spinner_layout);
         adapter_gender.setDropDownViewResource(R.layout.spinner_layout);
-//      genderSpinner.setAdapter(new MyAdapter(getApplicationContext(), R.layout.spinner_layout_icon, strings));
-        genderSpinner.setAdapter(new MyAdapter(getApplicationContext(), R.layout.spinner_layout_icon, R.array.genders));
+//      genderSpinner.setAdapter(new MyGenderAdapter(getApplicationContext(), R.layout.spinner_layout_icon, strings));
+        genderSpinner.setAdapter(new MyGenderAdapter(getApplicationContext(), R.layout.spinner_layout_icon, R.array.genders));
+        genderSpinner.setPrompt("Select your gender");
 
         ArrayAdapter<CharSequence> adapter_education = ArrayAdapter.createFromResource(this,
                 R.array.education, R.layout.spinner_layout);
         adapter_education.setDropDownViewResource(R.layout.spinner_layout);
-        educationSpinner.setAdapter(adapter_education);
+       // educationSpinner.setAdapter(adapter_education);
+       educationSpinner.setAdapter(new MyCustomAdapter(getApplicationContext(), R.layout.spinner_layout_icon, R.array.education));
+        educationSpinner.setPrompt("Select your education");
 
         ArrayAdapter<CharSequence> adapter_age = ArrayAdapter.createFromResource(this,
                 R.array.ages, R.layout.spinner_layout);
         adapter_age.setDropDownViewResource(R.layout.spinner_layout);
-        ageSpinner.setAdapter(adapter_age);
+        //ageSpinner.setAdapter(adapter_age);
+        ageSpinner.setAdapter(new MyCustomAdapter(getApplicationContext(), R.layout.spinner_layout_icon, R.array.ages));
+        ageSpinner.setPrompt("Select your age");
+
 
         genderSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (i>0){GENDER_SPINNER_TOUCHED = true;}
+                if (i>0){GENDER_SPINNER_TOUCHED = true;}    else {GENDER_SPINNER_TOUCHED = false;}
             }
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {GENDER_SPINNER_TOUCHED = false;}
@@ -136,7 +140,7 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
         educationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (i>0){EDUCATION_SPINNER_TOUCHED = true;}
+                if (i>0){EDUCATION_SPINNER_TOUCHED = true;}  else {EDUCATION_SPINNER_TOUCHED = false;}
             }
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {EDUCATION_SPINNER_TOUCHED = false;}
@@ -146,8 +150,8 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 Toast.makeText(getApplicationContext(),"Selected item:"+Integer.toString(i),Toast.LENGTH_SHORT).show();
-                if (i>0){AGE_SPINNER_TOUCHED = true;}
-               }
+                if (i>0){AGE_SPINNER_TOUCHED = true;} else {AGE_SPINNER_TOUCHED = false;}
+            }
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) { AGE_SPINNER_TOUCHED = false;}
         });
@@ -158,7 +162,7 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
     }
 
 
-    public class MyAdapter extends ArrayAdapter<String>{
+    public class MyGenderAdapter extends ArrayAdapter<String>{
 
 
         /**
@@ -167,7 +171,7 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
          * @param textViewResourceId
          * @param objects
          */
-        public MyAdapter(Context context, int textViewResourceId,   String[] objects) {
+        public MyGenderAdapter(Context context, int textViewResourceId, String[] objects) {
             super(context, textViewResourceId, objects);
         }
 
@@ -177,7 +181,7 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
          * @param textViewResourceId
          * @param stringArrayResourceId
          */
-        public MyAdapter(Context context, int textViewResourceId,   int stringArrayResourceId) {
+        public MyGenderAdapter(Context context, int textViewResourceId, int stringArrayResourceId) {
             super(context, textViewResourceId);
             String[] objects = getResources().getStringArray(stringArrayResourceId);
             for (String s : objects) {
@@ -189,7 +193,9 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
 
         @Override
         public View getDropDownView(int position, View convertView,ViewGroup parent) {
-            return getCustomView(position, convertView, parent);
+            View v =  getCustomView(position, convertView, parent);
+            if (position == 0){v.setVisibility(View.INVISIBLE);}
+            return v;
         }
 
         @Override
@@ -201,15 +207,18 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
 
             LayoutInflater inflater=getLayoutInflater();
             View row=inflater.inflate(R.layout.spinner_layout_icon, parent, false);
+
             TextView label=(TextView)row.findViewById(R.id.spinnerTarget);
-
-            String s = getItem(position);
-            label.setText(s);
-
+            TypedArray icons = getResources().obtainTypedArray(R.array.genders_icons);
             ImageView icon=(ImageView)row.findViewById(R.id.image);
 
-            TypedArray icons = getResources().obtainTypedArray(R.array.genders_icons);
-            Drawable gender_icon = icons.getDrawable(position);
+            String s;
+            Drawable gender_icon;
+
+                s = getItem(position);
+                gender_icon = icons.getDrawable(position);
+
+            label.setText(s);
             icon.setImageDrawable(gender_icon);
 
 
@@ -218,9 +227,72 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
 
 
 
+
             return row;
         }
     }
+
+    public class MyCustomAdapter extends ArrayAdapter<String>{
+
+
+        /**
+         * Constructor of adapter from string array
+         * @param context
+         * @param textViewResourceId
+         * @param objects
+         */
+        public MyCustomAdapter(Context context, int textViewResourceId, String[] objects) {
+            super(context, textViewResourceId, objects);
+        }
+
+        /**
+         * Contructor of adapter from id of string array
+         * @param context
+         * @param textViewResourceId
+         * @param stringArrayResourceId
+         */
+        public MyCustomAdapter(Context context, int textViewResourceId, int stringArrayResourceId) {
+            super(context, textViewResourceId);
+            String[] objects = getResources().getStringArray(stringArrayResourceId);
+            for (String s : objects) {
+                add(s);
+            }
+
+        }
+
+
+        @Override
+        public View getDropDownView(int position, View convertView,ViewGroup parent) {
+            View v =  getView(position, convertView, parent);
+            if (position == 0){v.setVisibility(View.INVISIBLE);}
+            return v;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            return getCustomView(position, convertView, parent);
+        }
+
+        public View getCustomView(int position, View convertView, ViewGroup parent) {
+
+            LayoutInflater inflater=getLayoutInflater();
+            View row=inflater.inflate(R.layout.spinner_layout, parent, false);
+
+            TextView label=(TextView)row.findViewById(R.id.spinnerTarget);
+            String s= getItem(position);
+            label.setText(s);
+
+
+            //label.setText(strings[position]);
+            //icon.setImageResource(arr_images[position]);
+
+
+
+
+            return row;
+        }
+    }
+
 }
 
 
