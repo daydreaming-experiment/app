@@ -25,10 +25,11 @@ public class FirstLaunch00WelcomeActivity extends FirstLaunchActivity {
 
     @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "FirstLaunch00WelcomeActivity";
-    private static CountDownTimer Timer;
+    private static CountDownTimer Animation_Timer;
 
     /**
      * onCreate
+     * Launching description activity at the end of animation timer
      * @param savedInstanceState
      */
     @Override
@@ -41,11 +42,12 @@ public class FirstLaunch00WelcomeActivity extends FirstLaunchActivity {
         AnimationDrawable AniFrame = (AnimationDrawable) MyImageView.getBackground();
         AniFrame.start();
 
-        Timer =  new CountDownTimer(2000, 1000) {
+        int duration =  getResources().getInteger(R.integer.welcome_animation_duration);
+        Animation_Timer =  new CountDownTimer(2000, 1000) {
             public void onTick(long millisUntilFinished) {}
             public void onFinish() {
                 launchNextActivity(FirstLaunch01DescriptionActivity.class);
-                Timer.cancel();
+                Animation_Timer.cancel();
             }
         }.start();
     }

@@ -36,10 +36,6 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
     public static String PROFILE_GENDER = "profileGender";
     public static String PROFILE_EDUCATION = "profileEducation";
 
-    // Now imported from xml
-    //String[] strings = {"--"," Female", " Male"};
-    //int arr_images[] = { R.drawable.empty ,R.drawable.icon_female, R.drawable.icon_male };
-
 
     public boolean GENDER_SPINNER_TOUCHED = false;
     public boolean AGE_SPINNER_TOUCHED = false;
@@ -60,9 +56,7 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
         prefs = getPreferences(MODE_PRIVATE);
 
         populate_spinners();
-
-        ViewGroup godfatherView = (ViewGroup)this.getWindow().getDecorView();    // need to be done after spinners get populated
-        FontUtils.setRobotoFont(this, godfatherView);
+        setRobotofont(this);   // need to be done after spinners get populated
     }
 
 
@@ -106,32 +100,23 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
      */
     public void populate_spinners(){
 
-        ArrayAdapter<CharSequence> adapter_gender = ArrayAdapter.createFromResource(this,
-                R.array.genders, R.layout.spinner_layout);
+        ArrayAdapter<CharSequence> adapter_gender = ArrayAdapter.createFromResource(this,R.array.genders, R.layout.spinner_layout);
         adapter_gender.setDropDownViewResource(R.layout.spinner_layout);
-//      genderSpinner.setAdapter(new MyGenderAdapter(getApplicationContext(), R.layout.spinner_layout_icon, strings));
         genderSpinner.setAdapter(new MyGenderAdapter(getApplicationContext(), R.layout.spinner_layout_icon, R.array.genders));
-        genderSpinner.setPrompt("Select your gender");
 
-        ArrayAdapter<CharSequence> adapter_education = ArrayAdapter.createFromResource(this,
-                R.array.education, R.layout.spinner_layout);
+        ArrayAdapter<CharSequence> adapter_education = ArrayAdapter.createFromResource(this,R.array.education, R.layout.spinner_layout);
         adapter_education.setDropDownViewResource(R.layout.spinner_layout);
-       // educationSpinner.setAdapter(adapter_education);
-       educationSpinner.setAdapter(new MyCustomAdapter(getApplicationContext(), R.layout.spinner_layout_icon, R.array.education));
-        educationSpinner.setPrompt("Select your education");
+        educationSpinner.setAdapter(new MyCustomAdapter(getApplicationContext(), R.layout.spinner_layout_icon, R.array.education));
 
-        ArrayAdapter<CharSequence> adapter_age = ArrayAdapter.createFromResource(this,
-                R.array.ages, R.layout.spinner_layout);
+        ArrayAdapter<CharSequence> adapter_age = ArrayAdapter.createFromResource(this, R.array.ages, R.layout.spinner_layout);
         adapter_age.setDropDownViewResource(R.layout.spinner_layout);
-        //ageSpinner.setAdapter(adapter_age);
         ageSpinner.setAdapter(new MyCustomAdapter(getApplicationContext(), R.layout.spinner_layout_icon, R.array.ages));
-        ageSpinner.setPrompt("Select your age");
 
 
         genderSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (i>0){GENDER_SPINNER_TOUCHED = true;}    else {GENDER_SPINNER_TOUCHED = false;}
+                if (i>0){GENDER_SPINNER_TOUCHED = true;} else {GENDER_SPINNER_TOUCHED = false;}
             }
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {GENDER_SPINNER_TOUCHED = false;}
@@ -140,7 +125,7 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
         educationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (i>0){EDUCATION_SPINNER_TOUCHED = true;}  else {EDUCATION_SPINNER_TOUCHED = false;}
+                if (i>0){EDUCATION_SPINNER_TOUCHED = true;} else {EDUCATION_SPINNER_TOUCHED = false;}
             }
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {EDUCATION_SPINNER_TOUCHED = false;}
@@ -149,19 +134,20 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
         ageSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(getApplicationContext(),"Selected item:"+Integer.toString(i),Toast.LENGTH_SHORT).show();
                 if (i>0){AGE_SPINNER_TOUCHED = true;} else {AGE_SPINNER_TOUCHED = false;}
             }
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) { AGE_SPINNER_TOUCHED = false;}
         });
 
-        //Toast.makeText(getApplicationContext(),Boolean.toString(checkForm()),Toast.LENGTH_SHORT).show();
-
 
     }
 
-
+    /**
+     * Special adapter
+     * - to fill particular layout of gender (containing icons)
+     * - to disable initial from possible selection
+     */
     public class MyGenderAdapter extends ArrayAdapter<String>{
 
 
@@ -232,6 +218,9 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
         }
     }
 
+    /**
+     * Special adapter with simple_spinner_layout, to disable initial from possible selection
+     */
     public class MyCustomAdapter extends ArrayAdapter<String>{
 
 

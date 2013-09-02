@@ -72,6 +72,9 @@
     <string name="firstLaunchProfile_text_gender">Gender</string>
     <string name="firstLaunchProfile_text_education">Education</string>
     <string name="firstLaunchProfile_text_age">Age</string>
+    <string name="firstLaunchProfile_Spinner_gender_prompt">Select your gender</string>
+    <string name="firstLaunchProfile_Spinner_education_prompt">Select your education</string>
+    <string name="firstLaunchProfile_Spinner_age_prompt">Select your age</string>
 
 
     <!-- Measure Activity -->

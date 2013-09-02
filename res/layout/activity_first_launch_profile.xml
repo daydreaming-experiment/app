@@ -60,6 +60,7 @@
                     android:layout_marginLeft="4dp"
                     android:paddingRight="10dp"
                     android:paddingLeft="10dp"
+                    android:prompt="@string/firstLaunchProfile_Spinner_age_prompt"
                     android:background="@drawable/simple_spinner_box"/>
 
 
@@ -91,6 +92,7 @@
                 android:layout_marginLeft="4dp"
                 android:paddingRight="10dp"
                 android:paddingLeft="10dp"
+                android:prompt="@string/firstLaunchProfile_Spinner_gender_prompt"
                 android:background="@drawable/simple_spinner_box"
                 />
 
@@ -124,7 +126,8 @@
                     android:singleLine = "true"
                     android:paddingRight="10dp"
                     android:paddingLeft="10dp"
-                    android:background="@drawable/simple_spinner_box"
+                    android:prompt="@string/firstLaunchProfile_Spinner_education_prompt"
+                   android:background="@drawable/simple_spinner_box"
                     />
 
 

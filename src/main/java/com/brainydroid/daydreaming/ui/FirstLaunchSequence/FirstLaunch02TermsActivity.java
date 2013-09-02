@@ -95,7 +95,7 @@ public class FirstLaunch02TermsActivity extends FirstLaunchActivity implements S
      * @param view
      */
     public void onClick_buttonDisagree(@SuppressWarnings("UnusedParameters") View view) {
-        Toast.makeText(this, "We require your agreement to proceed further. If you disagree with the terms, you should uninstall the app. No connection to the internet will be made.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "We require your agreement to proceed further. If you disagree with the terms, you should uninstall the app. No connection to the internet will be made.", Toast.LENGTH_LONG).show();
         onBackPressed();
     }
 

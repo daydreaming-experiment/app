@@ -1,5 +1,7 @@
 package com.brainydroid.daydreaming.ui.FirstLaunchSequence;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -34,8 +36,7 @@ public abstract class FirstLaunchActivity extends RoboSherlockFragmentActivity {
     public void onCreate(Bundle savedInstanceState) {
         Logger.v(TAG, "Creating");
         super.onCreate(savedInstanceState);
-        ViewGroup godfatherView = (ViewGroup)this.getWindow().getDecorView();
-        FontUtils.setRobotoFont(this, godfatherView);
+        setRobotofont(this);
 
     }
 
@@ -56,6 +57,11 @@ public abstract class FirstLaunchActivity extends RoboSherlockFragmentActivity {
         Logger.v(TAG, "Back pressed, setting slide transition");
         super.onBackPressed();
         overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
+    }
+
+    public void setRobotofont(Activity activity){
+        ViewGroup godfatherView = (ViewGroup) activity.getWindow().getDecorView();
+        FontUtils.setRobotoFont(activity, godfatherView);
     }
 
     /**
@@ -91,6 +97,7 @@ public abstract class FirstLaunchActivity extends RoboSherlockFragmentActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         startActivity(intent);
     }
+
 
 
     /**

@@ -1,14 +1,9 @@
 package com.brainydroid.daydreaming.ui.FirstLaunchSequence;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -37,8 +32,8 @@ public class DashboardActivity extends FirstLaunchActivity {
     public void onCreate(Bundle savedInstanceState) {
         Logger.v(TAG, "Creating");
         super.onCreate(savedInstanceState);
-        ViewGroup godfatherView = (ViewGroup)this.getWindow().getDecorView();
-        FontUtils.setRobotoFont(this, godfatherView);
+//        ViewGroup godfatherView = (ViewGroup)this.getWindow().getDecorView();
+//        FontUtils.setRobotoFont(this, godfatherView);
        // ImageView imgStartButton = (ImageView) findViewById(R.id.dashboard_ExperimentTimeElapsed);
        // imgStartButton.setBackgroundResource(R.drawable.timeelapsed);
 
@@ -50,6 +45,7 @@ public class DashboardActivity extends FirstLaunchActivity {
     }
 
 
+    /*
     // TODO: check this is ok with real ActionBar API
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -61,7 +57,10 @@ public class DashboardActivity extends FirstLaunchActivity {
         // action bar helpers have a chance to handle this event.
         return super.onCreateOptionsMenu(menu);
     }
+    */
 
+    // We don't need this anymore since we do not work with action bar anylonger
+    /*
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Logger.d(TAG, "OptionsItem selected");
@@ -78,14 +77,15 @@ public class DashboardActivity extends FirstLaunchActivity {
 
         return super.onOptionsItemSelected(item);
     }
+    */
 
-
+    /**
+     * Launching app settings activity
+     * @param view
+     */
     public void  onClick_openAppSettings(View view){
 
-        //Intent intent = new Intent(this, AppSettingsActivity2.class);
-        //intent.putExtra("nextClass", AppSettingsActivity2.class);
-
-        Intent intent = new Intent(this, AppSettingsActivity2.class);
+        Intent intent = new Intent(this, AppSettingsActivity.class);
 
         intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         startActivity(intent);
@@ -93,7 +93,11 @@ public class DashboardActivity extends FirstLaunchActivity {
 
     }
 
-
+    /**
+     * Launching term activity without enabling buttons
+     * Only exit is pressing back button
+     * @param view
+     */
     public void  onClick_REopenTerms(View view){
 
         Intent intent = new Intent(this, ReOpenTermsActivity.class);
@@ -104,7 +108,12 @@ public class DashboardActivity extends FirstLaunchActivity {
     }
 
 
-
+    /**
+     *
+     * Launching a description activity without possibility to click next
+     * Only exit is pressing back button.
+     * @param view
+     */
     public void  onClick_REopenDescription(View view){
 
         Intent intent = new Intent(this, ReOpenDescriptionActivity.class);
@@ -114,6 +123,8 @@ public class DashboardActivity extends FirstLaunchActivity {
 
     }
 
+
+    //TODO: Layout of an about activity
     public void  onClick_OpenAboutActivity(View view){
 
         Intent intent = new Intent(this, AboutActivity.class);
@@ -123,14 +134,14 @@ public class DashboardActivity extends FirstLaunchActivity {
 
     }
 
+    //TODO: Decide what should happen when resutls button is cliked on.
     public void  onClick_SeeResults(View view){
         Toast.makeText(this, "Not yet!", Toast.LENGTH_SHORT).show();
     }
 
-
-
-
-
+    /**
+     * Completely leave the app when back button is pressed
+     */
     @Override
     public void onBackPressed() {
         Logger.v(TAG, "Back pressed");
@@ -170,13 +181,17 @@ public class DashboardActivity extends FirstLaunchActivity {
 //        }
 //    }
 
+    /**
+     * Dashboard is main launcher. At start up of app, the whole firstlaunch sequence is ran.
+     * If they were already ran, user directly end up on dashboard layout.
+     */
     @Override
     protected void checkFirstLaunch() {
         if (!statusManager.isFirstLaunchCompleted()) {
             Logger.i(TAG, "First launch not completed -> starting first " +
                     "launch sequence and finishing this activity");
             Intent intent = new Intent(this, FirstLaunch00WelcomeActivity.class);
-//           Intent intent = new Intent(this, AppSettingsActivity2.class);
+//           Intent intent = new Intent(this, AppSettingsActivity.class);
 
             intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
             startActivity(intent);
@@ -186,6 +201,10 @@ public class DashboardActivity extends FirstLaunchActivity {
         }
     }
 
+    /**                                          *
+     * Launchinjg poll from dashboard (debug)
+     * @param view
+     */
     public void runPollNow(@SuppressWarnings("UnusedParameters") View view) {
         Logger.d(TAG, "Launching a debug poll");
 

@@ -32,12 +32,16 @@ public class FirstLaunch01DescriptionActivity extends FirstLaunchActivity {
     private static String TAG = "FirstLaunch01DescriptionActivity";
     @InjectView(R.id.firstLaunchDescription_textDescription) TextView description;
 
-
+    /**
+     *
+     * @param savedInstanceState
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Logger.v(TAG, "Creating");
         super.onCreate(savedInstanceState);
         populateDescription();
+        setRobotofont(this);
     }
 
     /**
@@ -51,7 +55,7 @@ public class FirstLaunch01DescriptionActivity extends FirstLaunchActivity {
 
 
     /**
-     * Loading description file into adequate text view
+     * Populating scrollview from raw text files
      */
     private void populateDescription() {
         try {
