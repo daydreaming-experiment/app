@@ -4,56 +4,28 @@
     android:layout_height="match_parent"
     android:gravity="center" >
 
-    <!--        <TextView          _
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:orientation="vertical" >
-
-                android:id="@+id/firstLaunchWelcome_textWelcome"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="50dp"
-                android:gravity="center_horizontal"
-                android:text="@string/firstLaunchWelcome_text_welcome"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:background="@drawable/text_box"/>
-
-
-        <TextView
-            android:id="@+id/firstLaunchWelcome_imageWelcome"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="50dp"
-            android:gravity="center_horizontal"
-            android:text="*an image here*" />
-    -->
-
-    <LinearLayout
+    <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal">
         <ImageView
-                    android:id="@+id/firstLaunchWelcome_helice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:adjustViewBounds="true"
-                    />
+                android:id="@+id/firstLaunchWelcome_helice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                />
 
-            <ImageView
-                    android:id="@+id/firstLaunchWelcome_ballon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_toRightOf="@id/firstLaunchWelcome_helice"
-                    android:adjustViewBounds="true"
-                    android:src="@drawable/ballon"/>
+        <ImageView
+                android:id="@+id/firstLaunchWelcome_ballon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/firstLaunchWelcome_helice"
+                android:adjustViewBounds="true"
+                android:src="@drawable/ballon"/>
 
-        </LinearLayout>
+    </RelativeLayout>
 
-
-
-        <LinearLayout
+    <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
@@ -73,19 +45,6 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
 
-            <!--
-
-                  <Button
-                      android:id="@+id/firstLaunchWelcome_buttonStart"
-                      android:layout_width="0dp"
-                      android:layout_height="wrap_content"
-                      android:layout_weight="1"
-                      android:drawableRight="@drawable/navigation_next_item"
-                      android:onClick="onClick_start"
-                      android:text="@string/firstLaunchWelcome_button_start"
-                      android:background="@drawable/nuage"/>
-
-                      -->
 
               </LinearLayout>
 

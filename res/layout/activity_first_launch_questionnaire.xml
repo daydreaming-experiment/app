@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:paddingTop="30dp"
+            android:paddingRight="15dp"
+            android:paddingLeft="15dp"
+            android:scrollbarSize="5dp"
+            android:scrollbarThumbVertical="@drawable/scrollbar_vertical_thumb"
+            android:id="@+id/firstLaunchQuestionnaire_Scrollview" >
+
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:orientation="vertical"
+                  android:layout_width="fill_parent"
+                  android:layout_height="fill_parent"  >
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:id = "@+id/Questions_linear_layout"
+                  android:orientation="vertical"
+                  android:layout_width="fill_parent"
+                  android:layout_height="fill_parent"
+                  android:paddingRight="15dp"
+                  android:paddingLeft="15dp"
+            >
+
+
+
+        <TextView
+                android:id="@+id/Questionnaire_title"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/Questionnaire_title"
+                android:lines="2"
+                android:gravity="center_horizontal"
+                android:textStyle="bold"
+                android:paddingBottom="30dp"
+                android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+        <TextView
+                android:id="@+id/Questionnaire_title"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/Questionnaire_intro"
+                android:paddingBottom="20dp"
+                android:lineSpacingExtra="+4dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+
+
+
+
+
+
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:orientation="vertical"
+                  android:layout_width="fill_parent"
+                  android:layout_height="fill_parent"
+                  android:layout_marginRight="@dimen/next_button_right_margin"
+                  android:paddingLeft="15dp">
+
+
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="100dp"
+                android:gravity="right"
+                android:layout_marginBottom="30dp"
+                >
+
+
+
+            <ImageButton
+                    android:id="@+id/firstLaunchQuestionnaire_buttonSkip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="onClick_buttonSkip"
+                    android:background="@drawable/button_cloud_next"
+                    android:visibility="gone"
+                    />
+            <ImageButton
+                    android:id="@+id/firstLaunchQuestionnaire_buttonNext"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="onClick_buttonNext"
+                    android:background="@drawable/button_cloud_next"
+                    android:layout_toRightOf="@id/firstLaunchQuestionnaire_buttonSkip"/>
+
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+
+    </LinearLayout>
+
+
+</ScrollView>
+
+

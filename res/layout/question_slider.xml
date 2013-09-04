@@ -28,8 +28,12 @@
         android:id="@+id/question_slider_seekBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:minHeight="6dip"
+        android:maxHeight="6dip"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
         android:layout_gravity="center" />
-    
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -35,8 +35,9 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".ui.DashboardActivity"
+        <activity android:name=".ui.FirstLaunchSequence.DashboardActivity"
                   android:label="@string/app_name"
+                  android:theme="@style/MyCustomTheme"
                   android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -44,53 +45,82 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.SettingsActivity"
+        <activity android:name=".ui.ReOpen.AppSettingsActivity"
                   android:label="@string/settings_title_activity"
+                  android:theme="@style/MyCustomTheme"
                   android:screenOrientation="portrait">
         </activity>
 
-        <activity android:name=".ui.QuestionActivity"
+
+        <activity android:name=".ui.Questions.QuestionActivity"
                   android:label="@string/app_name"
                   android:taskAffinity=""
+                  android:theme="@style/MyCustomTheme"
                   android:screenOrientation="portrait">
         </activity>
 
-        <activity android:name=".ui.FirstLaunchWelcomeActivity"
+        <!-- The FirstLauch Sequence Activities -->
+
+        <activity android:name=".ui.FirstLaunchSequence.FirstLaunch04PersonalityQuestionnaireActivity"
+                  android:theme="@style/MyCustomTheme"
+                  android:noHistory="true"
+                  android:screenOrientation="portrait">
+        </activity>
+
+        <activity android:name=".ui.FirstLaunchSequence.FirstLaunch00WelcomeActivity"
                   android:label="@string/firstLaunchWelcome_title_activity"
                   android:theme="@style/MyCustomTheme"
                   android:noHistory="true"
                   android:screenOrientation="portrait">
         </activity>
 
-        <activity android:name=".ui.FirstLaunchDescriptionActivity"
+
+
+        <activity android:name=".ui.FirstLaunchSequence.FirstLaunch01DescriptionActivity"
                   android:label="@string/firstLaunchDescription_title_activity"
                   android:theme="@style/MyCustomTheme"
                   android:screenOrientation="portrait">
         </activity>
 
-        <activity android:name=".ui.FirstLaunchProfileActivity"
+        <activity android:name=".ui.FirstLaunchSequence.FirstLaunch03ProfileActivity"
                   android:label="@string/firstLaunchProfile_title_activity"
                   android:theme="@style/MyCustomTheme"
                   android:screenOrientation="portrait">
         </activity>
 
-        <activity android:name=".ui.FirstLaunchTermsActivity"
+        <activity android:name=".ui.FirstLaunchSequence.FirstLaunch02TermsActivity"
                   android:label="@string/firstLaunchTerms_title_activity"
                   android:theme="@style/MyCustomTheme"
                   android:screenOrientation="portrait">
         </activity>
 
-        <activity android:name=".ui.FirstLaunchPullActivity"
-                  android:label="@string/firstLaunchPull_title_activity"
+        <activity android:name=".ui.FirstLaunchSequence.FirstLaunch05MeasuresActivity"
+                  android:label="@string/firstLaunchMeasures2_title_activity"
                   android:theme="@style/MyCustomTheme"
                   android:screenOrientation="portrait">
         </activity>
 
-        <activity android:name=".ui.FirstLaunchMeasuresActivity"
-                  android:label="@string/firstLaunchMeasures_title_activity"
+
+        <!-- The Single Opening Activities -->
+
+        <activity android:name=".ui.ReOpen.ReOpenDescriptionActivity"
                   android:theme="@style/MyCustomTheme"
                   android:screenOrientation="portrait">
         </activity>
+
+
+        <activity android:name=".ui.ReOpen.ReOpenTermsActivity"
+                  android:theme="@style/MyCustomTheme"
+                  android:screenOrientation="portrait">
+        </activity>
+
+        <activity android:name=".ui.ReOpen.AboutActivity"
+                  android:theme="@style/MyCustomTheme"
+                  android:screenOrientation="portrait">
+        </activity>
+
+
+
 
         <service android:name=".background.LocationService"
                  android:exported="false"/>

@@ -1,4 +1,53 @@
 <resources>
+
+    <!-- __________________________________________________ -->
+
+    <string name="app_name">Day Dreaming</string>
+    <string name="menu_settings">Settings</string>
+
+
+
+
+    <!-- Dashboard -->
+    <string name="dashboard_title_activity">Dashboard</string>
+    <string name="dashboard_text_experiment_running">Experiment is running.</string>
+    <string name="dashboard_quit_experiment">Quit</string>
+    <string name="dashboard_text_days_elapsed">Days elapsed</string>
+    <string name="dashboard_title_results">Results:</string>
+    <string name="dashboard_text_results">Results will appear once the first X days are completed (that\'s in Z days).</string>
+
+    <string name="dashboard_button_text_about">About</string>
+    <string name="dashboard_button_text_terms">Terms</string>
+    <string name="dashboard_button_text_description">Description</string>
+
+
+
+
+
+    <!-- Welcome Activity -->
+    <string name="firstLaunchWelcome_title_activity">Day Dreaming</string>
+    <string name="firstLaunchWelcome_text_welcome">Day Dreaming Experiment</string>
+    <string name="firstLaunchWelcome_button_start">Start</string>
+
+
+    <!-- Description Activity -->
+    <string name="firstLaunchDescription_title_activity">Description</string>
+    <string name="firstLaunchDescription_text_title">Welcome to the Daydreaming app!</string>
+    <string name="firstLaunchDescription_button_next">Next</string>
+
+    <!-- Terms Activity -->
+    <string name="consentAlert_title">Experiment consent</string>
+    <string name="consentAlert_text">Bla bla bla do you consent?</string>
+    <string name="consentAlert_button_consent">Agree</string>
+    <string name="consentAlert_button_no_consent">Disagree</string>
+    <string name="firstLaunchTerms_title_activity">Consent</string>
+    <string name="firstLaunchTerms_text_title">Consent</string>
+    <string name="firstLaunchTerms_text_consent">Consent</string>
+    <string name="firstLaunchTerms_button_agree">Agree</string>
+    <string name="firstLaunchTerms_button_disagree">Disagree</string>
+    <string name="firstLaunchTerms_text_please_scroll">Scroll down terms</string>
+
+    <!-- App Settings Activity -->
     <string name="notification_sound">Allow notification sound</string>
     <string name="notification_vibrator">Vibrate with notification</string>
     <string name="notification_led">Blink with notification</string>
@@ -12,28 +61,23 @@
     <string name="settings_title_activity">Settings</string>
     <string name="settings_time_corrected_1">Please allow polls for at least</string>
     <string name="settings_time_corrected_2">hours in the day! The time settings have been reset to default.</string>
-    
-    <string name="app_name">Day Dreaming</string>
-    <string name="menu_settings">Settings</string>
-    <string name="dashboard_title_activity">Dashboard</string>
-    <string name="dashboard_text_experiment_running">Experiment is running.</string>
-    <string name="dashboard_quit_experiment">Quit</string>
-    <string name="dashboard_text_days_elapsed">Days elapsed</string>
-    <string name="dashboard_title_results">Results:</string>
-    <string name="dashboard_text_results">Results will appear once the first X days are completed (that\'s in Z days).</string>
-    <string name="firstLaunchWelcome_title_activity">Day Dreaming</string>
-    <string name="firstLaunchWelcome_text_welcome">Day Dreaming Experiment</string>
-    <string name="firstLaunchWelcome_button_start">Start</string>
 
-    <string name="firstLaunchDescription_title_activity">Description</string>
-    <string name="firstLaunchDescription_text_title">Description</string>
-    <string name="firstLaunchDescription_text_description">Explanation of the experiment</string>
-    <string name="firstLaunchDescription_button_next">Next</string>
 
-    <string name="consentAlert_title">Experiment consent</string>
-    <string name="consentAlert_text">Bla bla bla do you consent?</string>
-    <string name="consentAlert_button_consent">Agree</string>
-    <string name="consentAlert_button_no_consent">Disagree</string>
+    <!-- Profile Activity -->
+    <string name="firstLaunchProfile_title_activity">Profile</string>
+    <string name="firstLaunchProfile_title_about_you">A LITTLE ABOUT YOU</string>
+    <string name="firstLaunchProfile_hint_age">Age</string>
+    <string name="firstLaunchProfile_button_next">Next</string>
+    <string name="firstLaunchProfile_fix_age">Please enter an age between 5 and 100</string>
+    <string name="firstLaunchProfile_text_gender">Gender</string>
+    <string name="firstLaunchProfile_text_education">Education</string>
+    <string name="firstLaunchProfile_text_age">Age</string>
+    <string name="firstLaunchProfile_Spinner_gender_prompt">Select your gender</string>
+    <string name="firstLaunchProfile_Spinner_education_prompt">Select your education</string>
+    <string name="firstLaunchProfile_Spinner_age_prompt">Select your age</string>
+
+
+    <!-- Measure Activity -->
     <string name="firstLaunchMeasures_text_measures">The app will measure:</string>
     <string name="firstLaunchMeasures_text_network_location">Coarse location (network-based)</string>
     <string name="firstLaunchMeasures_text_answers">Answers to the questions</string>
@@ -43,43 +87,35 @@
     <string name="firstLaunchMeasures_text_settings_necessary">Change your settings to get location:</string>
     <string name="firstLaunchMeasures_button_settings">Settings&#8230;</string>
     <string name="firstLaunchMeasures_title_activity">Measures &amp; Privacy</string>
-    <string name="firstLaunchProfile_title_activity">Profile</string>
-    <string name="firstLaunchProfile_title_about_you">A little about yourself:</string>
-    <string name="firstLaunchProfile_hint_age">Age</string>
-    <string name="firstLaunchProfile_button_next">Next</string>
-    <string name="firstLaunchProfile_fix_age">Please enter an age between 5 and 100</string>
-    <string name="firstLaunchProfile_text_gender">Gender</string>
-    <string name="firstLaunchProfile_text_education">Education</string>
-    <string name="firstLaunchProfile_text_age">Age</string>
+
+    <!-- Measure Activity 2 -->
+    <string name="firstLaunchMeasures2_text_data">DATA</string>
+    <string name="firstLaunchMeasures2_text_network_connection">Network connection</string>
+    <string name="firstLaunchMeasures2_button_change_data_settings">Change your data settings</string>
+    <string name="firstLaunchMeasures2_text_location">LOCATION</string>
+    <string name="firstLaunchMeasures2_text_coarse_location">Coarse location</string>
+    <string name="firstLaunchMeasures2_button_change_location_settings">Change your location settings</string>
+    <string name="firstLaunchMeasures2_title_activity">Measures</string>
+    <string name="firstLaunchMeasures2_text_intro">We will now fetch content from our servers.\nThis should take no more than a few seconds</string>
+    <string name="firstLaunchMeasures2_text_downloading">Download : Waiting for connection</string>
 
 
-    <string-array name="genders">
-        <item> -- </item>
-        <item>Female</item>
-        <item>Male</item>
-    </string-array>
-
-    <string-array name="ages">
-        <item> -- </item>
-        <item>Under 18</item>
-        <item>18 -24</item>
-        <item>25 -29</item>
-        <item>30 -39</item>
-        <item>40 -49</item>
-        <item>50 -59</item>
-        <item>60 -69</item>
-        <item>70+</item>
-    </string-array>
-
-    <string-array name="education">
-        <item> -- </item>
-        <item>School (GCSE or similar)</item>
-        <item>School (A-Levels, vocational, or similar)</item>
-        <item>University Degree</item>
-        <item>Advanced Degree (MA, PhD, etc.)</item>
-    </string-array>
+    <!-- Questionnaire Activity -->
+    <string name="Questionnaire_intro">Here are a number of personality traits that may or may not apply to you.  Please select the statement to indicate the extent to which you agree or disagree with each statement. You should rate the extent to which the pair of traits applies to you, even if one characteristic applies more strongly than the other. </string>
+    <string name="Questionnaire_title">PERSONALITY\nQUESTIONNAIRE</string>
 
 
+    <!-- Pulling question Activity -->
+    <string name="firstLaunchPull_title_activity">Pull Questions</string>
+    <string name="firstLaunchPull_text_intro">We will now fetch content from our servers.\nThis should take no more than a few seconds</string>
+    <string name="firstLaunchPull_text_downloading">Download : Waiting for connection</string>
+    <string name="firstLaunchPull_text_data_enabled">Network connection</string>
+    <string name="firstLaunchPull_text_settings_necessary">You are not connected to the internet, please change your settings.</string>
+    <string name="firstLaunchPull_button_settings">Settings</string>
+    <string name="firstLaunchPull_button_next">Continue</string>
+
+
+    <!-- Display question Activity -->
     <string name="question_welcome_text">Here are a few quick questions:</string>
     <string name="question_button_next">Next</string>
     <string name="question_button_finish">Finish</string>
@@ -98,24 +134,32 @@
     <string name="locationAlert_text_data">You should enable data connection to continue. Please adjust your settings.</string>
     <string name="locationAlert_text_location_and_data">You should enable network-based (coarse) location AND data connection to continue. Please adjust your settings.</string>
     <string name="locationAlert_button_settings">Go to settings&#8230;</string>
+    <string name="questionActivity_catch_key">Press again to exit.\nYou\'ll lose these questions!</string>
+
+
+    <!-- Poll Notivifcation -->
     <string name="pollNotification_ticker">Day Dreaming poll</string>
     <string name="pollNotification_title">Day Dreaming</string>
     <string name="pollNotification_text">A few quick questions</string>
-    <string name="questionActivity_catch_key">Press again to exit.\nYou\'ll lose these questions!</string>
 
-    <string name="firstLaunchPull_title_activity">Pull Questions</string>
-    <string name="firstLaunchPull_text_intro">We will now fetch content from our servers.\nThis should take no more than a few seconds</string>
-    <string name="firstLaunchPull_text_downloading">Download : Waiting for connection</string>
-    <string name="firstLaunchPull_text_data_enabled">Network connection</string>
-    <string name="firstLaunchPull_text_settings_necessary">You are not connected to the internet, please change your settings.</string>
-    <string name="firstLaunchPull_button_settings">Settings</string>
-    <string name="firstLaunchPull_button_next">Continue</string>
 
-    <string name="firstLaunchTerms_title_activity">Consent</string>
-    <string name="firstLaunchTerms_text_title">Consent</string>
-    <string name="firstLaunchTerms_text_consent">Consent</string>
-    <string name="firstLaunchTerms_button_agree">Agree</string>
-    <string name="firstLaunchTerms_button_disagree">Disagree</string>
-    <string name="firstLaunchTerms_text_please_scroll">Scroll down terms</string>
+    <!-- AppSettings -->
+    <string name="appsettings_title">SETTINGS</string>
+    <string name="appsettings_notification_title">Notifications</string>
+    <string name="appsettings_time_title">Time window for notifications</string>
+    <string name="appsettings_time_from">From </string>
+    <string name="appsettings_time_until">Until </string>
+
+    <string name="appsettings_allow_blink_text">Vibrates with notification</string>
+    <string name="appsettings_allow_vibrations_text">Vibrates with notification</string>
+    <string name="appsettings_allow_sound_text">Blink at notification</string>
+
+
+
+
+
+    <!-- Other -->
+
+
 
 </resources>
