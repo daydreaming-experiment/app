@@ -2,14 +2,14 @@
 <resources>
 
 
-<!-- TODO: a few elements that would be good to externalize in this file-->
+<!-- TODO: a few elements that would be good to externalize in this file
 
-    <dimen  name="next_button_width">Odp</dimen>
-    <dimen  name="next_button_heigth">0dp</dimen>
+    <dimen  name="next_button_width">1Odp</dimen>
+    <dimen  name="next_button_heigth">10dp</dimen>
 
-    <dimen  name="check_width">0dp</dimen>
-    <dimen  name="check_heigth">0dp</dimen>
-
+    <dimen  name="check_width">10dp</dimen>
+    <dimen  name="check_heigth">10dp</dimen>
+                                                                    -->
 
 <!-- LATENCIES -->
     <integer name="welcome_animation_duration">2000</integer> <!-- given in milliseconds-->
