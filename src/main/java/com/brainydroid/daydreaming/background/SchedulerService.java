@@ -11,18 +11,19 @@ import com.brainydroid.daydreaming.db.Util;
 import com.google.inject.Inject;
 import roboguice.service.RoboService;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Random;
 
 /**
  * Schedule a {@link com.brainydroid.daydreaming.db.Poll} to be created and
- * notified later on. The delay before creation-notification of the {@code
- * Poll} is both well randomized (a Poisson process) and respectful of the
- * user's notification settings.
+ * notified later on. The delay before creation-notification of the {@link
+ * com.brainydroid.daydreaming.db.Poll} is both well randomized (a Poisson
+ * process) and respectful of the user's notification settings.
  *
  * @author Sébastien Lerique
  * @author Vincent Adam
+ * @see SyncService
+ * @see PollService
  */
 public class SchedulerService extends RoboService {
 
@@ -36,12 +37,6 @@ public class SchedulerService extends RoboService {
 
     /** Mean delay in the poisson process scheduling polls */
     public static double MEAN_DELAY = 2 * 60 * 60 * 1000; // 2 hours
-
-    /** Format of date and time for logging */
-    private static String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
-
-    // Date and time formatter for logging
-    private SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
 
     // Handy object that will be holding the 'now' time
     private Calendar now;
@@ -86,10 +81,10 @@ public class SchedulerService extends RoboService {
      * Schedule a {@link com.brainydroid.daydreaming.db.Poll} to be created
      * and notified by {@link PollService} later on.
      *
-     * @param debugging Set to {@code true} for a fixed short delay before
+     * @param debugging Set to {@link true} for a fixed short delay before
      *                  notification
      */
-    private void schedulePoll(boolean debugging) {
+    private synchronized void schedulePoll(boolean debugging) {
         Logger.d(TAG, "Scheduling new poll");
 
         // Generate the time at which the poll will appear
@@ -103,7 +98,7 @@ public class SchedulerService extends RoboService {
                 scheduledTime, pendingIntent);
     }
 
-    private void fixNowAndGetAllowedWindow() {
+    private synchronized void fixNowAndGetAllowedWindow() {
         Logger.d(TAG, "Fixing now and obtaining allowed time window");
 
         now = Calendar.getInstance();
@@ -145,7 +140,7 @@ public class SchedulerService extends RoboService {
         // Compute the span of our allowed and forbidden time windows
         allowedSpan = (int)end.getTimeInMillis() -
                 (int)start.getTimeInMillis();
-        forbiddenSpan = 24 - allowedSpan;
+        forbiddenSpan = 24 * 60 * 60 * 1000 - allowedSpan;
     }
 
     /**
@@ -153,21 +148,21 @@ public class SchedulerService extends RoboService {
      * com.brainydroid.daydreaming.db.Poll} should appear.
      * <p/>
      * A delay is sampled from an exponential distribution with parameter
-     * {@code 1 / MEAN_DELAY}, and is then prolonged to observe the user's
-     * preferences_appsettings in notification time window. This is done by
+     * {@link 1 / MEAN_DELAY}, and is then prolonged to observe the user's
+     * preferences in notification time window. This is done by
      * "compactifying" each prohibited time window to one point: imagine a
      * time line where the beginning of a forbidden time window is the same
      * moment as the end of that forbidden time window,
      * and do the scheduling on that time line ; the result of this method
-     * is the same (see {@code makeRespectfulDelay()} and {@code
-     * makeRespectfulExpansion()} for details).
+     * is the same (see {@link #makeRespectfulDelay} and {@link
+     * #makeRespectfulExpansion} for details).
      *
-     * @param debugging Set to {@code true} to get a fixed short delay for
+     * @param debugging Set to {@link true} to get a fixed short delay for
      *                  the notification instead of a random delay
      * @return Scheduled (and shifted) moment for the poll to appear,
      *         in milliseconds from epoch
      */
-    private long generateTime(boolean debugging) {
+    private synchronized long generateTime(boolean debugging) {
         Logger.d(TAG, "Generating a time for schedule");
 
         // Fix what 'now' means, and retrieve the allowed time window
@@ -201,7 +196,7 @@ public class SchedulerService extends RoboService {
         milliseconds %= 60 * 1000;
         long seconds = milliseconds / 1000;
 
-        String scheduledString = sdf.format(scheduledCalendar.getTime());
+        String scheduledString = Util.formatDate(scheduledCalendar.getTime());
         Logger.i(TAG, "Poll scheduled in {0} hours, {1} minutes, " +
                 "and {2} seconds (i.e. {3})",
                 hours, minutes, seconds, scheduledString);
@@ -213,11 +208,11 @@ public class SchedulerService extends RoboService {
 
     /**
      * Sample a delay following an exponential distribution with parameter
-     * {@code 1 / MEAN_DELAY}.
+     * {@link 1 / MEAN_DELAY}.
      *
      * @return Sampled delay in milliseconds
      */
-    private long sampleDelay() {
+    private synchronized long sampleDelay() {
         Logger.d(TAG, "Sampling delay");
         return (long)(- Math.log(random.nextDouble()) * MEAN_DELAY);
     }
@@ -235,12 +230,12 @@ public class SchedulerService extends RoboService {
      * <p/>
      * To do this, we look at each forbidden time window as if it were a
      * unique instant (we "compactify" them). This logic is implemented in
-     * a recursive call to {@code makeRespectfulExpansion()}.
+     * a recursive call to {@link #makeRespectfulExpansion}.
      *
      * @param delay Initial delay to make respectful of user's settings
      * @return Resulting respectful delay
      */
-    private long makeRespectfulDelay(long delay) {
+    private synchronized long makeRespectfulDelay(long delay) {
         Logger.d(TAG, "Expanding delay to respect user's time window");
 
         long expansion = makeRespectfulExpansion(now, delay);
@@ -274,7 +269,7 @@ public class SchedulerService extends RoboService {
      * @param delay Suggested waiting delay in milliseconds
      * @return Prolonged waiting delay respecting the user's preferences_appsettings
      */
-    private long makeRespectfulExpansion(Calendar hypothesizedNow,
+    private synchronized long makeRespectfulExpansion(Calendar hypothesizedNow,
                                          long delay) {
         Logger.d(TAG, "Recursively building expansion value");
 
@@ -297,12 +292,14 @@ public class SchedulerService extends RoboService {
         suggested.add(Calendar.MILLISECOND, (int)delay);
 
         Logger.d(TAG, "Hypothesized now is: {0}",
-                sdf.format(hypothesizedNow.getTime()));
-        Logger.d(TAG, "Suggested is: {0}", sdf.format(suggested.getTime()));
-        Logger.d(TAG, "Allowed start is: {0}", sdf.format(start.getTime()));
-        Logger.d(TAG, "Allowed end is: {0}", sdf.format(end.getTime()));
+                Util.formatDate(hypothesizedNow.getTime()));
+        Logger.d(TAG, "Suggested is: {0}",
+                Util.formatDate(suggested.getTime()));
+        Logger.d(TAG, "Allowed start is: {0}",
+                Util.formatDate(start.getTime()));
+        Logger.d(TAG, "Allowed end is: {0}", Util.formatDate(end.getTime()));
         Logger.d(TAG, "Next allowed start is: {0}",
-                sdf.format(nextStart.getTime()));
+                Util.formatDate(nextStart.getTime()));
 
         if (hypothesizedNow.before(start)) {
             // hypothesizedNow is before the allowed time window. So we
@@ -368,7 +365,7 @@ public class SchedulerService extends RoboService {
     /**
      * Start {@link SyncService} to synchronize answers.
      */
-    private void startSyncService() {
+    private synchronized void startSyncService() {
         Logger.d(TAG, "Starting SyncService");
         Intent syncIntent = new Intent(this, SyncService.class);
         startService(syncIntent);

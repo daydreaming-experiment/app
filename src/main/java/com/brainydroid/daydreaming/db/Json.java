@@ -17,10 +17,15 @@ import javax.inject.Inject;
  * (like {@link IAnswer}, {@link IQuestionDetails},
  * custom instance creation ({@link Question} instances),
  * and useful serialization and deserialization of other classes (here
- * {@code Location} instances).
+ * {@link Location} instances).
  *
  * @author Sébastien Lerique
  * @author Vincent Adam
+ * @see AnswerDeserializer
+ * @see QuestionDetailsDeserializer
+ * @see QuestionInstanceCreator
+ * @see LocationDeserializer
+ * @see LocationSerializer
  */
 @Singleton
 public class Json {
@@ -36,7 +41,7 @@ public class Json {
     /**
      * Constructor used with dependency injection.
      *
-     * @param gsonBuilder An instance of {@code GsonBuilder}
+     * @param gsonBuilder An instance of {@link GsonBuilder}
      * @param answerDeserializer An instance of {@link AnswerDeserializer}
      * @param questionDetailsDeserializer An instance of {@link
      *                                    QuestionDetailsDeserializer}

@@ -108,9 +108,9 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
     }
 
     @Override
-    public void onStart() {
-        Logger.d(TAG, "Starting");
-        super.onStart();
+    public void onResume() {
+        Logger.d(TAG, "Resuming");
+        super.onResume();
 
         poll.setStatus(Poll.STATUS_RUNNING);
         question.setStatus(Question.STATUS_ASKED);
@@ -126,9 +126,9 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
     }
 
     @Override
-    public void onStop() {
-        Logger.d(TAG, "Stopping");
-        super.onStop();
+    public void onPause() {
+        Logger.d(TAG, "Pausing");
+        super.onPause();
         if (!isContinuingOrFinishing) {
             Logger.d(TAG, "We're not moving to next question or finishing " +
                     "the poll -> dismissing");

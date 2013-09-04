@@ -9,8 +9,6 @@ public abstract class StatusModel<M extends StatusModel<M,S>,
     @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "StatusModel";
 
-    public static final String COL_STATUS = "status";
-
     // These members don't need to be serialized
     private transient String status;
 
@@ -31,7 +29,7 @@ public abstract class StatusModel<M extends StatusModel<M,S>,
      *               LocationPoint.STATUS_COLLECTING} or {@code
      *               LocationPoint.STATUS_COMPLETED}
      */
-    public void setStatus(String status) {
+    public synchronized void setStatus(String status) {
         Logger.v(TAG, "Setting status");
         this.status = status;
         saveIfSync();
@@ -44,7 +42,7 @@ public abstract class StatusModel<M extends StatusModel<M,S>,
      *
      * @return Current status of the {@code LocationPoint}
      */
-    public String getStatus() {
+    public synchronized String getStatus() {
         return status;
     }
 

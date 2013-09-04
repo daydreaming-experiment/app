@@ -12,59 +12,66 @@ import com.google.inject.Inject;
  * Manage the lifecycle of {@link LocationService} and pass messages
  * on to it.
  * <p/>
- * Use this class as the handler for {@code LocationService}. You can
+ * Use this class as the handler for {@link LocationService}. You can
  * start, stop, bind and unbind to the service using this interface. The
- * main use is to pass callbacks to a running or to-be-started {@code
+ * main use is to pass callbacks to a running or to-be-started {@link
  * LocationService} so as to receive location updates on the right objects.
  * The main constraint to remember is that you can only send messages to the
- * {@code LocationService} (e.g. register or un-register callbacks) when it
+ * {@link LocationService} (e.g. register or un-register callbacks) when it
  * is bound. And in that case, they are transmitted instantly (i.e. not
  * depending on a callback).
  * <p/>
  * There are two use cases:
  * <ul>
- *     <li>{@link LocationPointService}: needs to start the {@code
- *     LocationService} ({@code startLocationService()}),
+ *     <li>{@link LocationPointService}: needs to start the {@link
+ *     LocationService} ({@link #startLocationService}),
  *     register a callback on it and stop itself. Registering the callback
- *     is done through this {@code LocationServiceConnection}, as follows:
+ *     is done through this {@link LocationServiceConnection}, as follows:
  *     <ol>
- *         <li>Record the callback to be set, with {@code
- *         setLocationPointCallback()}</li>
- *         <li>Create and register ({@code
- *         setOnServiceConnectionCallback()}) a {@link
- *         ServiceConnectionCallback} to stop the {@code
- *         LocationPointService} and unbind ({@code
- *         unbindLocationService()})</li>
- *         <li>Bind the {@code LocationService} to pass the message
- *         ({@code bindLocationService()}) ; once bound,
+ *         <li>Record the callback to be set, with {@link
+ *         #setLocationPointCallback}</li>
+ *         <li>Create and register ({@link
+ *         #setOnServiceConnectedCallback}) a {@link
+ *         ServiceConnectionCallback} to stop the {@link
+ *         LocationPointService} and unbind ({@link
+ *         #unbindLocationService})</li>
+ *         <li>Bind the {@link LocationService} to pass the message
+ *         ({@link #bindLocationService}) ; once bound,
  *         the {@link ServiceConnectionCallback} stops the
- *         {@code LocationPointService} and unbinds. The {@code
+ *         {@link LocationPointService} and unbinds. The {@link
  *         LocationService} keeps running on its own,
  *         sending location updates to the registered callback.</li>
  *     </ol>
- *     After some time, the {@code LocationPointService} starts again
- *     and clears its listener, which will stop the {@code LocationService}
+ *     After some time, the {@link LocationPointService} starts again
+ *     and clears its listener, which will stop the {@link LocationService}
  *     if no other listeners are registered (i.e. if no {@link
  *     com.brainydroid.daydreaming.ui.Questions.QuestionActivity} is listening for
  *     updates). This is done with the same procedure: record the message
- *     to pass ({@code clearLocationPointCallback()}),
- *     set a {@link ServiceConnectionCallback} to stop the {@code
+ *     to pass ({@link #clearLocationPointCallback}),
+ *     set a {@link ServiceConnectionCallback} to stop the {@link
  *     LocationPointService} and unbind, then bind to start the chain of
  *     callbacks.</li>
  *     <li>{@link com.brainydroid.daydreaming.ui.Questions.QuestionActivity}: needs
  *     to start the {@code LocationService}, bind to it,
  *     register a callback, and stay bound to be able to send messages at
- *     will (the difference with {@code LocationPointService} is that the
- *     {@code QuestionActivity} keeps running all the time while it is
- *     listening for location updates. When {@code QuestionActivity} stops,
- *     it clears its callback and unbinds. That will stop the {@code
- *     LocationService} if no other callback is registered (i.e. if no
- *     {@code LocationPoint} is listening for updates).
+ *     will (the difference with {@link LocationPointService} is that the
+ *     {@link com.brainydroid.daydreaming.ui.Questions.QuestionActivity} keeps running
+ *     all the time while it is listening for location updates. When {@link
+ *     com.brainydroid.daydreaming.ui.Questions.QuestionActivity} stops,
+ *     it clears its callback and unbinds. That will stop the {@link
+ *     LocationService} if no other callback is registered (i.e. if no {@link
+ *     com.brainydroid.daydreaming.db.LocationPoint} is listening for
+ *     updates).
  *     </li>
  * </ul>
  *
  * @author Sébastien Lerique
  * @author Vincent Adam
+ * @see LocationService
+ * @see LocationCallback
+ * @see ServiceConnectionCallback
+ * @see com.brainydroid.daydreaming.db.LocationPoint
+ * @see com.brainydroid.daydreaming.db.Question
  */
 public class LocationServiceConnection implements ServiceConnection {
 
@@ -205,7 +212,8 @@ public class LocationServiceConnection implements ServiceConnection {
     }
 
     /**
-     * Remember to set a {@code LocationPoint} callback when possible.
+     * Remember to set a {@link com.brainydroid.daydreaming.db.LocationPoint}
+     * callback when possible.
      *
      * @param callback Callback to remember
      */
@@ -226,7 +234,8 @@ public class LocationServiceConnection implements ServiceConnection {
     }
 
     /**
-     * Remember to set a {@code QuestionLocation} callback when possible.
+     * Remember to set a {@link com.brainydroid.daydreaming.db.Question}
+     * {@link LocationCallback} when possible.
      *
      * @param callback Callback to remember
      */
@@ -247,7 +256,8 @@ public class LocationServiceConnection implements ServiceConnection {
     }
 
     /**
-     * Remember to clear {@code LocationPoint} callback when possible.
+     * Remember to clear {@link com.brainydroid.daydreaming.db.LocationPoint}
+     * callback when possible.
      */
     public void clearLocationPointCallback() {
         Logger.d(TAG, "Clearing locationPointCallback");
@@ -255,7 +265,8 @@ public class LocationServiceConnection implements ServiceConnection {
     }
 
     /**
-     * Remember to clear {@code QuestionLocation} callback when possible.
+     * Remember to clear {@link com.brainydroid.daydreaming.db.Question}
+     * {@link LocationCallback} when possible.
      */
     public void clearQuestionLocationCallback() {
         Logger.d(TAG, "Clearing questionLocationCallback");

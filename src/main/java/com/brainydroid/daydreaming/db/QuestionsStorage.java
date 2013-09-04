@@ -16,15 +16,25 @@ public class QuestionsStorage {
 
     private static String TAG = "QuestionsStorage";
 
+    public static final String COL_NAME = "questionName";
+    public static final String COL_CATEGORY = "questionCategory";
+    public static final String COL_SUB_CATEGORY = "questionSubCategory";
+    public static final String COL_DETAILS = "questionDetails";
+
+    public static final String COL_STATUS = "questionStatus";
+    public static final String COL_ANSWER = "questionAnswer";
+    public static final String COL_LOCATION = "questionLocation";
+    public static final String COL_TIMESTAMP = "questionTimestamp";
+
     private static String QUESTIONS_VERSION = "questionsVersion";
     private static String TABLE_QUESTIONS = "questions";
 
     private static final String SQL_CREATE_TABLE_QUESTIONS =
             "CREATE TABLE IF NOT EXISTS " + TABLE_QUESTIONS + " (" +
-                    Question.COL_NAME + " TEXT NOT NULL, " +
-                    Question.COL_CATEGORY + " TEXT NOT NULL, " +
-                    Question.COL_SUB_CATEGORY + " TEXT, " +
-                    Question.COL_DETAILS + " TEXT NOT NULL" +
+                    COL_NAME + " TEXT NOT NULL, " +
+                    COL_CATEGORY + " TEXT NOT NULL, " +
+                    COL_SUB_CATEGORY + " TEXT, " +
+                    COL_DETAILS + " TEXT NOT NULL" +
                     ");";
 
     @Inject Json json;
@@ -49,7 +59,7 @@ public class QuestionsStorage {
         db.execSQL(SQL_CREATE_TABLE_QUESTIONS);
     }
 
-    public int getQuestionsVersion() {
+    public synchronized int getQuestionsVersion() {
         Logger.v(TAG, "Getting questions version");
         int questionsVersion = sharedPreferences.getInt(QUESTIONS_VERSION,
                 -1);
@@ -62,18 +72,18 @@ public class QuestionsStorage {
         return questionsVersion;
     }
 
-    private void setQuestionsVersion(int questionsVersion) {
+    private synchronized void setQuestionsVersion(int questionsVersion) {
         Logger.d(TAG, "Setting questions version to {0}", questionsVersion);
         eSharedPreferences.putInt(QUESTIONS_VERSION, questionsVersion);
         eSharedPreferences.commit();
     }
 
     // get question from id in db
-    public Question get(String questionName) {
+    public synchronized Question create(String questionName) {
         Logger.d(TAG, "Retrieving question {0} from db", questionName);
 
         Cursor res = db.query(TABLE_QUESTIONS, null,
-                Question.COL_NAME + "=?", new String[]{questionName},
+                COL_NAME + "=?", new String[]{questionName},
                 null, null, null);
         if (!res.moveToFirst()) {
             res.close();
@@ -81,23 +91,23 @@ public class QuestionsStorage {
         }
 
         Question q = questionFactory.create();
-        q.setName(res.getString(res.getColumnIndex(Question.COL_NAME)));
-        q.setCategory(res.getString(res.getColumnIndex(Question.COL_CATEGORY)));
+        q.setName(res.getString(res.getColumnIndex(COL_NAME)));
+        q.setCategory(res.getString(res.getColumnIndex(COL_CATEGORY)));
         q.setSubCategory(res.getString(
-                res.getColumnIndex(Question.COL_SUB_CATEGORY)));
+                res.getColumnIndex(COL_SUB_CATEGORY)));
         q.setDetailsFromJson(res.getString(
-                res.getColumnIndex(Question.COL_DETAILS)));
+                res.getColumnIndex(COL_DETAILS)));
         res.close();
 
         return q;
     }
 
     // get questions ids in questions db
-    public ArrayList<String> getQuestionNames() {
+    public synchronized ArrayList<String> getQuestionNames() {
         Logger.d(TAG, "Retrieving available question names from db");
 
         Cursor res = db.query(TABLE_QUESTIONS,
-                new String[] {Question.COL_NAME}, null, null, null,
+                new String[] {COL_NAME}, null, null, null,
                 null, null);
         if (!res.moveToFirst()) {
             res.close();
@@ -107,7 +117,7 @@ public class QuestionsStorage {
         ArrayList<String> questionNames = new ArrayList<String>();
         do {
             questionNames.add(res.getString(
-                    res.getColumnIndex(Question.COL_NAME)));
+                    res.getColumnIndex(COL_NAME)));
         } while (res.moveToNext());
         res.close();
 
@@ -115,7 +125,8 @@ public class QuestionsStorage {
     }
 
     // getRandomQuestions
-    public ArrayList<Question> getRandomQuestions(int nQuestions) {
+    public synchronized ArrayList<Question> getRandomQuestions(
+            int nQuestions) {
         Logger.d(TAG, "Retrieving {0} random questions from db", nQuestions);
 
         ArrayList<String> questionNames = getQuestionNames();
@@ -126,19 +137,19 @@ public class QuestionsStorage {
 
         for (int i = 0; i < nQuestions && i < nIds; i++) {
             rIndex = random.nextInt(questionNames.size());
-            randomQuestions.add(get(questionNames.get(rIndex)));
+            randomQuestions.add(create(questionNames.get(rIndex)));
             questionNames.remove(rIndex);
         }
 
         return randomQuestions;
     }
 
-    public void flush() {
+    public synchronized void flush() {
         Logger.d(TAG, "Flushing questions from db");
         db.delete(TABLE_QUESTIONS, null, null);
     }
 
-    private void add(ArrayList<Question> questions) {
+    private synchronized void add(ArrayList<Question> questions) {
         Logger.d(TAG, "Storing an array of questions to db");
         for (Question q : questions) {
             add(q);
@@ -146,25 +157,25 @@ public class QuestionsStorage {
     }
 
     // add question in database
-    private void add(Question question) {
+    private synchronized void add(Question question) {
         Logger.d(TAG, "Storing question {0} to db", question.getName());
         db.insert(TABLE_QUESTIONS, null, getQuestionValues(question));
     }
 
-    private ContentValues getQuestionValues(Question question) {
+    private synchronized ContentValues getQuestionValues(Question question) {
         Logger.d(TAG, "Building question values");
 
         ContentValues qValues = new ContentValues();
-        qValues.put(Question.COL_NAME, question.getName());
-        qValues.put(Question.COL_CATEGORY, question.getCategory());
-        qValues.put(Question.COL_SUB_CATEGORY,
+        qValues.put(COL_NAME, question.getName());
+        qValues.put(COL_CATEGORY, question.getCategory());
+        qValues.put(COL_SUB_CATEGORY,
                 question.getSubCategory());
-        qValues.put(Question.COL_DETAILS, question.getDetailsAsJson());
+        qValues.put(COL_DETAILS, question.getDetailsAsJson());
         return qValues;
     }
 
     // import questions from json file into database
-    public void importQuestions(String jsonQuestionsString) {
+    public synchronized void importQuestions(String jsonQuestionsString) {
         Logger.d(TAG, "Importing questions from JSON");
 
         ServerQuestionsJson serverQuestionsJson = json.fromJson(

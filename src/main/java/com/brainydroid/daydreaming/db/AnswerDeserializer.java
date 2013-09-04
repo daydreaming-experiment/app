@@ -13,6 +13,7 @@ import java.lang.reflect.Type;
  *
  * @author Sébastien Lerique
  * @author Vincent Adam
+ * @see IAnswer
  */
 public class AnswerDeserializer implements JsonDeserializer<IAnswer> {
 

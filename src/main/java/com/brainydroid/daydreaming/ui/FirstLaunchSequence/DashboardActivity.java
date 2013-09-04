@@ -107,7 +107,6 @@ public class DashboardActivity extends FirstLaunchActivity {
 
     }
 
-
     /**
      *
      * Launching a description activity without possibility to click next

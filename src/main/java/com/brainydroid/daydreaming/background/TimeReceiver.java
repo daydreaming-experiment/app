@@ -14,6 +14,7 @@ import roboguice.receiver.RoboBroadcastReceiver;
  *
  * @author Sébastien Lerique
  * @author Vincent Adam
+ * @see SchedulerService
  */
 public class TimeReceiver extends RoboBroadcastReceiver {
 

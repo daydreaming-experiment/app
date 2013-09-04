@@ -13,40 +13,44 @@ public abstract class StatusModelStorage<M extends StatusModel<M,S>,
 
     private static String TAG = "StatusModelStorage";
 
+    public static final String COL_STATUS = "status";
+
     @Inject
     public StatusModelStorage(Storage storage) {
         super(storage);
     }
 
     @Override
-    protected void populateModel(int modelId, M model, Cursor res) {
+    protected synchronized void populateModel(int modelId, M model,
+                                              Cursor res) {
         Logger.v(TAG, "Populating model {0} with status", modelId);
         model.setStatus(res.getString(
-                res.getColumnIndex(StatusModel.COL_STATUS)));
+                res.getColumnIndex(COL_STATUS)));
     }
 
     @Override
-    protected ContentValues getModelValues(M model) {
+    protected synchronized ContentValues getModelValues(M model) {
         Logger.d(TAG, "Getting model values (status only)");
         ContentValues modelValues = new ContentValues();
-        modelValues.put(StatusModel.COL_STATUS, model.getStatus());
+        modelValues.put(COL_STATUS, model.getStatus());
         return modelValues;
     }
 
-    private ArrayList<Integer> getModelIdsWithStatuses(String[] statuses) {
+    private synchronized ArrayList<Integer> getModelIdsWithStatuses(
+            String[] statuses) {
         Logger.d(TAG, "Getting model ids with statuses");
         return getModelIdsWithStatuses(statuses, null);
     }
 
-    protected ArrayList<Integer> getModelIdsWithStatuses(String[] statuses,
-                                                         String limit) {
+    protected synchronized ArrayList<Integer> getModelIdsWithStatuses(
+            String[] statuses, String limit) {
         Logger.d(TAG, "Getting model ids with statuses (with limit " +
                 "argument)");
 
-        String query = Util.multiplyString(StatusModel.COL_STATUS + "=?",
+        String query = Util.multiplyString(COL_STATUS + "=?",
                 statuses.length, " OR ");
         Cursor res = getDb().query(getMainTable(),
-                new String[]{Model.COL_ID}, query, statuses, null, null,
+                new String[]{COL_ID}, query, statuses, null, null,
                 null, limit);
         if (!res.moveToFirst()) {
             res.close();
@@ -55,13 +59,13 @@ public abstract class StatusModelStorage<M extends StatusModel<M,S>,
 
         ArrayList<Integer> statusModelIds = new ArrayList<Integer>();
         do {
-            statusModelIds.add(res.getInt(res.getColumnIndex(Model.COL_ID)));
+            statusModelIds.add(res.getInt(res.getColumnIndex(COL_ID)));
         } while (res.moveToNext());
 
         return statusModelIds;
     }
 
-    protected ArrayList<M> getModelsWithStatuses(
+    protected synchronized ArrayList<M> getModelsWithStatuses(
             String[] statuses) {
         String logStatuses = Util.joinStrings(statuses, ", ");
         Logger.d(TAG, "Getting models with statuses {0}", logStatuses);

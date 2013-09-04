@@ -6,6 +6,8 @@ package com.brainydroid.daydreaming.background;
  *
  * @author Sébastien Lerique
  * @author Vincent Adam
+ * @see LocationService
+ * @see LocationServiceConnection
  */
 public interface ServiceConnectionCallback {
 

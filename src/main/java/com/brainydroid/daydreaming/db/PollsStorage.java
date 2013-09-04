@@ -14,34 +14,30 @@ public final class PollsStorage extends StatusModelStorage<Poll,
 
     private static String TAG = "PollsStorage";
 
+    public static final String COL_NOTIFICATION_TIMESTAMP = "pollNotificationTimestamp";
+
     private static final String TABLE_POLLS = "polls";
     private static final String TABLE_POLL_QUESTIONS = "pollQuestions";
 
     private static final String SQL_CREATE_TABLE_POLLS =
             "CREATE TABLE IF NOT EXISTS " + TABLE_POLLS + " (" +
-                    Poll.COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    Poll.COL_STATUS + " TEXT NOT NULL, " +
-                    Poll.COL_NOTIFICATION_TIMESTAMP + " REAL" +
+                    COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    COL_STATUS + " TEXT NOT NULL, " +
+                    COL_NOTIFICATION_TIMESTAMP + " REAL" +
                     ");";
 
     private static final String SQL_CREATE_TABLE_POLL_QUESTIONS =
             "CREATE TABLE IF NOT EXISTS " + TABLE_POLL_QUESTIONS + " (" +
-                    Poll.COL_ID + " INTEGER NOT NULL, " +
-                    Question.COL_NAME + " TEXT NOT NULL, " +
-                    Question.COL_STATUS + " TEXT, " +
-                    Question.COL_ANSWER + " TEXT, " +
-                    Question.COL_LOCATION + " TEXT, " +
-                    Question.COL_TIMESTAMP + " REAL" +
+                    COL_ID + " INTEGER NOT NULL, " +
+                    QuestionsStorage.COL_NAME + " TEXT NOT NULL, " +
+                    QuestionsStorage.COL_STATUS + " TEXT, " +
+                    QuestionsStorage.COL_ANSWER + " TEXT, " +
+                    QuestionsStorage.COL_LOCATION + " TEXT, " +
+                    QuestionsStorage.COL_TIMESTAMP + " REAL" +
                     ");";
 
     @Inject QuestionsStorage questionsStorage;
     @Inject PollFactory pollFactory;
-
-    @Override
-    protected String[] getTableCreationStrings() {
-        return new String[] {SQL_CREATE_TABLE_POLLS,
-                SQL_CREATE_TABLE_POLL_QUESTIONS};
-    }
 
     @Inject
     public PollsStorage(Storage storage) {
@@ -49,42 +45,49 @@ public final class PollsStorage extends StatusModelStorage<Poll,
     }
 
     @Override
-    protected ContentValues getModelValues(Poll poll) {
+    protected synchronized String[] getTableCreationStrings() {
+        return new String[] {SQL_CREATE_TABLE_POLLS,
+                SQL_CREATE_TABLE_POLL_QUESTIONS};
+    }
+
+    @Override
+    protected synchronized ContentValues getModelValues(Poll poll) {
         Logger.v(TAG, "Building poll values");
 
         ContentValues pollValues = super.getModelValues(poll);
-        pollValues.put(Poll.COL_NOTIFICATION_TIMESTAMP,
+        pollValues.put(COL_NOTIFICATION_TIMESTAMP,
                 poll.getNotificationTimestamp());
         return pollValues;
     }
 
     @Override
-    protected String getMainTable() {
+    protected synchronized String getMainTable() {
         return TABLE_POLLS;
     }
 
     @Override
-    protected Poll create() {
+    protected synchronized Poll create() {
         Logger.v(TAG, "Creating new poll");
         return pollFactory.create();
     }
 
-    private ContentValues getQuestionValues(int pollId, Question question) {
+    private synchronized ContentValues getQuestionValues(int pollId,
+                                                         Question question) {
         Logger.d(TAG, "Building question values for question {0}",
                 question.getName());
 
         ContentValues qValues = new ContentValues();
-        qValues.put(Poll.COL_ID, pollId);
-        qValues.put(Question.COL_NAME, question.getName());
-        qValues.put(Question.COL_STATUS, question.getStatus());
-        qValues.put(Question.COL_ANSWER, question.getAnswerAsJson());
-        qValues.put(Question.COL_LOCATION, question.getLocationAsJson());
-        qValues.put(Question.COL_TIMESTAMP, question.getTimestamp());
+        qValues.put(COL_ID, pollId);
+        qValues.put(QuestionsStorage.COL_NAME, question.getName());
+        qValues.put(QuestionsStorage.COL_STATUS, question.getStatus());
+        qValues.put(QuestionsStorage.COL_ANSWER, question.getAnswerAsJson());
+        qValues.put(QuestionsStorage.COL_LOCATION, question.getLocationAsJson());
+        qValues.put(QuestionsStorage.COL_TIMESTAMP, question.getTimestamp());
         return qValues;
     }
 
     @Override
-    public void store(Poll poll) {
+    public synchronized void store(Poll poll) {
         Logger.d(TAG, "Storing poll (and questions) to db");
 
         super.store(poll);
@@ -97,7 +100,7 @@ public final class PollsStorage extends StatusModelStorage<Poll,
     }
 
     @Override
-    public void update(Poll poll) {
+    public synchronized void update(Poll poll) {
         Logger.d(TAG, "Updating poll (and questions) in db");
 
         super.update(poll);
@@ -106,21 +109,21 @@ public final class PollsStorage extends StatusModelStorage<Poll,
         for (Question q : poll.getQuestions()) {
             ContentValues qValues = getQuestionValues(pollId, q);
             getDb().update(TABLE_POLL_QUESTIONS, qValues,
-                    Poll.COL_ID + "=? AND " + Question.COL_NAME + "=?",
+                    COL_ID + "=? AND " + QuestionsStorage.COL_NAME + "=?",
                     new String[] {Integer.toString(pollId), q.getName()});
         }
     }
 
     @Override
-    public void populateModel(int pollId, Poll poll, Cursor res) {
+    public synchronized void populateModel(int pollId, Poll poll, Cursor res) {
         Logger.d(TAG, "Populating poll model from db");
 
         super.populateModel(pollId, poll, res);
         poll.setNotificationTimestamp(res.getLong(
-                res.getColumnIndex(Poll.COL_NOTIFICATION_TIMESTAMP)));
+                res.getColumnIndex(COL_NOTIFICATION_TIMESTAMP)));
 
         Cursor qRes = getDb().query(TABLE_POLL_QUESTIONS, null,
-                Poll.COL_ID + "=?",
+                COL_ID + "=?",
                 new String[] {Integer.toString(pollId)}, null, null, null);
         if (!qRes.moveToFirst()) {
             qRes.close();
@@ -128,37 +131,38 @@ public final class PollsStorage extends StatusModelStorage<Poll,
         }
 
         do {
-            Question q = questionsStorage.get(qRes.getString(
-                    qRes.getColumnIndex(Question.COL_NAME)));
+            Question q = questionsStorage.create(qRes.getString(
+                    qRes.getColumnIndex(QuestionsStorage.COL_NAME)));
             q.setStatus(qRes.getString(
-                    qRes.getColumnIndex(Question.COL_STATUS)));
+                    qRes.getColumnIndex(QuestionsStorage.COL_STATUS)));
             q.setAnswerFromJson(qRes.getString(
-                    qRes.getColumnIndex(Question.COL_ANSWER)));
+                    qRes.getColumnIndex(QuestionsStorage.COL_ANSWER)));
             q.setLocationFromJson(qRes.getString(
-                    qRes.getColumnIndex(Question.COL_LOCATION)));
+                    qRes.getColumnIndex(QuestionsStorage.COL_LOCATION)));
             q.setTimestamp(qRes.getLong(
-                    qRes.getColumnIndex(Question.COL_TIMESTAMP)));
+                    qRes.getColumnIndex(QuestionsStorage.COL_TIMESTAMP)));
 
             poll.addQuestion(q);
         } while (qRes.moveToNext());
         qRes.close();
     }
 
-    public ArrayList<Poll> getUploadablePolls() {
+    public synchronized ArrayList<Poll> getUploadablePolls() {
         Logger.v(TAG, "Getting uploadable polls");
         return getModelsWithStatuses(
                 new String[] {Poll.STATUS_COMPLETED, Poll.STATUS_PARTIALLY_COMPLETED});
     }
 
-    public ArrayList<Poll> getPendingPolls() {
+    public synchronized ArrayList<Poll> getPendingPolls() {
         Logger.d(TAG, "Getting pending polls");
         return getModelsWithStatuses(new String[] {Poll.STATUS_PENDING});
     }
 
     @Override
-    public void remove(int pollId) {
-        Logger.d(TAG, "Removing poll {0} from db (and questions)", pollId);
-        getDb().delete(TABLE_POLL_QUESTIONS, Poll.COL_ID + "=?",
+    public synchronized void remove(int pollId) {
+        super.remove(pollId);
+        Logger.d(TAG, "Removing questions of poll {0} from db", pollId);
+        getDb().delete(TABLE_POLL_QUESTIONS, COL_ID + "=?",
                 new String[]{Integer.toString(pollId)});
     }
 
