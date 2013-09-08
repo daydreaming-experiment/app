@@ -159,8 +159,8 @@
 
             <ImageButton
                     android:id="@+id/firstLaunchProfile_buttonNext"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="@dimen/button_next_width"
+                    android:layout_height="@dimen/button_next_height"
                     android:onClick="onClick_buttonNext"
                     android:text="@string/firstLaunchDescription_button_next"
                     android:background="@drawable/button_cloud_next"

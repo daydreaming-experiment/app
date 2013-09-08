@@ -21,7 +21,7 @@
         android:layout_gravity="center_vertical"
         android:layout_marginBottom="16dp"
         android:text="@string/questionMultipleChoice_check_all_that_apply"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
+        android:textAppearance="@style/ui_font_bodytext_white" />
 
     <LinearLayout
         android:id="@+id/question_multiple_choice_rootChoices"

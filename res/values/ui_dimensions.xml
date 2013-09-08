@@ -23,6 +23,12 @@
 
     <!-- Image Buttons -->
     <dimen  name="next_button_right_margin" >20dp</dimen>
+    <dimen  name="button_next_width" >100dp</dimen>
+    <dimen  name="button_next_height" >60dp</dimen>
+        <!--
+     finish : 200*118      r =        0.59
+     next:    193*113      r =          0.585
+    -->
 
     <!-- Block buttons -->
     <dimen  name="block_button_vertical_padding" >10dp</dimen>
@@ -64,6 +70,7 @@
     <dimen  name="dashboard_icon_size" >50dp</dimen>
     <dimen  name="dashboard_settings_button_size" >30dp</dimen>
     <dimen  name="dashboard_result_vert_padding_size" >20dp</dimen>
+    <dimen  name="dashboard_calendar_buttons_spacing" >20dp</dimen>
 
     <!-- TermsActivity -->
     <dimen  name="terms_text_side_padding" >30dp</dimen>

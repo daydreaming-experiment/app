@@ -3,6 +3,7 @@ package com.brainydroid.daydreaming.ui.FirstLaunchSequence;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
+import android.text.util.Linkify;
 import android.view.View;
 import android.widget.TextView;
 import com.brainydroid.daydreaming.R;
@@ -32,6 +33,8 @@ public class FirstLaunch01DescriptionActivity extends FirstLaunchActivity {
     private static String TAG = "FirstLaunch01DescriptionActivity";
     @InjectView(R.id.firstLaunchDescription_textDescription) TextView description;
 
+
+
     /**
      *
      * @param savedInstanceState
@@ -42,6 +45,8 @@ public class FirstLaunch01DescriptionActivity extends FirstLaunchActivity {
         super.onCreate(savedInstanceState);
         populateDescription();
         setRobotofont(this);
+        Linkify.addLinks(description,Linkify.WEB_URLS | Linkify.EMAIL_ADDRESSES);
+
     }
 
     /**

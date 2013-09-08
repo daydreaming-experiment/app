@@ -1,5 +1,6 @@
 package com.brainydroid.daydreaming.ui.Questions;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ComponentName;
@@ -12,7 +13,9 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.provider.Settings;
 import android.support.v4.app.DialogFragment;
+import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.*;
 import com.actionbarsherlock.app.SherlockDialogFragment;
 import com.brainydroid.daydreaming.R;
@@ -22,6 +25,7 @@ import com.brainydroid.daydreaming.db.PollsStorage;
 import com.brainydroid.daydreaming.db.Question;
 import com.brainydroid.daydreaming.network.SntpClient;
 import com.brainydroid.daydreaming.network.SntpClientCallback;
+import com.brainydroid.daydreaming.ui.FontUtils;
 import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockFragmentActivity;
 import com.google.inject.Inject;
 import roboguice.inject.ContentView;
@@ -49,6 +53,8 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
 
     @InjectView(R.id.question_linearLayout) LinearLayout questionLinearLayout;
     @InjectView(R.id.question_nextButton)   ImageButton nextButton;
+    @InjectView(R.id.question_finishButton)   ImageButton finishButton;
+
     @InjectResource(R.string.question_button_finish) String nextButtonFinishText;
 
     @Inject LocationServiceConnection locationServiceConnection;
@@ -103,6 +109,8 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
         initVars();
         setChrome();
         questionViewAdapter.inflate(isFirstQuestion());
+        setRobotofont(this);
+
     }
 
     @Override
@@ -184,12 +192,20 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
             if (isLastQuestion()) {
                 Logger.d(TAG, "Last question -> setting finish button text");
                 // TODO maybe change image button to finish button
+                nextButton.setVisibility(View.GONE);
+                finishButton.setVisibility(View.VISIBLE);
+                finishButton.setClickable(true);
+
                 //nextButton.setText(nextButtonFinishText);
-                Drawable button_drawable = getResources().getDrawable(R.drawable.button_finish);
-                nextButton.setImageDrawable(button_drawable);
+                //Drawable button_drawable = getResources().getDrawable(R.drawable.button_finish);
+                //nextButton.setImageDrawable(button_drawable);
+                //nextButton.getLayoutParams().height = getResources().getDimensionPixelSize(R.dimen.button_next_height);
+                //nextButton.getLayoutParams().width = getResources().getDimensionPixelSize(R.dimen.button_next_width);
+
             }
         }
     }
+
 
     private void startListeningTasks() {
         LocationCallback locationCallback = new LocationCallback() {
@@ -237,6 +253,10 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
                     "starting)");
             locationServiceConnection.bindLocationService();
         }
+    }
+
+    public void onClick_finishButton( View view) {
+        onClick_nextButton(view);
     }
 
     public void onClick_nextButton(@SuppressWarnings("UnusedParameters") View view) {
@@ -372,4 +392,15 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
         startService(syncIntent);
     }
 
+
+    public void setRobotofont(Activity activity){
+        ViewGroup godfatherView = (ViewGroup) activity.getWindow().getDecorView();
+        FontUtils.setRobotoFont(activity, godfatherView);
+    }
+
+    public int dpToPx(int dp) {
+        DisplayMetrics displayMetrics = getBaseContext().getResources().getDisplayMetrics();
+        int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
+        return px;
+    }
 }

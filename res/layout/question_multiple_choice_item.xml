@@ -2,4 +2,5 @@
     android:id="@+id/question_multiple_choice_checkBox"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:text=""/>
+    android:text=""
+    android:textAppearance="@style/ui_font_bodytext_white"/>
