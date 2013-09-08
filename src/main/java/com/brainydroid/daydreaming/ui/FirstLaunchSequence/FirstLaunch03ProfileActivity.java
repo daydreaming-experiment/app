@@ -11,8 +11,7 @@ import android.view.ViewGroup;
 import android.widget.*;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
-import com.brainydroid.daydreaming.ui.FontUtils;
-import com.brainydroid.daydreaming.ui.NoDefaultSpinner;
+
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 

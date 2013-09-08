@@ -5,7 +5,6 @@ import android.view.ViewGroup;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.ui.FontUtils;
-import com.brainydroid.daydreaming.ui.ReOpen.ReOpenActivity;
 import roboguice.inject.ContentView;
 
 /**

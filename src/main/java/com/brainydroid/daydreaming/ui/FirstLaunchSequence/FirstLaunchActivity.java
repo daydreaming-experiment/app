@@ -1,11 +1,9 @@
 package com.brainydroid.daydreaming.ui.FirstLaunchSequence;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.View;
 import android.view.ViewGroup;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.LocationPointService;
@@ -16,6 +14,7 @@ import com.brainydroid.daydreaming.ui.FontUtils;
 import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockFragmentActivity;
 import com.google.inject.Inject;
 
+
 /**
  * Class that activities FirstLaunchSequence heritate.
  */
@@ -23,7 +22,7 @@ public abstract class FirstLaunchActivity extends RoboSherlockFragmentActivity {
 
     private static String TAG = "FirstLaunchActivity";
 
-    @Inject StatusManager statusManager;
+    @Inject  StatusManager statusManager;
 
     @Override
     public void onStart() {

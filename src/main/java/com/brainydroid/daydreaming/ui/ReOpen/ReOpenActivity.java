@@ -1,13 +1,9 @@
 package com.brainydroid.daydreaming.ui.ReOpen;
 
-import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.ViewGroup;
 import com.brainydroid.daydreaming.R;
-import com.brainydroid.daydreaming.background.LocationPointService;
 import com.brainydroid.daydreaming.background.Logger;
-import com.brainydroid.daydreaming.background.SchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.ui.FontUtils;
 import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockFragmentActivity;
