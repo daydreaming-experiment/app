@@ -18,7 +18,8 @@
 
     <!-- -->
     <color name="actionbar_title_color">#224894</color>
-    <color name="transparent">#80000000</color>
+    <color name="transparent">#00000000</color>
+
 
     <!-- -->
     <color name="ui_blue_background_color">#00A2D4</color>

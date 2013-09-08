@@ -6,8 +6,10 @@
             <size android:width="40dp"
                   android:height="40dp"
                     />
+            <solid android:color="@color/transparent"/>
         </shape>
     </item>
+
     <item  android:left="10dp" android:top = "10dp" android:right="10dp" android:bottom = "10dp">
     <shape   android:shape="oval"    >
         <solid android:color="@color/ui_background_border_color"/>

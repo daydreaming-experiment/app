@@ -21,8 +21,7 @@
             android:layout_height="wrap_content"
             android:minHeight="6dip"
             android:maxHeight="6dip"
-            android:paddingLeft="0dp"
-            android:paddingRight="0dp"
+            android:thumbOffset	="30dp"
             android:paddingTop="5dp"
             android:paddingBottom="5dp"/>
     <TextView

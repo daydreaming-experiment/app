@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -12,10 +13,7 @@ import android.os.SystemClock;
 import android.provider.Settings;
 import android.support.v4.app.DialogFragment;
 import android.view.View;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 import com.actionbarsherlock.app.SherlockDialogFragment;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.*;
@@ -50,7 +48,7 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
     private IQuestionViewAdapter questionViewAdapter;
 
     @InjectView(R.id.question_linearLayout) LinearLayout questionLinearLayout;
-    @InjectView(R.id.question_nextButton) Button nextButton;
+    @InjectView(R.id.question_nextButton)   ImageButton nextButton;
     @InjectResource(R.string.question_button_finish) String nextButtonFinishText;
 
     @Inject LocationServiceConnection locationServiceConnection;
@@ -185,7 +183,10 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
 
             if (isLastQuestion()) {
                 Logger.d(TAG, "Last question -> setting finish button text");
-                nextButton.setText(nextButtonFinishText);
+                // TODO maybe change image button to finish button
+                //nextButton.setText(nextButtonFinishText);
+                Drawable button_drawable = getResources().getDrawable(R.drawable.button_finish);
+                nextButton.setImageDrawable(button_drawable);
             }
         }
     }

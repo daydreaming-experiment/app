@@ -33,6 +33,9 @@
     <!-- Questions -->
     <dimen  name="slider_question_bar_width" >3dp</dimen>
 
+    <!-- Seekbar -->
+    <integer name="Thumb_lateral_offset">30</integer>  <!--,in dps! -->
+
 
 <!-- Individual activities -->
 
@@ -72,13 +75,25 @@
     <dimen  name="profile_spinner_text_left_padding" >20dp</dimen>
     <dimen  name="profile_spinner_icon_left_padding" >20dp</dimen>
     <dimen  name="profile_spinner_icon_left_padding" >20dp</dimen>
+    <dimen  name="profile_paddingTop" >5dp</dimen>
+    <dimen  name="profile_paddingBottom" >5dp</dimen>
+    <dimen  name="profile_lateralPadding" >0dp</dimen>
 
     <!-- MeasuresActivity -->
     <dimen  name="measures_item_vertical_spacing" >15dp</dimen>
+    <dimen  name="measures_paddingTop" >0dp</dimen>
+    <dimen  name="measures_paddingBottom" >0dp</dimen>
+    <dimen  name="measures_lateralPadding" >0dp</dimen>
 
     <!-- QuestionnaireActivity -->
     <dimen  name="questionnaire_side_margin" >20dp</dimen>
     <dimen  name="questionnaire_bar_width" >20dp</dimen>
+    <dimen  name="questionnaire_paddingTop" >30dp</dimen>
+    <dimen  name="questionnaire_paddingBottom" >30dp</dimen>
+    <dimen  name="questionnaire_lateralPadding" >0dp</dimen>
+
+
+
 
 
 </resources>

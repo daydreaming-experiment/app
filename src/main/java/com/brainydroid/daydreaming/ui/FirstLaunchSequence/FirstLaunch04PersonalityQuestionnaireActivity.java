@@ -2,6 +2,7 @@ package com.brainydroid.daydreaming.ui.FirstLaunchSequence;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.FloatMath;
 import android.view.View;
 import android.widget.*;
@@ -35,6 +36,7 @@ public class FirstLaunch04PersonalityQuestionnaireActivity extends FirstLaunchAc
     public static int MAX_SEEKBAR = 100;
     public static int INIT_PROGRESS_SEEKBAR = 50;
 
+    public int ThumbOffset;
 
     public List<String> hints;
     public int hintsNumber;
@@ -52,6 +54,8 @@ public class FirstLaunch04PersonalityQuestionnaireActivity extends FirstLaunchAc
         String[] hints1 = getBaseContext().getResources().getStringArray(R.array.tipi_answers);
         hints = Arrays.asList(hints1);
         hintsNumber = hints.size();
+
+        ThumbOffset = dpToPx(getBaseContext().getResources().getInteger(R.integer.Thumb_lateral_offset));
 
         LinearLayout questions_layout =  (LinearLayout) findViewById(R.id.Questions_linear_layout);
         String[] objects = getBaseContext().getResources().getStringArray(R.array.tipi_questions);
@@ -108,6 +112,7 @@ public class FirstLaunch04PersonalityQuestionnaireActivity extends FirstLaunchAc
         SeekBar seekBar = (SeekBar)view.findViewById(R.id.Questionnaire_seekBar);
         seekBar.setMax(MAX_SEEKBAR);
         seekBar.setProgress(INIT_PROGRESS_SEEKBAR);
+        seekBar.setPadding(ThumbOffset,0,ThumbOffset,0);
         seekBar.setProgressDrawable(view.getResources().getDrawable(R.drawable.question_slider_progress));
         seekBar.setThumb(view.getResources().getDrawable(R.drawable.question_slider_thumb));
 
@@ -138,6 +143,12 @@ public class FirstLaunch04PersonalityQuestionnaireActivity extends FirstLaunchAc
         questions_layout.addView(view);
         return seekBar;
 
+    }
+
+    public int dpToPx(int dp) {
+        DisplayMetrics displayMetrics = getBaseContext().getResources().getDisplayMetrics();
+        int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
+        return px;
     }
 
 
