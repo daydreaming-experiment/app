@@ -131,9 +131,6 @@ public class StatusManager {
         return false;
     }
 
-
-
-
     /**
      * Check if the network location provider is enabled.
      *

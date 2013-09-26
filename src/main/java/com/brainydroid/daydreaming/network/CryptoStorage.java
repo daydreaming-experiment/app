@@ -2,9 +2,9 @@ package com.brainydroid.daydreaming.network;
 
 import android.app.Application;
 import android.content.Context;
+import android.widget.Toast;
 import com.brainydroid.daydreaming.background.Logger;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.brainydroid.daydreaming.db.Json;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -14,6 +14,7 @@ import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 @Singleton
@@ -33,10 +34,9 @@ public class CryptoStorage {
 
     @Inject Crypto crypto;
     @Inject ServerTalker serverTalker;
+    @Inject Json json;
+    @Inject Context context;
 
-    private final Gson gson = new GsonBuilder()
-            .excludeFieldsWithoutExposeAnnotation()
-            .create();
     private final File maiIdFile;
     private final File publicFile;
     private final File privateFile;
@@ -83,9 +83,12 @@ public class CryptoStorage {
                 if (success) {
                     Logger.d(TAG, "Registration HttpConversation " +
                             "successful");
-                    RegistrationAnswer registrationAnswer = gson.fromJson(serverAnswer,
-                            RegistrationAnswer.class);
-                    String maiId = registrationAnswer.getId();
+                    ProfileRegistrationData registrationAnswer = json.fromJson(serverAnswer,
+                            ProfileRegistrationData.class);
+                    // TODO: handle the case where returned JSON is in fact an error.
+                    Toast.makeText(context, "Server answer: " + serverAnswer,
+                            Toast.LENGTH_LONG);
+                    String maiId = registrationAnswer.getProfile().getId();
                     storageSuccess = storeKeyPairAndMaiId(kp, maiId);
 
                     if (storageSuccess) {
@@ -102,7 +105,7 @@ public class CryptoStorage {
         };
 
         Logger.i(TAG, "Launching registration");
-        serverTalker.register(kp.getPublic(), registrationCallback);
+        serverTalker.register(kp, registrationCallback);
     }
 
     private synchronized boolean hasStoredMaiId() {
@@ -254,11 +257,8 @@ public class CryptoStorage {
         return clearPrivateKey() && clearPublicKey() && clearMaiId();
     }
 
-    public synchronized String createArmoredPublicKeyJson(PublicKey publicKey) {
-        Logger.d(TAG, "Armouring public key in json");
-        HashMap<String, String> pkMap = new HashMap<String, String>();
-        pkMap.put("vk_pem", Crypto.armorPublicKey(publicKey));
-        return gson.toJson(pkMap);
+    public synchronized String createArmoredPublicKey(PublicKey publicKey) {
+        return Crypto.armorPublicKey(publicKey);
     }
 
     private synchronized byte[] sign(byte[] data) {
@@ -268,9 +268,13 @@ public class CryptoStorage {
             throw new RuntimeException(NOKP_EXCEPTION_MSG);
         }
 
+        return sign(data, getPrivateKey());
+    }
+
+    private synchronized byte[] sign(byte[] data, PrivateKey privateKey) {
         try {
             Logger.d(TAG, "Signing data");
-            return crypto.sign(getPrivateKey(), data);
+            return crypto.sign(privateKey, data);
         } catch (InvalidKeyException e) {
             Logger.e(TAG, "Asked to sign data but our key was invalid");
             throw new RuntimeException(e);
@@ -278,15 +282,25 @@ public class CryptoStorage {
     }
 
     public synchronized String signJws(String data) {
+        return signJws(data, getPrivateKey());
+    }
+
+    public synchronized String signJws(String data, PrivateKey privateKey) {
         Logger.i(TAG, "Creating JWS for data");
 
         String b64Header = Crypto.base64urlEncode(JWS_HEADER.getBytes());
         String b64Payload = Crypto.base64urlEncode(data.getBytes());
 
         String b64Input = b64Header + "." + b64Payload;
-        String b64sig = Crypto.base64urlEncode(sign(b64Input.getBytes()));
+        String b64Sig = Crypto.base64urlEncode(
+                sign(b64Input.getBytes(), privateKey));
 
-        return b64Input + "." + b64sig;
+        Signature signature = new Signature(b64Header, b64Sig);
+        ArrayList<Signature> signatures = new ArrayList<Signature>();
+        signatures.add(signature);
+        JWS jws = new JWS(b64Payload, signatures);
+
+        return json.toJsonExposed(jws);
     }
 
 }

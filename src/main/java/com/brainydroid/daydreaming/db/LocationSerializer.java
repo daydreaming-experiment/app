@@ -17,7 +17,7 @@ import java.lang.reflect.Type;
 public class LocationSerializer implements JsonSerializer<Location> {
 
     @SuppressWarnings("FieldCanBeLocal")
-    private static String TAG = "LocationDeserializer";
+    private static String TAG = "LocationSerializer";
 
     public static String LOCATION_LATITUDE = "latitude";
     public static String LOCATION_LONGITUDE = "longitude";

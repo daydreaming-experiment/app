@@ -2,6 +2,8 @@ package com.brainydroid.daydreaming.db;
 
 import android.location.Location;
 import com.brainydroid.daydreaming.background.Logger;
+import com.brainydroid.daydreaming.network.Signature;
+import com.brainydroid.daydreaming.network.SignatureSerializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.inject.Singleton;
@@ -57,7 +59,8 @@ public class Json {
                 QuestionDetailsDeserializer questionDetailsDeserializer,
                 QuestionInstanceCreator questionInstanceCreator,
                 LocationDeserializer locationDeserializer,
-                LocationSerializer locationSerializer) {
+                LocationSerializer locationSerializer,
+                SignatureSerializer signatureSerializer) {
         Logger.v(TAG, "Building Gson instances");
 
         // Register all our type adapters
@@ -69,6 +72,7 @@ public class Json {
         gsonBuilder.registerTypeAdapter(Location.class,
                 locationDeserializer);
         gsonBuilder.registerTypeAdapter(Location.class, locationSerializer);
+        gsonBuilder.registerTypeAdapter(Signature.class, signatureSerializer);
 
         // Build the two Gson instances
         gson = gsonBuilder.create();
