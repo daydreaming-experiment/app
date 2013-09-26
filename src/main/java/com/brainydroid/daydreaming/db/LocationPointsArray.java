@@ -16,7 +16,7 @@ import java.util.ArrayList;
 public class LocationPointsArray {
 
     @SuppressWarnings("UnusedDeclaration")
-    private static String TAG = "PollsArray";
+    private static String TAG = "ResultsArray";
 
     @Expose private ArrayList<LocationPoint> locationPoints;
 

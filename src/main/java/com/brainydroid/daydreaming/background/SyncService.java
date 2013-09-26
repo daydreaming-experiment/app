@@ -35,6 +35,7 @@ public class SyncService extends RoboService {
     @Inject CryptoStorage cryptoStorage;
     @Inject ServerTalker serverTalker;
     @Inject Json json;
+    @Inject ResultsArrayFactory resultsArrayFactory;
 
     /**
      * Callback called once the {@link CryptoStorage} is ready,
@@ -181,7 +182,8 @@ public class SyncService extends RoboService {
 
         // Wrap uploadable polls in a single structure to provide a root
         // node when jsonifying
-        final PollsArray pollsArray = new PollsArray(uploadablePolls);
+        final ResultsArray resultsArray = resultsArrayFactory.create(
+                uploadablePolls);
 
         // Called once the HttpPostTask completes or times out
         HttpConversationCallback callback = new HttpConversationCallback() {
@@ -201,7 +203,7 @@ public class SyncService extends RoboService {
                             serverAnswer);
 
                     Logger.d(TAG, "Removing uploaded polls from db");
-                    pollsStorage.remove(pollsArray.getPolls());
+                    pollsStorage.remove(resultsArray.getPolls());
                 } else {
                     Logger.w(TAG, "Error while uploading polls to server");
                 }
@@ -212,7 +214,7 @@ public class SyncService extends RoboService {
         // Sign our data to identify us, and upload
         Logger.d(TAG, "Signing data and launching polls sync");
         serverTalker.signAndUploadData(ServerConfig.EXP_ID,
-                json.toJsonExposed(pollsArray), callback);
+                json.toJsonExposed(resultsArray), callback);
     }
 
     /**

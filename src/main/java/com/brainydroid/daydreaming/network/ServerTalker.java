@@ -6,7 +6,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import java.security.KeyPair;
-import java.security.PublicKey;
 
 @Singleton
 public class ServerTalker {
@@ -26,7 +25,7 @@ public class ServerTalker {
 
         Logger.d(TAG, "Getting key to register");
         String vkPem = cryptoStorage.createArmoredPublicKey(keyPair.getPublic());
-        Profile profile = new Profile(vkPem, ServerConfig.EXP_ID);
+        Profile profile = new Profile(vkPem);
         ProfileRegistrationData profileRegistrationData =
                 new ProfileRegistrationData(profile);
         String jsonPayload = json.toJsonExposed(profileRegistrationData);

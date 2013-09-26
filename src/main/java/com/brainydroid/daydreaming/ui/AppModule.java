@@ -4,6 +4,7 @@ import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.LocationPointFactory;
 import com.brainydroid.daydreaming.db.PollFactory;
 import com.brainydroid.daydreaming.db.QuestionFactory;
+import com.brainydroid.daydreaming.network.ResultsArrayFactory;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
@@ -22,6 +23,8 @@ public class AppModule implements Module {
                 .build(QuestionFactory.class));
         binder.install(new FactoryModuleBuilder()
                 .build(LocationPointFactory.class));
+        binder.install(new FactoryModuleBuilder()
+                .build(ResultsArrayFactory.class));
     }
 
 }
