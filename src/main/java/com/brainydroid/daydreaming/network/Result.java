@@ -5,8 +5,9 @@ import com.google.gson.annotations.Expose;
 
 public class Result {
 
-    @Expose final String profile_id;
-    @Expose final Poll data;
+    @SuppressWarnings({"FieldCanBeLocal", "UnusedDeclaration"})
+    @Expose private String profile_id;
+    @Expose private Poll data;
 
     public Result(String profile_id, Poll data) {
         this.profile_id = profile_id;
