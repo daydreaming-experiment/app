@@ -9,6 +9,7 @@ import com.google.gson.GsonBuilder;
 import com.google.inject.Singleton;
 
 import javax.inject.Inject;
+import java.util.Collection;
 
 /**
  * Singleton JSON serializer and deserializer to centralize registration of
@@ -60,7 +61,8 @@ public class Json {
                 QuestionInstanceCreator questionInstanceCreator,
                 LocationDeserializer locationDeserializer,
                 LocationSerializer locationSerializer,
-                JWSSignatureSerializer jwsSignatureSerializer) {
+                JWSSignatureSerializer jwsSignatureSerializer,
+                QuestionSerializer questionSerializer) {
         Logger.v(TAG, "Building Gson instances");
 
         // Register all our type adapters
@@ -74,6 +76,7 @@ public class Json {
         gsonBuilder.registerTypeAdapter(Location.class, locationSerializer);
         gsonBuilder.registerTypeAdapter(JWSSignature.class,
                 jwsSignatureSerializer);
+        gsonBuilder.registerTypeAdapter(Question.class, questionSerializer);
 
         // Build the two Gson instances
         gson = gsonBuilder.create();
