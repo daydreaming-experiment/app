@@ -15,7 +15,6 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 @Singleton
 public class CryptoStorage {
@@ -295,10 +294,10 @@ public class CryptoStorage {
         String b64Sig = Crypto.base64urlEncode(
                 sign(b64Input.getBytes(), privateKey));
 
-        Signature signature = new Signature(b64Header, b64Sig);
-        ArrayList<Signature> signatures = new ArrayList<Signature>();
-        signatures.add(signature);
-        JWS jws = new JWS(b64Payload, signatures);
+        JWSSignature jwsSignature = new JWSSignature(b64Header, b64Sig);
+        ArrayList<JWSSignature> jwsSignatures = new ArrayList<JWSSignature>();
+        jwsSignatures.add(jwsSignature);
+        JWS jws = new JWS(b64Payload, jwsSignatures);
 
         return json.toJsonExposed(jws);
     }

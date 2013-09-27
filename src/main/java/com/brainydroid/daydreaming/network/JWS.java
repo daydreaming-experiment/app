@@ -7,10 +7,10 @@ import java.util.ArrayList;
 public class JWS {
 
     @Expose private String payload;
-    @Expose private ArrayList<Signature> signatures;
+    @Expose private ArrayList<JWSSignature> signatures;
 
-    public JWS(String payload, ArrayList<Signature> signatures) {
+    public JWS(String payload, ArrayList<JWSSignature> jwsSignatures) {
         this.payload = payload;
-        this.signatures = signatures;
+        this.signatures = jwsSignatures;
     }
 }

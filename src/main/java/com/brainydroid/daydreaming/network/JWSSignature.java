@@ -3,12 +3,12 @@ package com.brainydroid.daydreaming.network;
 
 import com.google.gson.annotations.Expose;
 
-public class Signature {
+public class JWSSignature {
 
     @Expose private String protected_;
     @Expose private String signature;
 
-    public Signature(String protected_, String signature) {
+    public JWSSignature(String protected_, String signature) {
         this.protected_ = protected_;
         this.signature = signature;
     }

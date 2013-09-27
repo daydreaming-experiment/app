@@ -1,24 +1,23 @@
 package com.brainydroid.daydreaming.network;
 
-import android.location.Location;
 import com.brainydroid.daydreaming.background.Logger;
 import com.google.gson.*;
 
 import java.lang.reflect.Type;
 
-public class SignatureSerializer implements JsonSerializer<Signature> {
+public class JWSSignatureSerializer implements JsonSerializer<JWSSignature> {
 
     @SuppressWarnings("FieldCanBeLocal")
-    private static String TAG = "SignatureSerializer";
+    private static String TAG = "JWSSignatureSerializer";
 
     public static String PROTECTED = "protected";
     public static String SIGNATURE = "signature";
 
     @Override
-    public JsonElement serialize(Signature src, Type typeOfSrc,
+    public JsonElement serialize(JWSSignature src, Type typeOfSrc,
                                  JsonSerializationContext context)
             throws JsonParseException {
-        Logger.v(TAG, "Serializing signature");
+        Logger.v(TAG, "Serializing jwsSignature");
 
         // Serialize the properties we're interested in, nothing else
         JsonObject jsonSrc = new JsonObject();
