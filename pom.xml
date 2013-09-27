@@ -143,7 +143,6 @@
                     <sdk>
                         <platform>${platform.versionCode}</platform>
                     </sdk>
-                    <undeployBeforeDeploy>true</undeployBeforeDeploy>
                 </configuration>
                 <extensions>true</extensions>
             </plugin>
