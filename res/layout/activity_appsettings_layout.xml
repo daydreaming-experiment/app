@@ -178,6 +178,8 @@
 
             <LinearLayout android:layout_height="wrap_content"
                           android:layout_width="wrap_content"
+                          android:orientation="horizontal"
+                          android:id="@+id/settings_time_text_from_layout"
                           android:layout_marginBottom="@dimen/settings_line_spacing">
 
 
@@ -199,7 +201,7 @@
                         android:id="@+id/settings_time_text_from"
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
-                        android:text="9:00"
+                        android:text=""
                         android:textAppearance="@style/ui_font_bodytext_darkblue_bold"
                         android:paddingLeft="@dimen/settings_textpadding_from_icons"
                         android:gravity="center_vertical"/>
@@ -210,6 +212,7 @@
             <LinearLayout android:layout_height="wrap_content"
                           android:layout_width="wrap_content"
                           android:orientation="horizontal"
+                          android:id="@+id/settings_time_text_until_layout"
                           android:layout_marginBottom="@dimen/settings_line_spacing">
                         <ImageView
                                 android:layout_width="@dimen/settings_time_arrow_size"
@@ -227,7 +230,7 @@
                                 android:id="@+id/settings_time_text_until"
                                 android:layout_height="wrap_content"
                                 android:layout_width="wrap_content"
-                                android:text="19:00"
+                                android:text=""
                                 android:textAppearance="@style/ui_font_bodytext_darkblue_bold"
                                 android:paddingLeft="@dimen/settings_textpadding_from_icons"
                                 android:gravity="center_vertical"/>
