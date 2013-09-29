@@ -101,6 +101,9 @@
 
 
 
+    <!-- QuestionsMultipleChoiceActivity -->
+    <dimen  name="question_occupation_line_marginBottom" >20dp</dimen>
+
 
 
 </resources>

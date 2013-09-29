@@ -187,6 +187,7 @@
                         android:src="@drawable/icon_time_window_from"
                         android:layout_width="@dimen/settings_time_arrow_size"
                         android:layout_height="@dimen/settings_time_arrow_size"
+                        android:gravity="center_vertical"
                         android:scaleType="fitStart"/>
 
 
@@ -218,6 +219,7 @@
                                 android:layout_width="@dimen/settings_time_arrow_size"
                                 android:layout_height="@dimen/settings_time_arrow_size"
                                 android:scaleType="fitStart"
+                                android:gravity="center_vertical"
                                 android:src="@drawable/icon_time_window_until"/>
                         <TextView
                                 android:layout_height="wrap_content"
