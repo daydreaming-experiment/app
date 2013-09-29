@@ -41,7 +41,7 @@
     <string name="consentAlert_button_consent">Agree</string>
     <string name="consentAlert_button_no_consent">Disagree</string>
     <string name="firstLaunchTerms_title_activity">Consent</string>
-    <string name="firstLaunchTerms_text_title">Consent</string>
+    <string name="firstLaunchTerms_text_title">CONSENT</string>
     <string name="firstLaunchTerms_text_consent">Consent</string>
     <string name="firstLaunchTerms_button_agree">Agree</string>
     <string name="firstLaunchTerms_button_disagree">Disagree</string>
