@@ -1,12 +1,9 @@
 package com.brainydroid.daydreaming.network;
 
-import com.brainydroid.daydreaming.db.Poll;
-import com.brainydroid.daydreaming.network.ResultsArray;
-
 import java.util.ArrayList;
 
-public interface ResultsArrayFactory {
+public interface ResultsArrayFactory<T> {
 
-    public ResultsArray create(ArrayList<Poll> polls);
+    public ResultsArray<T> create(ArrayList<T> datas);
 
 }

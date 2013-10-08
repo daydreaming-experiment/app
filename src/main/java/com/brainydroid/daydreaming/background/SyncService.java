@@ -35,7 +35,8 @@ public class SyncService extends RoboService {
     @Inject CryptoStorage cryptoStorage;
     @Inject ServerTalker serverTalker;
     @Inject Json json;
-    @Inject ResultsArrayFactory resultsArrayFactory;
+    @Inject ResultsArrayFactory<Poll> pollsArrayFactory;
+    @Inject ResultsArrayFactory<LocationPoint> locationPointsArrayFactory;
 
     /**
      * Callback called once the {@link CryptoStorage} is ready,
@@ -182,7 +183,7 @@ public class SyncService extends RoboService {
 
         // Wrap uploadable polls in a single structure to provide a root
         // node when jsonifying
-        final ResultsArray resultsArray = resultsArrayFactory.create(
+        final ResultsArray<Poll> pollsArray = pollsArrayFactory.create(
                 uploadablePolls);
 
         // Called once the HttpPostTask completes or times out
@@ -203,7 +204,7 @@ public class SyncService extends RoboService {
                             serverAnswer);
 
                     Logger.d(TAG, "Removing uploaded polls from db");
-                    pollsStorage.remove(resultsArray.getPolls());
+                    pollsStorage.remove(pollsArray.getDatas());
                 } else {
                     Logger.w(TAG, "Error while uploading polls to server");
                 }
@@ -214,7 +215,7 @@ public class SyncService extends RoboService {
         // Sign our data to identify us, and upload
         Logger.d(TAG, "Signing data and launching polls sync");
         serverTalker.signAndUploadData(ServerConfig.EXP_ID,
-                json.toJsonExposed(resultsArray), callback);
+                json.toJsonExposed(pollsArray), callback);
     }
 
     /**
@@ -235,8 +236,8 @@ public class SyncService extends RoboService {
 
         // Wrap uploadable location points in a single structure to provide
         // a root node when jsonifying.
-        final LocationPointsArray locationPoints =
-                new LocationPointsArray(uploadableLocationPoints);
+        final ResultsArray<LocationPoint> locationPointsArray =
+                locationPointsArrayFactory.create(uploadableLocationPoints);
 
         // Called when the HttPPostTask finishes or times out
         HttpConversationCallback callback = new HttpConversationCallback() {
@@ -260,7 +261,7 @@ public class SyncService extends RoboService {
                     Logger.d(TAG, "Removing uploaded locationPoints from " +
                             "db");
                     locationPointsStorage.remove(
-                            locationPoints.getLocationPoints());
+                            locationPointsArray.getDatas());
                 } else {
                     Logger.w(TAG, "Error while uploading locationPoints to " +
                             "server");
@@ -272,7 +273,7 @@ public class SyncService extends RoboService {
         // Sign our data to identify us, and upload
         Logger.d(TAG, "Signing data and launching locationPoints sync");
         serverTalker.signAndUploadData(ServerConfig.EXP_ID,
-                json.toJsonExposed(locationPoints), callback);
+                json.toJsonExposed(locationPointsArray), callback);
     }
 
 }

@@ -5,7 +5,9 @@ import com.google.gson.annotations.Expose;
 public class Profile {
 
     @Expose private String id;
+    @SuppressWarnings({"FieldCanBeLocal", "UnusedDeclaration"})
     @Expose private String vk_pem;
+    @SuppressWarnings({"FieldCanBeLocal", "UnusedDeclaration"})
     @Expose private String exp_id;
 
     public Profile(String vk_pem) {
