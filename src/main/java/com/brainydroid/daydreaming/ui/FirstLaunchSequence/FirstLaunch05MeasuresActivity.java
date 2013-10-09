@@ -188,7 +188,7 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
 
     public void onClick_buttonNext(@SuppressWarnings("UnusedParameters") View view) {
         Logger.v(TAG, "Next button clicked");
-        statusManager.setFirstLaunchCompleted();
+        finishFirstLaunch();
         launchDashBoardActivity();
     }
 

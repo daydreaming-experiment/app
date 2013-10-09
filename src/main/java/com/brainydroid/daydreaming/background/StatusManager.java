@@ -38,7 +38,7 @@ public class StatusManager {
      * milliseconds)
      */
     @SuppressWarnings("FieldCanBeLocal")
-    private static int SYNC_INTERVAL = 5 * 60 * 1000;
+    private static int SYNC_INTERVAL = 20 * 1000;
 
     @Inject LocationManager locationManager;
     @Inject ConnectivityManager connectivityManager;
