@@ -99,8 +99,16 @@ public class SyncService extends RoboService {
 
                 // Import the questions, and remember not to update
                 // questions again.
-                Logger.d(TAG, "Importing new questions to storage");
-                questionsStorage.importQuestions(serverAnswer);
+                try {
+                    questionsStorage.importQuestions(serverAnswer);
+                    Logger.d(TAG, "Importing new questions to storage");
+                } catch (QuestionsSyntaxException e) {
+                    Logger.e(TAG, "Downloaded questions were malformed -> " +
+                            "questions not updated");
+                    return;
+                }
+
+                Logger.i(TAG, "Questions successfully imported");
                 statusManager.setQuestionsUpdated();
             } else {
                 Logger.w(TAG, "Error while retrieving new questions from " +

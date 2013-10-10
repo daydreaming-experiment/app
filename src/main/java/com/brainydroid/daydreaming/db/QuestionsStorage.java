@@ -4,7 +4,9 @@ import android.content.ContentValues;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.MalformedJsonException;
 import com.brainydroid.daydreaming.background.Logger;
+import com.google.gson.JsonSyntaxException;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -175,14 +177,19 @@ public class QuestionsStorage {
     }
 
     // import questions from json file into database
-    public synchronized void importQuestions(String jsonQuestionsString) {
+    public synchronized void importQuestions(String jsonQuestionsString)
+            throws QuestionsSyntaxException {
         Logger.d(TAG, "Importing questions from JSON");
 
-        ServerQuestionsJson serverQuestionsJson = json.fromJson(
-                jsonQuestionsString, ServerQuestionsJson.class);
-        flush();
-        setQuestionsVersion(serverQuestionsJson.getVersion());
-        add(serverQuestionsJson.getQuestionsArrayList());
+        try {
+            ServerQuestionsJson serverQuestionsJson = json.fromJson(
+                    jsonQuestionsString, ServerQuestionsJson.class);
+            flush();
+            setQuestionsVersion(serverQuestionsJson.getVersion());
+            add(serverQuestionsJson.getQuestionsArrayList());
+        } catch (JsonSyntaxException e) {
+            throw new QuestionsSyntaxException();
+        }
     }
 
 }
