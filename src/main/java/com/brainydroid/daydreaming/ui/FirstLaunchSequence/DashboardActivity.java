@@ -8,13 +8,18 @@ import android.widget.Toast;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.background.SchedulerService;
+import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.ui.ReOpen.*;
+import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockFragmentActivity;
+import com.google.inject.Inject;
 import roboguice.inject.ContentView;
 
 @ContentView(R.layout.activity_dashboard)
-public class DashboardActivity extends FirstLaunchActivity {
+public class DashboardActivity extends RoboSherlockFragmentActivity {
 
     private static String TAG = "DashboardActivity";
+
+    @Inject StatusManager statusManager;
 
     @Override
     public void onStart() {
@@ -23,118 +28,70 @@ public class DashboardActivity extends FirstLaunchActivity {
         super.onStart();
     }
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Logger.v(TAG, "Creating");
         super.onCreate(savedInstanceState);
-        CheckFirstLaunch();
+        checkFirstLaunch();
 //        ViewGroup godfatherView = (ViewGroup)this.getWindow().getDecorView();
 //        FontUtils.setRobotoFont(this, godfatherView);
        // ImageView imgStartButton = (ImageView) findViewById(R.id.dashboard_ExperimentTimeElapsed);
-       // imgStartButton.setBackgroundResource(R.drawable.timeelapsed);
+       // imgStartButton.setBackgroundResource(R.drawable.timeElapsed);
 
     //    TextView textView = (TextView)findViewById(R.id.dashboard_textExperimentRunning);
-    //    Spannable WordtoSpan = new SpannableString("EXPERIMENT IS RUNNING");
-    //    WordtoSpan.setSpan(new ForegroundColorSpan(Color.WHITE), 14, 20,
+    //    Spannable wordToSpan = new SpannableString("EXPERIMENT IS RUNNING");
+    //    wordToSpan.setSpan(new ForegroundColorSpan(Color.WHITE), 14, 20,
     //            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-    //    textView.setText(WordtoSpan);
+    //    textView.setText(wordToSpan);
     }
-
-
-    /*
-    // TODO: check this is ok with real ActionBar API
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        Logger.v(TAG, "Creating options menu");
-        MenuInflater menuInflater = getSupportMenuInflater();
-        menuInflater.inflate(R.menu.dashboard, menu);
-
-        // Calling super after populating the menu is necessary here to ensure that the
-        // action bar helpers have a chance to handle this event.
-        return super.onCreateOptionsMenu(menu);
-    }
-    */
-
-    // We don't need this anymore since we do not work with action bar anylonger
-    /*
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        Logger.d(TAG, "OptionsItem selected");
-
-        switch (item.getItemId()) {
-        case R.id.menu_settings:
-            Logger.d(TAG, "Launching settings");
-            Intent intent = new Intent(this, AppSettingsActivity.class);
-            startActivity(intent);
-            break;
-
-        // No other cases for now
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-    */
 
     /**
      * Launching app settings activity
-     * @param view
      */
-    public void  onClick_openAppSettings(View view){
-
+    public void  onClick_openAppSettings(
+            @SuppressWarnings("UnusedParameters") View view){
         Intent intent = new Intent(this, AppSettingsActivity.class);
-
         intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         startActivity(intent);
-       // overridePendingTransition(R.anim.push_top_in, R.anim.push_bottom_out);
         overridePendingTransition(R.anim.push_top_in, R.anim.push_top_out);
-
     }
 
     /**
      * Launching term activity without enabling buttons
      * Only exit is pressing back button
-     * @param view
      */
-    public void  onClick_REopenTerms(View view){
-
+    public void onClick_ReOpenTerms(
+            @SuppressWarnings("UnusedParameters") View view){
         Intent intent = new Intent(this, ReOpenTermsActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         startActivity(intent);
         overridePendingTransition(R.anim.push_top_in, R.anim.push_top_out);
-
     }
 
     /**
-     *
      * Launching a description activity without possibility to click next
      * Only exit is pressing back button.
-     * @param view
      */
-    public void  onClick_REopenDescription(View view){
+    public void onClick_ReOpenDescription(
+            @SuppressWarnings("UnusedParameters") View view){
 
         Intent intent = new Intent(this, ReOpenDescriptionActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         startActivity(intent);
-        //overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
         overridePendingTransition(R.anim.push_top_in, R.anim.push_top_out);
-
     }
 
-
     //TODO: Layout of an about activity
-    public void  onClick_OpenAboutActivity(View view){
-
+    public void  onClick_OpenAboutActivity(@SuppressWarnings("UnusedParameters") View view){
         Intent intent = new Intent(this, AboutActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         startActivity(intent);
-        //overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
         overridePendingTransition(R.anim.push_top_in, R.anim.push_top_out);
-
     }
 
-    //TODO: Decide what should happen when resutls button is cliked on.
-    public void  onClick_SeeResults(View view){
+    //TODO: Decide what should happen when results button is clicked.
+    public void  onClick_SeeResults(
+            @SuppressWarnings("UnusedParameters") View view){
         Toast.makeText(this, "Not yet!", Toast.LENGTH_SHORT).show();
     }
 
@@ -157,7 +114,7 @@ public class DashboardActivity extends FirstLaunchActivity {
 //        // Get today just in case
 //        String todayDateString = format.format(new Date());
 //
-//        // Read Start date string from preferences_appsettings
+//        // Read Start date string from preferences_appSettings
 //        SharedPreferences sharedPreferences = getSharedPreferences("startDatePref", 0);
 //        String startDateString = sharedPreferences.getString("startDateString", todayDateString);
 //
@@ -181,20 +138,18 @@ public class DashboardActivity extends FirstLaunchActivity {
 //    }
 
     /**
-     * Dashboard is main launcher. At start up of app, the whole firstlaunch sequence is ran.
-     * If they were already ran, user directly end up on dashboard layout.
+     * Dashboard is main launcher. At start up of app, the whole firstLaunch
+     * sequence is ran. If they were already ran, user directly end up on
+     * dashboard layout.
      */
 
-
-
-    protected void CheckFirstLaunch() {
+    protected void checkFirstLaunch() {
         if (!statusManager.isFirstLaunchCompleted()) {
             Logger.i(TAG, "First launch not completed -> starting first " +
                     "launch sequence and finishing this activity");
             Intent intent = new Intent(this, FirstLaunch00WelcomeActivity.class);
-//           Intent intent = new Intent(this, AppSettingsActivity.class);
-
-            intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION |
+                    Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
             startActivity(intent);
             finish();
         } else {
@@ -202,10 +157,8 @@ public class DashboardActivity extends FirstLaunchActivity {
         }
     }
 
-
-    /**                                          *
-     * Launchinjg poll from dashboard (debug)
-     * @param view
+    /**
+     * Launching poll from dashboard (debug)
      */
     public void runPollNow(@SuppressWarnings("UnusedParameters") View view) {
         Logger.d(TAG, "Launching a debug poll");

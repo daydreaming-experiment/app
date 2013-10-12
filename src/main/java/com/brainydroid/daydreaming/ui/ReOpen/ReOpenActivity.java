@@ -17,7 +17,7 @@ import com.google.inject.Inject;
 
 
 /**
- * Class that activities FirstLaunchSequence heritate.
+ * Class that activities FirstLaunchSequence extend.
  */
 public abstract class ReOpenActivity extends RoboSherlockFragmentActivity {
 
@@ -35,7 +35,7 @@ public abstract class ReOpenActivity extends RoboSherlockFragmentActivity {
     public void onCreate(Bundle savedInstanceState) {
         Logger.v(TAG, "Creating");
         super.onCreate(savedInstanceState);
-        setRobotofont(this);
+        setRobotoFont(this);
 
     }
 
@@ -55,67 +55,14 @@ public abstract class ReOpenActivity extends RoboSherlockFragmentActivity {
     public void onBackPressed() {
         Logger.v(TAG, "Back pressed, setting slide transition");
         super.onBackPressed();
-        overridePendingTransition(R.anim.push_bottom_in, R.anim.push_bottom_out);
+        overridePendingTransition(R.anim.push_bottom_in,
+                R.anim.push_bottom_out);
     }
 
-    public void setRobotofont(Activity activity){
-        ViewGroup godfatherView = (ViewGroup) activity.getWindow().getDecorView();
+    public void setRobotoFont(Activity activity) {
+        ViewGroup godfatherView =
+                (ViewGroup)activity.getWindow().getDecorView();
         FontUtils.setRobotoFont(activity, godfatherView);
-    }
-
-
-
-    /**
-     * Launching activity in Sequence
-     * @param activity
-     */
-    protected void launchNextActivity(Class activity) {
-        Intent intent = new Intent(this, activity);
-        intent.putExtra("nextClass", activity);
-        intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-        startActivity(intent);
-        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
-    }
-
-
-    /**
-     * Launching Dashboard activity
-     */
-    protected void launchDashBoardActivity() {
-        Intent intent = new Intent(this, DashboardActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-        startActivity(intent);
-    }
-
-
-
-    /**
-     * Saving completion of FirstLaunchSequence. Next launch shall lead to dashboard directly
-     */
-    protected void finishFirstLaunch() {
-        Logger.i(TAG, "Setting first launch to finished");
-
-        statusManager.setFirstLaunchCompleted();
-
-//        // TODO: clean this up and re-activate counterpart in DashboardActivity
-//        // saving actual date to string in sharedPreferences
-//        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd G 'at' HH:mm:ss z");//("MM/dd/yyyy");
-//        String StartDateString = dateFormat.format(new Date());
-//        SharedPreferences sharedPrefs = getSharedPreferences("startDatePrefs", 0);
-//        SharedPreferences.Editor editor = sharedPrefs.edit();
-//        editor.putString("startDateString", StartDateString);
-//        editor.commit();
-//        //-----------------------
-
-        Intent schedulerServiceIntent = new Intent(this, SchedulerService.class);
-        startService(schedulerServiceIntent);
-
-        // FIXME: fix all emulator-specific hacks
-        Intent locationPointServiceIntent = new Intent(this, LocationPointService.class);
-        if (!(Build.FINGERPRINT.startsWith("generic"))) {
-            Logger.d(TAG, "Starting LocationPointService");
-            startService(locationPointServiceIntent);
-        }
     }
 
 }

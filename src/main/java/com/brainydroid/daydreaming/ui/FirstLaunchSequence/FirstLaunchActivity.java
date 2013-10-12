@@ -2,7 +2,6 @@ package com.brainydroid.daydreaming.ui.FirstLaunchSequence;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.ViewGroup;
 import com.brainydroid.daydreaming.R;
@@ -10,20 +9,22 @@ import com.brainydroid.daydreaming.background.LocationPointService;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.background.SchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
+import com.brainydroid.daydreaming.network.SntpClient;
+import com.brainydroid.daydreaming.network.SntpClientCallback;
 import com.brainydroid.daydreaming.ui.FontUtils;
 import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockFragmentActivity;
 import com.google.inject.Inject;
 
 
 /**
- * Class that activities FirstLaunchSequence heritate.
+ * Class that activities FirstLaunchSequence extend.
  */
 public abstract class FirstLaunchActivity extends RoboSherlockFragmentActivity {
 
     private static String TAG = "FirstLaunchActivity";
 
-
     @Inject  StatusManager statusManager;
+    @Inject SntpClient sntpClient;
 
     @Override
     public void onStart() {
@@ -35,8 +36,7 @@ public abstract class FirstLaunchActivity extends RoboSherlockFragmentActivity {
     public void onCreate(Bundle savedInstanceState) {
         Logger.v(TAG, "Creating");
         super.onCreate(savedInstanceState);
-        setRobotofont(this);
-
+        setRobotoFont(this);
     }
 
     @Override
@@ -58,8 +58,9 @@ public abstract class FirstLaunchActivity extends RoboSherlockFragmentActivity {
         overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
     }
 
-    public void setRobotofont(Activity activity){
-        ViewGroup godfatherView = (ViewGroup) activity.getWindow().getDecorView();
+    public void setRobotoFont(Activity activity){
+        ViewGroup godfatherView =
+                (ViewGroup)activity.getWindow().getDecorView();
         FontUtils.setRobotoFont(activity, godfatherView);
     }
 
@@ -77,7 +78,6 @@ public abstract class FirstLaunchActivity extends RoboSherlockFragmentActivity {
 
     /**
      * Launching activity in Sequence
-     * @param activity
      */
     protected void launchNextActivity(Class activity) {
         Intent intent = new Intent(this, activity);
@@ -86,7 +86,6 @@ public abstract class FirstLaunchActivity extends RoboSherlockFragmentActivity {
         startActivity(intent);
         overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
     }
-
 
     /**
      * Launching Dashboard activity
@@ -97,35 +96,46 @@ public abstract class FirstLaunchActivity extends RoboSherlockFragmentActivity {
         startActivity(intent);
     }
 
-
-
     /**
-     * Saving completion of FirstLaunchSequence. Next launch shall lead to dashboard directly
+     * Saving completion of FirstLaunchSequence. Next launch will lead to
+     * dashboard directly.
      */
     protected void finishFirstLaunch() {
         Logger.i(TAG, "Setting first launch to finished");
 
         statusManager.setFirstLaunchCompleted();
 
-//        // TODO: clean this up and re-activate counterpart in DashboardActivity
-//        // saving actual date to string in sharedPreferences
-//        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd G 'at' HH:mm:ss z");//("MM/dd/yyyy");
-//        String StartDateString = dateFormat.format(new Date());
-//        SharedPreferences sharedPrefs = getSharedPreferences("startDatePrefs", 0);
-//        SharedPreferences.Editor editor = sharedPrefs.edit();
-//        editor.putString("startDateString", StartDateString);
-//        editor.commit();
-//        //-----------------------
+        SntpClientCallback callback = new SntpClientCallback() {
 
-        Intent schedulerServiceIntent = new Intent(this, SchedulerService.class);
+            private String TAG = "FirstLaunch SntpClientCallback";
+
+            @Override
+            public void onTimeReceived(SntpClient sntpClient) {
+                Logger.d(TAG, "NTP request completed");
+
+                if (sntpClient != null) {
+                    Logger.i(TAG, "NTP request successful, " +
+                            "setting timestamp for start of experiment");
+                    statusManager.setExperimentStartTimestamp(
+                            sntpClient.getNow());
+                } else {
+                    Logger.i(TAG, "NTP request failed, sntpClient is null");
+                }
+            }
+
+        };
+
+        sntpClient.asyncRequestTime(callback);
+
+        Logger.d(TAG, "Starting SchedulerService");
+        Intent schedulerServiceIntent = new Intent(this,
+                SchedulerService.class);
         startService(schedulerServiceIntent);
 
-        // FIXME: fix all emulator-specific hacks
-        Intent locationPointServiceIntent = new Intent(this, LocationPointService.class);
-        if (!(Build.FINGERPRINT.startsWith("generic"))) {
-            Logger.d(TAG, "Starting LocationPointService");
-            startService(locationPointServiceIntent);
-        }
+        Intent locationPointServiceIntent = new Intent(this,
+                LocationPointService.class);
+        Logger.d(TAG, "Starting LocationPointService");
+        startService(locationPointServiceIntent);
     }
 
 }

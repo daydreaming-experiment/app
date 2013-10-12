@@ -50,7 +50,7 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
         Ext_checkFirstLaunch();
 
         populate_spinners();
-        setRobotofont(this);   // need to be done after spinners get populated
+        setRobotoFont(this);   // need to be done after spinners get populated
     }
 
     public void onClick_buttonNext(@SuppressWarnings("UnusedParameters") View view) {
