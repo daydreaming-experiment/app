@@ -33,12 +33,24 @@ public class StatusManager {
     /** Preference key storing timestamp of the last sync operation */
     private static String LAST_SYNC_TIMESTAMP = "lastSyncTimestamp";
 
+    /** Transient variable and possible values storing questionsUpdate status */
+    @SuppressWarnings({"FieldCanBeLocal", "UnusedDeclaration"})
+    private String questionsUpdateStatus = null;
+    public static String QUESTIONS_UPDATE_FAILED = "questionsUpdateFailed";
+    public static String QUESTIONS_UPDATE_SUCCEEDED =
+            "questionsUpdateSucceeded";
+    public static String QUESTIONS_UPDATE_MALFORMED =
+            "questionsUpdateMalformed";
+
+    /** Callback called when questionsUpdateStatus changes */
+    private QuestionsUpdateCallback questionsUpdateCallback = null;
+
     /**
      * Interval below which we don't need to re-sync data to servers (in
      * milliseconds)
      */
     @SuppressWarnings("FieldCanBeLocal")
-    private static int SYNC_INTERVAL = 20 * 1000;
+    private static int SYNC_INTERVAL = 15 * 1000;
 
     @Inject LocationManager locationManager;
     @Inject ConnectivityManager connectivityManager;
@@ -108,6 +120,25 @@ public class StatusManager {
 
         eSharedPreferences.putBoolean(EXP_STATUS_QUESTIONS_UPDATED, true);
         eSharedPreferences.commit();
+    }
+
+    public synchronized void setQuestionsUpdateStatusCallback
+            (QuestionsUpdateCallback callback) {
+        Logger.d(TAG, "Setting questionsUpdateCallback");
+        questionsUpdateCallback = callback;
+    }
+
+    public synchronized void clearQuestionsUpdateCallback() {
+        Logger.d(TAG, "Clearing questionsUpdateCallback");
+        questionsUpdateCallback = null;
+    }
+
+    public synchronized void setQuestionsUpdateStatus(String status) {
+        Logger.d(TAG, "Setting the questionsUpdateStatus to {}", status);
+        questionsUpdateStatus = status;
+        if (questionsUpdateCallback != null) {
+            questionsUpdateCallback.onQuestionsUpdateStatusChange(status);
+        }
     }
 
     /**
