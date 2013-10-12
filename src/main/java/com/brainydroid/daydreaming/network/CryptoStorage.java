@@ -2,7 +2,6 @@ package com.brainydroid.daydreaming.network;
 
 import android.app.Application;
 import android.content.Context;
-import android.widget.Toast;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.Json;
 import com.google.inject.Inject;
@@ -82,11 +81,12 @@ public class CryptoStorage {
                 if (success) {
                     Logger.d(TAG, "Registration HttpConversation " +
                             "successful");
-                    ProfileRegistrationData registrationAnswer = json.fromJson(serverAnswer,
-                            ProfileRegistrationData.class);
+                    ProfileWrapper registrationAnswer = json.fromJson(serverAnswer,
+                            ProfileWrapper.class);
                     // TODO: handle the case where returned JSON is in fact an error.
-                    Toast.makeText(context, "Server answer: " + serverAnswer,
-                            Toast.LENGTH_LONG);
+                    Logger.td(context, "Server answer: ",
+                            serverAnswer.replace("{", "'{'")
+                                    .replace("}", "'}'"));
                     String maiId = registrationAnswer.getProfile().getId();
                     storageSuccess = storeKeyPairAndMaiId(kp, maiId);
 
@@ -258,16 +258,6 @@ public class CryptoStorage {
 
     public synchronized String createArmoredPublicKey(PublicKey publicKey) {
         return Crypto.armorPublicKey(publicKey);
-    }
-
-    private synchronized byte[] sign(byte[] data) {
-        if (!hasStoredKeyPairAndMaiId()) {
-            Logger.e(TAG, "Asked to sign data but we don't have a complete " +
-                    "storage initialized");
-            throw new RuntimeException(NOKP_EXCEPTION_MSG);
-        }
-
-        return sign(data, getPrivateKey());
     }
 
     private synchronized byte[] sign(byte[] data, PrivateKey privateKey) {

@@ -32,10 +32,12 @@ public class SyncService extends RoboService {
     @Inject PollsStorage pollsStorage;
     @Inject LocationPointsStorage locationPointsStorage;
     @Inject QuestionsStorage questionsStorage;
+    @Inject ProfileStorage profileStorage;
     @Inject CryptoStorage cryptoStorage;
     @Inject ServerTalker serverTalker;
     @Inject Json json;
-    @Inject ResultsArrayFactory resultsArrayFactory;
+    @Inject ResultsWrapperFactory<Poll> pollsWrapperFactory;
+    @Inject ResultsWrapperFactory<LocationPoint> locationPointsWrapperFactory;
 
     /**
      * Callback called once the {@link CryptoStorage} is ready,
@@ -63,6 +65,15 @@ public class SyncService extends RoboService {
                     asyncUpdateQuestions();
                 } else {
                     Logger.v(TAG, "Questions already updated");
+                }
+
+                // We only sync the profile if stored data has been changed
+                if (profileStorage.isDirty())
+                {
+                    Logger.d(TAG, "Launching profile update");
+                    asyncPutProfile();
+                } else {
+                    Logger.v(TAG, "Profile has not changed since last update");
                 }
 
                 Logger.d(TAG, "Launching poll and locationPoints upload");
@@ -98,12 +109,26 @@ public class SyncService extends RoboService {
 
                 // Import the questions, and remember not to update
                 // questions again.
-                Logger.d(TAG, "Importing new questions to storage");
-                questionsStorage.importQuestions(serverAnswer);
+                try {
+                    questionsStorage.importQuestions(serverAnswer);
+                    Logger.d(TAG, "Importing new questions to storage");
+                } catch (QuestionsSyntaxException e) {
+                    Logger.e(TAG, "Downloaded questions were malformed -> " +
+                            "questions not updated");
+                    statusManager.setQuestionsUpdateStatus(
+                            StatusManager.QUESTIONS_UPDATE_MALFORMED);
+                    return;
+                }
+
+                Logger.i(TAG, "Questions successfully imported");
                 statusManager.setQuestionsUpdated();
+                statusManager.setQuestionsUpdateStatus(
+                        StatusManager.QUESTIONS_UPDATE_SUCCEEDED);
             } else {
                 Logger.w(TAG, "Error while retrieving new questions from " +
                         "server");
+                statusManager.setQuestionsUpdateStatus(
+                        StatusManager.QUESTIONS_UPDATE_FAILED);
             }
         }
 
@@ -182,7 +207,7 @@ public class SyncService extends RoboService {
 
         // Wrap uploadable polls in a single structure to provide a root
         // node when jsonifying
-        final ResultsArray resultsArray = resultsArrayFactory.create(
+        final ResultsWrapper<Poll> pollsWrap = pollsWrapperFactory.create(
                 uploadablePolls);
 
         // Called once the HttpPostTask completes or times out
@@ -196,6 +221,7 @@ public class SyncService extends RoboService {
                 Logger.d(TAG, "Polls sync HttpConversation finished");
 
                 if (success) {
+                    // TODO: handle the case where returned JSON is in fact an error.
                     Logger.i(TAG, "Successfully uploaded polls to server " +
                             "(serverAnswer: {0})", serverAnswer);
                     Logger.td(SyncService.this, SyncService.TAG + ": " +
@@ -203,7 +229,7 @@ public class SyncService extends RoboService {
                             serverAnswer);
 
                     Logger.d(TAG, "Removing uploaded polls from db");
-                    pollsStorage.remove(resultsArray.getPolls());
+                    pollsStorage.remove(pollsWrap.getDatas());
                 } else {
                     Logger.w(TAG, "Error while uploading polls to server");
                 }
@@ -213,8 +239,8 @@ public class SyncService extends RoboService {
 
         // Sign our data to identify us, and upload
         Logger.d(TAG, "Signing data and launching polls sync");
-        serverTalker.signAndUploadData(ServerConfig.EXP_ID,
-                json.toJsonExposed(resultsArray), callback);
+        serverTalker.signAndPostResult(json.toJsonExposed(pollsWrap),
+                callback);
     }
 
     /**
@@ -235,10 +261,10 @@ public class SyncService extends RoboService {
 
         // Wrap uploadable location points in a single structure to provide
         // a root node when jsonifying.
-        final LocationPointsArray locationPoints =
-                new LocationPointsArray(uploadableLocationPoints);
+        final ResultsWrapper<LocationPoint> locationPointsWrap =
+                locationPointsWrapperFactory.create(uploadableLocationPoints);
 
-        // Called when the HttPPostTask finishes or times out
+        // Called when the HttpPostTask finishes or times out
         HttpConversationCallback callback = new HttpConversationCallback() {
 
             private final String TAG =
@@ -250,6 +276,7 @@ public class SyncService extends RoboService {
                 Logger.d(TAG, "LocationPoints HttpConversation finished");
 
                 if (success) {
+                    // TODO: handle the case where returned JSON is in fact an error.
                     Logger.i(TAG, "Successfully uploaded locationPoints to " +
                             "server (serverAnswer: {0})", serverAnswer);
                             Logger.td(SyncService.this,
@@ -260,7 +287,7 @@ public class SyncService extends RoboService {
                     Logger.d(TAG, "Removing uploaded locationPoints from " +
                             "db");
                     locationPointsStorage.remove(
-                            locationPoints.getLocationPoints());
+                            locationPointsWrap.getDatas());
                 } else {
                     Logger.w(TAG, "Error while uploading locationPoints to " +
                             "server");
@@ -271,8 +298,52 @@ public class SyncService extends RoboService {
 
         // Sign our data to identify us, and upload
         Logger.d(TAG, "Signing data and launching locationPoints sync");
-        serverTalker.signAndUploadData(ServerConfig.EXP_ID,
-                json.toJsonExposed(locationPoints), callback);
+        serverTalker.signAndPostResult(json.toJsonExposed(locationPointsWrap),
+                callback);
+    }
+
+    private void asyncPutProfile() {
+        Logger.d(TAG, "Syncing profile data");
+
+        ProfileWrapper profileWrap = profileStorage.getProfile()
+                .buildWrapper();
+
+        // Called when the HttpPutTask finishes or times out
+        HttpConversationCallback callback = new HttpConversationCallback() {
+
+            private final String TAG =
+                    "PutProfile HttpConversationCallback";
+
+            @Override
+            public void onHttpConversationFinished(boolean success,
+                                                   String serverAnswer) {
+
+                Logger.d(TAG, "PutProfile HttpConversation finished");
+
+                if (success) {
+                    // TODO: handle the case where returned JSON is in fact an error.
+                    Logger.i(TAG, "Successfully uploaded Profile to " +
+                            "server (serverAnswer: {0})", serverAnswer);
+                    Logger.td(SyncService.this,
+                            SyncService.TAG + ": uploaded " +
+                                    "profile (serverAnswer: " +
+                                    "{0})", serverAnswer);
+
+                    Logger.d(TAG, "Clearing dirty flag for profile data");
+                    profileStorage.clearIsDirtyAndCommit();
+                } else {
+                    Logger.w(TAG, "Error while uploading profile to " +
+                            "server");
+                }
+
+            }
+
+        };
+
+        // Sign our data to identify us, and upload
+        Logger.d(TAG, "Signing data and launching profile update");
+        serverTalker.signAndPutProfile(json.toJsonExposed(profileWrap),
+                callback);
     }
 
 }
