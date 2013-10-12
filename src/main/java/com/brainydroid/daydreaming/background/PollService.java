@@ -108,8 +108,7 @@ public class PollService extends RoboService {
         }
 
         // Should we vibrate?
-        if (sharedPreferences.getBoolean("notification_vibrator_key",
-                true)) {
+        if (sharedPreferences.getBoolean("notification_vibrator_key", true)) {
             Logger.v(TAG, "Activating vibration");
             flags |= Notification.DEFAULT_VIBRATE;
         }
@@ -133,6 +132,7 @@ public class PollService extends RoboService {
         .build();
 
         // And send it to the system
+        notificationManager.cancel(poll.getId());
         notificationManager.notify(poll.getId(), notification);
     }
 
