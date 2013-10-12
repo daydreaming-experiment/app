@@ -9,6 +9,6 @@ public interface ProfileDataFactory {
     public ProfileData create(@Assisted("age") String age,
                               @Assisted("gender") String gender,
                               @Assisted("education") String education,
-                              HashMap<Integer, Integer> tipiAnswers);
+                              HashMap<String, Integer> tipiAnswers);
 
 }

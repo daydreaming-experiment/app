@@ -41,7 +41,6 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
     @InjectView(R.id.firstLaunchMeasures2_text_downloading) TextView
             textDownloading;
 
-    private boolean areQuestionsDownloaded = false;
     private boolean areQuestionsDownloading = false;
 
     private QuestionsUpdateCallback questionsUpdateCallback =
@@ -59,7 +58,6 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
                     if (status.equals(StatusManager.QUESTIONS_UPDATE_FAILED)) {
                         textDownloading.setText("Download failed! Are you " +
                                 "connected to the internet?");
-                        areQuestionsDownloaded = false;
                         updateView();
                         return;
                     }
@@ -69,7 +67,6 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
                         textDownloading.setText("Malformed questions " +
                                 "downloaded... can you contact the " +
                                 "developers?");
-                        areQuestionsDownloaded = false;
                         updateView();
                         return;
                     }
@@ -77,7 +74,6 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
                     if (status.equals(
                             StatusManager.QUESTIONS_UPDATE_SUCCEEDED)) {
                         textDownloading.setText("Questions downloaded");
-                        areQuestionsDownloaded = true;
                         updateView();
                         return;
                     }
@@ -114,15 +110,17 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
     private void updateView() {
         Logger.d(TAG, "Updating view of settings");
 
+        boolean areQuestionsDownloaded = statusManager.areQuestionsUpdated();
+
         textCoarseLocation.setCompoundDrawablesWithIntrinsicBounds(
                 statusManager.isNetworkLocEnabled() ? R.drawable.status_ok :
                         R.drawable.status_wrong, 0, 0, 0);
         textNetworkConnection.setCompoundDrawablesWithIntrinsicBounds(
-                statusManager.isDataEnabled() ? R.drawable.status_ok : R
-                        .drawable.status_wrong, 0, 0, 0);
+                statusManager.isDataEnabled() ? R.drawable.status_ok :
+                        R.drawable.status_wrong, 0, 0, 0);
         textDownloading.setCompoundDrawablesWithIntrinsicBounds
-                (areQuestionsDownloaded ? R.drawable.status_ok : R.drawable
-                        .status_wrong, 0, 0, 0);
+                (areQuestionsDownloaded ? R.drawable.status_ok :
+                        R.drawable.status_wrong, 0, 0, 0);
 
         if (areQuestionsDownloaded) {
             allowNextButton();
@@ -132,7 +130,7 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
 
         if (!areQuestionsDownloaded && !areQuestionsDownloading) {
             if (statusManager.isDataEnabled() &&
-                    statusManager.isLastSyncLongAgo()){
+                    statusManager.isLastSyncLongAgo()) {
                 loadQuestionsFromServer();
             }
         }
