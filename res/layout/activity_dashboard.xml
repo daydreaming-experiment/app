@@ -243,7 +243,7 @@
                       android:scaleType="centerInside"
                       android:background="@drawable/icon_terms"
                       android:layout_margin="10dp"
-                      android:onClick="onClick_REopenTerms"
+                      android:onClick="onClick_ReOpenTerms"
                       android:layout_centerHorizontal="true"/>
 
                 <TextView
@@ -274,7 +274,7 @@
                     android:scaleType="centerInside"
                     android:background="@drawable/icon_description"
                     android:layout_margin="10dp"
-                    android:onClick="onClick_REopenDescription"
+                    android:onClick="onClick_ReOpenDescription"
                     android:layout_centerHorizontal="true"/>
             <TextView
                     android:text="@string/dashboard_button_text_description"
