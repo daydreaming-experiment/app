@@ -147,12 +147,21 @@ public class SntpClient {
 
                 SntpClient sntpClient = SntpClient.this;
                 if (sntpClient.requestTime("0.pool.ntp.org", ServerConfig.NETWORK_TIMEOUT)) {
-                    Logger.d(TAG, "NTP request successful, " +
-                            "calling callback");
-                    finalCallback.onTimeReceived(sntpClient);
+                    Logger.d(TAG, "NTP request successful");
+                    if (finalCallback != null) {
+                        Logger.d(TAG, "Calling callback");
+                        finalCallback.onTimeReceived(sntpClient);
+                    } else {
+                        Logger.v(TAG, "No callback to call");
+                    }
                 } else {
-                    Logger.w(TAG, "NTP request failed, calling callback");
-                    finalCallback.onTimeReceived(null);
+                    Logger.w(TAG, "NTP request failed");
+                    if (finalCallback != null) {
+                        Logger.d(TAG, "Calling callback");
+                        finalCallback.onTimeReceived(null);
+                    } else {
+                        Logger.v(TAG, "No callback to call");
+                    }
                 }
             }
 

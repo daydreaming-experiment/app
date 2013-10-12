@@ -3,16 +3,21 @@ package com.brainydroid.daydreaming.ui.FirstLaunchSequence;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
-
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.background.SchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
-import com.brainydroid.daydreaming.ui.ReOpen.*;
+import com.brainydroid.daydreaming.network.ServerConfig;
+import com.brainydroid.daydreaming.network.SntpClient;
+import com.brainydroid.daydreaming.network.SntpClientCallback;
+import com.brainydroid.daydreaming.ui.ReOpen.AboutActivity;
+import com.brainydroid.daydreaming.ui.ReOpen.AppSettingsActivity;
 import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockFragmentActivity;
 import com.google.inject.Inject;
 import roboguice.inject.ContentView;
+import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_dashboard)
 public class DashboardActivity extends RoboSherlockFragmentActivity {
@@ -20,11 +25,15 @@ public class DashboardActivity extends RoboSherlockFragmentActivity {
     private static String TAG = "DashboardActivity";
 
     @Inject StatusManager statusManager;
+    @Inject SntpClient sntpClient;
+    @InjectView(R.id.dashboard_ExperimentTimeElapsed2)
+    TextView timeElapsedTextView;
+    @InjectView(R.id.dashboard_ExperimentResultsIn2) TextView timeToGoTextView;
 
     @Override
     public void onStart() {
         Logger.v(TAG, "Starting");
-        //updateRunningTime();
+        updateRunningTime();
         super.onStart();
     }
 
@@ -33,16 +42,6 @@ public class DashboardActivity extends RoboSherlockFragmentActivity {
         Logger.v(TAG, "Creating");
         super.onCreate(savedInstanceState);
         checkFirstLaunch();
-//        ViewGroup godfatherView = (ViewGroup)this.getWindow().getDecorView();
-//        FontUtils.setRobotoFont(this, godfatherView);
-       // ImageView imgStartButton = (ImageView) findViewById(R.id.dashboard_ExperimentTimeElapsed);
-       // imgStartButton.setBackgroundResource(R.drawable.timeElapsed);
-
-    //    TextView textView = (TextView)findViewById(R.id.dashboard_textExperimentRunning);
-    //    Spannable wordToSpan = new SpannableString("EXPERIMENT IS RUNNING");
-    //    wordToSpan.setSpan(new ForegroundColorSpan(Color.WHITE), 14, 20,
-    //            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-    //    textView.setText(wordToSpan);
     }
 
     /**
@@ -74,7 +73,6 @@ public class DashboardActivity extends RoboSherlockFragmentActivity {
      */
     public void onClick_ReOpenDescription(
             @SuppressWarnings("UnusedParameters") View view){
-
         Intent intent = new Intent(this, ReOpenDescriptionActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         startActivity(intent);
@@ -82,7 +80,8 @@ public class DashboardActivity extends RoboSherlockFragmentActivity {
     }
 
     //TODO: Layout of an about activity
-    public void  onClick_OpenAboutActivity(@SuppressWarnings("UnusedParameters") View view){
+    public void  onClick_OpenAboutActivity(
+            @SuppressWarnings("UnusedParameters") View view){
         Intent intent = new Intent(this, AboutActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         startActivity(intent);
@@ -105,37 +104,79 @@ public class DashboardActivity extends RoboSherlockFragmentActivity {
         finish();
     }
 
-//    // TODO: clean this up
-//    private void updateRunningTime() {
-//
-//        // Transform string to Date object
-//        SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd G 'at' HH:mm:ss z");
-//
-//        // Get today just in case
-//        String todayDateString = format.format(new Date());
-//
-//        // Read Start date string from preferences_appSettings
-//        SharedPreferences sharedPreferences = getSharedPreferences("startDatePref", 0);
-//        String startDateString = sharedPreferences.getString("startDateString", todayDateString);
-//
-//        try {
-//            Date startDate = format.parse(startDateString);
-//
-//            // Compute time difference from Date objects:
-//            // getTime : number of milliseconds since 1 January 1970 00:00:00 UTC
-//            long dt =  (new Date()).getTime() - startDate.getTime() ;
-//            dt /= 1000 * 60 * 60;
-//            int hours = (int)(dt % 24);
-//            dt /= 24;
-//            int days = (int)(dt);
-//
-//            String elapsedTime =  Integer.toString(days) + " days " + Integer.toString(hours) + " hours";
-//            TextView textView = (TextView)findViewById(R.id.dashboard_textDaysElapsedNumber);
-//            textView.setText(elapsedTime);
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
-//    }
+    private void updateRunningTime() {
+        // Set the running time from last trustworthy timestamp
+        long lastNtpTimestamp = statusManager.getLatestNtpTime();
+        updateRunningTimeFromTimestamp(lastNtpTimestamp);
+
+        // And try to update the timestamp
+        SntpClientCallback callback = new SntpClientCallback() {
+
+            private String TAG = "Dashboard SntpClientCallback";
+
+            @Override
+            public void onTimeReceived(SntpClient sntpClient) {
+                Logger.d(TAG, "NTP request completed");
+
+                if (sntpClient != null) {
+                    Logger.i(TAG, "NTP request successful, " +
+                            "updating running time views in dashboard");
+                    updateRunningTimeFromTimestamp(sntpClient.getNow());
+                } else {
+                    Logger.i(TAG, "NTP request failed, sntpClient is null");
+                }
+            }
+
+        };
+
+        sntpClient.asyncRequestTime(callback);
+    }
+
+    // TODO: disable "see results" button before the results are available
+    // TODO: something should happen once the results are available
+    private void updateRunningTimeFromTimestamp(long timestampNow) {
+        Logger.d(TAG, "Updating running time with timestamp {}", timestampNow);
+        long expStartTimestamp = statusManager.getExperimentStartTimestamp();
+
+        // In case our very first NTP request didn't succeed,
+        // or hasn't yet finished
+        if (expStartTimestamp <= 0) {
+            expStartTimestamp = timestampNow - 1;
+        }
+
+        final int daysElapsed = (int)((timestampNow - expStartTimestamp) /
+                (24 * 60 * 60 * 1000));
+        Logger.i(TAG, "Days elapsed: {}", daysElapsed);
+        final int daysToGo = ServerConfig.EXP_DURATION_DAYS - daysElapsed;
+        Logger.i(TAG, "Days to go: {}", daysToGo);
+
+        Runnable timeElapsedUpdater = new Runnable() {
+
+            private String TAG = "timeElapsedUpdater Runnable";
+
+            @Override
+            public void run() {
+                Logger.d(TAG, "Updating time elapsed view");
+                timeElapsedTextView.setText(String.valueOf(daysElapsed));
+            }
+
+        };
+
+        Runnable timeToGoUpdater = new Runnable() {
+
+            private String TAG = "timeToGoUpdater Runnable";
+
+            @Override
+            public void run() {
+                Logger.d(TAG, "Updating time to go view");
+                timeToGoTextView.setText(String.valueOf(daysToGo));
+            }
+
+        };
+
+        timeElapsedTextView.post(timeElapsedUpdater);
+        timeToGoTextView.post(timeToGoUpdater);
+    }
 
     /**
      * Dashboard is main launcher. At start up of app, the whole firstLaunch

@@ -15,4 +15,7 @@ public class ServerConfig {
 
     public static int NETWORK_TIMEOUT = 10 * 1000; // 10 seconds
 
+    // FIXME: put this in a proper place
+    public static int EXP_DURATION_DAYS = 30;
+
 }
