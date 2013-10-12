@@ -36,19 +36,20 @@ public class DashboardActivity extends RoboSherlockFragmentActivity {
 //        ViewGroup godfatherView = (ViewGroup)this.getWindow().getDecorView();
 //        FontUtils.setRobotoFont(this, godfatherView);
        // ImageView imgStartButton = (ImageView) findViewById(R.id.dashboard_ExperimentTimeElapsed);
-       // imgStartButton.setBackgroundResource(R.drawable.timeelapsed);
+       // imgStartButton.setBackgroundResource(R.drawable.timeElapsed);
 
     //    TextView textView = (TextView)findViewById(R.id.dashboard_textExperimentRunning);
-    //    Spannable WordtoSpan = new SpannableString("EXPERIMENT IS RUNNING");
-    //    WordtoSpan.setSpan(new ForegroundColorSpan(Color.WHITE), 14, 20,
+    //    Spannable wordToSpan = new SpannableString("EXPERIMENT IS RUNNING");
+    //    wordToSpan.setSpan(new ForegroundColorSpan(Color.WHITE), 14, 20,
     //            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-    //    textView.setText(WordtoSpan);
+    //    textView.setText(wordToSpan);
     }
 
     /**
      * Launching app settings activity
      */
-    public void  onClick_openAppSettings(View view){
+    public void  onClick_openAppSettings(
+            @SuppressWarnings("UnusedParameters") View view){
         Intent intent = new Intent(this, AppSettingsActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         startActivity(intent);
@@ -59,7 +60,8 @@ public class DashboardActivity extends RoboSherlockFragmentActivity {
      * Launching term activity without enabling buttons
      * Only exit is pressing back button
      */
-    public void onClick_ReOpenTerms(View view){
+    public void onClick_ReOpenTerms(
+            @SuppressWarnings("UnusedParameters") View view){
         Intent intent = new Intent(this, ReOpenTermsActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         startActivity(intent);
@@ -70,7 +72,8 @@ public class DashboardActivity extends RoboSherlockFragmentActivity {
      * Launching a description activity without possibility to click next
      * Only exit is pressing back button.
      */
-    public void onClick_ReOpenDescription(View view){
+    public void onClick_ReOpenDescription(
+            @SuppressWarnings("UnusedParameters") View view){
 
         Intent intent = new Intent(this, ReOpenDescriptionActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
@@ -78,20 +81,17 @@ public class DashboardActivity extends RoboSherlockFragmentActivity {
         overridePendingTransition(R.anim.push_top_in, R.anim.push_top_out);
     }
 
-
     //TODO: Layout of an about activity
-    public void  onClick_OpenAboutActivity(View view){
-
+    public void  onClick_OpenAboutActivity(@SuppressWarnings("UnusedParameters") View view){
         Intent intent = new Intent(this, AboutActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         startActivity(intent);
-        //overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
         overridePendingTransition(R.anim.push_top_in, R.anim.push_top_out);
-
     }
 
-    //TODO: Decide what should happen when resutls button is cliked on.
-    public void  onClick_SeeResults(View view){
+    //TODO: Decide what should happen when results button is clicked.
+    public void  onClick_SeeResults(
+            @SuppressWarnings("UnusedParameters") View view){
         Toast.makeText(this, "Not yet!", Toast.LENGTH_SHORT).show();
     }
 
@@ -114,7 +114,7 @@ public class DashboardActivity extends RoboSherlockFragmentActivity {
 //        // Get today just in case
 //        String todayDateString = format.format(new Date());
 //
-//        // Read Start date string from preferences_appsettings
+//        // Read Start date string from preferences_appSettings
 //        SharedPreferences sharedPreferences = getSharedPreferences("startDatePref", 0);
 //        String startDateString = sharedPreferences.getString("startDateString", todayDateString);
 //
