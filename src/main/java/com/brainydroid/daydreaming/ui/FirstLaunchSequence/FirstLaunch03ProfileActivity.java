@@ -35,7 +35,6 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
     public static String PROFILE_GENDER = "profileGender";
     public static String PROFILE_EDUCATION = "profileEducation";
 
-
     public boolean genderSpinnerTouched = false;
     public boolean ageSpinnerTouched = false;
     public boolean educationSpinnerTouched = false;
