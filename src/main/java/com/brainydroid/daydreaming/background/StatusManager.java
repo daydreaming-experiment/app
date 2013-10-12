@@ -42,6 +42,14 @@ public class StatusManager {
     public static String QUESTIONS_UPDATE_MALFORMED =
             "questionsUpdateMalformed";
 
+    /** Preference key storing timestamp of beginning of experiment */
+    @SuppressWarnings("FieldCanBeLocal")
+    private static String EXP_START_TIMESTAMP = "expStartTimestamp";
+
+    /** Preference key storing latest retrieved ntp timestamp */
+    @SuppressWarnings("FieldCanBeLocal")
+    private static String LATEST_NTP_TIMESTAMP = "latestNtpTimestamp";
+
     /** Callback called when questionsUpdateStatus changes */
     private QuestionsUpdateCallback questionsUpdateCallback = null;
 
@@ -247,6 +255,26 @@ public class StatusManager {
             Logger.d(TAG, "Last sync was not long ago");
             return false;
         }
+    }
+
+    public synchronized void setExperimentStartTimestamp(long timestamp) {
+        Logger.d(TAG, "Setting experiment start timestamp to {}", timestamp);
+        eSharedPreferences.putLong(EXP_START_TIMESTAMP, timestamp);
+        eSharedPreferences.commit();
+    }
+
+    public synchronized long getExperimentStartTimestamp() {
+        return sharedPreferences.getLong(EXP_START_TIMESTAMP, -1);
+    }
+
+    public synchronized void setLatestNtpTime(long timestamp) {
+        Logger.d(TAG, "Setting latest ntp requested time to {}", timestamp);
+        eSharedPreferences.putLong(LATEST_NTP_TIMESTAMP, timestamp);
+        eSharedPreferences.commit();
+    }
+
+    public synchronized long getLatestNtpTime() {
+        return sharedPreferences.getLong(LATEST_NTP_TIMESTAMP, -1);
     }
 
 }

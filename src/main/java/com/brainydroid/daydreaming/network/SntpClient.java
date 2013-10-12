@@ -18,6 +18,8 @@ package com.brainydroid.daydreaming.network;
 
 import android.os.SystemClock;
 import com.brainydroid.daydreaming.background.Logger;
+import com.brainydroid.daydreaming.background.StatusManager;
+import com.google.inject.Inject;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -36,6 +38,8 @@ import java.net.InetAddress;
 public class SntpClient {
 
     private static final String TAG = "SntpClient";
+
+    @Inject StatusManager statusManager;
 
     private static final int ORIGINATE_TIME_OFFSET = 24;
     private static final int RECEIVE_TIME_OFFSET = 32;
@@ -124,7 +128,9 @@ public class SntpClient {
             return false;
         }
 
-        Logger.d(TAG, "NTP request successful");
+        Logger.d(TAG, "NTP request successful, " +
+                "saving as latest time in StatusManager");
+        statusManager.setLatestNtpTime(getNow());
         return true;
     }
 

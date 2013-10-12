@@ -9,6 +9,8 @@ import com.brainydroid.daydreaming.background.LocationPointService;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.background.SchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
+import com.brainydroid.daydreaming.network.SntpClient;
+import com.brainydroid.daydreaming.network.SntpClientCallback;
 import com.brainydroid.daydreaming.ui.FontUtils;
 import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockFragmentActivity;
 import com.google.inject.Inject;
@@ -22,6 +24,7 @@ public abstract class FirstLaunchActivity extends RoboSherlockFragmentActivity {
     private static String TAG = "FirstLaunchActivity";
 
     @Inject  StatusManager statusManager;
+    @Inject SntpClient sntpClient;
 
     @Override
     public void onStart() {
@@ -102,16 +105,29 @@ public abstract class FirstLaunchActivity extends RoboSherlockFragmentActivity {
 
         statusManager.setFirstLaunchCompleted();
 
-//        // TODO: clean this up and re-activate counterpart in DashboardActivity
-//        // saving actual date to string in sharedPreferences
-//        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd G 'at' HH:mm:ss z");//("MM/dd/yyyy");
-//        String StartDateString = dateFormat.format(new Date());
-//        SharedPreferences sharedPrefs = getSharedPreferences("startDatePrefs", 0);
-//        SharedPreferences.Editor editor = sharedPrefs.edit();
-//        editor.putString("startDateString", StartDateString);
-//        editor.commit();
-//        //-----------------------
+        SntpClientCallback callback = new SntpClientCallback() {
 
+            private String TAG = "FirstLaunch SntpClientCallback";
+
+            @Override
+            public void onTimeReceived(SntpClient sntpClient) {
+                Logger.d(TAG, "NTP request completed");
+
+                if (sntpClient != null) {
+                    Logger.i(TAG, "NTP request successful, " +
+                            "setting timestamp for start of experiment");
+                    statusManager.setExperimentStartTimestamp(
+                            sntpClient.getNow());
+                } else {
+                    Logger.i(TAG, "NTP request failed, sntpClient is null");
+                }
+            }
+
+        };
+
+        sntpClient.asyncRequestTime(callback);
+
+        Logger.d(TAG, "Starting SchedulerService");
         Intent schedulerServiceIntent = new Intent(this,
                 SchedulerService.class);
         startService(schedulerServiceIntent);
