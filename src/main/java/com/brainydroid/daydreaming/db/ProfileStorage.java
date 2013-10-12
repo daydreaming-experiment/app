@@ -7,8 +7,8 @@ import com.brainydroid.daydreaming.network.ProfileFactory;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 @Singleton
 public class ProfileStorage {
@@ -19,7 +19,8 @@ public class ProfileStorage {
     private static String PROFILE_AGE = "profileAge";
     private static String PROFILE_GENDER = "profileGender";
     private static String PROFILE_EDUCATION = "profileEducation";
-    private static String PROFILE_TIPI_PREFIX = "profileTipi";
+    private static String PROFILE_TIPI_NAME_PREFIX = "profileTipiQuestionName";
+    private static String PROFILE_TIPI_ANSWER_PREFIX = "profileTipiAnswer";
     private static String PROFILE_TIPI_NUMBER_OF_ANSWERS =
             "profileTipiNumberOfAnswers";
 
@@ -65,29 +66,36 @@ public class ProfileStorage {
         return sharedPreferences.getString(PROFILE_EDUCATION, null);
     }
 
-    public void setTipiAnswers(ArrayList<Integer> tipiAnswers) {
+    public void setTipiAnswers(HashMap<String, Integer> tipiAnswers) {
         Logger.d(TAG, "Setting tipi questionnaire answers");
         int index = 0;
-        for (int answer : tipiAnswers) {
-            eSharedPreferences.putInt(PROFILE_TIPI_PREFIX + index, answer);
+        for (Map.Entry<String, Integer> answer : tipiAnswers.entrySet()) {
+            eSharedPreferences.putString(
+                    PROFILE_TIPI_NAME_PREFIX + index, answer.getKey());
+            eSharedPreferences.putInt(
+                    PROFILE_TIPI_ANSWER_PREFIX + index, answer.getValue());
             index++;
         }
         eSharedPreferences.putInt(PROFILE_TIPI_NUMBER_OF_ANSWERS, index);
         setIsDirtyAndCommit();
     }
 
-    private HashMap<Integer, Integer> getTipiAnswers() {
+    private HashMap<String, Integer> getTipiAnswers() {
         Logger.d(TAG, "Building tipiAnswers HashMap");
 
-        HashMap<Integer, Integer> tipiAnswers =
-                new HashMap<Integer, Integer>();
-        int numberOfAnswers = sharedPreferences.getInt
-                (PROFILE_TIPI_NUMBER_OF_ANSWERS, 0);
+        HashMap<String, Integer> tipiAnswers =
+                new HashMap<String, Integer>();
+        int numberOfAnswers = sharedPreferences.getInt(
+                PROFILE_TIPI_NUMBER_OF_ANSWERS, 0);
+        String questionName;
         int answer;
 
         for (int index = 0; index < numberOfAnswers; index++) {
-            answer = sharedPreferences.getInt(PROFILE_TIPI_PREFIX + index, -1);
-            tipiAnswers.put(index, answer);
+            questionName = sharedPreferences.getString(
+                    PROFILE_TIPI_NAME_PREFIX + index, null);
+            answer = sharedPreferences.getInt(
+                    PROFILE_TIPI_ANSWER_PREFIX + index, -1);
+            tipiAnswers.put(questionName, answer);
         }
 
         return tipiAnswers;

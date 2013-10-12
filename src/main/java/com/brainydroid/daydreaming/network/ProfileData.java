@@ -15,13 +15,13 @@ public class ProfileData {
     @Expose private String age;
     @Expose private String gender;
     @Expose private String education;
-    @Expose @Inject private HashMap<Integer, Integer> tipi_answers;
+    @Expose private HashMap<String, Integer> tipi_answers;
 
     @Inject
     public ProfileData(@Assisted("age") String age,
                        @Assisted("gender") String gender,
                        @Assisted("education") String education,
-                       @Assisted HashMap<Integer, Integer> tipiAnswers) {
+                       @Assisted HashMap<String, Integer> tipiAnswers) {
         Logger.v(TAG, "Creating a ProfileData instance");
         this.age = age;
         this.gender = gender;

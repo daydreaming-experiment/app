@@ -40,7 +40,7 @@
     <dimen  name="slider_question_bar_width" >3dp</dimen>
 
     <!-- Seekbar -->
-    <integer name="Thumb_lateral_offset">30</integer>  <!--,in dps! -->
+    <integer name="thumb_lateral_offset">30</integer>  <!--,in dps! -->
 
 
 <!-- Individual activities -->

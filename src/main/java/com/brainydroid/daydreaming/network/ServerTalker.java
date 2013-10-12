@@ -31,7 +31,7 @@ public class ServerTalker {
 
         Logger.d(TAG, "Getting key to register");
         String vkPem = cryptoStorage.createArmoredPublicKey(keyPair.getPublic());
-        ProfileWrapper profileWrap = profileFactory.create(vkPem).getWrapper();
+        ProfileWrapper profileWrap = profileFactory.create(vkPem).buildWrapper();
         String jsonPayload = json.toJsonExposed(profileWrap);
         String signedJson = cryptoStorage.signJws(jsonPayload, keyPair.getPrivate());
         String postUrl = ServerConfig.SERVER_NAME +
