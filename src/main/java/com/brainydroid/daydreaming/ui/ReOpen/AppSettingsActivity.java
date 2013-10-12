@@ -8,6 +8,7 @@ import android.preference.PreferenceManager;
 import android.text.format.DateFormat;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -34,6 +35,11 @@ public class AppSettingsActivity extends RoboActivity{
     private static String TAG = "AppSettingsActivity";
     private static int MIN_WINDOW_HOURS = 5; // 5 hours (in hours)
 
+    private static String NOTIF_VIBRATION = "notification_vibrator_key";
+    private static String NOTIF_BLINK = "notification_blink_key";
+    private static String NOTIF_SOUND = "notification_sound_key";
+
+
     // private TimePreference timePreferenceMax;
     // private TimePreference timePreferenceMin;
 
@@ -45,6 +51,10 @@ public class AppSettingsActivity extends RoboActivity{
 
     @InjectView(R.id.settings_time_text_from) TextView tv_time_from;
     @InjectView(R.id.settings_time_text_until) TextView tv_time_until;
+
+    @InjectView(R.id.appsettings_allow_blink_check) CheckBox blink_check;
+    @InjectView(R.id.appsettings_allow_sound_check) CheckBox sound_check;
+    @InjectView(R.id.appsettings_allow_vibrations_check) CheckBox vibrations_check;
 
 
     @Inject SharedPreferences sharedPreferences;
@@ -69,6 +79,7 @@ public class AppSettingsActivity extends RoboActivity{
 
         initVars();
         addListenerOnButton();
+        loadcheckboxfrompreference();
     }
 
     @Override
@@ -77,7 +88,7 @@ public class AppSettingsActivity extends RoboActivity{
         super.onResume();
 
         // Set up a listener for whenever a key changes
-       // sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+        // sharedPreferences.registerOnSharedPreferenceChangeListener(this);
     }
 
     @Override
@@ -93,11 +104,8 @@ public class AppSettingsActivity extends RoboActivity{
     private void initVars() {
         Logger.d(TAG, "Initializing variables");
 
+        update_time_views();
 
-        String Time_from = sharedPreferences.getString(TIME_FROM,defaultTimePreferenceMin);
-        String Time_until = sharedPreferences.getString(TIME_UNTIL,defaultTimePreferenceMax);
-        tv_time_from.setText(Time_from);
-        tv_time_until.setText(Time_until);
 
 //        timePreferenceMin = new TimePreference(getApplicationContext());
         //timePreferenceMin.setTime(sharedPreferences.getString("time_window_lb_key","00:00"));
@@ -192,6 +200,32 @@ public class AppSettingsActivity extends RoboActivity{
             }
         });
 
+        blink_check.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putBoolean(NOTIF_BLINK, blink_check.isChecked()); // value to store
+                editor.commit();     }
+        });
+
+        vibrations_check.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putBoolean(NOTIF_VIBRATION, vibrations_check.isChecked()); // value to store
+                editor.commit();        }
+        });
+
+        sound_check.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putBoolean(NOTIF_SOUND, sound_check.isChecked()); // value to store
+                editor.commit();        }
+        });
+
+
+
 
     }
 
@@ -263,8 +297,6 @@ public class AppSettingsActivity extends RoboActivity{
         String Time_until = sharedPreferences.getString(TIME_UNTIL,defaultTimePreferenceMax);
         tv_time_from.setText(Time_from);
         tv_time_until.setText(Time_until);
-
-
     }
 
     private void startSchedulerService() {
@@ -319,5 +351,16 @@ public class AppSettingsActivity extends RoboActivity{
         else
             return "0" + String.valueOf(c);
     }
+
+
+    public void loadcheckboxfrompreference(){
+
+        blink_check.setChecked(sharedPreferences.getBoolean(NOTIF_BLINK,true));
+        sound_check.setChecked(sharedPreferences.getBoolean(NOTIF_SOUND,true));
+        vibrations_check.setChecked(sharedPreferences.getBoolean(NOTIF_VIBRATION,true));
+
+
+    }
+
 
 }

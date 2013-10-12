@@ -47,8 +47,8 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
         Logger.v(TAG, "Creating");
 
         super.onCreate(savedInstanceState);
-
         Ext_checkFirstLaunch();
+
         populate_spinners();
         setRobotoFont(this);   // need to be done after spinners get populated
     }
