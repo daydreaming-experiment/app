@@ -277,7 +277,9 @@ public class AppSettingsActivity extends RoboActivity{
     public void onBackPressed() {
         Logger.v(TAG, "Back pressed, setting slide transition");
         super.onBackPressed();
-        overridePendingTransition(R.anim.push_bottom_in, R.anim.push_top_out);
+        //overridePendingTransition(R.anim.push_bottom_in, R.anim.push_top_out);
+        overridePendingTransition(R.anim.push_bottom_in, R.anim.push_bottom_out);
+
     }
     public void onClick_backtodashboard(View v) {
         onBackPressed();

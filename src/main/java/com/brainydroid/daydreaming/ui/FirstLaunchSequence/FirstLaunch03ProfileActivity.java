@@ -52,6 +52,8 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
         Logger.v(TAG, "Creating");
 
         super.onCreate(savedInstanceState);
+        Ext_Checkfirstlaunch();
+
         prefs = getPreferences(MODE_PRIVATE);
 
         populate_spinners();
@@ -279,6 +281,10 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
 
             return row;
         }
+    }
+
+    public void Ext_Checkfirstlaunch(){
+        checkFirstLaunch();
     }
 
 }

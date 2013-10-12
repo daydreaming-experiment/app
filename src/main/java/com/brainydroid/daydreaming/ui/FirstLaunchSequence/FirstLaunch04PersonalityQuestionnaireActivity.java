@@ -47,6 +47,7 @@ public class FirstLaunch04PersonalityQuestionnaireActivity extends FirstLaunchAc
     public void onCreate(Bundle savedInstanceState) {
         Logger.v(TAG, "Creating");
         super.onCreate(savedInstanceState);
+        Ext_Checkfirstlaunch();
 
         setContentView(R.layout.activity_first_launch_questionnaire);
 
@@ -151,6 +152,9 @@ public class FirstLaunch04PersonalityQuestionnaireActivity extends FirstLaunchAc
         return px;
     }
 
+    public void Ext_Checkfirstlaunch(){
+        checkFirstLaunch();
+    }
 
 
 

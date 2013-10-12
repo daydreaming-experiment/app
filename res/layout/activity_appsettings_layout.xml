@@ -252,8 +252,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:layout_gravity="right"
-            android:layout_alignParentBottom="true">
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true">
 
         <ImageButton
                 android:id="@+id/appsettings_backtodashboard_button"

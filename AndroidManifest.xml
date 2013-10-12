@@ -103,13 +103,13 @@
 
         <!-- The Single Opening Activities -->
 
-        <activity android:name=".ui.ReOpen.ReOpenDescriptionActivity"
+        <activity android:name=".ui.FirstLaunchSequence.ReOpenDescriptionActivity"
                   android:theme="@style/MyCustomTheme"
                   android:screenOrientation="portrait">
         </activity>
 
 
-        <activity android:name=".ui.ReOpen.ReOpenTermsActivity"
+        <activity android:name=".ui.FirstLaunchSequence.ReOpenTermsActivity"
                   android:theme="@style/MyCustomTheme"
                   android:screenOrientation="portrait">
         </activity>

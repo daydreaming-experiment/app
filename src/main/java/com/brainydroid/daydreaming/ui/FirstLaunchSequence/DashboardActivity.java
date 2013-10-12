@@ -3,13 +3,11 @@ package com.brainydroid.daydreaming.ui.FirstLaunchSequence;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.background.SchedulerService;
-import com.brainydroid.daydreaming.ui.*;
 import com.brainydroid.daydreaming.ui.ReOpen.*;
 import roboguice.inject.ContentView;
 
@@ -30,6 +28,7 @@ public class DashboardActivity extends FirstLaunchActivity {
     public void onCreate(Bundle savedInstanceState) {
         Logger.v(TAG, "Creating");
         super.onCreate(savedInstanceState);
+        CheckFirstLaunch();
 //        ViewGroup godfatherView = (ViewGroup)this.getWindow().getDecorView();
 //        FontUtils.setRobotoFont(this, godfatherView);
        // ImageView imgStartButton = (ImageView) findViewById(R.id.dashboard_ExperimentTimeElapsed);
@@ -87,7 +86,8 @@ public class DashboardActivity extends FirstLaunchActivity {
 
         intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         startActivity(intent);
-        overridePendingTransition(R.anim.push_top_in, R.anim.push_bottom_out);
+       // overridePendingTransition(R.anim.push_top_in, R.anim.push_bottom_out);
+        overridePendingTransition(R.anim.push_top_in, R.anim.push_top_out);
 
     }
 
@@ -101,7 +101,7 @@ public class DashboardActivity extends FirstLaunchActivity {
         Intent intent = new Intent(this, ReOpenTermsActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         startActivity(intent);
-        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+        overridePendingTransition(R.anim.push_top_in, R.anim.push_top_out);
 
     }
 
@@ -116,7 +116,8 @@ public class DashboardActivity extends FirstLaunchActivity {
         Intent intent = new Intent(this, ReOpenDescriptionActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         startActivity(intent);
-        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+        //overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+        overridePendingTransition(R.anim.push_top_in, R.anim.push_top_out);
 
     }
 
@@ -127,7 +128,8 @@ public class DashboardActivity extends FirstLaunchActivity {
         Intent intent = new Intent(this, AboutActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         startActivity(intent);
-        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+        //overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+        overridePendingTransition(R.anim.push_top_in, R.anim.push_top_out);
 
     }
 
@@ -182,8 +184,10 @@ public class DashboardActivity extends FirstLaunchActivity {
      * Dashboard is main launcher. At start up of app, the whole firstlaunch sequence is ran.
      * If they were already ran, user directly end up on dashboard layout.
      */
-    @Override
-    protected void checkFirstLaunch() {
+
+
+
+    protected void CheckFirstLaunch() {
         if (!statusManager.isFirstLaunchCompleted()) {
             Logger.i(TAG, "First launch not completed -> starting first " +
                     "launch sequence and finishing this activity");
@@ -197,6 +201,7 @@ public class DashboardActivity extends FirstLaunchActivity {
             Logger.v(TAG, "First launch completed");
         }
     }
+
 
     /**                                          *
      * Launchinjg poll from dashboard (debug)

@@ -55,6 +55,7 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
     public void onCreate(Bundle savedInstanceState) {
         Logger.v(TAG, "Creating");
         super.onCreate(savedInstanceState);
+        Ext_Checkfirstlaunch();
 
 
 
@@ -255,5 +256,8 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
         }
     }
 
+    public void Ext_Checkfirstlaunch(){
+        checkFirstLaunch();
+    }
 
 }
