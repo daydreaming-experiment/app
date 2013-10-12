@@ -1,21 +1,20 @@
 package com.brainydroid.daydreaming.network;
 
-import com.brainydroid.daydreaming.db.Poll;
 import com.google.gson.annotations.Expose;
 
-public class Result {
+public class Result<T> {
 
     @SuppressWarnings({"FieldCanBeLocal", "UnusedDeclaration"})
     @Expose private String profile_id;
-    @Expose private Poll data;
+    @Expose private T result_data;
 
-    public Result(String profile_id, Poll data) {
+    public Result(String profile_id, T result_data) {
         this.profile_id = profile_id;
-        this.data = data;
+        this.result_data = result_data;
     }
 
-    public synchronized Poll getPoll() {
-        return data;
+    public synchronized T getData() {
+        return result_data;
     }
 
 }

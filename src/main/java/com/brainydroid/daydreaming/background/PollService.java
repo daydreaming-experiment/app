@@ -6,11 +6,12 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.IBinder;
-import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.db.Poll;
 import com.brainydroid.daydreaming.db.PollsStorage;
+import com.brainydroid.daydreaming.network.SntpClient;
+import com.brainydroid.daydreaming.network.SntpClientCallback;
 import com.brainydroid.daydreaming.ui.Questions.QuestionActivity;
 import com.google.inject.Inject;
 import roboguice.service.RoboService;
@@ -36,6 +37,7 @@ public class PollService extends RoboService {
     @Inject NotificationManager notificationManager;
     @Inject PollsStorage pollsStorage;
     @Inject SharedPreferences sharedPreferences;
+    @Inject SntpClient sntpClient;
     @Inject Poll poll;
 
     @Override
@@ -155,8 +157,29 @@ public class PollService extends RoboService {
         // Update the poll's status
         Logger.d(TAG, "Setting poll status and timestamp, and saving");
         poll.setStatus(Poll.STATUS_PENDING);
-        poll.setNotificationTimestamp(SystemClock.elapsedRealtime());
         poll.save();
+
+        // Get a timestamp for the poll
+        SntpClientCallback sntpCallback = new SntpClientCallback() {
+
+            private final String TAG = "SntpClientCallback";
+
+            @Override
+            public void onTimeReceived(SntpClient sntpClient) {
+                if (sntpClient != null) {
+                    poll.setNotificationTimestamp(sntpClient.getNow());
+                    Logger.i(TAG, "Received and saved NTP time for " +
+                            "poll notification");
+                } else {
+                    Logger.e(TAG, "Received successful NTP request but " +
+                            "sntpClient is null");
+                }
+            }
+
+        };
+
+        Logger.i(TAG, "Launching NTP request");
+        sntpClient.asyncRequestTime(sntpCallback);
     }
 
     /**

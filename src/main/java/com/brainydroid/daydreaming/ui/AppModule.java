@@ -1,12 +1,14 @@
 package com.brainydroid.daydreaming.ui;
 
 import com.brainydroid.daydreaming.background.Logger;
-import com.brainydroid.daydreaming.db.LocationPointFactory;
-import com.brainydroid.daydreaming.db.PollFactory;
-import com.brainydroid.daydreaming.db.QuestionFactory;
-import com.brainydroid.daydreaming.network.ResultsArrayFactory;
+import com.brainydroid.daydreaming.db.*;
+import com.brainydroid.daydreaming.network.ProfileDataFactory;
+import com.brainydroid.daydreaming.network.ProfileFactory;
+import com.brainydroid.daydreaming.network.ProfileWrapperFactory;
+import com.brainydroid.daydreaming.network.ResultsWrapperFactory;
 import com.google.inject.Binder;
 import com.google.inject.Module;
+import com.google.inject.TypeLiteral;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
 
 public class AppModule implements Module {
@@ -24,7 +26,16 @@ public class AppModule implements Module {
         binder.install(new FactoryModuleBuilder()
                 .build(LocationPointFactory.class));
         binder.install(new FactoryModuleBuilder()
-                .build(ResultsArrayFactory.class));
+                .build(new TypeLiteral<ResultsWrapperFactory<Poll>>() {}));
+        binder.install(new FactoryModuleBuilder()
+                .build(new TypeLiteral<ResultsWrapperFactory<LocationPoint>>()
+                {}));
+        binder.install(new FactoryModuleBuilder().
+                build(ProfileWrapperFactory.class));
+        binder.install(new FactoryModuleBuilder().
+                build(ProfileFactory.class));
+        binder.install(new FactoryModuleBuilder().
+                build(ProfileDataFactory.class));
     }
 
 }
