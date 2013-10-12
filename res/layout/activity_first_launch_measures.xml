@@ -114,7 +114,7 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="@color/ui_white_text_color"
                 android:background="@drawable/dark_blue_rectangle"
-                android:onClick="onClick_buttonNetworkSettings"
+                android:onClick="onClick_buttonLocationSettings"
                 />
 
 
