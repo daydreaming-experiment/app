@@ -6,16 +6,16 @@ import com.google.inject.assistedinject.Assisted;
 
 import java.util.ArrayList;
 
-public class ResultsArray<T> {
+public class ResultsWrapper<T> {
 
     @SuppressWarnings("UnusedDeclaration")
-    private static String TAG = "ResultsArray";
+    private static String TAG = "ResultsWrapper";
 
     @Expose private ArrayList<Result<T>> results;
 
     @Inject
-    public ResultsArray(CryptoStorage cryptoStorage,
-                        @Assisted ArrayList<T> datas) {
+    public ResultsWrapper(CryptoStorage cryptoStorage,
+                          @Assisted ArrayList<T> datas) {
         String maiId = cryptoStorage.getMaiId();
         results = new ArrayList<Result<T>>();
         for (T data : datas) {

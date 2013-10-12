@@ -1,7 +1,6 @@
 package com.brainydroid.daydreaming.ui.FirstLaunchSequence;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -11,7 +10,8 @@ import android.view.ViewGroup;
 import android.widget.*;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
-
+import com.brainydroid.daydreaming.db.ProfileStorage;
+import com.google.inject.Inject;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
@@ -31,15 +31,11 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
 
     private static String TAG = "FirstLaunch03ProfileActivity";
 
-    public static String PROFILE_AGE = "profileAge";
-    public static String PROFILE_GENDER = "profileGender";
-    public static String PROFILE_EDUCATION = "profileEducation";
-
     public boolean genderSpinnerTouched = false;
     public boolean ageSpinnerTouched = false;
     public boolean educationSpinnerTouched = false;
 
-    public SharedPreferences prefs;
+    @Inject ProfileStorage profileStorage;
 
     @InjectView(R.id.firstLaunchProfile_genderSpinner) Spinner genderSpinner;
     @InjectView(R.id.firstLaunchProfile_educationSpinner)
@@ -51,7 +47,6 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
         Logger.v(TAG, "Creating");
 
         super.onCreate(savedInstanceState);
-        prefs = getPreferences(MODE_PRIVATE);
 
         populate_spinners();
         setRobotofont(this);   // need to be done after spinners get populated
@@ -63,21 +58,13 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
         if (!checkForm()) {
             Logger.d(TAG, "Form check failed");
         } else {
-            Logger.i(TAG, "Saving profile information to shared " +
-                    "preferences_appSettings");
-
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putString(PROFILE_AGE,
-                    ageSpinner.getSelectedItem().toString());
-            editor.putString(PROFILE_GENDER,
+            Logger.i(TAG, "Saving profile information to profileStorage");
+            profileStorage.setAge(ageSpinner.getSelectedItem().toString());
+            profileStorage.setGender(
                     genderSpinner.getSelectedItem().toString());
-            editor.putString(PROFILE_EDUCATION,
+            profileStorage.setEducation(
                     educationSpinner.getSelectedItem().toString());
-            editor.commit();
 
-            Logger.td(this, "{0}, {1}",
-                    genderSpinner.getSelectedItem().toString(),
-                    ageSpinner.getSelectedItem().toString());
             Logger.d(TAG, "Launching next activity");
             launchNextActivity(
                     FirstLaunch04PersonalityQuestionnaireActivity.class);
