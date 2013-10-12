@@ -2,7 +2,6 @@ package com.brainydroid.daydreaming.ui.FirstLaunchSequence;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
 import android.view.View;
@@ -53,7 +52,7 @@ public class FirstLaunch01DescriptionActivity extends FirstLaunchActivity {
         setbutton();
 
 
-        setRobotofont(this);
+        setRobotoFont(this);
         Linkify.addLinks(description,Linkify.WEB_URLS | Linkify.EMAIL_ADDRESSES);
 
     }
