@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import com.brainydroid.daydreaming.R;
@@ -113,11 +114,7 @@ public class PollService extends RoboService {
             flags |= Notification.DEFAULT_VIBRATE;
         }
 
-        // Should we beep?
-        if (sharedPreferences.getBoolean("notification_sound_key", true)) {
-            Logger.v(TAG, "Activating sound");
-            flags |= Notification.DEFAULT_SOUND;
-        }
+
 
         // Create our notification
         Notification notification = new NotificationCompat.Builder(this)
@@ -130,6 +127,13 @@ public class PollService extends RoboService {
         .setOnlyAlertOnce(true)
         .setDefaults(flags)
         .build();
+
+        // Should we beep?
+        if (sharedPreferences.getBoolean("notification_sound_key", true)) {
+            Logger.v(TAG, "Activating sound");
+            notification.sound = Uri.parse("android.resource://" + "com.brainydroid.daydreaming" + "/" + R.raw.notification);
+        }
+
 
         // And send it to the system
         notificationManager.cancel(poll.getId());

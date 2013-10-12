@@ -1,5 +1,11 @@
 <resources>
 
+
+    <!-- __________________________________________________ -->
+
+    <string name="app_website">http://www.daydreaming-the-app.net</string>
+    <string name="app_mail">contact@daydreaming-the-app.net</string>
+
     <!-- __________________________________________________ -->
 
     <string name="app_name">Day Dreaming</string>
@@ -150,7 +156,7 @@
     <string name="appsettings_time_until">Until </string>
 
     <string name="appsettings_allow_blink_text">Blinks at questions</string>
-    <string name="appsettings_allow_vibrations_text">Vibrate at questions</string>
+    <string name="appsettings_allow_vibrations_text">Vibrates at questions</string>
     <string name="appsettings_allow_sound_text">Beeps at questions</string>
 
 
@@ -212,9 +218,8 @@
 
 <p><b>I have another question!</b></p>
 <p>If there is anything else you would like to know, please don’t hesitate to email us:
-<br>- email at: ...@ </n>
-<br>- write us at: ... </n>
-<br>- visit: www... </n>
+<br>- email at: <a href="mailto:contact@daydreaming-the-app.net">contact@daydreaming-the-app.net</a> </n>
+<br>- visit: <a href="http://www.daydreaming-the-app.net">www.daydreaming-the-app.net</a> </n>
 </p>
 ]]>
     </string>

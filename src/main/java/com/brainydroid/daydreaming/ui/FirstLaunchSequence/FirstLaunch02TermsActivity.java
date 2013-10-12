@@ -2,6 +2,7 @@ package com.brainydroid.daydreaming.ui.FirstLaunchSequence;
 
 import android.os.Bundle;
 import android.text.Html;
+import android.text.util.Linkify;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -115,7 +116,9 @@ public class FirstLaunch02TermsActivity extends FirstLaunchActivity implements S
         more_consent_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-        more_consent_text.setText(Html.fromHtml(getString(R.string.more_terms_html)));  }
+                more_consent_text.setText(Html.fromHtml(getString(R.string.more_terms_html)));
+                Linkify.addLinks(more_consent_text, Linkify.WEB_URLS | Linkify.EMAIL_ADDRESSES);
+            }
         });
 
     }
