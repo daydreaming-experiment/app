@@ -50,6 +50,7 @@ public class FirstLaunch04PersonalityQuestionnaireActivity
     public void onCreate(Bundle savedInstanceState) {
         Logger.v(TAG, "Creating");
         super.onCreate(savedInstanceState);
+        Ext_checkFirstLaunch();
 
         setContentView(R.layout.activity_first_launch_questionnaire);
         thumbOffset = dpToPx(getBaseContext().getResources().getInteger(
@@ -169,5 +170,8 @@ public class FirstLaunch04PersonalityQuestionnaireActivity
                 DisplayMetrics.DENSITY_DEFAULT));
     }
 
+    public void Ext_checkFirstLaunch(){
+        checkFirstLaunch();
+    }
 }
 

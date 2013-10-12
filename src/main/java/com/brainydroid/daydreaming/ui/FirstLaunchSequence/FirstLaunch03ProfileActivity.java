@@ -48,6 +48,7 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
 
         super.onCreate(savedInstanceState);
 
+        Ext_checkFirstLaunch();
         populate_spinners();
         setRobotofont(this);   // need to be done after spinners get populated
     }
@@ -277,6 +278,10 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
 
             return row;
         }
+    }
+
+    public void Ext_checkFirstLaunch(){
+        checkFirstLaunch();
     }
 
 }

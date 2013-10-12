@@ -1,42 +1,69 @@
+The study has been exempted by the Colorado IRB, so we don’t need a consent form. All we need is a general information sheet that describes what we’re doing in broad strokes. This can just be an expansion of the description of the app:
 
-Consent
+Welcome to the Daydreaming app!
 
-Along the experiment, your data is automatically sent to our server in an anonymized form.
-By typing “I agree” below, you confirm that:
+This application is part of a research project that seeks to better understand the experience of daydreaming. Our goal is to better understand what conditions cause people to daydream, how daydreaming people’s impacts day-to-day life, and how we can all learn to control our daydreaming tendencies so as to maximize our health and well-being.
 
-- you know what data you’ll be sending to us, why we are collecting this data, and what we will use the data for
-- you agree to send this data to us
-- you understand that you can stop sending us data at any time, without affecting how you use the app
-- this is your mobile device
+The Daydreaming app requires very little effort to use. Several times a day, the app will notify you that new questions are available. When you click on the notification, you’ll be asked a few brief questions about your current activities, thoughts, and/or feelings. Each notification will take just a minute or so to fill out. Your responses, along with your current location, will be sent back to our server in anonymous form. After a few weeks of using the app, you will unlock a “My Daydreams” sections that  shows you some information about your responses and describes the type of mind-wanderer you are.
 
-Please scroll down and read the rest of the information carefully. You can find it any time in the ‘Options’ section of the app.
+Before starting, you will be asked to answer a few questions about yourself and to define the settings of the app. This should only take a few minutes, and only needs to be done once.
 
+If you’d like to know more about our research, and how we use your data, please click [here]. You can also find this information again at any time in the ‘Options’ section of the app. If you’re ready to begin, click “I agree” below.
+
+[I agree] [No thanks]
+
+The rest of this information should not be shown unless the user specifically clicks on the more information link, at which point they’re directed to a website that has the following FAQ.
 ------------------------------------------------------------------------------
 
-What’s this research for?
+What is this research for?
+
+This application is part of a research project that seeks to better understand the experience of daydreaming. Our goal is to better understand what conditions cause people to daydream, how daydreaming people’s impacts day-to-day life, and how we can all learn to control our daydreaming tendencies so as to maximize our health and well-being.
 
 What will I do?
 
+Just wait until the app notifies you that questions are available, and then answer them!
+
 How long will it take?
+
+Not long at all. The app will notify you a few times a day (5 - 7 on average). Each time you’re notified, we’ll ask you a few questions (2 - 5). So even if you respond to every single notification every single day, you’ll still only spend a few minutes a day using DayDreaming.
 
 What data will I be sharing?
 
+In addition to the responses you give to the questions presented in each notification, we also collect coarse GPS data, which tells us your current location accurate to approximately 0.2 - 0.5 miles.
+
 What will you do with this data?
+
+Research! We’ll combine your data with data from thousands of other people to ask questions like: what activities tend to precipitate daydreaming? In what locations are people most likely to daydream? What kind of people are more or less likely to experience mind wandering? And so on. We expect to publish our findings in peer-reviewed social science journals.
 
 Is it anonymous?
 
+Yes. We deliberately avoid asking you for any identifying information such as your email address, name, address, etc. If you look at the app permissions you’ll note that the only permissions we ask for are network access (required in order to send your data back to our server) and coarse GPS data (which we use to determine where you were when you answered the notification).
+
 Is it confidential?
+
+Yes. We will not share your responses with anyone except the research team. But remember that since your responses are anonymous to begin with, so it’s not as though the data is of much use to anyone except us.
 
 Is it secure?
 
+Yes. Your data is sent back to our server over a secure connection.
+
 Do I have to take part in the research to use the app?
 
-Is it easy to get out of?
+Technically, no; you can choose to opt out of sending your data to our server. But if you do opt out, we won’t be able to analyze your responses and provide you with any feedback about your daydreaming tendencies, so we’re not sure why you’d want to use the app without participating in the research!
+
+Can I stop participating in the research at any time?
+
+Absolutely. You can remove or stop using the app at any time.
 
 How much data does it use?
 
-I have another question:
-If there is anything else you would like to know, please contact us:
+Very little: under 10kb per day. To put it in perspective, this is much less than the vast majority of apps you can install from the Play Store, and is only a fraction of the amount of data an app like Google Maps will use in a typical session.
+
+I have another question!
+
+If there is anything else you would like to know, please don’t hesitate to email us:
 - email at: ...@
 - write us at: ...
 - visit: www...
+
+

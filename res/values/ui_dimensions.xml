@@ -74,6 +74,8 @@
 
     <!-- TermsActivity -->
     <dimen  name="terms_text_side_padding" >30dp</dimen>
+    <dimen  name="terms_vertical_spacing_title_text">20dp</dimen>
+    <dimen  name="terms_vertical_paddingTop_title">20dp</dimen>
 
     <!-- ProfileActivity -->
     <dimen  name="profile_title_vertical_space" >30dp</dimen>
@@ -88,8 +90,8 @@
 
     <!-- MeasuresActivity -->
     <dimen  name="measures_item_vertical_spacing" >15dp</dimen>
-    <dimen  name="measures_paddingTop" >0dp</dimen>
-    <dimen  name="measures_paddingBottom" >0dp</dimen>
+    <dimen  name="measures_paddingTop" >10dp</dimen>
+    <dimen  name="measures_paddingBottom" >10dp</dimen>
     <dimen  name="measures_lateralPadding" >0dp</dimen>
 
     <!-- QuestionnaireActivity -->
@@ -100,6 +102,9 @@
     <dimen  name="questionnaire_lateralPadding" >0dp</dimen>
 
 
+
+    <!-- QuestionsMultipleChoiceActivity -->
+    <dimen  name="question_occupation_line_marginBottom" >20dp</dimen>
 
 
 

@@ -22,12 +22,12 @@ public abstract class FirstLaunchActivity extends RoboSherlockFragmentActivity {
 
     private static String TAG = "FirstLaunchActivity";
 
+
     @Inject  StatusManager statusManager;
 
     @Override
     public void onStart() {
         Logger.v(TAG, "Starting");
-        checkFirstLaunch();
         super.onStart();
     }
 
@@ -66,8 +66,8 @@ public abstract class FirstLaunchActivity extends RoboSherlockFragmentActivity {
     /**
      * Kills activity if first launch already fully completed.
      */
-    protected void checkFirstLaunch() {
-        if (statusManager.isFirstLaunchCompleted()) {
+    public void checkFirstLaunch() {
+        if ( (statusManager.isFirstLaunchCompleted()) ) {
             Logger.i(TAG, "First launch completed -> finishing");
             finish();
         } else {
@@ -93,7 +93,7 @@ public abstract class FirstLaunchActivity extends RoboSherlockFragmentActivity {
      */
     protected void launchDashBoardActivity() {
         Intent intent = new Intent(this, DashboardActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
 

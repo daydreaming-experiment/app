@@ -2,24 +2,31 @@ package com.brainydroid.daydreaming.ui.ReOpen;
 
 import android.app.*;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.format.DateFormat;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.background.SchedulerService;
+import com.brainydroid.daydreaming.db.Util;
 import com.brainydroid.daydreaming.ui.FontUtils;
 import com.brainydroid.daydreaming.ui.TimePickerFragment;
+import com.google.inject.Inject;
 import roboguice.activity.RoboActivity;
 import roboguice.inject.ContentView;
+import roboguice.inject.InjectResource;
 import roboguice.inject.InjectView;
 
 
+
 @ContentView(R.layout.activity_appsettings_layout)
-public class AppSettingsActivity extends RoboActivity { //implements OnSharedPreferenceChangeListener {
+public class AppSettingsActivity extends RoboActivity{
 
     public static String TIME_FROM = "time_from";
     public static String TIME_UNTIL = "time_until";
@@ -27,18 +34,23 @@ public class AppSettingsActivity extends RoboActivity { //implements OnSharedPre
     private static String TAG = "AppSettingsActivity";
     private static int MIN_WINDOW_HOURS = 5; // 5 hours (in hours)
 
-   // private TimePreference timePreferenceMax;
-   // private TimePreference timePreferenceMin;
+    // private TimePreference timePreferenceMax;
+    // private TimePreference timePreferenceMin;
 
     public static final String PREFS_FILE = "prefs";
 
-   // public SharedPreferences sharedPreferences;
 
-    @InjectView(R.id.settings_time_text_from) TextView textview_time_from;
-    @InjectView(R.id.settings_time_text_until) TextView textview_time_until;
+    @InjectView(R.id.settings_time_text_from_layout)   LinearLayout layout_time_from;
+    @InjectView(R.id.settings_time_text_until_layout) LinearLayout layout_time_until;
 
-     // @InjectResource(R.pref.settings_time_window_lb_default) String defaultTimePreferenceMin;
-   // @InjectResource(R.pref.settings_time_window_ub_default) String defaultTimePreferenceMax;
+    @InjectView(R.id.settings_time_text_from) TextView tv_time_from;
+    @InjectView(R.id.settings_time_text_until) TextView tv_time_until;
+
+
+    @Inject SharedPreferences sharedPreferences;
+
+    @InjectResource(R.pref.settings_time_window_lb_default) String defaultTimePreferenceMin;
+    @InjectResource(R.pref.settings_time_window_ub_default) String defaultTimePreferenceMax;
 
     //@InjectResource(R.string.settings_time_corrected_1) String timeCorrectedText1;
     //@InjectResource(R.string.settings_time_corrected_2) String timeCorrectedText2;
@@ -50,9 +62,7 @@ public class AppSettingsActivity extends RoboActivity { //implements OnSharedPre
 
 
 
-       // setContentView(R.layout.activity_appsettings_layout);
-         //  textview_time_from = (TextView)findViewById(R.id.settings_time_text_from);
-         //  textview_time_until = (TextView)findViewById(R.id.settings_time_text_until);
+
 
         ViewGroup godfatherView = (ViewGroup)this.getWindow().getDecorView();
         FontUtils.setRobotoFont(this, godfatherView);
@@ -67,7 +77,7 @@ public class AppSettingsActivity extends RoboActivity { //implements OnSharedPre
         super.onResume();
 
         // Set up a listener for whenever a key changes
-        //sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+       // sharedPreferences.registerOnSharedPreferenceChangeListener(this);
     }
 
     @Override
@@ -84,18 +94,18 @@ public class AppSettingsActivity extends RoboActivity { //implements OnSharedPre
         Logger.d(TAG, "Initializing variables");
 
 
-        //sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String Time_from = sharedPreferences.getString(TIME_FROM,defaultTimePreferenceMin);
+        String Time_until = sharedPreferences.getString(TIME_UNTIL,defaultTimePreferenceMax);
+        tv_time_from.setText(Time_from);
+        tv_time_until.setText(Time_until);
 
 //        timePreferenceMin = new TimePreference(getApplicationContext());
         //timePreferenceMin.setTime(sharedPreferences.getString("time_window_lb_key","00:00"));
 //        timePreferenceMax = new TimePreference(getApplicationContext());
         //timePreferenceMax.setTime(sharedPreferences.getString("time_window_ub_key","00:00"));
-
         //timePreferenceMax = (TimePreference)preferenceScreen.findPreference("time_window_ub_key");
-
-
-  //      timePreferenceMin.setSummary(timePreferenceMin.getTimeString());
-  //      timePreferenceMax.setSummary(timePreferenceMax.getTimeString());
+        //      timePreferenceMin.setSummary(timePreferenceMin.getTimeString());
+        //      timePreferenceMax.setSummary(timePreferenceMax.getTimeString());
     }
 
     public void addListenerOnButton() {
@@ -104,26 +114,23 @@ public class AppSettingsActivity extends RoboActivity { //implements OnSharedPre
 
         //TODO: deal with loading defautls when no shared pref and sharedpref otherwise
 
-        String Time_from = "09:00"; //sharedPreferences.getString(TIME_FROM,"00:00");
-        String Time_until = "19:00"; // sharedPreferences.getString(TIME_UNTIL,"00:00");
 
-        //textview_time_from.setText(Time_from);
-        //textview_time_until.setText(Time_until);
 
-        final int hour_from = Integer.parseInt(Time_from.substring(0, 2));
-        final int minute_from = Integer.parseInt(Time_from.substring(3, 5));
-
-        final int hour_until = Integer.parseInt(Time_until.substring(0, 2));
-        final int minute_until = Integer.parseInt(Time_until.substring(3, 5));
 
 
 
         Logger.v(TAG, "Creating Listeners");
 
-        textview_time_from.setOnClickListener(new View.OnClickListener() {
+        layout_time_from.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                String Time_from = sharedPreferences.getString(TIME_FROM,defaultTimePreferenceMin);
+                final int minute_from = Integer.parseInt(Time_from.substring(3, 5));
+                final int hour_from = Integer.parseInt(Time_from.substring(0, 2));
+
                 DialogFragment newFragment = new TimePickerFragment() {
+
                     @Override
                     public Dialog onCreateDialog(Bundle savedInstanceState) {
                         return new TimePickerDialog(getActivity(), this, hour_from, minute_from, DateFormat.is24HourFormat(getActivity()));
@@ -132,16 +139,31 @@ public class AppSettingsActivity extends RoboActivity { //implements OnSharedPre
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                         //TODO Set text and save preference and relaunch scheduler if conflict
-                        textview_time_from.setText(new StringBuilder().append(pad(hourOfDay)).append(":").append(pad(minute)));
+
+                        StringBuilder sb = new StringBuilder().append(pad(hourOfDay)).append(":").append(pad(minute));
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putString(TIME_FROM, sb.toString()); // value to store
+                        editor.commit();
+
+                        // listener will here eventually correct and update the view
+                        correctTimeWindow();
+                        update_time_views();
+                        startSchedulerService();
+
                     }
                 };
                 newFragment.show(getFragmentManager(), "timePicker_from");
             }
         });
 
-        textview_time_until.setOnClickListener(new View.OnClickListener() {
+        layout_time_until.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                String Time_until = sharedPreferences.getString(TIME_UNTIL,defaultTimePreferenceMax);
+                final int minute_until = Integer.parseInt(Time_until.substring(3, 5));
+                final int hour_until = Integer.parseInt(Time_until.substring(0, 2));
+
                 DialogFragment newFragment = new TimePickerFragment() {
                     @Override
                     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -151,7 +173,19 @@ public class AppSettingsActivity extends RoboActivity { //implements OnSharedPre
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                         //TODO Set text and save preference and relaunch scheduler if conflict
-                        textview_time_until.setText(new StringBuilder().append(pad(hourOfDay)).append(":").append(pad(minute)));
+
+                        // update sharedpreference
+                        StringBuilder sb = new StringBuilder().append(pad(hourOfDay)).append(":").append(pad(minute));
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putString(TIME_UNTIL, sb.toString()); // value to store
+                        editor.commit();
+
+                        // listener will here eventually correct and update the view
+                        correctTimeWindow();
+                        update_time_views();
+                        startSchedulerService();
+
+
                     }
                 };
                 newFragment.show(getFragmentManager(), "timePicker_until");
@@ -161,7 +195,7 @@ public class AppSettingsActivity extends RoboActivity { //implements OnSharedPre
 
     }
 
-    /*
+           /*
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         Logger.d(TAG, "Preferences changed");
@@ -171,20 +205,25 @@ public class AppSettingsActivity extends RoboActivity { //implements OnSharedPre
                     "it, updating summaries, and starting scheduler " +
                     "service");
             correctTimeWindow();
-     //       timePreferenceMax.setSummary(timePreferenceMax.getTimeString());
-     //       timePreferenceMin.setSummary(timePreferenceMin.getTimeString());
+            update_time_views();
             startSchedulerService();
         }
     }
-    */
+             */
 
     //TODO: redo the checks
     private void correctTimeWindow() {
         if (!checkTimeWindow()) {
             Logger.d(TAG, "Time window set by user is not allowed, " +
                     "correcting");
-  //          timePreferenceMin.setTime(defaultTimePreferenceMin);
-  //          timePreferenceMax.setTime(defaultTimePreferenceMax);
+
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString(TIME_FROM, defaultTimePreferenceMin); // value to store
+            editor.putString(TIME_UNTIL, defaultTimePreferenceMax); // value to store
+            editor.commit();
+
+            //          timePreferenceMin.setTime(defaultTimePreferenceMin);
+            //          timePreferenceMax.setTime(defaultTimePreferenceMax);
             // Toast.makeText(this, timeCorrectedText1 + " " + MIN_WINDOW_HOURS +
             //        " " + timeCorrectedText2, Toast.LENGTH_LONG).show();
         } else {
@@ -195,13 +234,14 @@ public class AppSettingsActivity extends RoboActivity { //implements OnSharedPre
     // TODO redo check time without time preference
     private boolean checkTimeWindow() {
 
-        /**
-        String timeFirst = timePreferenceMin.getTimeString();
+
+        String timeFirst = sharedPreferences.getString(TIME_FROM,defaultTimePreferenceMin);
+        String timeLast = sharedPreferences.getString(TIME_UNTIL,defaultTimePreferenceMax);
+
         int firstHour = Util.getHour(timeFirst);
         int firstMinute = Util.getMinute(timeFirst);
         int first = firstHour * 60 + firstMinute;
 
-        String timeLast = timePreferenceMax.getTimeString();
         int lastHour = Util.getHour(timeLast);
         int lastMinute = Util.getMinute(timeLast);
         int last = lastHour * 60 + lastMinute;
@@ -213,8 +253,18 @@ public class AppSettingsActivity extends RoboActivity { //implements OnSharedPre
 
         return (first + MIN_WINDOW_HOURS * 60) <= last;
 
-        **/
-        return true;
+    }
+
+    /**
+     * Update the view from sharedpreferences
+     */
+    private void update_time_views(){
+        String Time_from = sharedPreferences.getString(TIME_FROM,defaultTimePreferenceMin);
+        String Time_until = sharedPreferences.getString(TIME_UNTIL,defaultTimePreferenceMax);
+        tv_time_from.setText(Time_from);
+        tv_time_until.setText(Time_until);
+
+
     }
 
     private void startSchedulerService() {
@@ -227,7 +277,9 @@ public class AppSettingsActivity extends RoboActivity { //implements OnSharedPre
     public void onBackPressed() {
         Logger.v(TAG, "Back pressed, setting slide transition");
         super.onBackPressed();
-        overridePendingTransition(R.anim.push_bottom_in, R.anim.push_top_out);
+        //overridePendingTransition(R.anim.push_bottom_in, R.anim.push_top_out);
+        overridePendingTransition(R.anim.push_bottom_in, R.anim.push_bottom_out);
+
     }
     public void onClick_backtodashboard(View v) {
         onBackPressed();
@@ -240,25 +292,25 @@ public class AppSettingsActivity extends RoboActivity { //implements OnSharedPre
     }
 
     /**
-    // see http://www.mkyong.com/android/android-time-picker-example/ for timepicker example.. we don't need time preference anymore
-    public void onClick_time_from(View v){
-        DialogFragment newFragment = new TimePickerFragment(){
-            @Override
-            public void onTimeSet(){
-                //TODO Set text and save preference and relaunch scheduler if conflict
-            }
-        };
-        newFragment.show(getFragmentManager(), "timePicker_from");
+     // see http://www.mkyong.com/android/android-time-picker-example/ for timepicker example.. we don't need time preference anymore
+     public void onClick_time_from(View v){
+     DialogFragment newFragment = new TimePickerFragment(){
+    @Override
+    public void onTimeSet(){
+    //TODO Set text and save preference and relaunch scheduler if conflict
     }
+    };
+     newFragment.show(getFragmentManager(), "timePicker_from");
+     }
 
-    public void onClick_time_until(View v){
-        DialogFragment newFragment = new TimePickerFragment(){
-            @Override
-            public void onTimeSet(){
-                //TODO Set text and save preference and relaunch scheduler if conflict
-            }
-        };newFragment.show(getFragmentManager(), "timePicker_until");
+     public void onClick_time_until(View v){
+     DialogFragment newFragment = new TimePickerFragment(){
+    @Override
+    public void onTimeSet(){
+    //TODO Set text and save preference and relaunch scheduler if conflict
     }
+    };newFragment.show(getFragmentManager(), "timePicker_until");
+     }
      */
 
     private static String pad(int c) {

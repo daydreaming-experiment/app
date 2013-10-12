@@ -1,6 +1,7 @@
 package com.brainydroid.daydreaming.ui.FirstLaunchSequence;
 
 import android.os.Bundle;
+import android.text.Html;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -34,6 +35,9 @@ public class FirstLaunch02TermsActivity extends FirstLaunchActivity implements S
 
 
     @InjectView(R.id.firstLaunchTerms_textConsent) TextView consent;
+    @InjectView(R.id.firstLaunchTerms_moreConsent_button) TextView more_consent_button;
+    @InjectView(R.id.firstLaunchTerms_moreConsent_text) TextView more_consent_text;
+
     @InjectView(R.id.firstLaunchTerms_Scrollview) ScrollViewExt sv;
     @InjectView(R.id.firstLaunchTerms_buttonAgree) Button Agree_button;
     @InjectView(R.id.firstLaunchTerms_buttonDisagree) Button Disagree_button;
@@ -42,26 +46,14 @@ public class FirstLaunch02TermsActivity extends FirstLaunchActivity implements S
     public void onCreate(Bundle savedInstanceState) {
         Logger.v(TAG, "Creating");
         super.onCreate(savedInstanceState);
+        Ext_Checkfirstlaunch();
 
-        Agree_button.setEnabled(false);
-        Disagree_button.setEnabled(true);
-        sv.setScrollViewListener(this);
-
-        Agree_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onClick_buttonAgree(view);
-            }
-        });
-        Disagree_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onClick_buttonDisagree(view);
-            }
-        });
-
-        populateConsent();
+        setbuttons_and_scrollviewlistener();
+        addagreementbuttonlistener();
+        addinfobuttonlistener();
+        consent.setText(Html.fromHtml(getString(R.string.terms_html)));
     }
+
 
     /**
      * called by scrollview listerner when scrollview position changes.
@@ -102,15 +94,52 @@ public class FirstLaunch02TermsActivity extends FirstLaunchActivity implements S
     /**
      * Loads terms res/raw/terms into adequate textview
      */
-    private void populateConsent() {
-        try {
-            InputStream termsInputStream = getResources().openRawResource(R.raw.terms);
-            consent.setText(Util.convertStreamToString(termsInputStream));
-            termsInputStream.close();
-        } catch (IOException e) {
-            Logger.e(TAG, "Error reading consent file");
-            e.printStackTrace();
-        }
+
+    public void Ext_Checkfirstlaunch(){
+        checkFirstLaunch();
+    }
+
+    public void addinfobuttonlistener(){
+        Agree_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onClick_buttonAgree(view);
+            }
+        });
+        Disagree_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onClick_buttonDisagree(view);
+            }
+        });
+        more_consent_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+        more_consent_text.setText(Html.fromHtml(getString(R.string.more_terms_html)));  }
+        });
+
+    }
+
+    public void addagreementbuttonlistener(){
+        Agree_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onClick_buttonAgree(view);
+            }
+        });
+        Disagree_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onClick_buttonDisagree(view);
+            }
+        });
+    }
+
+    public  void setbuttons_and_scrollviewlistener(){
+        Agree_button.setEnabled(false);
+        Disagree_button.setEnabled(true);
+        sv.setScrollViewListener(this);
+
     }
 
 }

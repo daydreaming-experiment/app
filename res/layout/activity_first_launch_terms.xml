@@ -71,23 +71,66 @@
             android:paddingLeft="15dp"
             android:scrollbarSize="5dp"
             android:scrollbarThumbVertical="@drawable/scrollbar_vertical_thumb"
-
             >
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                    android:id="@+id/firstLaunchTerms_titleConsent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:text="@string/firstLaunchTerms_text_title"
+                    android:paddingBottom="@dimen/terms_vertical_spacing_title_text"
+                    android:paddingTop="@dimen/terms_vertical_paddingTop_title"
+                    android:textAppearance="@style/ui_font_title_white_bold" />
 
 
             <TextView
                     android:id="@+id/firstLaunchTerms_textConsent"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_below="@id/firstLaunchTerms_titleConsent"
                     android:gravity="left"
                     android:text=""
                     android:paddingBottom="30dp"
                     android:paddingRight="30dp"
                     android:paddingLeft="30dp"
                     android:lineSpacingExtra="@dimen/text_linespacing"
-                    android:textAppearance="?android:attr/textAppearanceLarge" />
+                    android:textAppearance="@style/ui_font_title_white" />
 
-   </com.brainydroid.daydreaming.ui.Questions.ScrollViewExt>
+            <TextView
+                    android:id="@+id/firstLaunchTerms_moreConsent_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/firstLaunchTerms_textConsent"
+                    android:gravity="right"
+                    android:padding="30dp"
+                    android:text="@string/firstLaunchTerms_text_more_consent"
+                    android:textAppearance="@style/ui_font_title_white_bold"
+                    />
+
+
+            <TextView
+                    android:id="@+id/firstLaunchTerms_moreConsent_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/firstLaunchTerms_moreConsent_button"
+                    android:gravity="left"
+                    android:text=""
+                    android:paddingBottom="30dp"
+                    android:paddingRight="30dp"
+                    android:paddingLeft="30dp"
+                    android:lineSpacingExtra="@dimen/text_linespacing"
+                    android:textAppearance="@style/ui_font_title_white" />
+
+
+        </RelativeLayout>
+
+
+    </com.brainydroid.daydreaming.ui.Questions.ScrollViewExt>
 
 
 

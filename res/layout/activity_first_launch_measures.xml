@@ -11,13 +11,15 @@
 <RelativeLayout xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="16dp"
                 android:gravity="center" >
 
 
     <LinearLayout
                   android:orientation="vertical"
                   android:layout_gravity="center_horizontal"
+                  android:layout_marginTop="@dimen/measures_item_vertical_spacing"
+                  android:layout_marginBottom="@dimen/measures_item_vertical_spacing"
+
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
                   android:id="@+id/firstLaunchMeasures2_layout_data">
@@ -49,7 +51,6 @@
                 android:paddingRight="@dimen/block_button_horizontal_padding"
                 android:paddingTop="@dimen/block_button_vertical_padding"
                 android:paddingBottom="@dimen/block_button_vertical_padding"
-                android:layout_marginBottom="@dimen/measures_item_vertical_spacing"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -58,6 +59,7 @@
                 android:textColor="@color/ui_white_text_color"
                 android:background="@drawable/dark_blue_rectangle"
                 android:onClick="onClick_buttonNetworkSettings"
+                android:layout_marginBottom="@dimen/measures_item_vertical_spacing"
                 />
 
 
@@ -71,7 +73,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/firstLaunchMeasures2_layout_location"
             android:layout_below="@id/firstLaunchMeasures2_layout_data"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="@dimen/measures_item_vertical_spacing"
             android:layout_marginBottom="@dimen/measures_item_vertical_spacing"
 
             >
@@ -131,7 +133,6 @@
             android:padding="16dp"
             android:id="@+id/firstLaunchMeasures2_layout_pull"
             android:layout_below="@id/firstLaunchMeasures2_layout_location"
-
             android:orientation="vertical" >
 
 
@@ -158,6 +159,7 @@
                 android:layout_marginBottom="4dp"
                 android:drawableLeft="@drawable/status_wrong"
                 android:gravity="center_vertical"
+                android:textAppearance="@style/ui_font_bodytext_white"
                 android:text="@string/firstLaunchMeasures2_text_downloading" />
 
 

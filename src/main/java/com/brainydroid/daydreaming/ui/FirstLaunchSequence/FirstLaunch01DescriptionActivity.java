@@ -2,9 +2,11 @@ package com.brainydroid.daydreaming.ui.FirstLaunchSequence;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
@@ -33,7 +35,7 @@ public class FirstLaunch01DescriptionActivity extends FirstLaunchActivity {
     private static String TAG = "FirstLaunch01DescriptionActivity";
     @InjectView(R.id.firstLaunchDescription_textDescription) TextView description;
 
-
+    ImageButton next_button;
 
     /**
      *
@@ -43,7 +45,14 @@ public class FirstLaunch01DescriptionActivity extends FirstLaunchActivity {
     public void onCreate(Bundle savedInstanceState) {
         Logger.v(TAG, "Creating");
         super.onCreate(savedInstanceState);
+        Ext_Checkfirstlaunch();
+
+        next_button = (ImageButton)findViewById(R.id.firstLaunchDescription_buttonNext);
+
         populateDescription();
+        setbutton();
+
+
         setRobotofont(this);
         Linkify.addLinks(description,Linkify.WEB_URLS | Linkify.EMAIL_ADDRESSES);
 
@@ -74,6 +83,12 @@ public class FirstLaunch01DescriptionActivity extends FirstLaunchActivity {
         }
     }
 
+
+    public void setbutton(){
+        next_button.setVisibility(View.VISIBLE);
+        next_button.setClickable(true);
+    }
+
     /**
      * Terms activity separated in sequence.
      * Exiting at this point completely leaves the app.
@@ -86,6 +101,10 @@ public class FirstLaunch01DescriptionActivity extends FirstLaunchActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
         overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+    }
+
+    public void Ext_Checkfirstlaunch(){
+        checkFirstLaunch();
     }
 
 
