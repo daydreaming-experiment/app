@@ -50,9 +50,6 @@
 
 
     <!-- App Settings Activity -->
-    <string name="notification_sound">Allow notification sound</string>
-    <string name="notification_vibrator">Vibrate with notification</string>
-    <string name="notification_led">Blink with notification</string>
     <string name="time_window_lb">From </string>
     <string name="time_window_ub">Until</string>
     <string name="time_window_settings">Time window for notifications</string>
@@ -152,9 +149,9 @@
     <string name="appsettings_time_from">From </string>
     <string name="appsettings_time_until">Until </string>
 
-    <string name="appsettings_allow_blink_text">Vibrates with notification</string>
-    <string name="appsettings_allow_vibrations_text">Vibrates with notification</string>
-    <string name="appsettings_allow_sound_text">Blink at notification</string>
+    <string name="appsettings_allow_blink_text">Blinks at questions</string>
+    <string name="appsettings_allow_vibrations_text">Vibrate at questions</string>
+    <string name="appsettings_allow_sound_text">Beeps at questions</string>
 
 
 
