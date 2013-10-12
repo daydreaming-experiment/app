@@ -33,7 +33,7 @@ public class Profile {
                    @Assisted("age") String age,
                    @Assisted("gender") String gender,
                    @Assisted("education") String education,
-                   @Assisted HashMap<Integer, Integer> tipiAnswers) {
+                   @Assisted HashMap<String, Integer> tipiAnswers) {
         Logger.v(TAG, "Creating a Profile instance with detailed data");
         this.profile_data = profileDataFactory.create(age, gender, education,
                 tipiAnswers);
@@ -43,7 +43,7 @@ public class Profile {
         return id;
     }
 
-    public synchronized ProfileWrapper getWrapper() {
+    public synchronized ProfileWrapper buildWrapper() {
         return profileWrapperFactory.create(this);
     }
 }
