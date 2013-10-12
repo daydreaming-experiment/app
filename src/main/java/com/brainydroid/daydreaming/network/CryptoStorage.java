@@ -85,8 +85,9 @@ public class CryptoStorage {
                     ProfileRegistrationData registrationAnswer = json.fromJson(serverAnswer,
                             ProfileRegistrationData.class);
                     // TODO: handle the case where returned JSON is in fact an error.
-                    Toast.makeText(context, "Server answer: " + serverAnswer,
-                            Toast.LENGTH_LONG);
+                    Logger.td(context, "Server answer: ",
+                            serverAnswer.replace("{", "'{'")
+                                    .replace("}", "'}'"));
                     String maiId = registrationAnswer.getProfile().getId();
                     storageSuccess = storeKeyPairAndMaiId(kp, maiId);
 

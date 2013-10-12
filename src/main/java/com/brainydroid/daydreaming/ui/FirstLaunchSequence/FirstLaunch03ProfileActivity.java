@@ -63,9 +63,6 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
     public void onClick_buttonNext(@SuppressWarnings("UnusedParameters") View view) {
         Logger.v(TAG, "Next button clicked");
 
-
-        //Toast.makeText(this,Boolean.toString(checkForm()),Toast.LENGTH_SHORT).show();
-
         if (!checkForm()) {
             Logger.d(TAG, "Form check failed");
         } else {
