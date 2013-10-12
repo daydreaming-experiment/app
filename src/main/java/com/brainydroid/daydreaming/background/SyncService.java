@@ -306,7 +306,7 @@ public class SyncService extends RoboService {
         Logger.d(TAG, "Syncing profile data");
 
         ProfileWrapper profileWrap = profileStorage.getProfile()
-                .getWrapper();
+                .buildWrapper();
 
         // Called when the HttpPutTask finishes or times out
         HttpConversationCallback callback = new HttpConversationCallback() {

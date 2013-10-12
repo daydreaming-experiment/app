@@ -15,7 +15,7 @@ public class ProfileData {
     @Expose private String age;
     @Expose private String gender;
     @Expose private String education;
-    @Expose @Inject private HashMap<String, Integer> tipi_answers;
+    @Expose private HashMap<String, Integer> tipi_answers;
 
     @Inject
     public ProfileData(@Assisted("age") String age,
