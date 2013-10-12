@@ -42,6 +42,9 @@ public class StatusManager {
     public static String QUESTIONS_UPDATE_MALFORMED =
             "questionsUpdateMalformed";
 
+    /** Callback called when questionsUpdateStatus changes */
+    private QuestionsUpdateCallback questionsUpdateCallback = null;
+
     /** Preference key storing timestamp of beginning of experiment */
     @SuppressWarnings("FieldCanBeLocal")
     private static String EXP_START_TIMESTAMP = "expStartTimestamp";
@@ -49,9 +52,6 @@ public class StatusManager {
     /** Preference key storing latest retrieved ntp timestamp */
     @SuppressWarnings("FieldCanBeLocal")
     private static String LATEST_NTP_TIMESTAMP = "latestNtpTimestamp";
-
-    /** Callback called when questionsUpdateStatus changes */
-    private QuestionsUpdateCallback questionsUpdateCallback = null;
 
     /**
      * Interval below which we don't need to re-sync data to servers (in
@@ -271,6 +271,13 @@ public class StatusManager {
         Logger.d(TAG, "Setting latest ntp requested time to {}", timestamp);
         eSharedPreferences.putLong(LATEST_NTP_TIMESTAMP, timestamp);
         eSharedPreferences.commit();
+
+        if (!sharedPreferences.contains(EXP_START_TIMESTAMP)) {
+            Logger.w(TAG, "expStartTimestamp doesn't seem to have been set. " +
+                    "Setting it to this latest (and probably first) NTP " +
+                    "timestamp");
+            setExperimentStartTimestamp(timestamp);
+        }
     }
 
     public synchronized long getLatestNtpTime() {
