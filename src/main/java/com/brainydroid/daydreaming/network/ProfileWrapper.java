@@ -1,12 +1,16 @@
 package com.brainydroid.daydreaming.network;
 
 import com.google.gson.annotations.Expose;
+import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
+import com.google.inject.assistedinject.AssistedInject;
 
-public class ProfileRegistrationData {
+public class ProfileWrapper {
 
     @Expose private Profile profile;
 
-    public ProfileRegistrationData(Profile profile) {
+    @Inject
+    public ProfileWrapper(@Assisted Profile profile) {
         this.profile = profile;
     }
 
