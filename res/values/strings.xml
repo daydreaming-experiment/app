@@ -1,5 +1,11 @@
 <resources>
 
+
+    <!-- __________________________________________________ -->
+
+    <string name="app_website">http://www.daydreaming-the-app.net</string>
+    <string name="app_mail">contact@daydreaming-the-app.net</string>
+
     <!-- __________________________________________________ -->
 
     <string name="app_name">Day Dreaming</string>
@@ -150,7 +156,7 @@
     <string name="appsettings_time_until">Until </string>
 
     <string name="appsettings_allow_blink_text">Blinks at questions</string>
-    <string name="appsettings_allow_vibrations_text">Vibrate at questions</string>
+    <string name="appsettings_allow_vibrations_text">Vibrates at questions</string>
     <string name="appsettings_allow_sound_text">Beeps at questions</string>
 
 
