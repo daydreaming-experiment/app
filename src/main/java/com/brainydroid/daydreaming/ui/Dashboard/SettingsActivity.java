@@ -1,4 +1,4 @@
-package com.brainydroid.daydreaming.ui.ReOpen;
+package com.brainydroid.daydreaming.ui.Dashboard;
 
 import android.app.*;
 import android.content.Intent;
@@ -27,12 +27,12 @@ import roboguice.inject.InjectView;
 
 
 @ContentView(R.layout.activity_appsettings_layout)
-public class AppSettingsActivity extends RoboActivity{
+public class SettingsActivity extends RoboActivity{
 
     public static String TIME_FROM = "time_from";
     public static String TIME_UNTIL = "time_until";
 
-    private static String TAG = "AppSettingsActivity";
+    private static String TAG = "SettingsActivity";
     private static int MIN_WINDOW_HOURS = 5; // 5 hours (in hours)
 
     private static String NOTIF_VIBRATION = "notification_vibrator_key";

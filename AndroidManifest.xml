@@ -35,7 +35,7 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".ui.FirstLaunchSequence.DashboardActivity"
+        <activity android:name=".ui.Dashboard.DashboardActivity"
                   android:label="@string/app_name"
                   android:theme="@style/MyCustomTheme"
                   android:screenOrientation="portrait">
@@ -45,7 +45,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.ReOpen.AppSettingsActivity"
+        <activity android:name=".ui.Dashboard.SettingsActivity"
                   android:label="@string/settings_title_activity"
                   android:theme="@style/MyCustomTheme"
                   android:screenOrientation="portrait">
@@ -103,18 +103,18 @@
 
         <!-- The Single Opening Activities -->
 
-        <activity android:name=".ui.FirstLaunchSequence.ReOpenDescriptionActivity"
+        <activity android:name=".ui.Dashboard.DescriptionActivity"
                   android:theme="@style/MyCustomTheme"
                   android:screenOrientation="portrait">
         </activity>
 
 
-        <activity android:name=".ui.FirstLaunchSequence.ReOpenTermsActivity"
+        <activity android:name=".ui.Dashboard.TermsActivity"
                   android:theme="@style/MyCustomTheme"
                   android:screenOrientation="portrait">
         </activity>
 
-        <activity android:name=".ui.ReOpen.AboutActivity"
+        <activity android:name=".ui.Dashboard.AboutActivity"
                   android:theme="@style/MyCustomTheme"
                   android:screenOrientation="portrait">
         </activity>

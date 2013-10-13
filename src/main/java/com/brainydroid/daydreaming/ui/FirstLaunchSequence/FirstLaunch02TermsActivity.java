@@ -9,8 +9,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
-import com.brainydroid.daydreaming.ui.Questions.ScrollViewExt;
-import com.brainydroid.daydreaming.ui.Questions.ScrollViewListener;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
@@ -32,13 +30,17 @@ public class FirstLaunch02TermsActivity extends FirstLaunchActivity implements S
     private static String TAG = "FirstLaunch02TermsActivity";
 
 
-    @InjectView(R.id.firstLaunchTerms_textConsent) TextView consent;
-    @InjectView(R.id.firstLaunchTerms_moreConsent_button) TextView more_consent_button;
-    @InjectView(R.id.firstLaunchTerms_moreConsent_text) TextView more_consent_text;
+    @InjectView(R.id.firstLaunchTerms_textConsent) protected TextView consent;
+    @InjectView(R.id.firstLaunchTerms_moreConsent_button)
+    protected TextView more_consent_button;
+    @InjectView(R.id.firstLaunchTerms_moreConsent_text)
+    protected TextView more_consent_text;
 
     @InjectView(R.id.firstLaunchTerms_Scrollview) ScrollViewExt sv;
-    @InjectView(R.id.firstLaunchTerms_buttonAgree) Button agreeButton;
-    @InjectView(R.id.firstLaunchTerms_buttonDisagree) Button disagreeButton;
+    @InjectView(R.id.firstLaunchTerms_buttonAgree)
+    protected Button agreeButton;
+    @InjectView(R.id.firstLaunchTerms_buttonDisagree)
+    protected Button disagreeButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

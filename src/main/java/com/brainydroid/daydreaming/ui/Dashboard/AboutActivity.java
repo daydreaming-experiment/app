@@ -1,4 +1,4 @@
-package com.brainydroid.daydreaming.ui.ReOpen;
+package com.brainydroid.daydreaming.ui.Dashboard;
 
 import android.os.Bundle;
 import android.view.ViewGroup;
