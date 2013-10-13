@@ -1,4 +1,4 @@
-package com.brainydroid.daydreaming.ui.Questions;
+package com.brainydroid.daydreaming.ui.FirstLaunchSequence;
 
 import android.content.Context;
 import android.util.AttributeSet;

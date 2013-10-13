@@ -61,7 +61,7 @@
     </RelativeLayout>
 
 
-    <com.brainydroid.daydreaming.ui.Questions.ScrollViewExt
+    <com.brainydroid.daydreaming.ui.FirstLaunchSequence.ScrollViewExt
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:id="@+id/firstLaunchTerms_Scrollview"
@@ -133,7 +133,7 @@
         </RelativeLayout>
 
 
-    </com.brainydroid.daydreaming.ui.Questions.ScrollViewExt>
+    </com.brainydroid.daydreaming.ui.FirstLaunchSequence.ScrollViewExt>
 
 
 

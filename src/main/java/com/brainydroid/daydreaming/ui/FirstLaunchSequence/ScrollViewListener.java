@@ -1,4 +1,4 @@
-package com.brainydroid.daydreaming.ui.Questions;
+package com.brainydroid.daydreaming.ui.FirstLaunchSequence;
 
 public interface ScrollViewListener {
     void onScrollChanged(ScrollViewExt scrollView,

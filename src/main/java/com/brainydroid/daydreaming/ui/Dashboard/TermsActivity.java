@@ -1,16 +1,17 @@
-package com.brainydroid.daydreaming.ui.FirstLaunchSequence;
+package com.brainydroid.daydreaming.ui.Dashboard;
 
 import android.text.Html;
 import android.view.View;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
+import com.brainydroid.daydreaming.ui.FirstLaunchSequence.FirstLaunch02TermsActivity;
 import roboguice.inject.ContentView;
 
 @ContentView(R.layout.activity_first_launch_terms)
 
-public class ReOpenTermsActivity extends FirstLaunch02TermsActivity {
+public class TermsActivity extends FirstLaunch02TermsActivity {
 
-    private static String TAG = "ReOpenTermsActivity";
+    private static String TAG = "TermsActivity";
 
     @Override
     public  void setButtonAndScrollViewListener() {

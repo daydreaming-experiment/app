@@ -58,7 +58,7 @@
     <dimen  name="description_text_linespacing" >5dp</dimen>
 
 
-    <!-- AppSettingsActivity -->
+    <!-- SettingsActivity -->
     <dimen  name="settings_side_margins" >30dp</dimen>
     <dimen  name="settings_icon_size" >30dp</dimen>
     <dimen  name="settings_time_arrow_size" >30dp</dimen>

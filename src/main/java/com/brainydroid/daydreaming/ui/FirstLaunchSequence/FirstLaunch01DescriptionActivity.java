@@ -34,7 +34,7 @@ public class FirstLaunch01DescriptionActivity extends FirstLaunchActivity {
     private static String TAG = "FirstLaunch01DescriptionActivity";
     @InjectView(R.id.firstLaunchDescription_textDescription) TextView description;
 
-    ImageButton nextButton;
+    protected ImageButton nextButton;
 
     /**
      *
