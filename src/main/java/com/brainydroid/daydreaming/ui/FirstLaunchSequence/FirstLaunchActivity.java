@@ -23,14 +23,8 @@ public abstract class FirstLaunchActivity extends RoboSherlockFragmentActivity {
 
     private static String TAG = "FirstLaunchActivity";
 
-    @Inject  StatusManager statusManager;
+    @Inject StatusManager statusManager;
     @Inject SntpClient sntpClient;
-
-    @Override
-    public void onStart() {
-        Logger.v(TAG, "Starting");
-        super.onStart();
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -40,8 +34,16 @@ public abstract class FirstLaunchActivity extends RoboSherlockFragmentActivity {
     }
 
     @Override
+    public void onStart() {
+        Logger.v(TAG, "Starting");
+        checkFirstLaunch();
+        super.onStart();
+    }
+
+    @Override
     public void onResume() {
         Logger.v(TAG, "Resuming");
+        checkFirstLaunch();
         super.onResume();
     }
 
