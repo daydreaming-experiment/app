@@ -38,7 +38,9 @@
 
     <!-- Description Activity -->
     <string name="firstLaunchDescription_title_activity">Description</string>
-    <string name="firstLaunchDescription_text_title">Welcome to the Daydreaming app!</string>
+    <string name="firstLaunchDescription_text_title1">WELCOME TO</string>
+    <string name="firstLaunchDescription_text_title2">THE DAYDREAMING APP!</string>
+
     <string name="firstLaunchDescription_button_next">Next</string>
 
     <!-- Terms Activity -->
@@ -52,7 +54,7 @@
     <string name="firstLaunchTerms_button_agree">Agree</string>
     <string name="firstLaunchTerms_button_disagree">Disagree</string>
     <string name="firstLaunchTerms_text_please_scroll">Scroll down terms</string>
-    <string name="firstLaunchTerms_text_more_consent"><u>More information</u></string>
+    <string name="firstLaunchTerms_text_more_consent">More information</string>
 
 
     <!-- App Settings Activity -->
@@ -101,7 +103,7 @@
     <string name="firstLaunchMeasures2_text_coarse_location">Coarse location</string>
     <string name="firstLaunchMeasures2_button_change_location_settings">Change your location settings</string>
     <string name="firstLaunchMeasures2_title_activity">Measures</string>
-    <string name="firstLaunchMeasures2_text_intro">We will now fetch content from our servers.\nThis should take no more than a few seconds</string>
+    <string name="firstLaunchMeasures2_text_intro">Wait a few second while the questions are being downloaded</string>
     <string name="firstLaunchMeasures2_text_downloading">Download : Waiting for connection</string>
 
 
@@ -169,11 +171,12 @@
     <string name="terms_html">
         <![CDATA[
          <p>Welcome to the Daydreaming app! </p>
-<p>This application is part of a research project that seeks to better understand the experience of daydreaming. Our goal is to better understand what conditions cause people to daydream, how daydreaming people’s impacts day-to-day life, and how we can all learn to control our daydreaming tendencies so as to maximize our health and well-being.</p>
-<p>The Daydreaming app requires very little effort to use. Several times a day, the app will notify you that new questions are available. When you click on the notification, you’ll be asked a few brief questions about your current activities, thoughts, and/or feelings. Each notification will take just a minute or so to fill out. Your responses, along with your current location, will be sent back to our server in anonymous form. After a few weeks of using the app, you will unlock a “My Daydreams” sections that  shows you some information about your responses and describes the type of mind-wanderer you are.</p>
+<p>This application is part of a <i>research project</i> that seeks to better understand the experience of daydreaming. Our goal is to better understand what conditions cause people to daydream, how daydreaming people’s <i>impacts day-to-day life</i>, and how we can all learn to control our <i>daydreaming tendencies</i>  so as to maximize our health and well-being.</p>
+<p>The Daydreaming app requires very little effort to use. Several times a day, the app will notify you that new questions are available. When you click on the notification, you’ll be asked a few brief questions about your current activities, thoughts, and/or feelings. Each notification will take just a minute or so to fill out.</p>
+<p>Your responses, along with your current location, will be sent back to our server <b>in anonymous form</b>. After a few weeks of using the app, <i>you will unlock a “My Daydreams” sections</i> that  shows you some information about your responses and describes the type of mind-wanderer you are.</p>
 <p>Before starting, you will be asked to answer a few questions about yourself and to define the settings of the app. This should only take a few minutes, and only needs to be done once.</p>
 <p>If you’d like to know more about our research, and how we use your data, please click on “more information“ below. You can also find this information again at any time in the ‘Options’ section of the app. </p>
-<p>If you’re ready to begin, click “I agree” below.</p>
+<p>If you’re ready to begin, click “Agree” below.</p>
 ]]>
     </string>
 
@@ -181,10 +184,6 @@
         <![CDATA[
 
 <hr>
-
-<p><b>What is this research for? </b></p>
-<p>This application is part of a research project that seeks to better understand the experience of daydreaming. Our goal is to better understand what conditions cause people to daydream, how daydreaming people’s impacts day-to-day life, and how we can all learn to control our daydreaming tendencies so as to maximize our health and well-being.
-</p>
 
 <p><b>What will I do?  </b></p>
 <p>Just wait until the app notifies you that questions are available, and then answer them!</p>
@@ -196,10 +195,10 @@
 <p>In addition to the responses you give to the questions presented in each notification, we also collect coarse GPS data, which tells us your current location accurate to approximately 0.2 - 0.5 miles.</p>
 
 <p><b>What will you do with this data?</b></p>
-<p>Research! We’ll combine your data with data from thousands of other people to ask questions like: what activities tend to precipitate daydreaming? In what locations are people most likely to daydream? What kind of people are more or less likely to experience mind wandering? And so on. We expect to publish our findings in peer-reviewed social science journals.</p>
+<p><i>Research!</i> We’ll combine your data with data from thousands of other people to ask questions like: what activities tend to precipitate daydreaming? In what locations are people most likely to daydream? What kind of people are more or less likely to experience mind wandering? And so on. We expect to publish our findings in peer-reviewed social science journals.</p>
 
 <p><b>Is it anonymous?</b><p>
-<p>Yes. We deliberately avoid asking you for any identifying information such as your email address, name, address, etc. If you look at the app permissions you’ll note that the only permissions we ask for are network access (required in order to send your data back to our server) and coarse GPS data (which we use to determine where you were when you answered the notification).<p>
+<p><i>Yes</i>. We deliberately avoid asking you for any identifying information such as your email address, name, address, etc. If you look at the app permissions you’ll note that the only permissions we ask for are network access (required in order to send your data back to our server) and coarse GPS data (which we use to determine where you were when you answered the notification).<p>
 
 <p><b>Is it confidential?</b></p>
 <p>Yes. We will not share your responses with anyone except the research team. But remember that since your responses are anonymous to begin with, so it’s not as though the data is of much use to anyone except us.</p>
@@ -218,8 +217,8 @@
 
 <p><b>I have another question!</b></p>
 <p>If there is anything else you would like to know, please don’t hesitate to email us:
-<br>- email at: <a href="mailto:contact@daydreaming-the-app.net">contact@daydreaming-the-app.net</a> </n>
-<br>- visit: <a href="http://www.daydreaming-the-app.net">www.daydreaming-the-app.net</a> </n>
+<br>- email at:<br><a href="mailto:contact@daydreaming-the-app.net" style="color:#ede66d">contact@daydreaming-the-app.net</a> </n>
+<br>- visit:<br><a href="http://www.daydreaming-the-app.net" style="color:#ede66d">www.daydreaming-the-app.net</a> </n>
 </p>
 ]]>
     </string>

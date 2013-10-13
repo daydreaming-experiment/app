@@ -287,7 +287,7 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
 
     private void launchLocationAlertDialog() {
         Logger.d(TAG, "Launching alert dialog");
-
+        setIsContinuingOrFinishing();
         int titleId;
         int textId;
 

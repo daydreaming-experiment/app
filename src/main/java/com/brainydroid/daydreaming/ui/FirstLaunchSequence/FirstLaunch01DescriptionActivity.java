@@ -34,7 +34,7 @@ public class FirstLaunch01DescriptionActivity extends FirstLaunchActivity {
     private static String TAG = "FirstLaunch01DescriptionActivity";
     @InjectView(R.id.firstLaunchDescription_textDescription) TextView description;
 
-    ImageButton next_button;
+    protected ImageButton nextButton;
 
     /**
      *
@@ -44,12 +44,11 @@ public class FirstLaunch01DescriptionActivity extends FirstLaunchActivity {
     public void onCreate(Bundle savedInstanceState) {
         Logger.v(TAG, "Creating");
         super.onCreate(savedInstanceState);
-        Ext_Checkfirstlaunch();
 
-        next_button = (ImageButton)findViewById(R.id.firstLaunchDescription_buttonNext);
+        nextButton = (ImageButton)findViewById(R.id.firstLaunchDescription_buttonNext);
 
         populateDescription();
-        setbutton();
+        setButton();
 
 
         setRobotoFont(this);
@@ -68,7 +67,7 @@ public class FirstLaunch01DescriptionActivity extends FirstLaunchActivity {
 
 
     /**
-     * Populating scrollview from raw text files
+     * Populating scroll view from raw text files
      */
     private void populateDescription() {
         try {
@@ -83,9 +82,9 @@ public class FirstLaunch01DescriptionActivity extends FirstLaunchActivity {
     }
 
 
-    public void setbutton(){
-        next_button.setVisibility(View.VISIBLE);
-        next_button.setClickable(true);
+    public void setButton(){
+        nextButton.setVisibility(View.VISIBLE);
+        nextButton.setClickable(true);
     }
 
     /**
@@ -101,10 +100,5 @@ public class FirstLaunch01DescriptionActivity extends FirstLaunchActivity {
         startActivity(intent);
         overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
     }
-
-    public void Ext_Checkfirstlaunch(){
-        checkFirstLaunch();
-    }
-
 
 }

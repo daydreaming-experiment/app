@@ -1,28 +1,26 @@
-package com.brainydroid.daydreaming.ui.FirstLaunchSequence;
+package com.brainydroid.daydreaming.ui.Dashboard;
 
 import android.text.Html;
 import android.view.View;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
+import com.brainydroid.daydreaming.ui.FirstLaunchSequence.FirstLaunch02TermsActivity;
 import roboguice.inject.ContentView;
 
 @ContentView(R.layout.activity_first_launch_terms)
 
-public class ReOpenTermsActivity extends FirstLaunch02TermsActivity {
+public class TermsActivity extends FirstLaunch02TermsActivity {
 
-    private static String TAG = "FirstLaunch02TermsActivity";
-
-    @Override
-    public void Ext_Checkfirstlaunch(){}
+    private static String TAG = "TermsActivity";
 
     @Override
-    public  void setbuttons_and_scrollviewlistener(){
-        Agree_button.setEnabled(false);
-        Disagree_button.setEnabled(false);
+    public  void setButtonAndScrollViewListener() {
+        agreeButton.setEnabled(false);
+        disagreeButton.setEnabled(false);
     }
 
     @Override
-    public void addinfobuttonlistener(){
+    public void addInfoButtonListener(){
         more_consent_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -31,7 +29,7 @@ public class ReOpenTermsActivity extends FirstLaunch02TermsActivity {
     }
 
     @Override
-    public void addagreementbuttonlistener(){ }
+    public void addAgreementButtonListener() { }
 
 
     @Override
@@ -41,5 +39,7 @@ public class ReOpenTermsActivity extends FirstLaunch02TermsActivity {
         overridePendingTransition(R.anim.push_bottom_in, R.anim.push_bottom_out);
     }
 
+    @Override
+    public void checkFirstLaunch() { }
 
 }

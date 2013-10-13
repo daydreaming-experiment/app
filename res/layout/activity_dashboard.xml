@@ -19,7 +19,7 @@
                 android:layout_height="@dimen/dashboard_settings_button_size"
                 android:scaleType="fitCenter"
                 android:onClick="onClick_openAppSettings"
-                android:src="@drawable/button_app_settings"
+                android:src="@drawable/settings_icon_selector"
                 android:background="@null"/>
 
     </LinearLayout>
@@ -43,7 +43,7 @@
                 android:layout_height="wrap_content"
                 android:text="EXPERIMENT IS "
                 android:textAllCaps="true"
-                android:textAppearance="@style/ui_font_title_white_bold" />
+                android:textAppearance="@style/ui_font_big_title_white" />
         </LinearLayout>
 
         <LinearLayout
@@ -58,7 +58,7 @@
                 android:layout_height="wrap_content"
                 android:text="RUNNING"
                 android:textAllCaps="true"
-                android:textAppearance="@style/ui_font_title_darkblue_bold"/>
+                android:textAppearance="@style/ui_font_big_title_darkblue"/>
 
         </LinearLayout>
 
@@ -85,7 +85,8 @@
                 android:id="@+id/dashboard_ExperimentTimeElapsed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="16dp"
                 >
 
             <TextView
@@ -113,9 +114,8 @@
                 android:layout_width="@dimen/dashboard_calendar_width"
                 android:layout_height="@dimen/dashboard_calendarblock_number_height"
                 android:layout_below="@id/dashboard_ExperimentTimeElapsed1"
-                android:textColor="@color/ui_dark_blue_color"
                 android:text="XX"
-                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textAppearance="@style/ui_font_days_font_darkblue"
                 android:gravity="center"
                 android:background="@drawable/white_rectangle"
 
@@ -144,7 +144,8 @@
                 android:id="@+id/dashboard_ExperimentSeeResults"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="16dp"
                 android:layout_toRightOf="@id/dashboard_ExperimentTimeElapsed"
                 >
 
@@ -173,9 +174,8 @@
                 android:layout_width="@dimen/dashboard_calendar_width"
                 android:layout_height="@dimen/dashboard_calendarblock_number_height"
                 android:layout_below="@id/dashboard_ExperimentResultsIn1"
-                android:textColor="@color/white"
                 android:text="YY"
-                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textAppearance="@style/ui_font_days_font_white"
                 android:gravity="center"
                 android:background="@drawable/dark_blue_rectangle"
                 android:src="@drawable/settings_icon"
@@ -241,7 +241,7 @@
                       android:layout_width="@dimen/dashboard_icon_size"
                       android:layout_height="@dimen/dashboard_icon_size"
                       android:scaleType="centerInside"
-                      android:background="@drawable/icon_terms"
+                      android:background="@drawable/icon_terms_selector"
                       android:layout_margin="10dp"
                       android:onClick="onClick_ReOpenTerms"
                       android:layout_centerHorizontal="true"/>
@@ -272,7 +272,7 @@
                     android:layout_width="@dimen/dashboard_icon_size"
                     android:layout_height="@dimen/dashboard_icon_size"
                     android:scaleType="centerInside"
-                    android:background="@drawable/icon_description"
+                    android:background="@drawable/icon_description_selector"
                     android:layout_margin="10dp"
                     android:onClick="onClick_ReOpenDescription"
                     android:layout_centerHorizontal="true"/>
@@ -291,6 +291,7 @@
 
 
         <LinearLayout
+                android:id="@+id/dashboard_about_layout"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
@@ -304,7 +305,7 @@
                     android:layout_width="@dimen/dashboard_icon_size"
                     android:layout_height="@dimen/dashboard_icon_size"
                     android:scaleType="centerInside"
-                    android:background="@drawable/icon_about"
+                    android:background="@drawable/icon_about_selector"
                     android:layout_margin="10dp"
                     android:onClick="onClick_OpenAboutActivity"
                     android:layout_centerHorizontal="true"/>

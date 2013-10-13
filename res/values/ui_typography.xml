@@ -6,6 +6,14 @@
 
     <!-- Higher types -->
 
+    <style name="ui_font_days_font" parent="@android:style/TextAppearance.Large">
+        <item name="android:textSize">50sp</item>
+    </style>
+
+    <style name="ui_font_big_title" parent="@android:style/TextAppearance.Large">
+        <item name="android:textSize">25sp</item>
+    </style>
+
     <style name="ui_font_title" parent="@android:style/TextAppearance.Large">
         <item name="android:textSize">18sp</item>
     </style>
@@ -25,6 +33,26 @@
 
 
     <!-- Subtypes -->
+
+    <style name="ui_font_days_font_darkblue" parent="@android:style/TextAppearance.Large">
+        <item name="android:textSize">50sp</item>
+        <item name="android:textColor">@color/ui_dark_blue_color</item>
+    </style>
+
+    <style name="ui_font_days_font_white" parent="@android:style/TextAppearance.Large">
+        <item name="android:textSize">50sp</item>
+        <item name="android:textColor">@color/ui_white_text_color</item>
+    </style>
+
+    <style name="ui_font_big_title_darkblue" parent="@style/ui_font_big_title">
+        <item name="android:textColor">@color/ui_dark_blue_color</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="ui_font_big_title_white" parent="@style/ui_font_big_title">
+        <item name="android:textColor">@color/ui_white_text_color</item>
+        <item name="android:textStyle">bold</item>
+    </style>
 
     <style name="ui_font_title_darkblue" parent="@style/ui_font_title">
         <item name="android:textColor">@color/ui_dark_blue_color</item>
@@ -46,6 +74,9 @@
 
 
 
+    <style name="ui_font_bodytext_darkblue" parent="@style/ui_font_bodytext">
+        <item name="android:textColor">@color/ui_dark_blue_color</item>
+    </style>
 
 
     <style name="ui_font_bodytext_white" parent="@style/ui_font_bodytext">

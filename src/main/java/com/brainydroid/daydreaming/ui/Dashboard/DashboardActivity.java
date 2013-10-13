@@ -1,8 +1,11 @@
-package com.brainydroid.daydreaming.ui.FirstLaunchSequence;
+package com.brainydroid.daydreaming.ui.Dashboard;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.brainydroid.daydreaming.R;
@@ -12,8 +15,8 @@ import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.network.ServerConfig;
 import com.brainydroid.daydreaming.network.SntpClient;
 import com.brainydroid.daydreaming.network.SntpClientCallback;
-import com.brainydroid.daydreaming.ui.ReOpen.AboutActivity;
-import com.brainydroid.daydreaming.ui.ReOpen.AppSettingsActivity;
+import com.brainydroid.daydreaming.ui.FirstLaunchSequence.FirstLaunch00WelcomeActivity;
+import com.brainydroid.daydreaming.ui.FontUtils;
 import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockFragmentActivity;
 import com.google.inject.Inject;
 import roboguice.inject.ContentView;
@@ -35,6 +38,12 @@ public class DashboardActivity extends RoboSherlockFragmentActivity {
         Logger.v(TAG, "Starting");
         updateRunningTime();
         super.onStart();
+
+        //TODO: change this temporary setting
+        LinearLayout about_layout = (LinearLayout) findViewById(R.id.dashboard_about_layout);
+        about_layout.setAlpha(0.3f);
+        about_layout.setClickable(false);
+
     }
 
     @Override
@@ -42,6 +51,8 @@ public class DashboardActivity extends RoboSherlockFragmentActivity {
         Logger.v(TAG, "Creating");
         super.onCreate(savedInstanceState);
         checkFirstLaunch();
+        setRobotoFont(this);
+
     }
 
     /**
@@ -49,7 +60,7 @@ public class DashboardActivity extends RoboSherlockFragmentActivity {
      */
     public void  onClick_openAppSettings(
             @SuppressWarnings("UnusedParameters") View view){
-        Intent intent = new Intent(this, AppSettingsActivity.class);
+        Intent intent = new Intent(this, SettingsActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         startActivity(intent);
         overridePendingTransition(R.anim.push_top_in, R.anim.push_top_out);
@@ -61,7 +72,7 @@ public class DashboardActivity extends RoboSherlockFragmentActivity {
      */
     public void onClick_ReOpenTerms(
             @SuppressWarnings("UnusedParameters") View view){
-        Intent intent = new Intent(this, ReOpenTermsActivity.class);
+        Intent intent = new Intent(this, TermsActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         startActivity(intent);
         overridePendingTransition(R.anim.push_top_in, R.anim.push_top_out);
@@ -73,7 +84,7 @@ public class DashboardActivity extends RoboSherlockFragmentActivity {
      */
     public void onClick_ReOpenDescription(
             @SuppressWarnings("UnusedParameters") View view){
-        Intent intent = new Intent(this, ReOpenDescriptionActivity.class);
+        Intent intent = new Intent(this, DescriptionActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         startActivity(intent);
         overridePendingTransition(R.anim.push_top_in, R.anim.push_top_out);
@@ -209,6 +220,12 @@ public class DashboardActivity extends RoboSherlockFragmentActivity {
         startService(pollIntent);
 
         Toast.makeText(this, "Now wait for 5 secs", Toast.LENGTH_SHORT).show();
+    }
+
+    public void setRobotoFont(Activity activity){
+        ViewGroup godfatherView =
+                (ViewGroup)activity.getWindow().getDecorView();
+        FontUtils.setRobotoFont(activity, godfatherView);
     }
 
 }

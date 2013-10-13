@@ -1,10 +1,11 @@
-package com.brainydroid.daydreaming.ui.ReOpen;
+package com.brainydroid.daydreaming.ui.Dashboard;
 
 import android.os.Bundle;
 import android.view.ViewGroup;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.ui.FontUtils;
+import roboguice.activity.RoboFragmentActivity;
 import roboguice.inject.ContentView;
 
 /**
@@ -17,7 +18,7 @@ import roboguice.inject.ContentView;
 
 
 @ContentView(R.layout.activity_about)
-public class AboutActivity extends ReOpenActivity {
+public class AboutActivity extends RoboFragmentActivity {
 
     private static String TAG = "AboutActivity";
 

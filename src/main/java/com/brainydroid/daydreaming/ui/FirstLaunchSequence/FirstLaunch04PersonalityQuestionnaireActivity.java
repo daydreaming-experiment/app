@@ -1,5 +1,6 @@
 package com.brainydroid.daydreaming.ui.FirstLaunchSequence;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.FloatMath;
@@ -46,11 +47,12 @@ public class FirstLaunch04PersonalityQuestionnaireActivity
     private List<String> hints;
     private int nHints;
 
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Logger.v(TAG, "Creating");
         super.onCreate(savedInstanceState);
-        Ext_checkFirstLaunch();
 
         setContentView(R.layout.activity_first_launch_questionnaire);
         thumbOffset = dpToPx(getBaseContext().getResources().getInteger(
@@ -66,6 +68,8 @@ public class FirstLaunch04PersonalityQuestionnaireActivity
             seekBarsTouchedStates.put(s, false);
             seekBars.put(s, inflateView(s));
         }
+
+        setRobotoFont(this);
     }
 
     public void onClick_buttonNext(
@@ -133,20 +137,24 @@ public class FirstLaunch04PersonalityQuestionnaireActivity
         seekBar.setMax(MAX_PROGRESS_SEEKBAR);
         seekBar.setProgress(INIT_PROGRESS_SEEKBAR);
         seekBar.setPadding(thumbOffset, 0, thumbOffset, 0);
-        seekBar.setProgressDrawable(view.getResources().getDrawable(
-                R.drawable.question_slider_progress));
+        seekBar.setProgressDrawable(view.getResources().getDrawable(R
+                .drawable.question_slider_progress));
+        seekBar.setAlpha(0.5f);
+
         seekBar.setThumb(view.getResources().getDrawable(
                 R.drawable.question_slider_thumb));
 
         SeekBar.OnSeekBarChangeListener onSeekBarChange =
                 new SeekBar.OnSeekBarChangeListener() {
 
-            @Override
+
+                    @Override
             public void onProgressChanged(SeekBar seekBar, int progress,
                                           boolean fromUser) {
                 int index = (int)FloatMath.floor((progress / 101f) * nHints);
                 answer.setText(hints.get(index));
                 seekBarsTouchedStates.put(questionText, true);
+                seekBar.setAlpha(1f);
             }
 
             @Override
@@ -170,8 +178,5 @@ public class FirstLaunch04PersonalityQuestionnaireActivity
                 DisplayMetrics.DENSITY_DEFAULT));
     }
 
-    public void Ext_checkFirstLaunch(){
-        checkFirstLaunch();
-    }
 }
 

@@ -31,14 +31,14 @@
 
     <!-- Possible answers for Profile activity Spinners -->
     <string-array name="genders">
-        <item>select...</item>
+        <item>select</item>
         <item>Female</item>
         <item>Male</item>
         <item>Other</item>
     </string-array>
 
     <array name="genders_icons">
-        <item>@drawable/icon_questionmark</item>
+        <item>@drawable/empty</item>
         <item>@drawable/icon_female</item>
         <item>@drawable/icon_male</item>
         <item>@drawable/icon_questionmark</item>
@@ -46,7 +46,7 @@
 
 
     <string-array name="ages">
-        <item>select...</item>
+        <item>select</item>
         <item>Under 18</item>
         <item>18 -24</item>
         <item>25 -29</item>
@@ -58,7 +58,7 @@
     </string-array>
 
     <string-array name="education">
-        <item>select...</item>
+        <item>select</item>
         <item>School (GCSE or similar)</item>
         <item>School (A-Levels, vocational, or similar)</item>
         <item>University Degree</item>
