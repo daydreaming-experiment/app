@@ -12,6 +12,8 @@ public class FontUtils {
     public static interface FontTypes {
         public static String LIGHT = "Light";
         public static String BOLD = "Bold";
+        public static String REGULAR = "Regular";
+
     }
     /**
      * map of font types to font paths in assets
@@ -19,6 +21,7 @@ public class FontUtils {
     private static Map fontMap = new HashMap();
     static {
         fontMap.put(FontTypes.LIGHT, "fonts/Roboto-Light.ttf");
+        fontMap.put(FontTypes.REGULAR, "fonts/Roboto-Regular.ttf");
         fontMap.put(FontTypes.BOLD, "fonts/Roboto-Bold.ttf");
     }
     /* cache for loaded Roboto typefaces*/
@@ -45,7 +48,7 @@ public class FontUtils {
      * @return
      */
     private static Typeface getRobotoTypeface(Context context, Typeface originalTypeface) {
-        String robotoFontType = FontTypes.LIGHT; //default Light Roboto font
+        String robotoFontType = FontTypes.REGULAR; //default Light Roboto font
         if (originalTypeface != null) {
             int style = originalTypeface.getStyle();
             switch (style) {

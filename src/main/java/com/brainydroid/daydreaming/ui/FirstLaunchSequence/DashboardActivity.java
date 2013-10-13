@@ -1,8 +1,10 @@
 package com.brainydroid.daydreaming.ui.FirstLaunchSequence;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.brainydroid.daydreaming.R;
@@ -12,6 +14,7 @@ import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.network.ServerConfig;
 import com.brainydroid.daydreaming.network.SntpClient;
 import com.brainydroid.daydreaming.network.SntpClientCallback;
+import com.brainydroid.daydreaming.ui.FontUtils;
 import com.brainydroid.daydreaming.ui.ReOpen.AboutActivity;
 import com.brainydroid.daydreaming.ui.ReOpen.AppSettingsActivity;
 import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockFragmentActivity;
@@ -42,6 +45,8 @@ public class DashboardActivity extends RoboSherlockFragmentActivity {
         Logger.v(TAG, "Creating");
         super.onCreate(savedInstanceState);
         checkFirstLaunch();
+        setRobotoFont(this);
+
     }
 
     /**
@@ -209,6 +214,12 @@ public class DashboardActivity extends RoboSherlockFragmentActivity {
         startService(pollIntent);
 
         Toast.makeText(this, "Now wait for 5 secs", Toast.LENGTH_SHORT).show();
+    }
+
+    public void setRobotoFont(Activity activity){
+        ViewGroup godfatherView =
+                (ViewGroup)activity.getWindow().getDecorView();
+        FontUtils.setRobotoFont(activity, godfatherView);
     }
 
 }

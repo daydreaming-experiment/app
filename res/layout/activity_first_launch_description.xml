@@ -25,17 +25,36 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/firstLaunchDescription_scrollviewtext"   >
 
+                    <LinearLayout
+                            android:id="@+id/firstLaunchDescription_textTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true">
+
             <TextView
-                  android:id="@+id/firstLaunchDescription_textTitle"
+                  android:id="@+id/firstLaunchDescription_textTitle1"
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
-                  android:text="@string/firstLaunchDescription_text_title"
-                  android:textAppearance="@style/ui_font_title_darkblue_bold"
-                  android:layout_centerHorizontal="true"
+                  android:text="@string/firstLaunchDescription_text_title1"
+                  android:textAppearance="@style/ui_font_big_title_darkblue"
+                  android:gravity="center_horizontal"
+                  android:singleLine="true"
                   android:layout_marginTop="@dimen/description_text_titleTopMargin"
                     />
+                    <TextView
+                            android:id="@+id/firstLaunchDescription_textTitle2"
+                            android:layout_below="@id/firstLaunchDescription_textTitle1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/firstLaunchDescription_text_title2"
+                            android:textAppearance="@style/ui_font_big_title_darkblue"
+                            android:gravity="center_horizontal"
+                            android:singleLine="true"
+                            />
+    </LinearLayout>
 
-             <LinearLayout
+
+    <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/firstLaunchDescription_textTitle"

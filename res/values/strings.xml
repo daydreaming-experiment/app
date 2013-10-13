@@ -38,7 +38,9 @@
 
     <!-- Description Activity -->
     <string name="firstLaunchDescription_title_activity">Description</string>
-    <string name="firstLaunchDescription_text_title">Welcome to the Daydreaming app!</string>
+    <string name="firstLaunchDescription_text_title1">WELCOME TO</string>
+    <string name="firstLaunchDescription_text_title2">THE DAYDREAMING APP!</string>
+
     <string name="firstLaunchDescription_button_next">Next</string>
 
     <!-- Terms Activity -->
@@ -52,7 +54,7 @@
     <string name="firstLaunchTerms_button_agree">Agree</string>
     <string name="firstLaunchTerms_button_disagree">Disagree</string>
     <string name="firstLaunchTerms_text_please_scroll">Scroll down terms</string>
-    <string name="firstLaunchTerms_text_more_consent"><u>More information</u></string>
+    <string name="firstLaunchTerms_text_more_consent">More information</string>
 
 
     <!-- App Settings Activity -->
@@ -218,8 +220,8 @@
 
 <p><b>I have another question!</b></p>
 <p>If there is anything else you would like to know, please don’t hesitate to email us:
-<br>- email at: <a href="mailto:contact@daydreaming-the-app.net">contact@daydreaming-the-app.net</a> </n>
-<br>- visit: <a href="http://www.daydreaming-the-app.net">www.daydreaming-the-app.net</a> </n>
+<br>- email at: <a href="mailto:contact@daydreaming-the-app.net">contact@daydreaming-the-app.net<FONT COLOR=#ede66d ></a> </n>
+<br>- visit: <a href="http://www.daydreaming-the-app.net">www.daydreaming-the-app.net<FONT COLOR=#ede66d ></a> </n>
 </p>
 ]]>
     </string>
