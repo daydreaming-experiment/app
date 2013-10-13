@@ -49,6 +49,7 @@ public class FirstLaunch02TermsActivity extends FirstLaunchActivity implements S
         super.onCreate(savedInstanceState);
         Ext_Checkfirstlaunch();
 
+
         setbuttons_and_scrollviewlistener();
         addagreementbuttonlistener();
         addinfobuttonlistener();
@@ -75,6 +76,11 @@ public class FirstLaunch02TermsActivity extends FirstLaunchActivity implements S
             Agree_button.setEnabled(true);
             TextView text = (TextView) findViewById(R.id.firstLaunchTerms_please_scroll);
             text.setText(" "); // Clear textview asking to scrolldown
+
+            Agree_button.setAlpha(1f);
+            Agree_button.setClickable(true);
+
+
         }
     }
 
@@ -101,6 +107,10 @@ public class FirstLaunch02TermsActivity extends FirstLaunchActivity implements S
     }
 
     public void addinfobuttonlistener(){
+
+        Agree_button.setAlpha(0.5f);
+        Agree_button.setClickable(false);
+
         Agree_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

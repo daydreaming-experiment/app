@@ -1,6 +1,7 @@
 package com.brainydroid.daydreaming.ui.FirstLaunchSequence;
 
 import android.annotation.TargetApi;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -152,9 +153,13 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
 
     private void launchNetworkSettings() {
         Logger.d(TAG, "Launching network settings");
-        Intent settingsIntent = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
-        settingsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET |
-                Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+        Logger.d(TAG, "Launching data settings");
+        Intent settingsIntent = new Intent(Settings.ACTION_DATA_ROAMING_SETTINGS);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            ComponentName cName = new ComponentName("com.android.phone", "com.android.phone.Settings");
+            settingsIntent.setComponent(cName);
+        }
+        settingsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         startActivity(settingsIntent);
     }
 

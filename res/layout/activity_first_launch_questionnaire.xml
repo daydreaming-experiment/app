@@ -4,11 +4,12 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:paddingTop="@dimen/questionnaire_paddingTop"
+            android:layout_marginTop="@dimen/questionnaire_marginTop"
             android:paddingBottom="@dimen/questionnaire_paddingBottom"
             android:paddingRight="@dimen/questionnaire_lateralPadding"
             android:paddingLeft="@dimen/questionnaire_lateralPadding"
             android:scrollbarSize="5dp"
+            android:padding="15dp"
             android:scrollbarThumbVertical="@drawable/scrollbar_vertical_thumb"
             android:id="@+id/firstLaunchQuestionnaire_Scrollview" >
 
@@ -61,14 +62,14 @@
                   android:orientation="vertical"
                   android:layout_width="fill_parent"
                   android:layout_height="fill_parent"
-                  android:layout_marginRight="@dimen/next_button_right_margin"
+                  android:layout_marginRight="@dimen/next_button_right_margin_inc_scrollpadding"
                   android:paddingLeft="15dp">
 
 
         <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="100dp"
+                android:layout_marginTop="50dp"
                 android:gravity="right"
                 android:layout_marginBottom="30dp"
                 >
@@ -88,7 +89,7 @@
                     android:layout_width="@dimen/button_next_width"
                     android:layout_height="@dimen/button_next_height"
                     android:onClick="onClick_buttonNext"
-                    android:background="@drawable/button_cloud_next"
+                    android:background="@drawable/button_cloud_next_selector"
                     android:layout_toRightOf="@id/firstLaunchQuestionnaire_buttonSkip"/>
 
 

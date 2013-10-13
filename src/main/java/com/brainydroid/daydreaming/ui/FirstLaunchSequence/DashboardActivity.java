@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.brainydroid.daydreaming.R;
@@ -38,6 +40,12 @@ public class DashboardActivity extends RoboSherlockFragmentActivity {
         Logger.v(TAG, "Starting");
         updateRunningTime();
         super.onStart();
+
+        //TODO: change this temporary setting
+        LinearLayout about_layout = (LinearLayout) findViewById(R.id.dashboard_about_layout);
+        about_layout.setAlpha(0.3f);
+        about_layout.setClickable(false);
+
     }
 
     @Override

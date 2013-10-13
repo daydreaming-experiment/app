@@ -22,7 +22,6 @@
         android:padding="16dp"
         android:layout_marginRight="30dp"
         android:layout_marginLeft="30dp"
-        android:layout_marginTop="20dp"
         android:orientation="vertical"
             >
 
@@ -41,7 +40,7 @@
             android:layout_marginBottom="@dimen/profile_title_vertical_space"
             android:gravity="center_horizontal"
             android:text="@string/firstLaunchProfile_title_about_you"
-            android:textAppearance="@style/ui_font_title_white_bold" />
+            android:textAppearance="@style/ui_font_big_title_white" />
 
 
 
@@ -58,7 +57,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:layout_marginRight="4dp"
                     android:text="@string/firstLaunchProfile_text_age"
                     android:textAppearance="@style/ui_font_title_white"/>
@@ -68,12 +67,12 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
+                    android:layout_weight="3"
                     android:layout_marginLeft="4dp"
                     android:paddingRight="10dp"
                     android:paddingLeft="10dp"
                     android:prompt="@string/firstLaunchProfile_Spinner_age_prompt"
-                    android:background="@drawable/simple_spinner_box"/>
+                    android:background="@drawable/profile_spinner_box_selector"/>
 
 
 
@@ -90,7 +89,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_weight="1"
+                android:layout_weight="2"
                 android:layout_marginRight="4dp"
                 android:text="@string/firstLaunchProfile_text_gender"
                 android:textAppearance="@style/ui_font_title_white"/>
@@ -100,12 +99,12 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_weight="1"
+                android:layout_weight="3"
                 android:layout_marginLeft="4dp"
                 android:paddingRight="10dp"
                 android:paddingLeft="10dp"
                 android:prompt="@string/firstLaunchProfile_Spinner_gender_prompt"
-                android:background="@drawable/simple_spinner_box"
+                android:background="@drawable/profile_spinner_box_selector"
                 />
 
 
@@ -123,7 +122,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:layout_marginRight="4dp"
                     android:text="@string/firstLaunchProfile_text_education"
                     android:textAppearance="@style/ui_font_title_white"/>
@@ -133,13 +132,13 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
+                    android:layout_weight="3"
                     android:layout_marginLeft="4dp"
                     android:singleLine = "true"
                     android:paddingRight="10dp"
                     android:paddingLeft="10dp"
                     android:prompt="@string/firstLaunchProfile_Spinner_education_prompt"
-                   android:background="@drawable/simple_spinner_box"
+                   android:background="@drawable/profile_spinner_box_selector"
                     />
 
 
@@ -163,7 +162,7 @@
                     android:layout_height="@dimen/button_next_height"
                     android:onClick="onClick_buttonNext"
                     android:text="@string/firstLaunchDescription_button_next"
-                    android:background="@drawable/button_cloud_next"
+                    android:background="@drawable/button_cloud_next_selector"
                     />
 
 

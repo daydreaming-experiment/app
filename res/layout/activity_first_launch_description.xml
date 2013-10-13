@@ -1,9 +1,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:gravity="center_horizontal"
-    >
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:gravity="center_horizontal"
+        >
 
     <LinearLayout
             android:id="@+id/firstLaunchDescription_scrollview_layout"
@@ -12,70 +12,70 @@
             android:layout_alignParentTop="true"
             android:background="@drawable/white_background"    >
 
-            <ScrollView
-                    android:layout_width="fill_parent"
-                    android:layout_height="300dp"
-                    android:padding="15dp"
-                    android:scrollbarSize="5dp"
-                    android:gravity="center_horizontal"
-                    android:scrollbarThumbVertical="@drawable/scrollbar_vertical_thumb_blue">
+        <ScrollView
+                android:layout_width="fill_parent"
+                android:layout_height="300dp"
+                android:padding="15dp"
+                android:scrollbarSize="5dp"
+                android:gravity="center_horizontal"
+                android:scrollbarThumbVertical="@drawable/scrollbar_vertical_thumb_blue">
 
-                <RelativeLayout
-                        android:layout_width="wrap_content"
+            <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/firstLaunchDescription_scrollviewtext"   >
+
+                <LinearLayout
+                        android:id="@+id/firstLaunchDescription_textTitle"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/firstLaunchDescription_scrollviewtext"   >
+                        android:layout_marginTop="@dimen/description_text_titleTopMargin"
+                        android:orientation="vertical"
+                        android:layout_centerHorizontal="true">
 
-                    <LinearLayout
-                            android:id="@+id/firstLaunchDescription_textTitle"
-                            android:layout_width="wrap_content"
+                    <TextView
+                            android:id="@+id/firstLaunchDescription_textTitle1"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_centerHorizontal="true">
-
-            <TextView
-                  android:id="@+id/firstLaunchDescription_textTitle1"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:text="@string/firstLaunchDescription_text_title1"
-                  android:textAppearance="@style/ui_font_big_title_darkblue"
-                  android:gravity="center_horizontal"
-                  android:singleLine="true"
-                  android:layout_marginTop="@dimen/description_text_titleTopMargin"
-                    />
+                            android:text="@string/firstLaunchDescription_text_title1"
+                            android:textAppearance="@style/ui_font_big_title_darkblue"
+                            android:gravity="center_horizontal"
+                            android:singleLine="true"
+                            />
                     <TextView
                             android:id="@+id/firstLaunchDescription_textTitle2"
-                            android:layout_below="@id/firstLaunchDescription_textTitle1"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/firstLaunchDescription_text_title2"
                             android:textAppearance="@style/ui_font_big_title_darkblue"
                             android:gravity="center_horizontal"
                             android:singleLine="true"
                             />
-    </LinearLayout>
+                </LinearLayout>
 
 
-    <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/firstLaunchDescription_textTitle"
-                    android:layout_centerHorizontal="true"
-                     >
-            <TextView
-                    android:id="@+id/firstLaunchDescription_textDescription"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="coucou"
-                    android:padding="@dimen/description_text_padding"
-                    android:lineSpacingExtra="@dimen/description_text_linespacing"
-                    android:layout_gravity="left"
-                    android:textAppearance="@style/ui_font_title_darkblue"/>
-            </LinearLayout>
+                <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/firstLaunchDescription_textTitle"
+                        android:layout_centerHorizontal="true"
+                        >
+                    <TextView
+                            android:id="@+id/firstLaunchDescription_textDescription"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="coucou"
+                            android:padding="@dimen/description_text_padding"
+                            android:lineSpacingExtra="@dimen/description_text_linespacing"
+                            android:layout_gravity="left"
+                            android:textAppearance="@style/ui_font_title_darkblue"/>
+                </LinearLayout>
 
 
-    </RelativeLayout>
-        <!--         android:background="@drawable/text_box"
-                                                                -->
-            </ScrollView>
+            </RelativeLayout>
+            <!--         android:background="@drawable/text_box"
+                                                                    -->
+        </ScrollView>
 
     </LinearLayout>
 
@@ -97,11 +97,11 @@
 
 
     <RelativeLayout android:id="@+id/firstLaunchDescription_person_layout"
-                  android:layout_width="fill_parent"
-                  android:layout_height="wrap_content"
-                  android:gravity="center_horizontal"
-                  android:orientation="vertical"
-                  android:layout_alignParentBottom="true"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:layout_alignParentBottom="true"
             >
 
         <ImageView
@@ -125,7 +125,7 @@
                 android:layout_width="@dimen/button_next_width"
                 android:layout_height="@dimen/button_next_height"
                 android:onClick="onClick_buttonNext"
-                android:background="@drawable/button_cloud_next"/>
+                android:background="@drawable/button_cloud_next_selector"/>
 
     </LinearLayout>
 

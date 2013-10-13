@@ -1,8 +1,10 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+
+
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_height="wrap_content"
             android:paddingTop="@dimen/measures_paddingTop"
-            android:paddingBottom="@dimen/measures_paddingBottom"
+            android:layout_marginBottom="@dimen/measures_paddingBottom"
             android:paddingRight="@dimen/measures_lateralPadding"
             android:paddingLeft="@dimen/measures_lateralPadding"
             android:scrollbarSize="5dp"
@@ -11,6 +13,7 @@
 <RelativeLayout xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/standard_top_margin"
                 android:gravity="center" >
 
 
@@ -18,8 +21,6 @@
                   android:orientation="vertical"
                   android:layout_gravity="center_horizontal"
                   android:layout_marginTop="@dimen/measures_item_vertical_spacing"
-                  android:layout_marginBottom="@dimen/measures_item_vertical_spacing"
-
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
                   android:id="@+id/firstLaunchMeasures2_layout_data">
@@ -29,7 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_gravity="center_horizontal"
             android:text="@string/firstLaunchMeasures2_text_data"
-            android:textAppearance="@style/ui_font_title_white"
+            android:textAppearance="@style/ui_font_big_title_white"
             android:layout_marginBottom="@dimen/measures_item_vertical_spacing"
                 />
 
@@ -73,8 +74,10 @@
             android:layout_height="wrap_content"
             android:id="@+id/firstLaunchMeasures2_layout_location"
             android:layout_below="@id/firstLaunchMeasures2_layout_data"
+            android:layout_marginLeft="@dimen/measures_side_margin"
+            android:layout_marginRight="@dimen/measures_side_margin"
+
             android:layout_marginTop="@dimen/measures_item_vertical_spacing"
-            android:layout_marginBottom="@dimen/measures_item_vertical_spacing"
 
             >
 
@@ -83,7 +86,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_width="wrap_content"
                 android:text="@string/firstLaunchMeasures2_text_location"
-                android:textAppearance="@style/ui_font_title_white"
+                android:textAppearance="@style/ui_font_big_title_white"
                 android:layout_marginBottom="@dimen/measures_item_vertical_spacing"
 
                 />
@@ -130,7 +133,11 @@
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            android:layout_marginLeft="@dimen/measures_side_margin"
+            android:layout_marginRight="@dimen/measures_side_margin"
+
             android:id="@+id/firstLaunchMeasures2_layout_pull"
             android:layout_below="@id/firstLaunchMeasures2_layout_location"
             android:orientation="vertical" >
@@ -178,7 +185,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/firstLaunchMeasures2_layout_pull"
-            android:layout_marginBottom="20dp"
             android:layout_marginRight="@dimen/next_button_right_margin"
             android:gravity="right">
 
@@ -188,7 +194,7 @@
                 android:layout_width="@dimen/button_next_width"
                 android:layout_height="@dimen/button_next_height"
                 android:onClick="onClick_buttonNext"
-                android:background="@drawable/button_cloud_next"
+                android:background="@drawable/button_cloud_next_selector"
                 />
 
 
@@ -198,3 +204,4 @@
 
 </RelativeLayout>
 </ScrollView>
+

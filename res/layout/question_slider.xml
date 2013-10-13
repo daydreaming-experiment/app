@@ -13,7 +13,7 @@
         android:layout_gravity="center_vertical"
         android:layout_marginBottom="16dp"
         android:text=""
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="@style/ui_font_big_title_white" />
 
     <TextView
         android:id="@+id/question_slider_selectedSeek"
@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:minHeight="6dip"
         android:maxHeight="6dip"
-        android:thumbOffset	="30dp"
+        android:thumbOffset	="0dp"
         android:layout_gravity="center" />
 
     <LinearLayout
@@ -46,7 +46,7 @@
             android:layout_weight="1"
             android:gravity="left"
             android:text=""
-            android:textAppearance="@style/ui_font_bodytext_white"/>
+            android:textAppearance="@style/ui_font_bodytext_darkblue"/>
 
         <TextView
             android:id="@+id/question_slider_rightHint"
@@ -56,7 +56,7 @@
             android:layout_weight="1"
             android:gravity="right"
             android:text=""
-            android:textAppearance="@style/ui_font_bodytext_white" />
+            android:textAppearance="@style/ui_font_bodytext_darkblue" />
     </LinearLayout>
 
 </LinearLayout>

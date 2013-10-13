@@ -1,7 +1,10 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/question_rootView"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:padding="15dp"
+    android:scrollbarSize="5dp"
+    android:scrollbarThumbVertical="@drawable/scrollbar_vertical_thumb">
 
     <LinearLayout
         android:id="@+id/question_linearLayout"
