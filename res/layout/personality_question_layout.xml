@@ -11,7 +11,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text=""
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textAppearance="@style/ui_font_title_white_bold"
             android:gravity="center_horizontal"
             android:paddingTop="20dp"
             />
