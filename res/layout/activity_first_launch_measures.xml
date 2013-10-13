@@ -58,7 +58,7 @@
                 android:text="@string/firstLaunchMeasures2_button_change_data_settings"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="@color/ui_white_text_color"
-                android:background="@drawable/dark_blue_rectangle"
+                android:background="@drawable/dark_blue_rect_button_selector"
                 android:onClick="onClick_buttonNetworkSettings"
                 android:layout_marginBottom="@dimen/measures_item_vertical_spacing"
                 />
@@ -118,7 +118,7 @@
                 android:text="@string/firstLaunchMeasures2_button_change_location_settings"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="@color/ui_white_text_color"
-                android:background="@drawable/dark_blue_rectangle"
+                android:background="@drawable/dark_blue_rect_button_selector"
                 android:onClick="onClick_buttonLocationSettings"
                 />
 
