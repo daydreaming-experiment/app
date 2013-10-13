@@ -9,14 +9,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
-import com.brainydroid.daydreaming.db.Util;
-import com.brainydroid.daydreaming.ui.Questions.ScrollViewExt;
-import com.brainydroid.daydreaming.ui.Questions.ScrollViewListener;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
-import java.io.IOException;
-import java.io.InputStream;
 /**
  * Activity at first launch
  * Display of terms of consent + requirement of consent
@@ -35,24 +30,26 @@ public class FirstLaunch02TermsActivity extends FirstLaunchActivity implements S
     private static String TAG = "FirstLaunch02TermsActivity";
 
 
-    @InjectView(R.id.firstLaunchTerms_textConsent) TextView consent;
-    @InjectView(R.id.firstLaunchTerms_moreConsent_button) TextView more_consent_button;
-    @InjectView(R.id.firstLaunchTerms_moreConsent_text) TextView more_consent_text;
+    @InjectView(R.id.firstLaunchTerms_textConsent) protected TextView consent;
+    @InjectView(R.id.firstLaunchTerms_moreConsent_button)
+    protected TextView more_consent_button;
+    @InjectView(R.id.firstLaunchTerms_moreConsent_text)
+    protected TextView more_consent_text;
 
     @InjectView(R.id.firstLaunchTerms_Scrollview) ScrollViewExt sv;
-    @InjectView(R.id.firstLaunchTerms_buttonAgree) Button Agree_button;
-    @InjectView(R.id.firstLaunchTerms_buttonDisagree) Button Disagree_button;
+    @InjectView(R.id.firstLaunchTerms_buttonAgree)
+    protected Button agreeButton;
+    @InjectView(R.id.firstLaunchTerms_buttonDisagree)
+    protected Button disagreeButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Logger.v(TAG, "Creating");
         super.onCreate(savedInstanceState);
-        Ext_Checkfirstlaunch();
 
-
-        setbuttons_and_scrollviewlistener();
-        addagreementbuttonlistener();
-        addinfobuttonlistener();
+        setButtonAndScrollViewListener();
+        addAgreementButtonListener();
+        addInfoButtonListener();
         consent.setText(Html.fromHtml(getString(R.string.terms_html)));
     }
 
@@ -73,12 +70,12 @@ public class FirstLaunch02TermsActivity extends FirstLaunchActivity implements S
         int diff = (view.getBottom() - (scrollView.getHeight() + scrollView.getScrollY()));
         // if diff is zero, then the bottom has been reached and agreement button is set clickable.
         if (diff == 0) {
-            Agree_button.setEnabled(true);
+            agreeButton.setEnabled(true);
             TextView text = (TextView) findViewById(R.id.firstLaunchTerms_please_scroll);
             text.setText(" "); // Clear textview asking to scrolldown
 
-            Agree_button.setAlpha(1f);
-            Agree_button.setClickable(true);
+            agreeButton.setAlpha(1f);
+            agreeButton.setClickable(true);
 
 
         }
@@ -102,22 +99,18 @@ public class FirstLaunch02TermsActivity extends FirstLaunchActivity implements S
      * Loads terms res/raw/terms into adequate textview
      */
 
-    public void Ext_Checkfirstlaunch(){
-        checkFirstLaunch();
-    }
+    public void addInfoButtonListener(){
 
-    public void addinfobuttonlistener(){
+        agreeButton.setAlpha(0.5f);
+        agreeButton.setClickable(false);
 
-        Agree_button.setAlpha(0.5f);
-        Agree_button.setClickable(false);
-
-        Agree_button.setOnClickListener(new View.OnClickListener() {
+        agreeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onClick_buttonAgree(view);
             }
         });
-        Disagree_button.setOnClickListener(new View.OnClickListener() {
+        disagreeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onClick_buttonDisagree(view);
@@ -133,14 +126,14 @@ public class FirstLaunch02TermsActivity extends FirstLaunchActivity implements S
 
     }
 
-    public void addagreementbuttonlistener(){
-        Agree_button.setOnClickListener(new View.OnClickListener() {
+    public void addAgreementButtonListener(){
+        agreeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onClick_buttonAgree(view);
             }
         });
-        Disagree_button.setOnClickListener(new View.OnClickListener() {
+        disagreeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onClick_buttonDisagree(view);
@@ -148,9 +141,9 @@ public class FirstLaunch02TermsActivity extends FirstLaunchActivity implements S
         });
     }
 
-    public  void setbuttons_and_scrollviewlistener(){
-        Agree_button.setEnabled(false);
-        Disagree_button.setEnabled(true);
+    public  void setButtonAndScrollViewListener(){
+        agreeButton.setEnabled(false);
+        disagreeButton.setEnabled(true);
         sv.setScrollViewListener(this);
 
     }

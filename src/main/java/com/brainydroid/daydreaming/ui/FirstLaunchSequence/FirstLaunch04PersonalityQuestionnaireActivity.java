@@ -53,7 +53,6 @@ public class FirstLaunch04PersonalityQuestionnaireActivity
     public void onCreate(Bundle savedInstanceState) {
         Logger.v(TAG, "Creating");
         super.onCreate(savedInstanceState);
-        Ext_checkFirstLaunch();
 
         setContentView(R.layout.activity_first_launch_questionnaire);
         thumbOffset = dpToPx(getBaseContext().getResources().getInteger(
@@ -71,10 +70,6 @@ public class FirstLaunch04PersonalityQuestionnaireActivity
         }
 
         setRobotoFont(this);
-
-
-
-
     }
 
     public void onClick_buttonNext(
@@ -142,12 +137,9 @@ public class FirstLaunch04PersonalityQuestionnaireActivity
         seekBar.setMax(MAX_PROGRESS_SEEKBAR);
         seekBar.setProgress(INIT_PROGRESS_SEEKBAR);
         seekBar.setPadding(thumbOffset, 0, thumbOffset, 0);
-        seekBar.setProgressDrawable(view.getResources().getDrawable(R.drawable.question_slider_progress));
-
-        Drawable progressDrawable = seekBar.getProgressDrawable();
-        progressDrawable.setAlpha(128);
-        seekBar.setProgressDrawable(progressDrawable);
-
+        seekBar.setProgressDrawable(view.getResources().getDrawable(R
+                .drawable.question_slider_progress));
+        seekBar.setAlpha(0.5f);
 
         seekBar.setThumb(view.getResources().getDrawable(
                 R.drawable.question_slider_thumb));
@@ -162,10 +154,7 @@ public class FirstLaunch04PersonalityQuestionnaireActivity
                 int index = (int)FloatMath.floor((progress / 101f) * nHints);
                 answer.setText(hints.get(index));
                 seekBarsTouchedStates.put(questionText, true);
-
-                        Drawable progressDrawable = seekBar.getProgressDrawable();
-                        progressDrawable.setAlpha(255);
-                        seekBar.setProgressDrawable(progressDrawable);
+                seekBar.setAlpha(1f);
             }
 
             @Override
@@ -189,8 +178,5 @@ public class FirstLaunch04PersonalityQuestionnaireActivity
                 DisplayMetrics.DENSITY_DEFAULT));
     }
 
-    public void Ext_checkFirstLaunch(){
-        checkFirstLaunch();
-    }
 }
 

@@ -32,7 +32,7 @@
                 android:text="@string/firstLaunchTerms_button_disagree"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/ui_white_text_color"
-                android:background="@drawable/dark_blue_rect_button"
+                android:background="@drawable/dark_blue_rect_button_selector"
                 android:layout_marginRight="10dp"/>
 
         <Button
@@ -44,7 +44,7 @@
                 android:text="@string/firstLaunchTerms_button_agree"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/ui_white_text_color"
-                android:background="@drawable/light_blue_rect_button"
+                android:background="@drawable/light_blue_rect_button_selector"
                 />
           </LinearLayout>
 
@@ -61,7 +61,7 @@
     </RelativeLayout>
 
 
-    <com.brainydroid.daydreaming.ui.Questions.ScrollViewExt
+    <com.brainydroid.daydreaming.ui.FirstLaunchSequence.ScrollViewExt
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:id="@+id/firstLaunchTerms_Scrollview"
@@ -133,7 +133,7 @@
         </RelativeLayout>
 
 
-    </com.brainydroid.daydreaming.ui.Questions.ScrollViewExt>
+    </com.brainydroid.daydreaming.ui.FirstLaunchSequence.ScrollViewExt>
 
 
 

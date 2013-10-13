@@ -41,7 +41,7 @@
                         android:layout_width="@dimen/button_next_width"
                         android:layout_height="@dimen/button_next_height"
                         android:onClick="onClick_nextButton"
-                        android:background="@drawable/button_cloud_next"
+                        android:background="@drawable/button_cloud_next_selector"
                         />
                 <ImageButton
                         android:id="@+id/question_finishButton"
@@ -50,7 +50,7 @@
                         android:onClick="onClick_nextButton"
                         android:visibility="invisible"
                         android:clickable="false"
-                        android:background="@drawable/button_finish"
+                        android:background="@drawable/button_finish_selector"
                         />
 
 

@@ -92,8 +92,6 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
     public void onCreate(Bundle savedInstanceState) {
         Logger.v(TAG, "Creating");
         super.onCreate(savedInstanceState);
-
-        Ext_checkFirstLaunch();
     }
 
     @Override
@@ -213,10 +211,5 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
         Intent syncIntent = new Intent(this, SyncService.class);
         startService(syncIntent);
     }
-
-    public void Ext_checkFirstLaunch(){
-        checkFirstLaunch();
-    }
-
 
 }
