@@ -1,48 +1,89 @@
 {
-    "questionsVersion": 1,
+    "version": 1,
     "questions": [
         {
-            "id": "mindWandering_onOffTask",
+            "name": "mindWandering_onOffTask",
             "category": "mindWandering",
-            "subcategory": "content",
-            "type": "slider",
-            "mainText": "How much on-task are you right now?",
-            "parametersText": "Completely off-task{ss}Completely on-task",
-            "defaultPosition": 50
+            "subCategory": "content",
+            "details": {
+                "type": "Slider",
+                "subQuestions": [
+                    {
+                        "text": "How much on-task are you right now?",
+                        "hints": ["Completely off-task", "Completely on-task"],
+                        "initialPosition": 50
+                    }
+                ]
+            }
         },
         {
-            "id": "mindWandering_temporal",
+            "name": "mindWandering_temporal",
             "category": "mindWandering",
-            "subcategory": "content",
-            "type": "slider",
-            "mainText": "What is the temporal focus of your thoughts?",
-            "parametersText": "Far into the past{ss}Recent past{ss}Now{ss}Near future{ss}Far into the future",
-            "defaultPosition": 50
+            "subCategory": "content",
+            "details": {
+                "type": "Slider",
+                "subQuestions": [
+                    {
+                        "text": "What is the temporal focus of your thoughts?",
+                        "hints": ["Far into the past", "Recent past", "Now",
+                                  "Near future", "Far into the future"],
+                        "initialPosition": 50
+                    }
+                ]
+            }
         },
         {
-            "id": "mindWandering_social",
+            "name": "mindWandering_social",
             "category": "mindWandering",
-            "subcategory": "content",
-            "type": "slider",
-            "mainText": "How much are you thinking about yourself?{s}How much are you thinking about other people?",
-            "parametersText": "Not at all about yourself{ss}A little about yourself{ss}A lot about yourself{s}Not at all about other people{ss}A little about other people{ss}A lot about other people",
-            "defaultPosition": 50
+            "subCategory": "content",
+            "details": {
+                "type": "Slider",
+                "subQuestions": [
+                    {
+                        "text": "How much are you thinking about yourself?",
+                        "hints": ["Not at all", "A little", "A lot"],
+                        "initialPosition": 50
+                    },
+                    {
+                        "text": "How much are you thinking about other people?",
+                        "hints": ["Not at all", "A little", "A lot"],
+                        "initialPosition": 50
+                    }
+                ]
+            }
         },
         {
-            "id": "mindWandering_qualities",
+            "name": "mindWandering_qualities",
             "category": "mindWandering",
-            "subcategory": "qualities",
-            "type": "slider",
-            "mainText": "How fast were your thoughts?",
-            "parametersText": "Very slow{ss}Very fast",
-            "defaultPosition": 50
+            "subCategory": "qualities",
+            "details": {
+                "type": "Slider",
+                "subQuestions": [
+                    {
+                        "text": "How fast were your thoughts?",
+                        "hints": ["Very slow", "Very fast"],
+                        "initialPosition": 50
+                    }
+                ]
+            }
         },
         {
-            "id": "currentActivity_doing",
+            "name": "currentActivity_doing",
             "category": "currentActivity",
-            "type": "multipleChoice",
-            "mainText": "What were you doing just before the probe interrupted you?",
-            "parametersText": "Commuting{ss}Working{ss}Shopping{ss}Preparing food{ss}Doing housework{ss}Taking care of your children{ss}Eating{ss}Praying, worshiping, or meditating{ss}Socializing{ss}Watching TV{ss}Having a nap, resting{ss}Computer, Internet, or Email{ss}Relaxing{ss}On the phone{ss}Intimate relations{ss}Exercising"
+            "subCategory": "null",
+            "details": {
+                "type": "MultipleChoice",
+                "text": "What were you doing just before the probe interrupted you?",
+                "choices": ["Commuting", "Working", "Shopping",
+                            "Preparing food", "Doing housework",
+                            "Taking care of your children", "Eating",
+                            "Praying, worshiping, or meditating",
+                            "Socializing", "Watching TV",
+                            "Having a nap, resting",
+                            "Computer, Internet, or Email", "Relaxing",
+                            "On the phone", "Intimate relations",
+                            "Exercising"]
+            }
         }
     ]
 }

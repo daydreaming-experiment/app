@@ -5,184 +5,272 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
-import android.util.Log;
-
 import com.brainydroid.daydreaming.background.LocationService.LocationServiceBinder;
-import com.brainydroid.daydreaming.ui.Config;
+import com.google.inject.Inject;
 
+/**
+ * Manage the lifecycle of {@link LocationService} and pass messages
+ * on to it.
+ * <p/>
+ * Use this class as the handler for {@link LocationService}. You can
+ * start, stop, bind and unbind to the service using this interface. The
+ * main use is to pass callbacks to a running or to-be-started {@link
+ * LocationService} so as to receive location updates on the right objects.
+ * The main constraint to remember is that you can only send messages to the
+ * {@link LocationService} (e.g. register or un-register callbacks) when it
+ * is bound. And in that case, they are transmitted instantly (i.e. not
+ * depending on a callback).
+ * <p/>
+ * There are two use cases:
+ * <ul>
+ *     <li>{@link LocationPointService}: needs to start the {@link
+ *     LocationService} ({@link #startLocationService}),
+ *     register a callback on it and stop itself. Registering the callback
+ *     is done through this {@link LocationServiceConnection}, as follows:
+ *     <ol>
+ *         <li>Record the callback to be set, with {@link
+ *         #setLocationPointCallback}</li>
+ *         <li>Create and register ({@link
+ *         #setOnServiceConnectedCallback}) a {@link
+ *         ServiceConnectionCallback} to stop the {@link
+ *         LocationPointService} and unbind ({@link
+ *         #unbindLocationService})</li>
+ *         <li>Bind the {@link LocationService} to pass the message
+ *         ({@link #bindLocationService}) ; once bound,
+ *         the {@link ServiceConnectionCallback} stops the
+ *         {@link LocationPointService} and unbinds. The {@link
+ *         LocationService} keeps running on its own,
+ *         sending location updates to the registered callback.</li>
+ *     </ol>
+ *     After some time, the {@link LocationPointService} starts again
+ *     and clears its listener, which will stop the {@link LocationService}
+ *     if no other listeners are registered (i.e. if no {@link
+ *     com.brainydroid.daydreaming.ui.Questions.QuestionActivity} is listening for
+ *     updates). This is done with the same procedure: record the message
+ *     to pass ({@link #clearLocationPointCallback}),
+ *     set a {@link ServiceConnectionCallback} to stop the {@link
+ *     LocationPointService} and unbind, then bind to start the chain of
+ *     callbacks.</li>
+ *     <li>{@link com.brainydroid.daydreaming.ui.Questions.QuestionActivity}: needs
+ *     to start the {@code LocationService}, bind to it,
+ *     register a callback, and stay bound to be able to send messages at
+ *     will (the difference with {@link LocationPointService} is that the
+ *     {@link com.brainydroid.daydreaming.ui.Questions.QuestionActivity} keeps running
+ *     all the time while it is listening for location updates. When {@link
+ *     com.brainydroid.daydreaming.ui.Questions.QuestionActivity} stops,
+ *     it clears its callback and unbinds. That will stop the {@link
+ *     LocationService} if no other callback is registered (i.e. if no {@link
+ *     com.brainydroid.daydreaming.db.LocationPoint} is listening for
+ *     updates).
+ *     </li>
+ * </ul>
+ *
+ * @author Sébastien Lerique
+ * @author Vincent Adam
+ * @see LocationService
+ * @see LocationCallback
+ * @see ServiceConnectionCallback
+ * @see com.brainydroid.daydreaming.db.LocationPoint
+ * @see com.brainydroid.daydreaming.db.Question
+ */
 public class LocationServiceConnection implements ServiceConnection {
 
-	private static String TAG = "LocationServiceConnection";
+    private static String TAG = "LocationServiceConnection";
 
-    private ServiceConnectionCallback serviceConnectionCallback = null;
-	private LocationCallback locationItemCallbackToSet = null;
-    private boolean setLocationItemCallback = false;
-    private LocationCallback questionLocationCallbackToSet = null;
+    // Should we set a LocationPointCallback when possible?
+    private boolean setLocationPointCallback = false;
+    // If so we will set this one
+    private LocationCallback locationPointCallbackToSet = null;
+
+    // Should we set a QuestionLocationCallback when possible?
     private boolean setQuestionLocationCallback = false;
-	private LocationService locationService;
-	private boolean sBound = false;
-	private final Context _context;
+    // If so we will set this one
+    private LocationCallback questionLocationCallbackToSet = null;
 
-	public LocationServiceConnection(Context context) {
-		super();
+    // The LocationService we connect to
+    private LocationService locationService;
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] LocationServiceConnection");
-		}
+    // Called once we are connected to the LocationService
+    private ServiceConnectionCallback serviceConnectionCallback = null;
 
-		_context = context;
-	}
+    // true if we are connecting or connected,
+    // false if we are disconnecting or disconnected.
+    private boolean sBound = false;
 
-	@Override
-	public void onServiceConnected(ComponentName name, IBinder service) {
+    @Inject Context context;
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] onServiceConnected");
-		}
+    @Override
+    public void onServiceConnected(ComponentName name, IBinder binder) {
+        Logger.d(TAG, "LocationService connected");
 
-		LocationServiceBinder binder = (LocationServiceBinder)service;
-		locationService = binder.getService();
-		setLocationServiceCallbacks();
+        // Get our service and set our callbacks
+        locationService = ((LocationServiceBinder)binder).getService();
+        setLocationServiceCallbacks();
 
+        // If we can, call our ServiceConnectionCallback
         if (serviceConnectionCallback != null) {
+            Logger.d(TAG, "Calling back serviceConnectionCallback");
             serviceConnectionCallback.onServiceConnected();
+        } else {
+            Logger.v(TAG, "No serviceConnectionCallback to call");
         }
-	}
+    }
 
-	@Override
-	public void onServiceDisconnected(ComponentName name) {
+    @Override
+    public void onServiceDisconnected(ComponentName name) {
+        Logger.d(TAG, "LocationService disconnected");
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] onServiceDisconnected");
-		}
+        // The service is dead, forget about it
+        locationService = null;
+    }
 
-		locationService = null;
-	}
+    /**
+     * Start the {@link LocationService}.
+     */
+    public void startLocationService() {
+        Logger.d(TAG, "Starting LocationService");
+        Intent locationServiceIntent = new Intent(context,
+                LocationService.class);
+        context.startService(locationServiceIntent);
+    }
 
-	public void startLocationService() {
+    /**
+     * Bind to the {@link LocationService}.
+     */
+    public void bindLocationService() {
+        Logger.d(TAG, "Binding to LocationService");
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] startLocationService");
-		}
-
-		Intent locationServiceIntent = new Intent(_context, LocationService.class);
-		_context.startService(locationServiceIntent);
-	}
-
-	public void bindLocationService() {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] bindLocationService");
-		}
-
+        // Only bind if we're not waiting for a previous bindService() to
+        // complete
         if (!sBound) {
-            Intent locationServiceIntent = new Intent(_context, LocationService.class);
-            _context.bindService(locationServiceIntent, this, 0);
-            // Why is this here and not in onServiceConnected?
+            Intent locationServiceIntent = new Intent(context,
+                    LocationService.class);
+            context.bindService(locationServiceIntent, this, 0);
             sBound = true;
+        } else {
+            Logger.v(TAG, "LocationService already binding or bound -> " +
+                    "leaving it so");
         }
-	}
+    }
 
-	public void unbindLocationService() {
+    /**
+     * Unbind from the {@link LocationService}.
+     */
+    public void unbindLocationService() {
+        Logger.d(TAG, "Unbinding from LocationService");
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] unbindLocationService");
-		}
+        // Only unbind if we're not waiting for a previous unbindService()
+        // to complete
+        if (sBound) {
+            context.unbindService(this);
+            sBound = false;
+        } else {
+            Logger.w(TAG, "Already unbinding or unbound from " +
+                    "LocationService -> leaving it so");
+        }
+    }
 
-		if (sBound) {
-			_context.unbindService(this);
-            // Why is this here and not in onServiceDisconnected?
-			sBound = false;
-		}
-	}
+    /**
+     * Register recorded callbacks on the {@link LocationService}.
+     */
+    private void setLocationServiceCallbacks() {
+        Logger.d(TAG, "Setting callbacks on LocationService");
 
-	private void setLocationServiceCallbacks() {
+        // If we remembered to set a LocationPoint callback,
+        // do so. Then flush our memory of this.
+        if (setLocationPointCallback) {
+            Logger.d(TAG, "Setting locationPointCallback");
+            locationService.setLocationPointCallback(
+                    locationPointCallbackToSet);
+            locationPointCallbackToSet = null;
+            setLocationPointCallback = false;
+        } else {
+            Logger.v(TAG, "No locationPointCallback to set");
+        }
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] setLocationServiceCallbacks");
-		}
-
-		if (setLocationItemCallback) {
-			locationService.setLocationItemCallback(locationItemCallbackToSet);
-			locationItemCallbackToSet = null;
-            setLocationItemCallback = false;
-		}
-
+        // If we remembered to set a QuestionLocation callback,
+        // do so. Then flush our memory of this.
         if (setQuestionLocationCallback) {
-            locationService.setQuestionLocationCallback(questionLocationCallbackToSet);
+            Logger.d(TAG, "Setting questionLocationCallback");
+            locationService.setQuestionLocationCallback(
+                    questionLocationCallbackToSet);
             questionLocationCallbackToSet = null;
             setQuestionLocationCallback = false;
+        } else {
+            Logger.v(TAG, "No questionLocationCallback to set");
         }
-	}
+    }
 
-    public void setOnServiceConnectedCallback(ServiceConnectionCallback serviceConnectionCallback) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] setOnServiceConnectedCallback");
-        }
-
+    /**
+     * Register a {@link ServiceConnectionCallback}.
+     *
+     * @param serviceConnectionCallback Callback to register
+     */
+    public void setOnServiceConnectedCallback(
+            ServiceConnectionCallback serviceConnectionCallback) {
         this.serviceConnectionCallback = serviceConnectionCallback;
     }
 
-    public void setLocationItemCallback(LocationCallback callback) {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] setLocationItemCallback");
-        }
-
+    /**
+     * Remember to set a {@link com.brainydroid.daydreaming.db.LocationPoint}
+     * callback when possible.
+     *
+     * @param callback Callback to remember
+     */
+    public void setLocationPointCallback(LocationCallback callback) {
+        // Set the callback straight away if possible. If not possible,
+        // remember to do it later.
         if (sBound && locationService != null) {
-            locationService.setLocationItemCallback(callback);
-            locationItemCallbackToSet = null;
-            setLocationItemCallback = false;
+            Logger.d(TAG, "Setting locationPointCallback");
+            locationService.setLocationPointCallback(callback);
+            locationPointCallbackToSet = null;
+            setLocationPointCallback = false;
         } else {
-            locationItemCallbackToSet = callback;
-            setLocationItemCallback = true;
+            Logger.d(TAG, "Recording locationPointCallback for later " +
+                    "setting");
+            locationPointCallbackToSet = callback;
+            setLocationPointCallback = true;
         }
     }
 
-	public void setQuestionLocationCallback(LocationCallback callback) {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] setQuestionLocationCallback");
-		}
-
-		if (sBound && locationService != null) {
-			locationService.setQuestionLocationCallback(callback);
-			questionLocationCallbackToSet = null;
+    /**
+     * Remember to set a {@link com.brainydroid.daydreaming.db.Question}
+     * {@link LocationCallback} when possible.
+     *
+     * @param callback Callback to remember
+     */
+    public void setQuestionLocationCallback(LocationCallback callback) {
+        // Set the callback straight away if possible. If not possible,
+        // remember to do it later.
+        if (sBound && locationService != null) {
+            Logger.d(TAG, "Setting questionLocationCallback");
+            locationService.setQuestionLocationCallback(callback);
+            questionLocationCallbackToSet = null;
             setQuestionLocationCallback = false;
-		} else {
-			questionLocationCallbackToSet = callback;
+        } else {
+            Logger.d(TAG, "Recording questionLocationCallback for later " +
+                    "setting");
+            questionLocationCallbackToSet = callback;
             setQuestionLocationCallback = true;
-		}
-	}
-
-    public void clearLocationItemCallback() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] clearLocationItemCallback");
         }
-
-        setLocationItemCallback(null);
     }
 
+    /**
+     * Remember to clear {@link com.brainydroid.daydreaming.db.LocationPoint}
+     * callback when possible.
+     */
+    public void clearLocationPointCallback() {
+        Logger.d(TAG, "Clearing locationPointCallback");
+        setLocationPointCallback(null);
+    }
+
+    /**
+     * Remember to clear {@link com.brainydroid.daydreaming.db.Question}
+     * {@link LocationCallback} when possible.
+     */
     public void clearQuestionLocationCallback() {
-
-        // Debug
-        if (Config.LOGD) {
-            Log.d(TAG, "[fn] clearQuestionLocationCallback");
-        }
-
+        Logger.d(TAG, "Clearing questionLocationCallback");
         setQuestionLocationCallback(null);
     }
+
 }

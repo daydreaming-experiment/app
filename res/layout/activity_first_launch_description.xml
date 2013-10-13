@@ -1,52 +1,114 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center" >
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="center_horizontal"
+    >
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:orientation="vertical" >
-
-        <TextView
-            android:id="@+id/firstLaunchDescription_textTitle"
-            android:layout_width="match_parent"
+            android:id="@+id/firstLaunchDescription_scrollview_layout"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="50dp"
-            android:gravity="center_horizontal"
-            android:text="@string/firstLaunchDescription_text_title"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:layout_alignParentTop="true"
+            android:background="@drawable/white_background"    >
 
-        <TextView
-            android:id="@+id/firstLaunchDescription_textDescription"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="50dp"
-            android:gravity="center_horizontal"
-            android:text="@string/firstLaunchDescription_text_description" />
+            <ScrollView
+                    android:layout_width="fill_parent"
+                    android:layout_height="300dp"
+                    android:padding="15dp"
+                    android:scrollbarSize="5dp"
+                    android:gravity="center_horizontal"
+                    android:scrollbarThumbVertical="@drawable/scrollbar_vertical_thumb_blue">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+                <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/firstLaunchDescription_scrollviewtext"   >
 
-            <android.support.v7.widget.Space
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
-        
-	        <Button
-	            android:id="@+id/firstLaunchDescription_buttonNext"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:drawableRight="@drawable/navigation_next_item"
-	            android:onClick="onClick_buttonNext"
-	            android:text="@string/firstLaunchDescription_button_next" />
+            <TextView
+                  android:id="@+id/firstLaunchDescription_textTitle"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="@string/firstLaunchDescription_text_title"
+                  android:textAppearance="@style/ui_font_title_darkblue_bold"
+                  android:layout_centerHorizontal="true"
+                  android:layout_marginTop="@dimen/description_text_titleTopMargin"
+                    />
 
-	    </LinearLayout>
+             <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/firstLaunchDescription_textTitle"
+                    android:layout_centerHorizontal="true"
+                     >
+            <TextView
+                    android:id="@+id/firstLaunchDescription_textDescription"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="coucou"
+                    android:padding="@dimen/description_text_padding"
+                    android:lineSpacingExtra="@dimen/description_text_linespacing"
+                    android:layout_gravity="left"
+                    android:textAppearance="@style/ui_font_title_darkblue"/>
+            </LinearLayout>
+
+
+    </RelativeLayout>
+        <!--         android:background="@drawable/text_box"
+                                                                -->
+            </ScrollView>
 
     </LinearLayout>
+
+    <LinearLayout android:id="@+id/firstLaunchDescription_cloud_layout"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_marginTop="-10dp"
+                  android:layout_below="@id/firstLaunchDescription_scrollview_layout">
+
+
+        <ImageView
+                android:id="@+id/firstLaunchDescription_cloudimageview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="top"
+                android:src="@drawable/cloud_bottom"   />
+
+    </LinearLayout>
+
+
+    <RelativeLayout android:id="@+id/firstLaunchDescription_person_layout"
+                  android:layout_width="fill_parent"
+                  android:layout_height="wrap_content"
+                  android:gravity="center_horizontal"
+                  android:orientation="vertical"
+                  android:layout_alignParentBottom="true"
+            >
+
+        <ImageView
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_centerInParent="true"
+                android:src = "@drawable/person_description"  />
+
+    </RelativeLayout>
+
+
+    <LinearLayout android:id="@+id/firstLaunchDescription_button_layout"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_alignParentRight="true"
+                  android:layout_marginRight="@dimen/next_button_right_margin"
+                  android:layout_below="@id/firstLaunchDescription_cloud_layout">
+
+        <ImageButton
+                android:id="@+id/firstLaunchDescription_buttonNext"
+                android:layout_width="@dimen/button_next_width"
+                android:layout_height="@dimen/button_next_height"
+                android:onClick="onClick_buttonNext"
+                android:background="@drawable/button_cloud_next"/>
+
+    </LinearLayout>
+
 
 </RelativeLayout>

@@ -1,77 +1,29 @@
 package com.brainydroid.daydreaming.db;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-
-import android.util.Log;
-import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.SeekBar;
-import android.widget.TextView;
-
-import com.brainydroid.daydreaming.R;
-import com.brainydroid.daydreaming.ui.Config;
-import com.google.gson.Gson;
+import com.brainydroid.daydreaming.background.Logger;
 import com.google.gson.annotations.Expose;
 
-public class SliderAnswer implements Answer {
+import java.util.HashMap;
 
-	private static String TAG = "SliderAnswer";
+public class SliderAnswer implements IAnswer {
 
-	private transient Gson gson;
-	@Expose private final HashMap<String,Integer> sliders;
+    @SuppressWarnings("FieldCanBeLocal")
+    private static String TAG = "SliderAnswer";
 
-	public SliderAnswer() {
+    @SuppressWarnings("FieldCanBeLocal")
+    private String type = "Slider";
 
-		//Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] SliderAnswer");
-		}
+    // Don't inject this or it will override Json-loaded values when
+    // deserializing.
+    @Expose HashMap<String,Integer> sliders = new HashMap<String, Integer>();
 
-		sliders = new HashMap<String,Integer>();
-		gson = new Gson();
-	}
+    public synchronized String getType() {
+        return type;
+    }
 
-	@Override
-	public String toJson() {
+    public synchronized void addAnswer(String text, int position) {
+        Logger.v(TAG, "Adding answer {0} at position {1}", text, position);
+        sliders.put(text, position);
+    }
 
-		//Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] toJson");
-		}
-
-		return gson.toJson(this, this.getClass());
-	}
-
-	@Override
-	public void getAnswersFromLayout(LinearLayout questionLinearLayout) {
-
-		//Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] getAnswersFromLayout");
-		}
-
-		ArrayList<View> subQuestions = Question.getViewsByTag(questionLinearLayout, "subquestion");
-		Iterator<View> subQuestionsIt = subQuestions.iterator();
-
-		while (subQuestionsIt.hasNext()) {
-			View subQuestion = subQuestionsIt.next();
-			SeekBar seekBar = (SeekBar)subQuestion.findViewById(
-					R.id.question_slider_seekBar);
-			TextView mainTextView = (TextView)subQuestion.findViewById(R.id.question_slider_mainText);
-			String mainText = mainTextView.getText().toString();
-			addAnswer(mainText, seekBar.getProgress());
-		}
-	}
-
-	private void addAnswer(String questionString, int answer) {
-
-		//Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] addAnswer");
-		}
-
-		sliders.put(questionString, answer);
-	}
 }

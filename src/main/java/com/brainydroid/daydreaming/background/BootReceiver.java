@@ -1,47 +1,60 @@
 package com.brainydroid.daydreaming.background;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
+import com.google.inject.Inject;
+import roboguice.receiver.RoboBroadcastReceiver;
 
-import com.brainydroid.daydreaming.ui.Config;
+/**
+ * Start {@link SchedulerService} and {@link LocationPointService} when boot
+ * is completed.
+ * <p/>
+ * These services are only started if the first launch has been completed
+ * (i.e. the user has registered and is participating in the experiment).
+ *
+ * @author Sébastien Lerique
+ * @author Vincent Adam
+ * @see SchedulerService
+ * @see LocationPointService
+ */
+public class BootReceiver extends RoboBroadcastReceiver {
 
-public class BootReceiver extends BroadcastReceiver {
+    @SuppressWarnings("FieldCanBeLocal")
+    private static String TAG = "BootReceiver";
 
-	private static String TAG = "BootReceiver";
+    @Inject StatusManager statusManager;
 
-	private StatusManager status;
+    @Override
+    public void handleReceive(Context context, Intent intent) {
 
-	@Override
-	public void onReceive(Context context, Intent intent) {
+        // Were we called because the boot just completed?
+        String action = intent.getAction();
+        if (action.equals(Intent.ACTION_BOOT_COMPLETED)) {
+            Logger.d(TAG, "BootReceiver started for ACTION_BOOT_COMPLETED");
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] onReceive");
-		}
+            // If first launch hasn't been completed, the user doesn't want
+            // anything yet
+            if (statusManager.isFirstLaunchCompleted()) {
+                Logger.d(TAG, "First launch is completed");
 
-		status = StatusManager.getInstance(context);
-		String action = intent.getAction();
+                // Start scheduling polls
+                Logger.d(TAG, "Starting SchedulerService");
+                Intent schedulerIntent = new Intent(context,
+                        SchedulerService.class);
+                context.startService(schedulerIntent);
 
-		if (action.equals(Intent.ACTION_BOOT_COMPLETED)) {
+                // Start getting location updates
+                Logger.d(TAG, "Starting LocationPointService");
+                Intent locationPointServiceIntent = new Intent(context,
+                        LocationPointService.class);
+                context.startService(locationPointServiceIntent);
+            } else {
+                Logger.v(TAG, "First launch not completed -> exiting");
+            }
+        } else {
+            Logger.v(TAG, "BootReceiver started for something different " +
+                    "than ACTION_BOOT_COMPLETED -> exiting");
+        }
+    }
 
-			// Info
-			Log.i(TAG, "Received ACTION_BOOT_COMPLETED");
-
-			if (status.isFirstLaunchCompleted()) {
-
-				// Info
-				Log.i(TAG, "first launch is completed");
-				Log.i(TAG, "starting SchedulerService");
-                Log.i(TAG, "starting LocationItemService");
-
-				Intent schedulerIntent = new Intent(context, SchedulerService.class);
-				context.startService(schedulerIntent);
-
-                Intent locationItemServiceIntent = new Intent(context, LocationItemService.class);
-                context.startService(locationItemServiceIntent);
-			}
-		}
-	}
 }

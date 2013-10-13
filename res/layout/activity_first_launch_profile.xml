@@ -1,53 +1,89 @@
+
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:paddingTop="@dimen/profile_paddingTop"
+            android:paddingBottom="@dimen/profile_paddingBottom"
+            android:paddingRight="@dimen/profile_lateralPadding"
+            android:paddingLeft="@dimen/profile_lateralPadding"
+            android:scrollbarSize="5dp"
+            android:scrollbarThumbVertical="@drawable/scrollbar_vertical_thumb"
+             >
+
+<RelativeLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:gravity="center_vertical">
 
     <LinearLayout
+            android:id = "@+id/firstLaunchProfile_spinners"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp"
-        android:orientation="vertical" >
+        android:layout_marginRight="30dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="20dp"
+        android:orientation="vertical"
+            >
+
+        <ImageView
+                android:id="@+id/firstLaunchWelcome_ballon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:src="@drawable/ballon"/>
 
         <TextView
             android:id="@+id/firstLaunchProfile_titleAboutYou"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
+            android:layout_marginTop="@dimen/profile_title_vertical_space"
+            android:layout_marginBottom="@dimen/profile_title_vertical_space"
+            android:gravity="center_horizontal"
             android:text="@string/firstLaunchProfile_title_about_you"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:textAppearance="@style/ui_font_title_white_bold" />
+
+
+
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginBottom="8dp" >
+            android:layout_marginBottom="@dimen/profile_field_vertical_spacing">
 
-            <EditText
-                android:id="@+id/firstLaunchProfile_editAge"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="1"
-                android:layout_marginRight="4dp"
-                android:ems="10"
-                android:hint="@string/firstLaunchProfile_hint_age"
-                android:inputType="number" >
 
-                <requestFocus />
-            </EditText>
+            <TextView
+                    android:id="@+id/firstLaunchProfile_textGender"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:layout_marginRight="4dp"
+                    android:text="@string/firstLaunchProfile_text_age"
+                    android:textAppearance="@style/ui_font_title_white"/>
 
-            <android.support.v7.widget.Space
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
-            
+            <Spinner
+                    android:id="@+id/firstLaunchProfile_ageSpinner"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="4dp"
+                    android:paddingRight="10dp"
+                    android:paddingLeft="10dp"
+                    android:prompt="@string/firstLaunchProfile_Spinner_age_prompt"
+                    android:background="@drawable/simple_spinner_box"/>
+
+
+
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginBottom="8dp" >
+            android:layout_marginBottom="@dimen/profile_field_vertical_spacing">
 
             <TextView
                 android:id="@+id/firstLaunchProfile_textGender"
@@ -56,9 +92,8 @@
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
                 android:layout_marginRight="4dp"
-                android:hint="@string/firstLaunchProfile_text_gender"
-                android:textAppearance="?android:attr/textAppearanceMedium" >
-            </TextView>
+                android:text="@string/firstLaunchProfile_text_gender"
+                android:textAppearance="@style/ui_font_title_white"/>
 
             <Spinner
                 android:id="@+id/firstLaunchProfile_genderSpinner"
@@ -66,30 +101,74 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
-                android:layout_marginLeft="4dp" />
-            
+                android:layout_marginLeft="4dp"
+                android:paddingRight="10dp"
+                android:paddingLeft="10dp"
+                android:prompt="@string/firstLaunchProfile_Spinner_gender_prompt"
+                android:background="@drawable/simple_spinner_box"
+                />
+
+
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="@dimen/profile_field_vertical_spacing"
+                >
 
-            <android.support.v7.widget.Space
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
-        
-            <Button
-                android:id="@+id/firstLaunchProfile_buttonNext"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:drawableRight="@drawable/navigation_next_item"
-                android:onClick="onClick_buttonNext"
-                android:text="@string/firstLaunchProfile_button_next" />
+            <TextView
+                    android:id="@+id/firstLaunchProfile_textEducation"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:layout_marginRight="4dp"
+                    android:text="@string/firstLaunchProfile_text_education"
+                    android:textAppearance="@style/ui_font_title_white"/>
+
+            <Spinner
+                    android:id="@+id/firstLaunchProfile_educationSpinner"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="4dp"
+                    android:singleLine = "true"
+                    android:paddingRight="10dp"
+                    android:paddingLeft="10dp"
+                    android:prompt="@string/firstLaunchProfile_Spinner_education_prompt"
+                   android:background="@drawable/simple_spinner_box"
+                    />
+
 
         </LinearLayout>
 
+
     </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/firstLaunchProfile_spinners"
+            android:layout_marginBottom="20dp"
+            android:layout_marginRight="@dimen/next_button_right_margin"
+            android:gravity="right">
+
+
+            <ImageButton
+                    android:id="@+id/firstLaunchProfile_buttonNext"
+                    android:layout_width="@dimen/button_next_width"
+                    android:layout_height="@dimen/button_next_height"
+                    android:onClick="onClick_buttonNext"
+                    android:text="@string/firstLaunchDescription_button_next"
+                    android:background="@drawable/button_cloud_next"
+                    />
+
+
+    </LinearLayout>
+
+</RelativeLayout>
 
 </ScrollView>

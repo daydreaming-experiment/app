@@ -2,133 +2,286 @@ package com.brainydroid.daydreaming.background;
 
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Build;
-import android.util.Log;
+import android.os.SystemClock;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
-import com.brainydroid.daydreaming.ui.Config;
-
-// Class to create, maintain and update data (SharedPreferences) associated to the app
+/**
+ * Manage global application status (like first launch) and collect
+ * information on the device's status.
+ *
+ * @author Sébastien Lerique
+ * @author Vincent Adam
+ */
+@Singleton
 public class StatusManager {
 
-	private static String TAG = "StatusManager";
+    private static String TAG = "StatusManager";
 
-	private static StatusManager smInstance = null;
+    /** Preference key storing the first launch status */
+    private static String EXP_STATUS_FL_COMPLETED =
+            "expStatusFlCompleted";
 
-	private static final String EXP_STATUS = "expStatus"; // status of experiment
-	private static final String EXP_STATUS_FL_COMPLETED = "expStatusFlCompleted"; // first launch completed
+    /** Preference key storing the status of initial questions update */
+    private static String EXP_STATUS_QUESTIONS_UPDATED =
+            "expStatusQuestionsUpdated";
 
-	private final SharedPreferences expStatus; // file containing status of exp
-	private final SharedPreferences.Editor eExpStatus; // editor of expStatus
+    /** Preference key storing timestamp of the last sync operation */
+    private static String LAST_SYNC_TIMESTAMP = "lastSyncTimestamp";
 
-	private final LocationManager locationManager;
-	private final ConnectivityManager connManager;
-	private NetworkInfo networkInfo;
-	private final Context context; // application environment
+    /** Transient variable and possible values storing questionsUpdate status */
+    @SuppressWarnings({"FieldCanBeLocal", "UnusedDeclaration"})
+    private String questionsUpdateStatus = null;
+    public static String QUESTIONS_UPDATE_FAILED = "questionsUpdateFailed";
+    public static String QUESTIONS_UPDATE_SUCCEEDED =
+            "questionsUpdateSucceeded";
+    public static String QUESTIONS_UPDATE_MALFORMED =
+            "questionsUpdateMalformed";
 
-	public static synchronized StatusManager getInstance(Context context) {
+    /** Callback called when questionsUpdateStatus changes */
+    private QuestionsUpdateCallback questionsUpdateCallback = null;
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] getInstance");
-		}
+    /** Preference key storing timestamp of beginning of experiment */
+    @SuppressWarnings("FieldCanBeLocal")
+    private static String EXP_START_TIMESTAMP = "expStartTimestamp";
 
-		if (smInstance == null) {
-			smInstance = new StatusManager(context);
-		}
-		return smInstance;
-	}
+    /** Preference key storing latest retrieved ntp timestamp */
+    @SuppressWarnings("FieldCanBeLocal")
+    private static String LATEST_NTP_TIMESTAMP = "latestNtpTimestamp";
 
-	/*
-	 * Constructor.
-	 * loads context, assign initial preferences
-	 */
-	private StatusManager(Context context) {
+    /**
+     * Interval below which we don't need to re-sync data to servers (in
+     * milliseconds)
+     */
+    @SuppressWarnings("FieldCanBeLocal")
+    private static int SYNC_INTERVAL = 15 * 1000;
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] StatusManager");
-		}
+    @Inject LocationManager locationManager;
+    @Inject ConnectivityManager connectivityManager;
+    @Inject ActivityManager activityManager;
 
-		this.context = context.getApplicationContext();
-		expStatus = this.context.getSharedPreferences(EXP_STATUS, Context.MODE_PRIVATE);
-		eExpStatus = expStatus.edit();
-		locationManager = (LocationManager)this.context.getSystemService(Context.LOCATION_SERVICE);
-		connManager = (ConnectivityManager)this.context.getSystemService(Context.CONNECTIVITY_SERVICE);
-		networkInfo = connManager.getActiveNetworkInfo();
-	}
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor eSharedPreferences;
 
-	/*
-	 * Check if first launch is completed
-	 */
-	public boolean isFirstLaunchCompleted() {
+    /**
+     * Initialize the {@link SharedPreferences} editor.
+     */
+    @Inject
+    public StatusManager(SharedPreferences sharedPreferences) {
+        Logger.d(TAG, "StatusManager created");
+        this.sharedPreferences = sharedPreferences;
+        eSharedPreferences = sharedPreferences.edit();
+    }
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] isFirstLaunchCompleted");
-		}
+    /**
+     * Check if first launch is completed.
+     *
+     * @return {@code true} if first launch has completed,
+     *         {@code false} otherwise
+     */
+    public synchronized boolean isFirstLaunchCompleted() {
+        if (sharedPreferences.getBoolean(EXP_STATUS_FL_COMPLETED, false)) {
+            Logger.d(TAG, "First launch is completed");
+            return true;
+        } else {
+            Logger.d(TAG, "First launch not completed yet");
+            return false;
+        }
+    }
 
-		return expStatus.getBoolean(EXP_STATUS_FL_COMPLETED, false);
-	}
+    /**
+     * Set the first launch flag to completed.
+     */
+    public synchronized void setFirstLaunchCompleted() {
+        Logger.d(TAG, "Setting first launch to completed");
 
-	public void setFirstLaunchCompleted() {
+        eSharedPreferences.putBoolean(EXP_STATUS_FL_COMPLETED, true);
+        eSharedPreferences.commit();
+    }
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] setFirstLaunchCompleted");
-		}
+    /**
+     * Check if the questions have been updated.
+     *
+     * @return {@code true} if the questions have been updated,
+     *         {@code false} otherwise
+     */
+    public synchronized boolean areQuestionsUpdated() {
+        if (sharedPreferences.getBoolean(EXP_STATUS_QUESTIONS_UPDATED,
+                false)) {
+            Logger.d(TAG, "Questions are updated");
+            return true;
+        } else {
+            Logger.d(TAG, "Questions not updated yet");
+            return false;
+        }
+    }
 
-		eExpStatus.putBoolean(EXP_STATUS_FL_COMPLETED, true);
-		eExpStatus.commit();
-	}
+    /**
+     * Set the updated questions flag to completed.
+     */
+    public synchronized void setQuestionsUpdated() {
+        Logger.d(TAG, "Setting questions to updated");
 
-	public boolean isLocationServiceRunning() {
+        eSharedPreferences.putBoolean(EXP_STATUS_QUESTIONS_UPDATED, true);
+        eSharedPreferences.commit();
+    }
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] isLocationServiceRunning");
-		}
+    public synchronized void setQuestionsUpdateStatusCallback
+            (QuestionsUpdateCallback callback) {
+        Logger.d(TAG, "Setting questionsUpdateCallback");
+        questionsUpdateCallback = callback;
+    }
 
-		ActivityManager manager = (ActivityManager)context.getSystemService(Context.ACTIVITY_SERVICE);
-		for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-			if (LocationService.class.getName().equals(service.service.getClassName())) {
-				return true;
-			}
-		}
-		return false;
-	}
+    public synchronized void clearQuestionsUpdateCallback() {
+        Logger.d(TAG, "Clearing questionsUpdateCallback");
+        questionsUpdateCallback = null;
+    }
 
-	public boolean isNetworkLocEnabled() {
+    public synchronized void setQuestionsUpdateStatus(String status) {
+        Logger.d(TAG, "Setting the questionsUpdateStatus to {}", status);
+        questionsUpdateStatus = status;
+        if (questionsUpdateCallback != null) {
+            questionsUpdateCallback.onQuestionsUpdateStatusChange(status);
+        }
+    }
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] isNetworkEnabled");
-		}
+    /**
+     * Check if {@link LocationService} is running.
+     *
+     * @return {@code true} if {@link LocationService} is running,
+     *         {@code false} otherwise
+     */
+    public synchronized boolean isLocationServiceRunning() {
+        // This hack was found on StackOverflow
+        for (RunningServiceInfo service :
+                activityManager.getRunningServices(Integer.MAX_VALUE)) {
+            if (LocationService.class.getName().equals(
+                    service.service.getClassName())) {
+                Logger.d(TAG, "LocationService is running");
+                return true;
+            }
+        }
 
-		return locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-	}
+        Logger.d(TAG, "LocationService is not running");
+        return false;
+    }
 
-	public boolean isDataEnabled() {
+    /**
+     * Check if the network location provider is enabled.
+     *
+     * @return {@code true} if the network location provider is enabled,
+     *         {@code false} otherwise
+     */
+    public synchronized boolean isNetworkLocEnabled() {
+        if (locationManager.isProviderEnabled(
+                LocationManager.NETWORK_PROVIDER)) {
+            Logger.d(TAG, "Network location is enabled");
+            return true;
+        } else {
+            Logger.d(TAG, "Network location is disabled");
+            return false;
+        }
+    }
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] isDataEnabled");
-		}
+    /**
+     * Check if data connection is enabled (or connecting).
+     *
+     * @return {@code true} if data connection is enabled or connecting,
+     *         {@code false} otherwise
+     */
+    public synchronized boolean isDataEnabled() {
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnectedOrConnecting()) {
+            Logger.d(TAG, "Data is enabled");
+            return true;
+        } else {
+            Logger.d(TAG, "Data is disabled");
+            return false;
+        }
+    }
 
-		networkInfo = connManager.getActiveNetworkInfo();
-        return ( ( networkInfo != null && networkInfo.isConnectedOrConnecting() )||( Build.FINGERPRINT.startsWith("generic") ) );	}
+    /**
+     * Check if both data connection and network location provider are
+     * enabled (data connection can also be still connecting only).
+     *
+     * @return {@code true} if the network location provider is enabled and
+     *         data connection is enabled or connecting,
+     *         {@code false} otherwise
+     */
+    public synchronized boolean isDataAndLocationEnabled() {
+        if (isNetworkLocEnabled() && isDataEnabled()) {
+            Logger.d(TAG, "Data and network location are enabled");
+            return true;
+        } else {
+            Logger.d(TAG, "Either data or network location is disabled");
+            return false;
+        }
+    }
 
-	public boolean isDataAndLocationEnabled() {
+    /**
+     * Set the timestamp of the last sync operation to now.
+     */
+    public synchronized void setLastSyncToNow() {
+        long now = SystemClock.elapsedRealtime();
+        Logger.d(TAG, "Setting last sync timestamp to now");
+        eSharedPreferences.putLong(LAST_SYNC_TIMESTAMP, now);
+        eSharedPreferences.commit();
+    }
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] isDataAndLocationEnabled");
-		}
+    /**
+     * Check if a sync operation was made not long ago.
+     * <p/>
+     * If a sync operation was made less than {@link #SYNC_INTERVAL}
+     * milliseconds ago, this method will return false. Otherwise it will
+     * return true. Use {@link #setLastSyncToNow} to set the timestamp of the
+     * last sync operation when syncing.
+     *
+     * @return {@code boolean} indicating if the last sync operation was long
+     *         ago or not
+     */
+    public synchronized boolean isLastSyncLongAgo() {
+        // If last sync timestamp is present, make sure now is after the
+        // threshold to force a sync.
+        long threshold = sharedPreferences.getLong(LAST_SYNC_TIMESTAMP,
+                - SYNC_INTERVAL) + SYNC_INTERVAL;
+        if (threshold < SystemClock.elapsedRealtime()) {
+            Logger.d(TAG, "Last sync was long ago");
+            return true;
+        } else {
+            Logger.d(TAG, "Last sync was not long ago");
+            return false;
+        }
+    }
 
-		return isNetworkLocEnabled() && isDataEnabled();
-	}
+    public synchronized void setExperimentStartTimestamp(long timestamp) {
+        Logger.d(TAG, "Setting experiment start timestamp to {}", timestamp);
+        eSharedPreferences.putLong(EXP_START_TIMESTAMP, timestamp);
+        eSharedPreferences.commit();
+    }
+
+    public synchronized long getExperimentStartTimestamp() {
+        return sharedPreferences.getLong(EXP_START_TIMESTAMP, -1);
+    }
+
+    public synchronized void setLatestNtpTime(long timestamp) {
+        Logger.d(TAG, "Setting latest ntp requested time to {}", timestamp);
+        eSharedPreferences.putLong(LATEST_NTP_TIMESTAMP, timestamp);
+        eSharedPreferences.commit();
+
+        if (!sharedPreferences.contains(EXP_START_TIMESTAMP)) {
+            Logger.w(TAG, "expStartTimestamp doesn't seem to have been set. " +
+                    "Setting it to this latest (and probably first) NTP " +
+                    "timestamp");
+            setExperimentStartTimestamp(timestamp);
+        }
+    }
+
+    public synchronized long getLatestNtpTime() {
+        return sharedPreferences.getLong(LATEST_NTP_TIMESTAMP, -1);
+    }
+
 }

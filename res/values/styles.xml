@@ -1,50 +1,32 @@
 <resources>
 
-    <style name="AppTheme" parent="android:style/Theme.Light">
-        <item name="android:windowTitleSize">@dimen/actionbar_compat_height</item>
-        <item name="android:windowTitleBackgroundStyle">@style/ActionBarCompat</item>
-        <item name="android:windowContentOverlay">@drawable/actionbar_shadow</item>
 
-        <!-- for programmatic instantiation -->
-        <item name="actionbarCompatTitleStyle">@style/ActionBarCompatTitle</item>
-        <item name="actionbarCompatItemStyle">@style/ActionBarCompatItem</item>
-        <item name="actionbarCompatItemHomeStyle">@style/ActionBarCompatHomeItem</item>
-        <item name="actionbarCompatProgressIndicatorStyle">@style/ActionBarCompatProgressIndicator</item>
+
+    <!-- Text styles
+    <style name="ui_font_caption" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textSize">16sp</item> <item name="android:textColor">@color/ui_dark_blue_color</item>
     </style>
 
-    <style name="ActionBarCompat">
-        <item name="android:background">#eee</item>
+
+    <style name="ui_font_title" parent="@android:style/TextAppearance.Large">
+        <item name="android:textSize">18sp</item> <item name="android:textColor">@color/ui_white_text_color</item>
     </style>
 
-    <style name="ActionBarCompatItemBase">
-        <!-- layout_width/height must be set in code -->
-        <item name="android:scaleType">center</item>
-        <item name="android:background">@drawable/actionbar_compat_item</item>
+    <style name="ui_font_bodytext" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textSize">14sp</item> <item name="android:textColor">@color/ui_white_text_color</item>
     </style>
 
-    <style name="ActionBarCompatProgressIndicator" parent="android:style/Widget.ProgressBar.Large">
-        <item name="android:indeterminate">true</item>
+    <style name="ui_font_caption" parent="@android:style/TextAppearance.Small">
+        <item name="android:textSize">12sp</item> <item name="android:textColor">@color/ui_white_text_color</item>
+    </style>
+                                -->
+
+
+
+    <!-- Spinner -->
+
+    <style name="spinnerStyle"  parent="@android:style/Widget.TextView.SpinnerItem">
+        <item name="android:padding">5sp</item>
     </style>
 
-    <style name="ActionBarCompatTitleBase">
-        <item name="android:id">@id/actionbar_compat_title</item>
-        <!-- layout_width/height/weight must be set in code -->
-        <item name="android:gravity">center_vertical</item>
-        <item name="android:textSize">18sp</item>
-        <item name="android:paddingLeft">6dp</item>
-        <item name="android:paddingRight">6dp</item>
-        <item name="android:singleLine">true</item>
-        <item name="android:ellipsize">marquee</item>
-    </style>
-
-    <style name="ActionBarCompatTitle" parent="style/ActionBarCompatTitleBase">
-        <item name="android:textColor">@color/actionbar_title_color</item>
-    </style>
-
-    <style name="ActionBarCompatItem" parent="style/ActionBarCompatItemBase">
-    </style>
-
-    <style name="ActionBarCompatHomeItem" parent="style/ActionBarCompatItemBase">
-    </style>
-    
 </resources>

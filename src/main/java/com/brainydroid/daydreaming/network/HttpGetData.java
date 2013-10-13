@@ -1,44 +1,24 @@
 package com.brainydroid.daydreaming.network;
 
-import android.util.Log;
-
-import com.brainydroid.daydreaming.ui.Config;
-
 public class HttpGetData {
 
-	private static String TAG = "HttpGetData";
+    @SuppressWarnings("UnusedDeclaration")
+    private static String TAG = "HttpGetData";
 
-	private final String _getUrl;
-	private final HttpConversationCallback _httpConversationCallback;
+    private final String getUrl;
+    private final HttpConversationCallback httpConversationCallback;
 
-	public HttpGetData(String getUrl, HttpConversationCallback httpConversationCallback) {
+    public HttpGetData(String getUrl, HttpConversationCallback httpConversationCallback) {
+        this.getUrl = getUrl;
+        this.httpConversationCallback = httpConversationCallback;
+    }
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] HttpGetData");
-		}
+    public synchronized String getGetUrl() {
+        return getUrl;
+    }
 
-		_getUrl = getUrl;
-		_httpConversationCallback = httpConversationCallback;
-	}
+    public synchronized HttpConversationCallback getHttpConversationCallback() {
+        return httpConversationCallback;
+    }
 
-	public String getGetUrl() {
-
-		// Verbose
-		if (Config.LOGV) {
-			Log.v(TAG, "[fn] getGetUrl");
-		}
-
-		return _getUrl;
-	}
-
-	public HttpConversationCallback getHttpConversationCallback() {
-
-		// Verbose
-		if (Config.LOGV) {
-			Log.v(TAG, "[fn] getHttpConversationCallback");
-		}
-
-		return _httpConversationCallback;
-	}
 }

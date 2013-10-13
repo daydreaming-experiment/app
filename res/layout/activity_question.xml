@@ -15,27 +15,42 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
+            android:gravity="center_horizontal"
             android:text="@string/question_welcome_text"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:textAppearance="@style/ui_font_title_white_bold" />
         
 	    <LinearLayout
 	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content" >
-	
-	        <android.support.v7.widget.Space
-	            android:layout_width="0dp"
-	            android:layout_height="wrap_content"
-	            android:layout_weight="1" />
-	
-	        <Button
-	            android:id="@+id/question_nextButton"
-	            android:layout_width="0dp"
-	            android:layout_height="wrap_content"
-	            android:layout_weight="1"
-	            android:onClick="onClick_nextButton"
-	            android:text="@string/question_button_next" />
-	    
-	    </LinearLayout>
+	        android:layout_height="wrap_content"
+            android:gravity="right"
+            android:layout_marginBottom="30dp"
+            android:layout_marginTop="30dp">
+
+            <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                <ImageButton
+                        android:id="@+id/question_nextButton"
+                        android:layout_width="@dimen/button_next_width"
+                        android:layout_height="@dimen/button_next_height"
+                        android:onClick="onClick_nextButton"
+                        android:background="@drawable/button_cloud_next"
+                        />
+                <ImageButton
+                        android:id="@+id/question_finishButton"
+                        android:layout_width="@dimen/button_next_width"
+                        android:layout_height="@dimen/button_next_height"
+                        android:onClick="onClick_nextButton"
+                        android:visibility="invisible"
+                        android:clickable="false"
+                        android:background="@drawable/button_finish"
+                        />
+
+
+            </FrameLayout>
+
+        </LinearLayout>
 	    
     </LinearLayout>
 

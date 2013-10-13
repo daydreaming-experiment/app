@@ -1,44 +1,55 @@
 package com.brainydroid.daydreaming.background;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
-import android.util.Log;
+import com.google.inject.Inject;
+import roboguice.receiver.RoboBroadcastReceiver;
 
-import com.brainydroid.daydreaming.ui.Config;
+/**
+ * Start {@link SyncService} when Internet becomes available.
+ * <p/>
+ * This service is only started if the first launch has been completed
+ * (i.e. the user has registered and is participating in the experiment).
+ *
+ * @author Sébastien Lerique
+ * @author Vincent Adam
+ * @see SyncService
+ */
+public class NetworkReceiver extends RoboBroadcastReceiver {
 
-public class NetworkReceiver extends BroadcastReceiver {
+    @SuppressWarnings("FieldCanBeLocal")
+    private static String TAG = "NetworkReceiver";
 
-	private static String TAG = "NetworkReceiver";
+    @Inject StatusManager statusManager;
 
-	private StatusManager status;
+    @Override
+    public void handleReceive(Context context, Intent intent) {
 
-	@Override
-	public void onReceive(Context context, Intent intent) {
+        // Were we called because Internet just became available?
+        String action = intent.getAction();
+        if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
+            Logger.d(TAG, "NetworkReceiver started for CONNECTIVITY_ACTION");
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] onReceive");
-		}
+            // If first launch hasn't been completed, the user doesn't want
+            // anything yet. We also want Internet to be available.
+            if (statusManager.isFirstLaunchCompleted() &&
+                    statusManager.isDataEnabled()) {
+                Logger.d(TAG, "First launch is completed and data is " +
+                        "enabled");
 
-		status = StatusManager.getInstance(context);
-		String action = intent.getAction();
+                // Start synchronizing answers
+                Logger.d(TAG, "Starting SyncService");
+                Intent syncIntent = new Intent(context, SyncService.class);
+                context.startService(syncIntent);
+            } else {
+                Logger.v(TAG, "First launch not completed or data not " +
+                        "enabled -> exiting");
+            }
+        } else {
+            Logger.v(TAG, "NetworkReceived started for something different " +
+                    "than CONNECTIVITY_ACTION -> exiting");
+        }
+    }
 
-		if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
-
-			// Info
-			Log.i(TAG, "Received CONNECTIVITY_ACTION");
-
-			if (status.isFirstLaunchCompleted() && status.isDataEnabled()) {
-
-				// Info
-				Log.i(TAG, "first launch is completed");
-				Log.i(TAG, "starting SyncService");
-
-				Intent syncIntent = new Intent(context, SyncService.class);
-				context.startService(syncIntent);
-			}
-		}
-	}
 }

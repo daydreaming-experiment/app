@@ -1,97 +1,94 @@
 package com.brainydroid.daydreaming.network;
 
-import java.security.PublicKey;
+import com.brainydroid.daydreaming.background.Logger;
+import com.brainydroid.daydreaming.db.Json;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
-import android.util.Log;
+import java.security.KeyPair;
 
-import com.brainydroid.daydreaming.ui.Config;
-
+@Singleton
 public class ServerTalker {
 
-	private static String TAG = "ServerTalker";
+    private static String TAG = "ServerTalker";
 
-	private static String YE_URL_API = "/api/v1";
-	private static String YE_URL_DEVICES = YE_URL_API + "/devices/";
-	private static String YE_EXPS = "/exps/";
-	private static String YE_RESULTS = "/results/";
+    @Inject ProfileFactory profileFactory;
+    @Inject CryptoStorage cryptoStorage;
+    @Inject Json json;
 
-	private static ServerTalker stInstance;
+    private synchronized String getPostResultUrl() {
+        return ServerConfig.SERVER_NAME + ServerConfig.YE_URL_RESULTS;
+    }
 
-	private final CryptoStorage _cryptoStorage;
-	private String _serverName;
+    private synchronized String getPutProfileUrl() {
+        return ServerConfig.SERVER_NAME + ServerConfig.YE_URL_PROFILES + "/"
+                + cryptoStorage.getMaiId();
+    }
 
-	public static synchronized ServerTalker getInstance(String serverName,
-			CryptoStorage cryptoStorage) {
+    public synchronized void register(KeyPair keyPair,
+                                      HttpConversationCallback callback) {
+        Logger.i(TAG, "Registering at the server");
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] getInstance");
-		}
+        Logger.d(TAG, "Getting key to register");
+        String vkPem = cryptoStorage.createArmoredPublicKey(keyPair.getPublic());
+        ProfileWrapper profileWrap = profileFactory.create(vkPem).buildWrapper();
+        String jsonPayload = json.toJsonExposed(profileWrap);
+        String signedJson = cryptoStorage.signJws(jsonPayload, keyPair.getPrivate());
+        String postUrl = ServerConfig.SERVER_NAME +
+                ServerConfig.YE_URL_PROFILES;
 
-		if (stInstance == null) {
-			stInstance = new ServerTalker(serverName, cryptoStorage);
-		}
+        HttpPostData postData = new HttpPostData(postUrl, callback);
+        postData.setPostString(signedJson);
+        postData.setContentType("application/json");
 
-		return stInstance;
-	}
+        HttpPostTask postTask = new HttpPostTask();
+        Logger.d(TAG, "Executing POST task for registration");
+        postTask.execute(postData);
+    }
 
-	private ServerTalker(String serverName, CryptoStorage cryptoStorage) {
+    private synchronized void signAndPostData(
+            String url, String data, HttpConversationCallback callback) {
+        Logger.i(TAG, "Signing and POSTing data to server");
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] ServerTalker");
-		}
+        Logger.d(TAG, "Signing data");
+        String signedData = cryptoStorage.signJws(data);
 
-		_serverName = serverName;
-		_cryptoStorage = cryptoStorage;
-	}
+        Logger.d(TAG, "Url is {}", url);
+        HttpPostData postData = new HttpPostData(url, callback);
+        postData.setPostString(signedData);
+        postData.setContentType("application/jws");
 
-	public void setServerName(String s) {
+        HttpPostTask postTask = new HttpPostTask();
+        Logger.d(TAG, "Executing POST task for data upload");
+        postTask.execute(postData);
+    }
 
-		// Verbose
-		if (Config.LOGV) {
-			Log.v(TAG, "[fn] setServerName");
-		}
+    public synchronized void signAndPostResult(
+            String data, HttpConversationCallback callback) {
+        signAndPostData(getPostResultUrl(), data, callback);
+    }
 
-		_serverName = s;
-	}
+    private synchronized void signAndPutData(
+            String url, String data, HttpConversationCallback callback) {
+        Logger.i(TAG, "Signing and PUTing data to server");
 
-	public void register(PublicKey publicKey, HttpConversationCallback callback) {
+        Logger.d(TAG, "Signing data");
+        String signedData = cryptoStorage.signJws(data);
 
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] register");
-		}
+        Logger.d(TAG, "Url is {}", url);
+        HttpPutData putData = new HttpPutData(url, callback);
+        putData.setPutString(signedData);
+        putData.setContentType("application/jws");
 
-		final String jsonKey = _cryptoStorage.createArmoredPublicKeyJson(publicKey);
-		String postUrl = _serverName + YE_URL_DEVICES;
-		HttpPostData postData = new HttpPostData(postUrl, callback);
-		postData.setPostString(jsonKey);
-		postData.setContentType("application/json");
+        HttpPutTask putTask = new HttpPutTask();
+        Logger.d(TAG, "Executing PUT task for data upload");
+        putTask.execute(putData);
+    }
 
-		HttpPostTask postTask = new HttpPostTask();
-		postTask.execute(postData);
-	}
 
-	private String getPostResultUrl(String exp_id) {
-		return _serverName + YE_URL_DEVICES + _cryptoStorage.getMaiId() +
-				YE_EXPS + exp_id + YE_RESULTS;
-	}
+    public synchronized void signAndPutProfile(
+            String data, HttpConversationCallback callback) {
+        signAndPutData(getPutProfileUrl(), data, callback);
+    }
 
-	public <T> void signAndUploadData(String exp_id, String data,
-			HttpConversationCallback callback) {
-
-		// Debug
-		if (Config.LOGD) {
-			Log.d(TAG, "[fn] signAndUploadData");
-		}
-
-		String signedData = _cryptoStorage.signJws(data);
-		HttpPostData postData = new HttpPostData(getPostResultUrl(exp_id), callback);
-		postData.setPostString(signedData);
-		postData.setContentType("application/jws");
-
-		HttpPostTask postTask = new HttpPostTask();
-		postTask.execute(postData);
-	}
 }
