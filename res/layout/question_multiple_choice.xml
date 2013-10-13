@@ -49,6 +49,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/questionMultipleChoice_other_hint"
+            android:textColorHint="@color/ui_white_text_color"
             android:inputType="textCapSentences"
             android:textAppearance="@style/ui_font_bodytext_white"
             >
