@@ -179,13 +179,13 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
 
     private void forbidNextButton() {
         Logger.d(TAG, "Forbidding buttonNext");
-        buttonNext.customSetAlpha(0.3f);
+        buttonNext.setAlpha(0.3f);
         buttonNext.setClickable(false);
     }
 
     private void allowNextButton() {
         Logger.d(TAG, "Allowing buttonNext");
-        buttonNext.customSetAlpha(1f);
+        buttonNext.setAlpha(1f);
         buttonNext.setClickable(true);
     }
 

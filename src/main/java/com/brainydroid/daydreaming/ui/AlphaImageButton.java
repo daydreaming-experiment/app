@@ -23,7 +23,8 @@ public class AlphaImageButton extends ImageButton {
         super(context, attrs, defStyle);
     }
 
-    public void customSetAlpha(float alpha) {
+    @Override
+    public void setAlpha(float alpha) {
         Logger.v(TAG, "Setting alpha to {}", alpha);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {

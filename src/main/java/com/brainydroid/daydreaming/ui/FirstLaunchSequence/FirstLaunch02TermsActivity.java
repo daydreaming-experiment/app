@@ -69,7 +69,7 @@ public class FirstLaunch02TermsActivity extends FirstLaunchActivity implements S
             TextView text = (TextView) findViewById(R.id.firstLaunchTerms_please_scroll);
             text.setText(" "); // Clear TextView asking to scroll down
 
-            agreeButton.customSetAlpha(1f);
+            agreeButton.setAlpha(1f);
             agreeButton.setClickable(true);
 
 
@@ -95,7 +95,7 @@ public class FirstLaunch02TermsActivity extends FirstLaunchActivity implements S
 
     public void addInfoButtonListener(){
 
-        agreeButton.customSetAlpha(0.5f);
+        agreeButton.setAlpha(0.5f);
         agreeButton.setClickable(false);
 
         agreeButton.setOnClickListener(new View.OnClickListener() {

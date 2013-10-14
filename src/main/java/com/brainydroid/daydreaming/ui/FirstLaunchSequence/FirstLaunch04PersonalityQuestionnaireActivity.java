@@ -139,17 +139,16 @@ public class FirstLaunch04PersonalityQuestionnaireActivity
         seekBar.setPadding(thumbOffset, 0, thumbOffset, 0);
         seekBar.setProgressDrawable(view.getResources().getDrawable(R
                 .drawable.question_slider_progress));
-        seekBar.customSetAlpha(0.5f);
+        seekBar.setAlpha(0.5f);
 
         seekBar.setThumb(view.getResources().getDrawable(
                 R.drawable.question_slider_thumb));
 
-        SeekBar.OnSeekBarChangeListener onSeekBarChange =
-                new SeekBar.OnSeekBarChangeListener() {
+        AlphaSeekBar.OnAlphaSeekBarChangeListener onSeekBarChange =
+                new AlphaSeekBar.OnAlphaSeekBarChangeListener() {
 
-
-                    @Override
-            public void onProgressChanged(SeekBar seekBar, int progress,
+            @Override
+            public void onProgressChanged(AlphaSeekBar seekBar, int progress,
                                           boolean fromUser) {
                 int index = (int)FloatMath.floor((progress / 101f) * nHints);
                 answer.setText(hints.get(index));
@@ -158,10 +157,10 @@ public class FirstLaunch04PersonalityQuestionnaireActivity
             }
 
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {}
+            public void onStartTrackingTouch(AlphaSeekBar seekBar) {}
 
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {}
+            public void onStopTrackingTouch(AlphaSeekBar seekBar) {}
 
         };
 

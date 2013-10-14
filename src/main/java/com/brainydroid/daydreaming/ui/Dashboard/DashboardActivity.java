@@ -42,7 +42,7 @@ public class DashboardActivity extends RoboFragmentActivity {
         //TODO: change this temporary setting
         AlphaLinearLayout aboutLayout =
                 (AlphaLinearLayout)findViewById(R.id.dashboard_about_layout);
-        aboutLayout.customSetAlpha(0.3f);
+        aboutLayout.setAlpha(0.3f);
         aboutLayout.setClickable(false);
 
     }

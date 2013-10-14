@@ -69,7 +69,7 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
         AlphaSeekBar seekBar = (AlphaSeekBar)view.findViewById(R.id.question_slider_seekBar);
         seekBar.setProgressDrawable(view.getResources().getDrawable(R.drawable.question_slider_progress));
         seekBar.setThumb(view.getResources().getDrawable(R.drawable.question_slider_thumb));
-        seekBar.customSetAlpha(0.5f);
+        seekBar.setAlpha(0.5f);
 
         final TextView selectedSeek = (TextView)view.findViewById(R.id.question_slider_selectedSeek);
 
@@ -82,7 +82,7 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
                         "and background");
                 int index = (int) FloatMath.floor((progress / 101f) * hintsNumber);
                 selectedSeek.setText(hints.get(index));
-                seekBar.customSetAlpha(1f);
+                seekBar.setAlpha(1f);
             }
 
             @Override
