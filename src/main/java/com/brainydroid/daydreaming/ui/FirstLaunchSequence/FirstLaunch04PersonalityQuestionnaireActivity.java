@@ -1,6 +1,5 @@
 package com.brainydroid.daydreaming.ui.FirstLaunchSequence;
 
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.FloatMath;
@@ -12,6 +11,7 @@ import android.widget.Toast;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.ProfileStorage;
+import com.brainydroid.daydreaming.ui.AlphaSeekBar;
 import com.google.inject.Inject;
 
 import java.util.*;
@@ -132,8 +132,8 @@ public class FirstLaunch04PersonalityQuestionnaireActivity
                 (TextView)view.findViewById(R.id.Questionnaire_answer);
         answer.setText(hints.get(3));
 
-        SeekBar seekBar =
-                (SeekBar)view.findViewById(R.id.Questionnaire_seekBar);
+        AlphaSeekBar seekBar =
+                (AlphaSeekBar)view.findViewById(R.id.Questionnaire_seekBar);
         seekBar.setMax(MAX_PROGRESS_SEEKBAR);
         seekBar.setProgress(INIT_PROGRESS_SEEKBAR);
         seekBar.setPadding(thumbOffset, 0, thumbOffset, 0);
@@ -144,12 +144,11 @@ public class FirstLaunch04PersonalityQuestionnaireActivity
         seekBar.setThumb(view.getResources().getDrawable(
                 R.drawable.question_slider_thumb));
 
-        SeekBar.OnSeekBarChangeListener onSeekBarChange =
-                new SeekBar.OnSeekBarChangeListener() {
+        AlphaSeekBar.OnAlphaSeekBarChangeListener onSeekBarChange =
+                new AlphaSeekBar.OnAlphaSeekBarChangeListener() {
 
-
-                    @Override
-            public void onProgressChanged(SeekBar seekBar, int progress,
+            @Override
+            public void onProgressChanged(AlphaSeekBar seekBar, int progress,
                                           boolean fromUser) {
                 int index = (int)FloatMath.floor((progress / 101f) * nHints);
                 answer.setText(hints.get(index));
@@ -158,10 +157,10 @@ public class FirstLaunch04PersonalityQuestionnaireActivity
             }
 
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {}
+            public void onStartTrackingTouch(AlphaSeekBar seekBar) {}
 
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {}
+            public void onStopTrackingTouch(AlphaSeekBar seekBar) {}
 
         };
 

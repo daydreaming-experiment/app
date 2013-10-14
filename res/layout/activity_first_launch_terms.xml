@@ -24,7 +24,7 @@
                       android:layout_width="fill_parent"
                       android:layout_height="wrap_content"
                       android:layout_marginBottom="2dp">
-        <Button
+        <com.brainydroid.daydreaming.ui.AlphaButton
                 android:id="@+id/firstLaunchTerms_buttonDisagree"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
@@ -35,7 +35,7 @@
                 android:background="@drawable/dark_blue_rect_button_selector"
                 android:layout_marginRight="10dp"/>
 
-        <Button
+        <com.brainydroid.daydreaming.ui.AlphaButton
                 android:id="@+id/firstLaunchTerms_buttonAgree"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"

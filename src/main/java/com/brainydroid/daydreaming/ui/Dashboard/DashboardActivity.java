@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.brainydroid.daydreaming.R;
@@ -15,15 +14,16 @@ import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.network.ServerConfig;
 import com.brainydroid.daydreaming.network.SntpClient;
 import com.brainydroid.daydreaming.network.SntpClientCallback;
+import com.brainydroid.daydreaming.ui.AlphaLinearLayout;
 import com.brainydroid.daydreaming.ui.FirstLaunchSequence.FirstLaunch00WelcomeActivity;
 import com.brainydroid.daydreaming.ui.FontUtils;
-import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockFragmentActivity;
 import com.google.inject.Inject;
+import roboguice.activity.RoboFragmentActivity;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_dashboard)
-public class DashboardActivity extends RoboSherlockFragmentActivity {
+public class DashboardActivity extends RoboFragmentActivity {
 
     private static String TAG = "DashboardActivity";
 
@@ -40,9 +40,10 @@ public class DashboardActivity extends RoboSherlockFragmentActivity {
         super.onStart();
 
         //TODO: change this temporary setting
-        LinearLayout about_layout = (LinearLayout) findViewById(R.id.dashboard_about_layout);
-        about_layout.setAlpha(0.3f);
-        about_layout.setClickable(false);
+        AlphaLinearLayout aboutLayout =
+                (AlphaLinearLayout)findViewById(R.id.dashboard_about_layout);
+        aboutLayout.setAlpha(0.3f);
+        aboutLayout.setClickable(false);
 
     }
 

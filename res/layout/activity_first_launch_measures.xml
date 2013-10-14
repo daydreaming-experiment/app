@@ -189,7 +189,7 @@
             android:gravity="right">
 
 
-        <ImageButton
+        <com.brainydroid.daydreaming.ui.AlphaImageButton
                 android:id="@+id/firstLaunchMeasures2_buttonNext"
                 android:layout_width="@dimen/button_next_width"
                 android:layout_height="@dimen/button_next_height"

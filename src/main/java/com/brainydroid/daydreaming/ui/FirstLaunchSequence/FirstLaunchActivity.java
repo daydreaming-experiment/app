@@ -13,14 +13,14 @@ import com.brainydroid.daydreaming.network.SntpClient;
 import com.brainydroid.daydreaming.network.SntpClientCallback;
 import com.brainydroid.daydreaming.ui.Dashboard.DashboardActivity;
 import com.brainydroid.daydreaming.ui.FontUtils;
-import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockFragmentActivity;
 import com.google.inject.Inject;
+import roboguice.activity.RoboFragmentActivity;
 
 
 /**
  * Class that activities FirstLaunchSequence extend.
  */
-public abstract class FirstLaunchActivity extends RoboSherlockFragmentActivity {
+public abstract class FirstLaunchActivity extends RoboFragmentActivity {
 
     private static String TAG = "FirstLaunchActivity";
 

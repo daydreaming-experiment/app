@@ -1,19 +1,18 @@
 package com.brainydroid.daydreaming.ui.FirstLaunchSequence;
 
-import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.background.QuestionsUpdateCallback;
 import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.background.SyncService;
+import com.brainydroid.daydreaming.ui.AlphaImageButton;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
@@ -37,7 +36,8 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
             textNetworkConnection;
     @InjectView(R.id.firstLaunchMeasures2_textCoarseLocation) TextView
             textCoarseLocation;
-    @InjectView(R.id.firstLaunchMeasures2_buttonNext) ImageButton buttonNext;
+    @InjectView(R.id.firstLaunchMeasures2_buttonNext)
+    AlphaImageButton buttonNext;
 
     @InjectView(R.id.firstLaunchMeasures2_text_downloading) TextView
             textDownloading;
@@ -177,29 +177,15 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
         launchDashBoardActivity();
     }
 
-    @TargetApi(11)
     private void forbidNextButton() {
         Logger.d(TAG, "Forbidding buttonNext");
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            buttonNext.setAlpha(0.3f);
-        } else {
-            buttonNext.setVisibility(View.INVISIBLE);
-        }
-
+        buttonNext.setAlpha(0.3f);
         buttonNext.setClickable(false);
     }
 
-    @TargetApi(11)
     private void allowNextButton() {
         Logger.d(TAG, "Allowing buttonNext");
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            buttonNext.setAlpha(1f);
-        } else {
-            buttonNext.setVisibility(View.VISIBLE);
-        }
-
+        buttonNext.setAlpha(1f);
         buttonNext.setClickable(true);
     }
 
