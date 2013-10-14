@@ -42,10 +42,8 @@ backend server, which in turn talks to an Ajax client,
 [Naja](https://github.com/wehlutyk/naja).
 
 As you will also see in the code, we use
-[ActionBarSherlock](http://actionbarsherlock.com/) to mimick the
-ActionBar API in Android API 10,
 [RoboGuice](https://github.com/roboguice/roboguice) for dependency
-injection, and [Robolectric](http://pivotal.github.io/robolectric/) for
+injection and [Robolectric](http://pivotal.github.io/robolectric/) for
 automated tests.
 
 ## Detailed steps to set up your environment
@@ -218,7 +216,7 @@ build from inside IntelliJ (remember you can always `mvn package` at the
 command line if IntelliJ won't cooperate).
 
 Go to `File > Project Structure...` and select the `modules` item in the
-leftmost pane of the window. Now in the second pane (from the left), select `~apklib-android.support_compatibility-v7_13` ; in the `Dependencies` tab, make sure the `Module SDK` is set to `Project SDK`. Now selecting `~apklib-com.actionbarsherlock_actionbarsherlock_4.2.0` in the second pane, in the `Dependencies` tab, make sure the `Module SDK` is set to `Maven Android 4.0 Platform`. Confirm the changes by clicking `OK` at the bottom.
+leftmost pane of the window. Now in the second pane (from the left), select `~apklib-android.support_compatibility-v7_13` ; in the `Dependencies` tab, make sure the `Module SDK` is set to `Project SDK`. Confirm the changes by clicking `OK` at the bottom.
 
 Finally, go to `Run > Edit Configurations...` ; create a new run
 configuration by clicking the green `+` button and selecting `Android
