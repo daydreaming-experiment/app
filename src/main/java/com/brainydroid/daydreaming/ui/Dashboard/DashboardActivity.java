@@ -18,12 +18,12 @@ import com.brainydroid.daydreaming.ui.AlphaLinearLayout;
 import com.brainydroid.daydreaming.ui.FirstLaunchSequence.FirstLaunch00WelcomeActivity;
 import com.brainydroid.daydreaming.ui.FontUtils;
 import com.google.inject.Inject;
-import roboguice.activity.RoboActivity;
+import roboguice.activity.RoboFragmentActivity;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_dashboard)
-public class DashboardActivity extends RoboActivity {
+public class DashboardActivity extends RoboFragmentActivity {
 
     private static String TAG = "DashboardActivity";
 

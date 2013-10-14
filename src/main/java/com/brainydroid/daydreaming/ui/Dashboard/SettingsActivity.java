@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.text.format.DateFormat;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,9 +19,15 @@ import com.brainydroid.daydreaming.background.SchedulerService;
 import com.brainydroid.daydreaming.db.Util;
 import com.brainydroid.daydreaming.ui.FontUtils;
 import com.brainydroid.daydreaming.ui.TimePickerFragment;
+import com.google.inject.Inject;
+import roboguice.activity.RoboFragmentActivity;
+import roboguice.inject.ContentView;
+import roboguice.inject.InjectResource;
+import roboguice.inject.InjectView;
 
 
-public class SettingsActivity extends FragmentActivity {
+@ContentView(R.layout.activity_appsettings_layout)
+public class SettingsActivity extends RoboFragmentActivity {
 
     public static String TIME_FROM = "time_from";
     public static String TIME_UNTIL = "time_until";
@@ -35,27 +39,26 @@ public class SettingsActivity extends FragmentActivity {
     private static String NOTIF_BLINK = "notification_blink_key";
     private static String NOTIF_SOUND = "notification_sound_key";
 
-    LinearLayout layout_time_from;
-    LinearLayout layout_time_until;
+    @InjectView(R.id.settings_time_text_from_layout)   LinearLayout layout_time_from;
+    @InjectView(R.id.settings_time_text_until_layout) LinearLayout layout_time_until;
 
-    TextView tv_time_from;
-    TextView tv_time_until;
+    @InjectView(R.id.settings_time_text_from) TextView tv_time_from;
+    @InjectView(R.id.settings_time_text_until) TextView tv_time_until;
 
-    CheckBox blink_check;
-    CheckBox sound_check;
-    CheckBox vibrations_check;
+    @InjectView(R.id.appsettings_allow_blink_check) CheckBox blink_check;
+    @InjectView(R.id.appsettings_allow_sound_check) CheckBox sound_check;
+    @InjectView(R.id.appsettings_allow_vibrations_check) CheckBox vibrations_check;
 
-    SharedPreferences sharedPreferences;
+    @Inject SharedPreferences sharedPreferences;
 
-    String defaultTimePreferenceMin;
-    String defaultTimePreferenceMax;
+    @InjectResource(R.pref.settings_time_window_lb_default) String defaultTimePreferenceMin;
+    @InjectResource(R.pref.settings_time_window_ub_default) String defaultTimePreferenceMax;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Logger.v(TAG, "Creating");
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_appsettings_layout);
         ViewGroup godfatherView = (ViewGroup)getWindow().getDecorView();
         FontUtils.setRobotoFont(this, godfatherView);
 
@@ -85,23 +88,6 @@ public class SettingsActivity extends FragmentActivity {
     @SuppressWarnings("deprecation")
     private void initVars() {
         Logger.d(TAG, "Initializing variables");
-
-        layout_time_from = (LinearLayout)findViewById(R.id.settings_time_text_from_layout);
-        layout_time_until = (LinearLayout)findViewById(R.id.settings_time_text_until_layout);
-
-        tv_time_from = (TextView)findViewById(R.id.settings_time_text_from);
-        tv_time_until = (TextView)findViewById(R.id.settings_time_text_until);
-
-        blink_check = (CheckBox)findViewById(R.id.appsettings_allow_blink_check);
-        sound_check = (CheckBox)findViewById(R.id.appsettings_allow_sound_check);
-        vibrations_check = (CheckBox)findViewById(R.id.appsettings_allow_vibrations_check);
-
-        // Filename used by RoboGuice when injecting in other classes
-        sharedPreferences = getSharedPreferences("default", MODE_PRIVATE);
-
-        defaultTimePreferenceMin = getResources().getString(R.pref.settings_time_window_lb_default);
-        defaultTimePreferenceMax = getResources().getString(R.pref.settings_time_window_ub_default);
-
         updateTimeViews();
     }
 
