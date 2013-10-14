@@ -1,10 +1,13 @@
 package com.brainydroid.daydreaming.ui.Dashboard;
 
-import android.app.*;
+import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.text.format.DateFormat;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,16 +21,9 @@ import com.brainydroid.daydreaming.background.SchedulerService;
 import com.brainydroid.daydreaming.db.Util;
 import com.brainydroid.daydreaming.ui.FontUtils;
 import com.brainydroid.daydreaming.ui.TimePickerFragment;
-import com.google.inject.Inject;
-import roboguice.activity.RoboActivity;
-import roboguice.inject.ContentView;
-import roboguice.inject.InjectResource;
-import roboguice.inject.InjectView;
 
 
-
-@ContentView(R.layout.activity_appsettings_layout)
-public class SettingsActivity extends RoboActivity{
+public class SettingsActivity extends FragmentActivity {
 
     public static String TIME_FROM = "time_from";
     public static String TIME_UNTIL = "time_until";
@@ -39,42 +35,28 @@ public class SettingsActivity extends RoboActivity{
     private static String NOTIF_BLINK = "notification_blink_key";
     private static String NOTIF_SOUND = "notification_sound_key";
 
+    LinearLayout layout_time_from;
+    LinearLayout layout_time_until;
 
-    // private TimePreference timePreferenceMax;
-    // private TimePreference timePreferenceMin;
+    TextView tv_time_from;
+    TextView tv_time_until;
 
-    public static final String PREFS_FILE = "prefs";
+    CheckBox blink_check;
+    CheckBox sound_check;
+    CheckBox vibrations_check;
 
+    SharedPreferences sharedPreferences;
 
-    @InjectView(R.id.settings_time_text_from_layout)   LinearLayout layout_time_from;
-    @InjectView(R.id.settings_time_text_until_layout) LinearLayout layout_time_until;
-
-    @InjectView(R.id.settings_time_text_from) TextView tv_time_from;
-    @InjectView(R.id.settings_time_text_until) TextView tv_time_until;
-
-    @InjectView(R.id.appsettings_allow_blink_check) CheckBox blink_check;
-    @InjectView(R.id.appsettings_allow_sound_check) CheckBox sound_check;
-    @InjectView(R.id.appsettings_allow_vibrations_check) CheckBox vibrations_check;
-
-
-    @Inject SharedPreferences sharedPreferences;
-
-    @InjectResource(R.pref.settings_time_window_lb_default) String defaultTimePreferenceMin;
-    @InjectResource(R.pref.settings_time_window_ub_default) String defaultTimePreferenceMax;
-
-    //@InjectResource(R.string.settings_time_corrected_1) String timeCorrectedText1;
-    //@InjectResource(R.string.settings_time_corrected_2) String timeCorrectedText2;
+    String defaultTimePreferenceMin;
+    String defaultTimePreferenceMax;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Logger.v(TAG, "Creating");
         super.onCreate(savedInstanceState);
 
-
-
-
-
-        ViewGroup godfatherView = (ViewGroup)this.getWindow().getDecorView();
+        setContentView(R.layout.activity_appsettings_layout);
+        ViewGroup godfatherView = (ViewGroup)getWindow().getDecorView();
         FontUtils.setRobotoFont(this, godfatherView);
 
         initVars();
@@ -104,16 +86,23 @@ public class SettingsActivity extends RoboActivity{
     private void initVars() {
         Logger.d(TAG, "Initializing variables");
 
-        update_time_views();
+        layout_time_from = (LinearLayout)findViewById(R.id.settings_time_text_from_layout);
+        layout_time_until = (LinearLayout)findViewById(R.id.settings_time_text_until_layout);
 
+        tv_time_from = (TextView)findViewById(R.id.settings_time_text_from);
+        tv_time_until = (TextView)findViewById(R.id.settings_time_text_until);
 
-//        timePreferenceMin = new TimePreference(getApplicationContext());
-        //timePreferenceMin.setTime(sharedPreferences.getString("time_window_lb_key","00:00"));
-//        timePreferenceMax = new TimePreference(getApplicationContext());
-        //timePreferenceMax.setTime(sharedPreferences.getString("time_window_ub_key","00:00"));
-        //timePreferenceMax = (TimePreference)preferenceScreen.findPreference("time_window_ub_key");
-        //      timePreferenceMin.setSummary(timePreferenceMin.getTimeString());
-        //      timePreferenceMax.setSummary(timePreferenceMax.getTimeString());
+        blink_check = (CheckBox)findViewById(R.id.appsettings_allow_blink_check);
+        sound_check = (CheckBox)findViewById(R.id.appsettings_allow_sound_check);
+        vibrations_check = (CheckBox)findViewById(R.id.appsettings_allow_vibrations_check);
+
+        // Filename used by RoboGuice when injecting in other classes
+        sharedPreferences = getSharedPreferences("default", MODE_PRIVATE);
+
+        defaultTimePreferenceMin = getResources().getString(R.pref.settings_time_window_lb_default);
+        defaultTimePreferenceMax = getResources().getString(R.pref.settings_time_window_ub_default);
+
+        updateTimeViews();
     }
 
     public void addListenerOnButton() {
@@ -121,11 +110,6 @@ public class SettingsActivity extends RoboActivity{
         Logger.v(TAG, "Creating Listeners");
 
         //TODO: deal with loading defautls when no shared pref and sharedpref otherwise
-
-
-
-
-
 
         Logger.v(TAG, "Creating Listeners");
 
@@ -155,12 +139,13 @@ public class SettingsActivity extends RoboActivity{
 
                         // listener will here eventually correct and update the view
                         correctTimeWindow();
-                        update_time_views();
+                        updateTimeViews();
                         startSchedulerService();
 
                     }
                 };
-                newFragment.show(getFragmentManager(), "timePicker_from");
+                newFragment.show(getSupportFragmentManager(),
+                        "timePicker_from");
             }
         });
 
@@ -190,13 +175,14 @@ public class SettingsActivity extends RoboActivity{
 
                         // listener will here eventually correct and update the view
                         correctTimeWindow();
-                        update_time_views();
+                        updateTimeViews();
                         startSchedulerService();
 
 
                     }
                 };
-                newFragment.show(getFragmentManager(), "timePicker_until");
+                newFragment.show(getSupportFragmentManager(),
+                        "timePicker_until");
             }
         });
 
@@ -239,7 +225,7 @@ public class SettingsActivity extends RoboActivity{
                     "it, updating summaries, and starting scheduler " +
                     "service");
             correctTimeWindow();
-            update_time_views();
+            updateTimeViews();
             startSchedulerService();
         }
     }
@@ -292,7 +278,7 @@ public class SettingsActivity extends RoboActivity{
     /**
      * Update the view from sharedpreferences
      */
-    private void update_time_views(){
+    private void updateTimeViews(){
         String Time_from = sharedPreferences.getString(TIME_FROM,defaultTimePreferenceMin);
         String Time_until = sharedPreferences.getString(TIME_UNTIL,defaultTimePreferenceMax);
         tv_time_from.setText(Time_from);
@@ -313,14 +299,10 @@ public class SettingsActivity extends RoboActivity{
         overridePendingTransition(R.anim.push_bottom_in, R.anim.push_bottom_out);
 
     }
+
     public void onClick_backtodashboard(View v) {
         onBackPressed();
 
-    }
-
-    @Override
-    public FragmentManager getFragmentManager() {
-        return super.getFragmentManager();    //To change body of overridden methods use File | Settings | File Templates.
     }
 
     /**
