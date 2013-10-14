@@ -1,6 +1,5 @@
 package com.brainydroid.daydreaming.ui.FirstLaunchSequence;
 
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.FloatMath;
@@ -12,6 +11,7 @@ import android.widget.Toast;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.ProfileStorage;
+import com.brainydroid.daydreaming.ui.AlphaSeekBar;
 import com.google.inject.Inject;
 
 import java.util.*;
@@ -132,14 +132,14 @@ public class FirstLaunch04PersonalityQuestionnaireActivity
                 (TextView)view.findViewById(R.id.Questionnaire_answer);
         answer.setText(hints.get(3));
 
-        SeekBar seekBar =
-                (SeekBar)view.findViewById(R.id.Questionnaire_seekBar);
+        AlphaSeekBar seekBar =
+                (AlphaSeekBar)view.findViewById(R.id.Questionnaire_seekBar);
         seekBar.setMax(MAX_PROGRESS_SEEKBAR);
         seekBar.setProgress(INIT_PROGRESS_SEEKBAR);
         seekBar.setPadding(thumbOffset, 0, thumbOffset, 0);
         seekBar.setProgressDrawable(view.getResources().getDrawable(R
                 .drawable.question_slider_progress));
-        seekBar.setAlpha(0.5f);
+        seekBar.customSetAlpha(0.5f);
 
         seekBar.setThumb(view.getResources().getDrawable(
                 R.drawable.question_slider_thumb));

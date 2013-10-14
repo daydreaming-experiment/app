@@ -11,6 +11,7 @@ import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.SliderAnswer;
 import com.brainydroid.daydreaming.db.SliderQuestionDetails;
 import com.brainydroid.daydreaming.db.SliderSubQuestion;
+import com.brainydroid.daydreaming.ui.AlphaSeekBar;
 import com.google.inject.Inject;
 import roboguice.inject.InjectResource;
 
@@ -65,30 +66,30 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
         TextView rightHintText = (TextView)view.findViewById(R.id.question_slider_rightHint);
         rightHintText.setText(hints.get(hintsNumber - 1));
 
-        SeekBar seekBar = (SeekBar)view.findViewById(R.id.question_slider_seekBar);
+        AlphaSeekBar seekBar = (AlphaSeekBar)view.findViewById(R.id.question_slider_seekBar);
         seekBar.setProgressDrawable(view.getResources().getDrawable(R.drawable.question_slider_progress));
         seekBar.setThumb(view.getResources().getDrawable(R.drawable.question_slider_thumb));
-        seekBar.setAlpha(0.5f);
+        seekBar.customSetAlpha(0.5f);
 
         final TextView selectedSeek = (TextView)view.findViewById(R.id.question_slider_selectedSeek);
 
-        SeekBar.OnSeekBarChangeListener listener = new SeekBar.OnSeekBarChangeListener() {
+        AlphaSeekBar.OnAlphaSeekBarChangeListener listener = new AlphaSeekBar.OnAlphaSeekBarChangeListener() {
 
             @Override
-            public void onProgressChanged(SeekBar seekBar, int progress,
+            public void onProgressChanged(AlphaSeekBar seekBar, int progress,
                                           boolean fromUser) {
                 Logger.v(TAG, "SeekBar progress changed -> changing text " +
                         "and background");
-                int index = (int)FloatMath.floor((progress / 101f) * hintsNumber);
+                int index = (int) FloatMath.floor((progress / 101f) * hintsNumber);
                 selectedSeek.setText(hints.get(index));
-                seekBar.setAlpha(1f);
+                seekBar.customSetAlpha(1f);
             }
 
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {}
+            public void onStartTrackingTouch(AlphaSeekBar seekBar) { }
 
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {}
+            public void onStopTrackingTouch(AlphaSeekBar seekBar) { }
         };
 
         int initialPosition = subQuestion.getInitialPosition();

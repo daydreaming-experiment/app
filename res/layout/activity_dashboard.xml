@@ -290,7 +290,7 @@
 
 
 
-        <LinearLayout
+        <com.brainydroid.daydreaming.ui.AlphaLinearLayout
                 android:id="@+id/dashboard_about_layout"
                 android:layout_width="0dp"
                 android:layout_weight="1"
@@ -318,7 +318,7 @@
                     android:layout_below="@id/dashboard_about_button"
                     />
         </RelativeLayout>
-        </LinearLayout>
+        </com.brainydroid.daydreaming.ui.AlphaLinearLayout>
 
 
 

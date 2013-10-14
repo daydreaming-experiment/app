@@ -4,11 +4,11 @@ import android.os.Bundle;
 import android.text.Html;
 import android.text.util.Linkify;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
+import com.brainydroid.daydreaming.ui.AlphaButton;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
@@ -29,7 +29,6 @@ public class FirstLaunch02TermsActivity extends FirstLaunchActivity implements S
 
     private static String TAG = "FirstLaunch02TermsActivity";
 
-
     @InjectView(R.id.firstLaunchTerms_textConsent) protected TextView consent;
     @InjectView(R.id.firstLaunchTerms_moreConsent_button)
     protected TextView more_consent_button;
@@ -38,9 +37,9 @@ public class FirstLaunch02TermsActivity extends FirstLaunchActivity implements S
 
     @InjectView(R.id.firstLaunchTerms_Scrollview) ScrollViewExt sv;
     @InjectView(R.id.firstLaunchTerms_buttonAgree)
-    protected Button agreeButton;
+    protected AlphaButton agreeButton;
     @InjectView(R.id.firstLaunchTerms_buttonDisagree)
-    protected Button disagreeButton;
+    protected AlphaButton disagreeButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,26 +54,22 @@ public class FirstLaunch02TermsActivity extends FirstLaunchActivity implements S
 
 
     /**
-     * called by scrollview listerner when scrollview position changes.
+     * called by ScrollView listener when ScrollView position changes.
      * Enables agreement when text is scrolled down
-     * @param scrollView
-     * @param x
-     * @param y
-     * @param oldx
-     * @param oldy
      */
     @Override
-    public void onScrollChanged(ScrollViewExt scrollView, int x, int y, int oldx, int oldy) {
-        // We take the last son in the scrollview
-        View view = (View) scrollView.getChildAt(scrollView.getChildCount() - 1);
+    public void onScrollChanged(ScrollViewExt scrollView, int x, int y, int oldX, int oldY) {
+        // We take the last son in the ScrollView
+        View view = scrollView.getChildAt(scrollView.getChildCount() - 1);
         int diff = (view.getBottom() - (scrollView.getHeight() + scrollView.getScrollY()));
-        // if diff is zero, then the bottom has been reached and agreement button is set clickable.
+        // if diff is zero, then the bottom has been reached and agreement
+        // button is set clickable.
         if (diff == 0) {
             agreeButton.setEnabled(true);
             TextView text = (TextView) findViewById(R.id.firstLaunchTerms_please_scroll);
-            text.setText(" "); // Clear textview asking to scrolldown
+            text.setText(" "); // Clear TextView asking to scroll down
 
-            agreeButton.setAlpha(1f);
+            agreeButton.customSetAlpha(1f);
             agreeButton.setClickable(true);
 
 
@@ -88,7 +83,6 @@ public class FirstLaunch02TermsActivity extends FirstLaunchActivity implements S
 
     /**
      * Clicking 'disagree'
-     * @param view
      */
     public void onClick_buttonDisagree(@SuppressWarnings("UnusedParameters") View view) {
         Toast.makeText(this, "We require your agreement to proceed further. If you disagree with the terms, you should uninstall the app. No connection to the internet will be made.", Toast.LENGTH_LONG).show();
@@ -96,12 +90,12 @@ public class FirstLaunch02TermsActivity extends FirstLaunchActivity implements S
     }
 
     /**
-     * Loads terms res/raw/terms into adequate textview
+     * Loads terms res/raw/terms into adequate TextView
      */
 
     public void addInfoButtonListener(){
 
-        agreeButton.setAlpha(0.5f);
+        agreeButton.customSetAlpha(0.5f);
         agreeButton.setClickable(false);
 
         agreeButton.setOnClickListener(new View.OnClickListener() {

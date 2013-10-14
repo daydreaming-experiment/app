@@ -24,7 +24,7 @@
         android:text="@string/questionSlider_please_slide"
         android:textAppearance="@style/ui_font_bodytext_white" />
     
-    <SeekBar
+    <com.brainydroid.daydreaming.ui.AlphaSeekBar
         android:id="@+id/question_slider_seekBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
