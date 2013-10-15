@@ -162,8 +162,15 @@
     <string name="appsettings_allow_sound_text">Beeps at questions</string>
 
 
-
-
+    <!-- Crash Reports -->
+    <string name="crash_toast_text">Oops Daydreaming just crashed! Building a crash report...</string>
+    <string name="crash_dialog_text">Daydreaming just crashed, sorry! Please
+        help us by sending this crash report so we can fix the problem. You
+        can also add your name or email if you agree to be contacted
+        by the developers.</string>
+    <string name="crash_dialog_title">Daydreaming crash report</string>
+    <string name="crash_dialog_ok_toast">The Android lords be with you! Thanks for sending the report</string>
+    <string name="crash_dialog_comment_prompt">Name or email</string>
 
     <!-- Other -->
 
