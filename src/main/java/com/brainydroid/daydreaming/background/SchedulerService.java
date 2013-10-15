@@ -39,10 +39,8 @@ public class SchedulerService extends RoboService {
      */
     public static double MIN_DELAY = 5 * 60 * 1000; // 5 minutes
 
-    /** Mean delay in the poisson process scheduling polls: 2 hours minus the
-     *  offset delay
-     */
-    public static double MEAN_DELAY = 2 * 60 * 60 * 1000 - MIN_DELAY;
+    /** Mean delay in the poisson process scheduling polls */
+    public static double MEAN_DELAY = 2 * 60 * 60 * 1000; // 2 hours
 
 
     // Handy object that will be holding the 'now' time
@@ -193,7 +191,7 @@ public class SchedulerService extends RoboService {
         scheduledCalendar.add(Calendar.MILLISECOND, (int)respectfulDelay);
 
         // Now log what's scheduled. This is important to make sure we
-        // obverse the user's settings.
+        // obverse the user's settings.         Intent schedulerIntent =
 
         // Compute waiting hour, minute, and second values
         long milliseconds = respectfulDelay;
@@ -221,7 +219,8 @@ public class SchedulerService extends RoboService {
      */
     private synchronized long sampleDelay() {
         Logger.d(TAG, "Sampling delay");
-        return (long)(MIN_DELAY - Math.log(random.nextDouble()) * MEAN_DELAY);
+        return (long)(MIN_DELAY -
+                Math.log(random.nextDouble()) * (MEAN_DELAY - MIN_DELAY));
     }
 
     /**
