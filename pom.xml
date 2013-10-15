@@ -29,7 +29,6 @@
             <version>2.2.2</version>
         </dependency>
 
-
         <!-- From maven-android-sdk-deployer -->
         <dependency>
             <groupId>android.support</groupId>
@@ -94,6 +93,12 @@
                     <artifactId>guice</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>ch.acra</groupId>
+            <artifactId>acra</artifactId>
+            <version>4.5.0</version>
         </dependency>
 
         <!-- Make sure this is below the android dependencies -->

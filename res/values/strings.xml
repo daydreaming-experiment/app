@@ -162,7 +162,11 @@
     <string name="appsettings_allow_sound_text">Beeps at questions</string>
 
 
-
+    <!-- Crash Reports -->
+    <string name="crash_toast_text">Oops we just crashed! Building a crash report...</string>
+    <string name="crash_dialog_text">Daydreaming just crashed, sorry! Would you like to send the developers a crash report to help? Clicking OK will prompt you to send an email with the attached report</string>
+    <string name="crash_dialog_title">Daydreaming crash report</string>
+    <string name="crash_dialog_ok_toast">The Android lords be with you! Thanks for sending the report</string>
 
 
     <!-- Other -->
