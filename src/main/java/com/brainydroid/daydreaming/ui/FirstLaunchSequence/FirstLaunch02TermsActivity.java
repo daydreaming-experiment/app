@@ -1,5 +1,7 @@
 package com.brainydroid.daydreaming.ui.FirstLaunchSequence;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.util.Linkify;
@@ -41,6 +43,8 @@ public class FirstLaunch02TermsActivity extends FirstLaunchActivity implements S
     @InjectView(R.id.firstLaunchTerms_buttonDisagree)
     protected AlphaButton disagreeButton;
 
+    public boolean readtheterms = false;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Logger.v(TAG, "Creating");
@@ -72,13 +76,48 @@ public class FirstLaunch02TermsActivity extends FirstLaunchActivity implements S
             agreeButton.setAlpha(1f);
             agreeButton.setClickable(true);
 
+            readtheterms = true;
+
 
         }
     }
 
     public void onClick_buttonAgree(@SuppressWarnings("UnusedParameters") View view) {
         Logger.v(TAG, "Agree button clicked, launching next activity");
-        launchNextActivity(FirstLaunch03ProfileActivity.class);
+
+        if (readtheterms == false){
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                this);
+
+        // set title
+        alertDialogBuilder.setTitle("Agreement");
+
+        // set dialog message
+        alertDialogBuilder
+                .setMessage("You haven't read the terms. Are you sure you want to carry on?")
+                .setCancelable(false)
+                .setPositiveButton("Yes",new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog,int id) {
+                        launchNextActivity(FirstLaunch03ProfileActivity.class);
+                    }
+                })
+                .setNegativeButton("No",new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog,int id) {
+                         dialog.cancel();
+                    }
+                });
+
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // show it
+        alertDialog.show();        }
+        else {
+            launchNextActivity(FirstLaunch03ProfileActivity.class);
+        }
+
+
     }
 
     /**
@@ -95,8 +134,8 @@ public class FirstLaunch02TermsActivity extends FirstLaunchActivity implements S
 
     public void addInfoButtonListener(){
 
-        agreeButton.setAlpha(0.5f);
-        agreeButton.setClickable(false);
+        //agreeButton.setAlpha(0.5f);
+        //agreeButton.setClickable(false);
 
         agreeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -136,7 +175,7 @@ public class FirstLaunch02TermsActivity extends FirstLaunchActivity implements S
     }
 
     public  void setButtonAndScrollViewListener(){
-        agreeButton.setEnabled(false);
+        //agreeButton.setEnabled(false);
         disagreeButton.setEnabled(true);
         sv.setScrollViewListener(this);
 

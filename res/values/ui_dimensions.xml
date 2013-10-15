@@ -31,6 +31,10 @@
 
     <dimen  name="settings_notif_icon_size" >30dp</dimen>
 
+
+    <dimen  name="thumboffset" >15dp</dimen>
+
+
     <!--
  finish : 200*118      r =        0.59
  next:    193*113      r =          0.585

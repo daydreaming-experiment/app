@@ -54,7 +54,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/firstLaunchTerms_text_please_scroll"
                 android:textAppearance="@style/ui_font_caption"
-                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
                 android:layout_below="@id/firstLaunchTerms_buttons"/>
 
 
