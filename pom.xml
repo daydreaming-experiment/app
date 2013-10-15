@@ -36,22 +36,6 @@
             <version>18</version>
         </dependency>
 
-        <!-- From maven-android-sdk-deployer -->
-        <dependency>
-            <groupId>android.support</groupId>
-            <artifactId>compatibility-v7</artifactId>
-            <version>18</version>
-            <type>apklib</type>
-        </dependency>
-
-        <!-- From maven-android-sdk-deployer -->
-        <dependency>
-            <groupId>android.support</groupId>
-            <artifactId>compatibility-v7</artifactId>
-            <version>18</version>
-            <type>jar</type>
-        </dependency>
-
         <dependency>
             <groupId>com.google.android</groupId>
             <artifactId>annotations</artifactId>
@@ -126,8 +110,16 @@
     <build>
         <plugins>
             <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.5</version>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>com.jayway.maven.plugins.android.generation2</groupId>
                 <artifactId>android-maven-plugin</artifactId>
+                <version>3.7.0</version>
                 <configuration>
                     <androidManifestFile>${project.basedir}/AndroidManifest.xml</androidManifestFile>
                     <assetsDirectory>${project.basedir}/assets</assetsDirectory>
