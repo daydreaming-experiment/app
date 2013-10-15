@@ -4,6 +4,8 @@ language: java
 # (checks for pom.xml errors)
 script: mvn package
 
+install: mvn install -DskipTests=true -e -X -B
+
 # Install our dependencies
 before_install:
   # Don't mess with the main repository
