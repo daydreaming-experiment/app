@@ -34,9 +34,16 @@ public class SchedulerService extends RoboService {
 
     /** Scheduling delay when debugging is activated */
     public static long DEBUG_DELAY = 5 * 1000; // 5 seconds
+    /** Minimal delay between two polls: serves in normalizing the poisson
+     * process
+     */
+    public static double MIN_DELAY = 5 * 60 * 1000; // 5 minutes
 
-    /** Mean delay in the poisson process scheduling polls */
-    public static double MEAN_DELAY = 2 * 60 * 60 * 1000; // 2 hours
+    /** Mean delay in the poisson process scheduling polls: 2 hours minus the
+     *  offset delay
+     */
+    public static double MEAN_DELAY = 2 * 60 * 60 * 1000 - MIN_DELAY;
+
 
     // Handy object that will be holding the 'now' time
     private Calendar now;
@@ -214,7 +221,7 @@ public class SchedulerService extends RoboService {
      */
     private synchronized long sampleDelay() {
         Logger.d(TAG, "Sampling delay");
-        return (long)(- Math.log(random.nextDouble()) * MEAN_DELAY);
+        return (long)(MIN_DELAY - Math.log(random.nextDouble()) * MEAN_DELAY);
     }
 
     /**
