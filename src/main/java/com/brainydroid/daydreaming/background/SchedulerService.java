@@ -218,8 +218,8 @@ public class SchedulerService extends RoboService {
     }
 
     /**
-     * Prolong the waiting delay to respect the user's preferences_appsettings in
-     * notification time window.
+     * Prolong the waiting delay to respect the user's
+     * preferences_appSettings in notification time window.
      * <p/>
      * If the suggested scheduled time falls in the user's forbidden time
      * window, we need to adapt to make sure no poll will get notified in
@@ -267,7 +267,8 @@ public class SchedulerService extends RoboService {
      *
      * @param hypothesizedNow Time we should consider to be 'now'
      * @param delay Suggested waiting delay in milliseconds
-     * @return Prolonged waiting delay respecting the user's preferences_appsettings
+     * @return Prolonged waiting delay respecting the user's
+     * preferences_appSettings
      */
     private synchronized long makeRespectfulExpansion(Calendar hypothesizedNow,
                                          long delay) {
