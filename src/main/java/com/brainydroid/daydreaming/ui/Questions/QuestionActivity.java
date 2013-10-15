@@ -108,6 +108,11 @@ public class QuestionActivity extends RoboFragmentActivity {
         questionViewAdapter.inflate(isFirstQuestion());
         setRobotoFont(this);
 
+        // Reschedule so as not to have a new poll appear in the middle of
+        // this set of questions
+        if (isFirstQuestion()) {
+            startSchedulerService();
+        }
     }
 
     @Override
@@ -378,6 +383,15 @@ public class QuestionActivity extends RoboFragmentActivity {
         startService(syncIntent);
     }
 
+    /**
+     * Start {@link SchedulerService} for the next {@link Poll}.
+     */
+    private void startSchedulerService() {
+        Logger.d(TAG, "Starting SchedulerService");
+
+        Intent schedulerIntent = new Intent(this, SchedulerService.class);
+        startService(schedulerIntent);
+    }
 
     public void setRobotoFont(Activity activity){
         ViewGroup godfatherView = (ViewGroup) activity.getWindow().getDecorView();

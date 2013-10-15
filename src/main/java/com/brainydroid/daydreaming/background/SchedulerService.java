@@ -34,9 +34,14 @@ public class SchedulerService extends RoboService {
 
     /** Scheduling delay when debugging is activated */
     public static long DEBUG_DELAY = 5 * 1000; // 5 seconds
+    /** Minimal delay between two polls: serves in normalizing the poisson
+     * process
+     */
+    public static double MIN_DELAY = 5 * 60 * 1000; // 5 minutes
 
     /** Mean delay in the poisson process scheduling polls */
     public static double MEAN_DELAY = 2 * 60 * 60 * 1000; // 2 hours
+
 
     // Handy object that will be holding the 'now' time
     private Calendar now;
@@ -186,7 +191,7 @@ public class SchedulerService extends RoboService {
         scheduledCalendar.add(Calendar.MILLISECOND, (int)respectfulDelay);
 
         // Now log what's scheduled. This is important to make sure we
-        // obverse the user's settings.
+        // obverse the user's settings.         Intent schedulerIntent =
 
         // Compute waiting hour, minute, and second values
         long milliseconds = respectfulDelay;
@@ -214,12 +219,13 @@ public class SchedulerService extends RoboService {
      */
     private synchronized long sampleDelay() {
         Logger.d(TAG, "Sampling delay");
-        return (long)(- Math.log(random.nextDouble()) * MEAN_DELAY);
+        return (long)(MIN_DELAY -
+                Math.log(random.nextDouble()) * (MEAN_DELAY - MIN_DELAY));
     }
 
     /**
-     * Prolong the waiting delay to respect the user's preferences_appsettings in
-     * notification time window.
+     * Prolong the waiting delay to respect the user's
+     * preferences_appSettings in notification time window.
      * <p/>
      * If the suggested scheduled time falls in the user's forbidden time
      * window, we need to adapt to make sure no poll will get notified in
@@ -267,7 +273,8 @@ public class SchedulerService extends RoboService {
      *
      * @param hypothesizedNow Time we should consider to be 'now'
      * @param delay Suggested waiting delay in milliseconds
-     * @return Prolonged waiting delay respecting the user's preferences_appsettings
+     * @return Prolonged waiting delay respecting the user's
+     * preferences_appSettings
      */
     private synchronized long makeRespectfulExpansion(Calendar hypothesizedNow,
                                          long delay) {
