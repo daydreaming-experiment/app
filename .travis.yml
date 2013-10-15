@@ -29,8 +29,6 @@ before_install:
   - mvn install -N
   - cd compatibility-v4
   - mvn install
-  - cd ../compatibility-v7-gridlayout
-  - mvn install
   - cd ../../..
 
   # Come back into main repository

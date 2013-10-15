@@ -36,22 +36,6 @@
             <version>18</version>
         </dependency>
 
-        <!-- From maven-android-sdk-deployer -->
-        <dependency>
-            <groupId>android.support</groupId>
-            <artifactId>compatibility-v7</artifactId>
-            <version>18</version>
-            <type>apklib</type>
-        </dependency>
-
-        <!-- From maven-android-sdk-deployer -->
-        <dependency>
-            <groupId>android.support</groupId>
-            <artifactId>compatibility-v7</artifactId>
-            <version>18</version>
-            <type>jar</type>
-        </dependency>
-
         <dependency>
             <groupId>com.google.android</groupId>
             <artifactId>annotations</artifactId>
