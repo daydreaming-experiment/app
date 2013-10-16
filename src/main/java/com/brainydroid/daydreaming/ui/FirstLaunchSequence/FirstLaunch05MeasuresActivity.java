@@ -102,6 +102,9 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
         Logger.v(TAG, "Starting");
         super.onStart();
         updateView();
+
+        explanations();
+
     }
 
     @Override
@@ -247,7 +250,7 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
         buttonNext.setClickable(true);
 
 
-        Toast.makeText(this, "Content was successfully downloaded! Please click on the 'Next' button", Toast.LENGTH_SHORT).show();
+       // Toast.makeText(this, "Content was successfully downloaded! Please click on the 'Next' button", Toast.LENGTH_SHORT).show();
 
     }
 
@@ -260,4 +263,33 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
         startService(syncIntent);
     }
 
+    public void explanations(){
+
+        boolean areQuestionsDownloaded = statusManager.areQuestionsUpdated();
+
+        if (!areQuestionsDownloaded) {
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                this);
+
+        // set title
+        alertDialogBuilder.setTitle("Settings");
+
+        // set dialog message
+        alertDialogBuilder
+                .setMessage("Please update your phone settings where required. We will need internet access to download some content before you can continue.")
+                .setCancelable(false)
+                .setPositiveButton("OK",new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog,int id) { dialog.cancel(); }  });
+
+
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // show it
+        alertDialog.show();
+
+        }
+
+    }
 }
