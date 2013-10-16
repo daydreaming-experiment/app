@@ -107,7 +107,7 @@
             android:id="@+id/firstLaunchMeasures2_good_to_go"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
+            android:layout_marginBottom="16dp"
             android:text=""
             android:gravity="center_horizontal"
             android:textAppearance="@style/ui_font_title_white" />
