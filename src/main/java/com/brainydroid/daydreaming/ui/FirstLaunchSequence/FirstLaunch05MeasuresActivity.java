@@ -1,20 +1,20 @@
 package com.brainydroid.daydreaming.ui.FirstLaunchSequence;
 
-import android.annotation.TargetApi;
-import android.content.ComponentName;
-import android.content.Intent;
+import android.app.AlertDialog;
+import android.content.*;
+import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
-import android.widget.ImageButton;
+import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
-import com.brainydroid.daydreaming.background.QuestionsUpdateCallback;
-import com.brainydroid.daydreaming.background.StatusManager;
-import com.brainydroid.daydreaming.background.SyncService;
+import com.brainydroid.daydreaming.ui.AlphaImageButton;
 import roboguice.inject.ContentView;
+import roboguice.inject.InjectResource;
 import roboguice.inject.InjectView;
 
 /**
@@ -37,56 +37,45 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
             textNetworkConnection;
     @InjectView(R.id.firstLaunchMeasures2_textCoarseLocation) TextView
             textCoarseLocation;
-    @InjectView(R.id.firstLaunchMeasures2_buttonNext) ImageButton buttonNext;
+    @InjectView(R.id.firstLaunchMeasures2_explanation_network_connection)
+            TextView explanationNetworkConnection;
+    @InjectView(R.id.firstLaunchMeasures2_explanation_coarse_location)
+            TextView explanationCoarseLocation;
+    @InjectView(R.id.firstLaunchMeasures2_good_to_go) TextView goodToGoView;
 
-    @InjectView(R.id.firstLaunchMeasures2_text_downloading) TextView
-            textDownloading;
+    @InjectResource(R.string.firstLaunchMeasures2_explanation_network_connection_ok)
+            String explanationNetworkConnectionOk;
+    @InjectResource(R.string.firstLaunchMeasures2_explanation_network_connection_bad)
+            String explanationNetworkConnectionBad;
+    @InjectResource(R.string.firstLaunchMeasures2_explanation_coarse_location_ok)
+            String explanationCoarseLocationOk;
+    @InjectResource(R.string.firstLaunchMeasures2_explanation_coarse_location_bad)
+            String explanationCoarseLocationBad;
+    @InjectResource(R.string.firstLaunchMeasures2_good_to_go_ok) String goodToGoOk;
+            String goodToGoBad = "";
 
-    private boolean areQuestionsDownloading = false;
+    @InjectView(R.id.firstLaunchMeasures2_buttonNext)
+            AlphaImageButton buttonNext;
+    @InjectView(R.id.firstLaunchMeasures2_mainScrollView)
+            ScrollView mainScrollView;
 
-    private QuestionsUpdateCallback questionsUpdateCallback =
-            new QuestionsUpdateCallback() {
+    private BroadcastReceiver networkReceiver = new BroadcastReceiver() {
 
-                private String TAG = "QuestionsUpdateCallback";
+        private String TAG = "FirstLaunch05MeasuresActivity networkReceiver";
 
-                @Override
-                public void onQuestionsUpdateStatusChange(String status) {
-                    Logger.i(TAG, "Processing questionsUpdate status change " +
-                            "in callback");
-                    areQuestionsDownloading = false;
-                    statusManager.clearQuestionsUpdateCallback();
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // Were we called because Internet just became available?
+            String action = intent.getAction();
+            if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
+                Logger.d(TAG, "networkReceiver started for CONNECTIVITY_ACTION");
+                asyncUpdateView();
+            }
+        }
+    };
 
-                    if (status.equals(StatusManager.QUESTIONS_UPDATE_FAILED)) {
-                        textDownloading.setText("Download failed! Are you " +
-                                "connected to the internet?");
-                        updateView();
-                        return;
-                    }
-
-                    if (status.equals(
-                            StatusManager.QUESTIONS_UPDATE_MALFORMED)) {
-                        textDownloading.setText("Malformed questions " +
-                                "downloaded... can you contact the " +
-                                "developers?");
-                        updateView();
-                        return;
-                    }
-
-                    if (status.equals(
-                            StatusManager.QUESTIONS_UPDATE_SUCCEEDED)) {
-                        textDownloading.setText("Questions downloaded");
-                        updateView();
-                        return;
-                    }
-
-                    // If we can't recognised the status
-                    Logger.e(TAG, "Couldn't recognise the provided " +
-                            "questionsUpdate status");
-                    throw new RuntimeException("Unknown questionsUpdate " +
-                            "status received");
-                }
-
-            };
+    private IntentFilter networkIntentFilter =
+            new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -98,43 +87,63 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
     public void onStart() {
         Logger.v(TAG, "Starting");
         super.onStart();
-        updateView();
+        asyncUpdateView();
     }
 
     @Override
     public void onResume() {
         Logger.v(TAG, "Resuming");
         super.onResume();
-        updateView();
+        Logger.d(TAG, "Registering networkReceiver");
+        registerReceiver(networkReceiver, networkIntentFilter);
+        asyncUpdateView();
     }
 
-    private void updateView() {
-        Logger.d(TAG, "Updating view of settings");
+    @Override
+    public void onPause() {
+        Logger.v(TAG, "Pausing");
+        Logger.d(TAG, "Unregistering networkReceiver");
+        unregisterReceiver(networkReceiver);
+        super.onPause();
+    }
 
-        boolean areQuestionsDownloaded = statusManager.areQuestionsUpdated();
+    private void asyncUpdateView() {
+        Logger.d(TAG, "Asynchronously updating view of settings");
 
-        textCoarseLocation.setCompoundDrawablesWithIntrinsicBounds(
-                statusManager.isNetworkLocEnabled() ? R.drawable.status_ok :
-                        R.drawable.status_wrong, 0, 0, 0);
-        textNetworkConnection.setCompoundDrawablesWithIntrinsicBounds(
-                statusManager.isDataEnabled() ? R.drawable.status_ok :
-                        R.drawable.status_wrong, 0, 0, 0);
-        textDownloading.setCompoundDrawablesWithIntrinsicBounds
-                (areQuestionsDownloaded ? R.drawable.status_ok :
-                        R.drawable.status_wrong, 0, 0, 0);
+        final boolean isCoarseLocEnabled = statusManager.isNetworkLocEnabled();
+        final boolean isDataEnabled = statusManager.isDataEnabled();
 
-        if (areQuestionsDownloaded) {
-            allowNextButton();
-        } else {
-            forbidNextButton();
-        }
+        Runnable updateView = new Runnable() {
 
-        if (!areQuestionsDownloaded && !areQuestionsDownloading) {
-            if (statusManager.isDataEnabled() &&
-                    statusManager.isLastSyncLongAgo()) {
-                loadQuestionsFromServer();
+            private String TAG = "Runnable updateView";
+
+            @Override
+            public void run() {
+                Logger.d(TAG, "Running task: update of view");
+
+                textCoarseLocation.setCompoundDrawablesWithIntrinsicBounds(
+                        isCoarseLocEnabled ? R.drawable.status_ok :
+                                R.drawable.status_wrong, 0, 0, 0);
+                explanationCoarseLocation.setText(isCoarseLocEnabled ?
+                        explanationCoarseLocationOk : explanationCoarseLocationBad);
+                textNetworkConnection.setCompoundDrawablesWithIntrinsicBounds(
+                        isDataEnabled ? R.drawable.status_ok :
+                                R.drawable.status_wrong, 0, 0, 0);
+                explanationNetworkConnection.setText(isDataEnabled ?
+                        explanationNetworkConnectionOk :
+                        explanationNetworkConnectionBad);
+
+                if (isCoarseLocEnabled && isDataEnabled) {
+                    goodToGoView.setText(goodToGoOk);
+                    allowNextButton();
+                } else {
+                    goodToGoView.setText(goodToGoBad);
+                    forbidNextButton();
+                }
             }
-        }
+        };
+
+        mainScrollView.post(updateView);
     }
 
     public void onClick_buttonLocationSettings(
@@ -150,9 +159,50 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
     }
 
     private void launchNetworkSettings() {
-        Logger.d(TAG, "Launching network settings");
-        Logger.d(TAG, "Launching data settings");
+        Logger.d(TAG, "Launching network settings dialog");
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+
+        // set title
+        alertDialogBuilder.setTitle("Enable Data");
+
+        // set dialog message
+        alertDialogBuilder
+                .setMessage("Select the connectivity settings you wish to change")
+                .setCancelable(true)
+                .setPositiveButton("Network data",new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog,int id) {
+                        Logger.d(TAG, "Launching data settings");
+                        launchNetworkDataSettings();
+                    }
+                })
+                .setNegativeButton("Wifi",new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog,int id) {
+                        Logger.d(TAG, "Launching wifi settings");
+                        launchNetworkWifiSettings();
+                    }
+                });
+
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // show it
+        alertDialog.show();
+    }
+
+
+    private void launchNetworkDataSettings() {
         Intent settingsIntent = new Intent(Settings.ACTION_DATA_ROAMING_SETTINGS);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            ComponentName cName = new ComponentName("com.android.phone", "com.android.phone.Settings");
+            settingsIntent.setComponent(cName);
+        }
+        settingsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+        startActivity(settingsIntent);
+    }
+
+    private void launchNetworkWifiSettings() {
+        Intent settingsIntent = new Intent(Settings.ACTION_WIFI_SETTINGS);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
             ComponentName cName = new ComponentName("com.android.phone", "com.android.phone.Settings");
             settingsIntent.setComponent(cName);
@@ -177,39 +227,17 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
         launchDashBoardActivity();
     }
 
-    @TargetApi(11)
     private void forbidNextButton() {
         Logger.d(TAG, "Forbidding buttonNext");
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            buttonNext.setAlpha(0.3f);
-        } else {
-            buttonNext.setVisibility(View.INVISIBLE);
-        }
-
+        buttonNext.setAlpha(0.3f);
         buttonNext.setClickable(false);
     }
 
-    @TargetApi(11)
     private void allowNextButton() {
         Logger.d(TAG, "Allowing buttonNext");
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            buttonNext.setAlpha(1f);
-        } else {
-            buttonNext.setVisibility(View.VISIBLE);
-        }
-
+        buttonNext.setAlpha(1f);
         buttonNext.setClickable(true);
-    }
-
-    private void loadQuestionsFromServer() {
-        Logger.i(TAG, "Querying server for questions");
-        textDownloading.setText("Downloading...");
-        areQuestionsDownloading = true;
-        statusManager.setQuestionsUpdateStatusCallback(questionsUpdateCallback);
-        Intent syncIntent = new Intent(this, SyncService.class);
-        startService(syncIntent);
+        Toast.makeText(this, goodToGoOk, Toast.LENGTH_SHORT).show();
     }
 
 }

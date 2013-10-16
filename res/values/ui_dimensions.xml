@@ -31,6 +31,20 @@
 
     <dimen  name="settings_notif_icon_size" >30dp</dimen>
 
+
+    <!-- Seekbarthumb -->
+
+    <dimen  name="thumboffset" >15dp</dimen>
+
+    <dimen  name="seekbar_touchzone_diameter" >40dp</dimen>
+    <dimen  name="seekbar_touchzone_radius" >20dp</dimen>
+    <dimen  name="seekbar_big_circle_diameter" >20dp</dimen>
+    <dimen  name="seekbar_big_circle_offset" >10dp</dimen>
+    <dimen  name="seekbar_small_circle_diameter" >10dp</dimen>
+    <dimen  name="seekbar_small_circle_offset" >15dp</dimen>
+
+
+
     <!--
  finish : 200*118      r =        0.59
  next:    193*113      r =          0.585
@@ -94,7 +108,7 @@
     <dimen  name="profile_lateralPadding" >0dp</dimen>
 
     <!-- MeasuresActivity -->
-    <dimen  name="measures_item_vertical_spacing" >15dp</dimen>
+    <dimen  name="measures_item_vertical_spacing" >12dp</dimen>
     <dimen  name="measures_paddingTop" >10dp</dimen>
     <dimen  name="measures_paddingBottom" >10dp</dimen>
     <dimen  name="measures_lateralPadding" >15dp</dimen>

@@ -15,14 +15,17 @@
             android:gravity="center_horizontal"
             android:paddingTop="20dp"
             />
-    <SeekBar
+    <com.brainydroid.daydreaming.ui.AlphaSeekBar
             android:id="@+id/Questionnaire_seekBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="6dip"
             android:maxHeight="6dip"
+            android:paddingLeft="@dimen/seekbar_touchzone_radius"
+            android:paddingRight="@dimen/seekbar_touchzone_radius"
             android:paddingTop="5dp"
-            android:paddingBottom="5dp"/>
+            android:paddingBottom="5dp"
+            android:thumbOffset="@dimen/seekbar_touchzone_radius"/>
     <TextView
             android:id="@+id/Questionnaire_answer"
             android:layout_width="fill_parent"

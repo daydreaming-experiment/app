@@ -115,20 +115,14 @@ public class SyncService extends RoboService {
                 } catch (QuestionsSyntaxException e) {
                     Logger.e(TAG, "Downloaded questions were malformed -> " +
                             "questions not updated");
-                    statusManager.setQuestionsUpdateStatus(
-                            StatusManager.QUESTIONS_UPDATE_MALFORMED);
                     return;
                 }
 
                 Logger.i(TAG, "Questions successfully imported");
                 statusManager.setQuestionsUpdated();
-                statusManager.setQuestionsUpdateStatus(
-                        StatusManager.QUESTIONS_UPDATE_SUCCEEDED);
             } else {
                 Logger.w(TAG, "Error while retrieving new questions from " +
                         "server");
-                statusManager.setQuestionsUpdateStatus(
-                        StatusManager.QUESTIONS_UPDATE_FAILED);
             }
         }
 
@@ -305,8 +299,8 @@ public class SyncService extends RoboService {
     private void asyncPutProfile() {
         Logger.d(TAG, "Syncing profile data");
 
-        ProfileWrapper profileWrap = profileStorage.getProfile()
-                .buildWrapper();
+        profileStorage.setSyncStart();
+        ProfileWrapper profileWrap = profileStorage.getProfile().buildWrapper();
 
         // Called when the HttpPutTask finishes or times out
         HttpConversationCallback callback = new HttpConversationCallback() {
@@ -329,8 +323,14 @@ public class SyncService extends RoboService {
                                     "profile (serverAnswer: " +
                                     "{0})", serverAnswer);
 
-                    Logger.d(TAG, "Clearing dirty flag for profile data");
-                    profileStorage.clearIsDirtyAndCommit();
+                    if (profileStorage.hasChangedSinceSyncStart()) {
+                        Logger.d(TAG, "Profile has changed since sync start " +
+                                "-> not clearing isDirty flag");
+                    } else {
+                        Logger.d(TAG, "Profile untouched since sync " +
+                                "start -> clearing isDirty flag");
+                        profileStorage.clearIsDirtyAndCommit();
+                    }
                 } else {
                     Logger.w(TAG, "Error while uploading profile to " +
                             "server");

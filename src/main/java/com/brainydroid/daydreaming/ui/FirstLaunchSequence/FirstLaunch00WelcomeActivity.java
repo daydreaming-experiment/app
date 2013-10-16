@@ -46,7 +46,11 @@ public class FirstLaunch00WelcomeActivity extends FirstLaunchActivity {
         Animation_Timer =  new CountDownTimer(2000, 1000) {
             public void onTick(long millisUntilFinished) {}
             public void onFinish() {
-                launchNextActivity(FirstLaunch01DescriptionActivity.class);
+                if (statusManager.isTipiQuestionnaireCompleted()) {
+                    launchNextActivity(FirstLaunch05MeasuresActivity.class);
+                } else {
+                    launchNextActivity(FirstLaunch01DescriptionActivity.class);
+                }
                 Animation_Timer.cancel();
             }
         }.start();

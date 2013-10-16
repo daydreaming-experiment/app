@@ -96,15 +96,20 @@
     <string name="firstLaunchMeasures_title_activity">Measures &amp; Privacy</string>
 
     <!-- Measure Activity 2 -->
+    <string name="firstLaunchMeasures2_text_intro">Daydreaming needs internet
+        and geolocation to work:</string>
     <string name="firstLaunchMeasures2_text_data">DATA</string>
     <string name="firstLaunchMeasures2_text_network_connection">Network connection</string>
+    <string name="firstLaunchMeasures2_explanation_network_connection_ok">Internet connection is used to download the latest questions researchers have prepared and send back your answers; leave this enabled.</string>
+    <string name="firstLaunchMeasures2_explanation_network_connection_bad">Enable internet connection so the app can download the latest questions researchers have prepared and you can send back your answers.</string>
     <string name="firstLaunchMeasures2_button_change_data_settings">Change your data settings</string>
     <string name="firstLaunchMeasures2_text_location">LOCATION</string>
     <string name="firstLaunchMeasures2_text_coarse_location">Coarse location</string>
+    <string name="firstLaunchMeasures2_explanation_coarse_location_ok">Google\'s network-based location service is used for anonymous geolocation; leave this enabled.</string>
+    <string name="firstLaunchMeasures2_explanation_coarse_location_bad">Google\'s network-based location service is used for anonymous geolocation; please enable it.</string>
     <string name="firstLaunchMeasures2_button_change_location_settings">Change your location settings</string>
     <string name="firstLaunchMeasures2_title_activity">Measures</string>
-    <string name="firstLaunchMeasures2_text_intro">Wait a few second while the questions are being downloaded</string>
-    <string name="firstLaunchMeasures2_text_downloading">Download : Waiting for connection</string>
+    <string name="firstLaunchMeasures2_good_to_go_ok">Your settings are good, click next!</string>
 
 
     <!-- Questionnaire Activity -->
@@ -130,6 +135,9 @@
     <string name="questionSlider_please_slide">(Slide to answer)</string>
     <string name="questionSlider_sliders_untouched_single">Please answer using the slider</string>
     <string name="questionSlider_sliders_untouched_multiple">Please answer on all the sliders</string>
+    <string name="questionStarRating_please_rate">(Select a rating to answer) </string>
+    <string name="questionStarRating_star_ratings_untouched_single">Please answer using the star scale</string>
+    <string name="questionStarRating_star_ratings_untouched_multiple">Please answer on all the star scales</string>
     <string name="questionMultipleChoice_check_all_that_apply">Check all that apply</string>
     <string name="questionMultipleChoice_other_hint">Other</string>
     <string name="questionMultipleChoice_other_please_fill">Please tell us more in the \"Other\" box</string>
@@ -162,8 +170,15 @@
     <string name="appsettings_allow_sound_text">Beeps at questions</string>
 
 
-
-
+    <!-- Crash Reports -->
+    <string name="crash_toast_text">Oops Daydreaming just crashed! Building a crash report...</string>
+    <string name="crash_dialog_text">Daydreaming just crashed, sorry! Please
+        help us by sending this crash report so we can fix the problem. You
+        can also add your name or email if you agree to be contacted
+        by the developers.</string>
+    <string name="crash_dialog_title">Daydreaming crash report</string>
+    <string name="crash_dialog_ok_toast">The Android lords be with you! Thanks for sending the report</string>
+    <string name="crash_dialog_comment_prompt">Name or email</string>
 
     <!-- Other -->
 

@@ -3,7 +3,6 @@ package com.brainydroid.daydreaming.ui.Questions;
 import android.content.Context;
 import android.util.FloatMath;
 import android.view.View;
-import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.brainydroid.daydreaming.R;
@@ -11,6 +10,7 @@ import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.SliderAnswer;
 import com.brainydroid.daydreaming.db.SliderQuestionDetails;
 import com.brainydroid.daydreaming.db.SliderSubQuestion;
+import com.brainydroid.daydreaming.ui.AlphaSeekBar;
 import com.google.inject.Inject;
 import roboguice.inject.InjectResource;
 
@@ -65,30 +65,34 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
         TextView rightHintText = (TextView)view.findViewById(R.id.question_slider_rightHint);
         rightHintText.setText(hints.get(hintsNumber - 1));
 
-        SeekBar seekBar = (SeekBar)view.findViewById(R.id.question_slider_seekBar);
+        AlphaSeekBar seekBar = (AlphaSeekBar)view.findViewById(R.id.question_slider_seekBar);
         seekBar.setProgressDrawable(view.getResources().getDrawable(R.drawable.question_slider_progress));
         seekBar.setThumb(view.getResources().getDrawable(R.drawable.question_slider_thumb));
         seekBar.setAlpha(0.5f);
 
         final TextView selectedSeek = (TextView)view.findViewById(R.id.question_slider_selectedSeek);
 
-        SeekBar.OnSeekBarChangeListener listener = new SeekBar.OnSeekBarChangeListener() {
+        AlphaSeekBar.OnAlphaSeekBarChangeListener listener = new AlphaSeekBar.OnAlphaSeekBarChangeListener() {
 
             @Override
-            public void onProgressChanged(SeekBar seekBar, int progress,
+            public void onProgressChanged(AlphaSeekBar seekBar, int progress,
                                           boolean fromUser) {
                 Logger.v(TAG, "SeekBar progress changed -> changing text " +
                         "and background");
-                int index = (int)FloatMath.floor((progress / 101f) * hintsNumber);
+                int index = (int) FloatMath.floor((progress / 100f) * hintsNumber);
+                if (index == hintsNumber) {
+                    // Have an open interval to the right
+                    index -= 1;
+                }
                 selectedSeek.setText(hints.get(index));
                 seekBar.setAlpha(1f);
             }
 
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {}
+            public void onStartTrackingTouch(AlphaSeekBar seekBar) { }
 
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {}
+            public void onStopTrackingTouch(AlphaSeekBar seekBar) { }
         };
 
         int initialPosition = subQuestion.getInitialPosition();
@@ -98,7 +102,6 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
             seekBar.setProgress(initialPosition);
         }
 
-       // seekBar.setBackgroundColor(Color.argb(255,255,205,205));
         seekBar.setOnSeekBarChangeListener(listener);
 
         return view;
@@ -132,7 +135,7 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
         Logger.i(TAG, "Saving question answer");
 
         for (View subQuestionView : subQuestionsViews) {
-            SeekBar seekBar = (SeekBar)subQuestionView.findViewById(
+            AlphaSeekBar seekBar = (AlphaSeekBar)subQuestionView.findViewById(
                     R.id.question_slider_seekBar);
             TextView textView = (TextView)subQuestionView.findViewById(
                     R.id.question_slider_mainText);

@@ -10,6 +10,7 @@ public interface ProfileFactory {
     public Profile create(@Assisted("age") String age,
                           @Assisted("gender") String gender,
                           @Assisted("education") String education,
-                          HashMap<String, Integer> tipiAnswers);
+                          HashMap<String, Integer> tipiAnswers,
+                          int questionsVersion);
 
 }

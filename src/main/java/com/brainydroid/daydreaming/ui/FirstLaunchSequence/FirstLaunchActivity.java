@@ -5,22 +5,19 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.ViewGroup;
 import com.brainydroid.daydreaming.R;
-import com.brainydroid.daydreaming.background.LocationPointService;
-import com.brainydroid.daydreaming.background.Logger;
-import com.brainydroid.daydreaming.background.SchedulerService;
-import com.brainydroid.daydreaming.background.StatusManager;
+import com.brainydroid.daydreaming.background.*;
 import com.brainydroid.daydreaming.network.SntpClient;
 import com.brainydroid.daydreaming.network.SntpClientCallback;
 import com.brainydroid.daydreaming.ui.Dashboard.DashboardActivity;
 import com.brainydroid.daydreaming.ui.FontUtils;
-import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockFragmentActivity;
 import com.google.inject.Inject;
+import roboguice.activity.RoboFragmentActivity;
 
 
 /**
  * Class that activities FirstLaunchSequence extend.
  */
-public abstract class FirstLaunchActivity extends RoboSherlockFragmentActivity {
+public abstract class FirstLaunchActivity extends RoboFragmentActivity {
 
     private static String TAG = "FirstLaunchActivity";
 
@@ -71,12 +68,31 @@ public abstract class FirstLaunchActivity extends RoboSherlockFragmentActivity {
      * Kills activity if first launch already fully completed.
      */
     public void checkFirstLaunch() {
-        if ( (statusManager.isFirstLaunchCompleted()) ) {
+        if (statusManager.isFirstLaunchCompleted()) {
             Logger.i(TAG, "First launch completed -> finishing");
             finish();
         } else {
             Logger.v(TAG, "First launch not completed");
+
+            if(shouldFinishIfTipiQuestionnaireCompleted() &&
+                    statusManager.isTipiQuestionnaireCompleted())
+            {
+                Logger.i(TAG, "Tipi questionnaire completed, " +
+                        "and we should finish because of that -> finishing");
+                finish();
+            } else {
+                Logger.v(TAG, "Tipi questionnaire either not relevant for " +
+                        "finishing or not completed");
+            }
         }
+    }
+
+    /**
+     * To be overridden by classes who want a different behaviour in
+     * checkFirstLaunch().
+     */
+    public boolean shouldFinishIfTipiQuestionnaireCompleted() {
+        return false;
     }
 
     /**
@@ -129,6 +145,10 @@ public abstract class FirstLaunchActivity extends RoboSherlockFragmentActivity {
         };
 
         sntpClient.asyncRequestTime(callback);
+
+        Intent syncServiceIntent = new Intent(this, SyncService.class);
+        Logger.d(TAG, "Starting SyncService");
+        startService(syncServiceIntent);
 
         Logger.d(TAG, "Starting SchedulerService");
         Intent schedulerServiceIntent = new Intent(this,

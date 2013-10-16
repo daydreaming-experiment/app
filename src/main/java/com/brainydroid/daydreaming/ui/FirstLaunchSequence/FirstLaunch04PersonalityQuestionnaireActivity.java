@@ -1,8 +1,6 @@
 package com.brainydroid.daydreaming.ui.FirstLaunchSequence;
 
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.util.FloatMath;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -12,9 +10,14 @@ import android.widget.Toast;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.ProfileStorage;
+import com.brainydroid.daydreaming.ui.AlphaSeekBar;
 import com.google.inject.Inject;
+import roboguice.inject.ContentView;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Activity at first launch
@@ -27,7 +30,7 @@ import java.util.*;
  * Next activity     :  FirstLaunch05MeasuresActivity
  *
  */
-//@ContentView(R.layout.activity_first_launch_questionnaire)
+@ContentView(R.layout.activity_first_launch_questionnaire)
 public class FirstLaunch04PersonalityQuestionnaireActivity
         extends FirstLaunchActivity {
 
@@ -43,20 +46,13 @@ public class FirstLaunch04PersonalityQuestionnaireActivity
     @Inject HashMap<String, SeekBar> seekBars;
     @Inject HashMap<String, Boolean> seekBarsTouchedStates;
 
-    private int thumbOffset;
     private List<String> hints;
     private int nHints;
-
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Logger.v(TAG, "Creating");
         super.onCreate(savedInstanceState);
-
-        setContentView(R.layout.activity_first_launch_questionnaire);
-        thumbOffset = dpToPx(getBaseContext().getResources().getInteger(
-                R.integer.thumb_lateral_offset));
 
         String[] hintsPre = getBaseContext().getResources().getStringArray(
                 R.array.tipi_answers);
@@ -77,6 +73,7 @@ public class FirstLaunch04PersonalityQuestionnaireActivity
         Logger.d(TAG, "Next button clicked");
 
         if (retrieveTipiAnswers()) {
+            statusManager.setTipiQuestionnaireCompleted();
             launchNextActivity(FirstLaunch05MeasuresActivity.class);
         }
     }
@@ -132,11 +129,11 @@ public class FirstLaunch04PersonalityQuestionnaireActivity
                 (TextView)view.findViewById(R.id.Questionnaire_answer);
         answer.setText(hints.get(3));
 
-        SeekBar seekBar =
-                (SeekBar)view.findViewById(R.id.Questionnaire_seekBar);
+        AlphaSeekBar seekBar =
+                (AlphaSeekBar)view.findViewById(R.id.Questionnaire_seekBar);
         seekBar.setMax(MAX_PROGRESS_SEEKBAR);
         seekBar.setProgress(INIT_PROGRESS_SEEKBAR);
-        seekBar.setPadding(thumbOffset, 0, thumbOffset, 0);
+        //seekBar.setPadding(thumbOffset, 0, thumbOffset, 0);
         seekBar.setProgressDrawable(view.getResources().getDrawable(R
                 .drawable.question_slider_progress));
         seekBar.setAlpha(0.5f);
@@ -144,12 +141,11 @@ public class FirstLaunch04PersonalityQuestionnaireActivity
         seekBar.setThumb(view.getResources().getDrawable(
                 R.drawable.question_slider_thumb));
 
-        SeekBar.OnSeekBarChangeListener onSeekBarChange =
-                new SeekBar.OnSeekBarChangeListener() {
+        AlphaSeekBar.OnAlphaSeekBarChangeListener onSeekBarChange =
+                new AlphaSeekBar.OnAlphaSeekBarChangeListener() {
 
-
-                    @Override
-            public void onProgressChanged(SeekBar seekBar, int progress,
+            @Override
+            public void onProgressChanged(AlphaSeekBar seekBar, int progress,
                                           boolean fromUser) {
                 int index = (int)FloatMath.floor((progress / 101f) * nHints);
                 answer.setText(hints.get(index));
@@ -158,10 +154,10 @@ public class FirstLaunch04PersonalityQuestionnaireActivity
             }
 
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {}
+            public void onStartTrackingTouch(AlphaSeekBar seekBar) {}
 
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {}
+            public void onStopTrackingTouch(AlphaSeekBar seekBar) {}
 
         };
 
@@ -171,11 +167,10 @@ public class FirstLaunch04PersonalityQuestionnaireActivity
         return seekBar;
     }
 
-    public int dpToPx(int dp) {
-        DisplayMetrics displayMetrics =
-                getBaseContext().getResources().getDisplayMetrics();
-        return Math.round(dp * (displayMetrics.xdpi /
-                DisplayMetrics.DENSITY_DEFAULT));
+    // Overriding parent method
+    @Override
+    public boolean shouldFinishIfTipiQuestionnaireCompleted() {
+        return true;
     }
 
 }

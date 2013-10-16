@@ -101,4 +101,10 @@ public class FirstLaunch01DescriptionActivity extends FirstLaunchActivity {
         overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
     }
 
+    // Overriding parent method
+    @Override
+    public boolean shouldFinishIfTipiQuestionnaireCompleted() {
+        return true;
+    }
+
 }

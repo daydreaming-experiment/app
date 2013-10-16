@@ -1,10 +1,8 @@
 package com.brainydroid.daydreaming.db;
 
 import android.content.ContentValues;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.MalformedJsonException;
 import com.brainydroid.daydreaming.background.Logger;
 import com.google.gson.JsonSyntaxException;
 import com.google.inject.Inject;
@@ -28,7 +26,6 @@ public class QuestionsStorage {
     public static final String COL_LOCATION = "questionLocation";
     public static final String COL_TIMESTAMP = "questionTimestamp";
 
-    private static String QUESTIONS_VERSION = "questionsVersion";
     private static String TABLE_QUESTIONS = "questions";
 
     private static final String SQL_CREATE_TABLE_QUESTIONS =
@@ -42,42 +39,24 @@ public class QuestionsStorage {
     @Inject Json json;
     @Inject Random random;
     @Inject QuestionFactory questionFactory;
+    @Inject ProfileStorage profileStorage;
 
-    private final SharedPreferences sharedPreferences;
-    private final SharedPreferences.Editor eSharedPreferences;
     private final SQLiteDatabase db;
 
     // Constructor
     @Inject
-    public QuestionsStorage(Storage storage,
-                            SharedPreferences sharedPreferences) {
+    public QuestionsStorage(Storage storage) {
 
         Logger.d(TAG, "Building QuestionsStorage: creating table if it " +
                 "doesn't exist");
 
-        this.sharedPreferences = sharedPreferences;
-        eSharedPreferences = sharedPreferences.edit();
         db = storage.getWritableDatabase();
         db.execSQL(SQL_CREATE_TABLE_QUESTIONS);
     }
 
-    public synchronized int getQuestionsVersion() {
-        Logger.v(TAG, "Getting questions version");
-        int questionsVersion = sharedPreferences.getInt(QUESTIONS_VERSION,
-                -1);
-
-        if (questionsVersion == -1) {
-            throw new RuntimeException("questionsVersion is not set, " +
-                    "meaning questions were never loaded");
-        }
-
-        return questionsVersion;
-    }
-
     private synchronized void setQuestionsVersion(int questionsVersion) {
         Logger.d(TAG, "Setting questions version to {0}", questionsVersion);
-        eSharedPreferences.putInt(QUESTIONS_VERSION, questionsVersion);
-        eSharedPreferences.commit();
+        profileStorage.setQuestionsVersion(questionsVersion);
     }
 
     // get question from id in db

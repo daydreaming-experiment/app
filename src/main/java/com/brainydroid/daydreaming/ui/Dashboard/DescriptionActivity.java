@@ -1,6 +1,8 @@
 package com.brainydroid.daydreaming.ui.Dashboard;
 
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.ui.FirstLaunchSequence.FirstLaunch01DescriptionActivity;
@@ -19,6 +21,10 @@ public class DescriptionActivity extends FirstLaunch01DescriptionActivity {
     public void setButton(){
         nextButton.setVisibility(View.INVISIBLE);
         nextButton.setClickable(false);
+        ViewGroup parent = (ViewGroup)findViewById(R.id.firstLaunchDescription_main_layout);
+        LayoutInflater.from(this).inflate(R.layout.return_to_dashboard_button, parent, true);
+
+
     }
 
     @Override
@@ -26,6 +32,10 @@ public class DescriptionActivity extends FirstLaunch01DescriptionActivity {
         Logger.v(TAG, "Back pressed, setting slide transition");
         super.onBackPressed();
         overridePendingTransition(R.anim.push_bottom_in, R.anim.push_bottom_out);
+    }
+
+    public void onClick_backtodashboard(View v) {
+        onBackPressed();
     }
 
 }

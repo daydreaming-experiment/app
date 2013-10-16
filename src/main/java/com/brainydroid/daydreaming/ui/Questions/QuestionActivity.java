@@ -6,18 +6,18 @@ import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.provider.Settings;
 import android.support.v4.app.DialogFragment;
-import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
-import com.actionbarsherlock.app.SherlockDialogFragment;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.*;
 import com.brainydroid.daydreaming.db.Poll;
@@ -26,14 +26,13 @@ import com.brainydroid.daydreaming.db.Question;
 import com.brainydroid.daydreaming.network.SntpClient;
 import com.brainydroid.daydreaming.network.SntpClientCallback;
 import com.brainydroid.daydreaming.ui.FontUtils;
-import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockFragmentActivity;
 import com.google.inject.Inject;
+import roboguice.activity.RoboFragmentActivity;
 import roboguice.inject.ContentView;
-import roboguice.inject.InjectResource;
 import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_question)
-public class QuestionActivity extends RoboSherlockFragmentActivity {
+public class QuestionActivity extends RoboFragmentActivity {
 
     private static String TAG = "QuestionActivity";
 
@@ -55,15 +54,13 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
     @InjectView(R.id.question_nextButton)   ImageButton nextButton;
     @InjectView(R.id.question_finishButton)   ImageButton finishButton;
 
-    @InjectResource(R.string.question_button_finish) String nextButtonFinishText;
-
     @Inject LocationServiceConnection locationServiceConnection;
     @Inject PollsStorage pollsStorage;
     @Inject StatusManager statusManager;
     @Inject QuestionViewAdapterFactory questionViewAdapterFactory;
     @Inject SntpClient sntpClient;
 
-    public static class LocationAlertDialogFragment extends SherlockDialogFragment {
+    public static class LocationAlertDialogFragment extends DialogFragment {
 
         private static String TAG = "LocationAlertDialogFragment";
 
@@ -85,13 +82,13 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
             int text = getArguments().getInt("text");
             int posText = getArguments().getInt("posText");
 
-            AlertDialog.Builder alertSettings = new AlertDialog.Builder(getSherlockActivity())
+            AlertDialog.Builder alertSettings = new AlertDialog.Builder(getActivity())
             .setTitle(title)
             .setMessage(text)
             .setPositiveButton(posText,
                     new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {
-                    ((QuestionActivity)getSherlockActivity()).launchSettings();
+                    ((QuestionActivity)getActivity()).launchSettings();
                 }
             }).setIcon(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ?
                     R.drawable.ic_action_about_holo_light : R.drawable.ic_action_about_holo_dark);
@@ -109,8 +106,13 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
         initVars();
         setChrome();
         questionViewAdapter.inflate(isFirstQuestion());
-        setRobotofont(this);
+        setRobotoFont(this);
 
+        // Reschedule so as not to have a new poll appear in the middle of
+        // this set of questions
+        if (isFirstQuestion()) {
+            startSchedulerService();
+        }
     }
 
     @Override
@@ -195,13 +197,6 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
                 nextButton.setVisibility(View.GONE);
                 finishButton.setVisibility(View.VISIBLE);
                 finishButton.setClickable(true);
-
-                //nextButton.setText(nextButtonFinishText);
-                //Drawable button_drawable = getResources().getDrawable(R.drawable.button_finish);
-                //nextButton.setImageDrawable(button_drawable);
-                //nextButton.getLayoutParams().height = getResources().getDimensionPixelSize(R.dimen.button_next_height);
-                //nextButton.getLayoutParams().width = getResources().getDimensionPixelSize(R.dimen.button_next_width);
-
             }
         }
     }
@@ -253,10 +248,6 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
                     "starting)");
             locationServiceConnection.bindLocationService();
         }
-    }
-
-    public void onClick_finishButton( View view) {
-        onClick_nextButton(view);
     }
 
     public void onClick_nextButton(@SuppressWarnings("UnusedParameters") View view) {
@@ -392,15 +383,18 @@ public class QuestionActivity extends RoboSherlockFragmentActivity {
         startService(syncIntent);
     }
 
+    /**
+     * Start {@link SchedulerService} for the next {@link Poll}.
+     */
+    private void startSchedulerService() {
+        Logger.d(TAG, "Starting SchedulerService");
 
-    public void setRobotofont(Activity activity){
-        ViewGroup godfatherView = (ViewGroup) activity.getWindow().getDecorView();
-        FontUtils.setRobotoFont(activity, godfatherView);
+        Intent schedulerIntent = new Intent(this, SchedulerService.class);
+        startService(schedulerIntent);
     }
 
-    public int dpToPx(int dp) {
-        DisplayMetrics displayMetrics = getBaseContext().getResources().getDisplayMetrics();
-        int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
-        return px;
+    public void setRobotoFont(Activity activity){
+        ViewGroup godfatherView = (ViewGroup) activity.getWindow().getDecorView();
+        FontUtils.setRobotoFont(activity, godfatherView);
     }
 }
