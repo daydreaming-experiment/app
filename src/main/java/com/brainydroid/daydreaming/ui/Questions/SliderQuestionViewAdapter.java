@@ -79,7 +79,11 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
                                           boolean fromUser) {
                 Logger.v(TAG, "SeekBar progress changed -> changing text " +
                         "and background");
-                int index = (int) FloatMath.floor((progress / 101f) * hintsNumber);
+                int index = (int) FloatMath.floor((progress / 100f) * hintsNumber);
+                if (index == hintsNumber) {
+                    // Have an open interval to the right
+                    index -= 1;
+                }
                 selectedSeek.setText(hints.get(index));
                 seekBar.setAlpha(1f);
             }
