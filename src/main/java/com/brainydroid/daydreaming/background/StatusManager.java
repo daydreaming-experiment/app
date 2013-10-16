@@ -26,6 +26,10 @@ public class StatusManager {
     private static String EXP_STATUS_FL_COMPLETED =
             "expStatusFlCompleted";
 
+    /** Preference key storing the Tipi questionnaire completion status */
+    private static String EXP_STATUS_TIPI_COMPLETED =
+            "expStatusTipiCompleted";
+
     /** Preference key storing the status of initial questions update */
     private static String EXP_STATUS_QUESTIONS_UPDATED =
             "expStatusQuestionsUpdated";
@@ -96,7 +100,29 @@ public class StatusManager {
     public synchronized void setFirstLaunchCompleted() {
         Logger.d(TAG, "Setting first launch to completed");
 
+        if (!isTipiQuestionnaireCompleted()) {
+            throw new RuntimeException("Setting first launch to completed can" +
+                    " only be done if Tipi questionnaire is also completed");
+        }
+
         eSharedPreferences.putBoolean(EXP_STATUS_FL_COMPLETED, true);
+        eSharedPreferences.commit();
+    }
+
+    public synchronized boolean isTipiQuestionnaireCompleted() {
+        if (sharedPreferences.getBoolean(EXP_STATUS_TIPI_COMPLETED, false)) {
+            Logger.d(TAG, "Tipi questionnaire is completed");
+            return true;
+        } else {
+            Logger.d(TAG, "Tipi questionnaire not completed yet");
+            return false;
+        }
+    }
+
+    public synchronized void setTipiQuestionnaireCompleted() {
+        Logger.d(TAG, "Setting Tipi questionnaire to completed");
+
+        eSharedPreferences.putBoolean(EXP_STATUS_TIPI_COMPLETED, true);
         eSharedPreferences.commit();
     }
 
