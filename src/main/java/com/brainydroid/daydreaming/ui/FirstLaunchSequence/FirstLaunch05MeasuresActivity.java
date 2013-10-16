@@ -1,13 +1,13 @@
 package com.brainydroid.daydreaming.ui.FirstLaunchSequence;
 
 import android.app.AlertDialog;
-import android.content.ComponentName;
-import android.content.DialogInterface;
-import android.content.Intent;
+import android.content.*;
+import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
@@ -51,10 +51,30 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
     @InjectResource(R.string.firstLaunchMeasures2_explanation_coarse_location_bad)
             String explanationCoarseLocationBad;
     @InjectResource(R.string.firstLaunchMeasures2_good_to_go_ok) String goodToGoOk;
-    String goodToGoBad = "";
+            String goodToGoBad = "";
 
     @InjectView(R.id.firstLaunchMeasures2_buttonNext)
             AlphaImageButton buttonNext;
+    @InjectView(R.id.firstLaunchMeasures2_mainScrollView)
+            ScrollView mainScrollView;
+
+    private BroadcastReceiver networkReceiver = new BroadcastReceiver() {
+
+        private String TAG = "FirstLaunch05MeasuresActivity networkReceiver";
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // Were we called because Internet just became available?
+            String action = intent.getAction();
+            if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
+                Logger.d(TAG, "networkReceiver started for CONNECTIVITY_ACTION");
+                asyncUpdateView();
+            }
+        }
+    };
+
+    private IntentFilter networkIntentFilter =
+            new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -66,41 +86,63 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
     public void onStart() {
         Logger.v(TAG, "Starting");
         super.onStart();
-        updateView();
+        asyncUpdateView();
     }
 
     @Override
     public void onResume() {
         Logger.v(TAG, "Resuming");
         super.onResume();
-        updateView();
+        Logger.d(TAG, "Registering networkReceiver");
+        registerReceiver(networkReceiver, networkIntentFilter);
+        asyncUpdateView();
     }
 
-    private void updateView() {
-        Logger.d(TAG, "Updating view of settings");
+    @Override
+    public void onPause() {
+        Logger.v(TAG, "Pausing");
+        Logger.d(TAG, "Unregistering networkReceiver");
+        unregisterReceiver(networkReceiver);
+        super.onPause();
+    }
 
-        boolean isCoarseLocEnabled = statusManager.isNetworkLocEnabled();
-        boolean isDataEnabled = statusManager.isDataEnabled();
+    private void asyncUpdateView() {
+        Logger.d(TAG, "Asynchronously updating view of settings");
 
-        textCoarseLocation.setCompoundDrawablesWithIntrinsicBounds(
-                isCoarseLocEnabled ? R.drawable.status_ok :
-                        R.drawable.status_wrong, 0, 0, 0);
-        explanationCoarseLocation.setText(isCoarseLocEnabled ?
-                explanationCoarseLocationOk : explanationCoarseLocationBad);
-        textNetworkConnection.setCompoundDrawablesWithIntrinsicBounds(
-                isDataEnabled ? R.drawable.status_ok :
-                        R.drawable.status_wrong, 0, 0, 0);
-        explanationNetworkConnection.setText(isDataEnabled ?
-                explanationNetworkConnectionOk :
-                explanationNetworkConnectionBad);
+        final boolean isCoarseLocEnabled = statusManager.isNetworkLocEnabled();
+        final boolean isDataEnabled = statusManager.isDataEnabled();
 
-        if (isCoarseLocEnabled && isDataEnabled) {
-            goodToGoView.setText(goodToGoOk);
-            allowNextButton();
-        } else {
-            goodToGoView.setText(goodToGoBad);
-            forbidNextButton();
-        }
+        Runnable updateView = new Runnable() {
+
+            private String TAG = "Runnable updateView";
+
+            @Override
+            public void run() {
+                Logger.d(TAG, "Running task: update of view");
+
+                textCoarseLocation.setCompoundDrawablesWithIntrinsicBounds(
+                        isCoarseLocEnabled ? R.drawable.status_ok :
+                                R.drawable.status_wrong, 0, 0, 0);
+                explanationCoarseLocation.setText(isCoarseLocEnabled ?
+                        explanationCoarseLocationOk : explanationCoarseLocationBad);
+                textNetworkConnection.setCompoundDrawablesWithIntrinsicBounds(
+                        isDataEnabled ? R.drawable.status_ok :
+                                R.drawable.status_wrong, 0, 0, 0);
+                explanationNetworkConnection.setText(isDataEnabled ?
+                        explanationNetworkConnectionOk :
+                        explanationNetworkConnectionBad);
+
+                if (isCoarseLocEnabled && isDataEnabled) {
+                    goodToGoView.setText(goodToGoOk);
+                    allowNextButton();
+                } else {
+                    goodToGoView.setText(goodToGoBad);
+                    forbidNextButton();
+                }
+            }
+        };
+
+        mainScrollView.post(updateView);
     }
 
     public void onClick_buttonLocationSettings(
@@ -118,8 +160,7 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
     private void launchNetworkSettings() {
         Logger.d(TAG, "Launching network settings dialog");
 
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-                this);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
         // set title
         alertDialogBuilder.setTitle("Enable Data");
