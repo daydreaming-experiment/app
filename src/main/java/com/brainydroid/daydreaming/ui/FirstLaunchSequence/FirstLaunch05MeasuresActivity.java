@@ -9,6 +9,7 @@ import android.provider.Settings;
 import android.view.View;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.ui.AlphaImageButton;
@@ -236,9 +237,7 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
         Logger.d(TAG, "Allowing buttonNext");
         buttonNext.setAlpha(1f);
         buttonNext.setClickable(true);
-
-
-       // Toast.makeText(this, "Content was successfully downloaded! Please click on the 'Next' button", Toast.LENGTH_SHORT).show();
-
+        Toast.makeText(this, goodToGoOk, Toast.LENGTH_SHORT).show();
     }
+
 }
