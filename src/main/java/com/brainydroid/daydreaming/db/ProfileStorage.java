@@ -23,6 +23,8 @@ public class ProfileStorage {
     private static String PROFILE_TIPI_ANSWER_PREFIX = "profileTipiAnswer";
     private static String PROFILE_TIPI_NUMBER_OF_ANSWERS =
             "profileTipiNumberOfAnswers";
+    private static String PROFILE_QUESTIONS_VERSION =
+            "profileQuestionsVersion";
 
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor eSharedPreferences;
@@ -101,6 +103,16 @@ public class ProfileStorage {
         return tipiAnswers;
     }
 
+    public void setQuestionsVersion(int questionsVersion) {
+        Logger.d(TAG, "Setting questionsVersion to {}", questionsVersion);
+        eSharedPreferences.putInt(PROFILE_QUESTIONS_VERSION, questionsVersion);
+        setIsDirtyAndCommit();
+    }
+
+    private int getQuestionsVersion() {
+        return sharedPreferences.getInt(PROFILE_QUESTIONS_VERSION, -1);
+    }
+
     private void setIsDirtyAndCommit() {
         Logger.d(TAG, "Setting isDirty flag and committing");
         eSharedPreferences.putBoolean(PROFILE_IS_DIRTY, true);
@@ -120,6 +132,6 @@ public class ProfileStorage {
     public Profile getProfile() {
         Logger.d(TAG, "Building Profile instance from saved data");
         return profileFactory.create(getAge(), getGender(), getEducation(),
-                getTipiAnswers());
+                getTipiAnswers(), getQuestionsVersion());
     }
 }
