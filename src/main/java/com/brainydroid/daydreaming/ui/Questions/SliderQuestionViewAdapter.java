@@ -3,7 +3,6 @@ package com.brainydroid.daydreaming.ui.Questions;
 import android.content.Context;
 import android.util.FloatMath;
 import android.view.View;
-import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.brainydroid.daydreaming.R;
@@ -80,7 +79,11 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
                                           boolean fromUser) {
                 Logger.v(TAG, "SeekBar progress changed -> changing text " +
                         "and background");
-                int index = (int) FloatMath.floor((progress / 101f) * hintsNumber);
+                int index = (int) FloatMath.floor((progress / 100f) * hintsNumber);
+                if (index == hintsNumber) {
+                    // Have an open interval to the right
+                    index -= 1;
+                }
                 selectedSeek.setText(hints.get(index));
                 seekBar.setAlpha(1f);
             }
@@ -99,7 +102,6 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
             seekBar.setProgress(initialPosition);
         }
 
-       // seekBar.setBackgroundColor(Color.argb(255,255,205,205));
         seekBar.setOnSeekBarChangeListener(listener);
 
         return view;
@@ -133,7 +135,7 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
         Logger.i(TAG, "Saving question answer");
 
         for (View subQuestionView : subQuestionsViews) {
-            SeekBar seekBar = (SeekBar)subQuestionView.findViewById(
+            AlphaSeekBar seekBar = (AlphaSeekBar)subQuestionView.findViewById(
                     R.id.question_slider_seekBar);
             TextView textView = (TextView)subQuestionView.findViewById(
                     R.id.question_slider_mainText);

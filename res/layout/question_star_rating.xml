@@ -1,0 +1,64 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/question_star_rating_rootLinearLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="16dp"
+    android:orientation="vertical"
+    android:tag="subquestion" >
+
+    <TextView
+        android:id="@+id/question_star_rating_mainText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginBottom="16dp"
+        android:text=""
+        android:textAppearance="@style/ui_font_big_title_white" />
+
+    <TextView
+        android:id="@+id/question_star_rating_selectedRating"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:gravity="center"
+        android:text="@string/questionStarRating_please_rate"
+        android:textAppearance="@style/ui_font_bodytext_white" />
+    
+    <com.brainydroid.daydreaming.ui.AlphaRatingBar
+        android:id="@+id/question_star_rating_ratingBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="6dip"
+        android:maxHeight="6dip"
+        android:paddingLeft="@dimen/seekbar_touchzone_radius"
+        android:paddingRight="@dimen/seekbar_touchzone_radius"
+        android:thumbOffset="0dp"
+        android:layout_gravity="center" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp" >
+
+        <TextView
+            android:id="@+id/question_star_rating_leftHint"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:text=""
+            android:textAppearance="@style/ui_font_bodytext_darkblue"/>
+
+        <TextView
+            android:id="@+id/question_star_rating_rightHint"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:text=""
+            android:textAppearance="@style/ui_font_bodytext_darkblue" />
+    </LinearLayout>
+
+</LinearLayout>
