@@ -299,8 +299,8 @@ public class SyncService extends RoboService {
     private void asyncPutProfile() {
         Logger.d(TAG, "Syncing profile data");
 
-        ProfileWrapper profileWrap = profileStorage.getProfile()
-                .buildWrapper();
+        profileStorage.setSyncStart();
+        ProfileWrapper profileWrap = profileStorage.getProfile().buildWrapper();
 
         // Called when the HttpPutTask finishes or times out
         HttpConversationCallback callback = new HttpConversationCallback() {
@@ -323,8 +323,14 @@ public class SyncService extends RoboService {
                                     "profile (serverAnswer: " +
                                     "{0})", serverAnswer);
 
-                    Logger.d(TAG, "Clearing dirty flag for profile data");
-                    profileStorage.clearIsDirtyAndCommit();
+                    if (profileStorage.hasChangedSinceSyncStart()) {
+                        Logger.d(TAG, "Profile has changed since sync start " +
+                                "-> not clearing isDirty flag");
+                    } else {
+                        Logger.d(TAG, "Profile untouched since sync " +
+                                "start -> clearing isDirty flag");
+                        profileStorage.clearIsDirtyAndCommit();
+                    }
                 } else {
                     Logger.w(TAG, "Error while uploading profile to " +
                             "server");

@@ -26,6 +26,8 @@ public class ProfileStorage {
     private static String PROFILE_QUESTIONS_VERSION =
             "profileQuestionsVersion";
 
+    private boolean hasChangedSinceSyncStart = false;
+
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor eSharedPreferences;
 
@@ -113,14 +115,27 @@ public class ProfileStorage {
         return sharedPreferences.getInt(PROFILE_QUESTIONS_VERSION, -1);
     }
 
+    public void setSyncStart() {
+        Logger.d(TAG, "Setting hasChangedSinceSyncStart to false");
+        hasChangedSinceSyncStart = false;
+    }
+
+    public boolean hasChangedSinceSyncStart() {
+        return hasChangedSinceSyncStart;
+    }
+
     private void setIsDirtyAndCommit() {
-        Logger.d(TAG, "Setting isDirty flag and committing");
+        Logger.d(TAG, "Setting isDirty and hasChangedSinceSyncStart flags and " +
+                "committing");
+        hasChangedSinceSyncStart = true;
         eSharedPreferences.putBoolean(PROFILE_IS_DIRTY, true);
         eSharedPreferences.commit();
     }
 
     public void clearIsDirtyAndCommit() {
-        Logger.d(TAG, "Clearing dirty flag and committing");
+        Logger.d(TAG, "Clearing isDirty and hasChangedSinceSyncStart flag and " +
+                "committing");
+        hasChangedSinceSyncStart = false;
         eSharedPreferences.putBoolean(PROFILE_IS_DIRTY, false);
         eSharedPreferences.commit();
     }
