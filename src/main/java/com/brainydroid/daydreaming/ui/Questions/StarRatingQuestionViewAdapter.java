@@ -96,10 +96,21 @@ public class StarRatingQuestionViewAdapter extends BaseQuestionViewAdapter
                                         float rating, boolean fromUser) {
                 Logger.v(TAG, "RatingBar rating changed -> changing text " +
                         "and background");
-                int index = (int) FloatMath.floor((rating /
-                                ((float)effectiveNumStars + 0.1f))*hintsNumber);
+                int index = (int) FloatMath.floor((rating / (float)effectiveNumStars) * hintsNumber);
+                if (index == hintsNumber) {
+                    // Have an open interval to the right
+                    index -= 1;
+                }
                 selectedRating.setText(hints.get(index));
                 ratingBar.setAlpha(1f);
+                Logger.d(TAG, "RatingBar rating: {}", rating);
+                Logger.d(TAG, "RatingBar numStars: {}",
+                        ratingBar.getNumStars());
+                Logger.d(TAG, "RatingBar stepSize: {}",
+                        ratingBar.getStepSize());
+                Logger.d(TAG, "RatingBar effectiveNumStars: {}",
+                        effectiveNumStars);
+                Logger.d(TAG, "RatingBar hint index: {}", index);
             }
 
         };
