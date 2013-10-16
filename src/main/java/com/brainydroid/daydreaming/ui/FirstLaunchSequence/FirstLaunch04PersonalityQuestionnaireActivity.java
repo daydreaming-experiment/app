@@ -136,7 +136,7 @@ public class FirstLaunch04PersonalityQuestionnaireActivity
                 (AlphaSeekBar)view.findViewById(R.id.Questionnaire_seekBar);
         seekBar.setMax(MAX_PROGRESS_SEEKBAR);
         seekBar.setProgress(INIT_PROGRESS_SEEKBAR);
-        seekBar.setPadding(thumbOffset, 0, thumbOffset, 0);
+        //seekBar.setPadding(thumbOffset, 0, thumbOffset, 0);
         seekBar.setProgressDrawable(view.getResources().getDrawable(R
                 .drawable.question_slider_progress));
         seekBar.setAlpha(0.5f);

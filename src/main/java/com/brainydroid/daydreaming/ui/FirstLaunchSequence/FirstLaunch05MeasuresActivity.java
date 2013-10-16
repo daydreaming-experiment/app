@@ -1,6 +1,8 @@
 package com.brainydroid.daydreaming.ui.FirstLaunchSequence;
 
+import android.app.AlertDialog;
 import android.content.ComponentName;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -152,6 +154,39 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
     private void launchNetworkSettings() {
         Logger.d(TAG, "Launching network settings");
         Logger.d(TAG, "Launching data settings");
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                this);
+
+        // set title
+        alertDialogBuilder.setTitle("Enable Data");
+
+        // set dialog message
+        alertDialogBuilder
+                .setMessage("Select the connectivity settings you wish to change")
+                .setCancelable(true)
+                .setPositiveButton("Network data",new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog,int id) {
+                        launchNetworkDATASettings();
+                    }
+                })
+                .setNegativeButton("Wifi",new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog,int id) {
+                        launchNetworkWIFISettings();
+                    }
+                });
+
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // show it
+        alertDialog.show();
+
+
+    }
+
+
+    private void launchNetworkDATASettings() {
         Intent settingsIntent = new Intent(Settings.ACTION_DATA_ROAMING_SETTINGS);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
             ComponentName cName = new ComponentName("com.android.phone", "com.android.phone.Settings");
@@ -160,6 +195,28 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
         settingsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         startActivity(settingsIntent);
     }
+
+
+
+    private void launchNetworkWIFISettings() {
+        Intent settingsIntent = new Intent(Settings.ACTION_WIFI_SETTINGS);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            ComponentName cName = new ComponentName("com.android.phone", "com.android.phone.Settings");
+            settingsIntent.setComponent(cName);
+        }
+        settingsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+        startActivity(settingsIntent);
+    }
+
+
+
+
+
+
+
+
+
+
 
     private void launchLocationSettings() {
         Logger.d(TAG, "Launching location settings");

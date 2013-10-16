@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.text.Html;
 import android.text.util.Linkify;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.brainydroid.daydreaming.R;
@@ -71,7 +72,7 @@ public class FirstLaunch02TermsActivity extends FirstLaunchActivity implements S
         if (diff == 0) {
             agreeButton.setEnabled(true);
             TextView text = (TextView) findViewById(R.id.firstLaunchTerms_please_scroll);
-            text.setText(" "); // Clear TextView asking to scroll down
+            text.setVisibility(View.GONE); // Clear TextView asking to scroll down
 
             agreeButton.setAlpha(1f);
             agreeButton.setClickable(true);
@@ -180,5 +181,7 @@ public class FirstLaunch02TermsActivity extends FirstLaunchActivity implements S
         sv.setScrollViewListener(this);
 
     }
+
+
 
 }

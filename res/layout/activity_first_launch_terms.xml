@@ -1,4 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/firstLaunchTerms_main_layout"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent">
 
@@ -56,6 +57,7 @@
                 android:textAppearance="@style/ui_font_caption"
                 android:layout_alignParentRight="true"
                 android:layout_below="@id/firstLaunchTerms_buttons"/>
+
 
 
     </RelativeLayout>

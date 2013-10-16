@@ -32,7 +32,17 @@
     <dimen  name="settings_notif_icon_size" >30dp</dimen>
 
 
+    <!-- Seekbarthumb -->
+
     <dimen  name="thumboffset" >15dp</dimen>
+
+    <dimen  name="seekbar_touchzone_diameter" >40dp</dimen>
+    <dimen  name="seekbar_touchzone_radius" >20dp</dimen>
+    <dimen  name="seekbar_big_circle_diameter" >20dp</dimen>
+    <dimen  name="seekbar_big_circle_offset" >10dp</dimen>
+    <dimen  name="seekbar_small_circle_diameter" >10dp</dimen>
+    <dimen  name="seekbar_small_circle_offset" >15dp</dimen>
+
 
 
     <!--

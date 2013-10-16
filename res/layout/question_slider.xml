@@ -30,7 +30,9 @@
         android:layout_height="wrap_content"
         android:minHeight="6dip"
         android:maxHeight="6dip"
-        android:thumbOffset="@dimen/thumboffset"
+        android:paddingLeft="@dimen/seekbar_touchzone_radius"
+        android:paddingRight="@dimen/seekbar_touchzone_radius"
+        android:thumbOffset="0dp"
         android:layout_gravity="center" />
 
     <LinearLayout

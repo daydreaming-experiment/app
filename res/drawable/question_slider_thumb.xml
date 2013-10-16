@@ -3,27 +3,33 @@
 
     <item>
         <shape   android:shape="oval"    >
-            <size android:width="40dp"
-                  android:height="40dp"
+            <size android:width="@dimen/seekbar_touchzone_diameter"
+                  android:height="@dimen/seekbar_touchzone_diameter"
                     />
             <solid android:color="@color/transparent"/>
         </shape>
     </item>
 
-    <item  android:left="10dp" android:top = "10dp" android:right="10dp" android:bottom = "10dp">
+    <item  android:left="@dimen/seekbar_big_circle_offset"
+           android:top = "@dimen/seekbar_big_circle_offset"
+           android:right="@dimen/seekbar_big_circle_offset"
+           android:bottom = "@dimen/seekbar_big_circle_offset">
     <shape   android:shape="oval"    >
         <solid android:color="@color/ui_background_border_color"/>
-        <size android:width="20dp"
-              android:height="20dp"
+        <size android:width="@dimen/seekbar_big_circle_diameter"
+              android:height="@dimen/seekbar_big_circle_diameter"
               />
     </shape>
     </item>
-    <item android:left="15dp" android:top = "15dp" android:right="15dp" android:bottom = "15dp">
+    <item android:left="@dimen/seekbar_small_circle_offset"
+          android:top = "@dimen/seekbar_small_circle_offset"
+          android:right="@dimen/seekbar_small_circle_offset"
+          android:bottom = "@dimen/seekbar_small_circle_offset">
         <shape android:shape="oval" >
             <solid android:color="@color/ui_blue_background_color"/>
         </shape>
-        <size android:width="10dp"
-              android:height="10dp"
+        <size android:width="@dimen/seekbar_small_circle_diameter"
+              android:height="@dimen/seekbar_small_circle_diameter"
                 />
     </item>
 </layer-list>
