@@ -42,9 +42,6 @@ public class StatusManager {
     public static String QUESTIONS_UPDATE_MALFORMED =
             "questionsUpdateMalformed";
 
-    /** Callback called when questionsUpdateStatus changes */
-    private QuestionsUpdateCallback questionsUpdateCallback = null;
-
     /** Preference key storing timestamp of beginning of experiment */
     @SuppressWarnings("FieldCanBeLocal")
     private static String EXP_START_TIMESTAMP = "expStartTimestamp";
@@ -128,25 +125,6 @@ public class StatusManager {
 
         eSharedPreferences.putBoolean(EXP_STATUS_QUESTIONS_UPDATED, true);
         eSharedPreferences.commit();
-    }
-
-    public synchronized void setQuestionsUpdateStatusCallback
-            (QuestionsUpdateCallback callback) {
-        Logger.d(TAG, "Setting questionsUpdateCallback");
-        questionsUpdateCallback = callback;
-    }
-
-    public synchronized void clearQuestionsUpdateCallback() {
-        Logger.d(TAG, "Clearing questionsUpdateCallback");
-        questionsUpdateCallback = null;
-    }
-
-    public synchronized void setQuestionsUpdateStatus(String status) {
-        Logger.d(TAG, "Setting the questionsUpdateStatus to {}", status);
-        questionsUpdateStatus = status;
-        if (questionsUpdateCallback != null) {
-            questionsUpdateCallback.onQuestionsUpdateStatusChange(status);
-        }
     }
 
     /**
