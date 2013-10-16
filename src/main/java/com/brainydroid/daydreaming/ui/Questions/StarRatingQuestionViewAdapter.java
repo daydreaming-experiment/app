@@ -66,8 +66,9 @@ public class StarRatingQuestionViewAdapter extends BaseQuestionViewAdapter
         rightHintText.setText(hints.get(hintsNumber - 1));
 
         AlphaRatingBar ratingBar = (AlphaRatingBar)view.findViewById(R.id.question_star_rating_ratingBar);
-//        ratingBar.setProgressDrawable(view.getResources().getDrawable(R .drawable.question_star_rating_rating));
-//        ratingBar.setThumb(view.getResources().getDrawable(R.drawable.question_star_rating_thumb));
+        // FIXME: do a proper design for the RatingBar
+        ratingBar.setProgressDrawable(view.getResources().getDrawable(R.drawable.question_slider_progress));
+        ratingBar.setThumb(view.getResources().getDrawable(R.drawable.question_slider_thumb));
         ratingBar.setAlpha(0.5f);
 
         final int numStars = subQuestion.getNumStars();
@@ -78,6 +79,12 @@ public class StarRatingQuestionViewAdapter extends BaseQuestionViewAdapter
             effectiveNumStars = numStars;
         } else {
             effectiveNumStars = 5;
+        }
+
+        float stepSize = subQuestion.getStepSize();
+        if (stepSize != -1f) {
+            Logger.v(TAG, "Setting ratingBar stepSize to {}", stepSize);
+            ratingBar.setStepSize(stepSize);
         }
 
         final TextView selectedRating = (TextView)view.findViewById(R.id.question_star_rating_selectedRating);
