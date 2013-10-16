@@ -3,7 +3,6 @@ package com.brainydroid.daydreaming.ui.Questions;
 import android.content.Context;
 import android.util.FloatMath;
 import android.view.View;
-import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.brainydroid.daydreaming.R;
@@ -99,7 +98,6 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
             seekBar.setProgress(initialPosition);
         }
 
-       // seekBar.setBackgroundColor(Color.argb(255,255,205,205));
         seekBar.setOnSeekBarChangeListener(listener);
 
         return view;
@@ -133,7 +131,7 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
         Logger.i(TAG, "Saving question answer");
 
         for (View subQuestionView : subQuestionsViews) {
-            SeekBar seekBar = (SeekBar)subQuestionView.findViewById(
+            AlphaSeekBar seekBar = (AlphaSeekBar)subQuestionView.findViewById(
                     R.id.question_slider_seekBar);
             TextView textView = (TextView)subQuestionView.findViewById(
                     R.id.question_slider_mainText);

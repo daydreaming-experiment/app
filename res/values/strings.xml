@@ -135,6 +135,9 @@
     <string name="questionSlider_please_slide">(Slide to answer)</string>
     <string name="questionSlider_sliders_untouched_single">Please answer using the slider</string>
     <string name="questionSlider_sliders_untouched_multiple">Please answer on all the sliders</string>
+    <string name="questionStarRating_please_rate">(Select a rating to answer) </string>
+    <string name="questionStarRating_star_ratings_untouched_single">Please answer using the star scale</string>
+    <string name="questionStarRating_star_ratings_untouched_multiple">Please answer on all the star scales</string>
     <string name="questionMultipleChoice_check_all_that_apply">Check all that apply</string>
     <string name="questionMultipleChoice_other_hint">Other</string>
     <string name="questionMultipleChoice_other_please_fill">Please tell us more in the \"Other\" box</string>
