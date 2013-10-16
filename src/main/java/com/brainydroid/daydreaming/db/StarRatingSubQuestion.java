@@ -11,6 +11,8 @@ public class StarRatingSubQuestion {
     private ArrayList<String> hints = new ArrayList<String>();
     @SuppressWarnings("FieldCanBeLocal")
     private int numStars = -1;
+    @SuppressWarnings("FieldCanBeLocal")
+    private float stepSize = -1f;
 
     public synchronized String getText() {
         return text;
@@ -22,6 +24,10 @@ public class StarRatingSubQuestion {
 
     public synchronized int getNumStars() {
         return numStars;
+    }
+
+    public synchronized float getStepSize() {
+        return stepSize;
     }
 
 }

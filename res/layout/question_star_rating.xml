@@ -30,10 +30,10 @@
         android:layout_height="wrap_content"
         android:minHeight="6dip"
         android:maxHeight="6dip"
+        android:paddingLeft="@dimen/seekbar_touchzone_radius"
+        android:paddingRight="@dimen/seekbar_touchzone_radius"
+        android:thumbOffset="0dp"
         android:layout_gravity="center" />
-    <!--android:paddingLeft="@dimen/star_rater_touchzone_radius"-->
-    <!--android:paddingRight="@dimen/star_rater_touchzone_radius"-->
-    <!--android:thumbOffset="0dp"-->
 
     <LinearLayout
         android:layout_width="match_parent"

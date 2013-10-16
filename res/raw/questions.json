@@ -12,7 +12,8 @@
                         "text": "How much on-task are you right now?",
                         "hints": ["Completely off-task", "A little off-task",
                                   "A little on-task", "Completely on-task"],
-                        "numStars": 4
+                        "numStars": 3,
+                        "stepSize": 1
                     }
                 ]
             }
