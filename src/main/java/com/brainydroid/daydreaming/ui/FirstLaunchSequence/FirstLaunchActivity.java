@@ -5,10 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.ViewGroup;
 import com.brainydroid.daydreaming.R;
-import com.brainydroid.daydreaming.background.LocationPointService;
-import com.brainydroid.daydreaming.background.Logger;
-import com.brainydroid.daydreaming.background.SchedulerService;
-import com.brainydroid.daydreaming.background.StatusManager;
+import com.brainydroid.daydreaming.background.*;
 import com.brainydroid.daydreaming.network.SntpClient;
 import com.brainydroid.daydreaming.network.SntpClientCallback;
 import com.brainydroid.daydreaming.ui.Dashboard.DashboardActivity;
@@ -129,6 +126,10 @@ public abstract class FirstLaunchActivity extends RoboFragmentActivity {
         };
 
         sntpClient.asyncRequestTime(callback);
+
+        Intent syncServiceIntent = new Intent(this, SyncService.class);
+        Logger.d(TAG, "Starting SyncService");
+        startService(syncServiceIntent);
 
         Logger.d(TAG, "Starting SchedulerService");
         Intent schedulerServiceIntent = new Intent(this,

@@ -9,14 +9,11 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
-import com.brainydroid.daydreaming.background.QuestionsUpdateCallback;
-import com.brainydroid.daydreaming.background.StatusManager;
-import com.brainydroid.daydreaming.background.SyncService;
 import com.brainydroid.daydreaming.ui.AlphaImageButton;
 import roboguice.inject.ContentView;
+import roboguice.inject.InjectResource;
 import roboguice.inject.InjectView;
 
 /**
@@ -39,57 +36,25 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
             textNetworkConnection;
     @InjectView(R.id.firstLaunchMeasures2_textCoarseLocation) TextView
             textCoarseLocation;
+    @InjectView(R.id.firstLaunchMeasures2_explanation_network_connection)
+            TextView explanationNetworkConnection;
+    @InjectView(R.id.firstLaunchMeasures2_explanation_coarse_location)
+            TextView explanationCoarseLocation;
+    @InjectView(R.id.firstLaunchMeasures2_good_to_go) TextView goodToGoView;
+
+    @InjectResource(R.string.firstLaunchMeasures2_explanation_network_connection_ok)
+            String explanationNetworkConnectionOk;
+    @InjectResource(R.string.firstLaunchMeasures2_explanation_network_connection_bad)
+            String explanationNetworkConnectionBad;
+    @InjectResource(R.string.firstLaunchMeasures2_explanation_coarse_location_ok)
+            String explanationCoarseLocationOk;
+    @InjectResource(R.string.firstLaunchMeasures2_explanation_coarse_location_bad)
+            String explanationCoarseLocationBad;
+    @InjectResource(R.string.firstLaunchMeasures2_good_to_go_ok) String goodToGoOk;
+    String goodToGoBad = "";
+
     @InjectView(R.id.firstLaunchMeasures2_buttonNext)
-    AlphaImageButton buttonNext;
-
-    @InjectView(R.id.firstLaunchMeasures2_text_downloading) TextView
-            textDownloading;
-
-    private boolean areQuestionsDownloading = false;
-
-    private QuestionsUpdateCallback questionsUpdateCallback =
-            new QuestionsUpdateCallback() {
-
-                private String TAG = "QuestionsUpdateCallback";
-
-                @Override
-                public void onQuestionsUpdateStatusChange(String status) {
-                    Logger.i(TAG, "Processing questionsUpdate status change " +
-                            "in callback");
-                    areQuestionsDownloading = false;
-                    statusManager.clearQuestionsUpdateCallback();
-
-                    if (status.equals(StatusManager.QUESTIONS_UPDATE_FAILED)) {
-                        textDownloading.setText("Download failed! Are you " +
-                                "connected to the internet?");
-                        updateView();
-                        return;
-                    }
-
-                    if (status.equals(
-                            StatusManager.QUESTIONS_UPDATE_MALFORMED)) {
-                        textDownloading.setText("Malformed questions " +
-                                "downloaded... can you contact the " +
-                                "developers?");
-                        updateView();
-                        return;
-                    }
-
-                    if (status.equals(
-                            StatusManager.QUESTIONS_UPDATE_SUCCEEDED)) {
-                        textDownloading.setText("Questions downloaded");
-                        updateView();
-                        return;
-                    }
-
-                    // If we can't recognised the status
-                    Logger.e(TAG, "Couldn't recognise the provided " +
-                            "questionsUpdate status");
-                    throw new RuntimeException("Unknown questionsUpdate " +
-                            "status received");
-                }
-
-            };
+            AlphaImageButton buttonNext;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -102,9 +67,6 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
         Logger.v(TAG, "Starting");
         super.onStart();
         updateView();
-
-        explanations();
-
     }
 
     @Override
@@ -117,29 +79,27 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
     private void updateView() {
         Logger.d(TAG, "Updating view of settings");
 
-        boolean areQuestionsDownloaded = statusManager.areQuestionsUpdated();
+        boolean isCoarseLocEnabled = statusManager.isNetworkLocEnabled();
+        boolean isDataEnabled = statusManager.isDataEnabled();
 
         textCoarseLocation.setCompoundDrawablesWithIntrinsicBounds(
-                statusManager.isNetworkLocEnabled() ? R.drawable.status_ok :
+                isCoarseLocEnabled ? R.drawable.status_ok :
                         R.drawable.status_wrong, 0, 0, 0);
+        explanationCoarseLocation.setText(isCoarseLocEnabled ?
+                explanationCoarseLocationOk : explanationCoarseLocationBad);
         textNetworkConnection.setCompoundDrawablesWithIntrinsicBounds(
-                statusManager.isDataEnabled() ? R.drawable.status_ok :
+                isDataEnabled ? R.drawable.status_ok :
                         R.drawable.status_wrong, 0, 0, 0);
-        textDownloading.setCompoundDrawablesWithIntrinsicBounds
-                (areQuestionsDownloaded ? R.drawable.status_ok :
-                        R.drawable.status_wrong, 0, 0, 0);
+        explanationNetworkConnection.setText(isDataEnabled ?
+                explanationNetworkConnectionOk :
+                explanationNetworkConnectionBad);
 
-        if (areQuestionsDownloaded) {
+        if (isCoarseLocEnabled && isDataEnabled) {
+            goodToGoView.setText(goodToGoOk);
             allowNextButton();
         } else {
+            goodToGoView.setText(goodToGoBad);
             forbidNextButton();
-        }
-
-        if (!areQuestionsDownloaded && !areQuestionsDownloading) {
-            if (statusManager.isDataEnabled() &&
-                    statusManager.isLastSyncLongAgo()) {
-                loadQuestionsFromServer();
-            }
         }
     }
 
@@ -156,8 +116,7 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
     }
 
     private void launchNetworkSettings() {
-        Logger.d(TAG, "Launching network settings");
-        Logger.d(TAG, "Launching data settings");
+        Logger.d(TAG, "Launching network settings dialog");
 
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                 this);
@@ -171,12 +130,14 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
                 .setCancelable(true)
                 .setPositiveButton("Network data",new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog,int id) {
-                        launchNetworkDATASettings();
+                        Logger.d(TAG, "Launching data settings");
+                        launchNetworkDataSettings();
                     }
                 })
                 .setNegativeButton("Wifi",new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog,int id) {
-                        launchNetworkWIFISettings();
+                        Logger.d(TAG, "Launching wifi settings");
+                        launchNetworkWifiSettings();
                     }
                 });
 
@@ -185,12 +146,10 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
 
         // show it
         alertDialog.show();
-
-
     }
 
 
-    private void launchNetworkDATASettings() {
+    private void launchNetworkDataSettings() {
         Intent settingsIntent = new Intent(Settings.ACTION_DATA_ROAMING_SETTINGS);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
             ComponentName cName = new ComponentName("com.android.phone", "com.android.phone.Settings");
@@ -200,9 +159,7 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
         startActivity(settingsIntent);
     }
 
-
-
-    private void launchNetworkWIFISettings() {
+    private void launchNetworkWifiSettings() {
         Intent settingsIntent = new Intent(Settings.ACTION_WIFI_SETTINGS);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
             ComponentName cName = new ComponentName("com.android.phone", "com.android.phone.Settings");
@@ -211,16 +168,6 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
         settingsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         startActivity(settingsIntent);
     }
-
-
-
-
-
-
-
-
-
-
 
     private void launchLocationSettings() {
         Logger.d(TAG, "Launching location settings");
@@ -251,45 +198,6 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
 
 
        // Toast.makeText(this, "Content was successfully downloaded! Please click on the 'Next' button", Toast.LENGTH_SHORT).show();
-
-    }
-
-    private void loadQuestionsFromServer() {
-        Logger.i(TAG, "Querying server for questions");
-        textDownloading.setText("Downloading...");
-        areQuestionsDownloading = true;
-        statusManager.setQuestionsUpdateStatusCallback(questionsUpdateCallback);
-        Intent syncIntent = new Intent(this, SyncService.class);
-        startService(syncIntent);
-    }
-
-    public void explanations(){
-
-        boolean areQuestionsDownloaded = statusManager.areQuestionsUpdated();
-
-        if (!areQuestionsDownloaded) {
-
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-                this);
-
-        // set title
-        alertDialogBuilder.setTitle("Settings");
-
-        // set dialog message
-        alertDialogBuilder
-                .setMessage("Please update your phone settings where required. We will need internet access to download some content before you can continue.")
-                .setCancelable(false)
-                .setPositiveButton("OK",new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog,int id) { dialog.cancel(); }  });
-
-
-        // create alert dialog
-        AlertDialog alertDialog = alertDialogBuilder.create();
-
-        // show it
-        alertDialog.show();
-
-        }
 
     }
 }
