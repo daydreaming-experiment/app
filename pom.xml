@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.brainydroid</groupId>
     <artifactId>daydreaming</artifactId>
-    <version>0.7</version>
+    <version>0.7+next</version>
     <packaging>apk</packaging>
     <name>Daydreaming</name>
 
