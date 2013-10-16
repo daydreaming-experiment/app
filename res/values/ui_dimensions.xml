@@ -108,7 +108,7 @@
     <dimen  name="profile_lateralPadding" >0dp</dimen>
 
     <!-- MeasuresActivity -->
-    <dimen  name="measures_item_vertical_spacing" >15dp</dimen>
+    <dimen  name="measures_item_vertical_spacing" >12dp</dimen>
     <dimen  name="measures_paddingTop" >10dp</dimen>
     <dimen  name="measures_paddingBottom" >10dp</dimen>
     <dimen  name="measures_lateralPadding" >15dp</dimen>
