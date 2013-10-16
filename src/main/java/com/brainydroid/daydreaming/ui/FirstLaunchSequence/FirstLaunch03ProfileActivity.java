@@ -278,6 +278,12 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
         }
     }
 
+    // Overriding parent method
+    @Override
+    public boolean shouldFinishIfTipiQuestionnaireCompleted() {
+        return true;
+    }
+
 }
 
 

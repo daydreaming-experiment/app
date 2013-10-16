@@ -1,7 +1,6 @@
 package com.brainydroid.daydreaming.ui.FirstLaunchSequence;
 
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.util.FloatMath;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -15,7 +14,10 @@ import com.brainydroid.daydreaming.ui.AlphaSeekBar;
 import com.google.inject.Inject;
 import roboguice.inject.ContentView;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Activity at first launch
@@ -44,19 +46,13 @@ public class FirstLaunch04PersonalityQuestionnaireActivity
     @Inject HashMap<String, SeekBar> seekBars;
     @Inject HashMap<String, Boolean> seekBarsTouchedStates;
 
-    private int thumbOffset;
     private List<String> hints;
     private int nHints;
-
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Logger.v(TAG, "Creating");
         super.onCreate(savedInstanceState);
-
-        thumbOffset = dpToPx(getBaseContext().getResources().getInteger(
-                R.integer.thumb_lateral_offset));
 
         String[] hintsPre = getBaseContext().getResources().getStringArray(
                 R.array.tipi_answers);
@@ -77,6 +73,7 @@ public class FirstLaunch04PersonalityQuestionnaireActivity
         Logger.d(TAG, "Next button clicked");
 
         if (retrieveTipiAnswers()) {
+            statusManager.setTipiQuestionnaireCompleted();
             launchNextActivity(FirstLaunch05MeasuresActivity.class);
         }
     }
@@ -170,11 +167,10 @@ public class FirstLaunch04PersonalityQuestionnaireActivity
         return seekBar;
     }
 
-    public int dpToPx(int dp) {
-        DisplayMetrics displayMetrics =
-                getBaseContext().getResources().getDisplayMetrics();
-        return Math.round(dp * (displayMetrics.xdpi /
-                DisplayMetrics.DENSITY_DEFAULT));
+    // Overriding parent method
+    @Override
+    public boolean shouldFinishIfTipiQuestionnaireCompleted() {
+        return true;
     }
 
 }
