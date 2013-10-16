@@ -13,6 +13,7 @@ import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.ProfileStorage;
 import com.brainydroid.daydreaming.ui.AlphaSeekBar;
 import com.google.inject.Inject;
+import roboguice.inject.ContentView;
 
 import java.util.*;
 
@@ -27,7 +28,7 @@ import java.util.*;
  * Next activity     :  FirstLaunch05MeasuresActivity
  *
  */
-//@ContentView(R.layout.activity_first_launch_questionnaire)
+@ContentView(R.layout.activity_first_launch_questionnaire)
 public class FirstLaunch04PersonalityQuestionnaireActivity
         extends FirstLaunchActivity {
 
@@ -54,7 +55,6 @@ public class FirstLaunch04PersonalityQuestionnaireActivity
         Logger.v(TAG, "Creating");
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_first_launch_questionnaire);
         thumbOffset = dpToPx(getBaseContext().getResources().getInteger(
                 R.integer.thumb_lateral_offset));
 
