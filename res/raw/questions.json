@@ -13,7 +13,8 @@
                         "hints": ["Completely off-task", "A little off-task",
                                   "A little on-task", "Completely on-task"],
                         "numStars": 3,
-                        "stepSize": 0.5
+                        "stepSize": 0.5,
+                        "initialRating": 1.5,
                     }
                 ]
             }
