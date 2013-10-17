@@ -42,7 +42,8 @@
             android:layout_marginBottom="@dimen/profile_title_vertical_space"
             android:gravity="center_horizontal"
             android:text="@string/firstLaunchProfile_title_about_you"
-            android:textAppearance="@style/ui_font_big_title_white" />
+            android:textAppearance="@style/ui_font_big_title_bold"
+            android:textColor="@color/ui_white_text_color"/>
 
 
 

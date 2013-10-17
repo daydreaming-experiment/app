@@ -43,7 +43,9 @@
                 android:layout_height="wrap_content"
                 android:text="EXPERIMENT IS "
                 android:textAllCaps="true"
-                android:textAppearance="@style/ui_font_big_title_white" />
+                android:textAppearance="@style/ui_font_big_title_bold"
+                android:textcolor="@color/ui_white_text_color"
+                />
         </LinearLayout>
 
         <LinearLayout

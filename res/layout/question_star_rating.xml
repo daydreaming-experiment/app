@@ -13,7 +13,8 @@
         android:layout_gravity="center_vertical"
         android:layout_marginBottom="16dp"
         android:text=""
-        android:textAppearance="@style/ui_font_big_title_white" />
+        android:textAppearance="@style/ui_font_big_title_bold"
+        android:textColor="@color/ui_white_text_color"/>
 
     <TextView
         android:id="@+id/question_star_rating_selectedRating"
