@@ -31,14 +31,6 @@
 
     <!-- Subtypes -->
 
-    <style name="ui_font_days_font">
-        <item name="android:textSize">50sp</item>
-    </style>
-
-    <style name="ui_font_big_title_bold" parent="@style/ui_font_big_title">
-        <item name="android:textStyle">bold</item>
-    </style>
-
     <style name="ui_font_big_title_bold" parent="@style/ui_font_big_title">
         <item name="android:textStyle">bold</item>
     </style>

@@ -91,7 +91,7 @@
                     android:paddingBottom="@dimen/terms_vertical_spacing_title_text"
                     android:paddingTop="@dimen/terms_vertical_paddingTop_title"
                     android:textAppearance="@style/ui_font_big_title_bold"
-                    android:textcolor="@color/ui_white_text_color"/>
+                    android:textColor="@color/ui_white_text_color"/>
 
 
             <TextView
