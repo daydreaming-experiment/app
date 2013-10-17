@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-
     <!-- Text styles GISLAIN -->
 
     <!-- Higher types -->
@@ -30,7 +29,6 @@
         <item name="android:textSize">18sp</item>
     </style>
 
-
     <!-- Subtypes -->
 
     <style name="ui_font_days_font">
@@ -56,13 +54,5 @@
     <style name="ui_font_caption">
         <item name="android:textSize">12sp</item>
     </style>
-
-    <style name="ui_font_button_white" parent="@style/ui_font_button">
-        <item name="android:textColor">@color/ui_white_text_color</item>
-    </style>
-
-
-
-
 
 </resources>
