@@ -60,13 +60,15 @@ public class MultipleChoiceQuestionViewAdapter
                                          boolean isChecked) {
                 if (isChecked) {
                     Logger.v(TAG, "Other checked -> requesting focus");
-                    inputMethodManager.showSoftInput(otherEdit, 0);
                     otherEdit.requestFocus();
+                    inputMethodManager.showSoftInput(otherEdit, 0);
                 } else {
                     Logger.v(TAG, "Other unchecked -> releasing focus and " +
                             "emptying field");
                     ((LinearLayout)otherEdit.getParent()).requestFocus();
                     otherEdit.setText("");
+                    inputMethodManager.hideSoftInputFromWindow(
+                            otherEdit.getApplicationWindowToken(), 0);
                 }
             }
 
