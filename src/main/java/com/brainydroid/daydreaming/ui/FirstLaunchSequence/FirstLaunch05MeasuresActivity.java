@@ -6,6 +6,7 @@ import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.text.Html;
 import android.view.View;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -125,13 +126,14 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
                         isCoarseLocEnabled ? R.drawable.status_ok :
                                 R.drawable.status_wrong, 0, 0, 0);
                 explanationCoarseLocation.setText(isCoarseLocEnabled ?
-                        explanationCoarseLocationOk : explanationCoarseLocationBad);
+                        Html.fromHtml(explanationCoarseLocationOk) :
+                        Html.fromHtml(explanationCoarseLocationBad));
                 textNetworkConnection.setCompoundDrawablesWithIntrinsicBounds(
                         isDataEnabled ? R.drawable.status_ok :
                                 R.drawable.status_wrong, 0, 0, 0);
                 explanationNetworkConnection.setText(isDataEnabled ?
-                        explanationNetworkConnectionOk :
-                        explanationNetworkConnectionBad);
+                        Html.fromHtml(explanationNetworkConnectionOk) :
+                        Html.fromHtml(explanationNetworkConnectionBad));
 
                 if (isCoarseLocEnabled && isDataEnabled) {
                     goodToGoView.setText(goodToGoOk);
