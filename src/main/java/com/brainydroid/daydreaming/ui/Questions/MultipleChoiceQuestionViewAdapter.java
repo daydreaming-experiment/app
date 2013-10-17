@@ -72,6 +72,8 @@ public class MultipleChoiceQuestionViewAdapter
 
         };
 
+        injector.injectMembers(otherCheckListener);
+
         View.OnClickListener otherEditClickListener =
                 new View.OnClickListener() {
 
