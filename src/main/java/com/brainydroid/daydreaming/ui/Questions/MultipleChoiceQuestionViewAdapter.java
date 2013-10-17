@@ -52,7 +52,8 @@ public class MultipleChoiceQuestionViewAdapter
                 R.id.question_multiple_choice_otherEditText);
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-            otherEdit.setTextColor(R.color.ui_dark_blue_color);
+            otherEdit.setTextColor(context.getResources().getColor(
+                    R.color.ui_dark_blue_color));
         }
 
         CompoundButton.OnCheckedChangeListener otherCheckListener =
