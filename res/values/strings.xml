@@ -232,10 +232,12 @@
 
 <p><b>I have another question!</b></p>
 <p>If there is anything else you would like to know, please don’t hesitate to email us:
-<br>- email at:<br><a href="mailto:contact@daydreaming-the-app.net" style="color:#ede66d">contact@daydreaming-the-app.net</a> </n>
-<br>- visit:<br><a href="http://www.daydreaming-the-app.net" style="color:#ede66d">www.daydreaming-the-app.net</a> </n>
+<br>- email at:<br><font color="#ede66d"><a href="mailto:contact@daydreaming-the-app.net">contact@daydreaming-the-app.net</a> </font> </n>
+<br>- visit:<br><font color="#ede66d"><a href="http://www.daydreaming-the-app.net">www.daydreaming-the-app.net</a> </font> </n>
 </p>
 ]]>
     </string>
+    
+   
 
 </resources>
