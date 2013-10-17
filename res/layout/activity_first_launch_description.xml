@@ -71,7 +71,8 @@
                             android:padding="@dimen/description_text_padding"
                             android:lineSpacingExtra="@dimen/description_text_linespacing"
                             android:layout_gravity="left"
-                            android:textAppearance="@style/ui_font_title_darkblue"/>
+                            android:textAppearance="@style/ui_font_title"
+                            android:textColor="@color/ui_dark_blue_color"/>
                 </LinearLayout>
 
 

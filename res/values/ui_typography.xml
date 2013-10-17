@@ -45,10 +45,6 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="ui_font_title_darkblue" parent="@style/ui_font_title">
-        <item name="android:textColor">@color/ui_dark_blue_color</item>
-    </style>
-
     <style name="ui_font_title_white" parent="@style/ui_font_title">
         <item name="android:textColor">@color/ui_white_text_color</item>
     </style>
