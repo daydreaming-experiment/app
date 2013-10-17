@@ -10,6 +10,7 @@ import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.MultipleChoiceAnswer;
 import com.brainydroid.daydreaming.db.MultipleChoiceQuestionDetails;
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 import roboguice.inject.InjectResource;
 
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ public class MultipleChoiceQuestionViewAdapter
     String errorCheckOne;
     @Inject Context context;
     @Inject MultipleChoiceAnswer answer;
+    @Inject Injector injector;
 
     @Override
     protected ArrayList<View> inflateViews() {
@@ -51,11 +53,14 @@ public class MultipleChoiceQuestionViewAdapter
         CompoundButton.OnCheckedChangeListener otherCheckListener =
                 new CompoundButton.OnCheckedChangeListener() {
 
+            @Inject InputMethodManager inputMethodManager;
+
             @Override
             public void onCheckedChanged(CompoundButton buttonView,
                                          boolean isChecked) {
                 if (isChecked) {
                     Logger.v(TAG, "Other checked -> requesting focus");
+                    inputMethodManager.showSoftInput(otherEdit, 0);
                     otherEdit.requestFocus();
                 } else {
                     Logger.v(TAG, "Other unchecked -> releasing focus and " +
@@ -94,8 +99,7 @@ public class MultipleChoiceQuestionViewAdapter
         View.OnKeyListener onSoftKeyboardDonePress =
                 new View.OnKeyListener() {
 
-            @Inject
-            InputMethodManager inputMethodManager;
+            @Inject InputMethodManager inputMethodManager;
 
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -108,6 +112,8 @@ public class MultipleChoiceQuestionViewAdapter
                 return false;
             }
         };
+
+        injector.injectMembers(onSoftKeyboardDonePress);
 
         otherCheck.setOnCheckedChangeListener(otherCheckListener);
         otherEdit.setOnClickListener(otherEditClickListener);
