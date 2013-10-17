@@ -39,7 +39,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/firstLaunchDescription_text_title1"
-                            android:textAppearance="@style/ui_font_big_title_darkblue"
+                            android:textAppearance="@style/ui_font_big_title_bold"
+                            android:textColor="@color/ui_dark_blue_color"
                             android:gravity="center_horizontal"
                             android:singleLine="true"
                             />
@@ -48,7 +49,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/firstLaunchDescription_text_title2"
-                            android:textAppearance="@style/ui_font_big_title_darkblue"
+                            android:textAppearance="@style/ui_font_big_title_bold"
+                            android:textColor="@color/ui_dark_blue_color"
                             android:gravity="center_horizontal"
                             android:singleLine="true"
                             />

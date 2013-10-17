@@ -58,7 +58,8 @@
                 android:layout_height="wrap_content"
                 android:text="RUNNING"
                 android:textAllCaps="true"
-                android:textAppearance="@style/ui_font_big_title_darkblue"/>
+                android:textAppearance="@style/ui_font_big_title_bold"
+                android:textColor="@color/ui_dark_blue_color"/>
 
         </LinearLayout>
 
