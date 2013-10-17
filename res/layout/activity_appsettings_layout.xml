@@ -73,7 +73,8 @@
                            android:layout_width="wrap_content"
                            android:layout_height="wrap_content"
                            android:text="@string/appsettings_allow_sound_text"
-                           android:textAppearance="@style/ui_font_bodytext_white"
+                           android:textAppearance="@style/ui_font_bodytext"
+                            android:textColor="@color/ui_white_text_color"
                            android:gravity="center_vertical"
                            android:paddingLeft="@dimen/settings_textpadding_from_icons"
                            android:layout_toRightOf="@id/appsettings_sound_icon"
@@ -104,7 +105,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/appsettings_allow_vibrations_text"
-                            android:textAppearance="@style/ui_font_bodytext_white"
+                            android:textAppearance="@style/ui_font_bodytext"
+                            android:textColor="@color/ui_white_text_color"
                             android:paddingLeft="@dimen/settings_textpadding_from_icons"
                             android:layout_toRightOf="@id/appsettings_vibrate_icon"
                             />
@@ -138,7 +140,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/appsettings_allow_blink_text"
-                            android:textAppearance="@style/ui_font_bodytext_white"
+                            android:textAppearance="@style/ui_font_bodytext"
+                            android:textColor="@color/ui_white_text_color"
                             android:paddingLeft="@dimen/settings_textpadding_from_icons"
                             android:layout_toRightOf="@id/appsettings_blink_icon"
                             android:gravity="center_vertical"
@@ -196,7 +199,8 @@
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
                         android:text="@string/appsettings_time_from"
-                        android:textAppearance="@style/ui_font_bodytext_white"
+                        android:textAppearance="@style/ui_font_bodytext"
+                        android:textColor="@color/ui_white_text_color"
                         android:paddingLeft="@dimen/settings_textpadding_from_icons"
                         android:gravity="center_vertical"/>
                     <TextView
@@ -226,7 +230,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_width="wrap_content"
                                 android:text="@string/appsettings_time_until"
-                                android:textAppearance="@style/ui_font_bodytext_white"
+                                android:textAppearance="@style/ui_font_bodytext"
+                                android:textColor="@color/ui_white_text_color"
                                 android:paddingLeft="@dimen/settings_textpadding_from_icons"
                                 android:gravity="center_vertical"/>
                         <TextView

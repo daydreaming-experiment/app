@@ -23,7 +23,8 @@
         android:layout_marginBottom="16dp"
         android:gravity="center"
         android:text="@string/questionStarRating_please_rate"
-        android:textAppearance="@style/ui_font_bodytext_white" />
+        android:textAppearance="@style/ui_font_bodytext"
+        android:textColor="@color/ui_white_text_color"/>
     
     <com.brainydroid.daydreaming.ui.AlphaRatingBar
         android:id="@+id/question_star_rating_ratingBar"

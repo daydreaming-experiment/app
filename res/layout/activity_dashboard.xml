@@ -97,7 +97,8 @@
                     android:layout_width="@dimen/dashboard_calendar_width"
                     android:layout_height="30dp"
                     android:text="Time elapsed"
-                    android:textAppearance="@style/ui_font_bodytext_white"
+                    android:textAppearance="@style/ui_font_bodytext"
+                    android:textColor="@color/ui_white_text_color"
                     android:gravity="center_horizontal"
                      />
 
@@ -158,7 +159,8 @@
                     android:layout_width="@dimen/dashboard_calendar_width"
                     android:layout_height="30dp"
                     android:text="Results in"
-                    android:textAppearance="@style/ui_font_bodytext_white"
+                    android:textAppearance="@style/ui_font_bodytext"
+                    android:textColor="@color/ui_white_text_color"
                     android:gravity="center_horizontal"
                     />
         <ImageView
@@ -255,7 +257,8 @@
                       android:text="@string/dashboard_button_text_terms"
                       android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
-                      android:textAppearance="@style/ui_font_bodytext_white"
+                      android:textAppearance="@style/ui_font_bodytext"
+                      android:textColor="@color/ui_white_text_color"
                       android:layout_centerHorizontal="true"
                       android:layout_below="@id/dashboard_terms_button"/>
         </RelativeLayout>
@@ -285,7 +288,8 @@
                     android:text="@string/dashboard_button_text_description"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="@style/ui_font_bodytext_white"
+                    android:textAppearance="@style/ui_font_bodytext"
+                    android:textColor="@color/ui_white_text_color"
                     android:layout_below="@id/dashboard_description_button"
                     android:layout_centerHorizontal="true"/>
         </RelativeLayout>
@@ -319,7 +323,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
-                    android:textAppearance="@style/ui_font_bodytext_white"
+                    android:textAppearance="@style/ui_font_bodytext"
+                    android:textColor="@color/ui_white_text_color"
                     android:layout_below="@id/dashboard_about_button"
                     />
         </RelativeLayout>

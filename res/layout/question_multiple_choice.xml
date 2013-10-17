@@ -22,7 +22,8 @@
         android:layout_gravity="center_vertical"
         android:layout_marginBottom="16dp"
         android:text="@string/questionMultipleChoice_check_all_that_apply"
-        android:textAppearance="@style/ui_font_bodytext_white" />
+        android:textAppearance="@style/ui_font_bodytext"
+        android:textColor="@color/ui_white_text_color"/>
 
     <LinearLayout
         android:id="@+id/question_multiple_choice_rootChoices"
@@ -52,7 +53,8 @@
             android:hint="@string/questionMultipleChoice_other_hint"
             android:textColorHint="@color/ui_white_text_color"
             android:inputType="textCapSentences"
-            android:textAppearance="@style/ui_font_bodytext_white"
+            android:textAppearance="@style/ui_font_bodytext"
+            android:textColor="@color/ui_white_text_color"
             >
 
         </EditText>

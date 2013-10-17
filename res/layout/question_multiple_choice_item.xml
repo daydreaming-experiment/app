@@ -6,4 +6,5 @@
     android:button="@drawable/custom_checkbox"
     android:paddingBottom="@dimen/question_occupation_line_marginBottom"
     android:gravity="center_vertical"
-    android:textAppearance="@style/ui_font_bodytext_white"/>
+    android:textAppearance="@style/ui_font_bodytext"
+    android:textColor="@color/ui_white_text_color"/>
