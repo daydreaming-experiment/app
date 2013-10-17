@@ -7,7 +7,7 @@ public class ServerConfig {
     public static String SERVER_NAME = "http://api.qa.naja.cc";
 
     //public static String QUESTIONS_URL = "https://raw.github.com/wehlutyk/daydreaming/feature/star-rating/res/raw/questions.json";
-    public static String QUESTIONS_URL = "https://raw.github.com/wehlutyk/daydreaming/develop/res/raw/questions.json";
+    public static String QUESTIONS_URL = "http://daydreaming-the-app.net/experiment-static/questions.json";
 
     public static String YE_URL_API = "/v1";
     public static String YE_URL_PROFILES = YE_URL_API + "/profiles";
