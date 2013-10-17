@@ -53,17 +53,6 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="ui_font_bodytext_blue" parent="@style/ui_font_bodytext">
-        <item name="android:textColor">@color/ui_blue_background_color</item>
-    </style>
-
-    <style name="ui_font_bodytext_darkblue_bold" parent="@style/ui_font_bodytext">
-        <item name="android:textColor">@color/ui_dark_blue_color</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-
-
-
     <style name="ui_font_caption">
         <item name="android:textSize">12sp</item>
         <item name="android:textColor">@color/ui_dark_blue_color</item>
