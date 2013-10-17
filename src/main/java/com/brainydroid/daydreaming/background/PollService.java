@@ -40,6 +40,7 @@ public class PollService extends RoboService {
     @Inject SharedPreferences sharedPreferences;
     @Inject SntpClient sntpClient;
     @Inject Poll poll;
+    @Inject StatusManager statusManager;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -47,9 +48,15 @@ public class PollService extends RoboService {
 
         super.onStartCommand(intent, flags, startId);
 
-        // Populate and notify the poll
-        populatePoll();
-        notifyPoll();
+        // If the questions haven't been downloaded (which is probably
+        // because the json was malformed), only reschedule (which will
+        // re-download the questions; hopefully they will have been fixed)
+        // and don't show any poll.
+        if (statusManager.areQuestionsUpdated()) {
+            // Populate and notify the poll
+            populatePoll();
+            notifyPoll();
+        }
 
         // Schedule the next poll
         startSchedulerService();

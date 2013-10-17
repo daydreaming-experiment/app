@@ -42,7 +42,6 @@ public class SchedulerService extends RoboService {
     /** Mean delay in the poisson process scheduling polls */
     public static double MEAN_DELAY = 2 * 60 * 60 * 1000; // 2 hours
 
-
     // Handy object that will be holding the 'now' time
     private Calendar now;
     private long nowUpTime;
