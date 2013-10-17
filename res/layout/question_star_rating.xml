@@ -49,7 +49,8 @@
             android:layout_weight="1"
             android:gravity="left"
             android:text=""
-            android:textAppearance="@style/ui_font_bodytext_darkblue"/>
+            android:textAppearance="@style/ui_font_bodytext"
+            android:textColor="@color/ui_dark_blue_color"/>
 
         <TextView
             android:id="@+id/question_star_rating_rightHint"
@@ -59,7 +60,8 @@
             android:layout_weight="1"
             android:gravity="right"
             android:text=""
-            android:textAppearance="@style/ui_font_bodytext_darkblue" />
+            android:textAppearance="@style/ui_font_bodytext"
+            android:textColor="@color/ui_dark_blue_color"/>
     </LinearLayout>
 
 </LinearLayout>
