@@ -55,7 +55,6 @@
 
     <style name="ui_font_caption">
         <item name="android:textSize">12sp</item>
-        <item name="android:textColor">@color/ui_dark_blue_color</item>
     </style>
 
 
