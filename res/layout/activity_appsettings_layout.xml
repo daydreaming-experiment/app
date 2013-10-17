@@ -48,7 +48,8 @@
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     android:gravity="center_horizontal"
-                    android:textAppearance="@style/ui_font_bodytext_white_bold"
+                    android:textAppearance="@style/ui_font_bodytext_bold"
+                    android:textColor="@color/ui_white_text_color"
                     />
             </LinearLayout>
 
@@ -176,7 +177,8 @@
                         android:text="@string/appsettings_time_title"
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
-                        android:textAppearance="@style/ui_font_bodytext_white_bold"
+                        android:textAppearance="@style/ui_font_bodytext_bold"
+                        android:textColor="@color/ui_white_text_color"
                         />
             </LinearLayout>
 
