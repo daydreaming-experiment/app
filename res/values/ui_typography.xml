@@ -33,14 +33,8 @@
 
     <!-- Subtypes -->
 
-    <style name="ui_font_days_font_darkblue">
+    <style name="ui_font_days_font">
         <item name="android:textSize">50sp</item>
-        <item name="android:textColor">@color/ui_dark_blue_color</item>
-    </style>
-
-    <style name="ui_font_days_font_white">
-        <item name="android:textSize">50sp</item>
-        <item name="android:textColor">@color/ui_white_text_color</item>
     </style>
 
     <style name="ui_font_big_title_darkblue" parent="@style/ui_font_big_title">
