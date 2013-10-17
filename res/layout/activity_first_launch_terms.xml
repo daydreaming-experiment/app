@@ -103,7 +103,8 @@
                     android:paddingRight="@dimen/terms_text_side_padding"
                     android:paddingLeft="@dimen/terms_text_side_padding"
                     android:lineSpacingExtra="@dimen/text_linespacing"
-                    android:textAppearance="@style/ui_font_title_white" />
+                    android:textAppearance="@style/ui_font_title"
+                    android:textColor="@color/ui_white_text_color"/>
 
             <TextView
                     android:id="@+id/firstLaunchTerms_moreConsent_button"
@@ -130,7 +131,8 @@
                     android:paddingRight="@dimen/terms_text_side_padding"
                     android:paddingLeft="@dimen/terms_text_side_padding"
                     android:lineSpacingExtra="@dimen/text_linespacing"
-                    android:textAppearance="@style/ui_font_title_white" />
+                    android:textAppearance="@style/ui_font_title"
+                    android:textColor="@color/ui_white_text_color"/>
 
 
         </RelativeLayout>
