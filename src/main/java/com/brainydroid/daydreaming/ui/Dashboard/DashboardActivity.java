@@ -94,10 +94,10 @@ public class DashboardActivity extends RoboFragmentActivity {
     //TODO: Layout of an about activity
     public void  onClick_OpenAboutActivity(
             @SuppressWarnings("UnusedParameters") View view){
-        Intent intent = new Intent(this, AboutActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-        startActivity(intent);
-        overridePendingTransition(R.anim.push_top_in, R.anim.push_top_out);
+//        Intent intent = new Intent(this, AboutActivity.class);
+//        intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+//        startActivity(intent);
+//        overridePendingTransition(R.anim.push_top_in, R.anim.push_top_out);
     }
 
     //TODO: Decide what should happen when results button is clicked.
