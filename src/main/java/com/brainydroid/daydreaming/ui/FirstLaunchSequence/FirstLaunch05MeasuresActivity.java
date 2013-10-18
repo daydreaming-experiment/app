@@ -238,8 +238,10 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
     private void allowNextButton() {
         Logger.d(TAG, "Allowing buttonNext");
         buttonNext.setAlpha(1f);
-        buttonNext.setClickable(true);
-        Toast.makeText(this, goodToGoOk, Toast.LENGTH_SHORT).show();
+        if (!buttonNext.isClickable()) {
+            buttonNext.setClickable(true);
+            Toast.makeText(this, goodToGoOk, Toast.LENGTH_SHORT).show();
+        }
     }
 
 }
