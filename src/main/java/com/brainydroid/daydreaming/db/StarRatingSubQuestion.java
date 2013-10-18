@@ -13,6 +13,8 @@ public class StarRatingSubQuestion {
     private int numStars = -1;
     @SuppressWarnings("FieldCanBeLocal")
     private float stepSize = -1f;
+    @SuppressWarnings("FieldCanBeLocal")
+    private float initialRating = -1;
 
     public synchronized String getText() {
         return text;
@@ -28,6 +30,10 @@ public class StarRatingSubQuestion {
 
     public synchronized float getStepSize() {
         return stepSize;
+    }
+
+    public synchronized float getInitialRating() {
+        return initialRating;
     }
 
 }

@@ -22,13 +22,15 @@
                 android:layout_marginBottom="16dp"
                 android:text="@string/firstLaunchMeasures2_text_intro"
                 android:gravity="center_horizontal"
-                android:textAppearance="@style/ui_font_title_white" />
+                android:textAppearance="@style/ui_font_title"
+                android:textColor="@color/ui_white_text_color"/>
 
         <TextView
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:text="@string/firstLaunchMeasures2_text_data"
-                android:textAppearance="@style/ui_font_big_title_white"
+                android:textAppearance="@style/ui_font_big_title_bold"
+                android:textColor="@color/ui_white_text_color"
                 android:layout_marginBottom="@dimen/measures_item_vertical_spacing" />
 
         <TextView
@@ -36,7 +38,8 @@
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:drawableLeft="@drawable/status_wrong"
-                android:textAppearance="@style/ui_font_title_white_bold"
+                android:textAppearance="@style/ui_font_title_bold"
+                android:textColor="@color/ui_white_text_color"
                 android:text="@string/firstLaunchMeasures2_text_network_connection"
                 android:layout_marginBottom="@dimen/measures_item_vertical_spacing" />
 
@@ -47,7 +50,8 @@
                 android:layout_marginBottom="4dp"
                 android:text=""
                 android:gravity="center_horizontal"
-                android:textAppearance="@style/ui_font_title_white" />
+                android:textAppearance="@style/ui_font_title"
+                android:textColor="@color/ui_white_text_color"/>
 
         <Button
                 android:id="@+id/firstLaunchMeasures2_buttonNetworkSettings"
@@ -68,7 +72,8 @@
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:text="@string/firstLaunchMeasures2_text_location"
-                android:textAppearance="@style/ui_font_big_title_white"
+                android:textAppearance="@style/ui_font_big_title_bold"
+                android:textColor="@color/ui_white_text_color"
                 android:layout_marginBottom="@dimen/measures_item_vertical_spacing" />
 
         <TextView
@@ -77,7 +82,8 @@
                 android:layout_width="wrap_content"
                 android:text="@string/firstLaunchMeasures2_text_coarse_location"
                 android:drawableLeft="@drawable/status_wrong"
-                android:textAppearance="@style/ui_font_title_white_bold"
+                android:textAppearance="@style/ui_font_title_bold"
+                android:textColor="@color/ui_white_text_color"
                 android:layout_marginBottom="@dimen/measures_item_vertical_spacing" />
 
         <TextView
@@ -87,7 +93,8 @@
                 android:layout_marginBottom="4dp"
                 android:text=""
                 android:gravity="center_horizontal"
-                android:textAppearance="@style/ui_font_title_white" />
+                android:textAppearance="@style/ui_font_title"
+                android:textColor="@color/ui_white_text_color"/>
 
         <Button
                 android:id="@+id/firstLaunchMeasures2_buttonLocationSettings"
@@ -111,7 +118,8 @@
             android:layout_marginBottom="16dp"
             android:text=""
             android:gravity="center_horizontal"
-            android:textAppearance="@style/ui_font_title_white" />
+            android:textAppearance="@style/ui_font_title"
+            android:textColor="@color/ui_white_text_color"/>
 
         <LinearLayout
                 android:gravity="right"

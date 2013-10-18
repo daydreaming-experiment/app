@@ -1,6 +1,7 @@
 package com.brainydroid.daydreaming.ui.Questions;
 
 import android.content.Context;
+import android.os.Build;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -10,6 +11,7 @@ import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.MultipleChoiceAnswer;
 import com.brainydroid.daydreaming.db.MultipleChoiceQuestionDetails;
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 import roboguice.inject.InjectResource;
 
 import java.util.ArrayList;
@@ -28,6 +30,7 @@ public class MultipleChoiceQuestionViewAdapter
     String errorCheckOne;
     @Inject Context context;
     @Inject MultipleChoiceAnswer answer;
+    @Inject Injector injector;
 
     @Override
     protected ArrayList<View> inflateViews() {
@@ -48,8 +51,15 @@ public class MultipleChoiceQuestionViewAdapter
         final EditText otherEdit = (EditText)choicesView.findViewById(
                 R.id.question_multiple_choice_otherEditText);
 
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+            otherEdit.setTextColor(context.getResources().getColor(
+                    R.color.ui_dark_blue_color));
+        }
+
         CompoundButton.OnCheckedChangeListener otherCheckListener =
                 new CompoundButton.OnCheckedChangeListener() {
+
+            @Inject InputMethodManager inputMethodManager;
 
             @Override
             public void onCheckedChanged(CompoundButton buttonView,
@@ -57,15 +67,20 @@ public class MultipleChoiceQuestionViewAdapter
                 if (isChecked) {
                     Logger.v(TAG, "Other checked -> requesting focus");
                     otherEdit.requestFocus();
+                    inputMethodManager.showSoftInput(otherEdit, 0);
                 } else {
                     Logger.v(TAG, "Other unchecked -> releasing focus and " +
                             "emptying field");
                     ((LinearLayout)otherEdit.getParent()).requestFocus();
                     otherEdit.setText("");
+                    inputMethodManager.hideSoftInputFromWindow(
+                            otherEdit.getApplicationWindowToken(), 0);
                 }
             }
 
         };
+
+        injector.injectMembers(otherCheckListener);
 
         View.OnClickListener otherEditClickListener =
                 new View.OnClickListener() {
@@ -94,8 +109,7 @@ public class MultipleChoiceQuestionViewAdapter
         View.OnKeyListener onSoftKeyboardDonePress =
                 new View.OnKeyListener() {
 
-            @Inject
-            InputMethodManager inputMethodManager;
+            @Inject InputMethodManager inputMethodManager;
 
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -108,6 +122,8 @@ public class MultipleChoiceQuestionViewAdapter
                 return false;
             }
         };
+
+        injector.injectMembers(onSoftKeyboardDonePress);
 
         otherCheck.setOnCheckedChangeListener(otherCheckListener);
         otherEdit.setOnClickListener(otherEditClickListener);
