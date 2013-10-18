@@ -22,7 +22,7 @@
                 android:layout_marginBottom="16dp"
                 android:text="@string/firstLaunchMeasures2_text_intro"
                 android:gravity="center_horizontal"
-                android:textAppearance="@style/ui_font_title"
+                android:textAppearance="@style/ui_font_big_title_bold"
                 android:textColor="@color/ui_white_text_color"/>
 
         <TextView

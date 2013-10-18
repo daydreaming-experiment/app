@@ -96,17 +96,16 @@
     <string name="firstLaunchMeasures_title_activity">Measures &amp; Privacy</string>
 
     <!-- Measure Activity 2 -->
-    <string name="firstLaunchMeasures2_text_intro">Daydreaming needs internet
-        and geolocation to work:</string>
-    <string name="firstLaunchMeasures2_text_data">DATA</string>
-    <string name="firstLaunchMeasures2_text_network_connection">Network connection</string>
-    <string name="firstLaunchMeasures2_explanation_network_connection_ok"><![CDATA[ Internet is used to download the latest questions and send back your answers. <b>Leave this enabled.</b> ]]></string>
-    <string name="firstLaunchMeasures2_explanation_network_connection_bad"><![CDATA[ <b>Enable internet</b> to download the latest questions and send back your answers. ]]></string>
+    <string name="firstLaunchMeasures2_text_intro">Now check that data connection and geolocation are activated</string>
+    <string name="firstLaunchMeasures2_text_data"></string>
+    <string name="firstLaunchMeasures2_text_network_connection">Data connection</string>
+    <string name="firstLaunchMeasures2_explanation_network_connection_ok"><![CDATA[ Data connection is used throughout the experiment to send us your answers ]]></string>
+    <string name="firstLaunchMeasures2_explanation_network_connection_bad"><![CDATA[ <b>Enable data connection</b> to send us your answers throughout the experiment ]]></string>
     <string name="firstLaunchMeasures2_button_change_data_settings">Change your data settings</string>
-    <string name="firstLaunchMeasures2_text_location">LOCATION</string>
+    <string name="firstLaunchMeasures2_text_location"></string>
     <string name="firstLaunchMeasures2_text_coarse_location">Coarse location</string>
-    <string name="firstLaunchMeasures2_explanation_coarse_location_ok"><![CDATA[ Google\'s network location service is used for anonymous geolocation. <b>Leave this enabled.</b> ]]></string>
-    <string name="firstLaunchMeasures2_explanation_coarse_location_bad"><![CDATA[ <b> Enable Google\'s network location service</b>, used for anonymous geolocation. ]]></string>
+    <string name="firstLaunchMeasures2_explanation_coarse_location_ok"><![CDATA[ Coarse location (not GPS) is used for anonymous geolocation ]]></string>
+    <string name="firstLaunchMeasures2_explanation_coarse_location_bad"><![CDATA[ <b>Enable coarse location</b> (not GPS) for anonymous geolocation ]]></string>
     <string name="firstLaunchMeasures2_button_change_location_settings">Change your location settings</string>
     <string name="firstLaunchMeasures2_title_activity">Measures</string>
     <string name="firstLaunchMeasures2_good_to_go_ok">Your settings are good, click next!</string>
