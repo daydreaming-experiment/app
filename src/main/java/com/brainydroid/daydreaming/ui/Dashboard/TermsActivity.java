@@ -27,8 +27,10 @@ public class TermsActivity extends FirstLaunch02TermsActivity {
 
         View buttons_layout =  findViewById(R.id.firstLaunchTerms_buttons);
         TextView valueTV = new TextView(this);
-        valueTV.setText("If you no longer agree to this term, uninstall the app to quit the experiment.");
+        valueTV.setText("If you no longer agree to these terms, " +
+                "uninstall the app to quit the experiment.");
         valueTV.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        valueTV.setTextColor(getResources().getColor(R.color.ui_dark_blue_color));
         ((LinearLayout) buttons_layout).addView(valueTV);
 
         TextView text = (TextView) findViewById(R.id.firstLaunchTerms_please_scroll);

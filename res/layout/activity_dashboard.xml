@@ -43,7 +43,9 @@
                 android:layout_height="wrap_content"
                 android:text="EXPERIMENT IS "
                 android:textAllCaps="true"
-                android:textAppearance="@style/ui_font_big_title_white" />
+                android:textAppearance="@style/ui_font_big_title_bold"
+                android:textColor="@color/ui_white_text_color"
+                />
         </LinearLayout>
 
         <LinearLayout
@@ -58,7 +60,8 @@
                 android:layout_height="wrap_content"
                 android:text="RUNNING"
                 android:textAllCaps="true"
-                android:textAppearance="@style/ui_font_big_title_darkblue"/>
+                android:textAppearance="@style/ui_font_big_title_bold"
+                android:textColor="@color/ui_dark_blue_color"/>
 
         </LinearLayout>
 
@@ -94,7 +97,8 @@
                     android:layout_width="@dimen/dashboard_calendar_width"
                     android:layout_height="30dp"
                     android:text="Time elapsed"
-                    android:textAppearance="@style/ui_font_bodytext_white"
+                    android:textAppearance="@style/ui_font_bodytext"
+                    android:textColor="@color/ui_white_text_color"
                     android:gravity="center_horizontal"
                      />
 
@@ -115,7 +119,8 @@
                 android:layout_height="@dimen/dashboard_calendarblock_number_height"
                 android:layout_below="@id/dashboard_ExperimentTimeElapsed1"
                 android:text="XX"
-                android:textAppearance="@style/ui_font_days_font_darkblue"
+                android:textAppearance="@style/ui_font_days_font"
+                android:textColor="@color/ui_dark_blue_color"
                 android:gravity="center"
                 android:background="@drawable/white_rectangle"
 
@@ -154,7 +159,8 @@
                     android:layout_width="@dimen/dashboard_calendar_width"
                     android:layout_height="30dp"
                     android:text="Results in"
-                    android:textAppearance="@style/ui_font_bodytext_white"
+                    android:textAppearance="@style/ui_font_bodytext"
+                    android:textColor="@color/ui_white_text_color"
                     android:gravity="center_horizontal"
                     />
         <ImageView
@@ -175,7 +181,8 @@
                 android:layout_height="@dimen/dashboard_calendarblock_number_height"
                 android:layout_below="@id/dashboard_ExperimentResultsIn1"
                 android:text="YY"
-                android:textAppearance="@style/ui_font_days_font_white"
+                android:textAppearance="@style/ui_font_days_font"
+                android:textColor="@color/ui_white_text_color"
                 android:gravity="center"
                 android:background="@drawable/dark_blue_rectangle"
                 android:src="@drawable/settings_icon"
@@ -197,7 +204,8 @@
                 android:layout_width="@dimen/dashboard_calendar_width"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/dashboard_ExperimentResultsIn2days"
-                android:textAppearance="@style/ui_font_button_dark"
+                android:textAppearance="@style/ui_font_button"
+                android:textColor="@color/ui_dark_blue_color"
                 android:text="See Results"
                 android:paddingBottom="@dimen/block_button_vertical_padding"
                 android:paddingTop="@dimen/block_button_vertical_padding"
@@ -250,7 +258,8 @@
                       android:text="@string/dashboard_button_text_terms"
                       android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
-                      android:textAppearance="@style/ui_font_bodytext_white"
+                      android:textAppearance="@style/ui_font_bodytext"
+                      android:textColor="@color/ui_white_text_color"
                       android:layout_centerHorizontal="true"
                       android:layout_below="@id/dashboard_terms_button"/>
         </RelativeLayout>
@@ -280,7 +289,8 @@
                     android:text="@string/dashboard_button_text_description"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="@style/ui_font_bodytext_white"
+                    android:textAppearance="@style/ui_font_bodytext"
+                    android:textColor="@color/ui_white_text_color"
                     android:layout_below="@id/dashboard_description_button"
                     android:layout_centerHorizontal="true"/>
         </RelativeLayout>
@@ -314,7 +324,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
-                    android:textAppearance="@style/ui_font_bodytext_white"
+                    android:textAppearance="@style/ui_font_bodytext"
+                    android:textColor="@color/ui_white_text_color"
                     android:layout_below="@id/dashboard_about_button"
                     />
         </RelativeLayout>

@@ -13,7 +13,8 @@
         android:layout_gravity="center_vertical"
         android:layout_marginBottom="16dp"
         android:text=""
-        android:textAppearance="@style/ui_font_big_title_white" />
+        android:textAppearance="@style/ui_font_big_title_bold"
+        android:textColor="@color/ui_white_text_color"/>
 
     <TextView
         android:id="@+id/question_slider_selectedSeek"
@@ -22,7 +23,8 @@
         android:layout_marginBottom="16dp"
         android:gravity="center"
         android:text="@string/questionSlider_please_slide"
-        android:textAppearance="@style/ui_font_bodytext_white" />
+        android:textAppearance="@style/ui_font_bodytext"
+        android:textColor="@color/ui_white_text_color"/>
     
     <com.brainydroid.daydreaming.ui.AlphaSeekBar
         android:id="@+id/question_slider_seekBar"
@@ -48,7 +50,8 @@
             android:layout_weight="1"
             android:gravity="left"
             android:text=""
-            android:textAppearance="@style/ui_font_bodytext_darkblue"/>
+            android:textAppearance="@style/ui_font_bodytext"
+            android:textColor="@color/ui_dark_blue_color"/>
 
         <TextView
             android:id="@+id/question_slider_rightHint"
@@ -58,7 +61,8 @@
             android:layout_weight="1"
             android:gravity="right"
             android:text=""
-            android:textAppearance="@style/ui_font_bodytext_darkblue" />
+            android:textAppearance="@style/ui_font_bodytext"
+            android:textColor="@color/ui_dark_blue_color"/>
     </LinearLayout>
 
 </LinearLayout>

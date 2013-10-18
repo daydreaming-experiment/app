@@ -1,6 +1,7 @@
 package com.brainydroid.daydreaming.ui.Questions;
 
 import android.content.Context;
+import android.os.Build;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -49,6 +50,11 @@ public class MultipleChoiceQuestionViewAdapter
                 R.id.question_multiple_choice_otherCheckBox);
         final EditText otherEdit = (EditText)choicesView.findViewById(
                 R.id.question_multiple_choice_otherEditText);
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+            otherEdit.setTextColor(context.getResources().getColor(
+                    R.color.ui_dark_blue_color));
+        }
 
         CompoundButton.OnCheckedChangeListener otherCheckListener =
                 new CompoundButton.OnCheckedChangeListener() {

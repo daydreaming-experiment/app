@@ -42,7 +42,8 @@
             android:layout_marginBottom="@dimen/profile_title_vertical_space"
             android:gravity="center_horizontal"
             android:text="@string/firstLaunchProfile_title_about_you"
-            android:textAppearance="@style/ui_font_big_title_white" />
+            android:textAppearance="@style/ui_font_big_title_bold"
+            android:textColor="@color/ui_white_text_color"/>
 
 
 
@@ -62,7 +63,8 @@
                     android:layout_weight="2"
                     android:layout_marginRight="4dp"
                     android:text="@string/firstLaunchProfile_text_age"
-                    android:textAppearance="@style/ui_font_title_white"/>
+                    android:textAppearance="@style/ui_font_title"
+                    android:textColor="@color/ui_white_text_color"/>
 
             <Spinner
                     android:id="@+id/firstLaunchProfile_ageSpinner"
@@ -94,7 +96,8 @@
                 android:layout_weight="2"
                 android:layout_marginRight="4dp"
                 android:text="@string/firstLaunchProfile_text_gender"
-                android:textAppearance="@style/ui_font_title_white"/>
+                android:textAppearance="@style/ui_font_title"
+                android:textColor="@color/ui_white_text_color"/>
 
             <Spinner
                 android:id="@+id/firstLaunchProfile_genderSpinner"
@@ -127,7 +130,8 @@
                     android:layout_weight="2"
                     android:layout_marginRight="4dp"
                     android:text="@string/firstLaunchProfile_text_education"
-                    android:textAppearance="@style/ui_font_title_white"/>
+                    android:textAppearance="@style/ui_font_title"
+                    android:textColor="@color/ui_white_text_color"/>
 
             <Spinner
                     android:id="@+id/firstLaunchProfile_educationSpinner"
