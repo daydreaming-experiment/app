@@ -70,6 +70,12 @@
     <dimen  name="description_text_padding" >15dp</dimen>
     <dimen  name="description_text_titleTopMargin" >50dp</dimen>
     <dimen  name="description_text_linespacing" >5dp</dimen>
+    <dimen  name="description_scrollview_heigth">300dp</dimen>
+    <dimen  name="description_cone_vertical_offset">350dp</dimen>
+    <dimen  name="description_cloud_vertical_offset">500dp</dimen>
+    <dimen  name="cloud_cone_person_heigth">200dp</dimen>             <!-- TODO CHANGE -->
+    <dimen  name="cloud_cone_person_width">400dp</dimen>              <!-- TODO CHANGE -->
+
 
 
     <!-- SettingsActivity -->
