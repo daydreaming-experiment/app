@@ -42,8 +42,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="EXPERIMENT IS "
+                android:singleLine="true"
                 android:textAllCaps="true"
-                android:textAppearance="@style/ui_font_big_title_bold"
+                android:textAppearance="@style/ui_font_title_bold"
                 android:textColor="@color/ui_white_text_color"
                 />
         </LinearLayout>
@@ -59,8 +60,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="RUNNING"
+                android:singleLine="true"
                 android:textAllCaps="true"
-                android:textAppearance="@style/ui_font_big_title_bold"
+                android:textAppearance="@style/ui_font_title_bold"
                 android:textColor="@color/ui_dark_blue_color"/>
 
         </LinearLayout>
@@ -79,7 +81,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:layout_gravity="center_horizontal">
+            android:layout_gravity="center_horizontal" android:gravity="center_horizontal">
 
 
         <!-- column time-elapsed -->

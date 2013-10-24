@@ -82,7 +82,7 @@ public class FirstLaunch01DescriptionActivity extends FirstLaunchActivity {
 
         int personcomplex_dp_height = (int) (getResources().getDimension(R.dimen.cloud_cone_person_heigth) / getResources().getDisplayMetrics().density);     // size of cloud/person/cone complex
         ViewGroup.LayoutParams params = myScrollLayout.getLayoutParams();
-// Changes the height and width to the specified *pixels*
+
         params.height = (int)( ((float)(screen_height-personcomplex_dp_height))*(getResources().getDisplayMetrics().density) )+1;
 
 
