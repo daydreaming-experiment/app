@@ -37,8 +37,13 @@ public class FirstLaunch00WelcomeActivity extends FirstLaunchActivity {
         Logger.v(TAG, "Creating");
         super.onCreate(savedInstanceState);
 
+
+        launchAnimation();
+            }
+
+    public void launchAnimation(){
         ImageView MyImageView = (ImageView)findViewById(R.id.firstLaunchWelcome_helice);
-        MyImageView.setBackgroundResource(R.drawable.animated_background);
+        MyImageView.setBackgroundResource(R.drawable.animated_helix);
         AnimationDrawable AniFrame = (AnimationDrawable) MyImageView.getBackground();
         AniFrame.start();
 

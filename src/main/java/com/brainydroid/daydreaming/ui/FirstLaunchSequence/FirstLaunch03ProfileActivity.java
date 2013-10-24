@@ -2,8 +2,10 @@ package com.brainydroid.daydreaming.ui.FirstLaunchSequence;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +37,7 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
     public boolean ageSpinnerTouched = false;
     public boolean educationSpinnerTouched = false;
 
+
     @Inject ProfileStorage profileStorage;
 
     @InjectView(R.id.firstLaunchProfile_genderSpinner) Spinner genderSpinner;
@@ -48,6 +51,7 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
 
         super.onCreate(savedInstanceState);
         populate_spinners();
+        launchAnimation();
         setRobotoFont(this);   // need to be done after spinners get populated
     }
 
@@ -68,6 +72,15 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
             launchNextActivity(
                     FirstLaunch04PersonalityQuestionnaireActivity.class);
         }
+    }
+
+
+
+    public void launchAnimation(){
+        ImageView MyImageView = (ImageView)findViewById(R.id.firstLaunchProfile_helice);
+        MyImageView.setBackgroundResource(R.drawable.animated_helix);
+        AnimationDrawable AniFrame = (AnimationDrawable) MyImageView.getBackground();
+        AniFrame.start();
     }
 
     private boolean checkForm() {

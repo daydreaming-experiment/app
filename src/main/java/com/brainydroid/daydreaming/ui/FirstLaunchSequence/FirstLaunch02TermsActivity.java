@@ -41,8 +41,6 @@ public class FirstLaunch02TermsActivity extends FirstLaunchActivity implements S
     @InjectView(R.id.firstLaunchTerms_moreConsent_button)
     protected TextView more_consent_button;
     @InjectView(R.id.firstLaunchTerms_moreConsent_text)
-    protected TextView more_consent_links;
-    @InjectView(R.id.firstLaunchTerms_moreConsent_links)
     protected TextView more_consent_text;
     @InjectView(R.id.firstLaunchTerms_Scrollview) ScrollViewExt sv;
     @InjectView(R.id.firstLaunchTerms_buttonAgree)
@@ -78,7 +76,7 @@ public class FirstLaunch02TermsActivity extends FirstLaunchActivity implements S
         if (diff == 0) {
             agreeButton.setEnabled(true);
             TextView text = (TextView) findViewById(R.id.firstLaunchTerms_please_scroll);
-            text.setVisibility(View.GONE); // Clear TextView asking to scroll down
+            text.setVisibility(View.INVISIBLE); // Clear TextView asking to scroll down
 
             agreeButton.setAlpha(1f);
             agreeButton.setClickable(true);
@@ -159,18 +157,9 @@ public class FirstLaunch02TermsActivity extends FirstLaunchActivity implements S
         more_consent_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                more_consent_text.setText(Html.fromHtml(getString(R.string.more_terms_html)));
-                Linkify.addLinks(more_consent_text, Linkify.WEB_URLS | Linkify.EMAIL_ADDRESSES);
+        more_consent_text.setText(Html.fromHtml(getString(R.string.more_terms_html)));
+        Linkify.addLinks(more_consent_text, Linkify.WEB_URLS | Linkify.EMAIL_ADDRESSES);
 
-                try {
-                    InputStream termsInputStream = getResources().openRawResource(R.raw.links);
-                    more_consent_links.setText(Util.convertStreamToString(termsInputStream));
-                    termsInputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                }
-                more_consent_links.setMovementMethod(LinkMovementMethod.getInstance());
-                Linkify.addLinks(more_consent_links,Linkify.WEB_URLS | Linkify.EMAIL_ADDRESSES);
 
             }
         });

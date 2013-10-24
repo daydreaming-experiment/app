@@ -135,19 +135,6 @@
                     android:textAppearance="@style/ui_font_title"
                     android:textColor="@color/ui_white_text_color"/>
 
-            <TextView
-                    android:id="@+id/firstLaunchTerms_moreConsent_links"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/firstLaunchTerms_moreConsent_text"
-                    android:gravity="left"
-                    android:text=""
-                    android:paddingBottom="30dp"
-                    android:paddingRight="@dimen/terms_text_side_padding"
-                    android:paddingLeft="@dimen/terms_text_side_padding"
-                    android:lineSpacingExtra="@dimen/text_linespacing"
-                    android:textAppearance="@style/ui_font_title"
-                    android:textColor="@color/ui_white_text_color"/>
 
 
         </RelativeLayout>
