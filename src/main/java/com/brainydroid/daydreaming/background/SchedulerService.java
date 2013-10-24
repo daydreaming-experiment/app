@@ -40,7 +40,7 @@ public class SchedulerService extends RoboService {
     public static double MIN_DELAY = 5 * 60 * 1000; // 5 minutes
 
     /** Mean delay in the poisson process scheduling polls */
-    public static double MEAN_DELAY = 2 * 60 * 60 * 1000; // 2 hours
+    public static double MEAN_DELAY = 60 * 60 * 1000; // 2 hours
 
     // Handy object that will be holding the 'now' time
     private Calendar now;
