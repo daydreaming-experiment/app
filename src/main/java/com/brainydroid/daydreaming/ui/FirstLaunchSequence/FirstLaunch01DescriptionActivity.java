@@ -1,11 +1,15 @@
 package com.brainydroid.daydreaming.ui.FirstLaunchSequence;
 
 import android.content.Intent;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
+import android.view.Display;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
@@ -33,6 +37,8 @@ public class FirstLaunch01DescriptionActivity extends FirstLaunchActivity {
     @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "FirstLaunch01DescriptionActivity";
     @InjectView(R.id.firstLaunchDescription_textDescription) TextView description;
+    @InjectView(R.id.firstLaunchDescription_scrollview_layout)
+    LinearLayout myScrollLayout;
 
     protected ImageButton nextButton;
 
@@ -47,6 +53,8 @@ public class FirstLaunch01DescriptionActivity extends FirstLaunchActivity {
 
         nextButton = (ImageButton)findViewById(R.id.firstLaunchDescription_buttonNext);
 
+
+        makelayoutdesign();
         populateDescription();
         setButton();
 
@@ -65,6 +73,20 @@ public class FirstLaunch01DescriptionActivity extends FirstLaunchActivity {
         launchNextActivity(FirstLaunch02TermsActivity.class);
     }
 
+
+    public void makelayoutdesign(){
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int screen_height = (int)(size.y/getResources().getDisplayMetrics().density);   // gets the size of my screen programatically
+
+        int personcomplex_dp_height = (int) (getResources().getDimension(R.dimen.cloud_cone_person_heigth) / getResources().getDisplayMetrics().density);     // size of cloud/person/cone complex
+        ViewGroup.LayoutParams params = myScrollLayout.getLayoutParams();
+
+        params.height = (int)( ((float)(screen_height-personcomplex_dp_height))*(getResources().getDisplayMetrics().density) )+1;
+
+
+    }
 
     /**
      * Populating scroll view from raw text files
