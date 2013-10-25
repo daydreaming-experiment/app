@@ -33,6 +33,8 @@
                 android:layout_width="wrap_content"
                 android:adjustViewBounds="true"
                 android:drawableLeft="@drawable/status_wrong"
+                android:drawablePadding="5dp"
+
                 android:gravity="center_vertical"
                 android:textAppearance="@style/ui_font_title_bold"
                 android:textColor="@color/ui_white_text_color"
@@ -71,6 +73,7 @@
                 android:layout_width="wrap_content"
                 android:text="@string/firstLaunchMeasures2_text_coarse_location"
                 android:drawableLeft="@drawable/status_wrong"
+                android:drawablePadding="5dp"
                 android:gravity="center_vertical"
                 android:textAppearance="@style/ui_font_title_bold"
                 android:textColor="@color/ui_white_text_color"

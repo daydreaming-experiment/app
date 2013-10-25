@@ -11,7 +11,8 @@ public final class Poll extends StatusModel<Poll,PollsStorage> {
     private static String TAG = "Poll";
 
     @Expose @Inject private ArrayList<Question> questions;
-    @Expose private long notificationTimestamp;
+    @Expose private long notificationNtpTimestamp;
+    @Expose private long notificationSystemTimestamp;
 
     public static final String STATUS_PENDING = "pollPending"; // Notification has appeared
     public static final String STATUS_RUNNING = "pollRunning"; // QuestionActivity is running
@@ -47,14 +48,25 @@ public final class Poll extends StatusModel<Poll,PollsStorage> {
         return questions.size();
     }
 
-    public synchronized long getNotificationTimestamp() {
-        return notificationTimestamp;
+    public synchronized long getNotificationNtpTimestamp() {
+        return notificationNtpTimestamp;
     }
 
-    public synchronized void setNotificationTimestamp(
-            long notificationTimestamp) {
-        Logger.v(TAG, "Setting notification timestamp");
-        this.notificationTimestamp = notificationTimestamp;
+    public synchronized void setNotificationNtpTimestamp(
+            long notificationNtpTimestamp) {
+        Logger.v(TAG, "Setting notification ntpTimestamp");
+        this.notificationNtpTimestamp = notificationNtpTimestamp;
+        saveIfSync();
+    }
+
+    public synchronized long getNotificationSystemTimestamp() {
+        return notificationSystemTimestamp;
+    }
+
+    public synchronized void setNotificationSystemTimestamp(
+            long notificationSystemTimestamp) {
+        Logger.v(TAG, "Setting notification systemTimestamp");
+        this.notificationSystemTimestamp = notificationSystemTimestamp;
         saveIfSync();
     }
 

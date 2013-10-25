@@ -24,7 +24,9 @@ public class QuestionsStorage {
     public static final String COL_STATUS = "questionStatus";
     public static final String COL_ANSWER = "questionAnswer";
     public static final String COL_LOCATION = "questionLocation";
-    public static final String COL_TIMESTAMP = "questionTimestamp";
+    public static final String COL_NTP_TIMESTAMP = "questionNtpTimestamp";
+    public static final String COL_SYSTEM_TIMESTAMP =
+            "questionSystemTimestamp";
 
     private static String TABLE_QUESTIONS = "questions";
 

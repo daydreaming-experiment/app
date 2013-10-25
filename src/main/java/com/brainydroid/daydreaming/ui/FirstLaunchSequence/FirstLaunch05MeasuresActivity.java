@@ -53,7 +53,7 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
     @InjectResource(R.string.firstLaunchMeasures2_explanation_coarse_location_bad)
             String explanationCoarseLocationBad;
     @InjectResource(R.string.firstLaunchMeasures2_good_to_go_ok) String goodToGoOk;
-            String goodToGoBad = "";
+    String goodToGoBad = "";
 
     @InjectView(R.id.firstLaunchMeasures2_buttonNext)
             AlphaImageButton buttonNext;
@@ -88,13 +88,13 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
     public void onStart() {
         Logger.v(TAG, "Starting");
         super.onStart();
-        asyncUpdateView();
     }
 
     @Override
     public void onResume() {
         Logger.v(TAG, "Resuming");
         super.onResume();
+        forbidNextButton();
         Logger.d(TAG, "Registering networkReceiver");
         registerReceiver(networkReceiver, networkIntentFilter);
         asyncUpdateView();
@@ -147,6 +147,9 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
 
         mainScrollView.post(updateView);
     }
+
+
+
 
     public void onClick_buttonLocationSettings(
             @SuppressWarnings("UnusedParameters") View view) {
@@ -225,9 +228,37 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
     public void onClick_buttonNext(
             @SuppressWarnings("UnusedParameters") View view) {
         Logger.v(TAG, "Next button clicked");
-        finishFirstLaunch();
-        launchDashBoardActivity();
-    }
+
+        String measures_warning = getResources().getString(R.string.firstLaunchMeasures2_text_warning);
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                this);
+
+        // set title
+        alertDialogBuilder.setTitle("Agreement");
+
+        // set dialog message
+        alertDialogBuilder
+                .setMessage(measures_warning)
+                .setCancelable(false)
+                .setPositiveButton("Yes",new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog,int id) {
+                        finishFirstLaunch();
+                        launchDashBoardActivity();                    }
+                })
+                .setNegativeButton("No",new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog,int id) {
+                        dialog.cancel();
+                    }
+                });
+
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // show it
+        alertDialog.show();        }
+
+
 
     private void forbidNextButton() {
         Logger.d(TAG, "Forbidding buttonNext");

@@ -1,17 +1,10 @@
 package com.brainydroid.daydreaming.ui.Questions;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.ComponentName;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
-import android.provider.Settings;
-import android.support.v4.app.DialogFragment;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -30,6 +23,8 @@ import com.google.inject.Inject;
 import roboguice.activity.RoboFragmentActivity;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
+
+import java.util.Calendar;
 
 @ContentView(R.layout.activity_question)
 public class QuestionActivity extends RoboFragmentActivity {
@@ -60,44 +55,6 @@ public class QuestionActivity extends RoboFragmentActivity {
     @Inject QuestionViewAdapterFactory questionViewAdapterFactory;
     @Inject SntpClient sntpClient;
 
-    public static class LocationAlertDialogFragment extends DialogFragment {
-
-        private static String TAG = "LocationAlertDialogFragment";
-
-        public static LocationAlertDialogFragment newInstance(int title, int text, int posText) {
-            LocationAlertDialogFragment frag = new LocationAlertDialogFragment();
-            Bundle args = new Bundle();
-            args.putInt("title", title);
-            args.putInt("text", text);
-            args.putInt("posText", posText);
-            frag.setArguments(args);
-            return frag;
-        }
-
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            Logger.d(TAG, "Creating location alert dialog");
-
-            int title = getArguments().getInt("title");
-            int text = getArguments().getInt("text");
-            int posText = getArguments().getInt("posText");
-
-            AlertDialog.Builder alertSettings = new AlertDialog.Builder(getActivity())
-            .setTitle(title)
-            .setMessage(text)
-            .setPositiveButton(posText,
-                    new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int whichButton) {
-                    ((QuestionActivity)getActivity()).launchSettings();
-                }
-            }).setIcon(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ?
-                    R.drawable.ic_action_about_holo_light : R.drawable.ic_action_about_holo_dark);
-
-            return alertSettings.create();
-        }
-
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Logger.v(TAG, "Creating");
@@ -122,6 +79,7 @@ public class QuestionActivity extends RoboFragmentActivity {
 
         poll.setStatus(Poll.STATUS_RUNNING);
         question.setStatus(Question.STATUS_ASKED);
+        question.setSystemTimestamp(Calendar.getInstance().getTimeInMillis());
 
         if (statusManager.isDataAndLocationEnabled()) {
             Logger.i(TAG, "Data and location enabled -> starting listening " +
@@ -193,7 +151,6 @@ public class QuestionActivity extends RoboFragmentActivity {
 
             if (isLastQuestion()) {
                 Logger.d(TAG, "Last question -> setting finish button text");
-                // TODO maybe change image button to finish button
                 nextButton.setVisibility(View.GONE);
                 finishButton.setVisibility(View.VISIBLE);
                 finishButton.setClickable(true);
@@ -222,7 +179,7 @@ public class QuestionActivity extends RoboFragmentActivity {
             @Override
             public void onTimeReceived(SntpClient sntpClient) {
                 if (sntpClient != null) {
-                    question.setTimestamp(sntpClient.getNow());
+                    question.setNtpTimestamp(sntpClient.getNow());
                     Logger.i(TAG, "Received and saved NTP time for " +
                             "question");
                 } else {
@@ -263,44 +220,10 @@ public class QuestionActivity extends RoboFragmentActivity {
                 Logger.d(TAG, "Last question -> finishing poll");
                 finishPoll();
             } else {
-                if (statusManager.isDataAndLocationEnabled()) {
-                    Logger.d(TAG, "Data and location enabled -> launching " +
-                            "next question");
-                    launchNextQuestion();
-                } else {
-                    Logger.d(TAG, "Either data or location disabled -> " +
-                            "launching alert dialog");
-                    launchLocationAlertDialog();
-                }
+                Logger.d(TAG, "Launching next question");
+                launchNextQuestion();
             }
         }
-    }
-
-    private void launchLocationAlertDialog() {
-        Logger.d(TAG, "Launching alert dialog");
-        setIsContinuingOrFinishing();
-        int titleId;
-        int textId;
-
-        if (!statusManager.isNetworkLocEnabled()) {
-            if (!statusManager.isDataEnabled()) {
-                Logger.d(TAG, "Network location and data disabled");
-                titleId = R.string.locationAlert_title_location_and_data;
-                textId = R.string.locationAlert_text_location_and_data;
-            } else {
-                Logger.d(TAG, "Network location disabled, data enabled");
-                titleId = R.string.locationAlert_title_location;
-                textId = R.string.locationAlert_text_location;
-            }
-        } else {
-            Logger.d(TAG, "Network location enabled, location disabled");
-            titleId = R.string.locationAlert_title_data;
-            textId = R.string.locationAlert_text_data;
-        }
-
-        DialogFragment locationAlert = LocationAlertDialogFragment.newInstance(
-                titleId, textId, R.string.locationAlert_button_settings);
-        locationAlert.show(getSupportFragmentManager(), "locationAlert");
     }
 
     private void launchNextQuestion() {
@@ -316,28 +239,6 @@ public class QuestionActivity extends RoboFragmentActivity {
 
         overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
         finish();
-    }
-
-    private void launchSettings() {
-        Intent settingsIntent;
-
-        if (!statusManager.isNetworkLocEnabled()) {
-            Logger.d(TAG, "Launching location settings");
-            settingsIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-            settingsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-        } else {
-            Logger.d(TAG, "Launching data settings");
-            settingsIntent = new Intent(Settings.ACTION_DATA_ROAMING_SETTINGS);
-
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-                ComponentName cName = new ComponentName("com.android.phone", "com.android.phone.Settings");
-                settingsIntent.setComponent(cName);
-            }
-
-            settingsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-        }
-
-        startActivity(settingsIntent);
     }
 
     private void dismissPoll() {

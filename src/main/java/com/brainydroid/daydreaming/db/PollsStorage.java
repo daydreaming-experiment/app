@@ -14,7 +14,10 @@ public final class PollsStorage extends StatusModelStorage<Poll,
 
     private static String TAG = "PollsStorage";
 
-    public static final String COL_NOTIFICATION_TIMESTAMP = "pollNotificationTimestamp";
+    public static final String COL_NOTIFICATION_NTP_TIMESTAMP =
+            "pollNotificationNtpTimestamp";
+    public static final String COL_NOTIFICATION_SYSTEM_TIMESTAMP =
+            "pollNotificationSystemTimestamp";
 
     private static final String TABLE_POLLS = "polls";
     private static final String TABLE_POLL_QUESTIONS = "pollQuestions";
@@ -23,7 +26,8 @@ public final class PollsStorage extends StatusModelStorage<Poll,
             "CREATE TABLE IF NOT EXISTS " + TABLE_POLLS + " (" +
                     COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     COL_STATUS + " TEXT NOT NULL, " +
-                    COL_NOTIFICATION_TIMESTAMP + " REAL" +
+                    COL_NOTIFICATION_NTP_TIMESTAMP + " REAL, " +
+                    COL_NOTIFICATION_SYSTEM_TIMESTAMP + " REAL" +
                     ");";
 
     private static final String SQL_CREATE_TABLE_POLL_QUESTIONS =
@@ -33,7 +37,8 @@ public final class PollsStorage extends StatusModelStorage<Poll,
                     QuestionsStorage.COL_STATUS + " TEXT, " +
                     QuestionsStorage.COL_ANSWER + " TEXT, " +
                     QuestionsStorage.COL_LOCATION + " TEXT, " +
-                    QuestionsStorage.COL_TIMESTAMP + " REAL" +
+                    QuestionsStorage.COL_NTP_TIMESTAMP + " REAL, " +
+                    QuestionsStorage.COL_SYSTEM_TIMESTAMP + " REAL" +
                     ");";
 
     @Inject QuestionsStorage questionsStorage;
@@ -55,8 +60,10 @@ public final class PollsStorage extends StatusModelStorage<Poll,
         Logger.v(TAG, "Building poll values");
 
         ContentValues pollValues = super.getModelValues(poll);
-        pollValues.put(COL_NOTIFICATION_TIMESTAMP,
-                poll.getNotificationTimestamp());
+        pollValues.put(COL_NOTIFICATION_NTP_TIMESTAMP,
+                poll.getNotificationNtpTimestamp());
+        pollValues.put(COL_NOTIFICATION_SYSTEM_TIMESTAMP,
+                poll.getNotificationSystemTimestamp());
         return pollValues;
     }
 
@@ -82,7 +89,10 @@ public final class PollsStorage extends StatusModelStorage<Poll,
         qValues.put(QuestionsStorage.COL_STATUS, question.getStatus());
         qValues.put(QuestionsStorage.COL_ANSWER, question.getAnswerAsJson());
         qValues.put(QuestionsStorage.COL_LOCATION, question.getLocationAsJson());
-        qValues.put(QuestionsStorage.COL_TIMESTAMP, question.getTimestamp());
+        qValues.put(QuestionsStorage.COL_NTP_TIMESTAMP,
+                question.getNtpTimestamp());
+        qValues.put(QuestionsStorage.COL_SYSTEM_TIMESTAMP,
+                question.getSystemTimestamp());
         return qValues;
     }
 
@@ -119,8 +129,10 @@ public final class PollsStorage extends StatusModelStorage<Poll,
         Logger.d(TAG, "Populating poll model from db");
 
         super.populateModel(pollId, poll, res);
-        poll.setNotificationTimestamp(res.getLong(
-                res.getColumnIndex(COL_NOTIFICATION_TIMESTAMP)));
+        poll.setNotificationNtpTimestamp(res.getLong(
+                res.getColumnIndex(COL_NOTIFICATION_NTP_TIMESTAMP)));
+        poll.setNotificationSystemTimestamp(res.getLong(
+                res.getColumnIndex(COL_NOTIFICATION_SYSTEM_TIMESTAMP)));
 
         Cursor qRes = getDb().query(TABLE_POLL_QUESTIONS, null,
                 COL_ID + "=?",
@@ -139,8 +151,11 @@ public final class PollsStorage extends StatusModelStorage<Poll,
                     qRes.getColumnIndex(QuestionsStorage.COL_ANSWER)));
             q.setLocationFromJson(qRes.getString(
                     qRes.getColumnIndex(QuestionsStorage.COL_LOCATION)));
-            q.setTimestamp(qRes.getLong(
-                    qRes.getColumnIndex(QuestionsStorage.COL_TIMESTAMP)));
+            q.setNtpTimestamp(qRes.getLong(
+                    qRes.getColumnIndex(QuestionsStorage.COL_NTP_TIMESTAMP)));
+            q.setSystemTimestamp(qRes.getLong(
+                    qRes.getColumnIndex(QuestionsStorage.COL_SYSTEM_TIMESTAMP)
+            ));
 
             poll.addQuestion(q);
         } while (qRes.moveToNext());
