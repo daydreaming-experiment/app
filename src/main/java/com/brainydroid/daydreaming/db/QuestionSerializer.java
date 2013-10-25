@@ -22,7 +22,8 @@ public class QuestionSerializer implements JsonSerializer<Question> {
         jsonSrc.addProperty("status", src.getStatus());
         jsonSrc.add("answer", context.serialize(src.getAnswer()));
         jsonSrc.add("location", context.serialize(src.getLocation()));
-        jsonSrc.addProperty("timestamp", src.getTimestamp());
+        jsonSrc.addProperty("ntpTimestamp", src.getNtpTimestamp());
+        jsonSrc.addProperty("systemTimestamp", src.getSystemTimestamp());
 
         return jsonSrc;
     }

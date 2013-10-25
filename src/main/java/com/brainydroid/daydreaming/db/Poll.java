@@ -48,7 +48,7 @@ public final class Poll extends StatusModel<Poll,PollsStorage> {
         return questions.size();
     }
 
-    public synchronized long getNtpNotificationTimestamp() {
+    public synchronized long getNotificationNtpTimestamp() {
         return notificationNtpTimestamp;
     }
 
@@ -59,7 +59,7 @@ public final class Poll extends StatusModel<Poll,PollsStorage> {
         saveIfSync();
     }
 
-    public synchronized long getSystemNotificationTimestamp() {
+    public synchronized long getNotificationSystemTimestamp() {
         return notificationSystemTimestamp;
     }
 
