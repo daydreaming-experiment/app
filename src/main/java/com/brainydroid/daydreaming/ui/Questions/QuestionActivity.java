@@ -24,6 +24,8 @@ import roboguice.activity.RoboFragmentActivity;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
+import java.util.Calendar;
+
 @ContentView(R.layout.activity_question)
 public class QuestionActivity extends RoboFragmentActivity {
 
@@ -77,6 +79,7 @@ public class QuestionActivity extends RoboFragmentActivity {
 
         poll.setStatus(Poll.STATUS_RUNNING);
         question.setStatus(Question.STATUS_ASKED);
+        question.setSystemTimestamp(Calendar.getInstance().getTimeInMillis());
 
         if (statusManager.isDataAndLocationEnabled()) {
             Logger.i(TAG, "Data and location enabled -> starting listening " +
@@ -176,7 +179,7 @@ public class QuestionActivity extends RoboFragmentActivity {
             @Override
             public void onTimeReceived(SntpClient sntpClient) {
                 if (sntpClient != null) {
-                    question.setTimestamp(sntpClient.getNow());
+                    question.setNtpTimestamp(sntpClient.getNow());
                     Logger.i(TAG, "Received and saved NTP time for " +
                             "question");
                 } else {

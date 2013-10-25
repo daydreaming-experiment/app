@@ -26,7 +26,8 @@ public class Question {
     @Expose private String status = null;
     @Expose private IAnswer answer = null;
     @Expose private Location location;
-    @Expose private long timestamp = -1;
+    @Expose private long ntpTimestamp = -1;
+    @Expose private long systemTimestamp = -1;
 
     private Poll poll = null;
 
@@ -148,13 +149,23 @@ public class Question {
         saveIfInSyncingPoll();
     }
 
-    public synchronized long getTimestamp() {
-        return timestamp;
+    public synchronized long getNtpTimestamp() {
+        return ntpTimestamp;
     }
 
-    public synchronized void setTimestamp(long timestamp) {
-        Logger.v(TAG, "Setting timestamp");
-        this.timestamp = timestamp;
+    public synchronized void setNtpTimestamp(long ntpTimestamp) {
+        Logger.v(TAG, "Setting ntpTimestamp");
+        this.ntpTimestamp = ntpTimestamp;
+        saveIfInSyncingPoll();
+    }
+
+    public synchronized long getSystemTimestamp() {
+        return systemTimestamp;
+    }
+
+    public synchronized void setSystemTimestamp(long systemTimestamp) {
+        Logger.v(TAG, "Setting systemTimestamp");
+        this.systemTimestamp = systemTimestamp;
         saveIfInSyncingPoll();
     }
 
