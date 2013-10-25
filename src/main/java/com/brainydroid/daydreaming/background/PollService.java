@@ -18,6 +18,7 @@ import com.google.inject.Inject;
 import roboguice.service.RoboService;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  * Create and populate a {@link Poll}, then notify it to the user.
@@ -167,6 +168,8 @@ public class PollService extends RoboService {
 
         // Update the poll's status
         Logger.d(TAG, "Setting poll status and timestamp, and saving");
+        poll.setNotificationSystemTimestamp(
+                Calendar.getInstance().getTimeInMillis());
         poll.setStatus(Poll.STATUS_PENDING);
         poll.save();
 
@@ -178,7 +181,7 @@ public class PollService extends RoboService {
             @Override
             public void onTimeReceived(SntpClient sntpClient) {
                 if (sntpClient != null) {
-                    poll.setNotificationTimestamp(sntpClient.getNow());
+                    poll.setNotificationNtpTimestamp(sntpClient.getNow());
                     Logger.i(TAG, "Received and saved NTP time for " +
                             "poll notification");
                 } else {
