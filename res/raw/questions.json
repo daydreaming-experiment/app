@@ -1,5 +1,6 @@
 {
     "version": 1,
+    "nSlotsPerPoll": 5,
     "questions": [
         {
             "name": "mindWandering_daydreaming",
@@ -21,7 +22,7 @@
             "name": "mindWandering_temporalFuture",
             "category": "mindWandering",
             "subCategory": "temporalFuture",
-            "block": 0,
+            "group": 0,
             "details": {
                 "type": "Slider",
                 "subQuestions": [
@@ -34,8 +35,8 @@
                         "text": "If so, how far in the future?",
                         "hints": ["Later today", "In a week", "In a month", "In six months", "In more than a year"],
                         "initialPosition": 50,
-			"notApplyAllowed": true,
-			"showHints": true
+                        "notApplyAllowed": true,
+                        "showHints": true
                     }
                 ]
             }
@@ -44,7 +45,7 @@
             "name": "mindWandering_temporalPast",
             "category": "mindWandering",
             "subCategory": "temporalPast",
-            "block": 0,
+            "group": 0,
             "details": {
                 "type": "Slider",
                 "subQuestions": [
@@ -57,8 +58,8 @@
                         "text": "If so, how far into the past?",
                         "hints": ["More than a year back", "Six months back", "A month back", "A week back", "Earlier today"],
                         "initialPosition": 50,
-			"notApplyAllowed": true,
-			"showHints": true
+                        "notApplyAllowed": true,
+                        "showHints": true
                     }
                 ]
             }
@@ -67,7 +68,7 @@
             "name": "mindWandering_socialOther",
             "category": "mindWandering",
             "subCategory": "socialOther",
-            "block": 1,
+            "group": 1,
             "details": {
                 "type": "Slider",
                 "subQuestions": [
@@ -80,7 +81,7 @@
                         "text": "If so, how close to you are those people?",
                         "hints": ["Complete stranger", "Very close"],
                         "initialPosition": 50,
-			"notApplyAllowed": true
+                        "notApplyAllowed": true
                     }
                 ]
             }
@@ -89,7 +90,7 @@
             "name": "mindWandering_socialSelf",
             "category": "mindWandering",
             "subCategory": "socialSelf",
-            "block": 1,
+            "group": 1,
             "details": {
                 "type": "Slider",
                 "subQuestions": [
@@ -110,7 +111,7 @@
                 "type": "Slider",
                 "subQuestions": [
                     {
-                        "text": "What is your mood?",
+                        "text": "What was your mood?",
                         "hints": ["Very negative", "Very positive"],
                         "initialPosition": 50
                     }
@@ -124,7 +125,7 @@
             "slot": -1,
             "details": {
                 "type": "MultipleChoice",
-                "text": "What were you doing just before the probe interrupted you?",
+                "text": "What were you doing?",
                 "choices": ["Commuting", "Working", "Studying", "Shopping",
                             "Preparing food", "Doing housework",
                             "Taking care of your children", "Eating",
