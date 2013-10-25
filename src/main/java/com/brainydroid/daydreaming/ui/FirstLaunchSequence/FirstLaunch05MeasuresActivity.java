@@ -148,6 +148,9 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
         mainScrollView.post(updateView);
     }
 
+
+
+
     public void onClick_buttonLocationSettings(
             @SuppressWarnings("UnusedParameters") View view) {
         Logger.v(TAG, "Location settings button clicked");
@@ -225,9 +228,37 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
     public void onClick_buttonNext(
             @SuppressWarnings("UnusedParameters") View view) {
         Logger.v(TAG, "Next button clicked");
-        finishFirstLaunch();
-        launchDashBoardActivity();
-    }
+
+        String measures_warning = getResources().getString(R.string.firstLaunchMeasures2_text_warning);
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                this);
+
+        // set title
+        alertDialogBuilder.setTitle("Agreement");
+
+        // set dialog message
+        alertDialogBuilder
+                .setMessage(measures_warning)
+                .setCancelable(false)
+                .setPositiveButton("Yes",new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog,int id) {
+                        finishFirstLaunch();
+                        launchDashBoardActivity();                    }
+                })
+                .setNegativeButton("No",new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog,int id) {
+                        dialog.cancel();
+                    }
+                });
+
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // show it
+        alertDialog.show();        }
+
+
 
     private void forbidNextButton() {
         Logger.d(TAG, "Forbidding buttonNext");

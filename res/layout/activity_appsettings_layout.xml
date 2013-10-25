@@ -55,9 +55,8 @@
 
 
                 <RelativeLayout android:layout_height="wrap_content"
-                              android:layout_width="wrap_content"
+                              android:layout_width="fill_parent"
                               android:id="@+id/appsettings_notif_sound_layout"
-                              android:gravity="center_vertical"
                               android:layout_marginBottom="@dimen/settings_line_spacing">
 
 
@@ -65,7 +64,7 @@
                             android:layout_width="@dimen/settings_icon_size"
                             android:layout_height="@dimen/settings_icon_size"
                             android:scaleType="fitCenter"
-                            android:layout_gravity="center_horizontal"
+                            android:layout_centerVertical="true"
                             android:src="@drawable/icon_notif_sound"
                             android:id ="@+id/appsettings_sound_icon"
                                />
@@ -76,16 +75,19 @@
                            android:text="@string/appsettings_allow_sound_text"
                            android:textAppearance="@style/ui_font_bodytext"
                             android:textColor="@color/ui_white_text_color"
-                           android:gravity="center_vertical"
                            android:paddingLeft="@dimen/settings_textpadding_from_icons"
                            android:layout_toRightOf="@id/appsettings_sound_icon"
-                               />
+                           android:layout_centerVertical="true"
+
+                            />
 
                        <CheckBox
                            android:id="@+id/appsettings_allow_sound_check"
                            android:layout_width="wrap_content"
                            android:layout_height="wrap_content"
                            android:text=""
+                           android:layout_centerVertical="true"
+
                            android:button="@drawable/custom_checkbox"
                            android:layout_alignParentRight="true"/>
                 </RelativeLayout>
@@ -93,7 +95,6 @@
                 <RelativeLayout android:layout_height="wrap_content"
                               android:layout_width="wrap_content"
                               android:id="@+id/appsettings_notif_vibrate_layout"
-                              android:layout_centerVertical="true"
                               android:layout_marginBottom="@dimen/settings_line_spacing">
 
                     <ImageView
@@ -101,6 +102,7 @@
                             android:layout_width="@dimen/settings_icon_size"
                             android:layout_height="@dimen/settings_icon_size"
                             android:scaleType="fitCenter"
+                            android:layout_centerVertical="true"
                             android:src="@drawable/icon_notif_vibrate"/>
                     <TextView
                             android:layout_width="wrap_content"
@@ -110,6 +112,8 @@
                             android:textColor="@color/ui_white_text_color"
                             android:paddingLeft="@dimen/settings_textpadding_from_icons"
                             android:layout_toRightOf="@id/appsettings_vibrate_icon"
+                            android:layout_centerVertical="true"
+
                             />
 
 
@@ -119,6 +123,7 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentRight="true"
                             android:text=""
+                            android:layout_centerVertical="true"
                             android:button="@drawable/custom_checkbox"
                             />
 
@@ -135,7 +140,7 @@
                             android:layout_height="@dimen/settings_icon_size"
                             android:scaleType="fitCenter"
                             android:src="@drawable/icon_notif_blink"
-                            android:gravity="center_vertical"
+                            android:layout_centerVertical="true"
                             />
                     <TextView
                             android:layout_width="wrap_content"
@@ -145,7 +150,7 @@
                             android:textColor="@color/ui_white_text_color"
                             android:paddingLeft="@dimen/settings_textpadding_from_icons"
                             android:layout_toRightOf="@id/appsettings_blink_icon"
-                            android:gravity="center_vertical"
+                            android:layout_centerVertical="true"
                             />
                     <CheckBox
                             android:id="@+id/appsettings_allow_blink_check"
@@ -154,7 +159,7 @@
                             android:text=""
                             android:button="@drawable/custom_checkbox"
                             android:layout_alignParentRight="true"
-                            android:gravity="center_vertical"
+                            android:layout_centerVertical="true"
                             />
                 </RelativeLayout>
 
@@ -185,6 +190,7 @@
             <LinearLayout android:layout_height="wrap_content"
                           android:layout_width="wrap_content"
                           android:orientation="horizontal"
+                          android:gravity="center_vertical"
                           android:id="@+id/settings_time_text_from_layout"
                           android:layout_marginBottom="@dimen/settings_line_spacing">
 
@@ -221,6 +227,7 @@
             <LinearLayout android:layout_height="wrap_content"
                           android:layout_width="wrap_content"
                           android:orientation="horizontal"
+                          android:gravity="center_vertical"
                           android:id="@+id/settings_time_text_until_layout"
                           android:layout_marginBottom="@dimen/settings_line_spacing">
                         <ImageView
@@ -258,7 +265,7 @@
     </LinearLayout>
 
 
-    <LinearLayout
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:layout_alignParentBottom="true"
@@ -274,7 +281,6 @@
                 android:src="@drawable/dashboard_arrow"
                 android:background="@null"/>
     </LinearLayout>
-
 
 
 </RelativeLayout>

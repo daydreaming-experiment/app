@@ -97,18 +97,18 @@
 
     <!-- Measure Activity 2 -->
     <string name="firstLaunchMeasures2_text_intro">Now check that internet and geolocation are activated</string>
-    <string name="firstLaunchMeasures2_text_data"></string>
-    <string name="firstLaunchMeasures2_text_network_connection">Internet</string>
+    <string name="firstLaunchMeasures2_text_network_connection"> Internet</string>
     <string name="firstLaunchMeasures2_explanation_network_connection_ok"><![CDATA[ Internet is used to send us your answers ]]></string>
     <string name="firstLaunchMeasures2_explanation_network_connection_bad"><![CDATA[ <b>Enable internet</b> to send us your answers ]]></string>
     <string name="firstLaunchMeasures2_button_change_data_settings">Change your internet settings</string>
-    <string name="firstLaunchMeasures2_text_location"></string>
-    <string name="firstLaunchMeasures2_text_coarse_location">Coarse location</string>
+    <string name="firstLaunchMeasures2_text_coarse_location"> Coarse location</string>
     <string name="firstLaunchMeasures2_explanation_coarse_location_ok"><![CDATA[ Coarse location (not GPS) is used for anonymous geolocation ]]></string>
     <string name="firstLaunchMeasures2_explanation_coarse_location_bad"><![CDATA[ <b>Enable coarse location</b> (not GPS) for anonymous geolocation ]]></string>
     <string name="firstLaunchMeasures2_button_change_location_settings">Change your location settings</string>
     <string name="firstLaunchMeasures2_title_activity">Measures</string>
     <string name="firstLaunchMeasures2_good_to_go_ok">Your settings are good, click next!</string>
+
+    <string name="firstLaunchMeasures2_text_warning">You do realize that you allow us to get your coarse location and upload your answers?</string>
 
 
     <!-- Questionnaire Activity -->
@@ -160,7 +160,7 @@
     <!-- AppSettings -->
     <string name="appsettings_title">SETTINGS</string>
     <string name="appsettings_notification_title">Notifications</string>
-    <string name="appsettings_time_title">Time window for notifications</string>
+    <string name="appsettings_time_title">Only ask questions</string>
     <string name="appsettings_time_from">From </string>
     <string name="appsettings_time_until">Until </string>
 

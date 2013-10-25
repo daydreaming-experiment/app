@@ -90,6 +90,8 @@ public class FirstLaunch02TermsActivity extends FirstLaunchActivity implements S
     public void onClick_buttonAgree(@SuppressWarnings("UnusedParameters") View view) {
         Logger.v(TAG, "Agree button clicked, launching next activity");
 
+
+
         if (readtheterms == false){
 
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
