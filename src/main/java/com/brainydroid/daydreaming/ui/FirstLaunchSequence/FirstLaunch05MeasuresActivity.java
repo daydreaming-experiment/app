@@ -88,13 +88,13 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
     public void onStart() {
         Logger.v(TAG, "Starting");
         super.onStart();
-        asyncUpdateView();
     }
 
     @Override
     public void onResume() {
         Logger.v(TAG, "Resuming");
         super.onResume();
+        forbidNextButton();
         Logger.d(TAG, "Registering networkReceiver");
         registerReceiver(networkReceiver, networkIntentFilter);
         asyncUpdateView();
