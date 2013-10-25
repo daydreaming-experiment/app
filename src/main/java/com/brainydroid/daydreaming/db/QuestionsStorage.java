@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import com.brainydroid.daydreaming.background.Logger;
+import com.brainydroid.daydreaming.background.StatusManager;
 import com.google.gson.JsonSyntaxException;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -46,6 +47,7 @@ public class QuestionsStorage {
     @Inject Random random;
     @Inject QuestionFactory questionFactory;
     @Inject ProfileStorage profileStorage;
+    @Inject StatusManager statusManager;
 
     private final SQLiteDatabase db;
 
@@ -63,6 +65,11 @@ public class QuestionsStorage {
     private synchronized void setQuestionsVersion(int questionsVersion) {
         Logger.d(TAG, "Setting questions version to {0}", questionsVersion);
         profileStorage.setQuestionsVersion(questionsVersion);
+    }
+
+    private synchronized void setNSlotsPerPoll(int nSlotsPerPoll) {
+        Logger.d(TAG, "Setting nSlotsPerPoll to {0}", nSlotsPerPoll);
+        statusManager.setNSlotsPerPoll(nSlotsPerPoll);
     }
 
     // get question from id in db
@@ -84,6 +91,8 @@ public class QuestionsStorage {
                 res.getColumnIndex(COL_SUB_CATEGORY)));
         q.setDetailsFromJson(res.getString(
                 res.getColumnIndex(COL_DETAILS)));
+        q.setGroup(res.getInt(res.getColumnIndex(COL_GROUP)));
+        q.setSlot(res.getInt(res.getColumnIndex(COL_SLOT)));
         res.close();
 
         return q;
@@ -158,6 +167,8 @@ public class QuestionsStorage {
         qValues.put(COL_SUB_CATEGORY,
                 question.getSubCategory());
         qValues.put(COL_DETAILS, question.getDetailsAsJson());
+        qValues.put(COL_GROUP, question.getGroup());
+        qValues.put(COL_SLOT, question.getSlot());
         return qValues;
     }
 
@@ -169,9 +180,16 @@ public class QuestionsStorage {
         try {
             ServerQuestionsJson serverQuestionsJson = json.fromJson(
                     jsonQuestionsString, ServerQuestionsJson.class);
-            flush();
-            setQuestionsVersion(serverQuestionsJson.getVersion());
-            add(serverQuestionsJson.getQuestionsArrayList());
+            int nSlotsPerPoll = serverQuestionsJson.getNSlotsPerPoll();
+            if (nSlotsPerPoll != -1) {
+                flush();
+                setQuestionsVersion(serverQuestionsJson.getVersion());
+                setNSlotsPerPoll(nSlotsPerPoll);
+                add(serverQuestionsJson.getQuestionsArrayList());
+            } else {
+                throw new JsonSyntaxException("nSlotsPerPoll can't be " +
+                        "undefined or -1");
+            }
         } catch (JsonSyntaxException e) {
             throw new QuestionsSyntaxException();
         }

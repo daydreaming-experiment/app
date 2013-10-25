@@ -5,7 +5,8 @@ import com.brainydroid.daydreaming.background.Logger;
 import com.google.gson.annotations.Expose;
 import com.google.inject.Inject;
 
-// TODO: add some way to save the phone's timezone and the user's preferences_appsettings
+// TODO: add some way to save the phone's timezone and the user's
+// preferences_appSettings
 // about what times he allowed notifications to appear at.
 
 public class Question {

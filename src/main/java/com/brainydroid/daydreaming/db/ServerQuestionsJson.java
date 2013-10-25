@@ -8,8 +8,7 @@ public class ServerQuestionsJson {
     private static String TAG = "ServerQuestionsJson";
 
     public int version = -1;
-    public int nSlotsPerPoll = -1; // TODO: on import, check it's not -1,
-    // else raise exception
+    public int nSlotsPerPoll = -1;
     ArrayList<Question> questions = new ArrayList<Question>();
 
     public synchronized ArrayList<Question> getQuestionsArrayList() {
@@ -20,7 +19,7 @@ public class ServerQuestionsJson {
         return version;
     }
 
-    public synchronized int getnSlotsPerPoll() {
+    public synchronized int getNSlotsPerPoll() {
         return nSlotsPerPoll;
     }
 
