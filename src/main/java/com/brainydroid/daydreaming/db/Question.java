@@ -22,6 +22,8 @@ public class Question {
     private String category = null;
     private String subCategory = null;
     private IQuestionDetails details = null;
+    private int group = -1;
+    private int slot = -1;
 
     @Expose private String status = null;
     @Expose private IAnswer answer = null;
@@ -73,8 +75,7 @@ public class Question {
 
     public synchronized void setDetailsFromJson(String jsonDetails) {
         Logger.v(TAG, "Setting details from JSON");
-        details = json.fromJson(jsonDetails, IQuestionDetails.class);
-        saveIfInSyncingPoll();
+        setDetails(json.fromJson(jsonDetails, IQuestionDetails.class));
     }
 
     public synchronized IQuestionDetails getDetails() {
@@ -84,6 +85,26 @@ public class Question {
     public synchronized void setDetails(IQuestionDetails details) {
         Logger.v(TAG, "Setting details");
         this.details = details;
+        saveIfInSyncingPoll();
+    }
+
+    public synchronized int getGroup() {
+        return group;
+    }
+
+    public synchronized void setGroup(int group) {
+        Logger.v(TAG, "Setting group");
+        this.group = group;
+        saveIfInSyncingPoll();
+    }
+
+    public synchronized int getSlot() {
+        return slot;
+    }
+
+    public synchronized void setSlot(int slot) {
+        Logger.v(TAG, "Setting slot");
+        this.slot = slot;
         saveIfInSyncingPoll();
     }
 

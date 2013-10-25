@@ -20,6 +20,8 @@ public class QuestionsStorage {
     public static final String COL_CATEGORY = "questionCategory";
     public static final String COL_SUB_CATEGORY = "questionSubCategory";
     public static final String COL_DETAILS = "questionDetails";
+    public static final String COL_GROUP = "questionGroup";
+    public static final String COL_SLOT = "questionSlot";
 
     public static final String COL_STATUS = "questionStatus";
     public static final String COL_ANSWER = "questionAnswer";
@@ -35,7 +37,9 @@ public class QuestionsStorage {
                     COL_NAME + " TEXT NOT NULL, " +
                     COL_CATEGORY + " TEXT NOT NULL, " +
                     COL_SUB_CATEGORY + " TEXT, " +
-                    COL_DETAILS + " TEXT NOT NULL" +
+                    COL_DETAILS + " TEXT NOT NULL, " +
+                    COL_GROUP + " INTEGER, " +
+                    COL_SLOT + " INTEGER" +
                     ");";
 
     @Inject Json json;
