@@ -53,7 +53,7 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
     @InjectResource(R.string.firstLaunchMeasures2_explanation_coarse_location_bad)
             String explanationCoarseLocationBad;
     @InjectResource(R.string.firstLaunchMeasures2_good_to_go_ok) String goodToGoOk;
-            String goodToGoBad = "";
+    String goodToGoBad = "";
 
     @InjectView(R.id.firstLaunchMeasures2_buttonNext)
             AlphaImageButton buttonNext;
