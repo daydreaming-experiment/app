@@ -5,9 +5,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.brainydroid.daydreaming.R;
+import com.brainydroid.daydreaming.background.BuildConfig;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.background.SchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
@@ -32,6 +34,10 @@ public class DashboardActivity extends RoboFragmentActivity {
     @InjectView(R.id.dashboard_ExperimentTimeElapsed2)
     TextView timeElapsedTextView;
     @InjectView(R.id.dashboard_ExperimentResultsIn2) TextView timeToGoTextView;
+    @InjectView(R.id.dashboard_titleTesting)  TextView test_text;
+    @InjectView(R.id.button_test_poll) Button test_button;
+
+
 
     @Override
     public void onStart() {
@@ -52,6 +58,7 @@ public class DashboardActivity extends RoboFragmentActivity {
         Logger.v(TAG, "Creating");
         super.onCreate(savedInstanceState);
         checkFirstLaunch();
+        checktest();
         setRobotoFont(this);
 
     }
@@ -227,6 +234,13 @@ public class DashboardActivity extends RoboFragmentActivity {
         ViewGroup godfatherView =
                 (ViewGroup)activity.getWindow().getDecorView();
         FontUtils.setRobotoFont(activity, godfatherView);
+    }
+
+    public void checktest(){
+        if (!BuildConfig.TESTING){
+        test_button.setVisibility(View.GONE);
+        test_text.setVisibility(View.GONE);
+        }
     }
 
 }

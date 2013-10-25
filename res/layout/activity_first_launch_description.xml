@@ -83,55 +83,38 @@
 
     </LinearLayout>
 
-    <LinearLayout android:id="@+id/firstLaunchDescription_cloud_layout"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:layout_marginTop="-10dp"
-                  android:layout_below="@id/firstLaunchDescription_scrollview_layout">
+    <RelativeLayout android:id="@+id/firstLaunchDescription_cloud_layout"
+                  android:layout_width="fill_parent"
+                  android:layout_height="fill_parent">
 
 
         <ImageView
-                android:id="@+id/firstLaunchDescription_cloudimageview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="top"
-                android:src="@drawable/cloud_bottom"   />
-
-    </LinearLayout>
-
-
-    <RelativeLayout android:id="@+id/firstLaunchDescription_person_layout"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:orientation="vertical"
-                    android:layout_alignParentBottom="true"
-            >
-
-        <ImageView
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:layout_centerInParent="true"
-                android:src = "@drawable/person_description"  />
+                android:layout_width="@dimen/cloud_cone_person_width"
+                android:layout_height="@dimen/cloud_cone_person_heigth"
+                android:layout_alignParentBottom="true"
+                android:src = "@drawable/cloud_description"
+                android:scaleType="centerCrop"
+                />
 
     </RelativeLayout>
 
 
-    <LinearLayout android:id="@+id/firstLaunchDescription_button_layout"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:layout_alignParentRight="true"
-                  android:layout_marginRight="@dimen/next_button_right_margin"
-                  android:layout_below="@id/firstLaunchDescription_cloud_layout">
+    <RelativeLayout android:id="@+id/firstLaunchDescription_button_layout"
+                  android:layout_width="fill_parent"
+                  android:layout_height="fill_parent">
 
         <ImageButton
                 android:id="@+id/firstLaunchDescription_buttonNext"
                 android:layout_width="@dimen/button_next_width"
                 android:layout_height="@dimen/button_next_height"
+                android:layout_marginRight="@dimen/next_button_right_margin"
+                android:layout_marginBottom="@dimen/next_button_right_margin"
                 android:onClick="onClick_buttonNext"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
                 android:background="@drawable/button_cloud_next_selector"/>
 
-    </LinearLayout>
+    </RelativeLayout>
 
 
 </RelativeLayout>

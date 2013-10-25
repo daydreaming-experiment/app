@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -11,9 +12,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
+import com.brainydroid.daydreaming.db.Util;
 import com.brainydroid.daydreaming.ui.AlphaButton;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Activity at first launch
@@ -37,7 +42,6 @@ public class FirstLaunch02TermsActivity extends FirstLaunchActivity implements S
     protected TextView more_consent_button;
     @InjectView(R.id.firstLaunchTerms_moreConsent_text)
     protected TextView more_consent_text;
-
     @InjectView(R.id.firstLaunchTerms_Scrollview) ScrollViewExt sv;
     @InjectView(R.id.firstLaunchTerms_buttonAgree)
     protected AlphaButton agreeButton;
@@ -72,7 +76,7 @@ public class FirstLaunch02TermsActivity extends FirstLaunchActivity implements S
         if (diff == 0) {
             agreeButton.setEnabled(true);
             TextView text = (TextView) findViewById(R.id.firstLaunchTerms_please_scroll);
-            text.setVisibility(View.GONE); // Clear TextView asking to scroll down
+            text.setVisibility(View.INVISIBLE); // Clear TextView asking to scroll down
 
             agreeButton.setAlpha(1f);
             agreeButton.setClickable(true);
@@ -88,32 +92,32 @@ public class FirstLaunch02TermsActivity extends FirstLaunchActivity implements S
 
         if (readtheterms == false){
 
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-                this);
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                    this);
 
-        // set title
-        alertDialogBuilder.setTitle("Agreement");
+            // set title
+            alertDialogBuilder.setTitle("Agreement");
 
-        // set dialog message
-        alertDialogBuilder
-                .setMessage("You haven't read the terms. Are you sure you want to carry on?")
-                .setCancelable(false)
-                .setPositiveButton("Yes",new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog,int id) {
-                        launchNextActivity(FirstLaunch03ProfileActivity.class);
-                    }
-                })
-                .setNegativeButton("No",new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog,int id) {
-                         dialog.cancel();
-                    }
-                });
+            // set dialog message
+            alertDialogBuilder
+                    .setMessage("You haven't read the terms. Are you sure you want to carry on?")
+                    .setCancelable(false)
+                    .setPositiveButton("Yes",new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog,int id) {
+                            launchNextActivity(FirstLaunch03ProfileActivity.class);
+                        }
+                    })
+                    .setNegativeButton("No",new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog,int id) {
+                            dialog.cancel();
+                        }
+                    });
 
-        // create alert dialog
-        AlertDialog alertDialog = alertDialogBuilder.create();
+            // create alert dialog
+            AlertDialog alertDialog = alertDialogBuilder.create();
 
-        // show it
-        alertDialog.show();        }
+            // show it
+            alertDialog.show();        }
         else {
             launchNextActivity(FirstLaunch03ProfileActivity.class);
         }
@@ -153,8 +157,10 @@ public class FirstLaunch02TermsActivity extends FirstLaunchActivity implements S
         more_consent_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                more_consent_text.setText(Html.fromHtml(getString(R.string.more_terms_html)));
-                Linkify.addLinks(more_consent_text, Linkify.WEB_URLS | Linkify.EMAIL_ADDRESSES);
+        more_consent_text.setText(Html.fromHtml(getString(R.string.more_terms_html)));
+        Linkify.addLinks(more_consent_text, Linkify.WEB_URLS | Linkify.EMAIL_ADDRESSES);
+
+
             }
         });
 

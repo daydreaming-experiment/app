@@ -50,6 +50,10 @@
  next:    193*113      r =          0.585
 -->
 
+    <dimen  name="dashboard_settings_button_size_withmargin" >60dp</dimen>
+    <dimen  name="dashboard_settings_button_margin" >15dp</dimen>
+
+
     <!-- Block buttons -->
     <dimen  name="block_button_vertical_padding" >6dp</dimen>
     <dimen  name="block_button_horizontal_padding" >20dp</dimen>
@@ -70,6 +74,13 @@
     <dimen  name="description_text_padding" >15dp</dimen>
     <dimen  name="description_text_titleTopMargin" >50dp</dimen>
     <dimen  name="description_text_linespacing" >5dp</dimen>
+    <dimen  name="description_scrollview_heigth">300dp</dimen>
+    <dimen  name="description_cone_vertical_offset">350dp</dimen>
+    <dimen  name="description_cloud_vertical_offset">500dp</dimen>
+
+    <dimen  name="cloud_cone_person_heigth">300dp</dimen>             <!-- TODO CHANGE -->
+    <dimen  name="cloud_cone_person_width">600dp</dimen>              <!-- TODO CHANGE -->
+
 
 
     <!-- SettingsActivity -->
@@ -88,7 +99,6 @@
     <dimen  name="dashboard_calendarblock_number_height" >60dp</dimen>
     <dimen  name="dashboard_calendarblock_days_height" >30dp</dimen>
     <dimen  name="dashboard_icon_size" >50dp</dimen>
-    <dimen  name="dashboard_settings_button_size" >30dp</dimen>
     <dimen  name="dashboard_result_vert_padding_size" >20dp</dimen>
     <dimen  name="dashboard_calendar_buttons_spacing" >20dp</dimen>
 
@@ -108,7 +118,7 @@
     <dimen  name="profile_lateralPadding" >0dp</dimen>
 
     <!-- MeasuresActivity -->
-    <dimen  name="measures_item_vertical_spacing" >12dp</dimen>
+    <dimen  name="measures_item_vertical_spacing" >20dp</dimen>
     <dimen  name="measures_paddingTop" >10dp</dimen>
     <dimen  name="measures_paddingBottom" >10dp</dimen>
     <dimen  name="measures_lateralPadding" >15dp</dimen>
