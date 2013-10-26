@@ -38,7 +38,7 @@ public class QuestionsStorage {
                     COL_CATEGORY + " TEXT NOT NULL, " +
                     COL_SUB_CATEGORY + " TEXT, " +
                     COL_DETAILS + " TEXT NOT NULL, " +
-                    COL_SLOT + " TEXT NOT NUL" +
+                    COL_SLOT + " TEXT NOT NULL" +
                     ");";
 
     @Inject Json json;
@@ -141,6 +141,8 @@ public class QuestionsStorage {
             q.setDetailsFromJson(res.getString(
                     res.getColumnIndex(COL_DETAILS)));
             q.setSlot(res.getString(res.getColumnIndex(COL_SLOT)));
+
+            slottedQuestions.add(q);
         } while (res.moveToNext());
         res.close();
 

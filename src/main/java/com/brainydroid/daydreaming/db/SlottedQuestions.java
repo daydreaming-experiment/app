@@ -17,8 +17,11 @@ public class SlottedQuestions extends ArrayList<Question> {
                 new HashMap<Integer, ArrayList<Question>>();
         Integer slot;
         for (Question q : this) {
+            Logger.v(TAG, "Testing question {}", q.getName());
             try {
                 slot = Integer.parseInt(q.getSlot());
+                Logger.v(TAG, "Question {0} is positioned at {1}",
+                        q.getName(), slot);
                 if (!positionedQuestionGroups.containsKey(slot)) {
                     positionedQuestionGroups.put(slot,
                             new ArrayList<Question>());
@@ -26,6 +29,7 @@ public class SlottedQuestions extends ArrayList<Question> {
                 positionedQuestionGroups.get(slot).add(q);
             } catch (Exception e) {
                 // Do nothing, just continue
+                Logger.v(TAG, "Question {} is only grouped", q.getName());
             }
         }
 
@@ -39,10 +43,13 @@ public class SlottedQuestions extends ArrayList<Question> {
                 new HashMap<String, ArrayList<Question>>();
         String slot;
         for (Question q : this) {
+            Logger.v(TAG, "Testing question {}", q.getName());
             try {
                 Integer.parseInt(q.getSlot());
+                Logger.v(TAG, "Question {} is positioned", q.getName());
                 // If the above statement works, just continue
             } catch (Exception e) {
+                Logger.v(TAG, "Question {} is only grouped", q.getName());
                 slot = q.getSlot();
                 if (!floatingQuestionGroups.containsKey(slot)) {
                     floatingQuestionGroups.put(slot, new ArrayList<Question>());

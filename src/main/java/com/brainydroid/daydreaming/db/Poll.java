@@ -35,10 +35,13 @@ public final class Poll extends StatusModel<Poll,PollsStorage> {
         // Get all our questions
         SlottedQuestions slottedQuestions =
                 questionsStorage.getSlottedQuestions();
+        Logger.v(TAG, "Got {} questions from DB", slottedQuestions.size());
 
         // First get the positioned groups, and convert their negative indices
         HashMap<Integer, ArrayList<Question>> positionedGroups =
                 slottedQuestions.getPositionedQuestionGroups();
+        Logger.v(TAG, "Got {} positioned question groups",
+                positionedGroups.size());
         int originalIndex;
         int convertedIndex;
         for (Map.Entry<Integer, ArrayList<Question>> groupEntry :
@@ -46,6 +49,7 @@ public final class Poll extends StatusModel<Poll,PollsStorage> {
             originalIndex = groupEntry.getKey();
             convertedIndex = originalIndex < 0 ?
                     nSlots + originalIndex : originalIndex;
+            Logger.v(TAG, "Placing group at slot {}", convertedIndex);
             slots.put(convertedIndex, groupEntry.getValue());
         }
 
@@ -56,27 +60,37 @@ public final class Poll extends StatusModel<Poll,PollsStorage> {
                 remainingIndices.add(i);
             }
         }
+        int nFloatingToFill = remainingIndices.size();
+        Logger.v(TAG, "Still have {} slots to fill", nFloatingToFill);
 
         // Get as many floating groups as there remains free slots (they're
         // already randomly ordered)
-        int nFloatingToFill = remainingIndices.size();
         ArrayList<ArrayList<Question>> floatingGroups =
                 slottedQuestions.getRandomFloatingQuestionGroups(
                         nFloatingToFill);
+        Logger.v(TAG, "Got {} floating groups to fill the slots",
+                floatingGroups.size());
         for (int i = 0; i < nFloatingToFill; i++) {
+            Logger.v(TAG, "Putting group {0} at slot {1}",
+                    floatingGroups.get(i).get(0).getSlot(),
+                    remainingIndices.get(i));
             slots.put(remainingIndices.get(i), floatingGroups.get(i));
         }
 
         // Shuffle each group internally, and store in a two-level ArrayList
         ArrayList<ArrayList<Question>> slotsArray =
                 new ArrayList<ArrayList<Question>>(nSlots);
+        ArrayList<Question> slotQuestions;
         for (Map.Entry<Integer, ArrayList<Question>> groupEntry :
                 slots.entrySet()) {
-            slotsArray.add(groupEntry.getKey(),
-                    util.shuffle(groupEntry.getValue()));
+            Logger.v(TAG, "Shuffling slot {}", groupEntry.getKey());
+            slotQuestions = groupEntry.getValue();
+            util.shuffle(slotQuestions);
+            slotsArray.add(groupEntry.getKey(), slotQuestions);
         }
 
         // Finally flatten the two-level ArrayList
+        Logger.v(TAG, "Flattening the slots into an array");
         questions = new ArrayList<Question>();
         for (ArrayList<Question> slot : slotsArray) {
             questions.addAll(slot);

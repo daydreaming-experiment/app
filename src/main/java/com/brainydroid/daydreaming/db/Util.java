@@ -7,6 +7,7 @@ import com.google.inject.Singleton;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Random;
 
@@ -81,26 +82,27 @@ public class Util {
     }
 
     public <T> ArrayList<T> sample(ArrayList<T> list, int nSamples) {
-        Logger.v(TAG, "Sampling {} items in ArrayList", nSamples);
-
         int size = list.size();
-        ArrayList<T> samples = new ArrayList<T>();
+        Logger.v(TAG, "Sampling {0} distinct items in list (size {1})",
+                nSamples, size);
 
         ArrayList<Integer> indices = new ArrayList<Integer>();
         for (int i = 0; i < size; i++) {
             indices.add(i);
         }
+        Collections.shuffle(indices, random);
 
-        for (int used = 0; used < nSamples; used++) {
-            samples.add(list.get(indices.get(random.nextInt(size))));
+        ArrayList<T> samples = new ArrayList<T>();
+        for (int i = 0; i < nSamples; i++) {
+            samples.add(list.get(indices.get(i)));
         }
 
         return samples;
     }
 
-    public <T> ArrayList<T> shuffle(ArrayList<T> list) {
-        Logger.v(TAG, "Shuffling list");
-        return sample(list, list.size());
+    public <T> void shuffle(ArrayList<T> list) {
+        Logger.v(TAG, "Shuffling list (size {})", list.size());
+        Collections.shuffle(list, random);
     }
 
 }
