@@ -11,7 +11,7 @@ public class ServerConfig {
             "http://daydreaming-the-app.net/experiment-static/questions.json";
     */
     public static String QUESTIONS_URL =
-            "http://daydreaming-the-app.net/experiment-static/questions-new-format.json";
+            "http://daydreaming-the-app.net/experiment-static/questions/format-v1/questions.json";
 
     public static String YE_URL_API = "/v1";
     public static String YE_URL_PROFILES = YE_URL_API + "/profiles";
