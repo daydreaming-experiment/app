@@ -10,7 +10,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import java.util.ArrayList;
-import java.util.Random;
+import java.util.HashSet;
 
 @Singleton
 public class QuestionsStorage {
@@ -21,7 +21,6 @@ public class QuestionsStorage {
     public static final String COL_CATEGORY = "questionCategory";
     public static final String COL_SUB_CATEGORY = "questionSubCategory";
     public static final String COL_DETAILS = "questionDetails";
-    public static final String COL_GROUP = "questionGroup";
     public static final String COL_SLOT = "questionSlot";
 
     public static final String COL_STATUS = "questionStatus";
@@ -39,14 +38,13 @@ public class QuestionsStorage {
                     COL_CATEGORY + " TEXT NOT NULL, " +
                     COL_SUB_CATEGORY + " TEXT, " +
                     COL_DETAILS + " TEXT NOT NULL, " +
-                    COL_GROUP + " INTEGER, " +
-                    COL_SLOT + " INTEGER" +
+                    COL_SLOT + " TEXT NOT NUL" +
                     ");";
 
     @Inject Json json;
-    @Inject Random random;
     @Inject QuestionFactory questionFactory;
     @Inject ProfileStorage profileStorage;
+    @Inject SlottedQuestionsFactory slottedQuestionsFactory;
     @Inject StatusManager statusManager;
 
     private final SQLiteDatabase db;
@@ -72,6 +70,10 @@ public class QuestionsStorage {
         statusManager.setNSlotsPerPoll(nSlotsPerPoll);
     }
 
+    public synchronized int getNSlotsPerPoll() {
+        return statusManager.getNSlotsPerPoll();
+    }
+
     // get question from id in db
     public synchronized Question create(String questionName) {
         Logger.d(TAG, "Retrieving question {0} from db", questionName);
@@ -91,8 +93,7 @@ public class QuestionsStorage {
                 res.getColumnIndex(COL_SUB_CATEGORY)));
         q.setDetailsFromJson(res.getString(
                 res.getColumnIndex(COL_DETAILS)));
-        q.setGroup(res.getInt(res.getColumnIndex(COL_GROUP)));
-        q.setSlot(res.getInt(res.getColumnIndex(COL_SLOT)));
+        q.setSlot(res.getString(res.getColumnIndex(COL_SLOT)));
         res.close();
 
         return q;
@@ -120,24 +121,30 @@ public class QuestionsStorage {
         return questionNames;
     }
 
-    // getRandomQuestions
-    public synchronized ArrayList<Question> getRandomQuestions(
-            int nQuestions) {
-        Logger.d(TAG, "Retrieving {0} random questions from db", nQuestions);
+    public synchronized SlottedQuestions getSlottedQuestions() {
+        Logger.d(TAG, "Retrieving all questions from db");
 
-        ArrayList<String> questionNames = getQuestionNames();
-        int nIds = questionNames.size();
-
-        ArrayList<Question> randomQuestions = new ArrayList<Question>();
-        int rIndex;
-
-        for (int i = 0; i < nQuestions && i < nIds; i++) {
-            rIndex = random.nextInt(questionNames.size());
-            randomQuestions.add(create(questionNames.get(rIndex)));
-            questionNames.remove(rIndex);
+        Cursor res = db.query(TABLE_QUESTIONS, null, null, null, null, null,
+                null);
+        if (!res.moveToFirst()) {
+            res.close();
+            return null;
         }
 
-        return randomQuestions;
+        SlottedQuestions slottedQuestions = slottedQuestionsFactory.create();
+        do {
+            Question q = questionFactory.create();
+            q.setName(res.getString(res.getColumnIndex(COL_NAME)));
+            q.setCategory(res.getString(res.getColumnIndex(COL_CATEGORY)));
+            q.setSubCategory(res.getString(
+                    res.getColumnIndex(COL_SUB_CATEGORY)));
+            q.setDetailsFromJson(res.getString(
+                    res.getColumnIndex(COL_DETAILS)));
+            q.setSlot(res.getString(res.getColumnIndex(COL_SLOT)));
+        } while (res.moveToNext());
+        res.close();
+
+        return slottedQuestions;
     }
 
     public synchronized void flush() {
@@ -167,7 +174,6 @@ public class QuestionsStorage {
         qValues.put(COL_SUB_CATEGORY,
                 question.getSubCategory());
         qValues.put(COL_DETAILS, question.getDetailsAsJson());
-        qValues.put(COL_GROUP, question.getGroup());
         qValues.put(COL_SLOT, question.getSlot());
         return qValues;
     }
@@ -180,16 +186,29 @@ public class QuestionsStorage {
         try {
             ServerQuestionsJson serverQuestionsJson = json.fromJson(
                     jsonQuestionsString, ServerQuestionsJson.class);
+
+            // Check nSlotsPerPoll is set
             int nSlotsPerPoll = serverQuestionsJson.getNSlotsPerPoll();
-            if (nSlotsPerPoll != -1) {
-                flush();
-                setQuestionsVersion(serverQuestionsJson.getVersion());
-                setNSlotsPerPoll(nSlotsPerPoll);
-                add(serverQuestionsJson.getQuestionsArrayList());
-            } else {
-                throw new JsonSyntaxException("nSlotsPerPoll can't be " +
-                        "undefined or -1");
+            if (nSlotsPerPoll == -1) {
+                throw new JsonSyntaxException("nSlotsPerPoll can't be -1");
             }
+
+            // Get all question slots and check there are at least as many as
+            // nSlotsPerPoll
+            HashSet<String> slots = new HashSet<String>();
+            for (Question q : serverQuestionsJson.getQuestionsArrayList()) {
+                slots.add(q.getSlot());
+            }
+            if (slots.size() < nSlotsPerPoll) {
+                throw new JsonSyntaxException("There must be at least as many" +
+                        " slots defined in the questions as nSlotsPerPoll");
+            }
+
+            // All is good, do the real import
+            flush();
+            setQuestionsVersion(serverQuestionsJson.getVersion());
+            setNSlotsPerPoll(nSlotsPerPoll);
+            add(serverQuestionsJson.getQuestionsArrayList());
         } catch (JsonSyntaxException e) {
             throw new QuestionsSyntaxException();
         }

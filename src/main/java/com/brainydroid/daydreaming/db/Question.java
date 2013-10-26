@@ -23,8 +23,7 @@ public class Question {
     private String category = null;
     private String subCategory = null;
     private IQuestionDetails details = null;
-    private int group = -1;
-    private int slot = -1;
+    private String slot = null;
 
     @Expose private String status = null;
     @Expose private IAnswer answer = null;
@@ -89,21 +88,11 @@ public class Question {
         saveIfInSyncingPoll();
     }
 
-    public synchronized int getGroup() {
-        return group;
-    }
-
-    public synchronized void setGroup(int group) {
-        Logger.v(TAG, "Setting group");
-        this.group = group;
-        saveIfInSyncingPoll();
-    }
-
-    public synchronized int getSlot() {
+    public synchronized String getSlot() {
         return slot;
     }
 
-    public synchronized void setSlot(int slot) {
+    public synchronized void setSlot(String slot) {
         Logger.v(TAG, "Setting slot");
         this.slot = slot;
         saveIfInSyncingPoll();

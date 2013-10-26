@@ -6,7 +6,7 @@
             "name": "mindWandering_daydreaming",
             "category": "mindWandering",
             "subCategory": "daydreaming",
-            "slot": 0,
+            "slot": "0",
             "details": {
                 "type": "Slider",
                 "subQuestions": [
@@ -22,7 +22,7 @@
             "name": "mindWandering_temporalFuture",
             "category": "mindWandering",
             "subCategory": "temporalFuture",
-            "group": 0,
+            "slot": "A",
             "details": {
                 "type": "Slider",
                 "subQuestions": [
@@ -45,7 +45,7 @@
             "name": "mindWandering_temporalPast",
             "category": "mindWandering",
             "subCategory": "temporalPast",
-            "group": 0,
+            "slot": "A",
             "details": {
                 "type": "Slider",
                 "subQuestions": [
@@ -68,7 +68,7 @@
             "name": "mindWandering_socialOther",
             "category": "mindWandering",
             "subCategory": "socialOther",
-            "group": 1,
+            "slot": "B",
             "details": {
                 "type": "Slider",
                 "subQuestions": [
@@ -90,7 +90,7 @@
             "name": "mindWandering_socialSelf",
             "category": "mindWandering",
             "subCategory": "socialSelf",
-            "group": 1,
+            "slot": "B",
             "details": {
                 "type": "Slider",
                 "subQuestions": [
@@ -106,7 +106,7 @@
             "name": "mood",
             "category": "mood",
             "subCategory": "null",
-            "slot": -2,
+            "slot": "-2",
             "details": {
                 "type": "Slider",
                 "subQuestions": [
@@ -122,7 +122,7 @@
             "name": "currentActivity",
             "category": "currentActivity",
             "subCategory": "null",
-            "slot": -1,
+            "slot": "-1",
             "details": {
                 "type": "MultipleChoice",
                 "text": "What were you doing?",

@@ -1,11 +1,16 @@
 package com.brainydroid.daydreaming.db;
 
 import com.brainydroid.daydreaming.background.Logger;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Random;
 
+@Singleton
 public class Util {
 
     private static String TAG = "Util";
@@ -15,6 +20,8 @@ public class Util {
 
     // Date and time formatter for logging
     private static SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
+
+    @Inject Random random;
 
     public static String multiplyString(String string, int times, String joinString) {
         Logger.v(TAG, "Multiplying strings");
@@ -71,6 +78,29 @@ public class Util {
     public static String formatDate(Date date) {
         Logger.v(TAG, "Formatting date");
         return sdf.format(date);
+    }
+
+    public <T> ArrayList<T> sample(ArrayList<T> list, int nSamples) {
+        Logger.v(TAG, "Sampling {} items in ArrayList", nSamples);
+
+        int size = list.size();
+        ArrayList<T> samples = new ArrayList<T>();
+
+        ArrayList<Integer> indices = new ArrayList<Integer>();
+        for (int i = 0; i < size; i++) {
+            indices.add(i);
+        }
+
+        for (int used = 0; used < nSamples; used++) {
+            samples.add(list.get(indices.get(random.nextInt(size))));
+        }
+
+        return samples;
+    }
+
+    public <T> ArrayList<T> shuffle(ArrayList<T> list) {
+        Logger.v(TAG, "Shuffling list");
+        return sample(list, list.size());
     }
 
 }
