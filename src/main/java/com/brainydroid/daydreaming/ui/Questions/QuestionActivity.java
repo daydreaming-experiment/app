@@ -51,6 +51,8 @@ public class QuestionActivity extends RoboFragmentActivity {
     private IQuestionViewAdapter questionViewAdapter;
 
     @InjectView(R.id.question_linearLayout) LinearLayout questionLinearLayout;
+    @InjectView(R.id.question_introlinearLayout) LinearLayout questionintroLinearLayout;
+
     @InjectView(R.id.question_nextButton)   ImageButton nextButton;
     @InjectView(R.id.question_finishButton)   ImageButton finishButton;
 
@@ -188,9 +190,8 @@ public class QuestionActivity extends RoboFragmentActivity {
 
         if (!isFirstQuestion()) {
             Logger.d(TAG, "Not the first question -> removing welcome text");
-            TextView welcomeText = (TextView)questionLinearLayout.findViewById(R.id.question_welcomeText);
-            questionLinearLayout.removeView(welcomeText);
-
+            TextView welcomeText = (TextView)questionintroLinearLayout.findViewById(R.id.question_welcomeText);
+            welcomeText.setVisibility(View.GONE);
             if (isLastQuestion()) {
                 Logger.d(TAG, "Last question -> setting finish button text");
                 // TODO maybe change image button to finish button
