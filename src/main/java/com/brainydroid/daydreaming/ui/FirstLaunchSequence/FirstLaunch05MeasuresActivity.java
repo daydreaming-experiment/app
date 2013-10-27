@@ -53,7 +53,7 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
     @InjectResource(R.string.firstLaunchMeasures2_explanation_coarse_location_bad)
             String explanationCoarseLocationBad;
     @InjectResource(R.string.firstLaunchMeasures2_good_to_go_ok) String goodToGoOk;
-            String goodToGoBad = "";
+    String goodToGoBad = "";
 
     @InjectView(R.id.firstLaunchMeasures2_buttonNext)
             AlphaImageButton buttonNext;
@@ -88,13 +88,13 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
     public void onStart() {
         Logger.v(TAG, "Starting");
         super.onStart();
-        asyncUpdateView();
     }
 
     @Override
     public void onResume() {
         Logger.v(TAG, "Resuming");
         super.onResume();
+        forbidNextButton();
         Logger.d(TAG, "Registering networkReceiver");
         registerReceiver(networkReceiver, networkIntentFilter);
         asyncUpdateView();
