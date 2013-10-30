@@ -15,6 +15,10 @@ public class StarRatingSubQuestion {
     private float stepSize = -1f;
     @SuppressWarnings("FieldCanBeLocal")
     private float initialRating = -1;
+    @SuppressWarnings("FieldCanBeLocal")
+    private boolean notApplyAllowed = false;
+    @SuppressWarnings("FieldCanBeLocal")
+    private boolean showHints = false;
 
     public synchronized String getText() {
         return text;
@@ -34,6 +38,14 @@ public class StarRatingSubQuestion {
 
     public synchronized float getInitialRating() {
         return initialRating;
+    }
+
+    public synchronized boolean getNotApplyAllowed() {
+        return notApplyAllowed;
+    }
+
+    public synchronized boolean getShowHints() {
+        return showHints;
     }
 
 }
