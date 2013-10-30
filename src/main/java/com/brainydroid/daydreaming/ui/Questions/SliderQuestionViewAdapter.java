@@ -3,6 +3,8 @@ package com.brainydroid.daydreaming.ui.Questions;
 import android.content.Context;
 import android.util.FloatMath;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.brainydroid.daydreaming.R;
@@ -28,6 +30,7 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
     String errorUntouchedMultiple;
     @InjectResource(R.string.questionSlider_sliders_untouched_single)
     String errorUntouchedSingle;
+    @InjectResource(R.string.questionSlider_skipped) String textSkipped;
 
     @Inject Context context;
     @Inject ArrayList<View> subQuestionsViews;
@@ -56,7 +59,8 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
         final ArrayList<String> hints = subQuestion.getHints();
         final int hintsNumber = hints.size();
 
-        TextView qText = (TextView)view.findViewById(R.id.question_slider_mainText);
+        final TextView qText =
+                (TextView)view.findViewById(R.id.question_slider_mainText);
         qText.setText(subQuestion.getText());
 
         TextView leftHintText = (TextView)view.findViewById(R.id.question_slider_leftHint);
@@ -65,27 +69,56 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
         TextView rightHintText = (TextView)view.findViewById(R.id.question_slider_rightHint);
         rightHintText.setText(hints.get(hintsNumber - 1));
 
-        AlphaSeekBar seekBar = (AlphaSeekBar)view.findViewById(R.id.question_slider_seekBar);
+        final AlphaSeekBar seekBar =
+                (AlphaSeekBar)view.findViewById(R.id.question_slider_seekBar);
         seekBar.setProgressDrawable(view.getResources().getDrawable(R.drawable.question_slider_progress));
         seekBar.setThumb(view.getResources().getDrawable(R.drawable.question_slider_thumb));
         seekBar.setAlpha(0.5f);
 
-        final TextView selectedSeek = (TextView)view.findViewById(R.id.question_slider_selectedSeek);
+        final int initialPosition = subQuestion.getInitialPosition();
+        if (initialPosition != -1) {
+            Logger.v(TAG, "Setting seekBar initial position to {0}",
+                    initialPosition);
+            seekBar.setProgress(initialPosition);
+        }
 
-        AlphaSeekBar.OnAlphaSeekBarChangeListener listener = new AlphaSeekBar.OnAlphaSeekBarChangeListener() {
+        final TextView selectedSeek = (TextView)view.findViewById(R.id.question_slider_selectedSeek);
+        if (!subQuestion.getShowHints()) {
+            selectedSeek.setVisibility(View.GONE);
+        }
+
+        final CheckBox naCheckBox =
+                (CheckBox)view.findViewById(R.id.question_slider_naCheckBox);
+        if (!subQuestion.getNotApplyAllowed()) {
+            naCheckBox.setVisibility(View.GONE);
+        }
+
+        AlphaSeekBar.OnAlphaSeekBarChangeListener progressListener =
+                new AlphaSeekBar.OnAlphaSeekBarChangeListener() {
 
             @Override
             public void onProgressChanged(AlphaSeekBar seekBar, int progress,
                                           boolean fromUser) {
-                Logger.v(TAG, "SeekBar progress changed -> changing text " +
-                        "and background");
-                int index = (int) FloatMath.floor((progress / 100f) * hintsNumber);
-                if (index == hintsNumber) {
-                    // Have an open interval to the right
-                    index -= 1;
+                if (!naCheckBox.isChecked()) {
+                    Logger.v(TAG, "SeekBar progress changed -> changing text " +
+                            "and transparency");
+                    int index = (int) FloatMath.floor((progress / 100f) * hintsNumber);
+                    if (index == hintsNumber) {
+                        // Have an open interval to the right
+                        index -= 1;
+                    }
+
+                    selectedSeek.setText(hints.get(index));
+                    seekBar.setAlpha(1f);
+                } else {
+                    // Only reset the progress if the change came from the
+                    // user, otherwise we might generate an infinite loop
+                    if (fromUser) {
+                        Logger.v(TAG, "SeekBar touched by user but skipping " +
+                                "checkbox checked -> doing nothing");
+                        seekBar.setProgress(initialPosition);
+                    }
                 }
-                selectedSeek.setText(hints.get(index));
-                seekBar.setAlpha(1f);
             }
 
             @Override
@@ -95,14 +128,29 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
             public void onStopTrackingTouch(AlphaSeekBar seekBar) { }
         };
 
-        int initialPosition = subQuestion.getInitialPosition();
-        if (initialPosition != -1) {
-            Logger.v(TAG, "Setting seekBar initial position to {0}",
-                    initialPosition);
-            seekBar.setProgress(initialPosition);
-        }
+        seekBar.setOnSeekBarChangeListener(progressListener);
 
-        seekBar.setOnSeekBarChangeListener(listener);
+        CheckBox.OnCheckedChangeListener naListener =
+                new CheckBox.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                seekBar.setProgress(initialPosition);
+                seekBar.setAlpha(0.5f);
+                if (b) {
+                    Logger.d(TAG, "Skipping checkBox checked, " +
+                            "disabling the slider");
+                    selectedSeek.setText(textSkipped);
+                } else {
+                    Logger.d(TAG, "Skipping checkBox unchecked, " +
+                            "re-enabling the slider");
+                    selectedSeek.setText(textPleaseSlide);
+                }
+            }
+
+        };
+
+        naCheckBox.setOnCheckedChangeListener(naListener);
 
         return view;
     }
@@ -140,7 +188,10 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
             TextView textView = (TextView)subQuestionView.findViewById(
                     R.id.question_slider_mainText);
             String text = textView.getText().toString();
-            answer.addAnswer(text, seekBar.getProgress());
+            CheckBox naCheckBox = (CheckBox)subQuestionView.findViewById(
+                    R.id.question_slider_naCheckBox);
+            int progress = naCheckBox.isChecked() ? -1 : seekBar.getProgress();
+            answer.addAnswer(text, progress);
         }
 
         question.setAnswer(answer);

@@ -3,6 +3,8 @@ package com.brainydroid.daydreaming.ui.Questions;
 import android.content.Context;
 import android.util.FloatMath;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.brainydroid.daydreaming.R;
@@ -28,6 +30,7 @@ public class StarRatingQuestionViewAdapter extends BaseQuestionViewAdapter
     String errorUntouchedMultiple;
     @InjectResource(R.string.questionStarRating_star_ratings_untouched_single)
     String errorUntouchedSingle;
+    @InjectResource(R.string.questionStarRating_skipped) String textSkipped;
 
     @Inject Context context;
     @Inject ArrayList<View> subQuestionsViews;
@@ -65,7 +68,8 @@ public class StarRatingQuestionViewAdapter extends BaseQuestionViewAdapter
         TextView rightHintText = (TextView)view.findViewById(R.id.question_star_rating_rightHint);
         rightHintText.setText(hints.get(hintsNumber - 1));
 
-        AlphaRatingBar ratingBar = (AlphaRatingBar)view.findViewById(R.id.question_star_rating_ratingBar);
+        final AlphaRatingBar ratingBar =
+                (AlphaRatingBar)view.findViewById(R.id.question_star_rating_ratingBar);
         ratingBar.setProgressDrawable(view.getResources().getDrawable(R.drawable.question_slider_progress));
         ratingBar.setThumb(view.getResources().getDrawable(R.drawable.question_slider_thumb));
         ratingBar.setAlpha(0.5f);
@@ -86,7 +90,7 @@ public class StarRatingQuestionViewAdapter extends BaseQuestionViewAdapter
             ratingBar.setStepSize(stepSize);
         }
 
-        float initialRating = subQuestion.getInitialRating();
+        final float initialRating = subQuestion.getInitialRating();
         if (initialRating != -1) {
             Logger.v(TAG, "Setting ratingBar initial rating to {0}",
                     initialRating);
@@ -94,26 +98,68 @@ public class StarRatingQuestionViewAdapter extends BaseQuestionViewAdapter
         }
 
         final TextView selectedRating = (TextView)view.findViewById(R.id.question_star_rating_selectedRating);
+        if (!subQuestion.getShowHints()) {
+            selectedRating.setVisibility(View.GONE);
+        }
+
+        final CheckBox naCheckBox =
+                (CheckBox)view.findViewById(R.id.question_star_rating_naCheckBox);
+        if (!subQuestion.getNotApplyAllowed()) {
+            naCheckBox.setVisibility(View.GONE);
+        }
 
         AlphaRatingBar.OnAlphaRatingBarChangeListener listener = new AlphaRatingBar.OnAlphaRatingBarChangeListener() {
 
             @Override
             public void onRatingChanged(AlphaRatingBar ratingBar,
                                         float rating, boolean fromUser) {
-                Logger.v(TAG, "RatingBar rating changed -> changing text " +
-                        "and background");
-                int index = (int) FloatMath.floor((rating / (float)effectiveNumStars) * hintsNumber);
-                if (index == hintsNumber) {
-                    // Have an open interval to the right
-                    index -= 1;
+                if (!naCheckBox.isChecked()) {
+                    Logger.v(TAG, "RatingBar rating changed -> changing text " +
+                            "and transparency");
+                    int index = (int) FloatMath.floor((rating / (float)effectiveNumStars) * hintsNumber);
+                    if (index == hintsNumber) {
+                        // Have an open interval to the right
+                        index -= 1;
+                    }
+
+                    selectedRating.setText(hints.get(index));
+                    ratingBar.setAlpha(1f);
+                } else {
+                    // Only reset the rating if the change came from the
+                    // user, otherwise we might generate an infinite loop
+                    if (fromUser) {
+                        Logger.v(TAG, "RatingBar touched by user but skipping" +
+                                " checkbox checked -> doing nothing");
+                        ratingBar.setRating(initialRating);
+                    }
                 }
-                selectedRating.setText(hints.get(index));
-                ratingBar.setAlpha(1f);
             }
 
         };
 
         ratingBar.setOnRatingBarChangeListener(listener);
+
+        CheckBox.OnCheckedChangeListener naListener =
+                new CheckBox.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                ratingBar.setRating(initialRating);
+                ratingBar.setAlpha(0.5f);
+                if (b) {
+                    Logger.d(TAG, "Skipping checkbox checked, " +
+                            "disabling the rating bar");
+                    selectedRating.setText(textSkipped);
+                } else {
+                    Logger.d(TAG, "Skipping checkbox unchecked, " +
+                            "re-enabling the rating bar");
+                    selectedRating.setText(textPleaseRate);
+                }
+            }
+
+        };
+
+        naCheckBox.setOnCheckedChangeListener(naListener);
 
         return view;
     }
@@ -151,7 +197,10 @@ public class StarRatingQuestionViewAdapter extends BaseQuestionViewAdapter
             TextView textView = (TextView)subQuestionView.findViewById(
                     R.id.question_star_rating_mainText);
             String text = textView.getText().toString();
-            answer.addAnswer(text, ratingBar.getProgress());
+            CheckBox naCheckBox = (CheckBox)subQuestionView.findViewById(
+                    R.id.question_star_rating_naCheckBox);
+            float rating = naCheckBox.isChecked() ? -1 : ratingBar.getRating();
+            answer.addAnswer(text, rating);
         }
 
         question.setAnswer(answer);

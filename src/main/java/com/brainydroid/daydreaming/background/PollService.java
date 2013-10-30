@@ -33,9 +33,6 @@ public class PollService extends RoboService {
 
     private static String TAG = "PollService";
 
-    /** Number of questions per {@link Poll} */
-    public static int N_QUESTIONS_PER_POLL = 3;
-
     @Inject NotificationManager notificationManager;
     @Inject PollsStorage pollsStorage;
     @Inject SharedPreferences sharedPreferences;
@@ -130,7 +127,7 @@ public class PollService extends RoboService {
         .setContentTitle(getString(R.string.pollNotification_title))
         .setContentText(getString(R.string.pollNotification_text))
         .setContentIntent(contentIntent)
-        .setSmallIcon(android.R.drawable.ic_dialog_info)
+        .setSmallIcon(R.drawable.ic_stat_notify_small_daydreaming)
         .setAutoCancel(true)
         .setOnlyAlertOnce(true)
         .setDefaults(flags)
@@ -163,7 +160,7 @@ public class PollService extends RoboService {
             poll = pendingPolls.get(0);
         } else {
             Logger.d(TAG, "Sampling new questions for poll");
-            poll.populateQuestions(N_QUESTIONS_PER_POLL);
+            poll.populateQuestions();
         }
 
         // Update the poll's status

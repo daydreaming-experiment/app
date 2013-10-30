@@ -11,6 +11,10 @@ public class SliderSubQuestion {
     private ArrayList<String> hints = new ArrayList<String>();
     @SuppressWarnings("FieldCanBeLocal")
     private int initialPosition = -1;
+    @SuppressWarnings("FieldCanBeLocal")
+    private boolean notApplyAllowed = false;
+    @SuppressWarnings("FieldCanBeLocal")
+    private boolean showHints = false;
 
     public synchronized String getText() {
         return text;
@@ -22,6 +26,14 @@ public class SliderSubQuestion {
 
     public synchronized int getInitialPosition() {
         return initialPosition;
+    }
+
+    public synchronized boolean getNotApplyAllowed() {
+        return notApplyAllowed;
+    }
+
+    public synchronized boolean getShowHints() {
+        return showHints;
     }
 
 }

@@ -36,6 +36,8 @@ public class AppModule implements Module {
                 build(ProfileFactory.class));
         binder.install(new FactoryModuleBuilder().
                 build(ProfileDataFactory.class));
+        binder.install(new FactoryModuleBuilder()
+                .build(SlottedQuestionsFactory.class));
     }
 
 }

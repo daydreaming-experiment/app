@@ -8,7 +8,7 @@
 
     <!-- __________________________________________________ -->
 
-    <string name="app_name">Day Dreaming</string>
+    <string name="app_name">Daydreaming</string>
     <string name="menu_settings">Settings</string>
 
 
@@ -31,8 +31,8 @@
 
 
     <!-- Welcome Activity -->
-    <string name="firstLaunchWelcome_title_activity">Day Dreaming</string>
-    <string name="firstLaunchWelcome_text_welcome">Day Dreaming Experiment</string>
+    <string name="firstLaunchWelcome_title_activity">Daydreaming</string>
+    <string name="firstLaunchWelcome_text_welcome">Daydreaming Experiment</string>
     <string name="firstLaunchWelcome_button_start">Start</string>
 
 
@@ -132,11 +132,15 @@
     <string name="question_button_finish">Finish</string>
     <string name="question_thank_you">Thank you for answering these questions!</string>
     <string name="questionSlider_please_slide">(Slide to answer)</string>
+    <string name="questionSlider_skipped">(Skipped)</string>
     <string name="questionSlider_sliders_untouched_single">Please answer using the slider</string>
     <string name="questionSlider_sliders_untouched_multiple">Please answer on all the sliders</string>
+    <string name="questionSlider_skip">Does not apply</string>
     <string name="questionStarRating_please_rate">(Select a rating to answer) </string>
+    <string name="questionStarRating_skipped">(Skipped)</string>
     <string name="questionStarRating_star_ratings_untouched_single">Please answer using the star scale</string>
     <string name="questionStarRating_star_ratings_untouched_multiple">Please answer on all the star scales</string>
+    <string name="questionStarRating_skip">Does not apply</string>
     <string name="questionMultipleChoice_check_all_that_apply">Check all that apply</string>
     <string name="questionMultipleChoice_other_hint">Other</string>
     <string name="questionMultipleChoice_other_please_fill">Please tell us more in the \"Other\" box</string>
@@ -149,11 +153,11 @@
     <string name="locationAlert_text_location_and_data">You should enable network-based (coarse) location AND data connection to continue. Please adjust your settings.</string>
     <string name="locationAlert_button_settings">Go to settings&#8230;</string>
     <string name="questionActivity_catch_key">Press again to exit.\nYou\'ll lose these questions!</string>
-
+    <string name="question_common_question_intro_text">Right before the app interrupted you...</string>
 
     <!-- Poll Notivifcation -->
-    <string name="pollNotification_ticker">Day Dreaming poll</string>
-    <string name="pollNotification_title">Day Dreaming</string>
+    <string name="pollNotification_ticker">Daydreaming poll</string>
+    <string name="pollNotification_title">Daydreaming</string>
     <string name="pollNotification_text">A few quick questions</string>
 
 

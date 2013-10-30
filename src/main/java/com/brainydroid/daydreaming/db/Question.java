@@ -5,7 +5,8 @@ import com.brainydroid.daydreaming.background.Logger;
 import com.google.gson.annotations.Expose;
 import com.google.inject.Inject;
 
-// TODO: add some way to save the phone's timezone and the user's preferences_appsettings
+// TODO: add some way to save the phone's timezone and the user's
+// preferences_appSettings
 // about what times he allowed notifications to appear at.
 
 public class Question {
@@ -22,6 +23,7 @@ public class Question {
     private String category = null;
     private String subCategory = null;
     private IQuestionDetails details = null;
+    private String slot = null;
 
     @Expose private String status = null;
     @Expose private IAnswer answer = null;
@@ -73,8 +75,7 @@ public class Question {
 
     public synchronized void setDetailsFromJson(String jsonDetails) {
         Logger.v(TAG, "Setting details from JSON");
-        details = json.fromJson(jsonDetails, IQuestionDetails.class);
-        saveIfInSyncingPoll();
+        setDetails(json.fromJson(jsonDetails, IQuestionDetails.class));
     }
 
     public synchronized IQuestionDetails getDetails() {
@@ -84,6 +85,16 @@ public class Question {
     public synchronized void setDetails(IQuestionDetails details) {
         Logger.v(TAG, "Setting details");
         this.details = details;
+        saveIfInSyncingPoll();
+    }
+
+    public synchronized String getSlot() {
+        return slot;
+    }
+
+    public synchronized void setSlot(String slot) {
+        Logger.v(TAG, "Setting slot");
+        this.slot = slot;
         saveIfInSyncingPoll();
     }
 

@@ -37,14 +37,9 @@ public class StatusManager {
     /** Preference key storing timestamp of the last sync operation */
     private static String LAST_SYNC_TIMESTAMP = "lastSyncTimestamp";
 
-    /** Transient variable and possible values storing questionsUpdate status */
-    @SuppressWarnings({"FieldCanBeLocal", "UnusedDeclaration"})
-    private String questionsUpdateStatus = null;
-    public static String QUESTIONS_UPDATE_FAILED = "questionsUpdateFailed";
-    public static String QUESTIONS_UPDATE_SUCCEEDED =
-            "questionsUpdateSucceeded";
-    public static String QUESTIONS_UPDATE_MALFORMED =
-            "questionsUpdateMalformed";
+    /** Preference key storing number of slots per poll */
+    private static String QUESTIONS_N_SLOTS_PER_POLL =
+            "questionsNSlotsPerPoll";
 
     /** Preference key storing timestamp of beginning of experiment */
     @SuppressWarnings("FieldCanBeLocal")
@@ -150,6 +145,22 @@ public class StatusManager {
         Logger.d(TAG, "Setting questions to updated");
 
         eSharedPreferences.putBoolean(EXP_STATUS_QUESTIONS_UPDATED, true);
+        eSharedPreferences.commit();
+    }
+
+    /**
+     * Get the number of slots per poll
+     */
+    public synchronized int getNSlotsPerPoll() {
+        int nSlotsPerPoll = sharedPreferences.getInt(
+                QUESTIONS_N_SLOTS_PER_POLL, -1);
+        Logger.v(TAG, "nSlotsPerPoll is {}", nSlotsPerPoll);
+        return nSlotsPerPoll;
+    }
+
+    public synchronized void setNSlotsPerPoll(int nSlotsPerPoll) {
+        Logger.d(TAG, "Setting nSlotsPerPoll to {}", nSlotsPerPoll);
+        eSharedPreferences.putInt(QUESTIONS_N_SLOTS_PER_POLL, nSlotsPerPoll);
         eSharedPreferences.commit();
     }
 
