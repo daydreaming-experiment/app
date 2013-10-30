@@ -101,7 +101,7 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
                                           boolean fromUser) {
                 if (!naCheckBox.isChecked()) {
                     Logger.v(TAG, "SeekBar progress changed -> changing text " +
-                            "and background");
+                            "and transparency");
                     int index = (int) FloatMath.floor((progress / 100f) * hintsNumber);
                     if (index == hintsNumber) {
                         // Have an open interval to the right

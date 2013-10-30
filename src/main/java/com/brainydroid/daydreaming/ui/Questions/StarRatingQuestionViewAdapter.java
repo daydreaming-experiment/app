@@ -115,7 +115,7 @@ public class StarRatingQuestionViewAdapter extends BaseQuestionViewAdapter
                                         float rating, boolean fromUser) {
                 if (!naCheckBox.isChecked()) {
                     Logger.v(TAG, "RatingBar rating changed -> changing text " +
-                            "and background");
+                            "and transparency");
                     int index = (int) FloatMath.floor((rating / (float)effectiveNumStars) * hintsNumber);
                     if (index == hintsNumber) {
                         // Have an open interval to the right
