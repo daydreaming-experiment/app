@@ -93,7 +93,9 @@ public final class Poll extends StatusModel<Poll,PollsStorage> {
         Logger.v(TAG, "Flattening the slots into an array");
         questions = new ArrayList<Question>();
         for (ArrayList<Question> slot : slotsArray) {
-            questions.addAll(slot);
+            for (Question q : slot) {
+                addQuestion(q);
+            }
         }
     }
 
