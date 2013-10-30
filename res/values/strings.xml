@@ -8,7 +8,7 @@
 
     <!-- __________________________________________________ -->
 
-    <string name="app_name">Day Dreaming</string>
+    <string name="app_name">Daydreaming</string>
     <string name="menu_settings">Settings</string>
 
 
@@ -31,8 +31,8 @@
 
 
     <!-- Welcome Activity -->
-    <string name="firstLaunchWelcome_title_activity">Day Dreaming</string>
-    <string name="firstLaunchWelcome_text_welcome">Day Dreaming Experiment</string>
+    <string name="firstLaunchWelcome_title_activity">Daydreaming</string>
+    <string name="firstLaunchWelcome_text_welcome">Daydreaming Experiment</string>
     <string name="firstLaunchWelcome_button_start">Start</string>
 
 
@@ -152,8 +152,8 @@
     <string name="question_common_question_intro_text">Right before the app interrupted you...</string>
 
     <!-- Poll Notivifcation -->
-    <string name="pollNotification_ticker">Day Dreaming poll</string>
-    <string name="pollNotification_title">Day Dreaming</string>
+    <string name="pollNotification_ticker">Daydreaming poll</string>
+    <string name="pollNotification_title">Daydreaming</string>
     <string name="pollNotification_text">A few quick questions</string>
 
 
