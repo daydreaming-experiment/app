@@ -49,7 +49,7 @@ public class StarRatingQuestionViewAdapter extends BaseQuestionViewAdapter
 
     }
 
-    private View inflateView(StarRatingSubQuestion subQuestion) {
+    private View inflateView(final StarRatingSubQuestion subQuestion) {
         Logger.v(TAG, "Inflating view for subQuestion");
 
         View view = layoutInflater.inflate(R.layout.question_star_rating, null);
@@ -107,7 +107,13 @@ public class StarRatingQuestionViewAdapter extends BaseQuestionViewAdapter
                     // Have an open interval to the right
                     index -= 1;
                 }
-                selectedRating.setText(hints.get(index));
+
+                if (subQuestion.getShowHints()) {
+                    selectedRating.setText(hints.get(index));
+                } else {
+                    selectedRating.setText("");
+                }
+
                 ratingBar.setAlpha(1f);
             }
 
