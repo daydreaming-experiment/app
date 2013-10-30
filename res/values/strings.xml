@@ -149,7 +149,7 @@
     <string name="locationAlert_text_location_and_data">You should enable network-based (coarse) location AND data connection to continue. Please adjust your settings.</string>
     <string name="locationAlert_button_settings">Go to settings&#8230;</string>
     <string name="questionActivity_catch_key">Press again to exit.\nYou\'ll lose these questions!</string>
-
+    <string name="question_common_question_intro_text">Right before the app interrupted you...</string>
 
     <!-- Poll Notivifcation -->
     <string name="pollNotification_ticker">Day Dreaming poll</string>

@@ -127,7 +127,7 @@ public class PollService extends RoboService {
         .setContentTitle(getString(R.string.pollNotification_title))
         .setContentText(getString(R.string.pollNotification_text))
         .setContentIntent(contentIntent)
-        .setSmallIcon(android.R.drawable.ic_dialog_info)
+        .setSmallIcon(R.drawable.ic_stat_notify_small_daydreaming)
         .setAutoCancel(true)
         .setOnlyAlertOnce(true)
         .setDefaults(flags)
