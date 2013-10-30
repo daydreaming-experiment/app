@@ -49,7 +49,7 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
 
     }
 
-    private View inflateView(SliderSubQuestion subQuestion) {
+    private View inflateView(final SliderSubQuestion subQuestion) {
         Logger.v(TAG, "Inflating view for subQuestion");
 
         View view = layoutInflater.inflate(R.layout.question_slider, null);
@@ -84,7 +84,13 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
                     // Have an open interval to the right
                     index -= 1;
                 }
-                selectedSeek.setText(hints.get(index));
+
+                if (subQuestion.getShowHints()) {
+                    selectedSeek.setText(hints.get(index));
+                } else {
+                    selectedSeek.setText("");
+                }
+
                 seekBar.setAlpha(1f);
             }
 
