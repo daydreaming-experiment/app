@@ -49,7 +49,7 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
 
     }
 
-    private View inflateView(final SliderSubQuestion subQuestion) {
+    private View inflateView(SliderSubQuestion subQuestion) {
         Logger.v(TAG, "Inflating view for subQuestion");
 
         View view = layoutInflater.inflate(R.layout.question_slider, null);
@@ -71,6 +71,9 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
         seekBar.setAlpha(0.5f);
 
         final TextView selectedSeek = (TextView)view.findViewById(R.id.question_slider_selectedSeek);
+        if (!subQuestion.getShowHints()) {
+            selectedSeek.setVisibility(View.GONE);
+        }
 
         AlphaSeekBar.OnAlphaSeekBarChangeListener listener = new AlphaSeekBar.OnAlphaSeekBarChangeListener() {
 
@@ -85,12 +88,7 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
                     index -= 1;
                 }
 
-                if (subQuestion.getShowHints()) {
-                    selectedSeek.setText(hints.get(index));
-                } else {
-                    selectedSeek.setText("");
-                }
-
+                selectedSeek.setText(hints.get(index));
                 seekBar.setAlpha(1f);
             }
 

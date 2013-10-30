@@ -49,7 +49,7 @@ public class StarRatingQuestionViewAdapter extends BaseQuestionViewAdapter
 
     }
 
-    private View inflateView(final StarRatingSubQuestion subQuestion) {
+    private View inflateView(StarRatingSubQuestion subQuestion) {
         Logger.v(TAG, "Inflating view for subQuestion");
 
         View view = layoutInflater.inflate(R.layout.question_star_rating, null);
@@ -94,6 +94,9 @@ public class StarRatingQuestionViewAdapter extends BaseQuestionViewAdapter
         }
 
         final TextView selectedRating = (TextView)view.findViewById(R.id.question_star_rating_selectedRating);
+        if (!subQuestion.getShowHints()) {
+            selectedRating.setVisibility(View.GONE);
+        }
 
         AlphaRatingBar.OnAlphaRatingBarChangeListener listener = new AlphaRatingBar.OnAlphaRatingBarChangeListener() {
 
@@ -108,12 +111,7 @@ public class StarRatingQuestionViewAdapter extends BaseQuestionViewAdapter
                     index -= 1;
                 }
 
-                if (subQuestion.getShowHints()) {
-                    selectedRating.setText(hints.get(index));
-                } else {
-                    selectedRating.setText("");
-                }
-
+                selectedRating.setText(hints.get(index));
                 ratingBar.setAlpha(1f);
             }
 
