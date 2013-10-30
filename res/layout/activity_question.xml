@@ -23,7 +23,6 @@
                 android:id="@+id/question_introlinearLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="@dimen/question_vertical_margin"
                 android:paddingTop="@dimen/question_vertical_margin"
                 android:orientation="vertical" >
 
@@ -42,7 +41,6 @@
                     android:id="@+id/question_commonQuestionIntroText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
                     android:gravity="center_horizontal"
                     android:text="@string/question_common_question_intro_text"
                     android:textAppearance="@style/ui_font_big_title_bold"
