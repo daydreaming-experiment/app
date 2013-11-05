@@ -33,7 +33,7 @@
         <dependency>
             <groupId>android.support</groupId>
             <artifactId>compatibility-v4</artifactId>
-            <version>19</version>
+            <version>19.0.0</version>
         </dependency>
 
         <dependency>
