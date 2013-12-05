@@ -23,3 +23,6 @@ before_install:
 
   # Come back into main repository
   - cd ${MAIN_REPO}
+
+  # Maven 3.1.1 needs android-maven-plugin 3.8.0
+  - if mvn --version | grep -q "Apache Maven 3.1.1"; then echo "Updating android-maven-plugin version to 3.8.0"; sed -i 's/3.7.0/3.8.0/' pom.xml; fi
