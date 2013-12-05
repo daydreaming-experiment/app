@@ -15,9 +15,9 @@ Instructions follow on how get up and running.
 
 ### Building the project
 
-Once IntelliJ is well configured (see below) you can use it directly to
-build the project, but the simplest and most reproducible way is to use
-[Apache Maven](http://maven.apache.org/). That's what we use.
+Once IntelliJ IDEA is well configured (see below) you can use it directly to
+build the project, but the simplest and most reproducible way is to use [Apache
+Maven](http://maven.apache.org/). That's what we use.
 
 ### Version control
 
@@ -64,7 +64,7 @@ ActionBarSherlock.
 First we need the SDK Tools from the Android website:
 
 ```sh
-wget -O android-sdk-linux.tgz http://dl.google.com/android/android-sdk_r22-linux.tgz
+wget -O android-sdk-linux.tgz http://dl.google.com/android/android-sdk_r22.3-linux.tgz
 tar xzf android-sdk-linux.tgz
 ```
 
@@ -92,19 +92,10 @@ Now, install the necessary SDK packages by running the following command
 (from any folder):
 
 ```sh
-android update sdk --no-ui --force --filter platform-tools,build-tools-17.0.0,android-14,android-16,extra-android-support
+android update sdk --no-ui --force --filter platform-tools,build-tools-19.0.0,android-16
 ```
 
 (And answering `y` to the license agreement.)
-
-Finally we'll be needing a small workaround to make sure the version of
-the `maven-android-plugin` we use is compatible with the latest version
-of the SDK tools (otherwise we'll be facing errors like `aapt not found`
-later on):
-
-```sh
-cp -r ${ANDROID_HOME}/build-tools/17.0.0/* ${ANDROID_HOME}/platform-tools/
-```
 
 #### Configure Maven to have the right Android SDK home
 
@@ -136,36 +127,6 @@ home folder to make it look like this:
     </activeProfiles>
 </settings>
 ```
-
-#### Deploy Android packages to Maven
-
-Maven is great, it downloads most packages we need automatically, but
-not all packages in the Maven repository are up to date with the latest
-versions. And Android tools tend to change about once a month these
-days. To help with this we use the [Maven Android SDK
-Deployer](https://github.com/mosabua/maven-android-sdk-deployer):
-
-```sh
-# Get the deployer
-git clone https://github.com/mosabua/maven-android-sdk-deployer.git
-cd maven-android-sdk-deployer
-
-# Install only what we need
-mvn install -N
-cd extras
-mvn install -N
-cd compatibility-v4
-mvn install -N
-cd ../compatibility-v7-gridlayout
-mvn install -N
-```
-
-Now we should be good to go for a full build of the app. `cd` into
-daydreaming's repository, and run `mvn package`. This should take a few
-minutes, and when finished there should be a nice
-`daydreaming-x.y.z.apk` in the `target` folder of the repository.  If
-there isn't, or if a problem appears before this stage, please file an
-issue so we can fix this document!
 
 ## Setting up IntelliJ IDEA
 
