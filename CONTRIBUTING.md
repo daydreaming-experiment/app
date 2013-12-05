@@ -132,7 +132,7 @@ home folder to make it look like this:
 
 Now that we've set up Maven and that we can build the app, it's time to
 get the IDE running. I'm using IntelliJ IDEA Community Edition, version
-12.1 ; if your experience is different with a different version, please
+13 ; if your experience is different with a different version, please
 send us feedback!
 
 ### Importing the Maven project
@@ -162,13 +162,6 @@ environment variable), and click `OK`. Accept the `Java SDK` version
 clicking `OK` at the popup dialog. Now click `Next`, and then `Finish`
 at the next window to finalize the import.
 
-The import will take a few minutes to complete, and on its way it will
-most probably give you an `Error when importing module
-'~apklib-android.support_compatibility-v7_13': Cannot find appropriate
-Android platform for API level`. Not to worry, it's [a known
-bug](http://youtrack.jetbrains.com/issue/IDEA-104800) and has no
-tangible impact (it's fixed in IntelliJ 12.1.2).
-
 ### Configuring IntelliJ
 
 IntelliJ has its own build system (configured by importing the Maven
@@ -176,10 +169,7 @@ settings), and there's still a few options to fix before you can cleanly
 build from inside IntelliJ (remember you can always `mvn package` at the
 command line if IntelliJ won't cooperate).
 
-Go to `File > Project Structure...` and select the `modules` item in the
-leftmost pane of the window. Now in the second pane (from the left), select `~apklib-android.support_compatibility-v7_13` ; in the `Dependencies` tab, make sure the `Module SDK` is set to `Project SDK`. Confirm the changes by clicking `OK` at the bottom.
-
-Finally, go to `Run > Edit Configurations...` ; create a new run
+Go to `Run > Edit Configurations...` ; create a new run
 configuration by clicking the green `+` button and selecting `Android
 Application`. Now on the right side, you can name the configuration
 `daydreaming-run` ; in the `General` tab, select `daydreaming` in the
