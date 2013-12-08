@@ -46,6 +46,12 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".ui.BaseActivity"
+                  android:label="base_activity"
+                  android:theme="@style/MyCustomTheme"
+                  android:screenOrientation="portrait">
+        </activity>
+
         <activity android:name=".ui.Dashboard.SettingsActivity"
                   android:label="@string/settings_title_activity"
                   android:theme="@style/MyCustomTheme"

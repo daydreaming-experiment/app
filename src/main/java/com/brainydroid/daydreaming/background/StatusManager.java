@@ -49,6 +49,14 @@ public class StatusManager {
     @SuppressWarnings("FieldCanBeLocal")
     private static String LATEST_NTP_TIMESTAMP = "latestNtpTimestamp";
 
+    /** Preference key storing the current mode */
+    private static String EXP_CURRENT_MODE = "expCurrentMode";
+
+    private static String TEST_MODE = "test";
+    private static String PROD_MODE = "prod";
+    private static String DEFAULT_MODE = PROD_MODE;
+
+
     /**
      * Interval below which we don't need to re-sync data to servers (in
      * milliseconds)
@@ -298,5 +306,63 @@ public class StatusManager {
     public synchronized long getLatestNtpTime() {
         return sharedPreferences.getLong(LATEST_NTP_TIMESTAMP, -1);
     }
+
+
+   // ------------- Mode related functions
+    /**
+     * get current mode (test or prod)
+     * @return
+     */
+    public synchronized String getcurrentmode() {
+            Logger.d(TAG, "return current mode");
+            return sharedPreferences.getString(EXP_CURRENT_MODE, DEFAULT_MODE);
+    }
+
+    /**
+     * Set current mode
+     * @param mode
+     */
+    private synchronized void setcurrentmode(String mode) {
+        Logger.d(TAG, "Setting current mode");
+        eSharedPreferences.putString(EXP_CURRENT_MODE, mode);
+        eSharedPreferences.commit();
+    }
+
+    public synchronized boolean iscurrentmodetest() {
+        if (getcurrentmode().equals(TEST_MODE)) {
+            Logger.d(TAG, "current mode is test");
+            return true;
+        } else {
+            Logger.d(TAG, "current mode is not test");
+            return false;
+        }
+    }
+
+    public synchronized boolean iscurrentmodeprod() {
+        if (getcurrentmode().equals(PROD_MODE)) {
+            Logger.d(TAG, "current mode is prod");
+            return true;
+        } else {
+            Logger.d(TAG, "current mode is not prod");
+            return false;
+        }
+    }
+
+
+    public synchronized void setcurrentmodetotest() {
+        Logger.d(TAG, "Setting current mode to test");
+        setcurrentmode(TEST_MODE);
+    }
+    public synchronized void setcurrentmodetoprod() {
+        Logger.d(TAG, "Setting current mode to prod");
+        setcurrentmode(PROD_MODE);
+    }
+
+
+
+
+
+
+
 
 }

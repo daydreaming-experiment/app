@@ -1,7 +1,9 @@
 package com.brainydroid.daydreaming.ui.Dashboard;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -9,13 +11,11 @@ import android.support.v4.app.DialogFragment;
 import android.text.format.DateFormat;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.TimePicker;
+import android.widget.*;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.background.SchedulerService;
+import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.db.Util;
 import com.brainydroid.daydreaming.ui.FontUtils;
 import com.brainydroid.daydreaming.ui.TimePickerFragment;
@@ -50,6 +50,8 @@ public class SettingsActivity extends RoboFragmentActivity {
     @InjectView(R.id.appsettings_allow_vibrations_check) CheckBox vibrations_check;
 
     @Inject SharedPreferences sharedPreferences;
+    @Inject StatusManager statusManager;
+
 
     @InjectResource(R.pref.settings_time_window_lb_default) String defaultTimePreferenceMin;
     @InjectResource(R.pref.settings_time_window_ub_default) String defaultTimePreferenceMax;
@@ -290,6 +292,96 @@ public class SettingsActivity extends RoboFragmentActivity {
         onBackPressed();
 
     }
+
+    public void onClick_switchmode(View v) {
+        // TODO
+        // high level description
+        if (statusManager.iscurrentmodetest()){
+            // simple dialog proposing to switch back to prod mode
+            testtoprod_dialog();
+        } else if (statusManager.iscurrentmodeprod()){
+            prodtotest_dialog();
+        }
+
+        // -- propose switch to standard mode
+        // if prod
+        // -- propose to switch to test mode
+        // ---- ask for password
+        // ---- if correct
+        // ------ setcurrentmode('prod')
+        // ------ create new profile
+        // ------ switch profile
+        // endif
+    }
+
+
+    public void testtoprod_dialog(){
+        Logger.v(TAG, "Proposing to switch back to prod mode");
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                this);
+
+        // set title
+        alertDialogBuilder.setTitle("Mode change");
+
+        // set dialog message
+        alertDialogBuilder
+                .setMessage("Back to production mode?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        statusManager.setcurrentmodetoprod();
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // show it
+        alertDialog.show();        }
+
+    public void prodtotest_dialog(){
+        Logger.v(TAG, "Proposing to switch from prod to test mode");
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+        alert.setTitle("Mode Switch");
+        alert.setMessage("Insert pass to switch to test mode");
+
+        // Set an EditText view to get user input
+        final EditText input_pass = new EditText(this);
+        alert.setView(input_pass);
+
+        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                String entered_pass = input_pass.getText().toString();
+                String true_pass = getResources().getString(R.string.mode_switch_pass);
+                if (entered_pass.equals(true_pass)){
+                    statusManager.setcurrentmodetotest();
+                    Toast.makeText(getApplicationContext(),"mode set to test",Toast.LENGTH_SHORT).show();
+
+                } else {
+                    Toast.makeText(getApplicationContext(),"wrong pass",Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
+
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // Canceled.
+            }
+        });
+
+        alert.show();  }
+
+
+
 
     /**
      // see http://www.mkyong.com/android/android-time-picker-example/ for timepicker example.. we don't need time preference anymore
