@@ -153,4 +153,22 @@ public final class LocationPointsStorage extends
                 new String[] {LocationPoint.STATUS_COLLECTING});
     }
 
+    public synchronized void removeLocationPoints(ArrayList<LocationPoint> locationPointArrayList) {
+        Logger.d(TAG, "Removing multiple LocationPoints");
+        if (!(locationPointArrayList==null)){
+            if (!locationPointArrayList.isEmpty()){
+                for (int i=0;i<locationPointArrayList.size();i++) {
+                    int pollId = locationPointArrayList.get(i).getId();
+                    remove(pollId);
+                }
+            }
+        }
+    }
+
+    public synchronized void removeUploadablePolls(){
+        Logger.d(TAG, "Removing uploadable LocationPoints");
+        removeLocationPoints(getUploadableLocationPoints());
+    }
+
+
 }

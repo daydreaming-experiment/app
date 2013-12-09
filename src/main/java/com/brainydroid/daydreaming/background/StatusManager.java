@@ -313,23 +313,28 @@ public class StatusManager {
      * get current mode (test or prod)
      * @return
      */
-    public synchronized String getcurrentmode() {
+    public synchronized String getCurrentMode() {
             Logger.d(TAG, "return current mode");
             return sharedPreferences.getString(EXP_CURRENT_MODE, DEFAULT_MODE);
+    }
+
+    public synchronized String getProfileName() {
+        Logger.d(TAG, "return profile name");
+        return getCurrentMode();
     }
 
     /**
      * Set current mode
      * @param mode
      */
-    private synchronized void setcurrentmode(String mode) {
+    private synchronized void setCurrentMode(String mode) {
         Logger.d(TAG, "Setting current mode");
         eSharedPreferences.putString(EXP_CURRENT_MODE, mode);
         eSharedPreferences.commit();
     }
 
-    public synchronized boolean iscurrentmodetest() {
-        if (getcurrentmode().equals(TEST_MODE)) {
+    public synchronized boolean isCurrentModeTest() {
+        if (getCurrentMode().equals(TEST_MODE)) {
             Logger.d(TAG, "current mode is test");
             return true;
         } else {
@@ -338,8 +343,8 @@ public class StatusManager {
         }
     }
 
-    public synchronized boolean iscurrentmodeprod() {
-        if (getcurrentmode().equals(PROD_MODE)) {
+    public synchronized boolean isCurrentModeProd() {
+        if (getCurrentMode().equals(PROD_MODE)) {
             Logger.d(TAG, "current mode is prod");
             return true;
         } else {
@@ -349,15 +354,14 @@ public class StatusManager {
     }
 
 
-    public synchronized void setcurrentmodetotest() {
+    public synchronized void setCurrentModeToTest() {
         Logger.d(TAG, "Setting current mode to test");
-        setcurrentmode(TEST_MODE);
+        setCurrentMode(TEST_MODE);
     }
-    public synchronized void setcurrentmodetoprod() {
+    public synchronized void setCurrentModeToProd() {
         Logger.d(TAG, "Setting current mode to prod");
-        setcurrentmode(PROD_MODE);
+        setCurrentMode(PROD_MODE);
     }
-
 
 
 

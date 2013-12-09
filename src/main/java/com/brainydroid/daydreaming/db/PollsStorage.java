@@ -181,4 +181,22 @@ public final class PollsStorage extends StatusModelStorage<Poll,
                 new String[]{Integer.toString(pollId)});
     }
 
+    public synchronized void removePolls(ArrayList<Poll> pollArrayList) {
+        Logger.d(TAG, "Removing multiple polls");
+        if (!(pollArrayList==null)){
+            if (!pollArrayList.isEmpty()){
+                for (int i=0;i<pollArrayList.size();i++) {
+                    int pollId = pollArrayList.get(i).getId();
+                    remove(pollId);
+                }
+            }
+        }
+    }
+
+    public synchronized void removeUploadablePolls(){
+        Logger.d(TAG, "Removing uploadable polls");
+
+        removePolls(getUploadablePolls());
+    }
+
 }

@@ -3,6 +3,7 @@ package com.brainydroid.daydreaming.network;
 import android.app.Application;
 import android.content.Context;
 import com.brainydroid.daydreaming.background.Logger;
+import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.db.Json;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -35,17 +36,20 @@ public class CryptoStorage {
     @Inject Json json;
     @Inject Context context;
 
+    @Inject StatusManager sm;
+
+
     private final File maiIdFile;
     private final File publicFile;
     private final File privateFile;
 
     @Inject
     public CryptoStorage(Application application) {
-        Logger.d(TAG, "Initializing CryptoStorage");
-
+        Logger.d(TAG,"Initializing CryptoStorage");
+                     // sm.getProfileName()+" - "+
         File storageDir = application.getDir(STORAGE_DIRNAME, Context.MODE_PRIVATE);
         maiIdFile = new File(storageDir, MAI_ID_FILENAME);
-        publicFile = new File(storageDir, PUBLIC_FILENAME);
+        publicFile = new File(storageDir,PUBLIC_FILENAME);
         privateFile = new File(storageDir, PRIVATE_FILENAME);
     }
 

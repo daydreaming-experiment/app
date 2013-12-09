@@ -251,14 +251,14 @@ public class DashboardActivity extends RoboFragmentActivity {
     }
 
     public void checktest(){
-        if (statusManager.iscurrentmodeprod()){
+        if (statusManager.isCurrentModeProd()){
             test_button.setVisibility(View.INVISIBLE);
             test_button.setClickable(false);
             test_text.setVisibility(View.INVISIBLE);
             setTheme(R.style.MyCustomTheme);
             Logger.v(TAG, "On start: setting prod theme");
 
-        } else if (statusManager.iscurrentmodetest()){
+        } else if (statusManager.isCurrentModeTest()){
             test_button.setVisibility(View.VISIBLE);
             test_button.setClickable(true);
             test_text.setVisibility(View.VISIBLE);
@@ -267,6 +267,7 @@ public class DashboardActivity extends RoboFragmentActivity {
         }
 
     }
+
 
     public static int getCustomThemeId(String themeSetting){
         int themeId;

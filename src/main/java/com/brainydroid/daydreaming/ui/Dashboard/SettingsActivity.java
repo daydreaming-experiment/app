@@ -16,7 +16,11 @@ import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.background.SchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
+import com.brainydroid.daydreaming.db.LocationPointsStorage;
+import com.brainydroid.daydreaming.db.PollsStorage;
+import com.brainydroid.daydreaming.db.ProfileStorage;
 import com.brainydroid.daydreaming.db.Util;
+import com.brainydroid.daydreaming.network.CryptoStorage;
 import com.brainydroid.daydreaming.ui.FontUtils;
 import com.brainydroid.daydreaming.ui.TimePickerFragment;
 import com.google.inject.Inject;
@@ -51,7 +55,10 @@ public class SettingsActivity extends RoboFragmentActivity {
 
     @Inject SharedPreferences sharedPreferences;
     @Inject StatusManager statusManager;
-
+    @Inject ProfileStorage profileStorage;
+    @Inject CryptoStorage cryptoStorage;
+    @Inject PollsStorage pollsStorage;
+    @Inject LocationPointsStorage locationPointsStorage;
 
     @InjectResource(R.pref.settings_time_window_lb_default) String defaultTimePreferenceMin;
     @InjectResource(R.pref.settings_time_window_ub_default) String defaultTimePreferenceMax;
@@ -299,10 +306,10 @@ public class SettingsActivity extends RoboFragmentActivity {
     public void onClick_switchmode(View v) {
         // TODO
         // high level description
-        if (statusManager.iscurrentmodetest()){
+        if (statusManager.isCurrentModeTest()){
             // simple dialog proposing to switch back to prod mode
             testtoprod_dialog();
-        } else if (statusManager.iscurrentmodeprod()){
+        } else if (statusManager.isCurrentModeProd()){
             prodtotest_dialog();
         }
 
@@ -333,7 +340,13 @@ public class SettingsActivity extends RoboFragmentActivity {
                 .setCancelable(false)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        statusManager.setcurrentmodetoprod();
+                        statusManager.setCurrentModeToProd();
+
+                        profileStorage.clearProfile();
+                        cryptoStorage.clearStore();
+                        pollsStorage.removeUploadablePolls();
+                        locationPointsStorage.removeUploadablePolls();
+
                     }
                 })
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -365,7 +378,13 @@ public class SettingsActivity extends RoboFragmentActivity {
                 String entered_pass = input_pass.getText().toString();
                 String true_pass = getResources().getString(R.string.mode_switch_pass);
                 if (entered_pass.equals(true_pass)){
-                    statusManager.setcurrentmodetotest();
+
+                    statusManager.setCurrentModeToTest();
+                    profileStorage.clearProfile();
+                    cryptoStorage.clearStore();
+                    pollsStorage.removeUploadablePolls();
+                    locationPointsStorage.removeUploadablePolls();
+
                     Toast.makeText(getApplicationContext(),"mode set to test",Toast.LENGTH_SHORT).show();
 
                 } else {
