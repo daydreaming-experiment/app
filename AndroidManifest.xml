@@ -38,18 +38,11 @@
 
         <activity android:name=".ui.Dashboard.DashboardActivity"
                   android:label="@string/app_name"
-                  android:theme="@style/MyCustomTheme"
                   android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-        </activity>
-
-        <activity android:name=".ui.BaseActivity"
-                  android:label="base_activity"
-                  android:theme="@style/MyCustomTheme"
-                  android:screenOrientation="portrait">
         </activity>
 
         <activity android:name=".ui.Dashboard.SettingsActivity"

@@ -3,13 +3,14 @@ package com.brainydroid.daydreaming.ui.Dashboard;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.brainydroid.daydreaming.R;
-import com.brainydroid.daydreaming.background.BuildConfig;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.background.SchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
@@ -19,7 +20,6 @@ import com.brainydroid.daydreaming.network.SntpClientCallback;
 import com.brainydroid.daydreaming.ui.AlphaLinearLayout;
 import com.brainydroid.daydreaming.ui.FirstLaunchSequence.FirstLaunch00WelcomeActivity;
 import com.brainydroid.daydreaming.ui.FontUtils;
-import com.brainydroid.daydreaming.ui.BaseActivity;
 
 import com.google.inject.Inject;
 import roboguice.activity.RoboFragmentActivity;
@@ -28,6 +28,9 @@ import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_dashboard)
 public class DashboardActivity extends RoboFragmentActivity {
+
+    public static int THEME = 0;
+
 
     private static String TAG = "DashboardActivity";
 
@@ -38,11 +41,14 @@ public class DashboardActivity extends RoboFragmentActivity {
     @InjectView(R.id.dashboard_ExperimentResultsIn2) TextView timeToGoTextView;
     @InjectView(R.id.dashboard_titleTesting)  TextView test_text;
     @InjectView(R.id.button_test_poll) Button test_button;
+    @InjectView(R.id.dashboard_testing_linearlayout)   LinearLayout test_layout;
 
 
 
     @Override
     public void onStart() {
+        checktest();
+
         Logger.v(TAG, "Starting");
         updateRunningTime();
         super.onStart();
@@ -55,12 +61,18 @@ public class DashboardActivity extends RoboFragmentActivity {
 
     }
 
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Logger.v(TAG, "Creating");
+
+        //TODO: change this rather dirty access to preferences
+        String mode = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("expCurrentMode", "prod");
+        setTheme(getCustomThemeId(mode));
+
         super.onCreate(savedInstanceState);
         checkFirstLaunch();
-        checktest();
         setRobotoFont(this);
 
     }
@@ -239,10 +251,32 @@ public class DashboardActivity extends RoboFragmentActivity {
     }
 
     public void checktest(){
-        if (!BuildConfig.TESTING){
-        test_button.setVisibility(View.GONE);
-        test_text.setVisibility(View.GONE);
+        if (statusManager.iscurrentmodeprod()){
+            test_button.setVisibility(View.INVISIBLE);
+            test_button.setClickable(false);
+            test_text.setVisibility(View.INVISIBLE);
+            setTheme(R.style.MyCustomTheme);
+            Logger.v(TAG, "On start: setting prod theme");
+
+        } else if (statusManager.iscurrentmodetest()){
+            test_button.setVisibility(View.VISIBLE);
+            test_button.setClickable(true);
+            test_text.setVisibility(View.VISIBLE);
+            setTheme(R.style.MyCustomTheme_test);
+            Logger.v(TAG, "On start: setting test theme");
         }
+
     }
+
+    public static int getCustomThemeId(String themeSetting){
+        int themeId;
+        if(themeSetting.equals("prod")){
+            themeId = R.style.MyCustomTheme;
+        }else{
+            themeId = R.style.MyCustomTheme_test;}
+        return themeId;
+    }
+
+
 
 }

@@ -14,7 +14,7 @@
                 android:toDegrees="0.5"
                 android:pivotX="50%"
                 android:pivotY="50%"
-                android:drawable="@drawable/blue_background">
+                android:drawable="@drawable/blue_background_test_border">
         </rotate>
     </item>
 </layer-list>
