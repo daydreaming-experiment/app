@@ -340,12 +340,15 @@ public class SettingsActivity extends RoboFragmentActivity {
                 .setCancelable(false)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        statusManager.setCurrentModeToProd();
 
+                        // clearing test
                         profileStorage.clearProfile();
                         cryptoStorage.clearStore();
+                        // removing pending
                         pollsStorage.removeUploadablePolls();
                         locationPointsStorage.removeUploadablePolls();
+                        // switch status
+                        statusManager.setCurrentModeToProd();
 
                     }
                 })
@@ -379,11 +382,11 @@ public class SettingsActivity extends RoboFragmentActivity {
                 String true_pass = getResources().getString(R.string.mode_switch_pass);
                 if (entered_pass.equals(true_pass)){
 
-                    statusManager.setCurrentModeToTest();
-                    profileStorage.clearProfile();
-                    cryptoStorage.clearStore();
+                    //profileStorage.clearProfile();
+                    //cryptoStorage.clearStore();
                     pollsStorage.removeUploadablePolls();
                     locationPointsStorage.removeUploadablePolls();
+                    statusManager.setCurrentModeToTest();
 
                     Toast.makeText(getApplicationContext(),"mode set to test",Toast.LENGTH_SHORT).show();
 
