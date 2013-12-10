@@ -133,7 +133,7 @@ public class DashboardActivity extends RoboFragmentActivity {
     @Override
     public void onBackPressed() {
         Logger.v(TAG, "Back pressed");
-        // Don't overridePendingTransition (not calling super)
+        super.onBackPressed();
         finish();
     }
 
