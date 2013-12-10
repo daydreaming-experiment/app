@@ -36,18 +36,15 @@ public class CryptoStorage {
     @Inject Json json;
     @Inject Context context;
 
-    @Inject StatusManager sm;
-
-
     private final File maiIdFile;
     private final File publicFile;
     private final File privateFile;
 
     @Inject
-    public CryptoStorage(Application application) {
-        Logger.d(TAG,"Initializing CryptoStorage");
-                     // sm.getProfileName()+" - "+
-        File storageDir = application.getDir(STORAGE_DIRNAME, Context.MODE_PRIVATE);
+    public CryptoStorage(Application application, StatusManager sm) {
+        Logger.d(TAG,"Initializing CryptoStorage for profile " + sm.getProfileName());
+
+        File storageDir = application.getDir(sm.getProfileName() + STORAGE_DIRNAME, Context.MODE_PRIVATE);
         maiIdFile = new File(storageDir, MAI_ID_FILENAME);
         publicFile = new File(storageDir,PUBLIC_FILENAME);
         privateFile = new File(storageDir, PRIVATE_FILENAME);
