@@ -289,7 +289,7 @@ public class SettingsActivity extends RoboFragmentActivity {
     @Override
     public void onBackPressed() {
         Logger.v(TAG, "Back pressed, setting slide transition");
-   //     super.onBackPressed();
+        super.onBackPressed();
         //overridePendingTransition(R.anim.push_bottom_in, R.anim.push_top_out);
 
             Intent intent = new Intent(this, DashboardActivity.class);
@@ -299,7 +299,7 @@ public class SettingsActivity extends RoboFragmentActivity {
     }
 
     public void onClick_backtodashboard(View v) {
-        onBackPressed();
+        finish();
 
     }
 
