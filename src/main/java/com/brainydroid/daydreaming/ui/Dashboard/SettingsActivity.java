@@ -292,15 +292,15 @@ public class SettingsActivity extends RoboFragmentActivity {
         super.onBackPressed();
         //overridePendingTransition(R.anim.push_bottom_in, R.anim.push_top_out);
 
-            Intent intent = new Intent(this, DashboardActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);   // restart to launch oncreate
-            startActivity(intent);
-            overridePendingTransition(R.anim.push_bottom_in, R.anim.push_bottom_out);
+        Intent intent = new Intent(this, DashboardActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);   // restart to launch oncreate
+        startActivity(intent);
+        overridePendingTransition(R.anim.push_bottom_in, R.anim.push_bottom_out);
     }
 
     public void onClick_backtodashboard(View v) {
         finish();
-
+        onBackPressed();
     }
 
     public void onClick_switchmode(View v) {
