@@ -23,8 +23,6 @@ public class DescriptionActivity extends FirstLaunch01DescriptionActivity {
         nextButton.setClickable(false);
         ViewGroup parent = (ViewGroup)findViewById(R.id.firstLaunchDescription_main_layout);
         LayoutInflater.from(this).inflate(R.layout.return_to_dashboard_button, parent, true);
-
-
     }
 
     @Override

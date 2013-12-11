@@ -19,23 +19,17 @@ public class AboutActivity extends RoboFragmentActivity {
     @Inject StatusManager statusManager;
 
     @Override
-    public void onStart() {
-        Logger.v(TAG, "Starting");
-        checkTestMode();
-        super.onStart();
-    }
-
-    @Override
     public void onCreate(Bundle savedInstanceState) {
         Logger.v(TAG, "Creating");
+        checkTestMode();
         ViewGroup godfatherView = (ViewGroup)this.getWindow().getDecorView();
         FontUtils.setRobotoFont(this, godfatherView);
         super.onCreate(savedInstanceState);
     }
 
-    public void checkTestMode(){
+    public void checkTestMode() {
         Logger.d(TAG, "Checking test mode status");
-        if (statusManager.getCurrentMode() == StatusManager.MODE_PROD) {
+        if (StatusManager.getCurrentModeStatic(this) == StatusManager.MODE_PROD) {
             Logger.d(TAG, "Setting production theme");
             setTheme(R.style.MyCustomTheme);
         } else {

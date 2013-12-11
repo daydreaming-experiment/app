@@ -43,12 +43,11 @@ public class DashboardActivity extends RoboFragmentActivity {
     public void onStart() {
         Logger.v(TAG, "Starting");
 
-        checkTestMode();
-        updateRunningTime();
-
         aboutLayout.setAlpha(0.3f);
         aboutLayout.setClickable(false);
 
+        updateRunningTime();
+        updateChromeMode();
         super.onStart();
     }
 
@@ -56,6 +55,7 @@ public class DashboardActivity extends RoboFragmentActivity {
     public void onCreate(Bundle savedInstanceState) {
         Logger.v(TAG, "Creating");
 
+        checkTestMode();
         super.onCreate(savedInstanceState);
         checkFirstLaunch();
         setRobotoFont(this);
@@ -235,21 +235,31 @@ public class DashboardActivity extends RoboFragmentActivity {
         FontUtils.setRobotoFont(activity, godfatherView);
     }
 
-    public void checkTestMode(){
+    private void checkTestMode() {
         Logger.d(TAG, "Checking test mode status");
-        if (statusManager.getCurrentMode() == StatusManager.MODE_PROD) {
+        if (StatusManager.getCurrentModeStatic(this) == StatusManager.MODE_PROD) {
             Logger.d(TAG, "Setting production theme");
-            testButton.setVisibility(View.INVISIBLE);
-            testButton.setClickable(false);
-            testText.setVisibility(View.INVISIBLE);
             setTheme(R.style.MyCustomTheme);
         } else {
             Logger.d(TAG, "Setting test theme");
+            setTheme(R.style.MyCustomTheme_test);
+        }
+    }
+
+    private void updateChromeMode() {
+        Logger.d(TAG, "Updating chrome depending on test mode");
+        if (statusManager.getCurrentMode() == StatusManager.MODE_PROD) {
+            Logger.d(TAG, "Setting production chrome");
+            testButton.setVisibility(View.INVISIBLE);
+            testButton.setClickable(false);
+            testText.setVisibility(View.INVISIBLE);
+        } else {
+            Logger.d(TAG, "Setting test chrome");
             testButton.setVisibility(View.VISIBLE);
             testButton.setClickable(true);
             testText.setVisibility(View.VISIBLE);
-            setTheme(R.style.MyCustomTheme_test);
         }
+
     }
 
 }

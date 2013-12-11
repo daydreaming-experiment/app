@@ -55,15 +55,10 @@ public class SettingsActivity extends RoboFragmentActivity {
     @InjectResource(R.pref.settings_time_window_ub_default) String defaultTimePreferenceMax;
 
     @Override
-    public void onStart() {
-        Logger.v(TAG, "Starting");
-        checkTestMode();
-        super.onStart();
-    }
-
-    @Override
     public void onCreate(Bundle savedInstanceState) {
         Logger.v(TAG, "Creating");
+
+        checkTestMode();
         super.onCreate(savedInstanceState);
 
         ViewGroup godfatherView = (ViewGroup)getWindow().getDecorView();
@@ -360,9 +355,9 @@ public class SettingsActivity extends RoboFragmentActivity {
         vibrations_check.setChecked(sharedPreferences.getBoolean(NOTIF_VIBRATION, true));
     }
 
-    public void checkTestMode(){
+    public void checkTestMode() {
         Logger.d(TAG, "Checking test mode status");
-        if (statusManager.getCurrentMode() == StatusManager.MODE_PROD) {
+        if (StatusManager.getCurrentModeStatic(this) == StatusManager.MODE_PROD) {
             Logger.d(TAG, "Setting production theme");
             setTheme(R.style.MyCustomTheme);
         } else {

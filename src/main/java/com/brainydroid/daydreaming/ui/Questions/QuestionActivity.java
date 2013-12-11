@@ -60,6 +60,8 @@ public class QuestionActivity extends RoboFragmentActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Logger.v(TAG, "Creating");
+
+        checkTestMode();
         super.onCreate(savedInstanceState);
 
         initVars();
@@ -72,13 +74,6 @@ public class QuestionActivity extends RoboFragmentActivity {
         if (isFirstQuestion()) {
             startSchedulerService();
         }
-    }
-
-    @Override
-    public void onStart() {
-        Logger.v(TAG, "Starting");
-        checkTestMode();
-        super.onStart();
     }
 
     @Override
@@ -302,14 +297,14 @@ public class QuestionActivity extends RoboFragmentActivity {
         startService(schedulerIntent);
     }
 
-    public void setRobotoFont(Activity activity){
+    public void setRobotoFont(Activity activity) {
         ViewGroup godfatherView = (ViewGroup) activity.getWindow().getDecorView();
         FontUtils.setRobotoFont(activity, godfatherView);
     }
 
-    public void checkTestMode(){
+    public void checkTestMode() {
         Logger.d(TAG, "Checking test mode status");
-        if (statusManager.getCurrentMode() == StatusManager.MODE_PROD) {
+        if (StatusManager.getCurrentModeStatic(this) == StatusManager.MODE_PROD) {
             Logger.d(TAG, "Setting production theme");
             setTheme(R.style.MyCustomTheme);
         } else {

@@ -39,8 +39,6 @@ public class TermsActivity extends FirstLaunch02TermsActivity {
         setRobotoFont(this);
         ViewGroup parent = (ViewGroup)findViewById(R.id.firstLaunchTerms_main_layout);
         LayoutInflater.from(this).inflate(R.layout.return_to_dashboard_button, parent, true);
-
-
     }
 
     @Override

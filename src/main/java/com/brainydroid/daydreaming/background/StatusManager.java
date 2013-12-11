@@ -2,11 +2,13 @@ package com.brainydroid.daydreaming.background;
 
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import com.brainydroid.daydreaming.db.LocationPointsStorage;
 import com.brainydroid.daydreaming.db.PollsStorage;
 import com.brainydroid.daydreaming.db.ProfileStorage;
@@ -363,6 +365,13 @@ public class StatusManager {
 
     public synchronized int getCurrentMode() {
         return cachedCurrentMode;
+    }
+
+    public static synchronized int getCurrentModeStatic(Context context) {
+        int mode = PreferenceManager.getDefaultSharedPreferences(
+                context.getApplicationContext()).getInt(EXP_CURRENT_MODE, MODE_DEFAULT);
+        Logger.d(TAG, "Current mode is {} (gotten statically)", mode);
+        return mode;
     }
 
     public synchronized String getCurrentModeName() {

@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import com.brainydroid.daydreaming.background.Logger;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import java.util.ArrayList;
@@ -41,7 +42,7 @@ public final class PollsStorage extends StatusModelStorage<Poll,
                     QuestionsStorage.COL_SYSTEM_TIMESTAMP + " REAL" +
                     ");";
 
-    @Inject QuestionsStorage questionsStorage;
+    @Inject Provider<QuestionsStorage> questionsStorageProvider;
     @Inject PollFactory pollFactory;
 
     @Inject
@@ -143,7 +144,7 @@ public final class PollsStorage extends StatusModelStorage<Poll,
         }
 
         do {
-            Question q = questionsStorage.create(qRes.getString(
+            Question q = questionsStorageProvider.get().create(qRes.getString(
                     qRes.getColumnIndex(QuestionsStorage.COL_NAME)));
             q.setStatus(qRes.getString(
                     qRes.getColumnIndex(QuestionsStorage.COL_STATUS)));

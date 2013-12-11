@@ -27,6 +27,7 @@ public abstract class FirstLaunchActivity extends RoboFragmentActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Logger.v(TAG, "Creating");
+        checkTestMode();
         super.onCreate(savedInstanceState);
         setRobotoFont(this);
     }
@@ -34,7 +35,6 @@ public abstract class FirstLaunchActivity extends RoboFragmentActivity {
     @Override
     public void onStart() {
         Logger.v(TAG, "Starting");
-        checkTestMode();
         checkFirstLaunch();
         super.onStart();
     }
@@ -162,9 +162,9 @@ public abstract class FirstLaunchActivity extends RoboFragmentActivity {
         startService(locationPointServiceIntent);
     }
 
-    public void checkTestMode(){
+    public void checkTestMode() {
         Logger.d(TAG, "Checking test mode status");
-        if (statusManager.getCurrentMode() == StatusManager.MODE_PROD) {
+        if (StatusManager.getCurrentModeStatic(this) == StatusManager.MODE_PROD) {
             Logger.d(TAG, "Setting production theme");
             setTheme(R.style.MyCustomTheme);
         } else {
