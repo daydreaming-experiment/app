@@ -50,7 +50,7 @@ public class PollService extends RoboService {
         // because the json was malformed), only reschedule (which will
         // re-download the questions; hopefully they will have been fixed)
         // and don't show any poll.
-        if (statusManager.areQuestionsUpdated()) {
+        if (statusManager.areParametersUpdated()) {
             // Populate and notify the poll
             populatePoll();
             notifyPoll();

@@ -1,6 +1,7 @@
 package com.brainydroid.daydreaming.db;
 
 import android.content.ContentValues;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import com.brainydroid.daydreaming.background.Logger;
@@ -14,9 +15,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 @Singleton
-public class QuestionsStorage {
+public class ParametersStorage {
 
-    private static String TAG = "QuestionsStorage";
+    private static String TAG = "ParametersStorage";
 
     public static final String COL_NAME = "questionName";
     public static final String COL_CATEGORY = "questionCategory";
@@ -42,6 +43,12 @@ public class QuestionsStorage {
                     COL_SLOT + " TEXT NOT NULL" +
                     ");";
 
+    private static String QUESTIONS_N_SLOTS_PER_POLL = "questionsNSlotsPerPoll";
+    private static String PARAMETERS_VERSION = "parametersVersion";
+
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor eSharedPreferences;
+
     @Inject Json json;
     @Inject QuestionFactory questionFactory;
     @Inject ProfileStorage profileStorage;
@@ -51,28 +58,50 @@ public class QuestionsStorage {
     private final SQLiteDatabase db;
 
     @Inject
-    public QuestionsStorage(Storage storage, StatusManager statusManager) {
-        Logger.d(TAG, "{} - Building QuestionsStorage: creating table if it " +
+    public ParametersStorage(Storage storage, StatusManager statusManager,
+                             SharedPreferences sharedPreferences) {
+        Logger.d(TAG, "{} - Building ParametersStorage: creating table if it " +
                 "doesn't exist", statusManager.getCurrentModeName());
 
         db = storage.getWritableDatabase();
         for (String modeName : StatusManager.AVAILABLE_MODE_NAMES) {
             db.execSQL(MessageFormat.format(SQL_CREATE_TABLE_QUESTIONS, modeName));
         }
+
+        this.sharedPreferences = sharedPreferences;
+        eSharedPreferences = sharedPreferences.edit();
     }
 
-    private synchronized void setQuestionsVersion(int questionsVersion) {
-        Logger.d(TAG, "{} - Setting questions version to {}", statusManager.getCurrentModeName(), questionsVersion);
-        profileStorage.setQuestionsVersion(questionsVersion);
+    private synchronized void setParametersVersion(int version) {
+        Logger.d(TAG, "{} - Setting parametersVersion to {}", statusManager.getCurrentModeName(), version);
+        eSharedPreferences.putInt(statusManager.getCurrentModeName() + PARAMETERS_VERSION, version);
+        eSharedPreferences.commit();
+        profileStorage.setParametersVersion(version);
+    }
+
+    private synchronized void clearParametersVersion() {
+        Logger.d(TAG, "{} - Clearing parameters version", statusManager.getCurrentModeName());
+        eSharedPreferences.remove(PARAMETERS_VERSION);
+        eSharedPreferences.commit();
     }
 
     private synchronized void setNSlotsPerPoll(int nSlotsPerPoll) {
         Logger.d(TAG, "{} - Setting nSlotsPerPoll to {}",statusManager.getCurrentModeName(),  nSlotsPerPoll);
-        statusManager.setNSlotsPerPoll(nSlotsPerPoll);
+        eSharedPreferences.putInt(statusManager.getCurrentModeName() + QUESTIONS_N_SLOTS_PER_POLL, nSlotsPerPoll);
+        eSharedPreferences.commit();
     }
 
     public synchronized int getNSlotsPerPoll() {
-        return statusManager.getNSlotsPerPoll();
+        int nSlotsPerPoll = sharedPreferences.getInt(
+                statusManager.getCurrentModeName() + QUESTIONS_N_SLOTS_PER_POLL, -1);
+        Logger.v(TAG, "{} - nSlotsPerPoll is {}", statusManager.getCurrentModeName(), nSlotsPerPoll);
+        return nSlotsPerPoll;
+    }
+
+    public synchronized void clearNSlotsPerPoll() {
+        Logger.d(TAG, "{} - Clearing nSlotsPerPoll", statusManager.getCurrentModeName());
+        eSharedPreferences.remove(statusManager.getCurrentModeName() + QUESTIONS_N_SLOTS_PER_POLL);
+        eSharedPreferences.commit();
     }
 
     // get question from id in db
@@ -129,6 +158,13 @@ public class QuestionsStorage {
     }
 
     public synchronized void flush() {
+        Logger.d(TAG, "{} - Flushing all parameters", statusManager.getCurrentModeName());
+        flushQuestions();
+        clearNSlotsPerPoll();
+        clearParametersVersion();
+    }
+
+    public synchronized void flushQuestions() {
         Logger.d(TAG, "{} - Flushing questions from db", statusManager.getCurrentModeName());
         db.delete(statusManager.getCurrentModeName() + TABLE_QUESTIONS, null, null);
     }
@@ -159,17 +195,17 @@ public class QuestionsStorage {
         return qValues;
     }
 
-    // import questions from json file into database
-    public synchronized void importQuestions(String jsonQuestionsString)
-            throws QuestionsSyntaxException {
-        Logger.d(TAG, "{} - Importing questions from JSON", statusManager.getCurrentModeName());
+    // import parameters from json file into database
+    public synchronized void importParameters(String jsonParametersString)
+            throws ParametersSyntaxException {
+        Logger.d(TAG, "{} - Importing parameters from JSON", statusManager.getCurrentModeName());
 
         try {
-            ServerQuestionsJson serverQuestionsJson = json.fromJson(
-                    jsonQuestionsString, ServerQuestionsJson.class);
+            ServerParametersJson serverParametersJson = json.fromJson(
+                    jsonParametersString, ServerParametersJson.class);
 
             // Check nSlotsPerPoll is set
-            int nSlotsPerPoll = serverQuestionsJson.getNSlotsPerPoll();
+            int nSlotsPerPoll = serverParametersJson.getNSlotsPerPoll();
             if (nSlotsPerPoll == -1) {
                 throw new JsonSyntaxException("nSlotsPerPoll can't be -1");
             }
@@ -177,7 +213,7 @@ public class QuestionsStorage {
             // Get all question slots and check there are at least as many as
             // nSlotsPerPoll
             HashSet<String> slots = new HashSet<String>();
-            for (Question q : serverQuestionsJson.getQuestionsArrayList()) {
+            for (Question q : serverParametersJson.getQuestionsArrayList()) {
                 slots.add(q.getSlot());
             }
             if (slots.size() < nSlotsPerPoll) {
@@ -187,11 +223,11 @@ public class QuestionsStorage {
 
             // All is good, do the real import
             flush();
-            setQuestionsVersion(serverQuestionsJson.getVersion());
+            setParametersVersion(serverParametersJson.getVersion());
             setNSlotsPerPoll(nSlotsPerPoll);
-            add(serverQuestionsJson.getQuestionsArrayList());
+            add(serverParametersJson.getQuestionsArrayList());
         } catch (JsonSyntaxException e) {
-            throw new QuestionsSyntaxException();
+            throw new ParametersSyntaxException();
         }
     }
 

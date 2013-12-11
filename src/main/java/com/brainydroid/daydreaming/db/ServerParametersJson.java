@@ -2,10 +2,10 @@ package com.brainydroid.daydreaming.db;
 
 import java.util.ArrayList;
 
-public class ServerQuestionsJson {
+public class ServerParametersJson {
 
     @SuppressWarnings("UnusedDeclaration")
-    private static String TAG = "ServerQuestionsJson";
+    private static String TAG = "ServerParametersJson";
 
     public int version = -1;
     public int nSlotsPerPoll = -1;

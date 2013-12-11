@@ -22,19 +22,19 @@ public final class Poll extends StatusModel<Poll,PollsStorage> {
     public static final String STATUS_COMPLETED = "pollCompleted"; // QuestionActivity completed
 
     @Inject transient PollsStorage pollsStorage;
-    @Inject transient QuestionsStorage questionsStorage;
+    @Inject transient ParametersStorage parametersStorage;
     @Inject transient Util util;
 
     public synchronized void populateQuestions() {
         Logger.d(TAG, "Populating poll");
 
-        int nSlots = questionsStorage.getNSlotsPerPoll();
+        int nSlots = parametersStorage.getNSlotsPerPoll();
         HashMap<Integer, ArrayList<Question>> slots =
                 new HashMap<Integer, ArrayList<Question>>();
 
         // Get all our questions
         SlottedQuestions slottedQuestions =
-                questionsStorage.getSlottedQuestions();
+                parametersStorage.getSlottedQuestions();
         Logger.v(TAG, "Got {} questions from DB", slottedQuestions.size());
 
         // First get the positioned groups, and convert their negative indices

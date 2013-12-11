@@ -10,6 +10,7 @@ import android.net.NetworkInfo;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import com.brainydroid.daydreaming.db.LocationPointsStorage;
+import com.brainydroid.daydreaming.db.ParametersStorage;
 import com.brainydroid.daydreaming.db.PollsStorage;
 import com.brainydroid.daydreaming.db.ProfileStorage;
 import com.brainydroid.daydreaming.network.CryptoStorage;
@@ -38,15 +39,11 @@ public class StatusManager {
             "expStatusTipiCompleted";
 
     /** Preference key storing the status of initial questions update */
-    private static String EXP_STATUS_QUESTIONS_UPDATED =
+    private static String EXP_STATUS_PARAMETERS_UPDATED =
             "expStatusQuestionsUpdated";
 
     /** Preference key storing timestamp of the last sync operation */
     private static String LAST_SYNC_TIMESTAMP = "lastSyncTimestamp";
-
-    /** Preference key storing number of slots per poll */
-    private static String QUESTIONS_N_SLOTS_PER_POLL =
-            "questionsNSlotsPerPoll";
 
     /** Preference key storing timestamp of beginning of experiment */
     @SuppressWarnings("FieldCanBeLocal")
@@ -65,6 +62,7 @@ public class StatusManager {
     public static String MODE_NAME_TEST = "test";
     public static String MODE_NAME_PROD = "production";
     public static String[] AVAILABLE_MODE_NAMES = {MODE_NAME_PROD, MODE_NAME_TEST};
+    private int cachedCurrentMode = MODE_DEFAULT;
 
     /**
      * Interval below which we don't need to re-sync data to servers (in
@@ -79,13 +77,12 @@ public class StatusManager {
     @Inject ProfileStorage profileStorage;
     @Inject PollsStorage pollsStorage;
     @Inject LocationPointsStorage locationPointsStorage;
+    @Inject ParametersStorage parametersStorage;
     // Use a provider here to prevent circular dependencies
     @Inject Provider<CryptoStorage> cryptoStorageProvider;
 
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor eSharedPreferences;
-
-    private int cachedCurrentMode = MODE_DEFAULT;
 
     /**
      * Initialize the {@link SharedPreferences} editor.
@@ -161,58 +158,36 @@ public class StatusManager {
     }
 
     /**
-     * Check if the questions have been updated.
+     * Check if the parameters have been updated.
      *
-     * @return {@code true} if the questions have been updated,
+     * @return {@code true} if the parameters have been updated,
      *         {@code false} otherwise
      */
-    public synchronized boolean areQuestionsUpdated() {
-        if (sharedPreferences.getBoolean(getCurrentModeName() + EXP_STATUS_QUESTIONS_UPDATED,
+    public synchronized boolean areParametersUpdated() {
+        if (sharedPreferences.getBoolean(getCurrentModeName() + EXP_STATUS_PARAMETERS_UPDATED,
                 false)) {
-            Logger.d(TAG, "{} - Questions are updated", getCurrentModeName());
+            Logger.d(TAG, "{} - Parameters are updated", getCurrentModeName());
             return true;
         } else {
-            Logger.d(TAG, "{} - Questions not updated yet", getCurrentModeName());
+            Logger.d(TAG, "{} - Parameters not updated yet", getCurrentModeName());
             return false;
         }
     }
 
     /**
-     * Set the updated questions flag to completed.
+     * Set the updated parameters flag to completed.
      */
-    public synchronized void setQuestionsUpdated() {
-        Logger.d(TAG, "{} - Setting questions to updated", getCurrentModeName());
+    public synchronized void setParametersUpdated() {
+        Logger.d(TAG, "{} - Setting parameters to updated", getCurrentModeName());
 
-        eSharedPreferences.putBoolean(getCurrentModeName() + EXP_STATUS_QUESTIONS_UPDATED, true);
+        eSharedPreferences.putBoolean(getCurrentModeName() + EXP_STATUS_PARAMETERS_UPDATED, true);
         eSharedPreferences.commit();
     }
 
-    private synchronized void clearQuestionsUpdated() {
-        Logger.d(TAG, "{} - Clearing questions updated", getCurrentModeName());
+    private synchronized void clearParametersUpdated() {
+        Logger.d(TAG, "{} - Clearing parameters updated", getCurrentModeName());
 
-        eSharedPreferences.remove(getCurrentModeName() + EXP_STATUS_QUESTIONS_UPDATED);
-        eSharedPreferences.commit();
-    }
-
-    /**
-     * Get the number of slots per poll
-     */
-    public synchronized int getNSlotsPerPoll() {
-        int nSlotsPerPoll = sharedPreferences.getInt(
-                getCurrentModeName() + QUESTIONS_N_SLOTS_PER_POLL, -1);
-        Logger.v(TAG, "{} - nSlotsPerPoll is {}", getCurrentModeName(), nSlotsPerPoll);
-        return nSlotsPerPoll;
-    }
-
-    public synchronized void setNSlotsPerPoll(int nSlotsPerPoll) {
-        Logger.d(TAG, "{} - Setting nSlotsPerPoll to {}", getCurrentModeName(), nSlotsPerPoll);
-        eSharedPreferences.putInt(getCurrentModeName() + QUESTIONS_N_SLOTS_PER_POLL, nSlotsPerPoll);
-        eSharedPreferences.commit();
-    }
-
-    private synchronized void clearNSlotsPerPoll() {
-        Logger.d(TAG, "{} - Clearing nSlotsPerPoll", getCurrentModeName());
-        eSharedPreferences.remove(getCurrentModeName() + QUESTIONS_N_SLOTS_PER_POLL);
+        eSharedPreferences.remove(getCurrentModeName() + EXP_STATUS_PARAMETERS_UPDATED);
         eSharedPreferences.commit();
     }
 
@@ -408,9 +383,11 @@ public class StatusManager {
         // Clear local flags (after switch)
         clearFirstLaunchCompleted();
         clearTipiQuestionnaireCompleted();
-        clearQuestionsUpdated();
-        clearNSlotsPerPoll();
         clearExperimentStartTimestamp();
+
+        // Clear parameters storage
+        clearParametersUpdated();
+        parametersStorage.flush();
 
         // Clear test profile and crypto storage (after switch)
         profileStorage.clearProfile();
@@ -428,7 +405,7 @@ public class StatusManager {
         setCurrentMode(MODE_PROD);
 
         // Don't clear local flags (after switch), so that experiment isn't restarted
-
+        // Don't clear parameters storage
         // And don't clear test profile and crypto storage (after switch)
     }
 

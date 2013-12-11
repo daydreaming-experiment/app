@@ -24,8 +24,8 @@ public class ProfileStorage {
     private static String PROFILE_TIPI_ANSWER_PREFIX = "profileTipiAnswer";
     private static String PROFILE_TIPI_NUMBER_OF_ANSWERS =
             "profileTipiNumberOfAnswers";
-    private static String PROFILE_QUESTIONS_VERSION =
-            "profileQuestionsVersion";
+    private static String PROFILE_PARAMETERS_VERSION =
+            "profileParametersVersion";
 
     private boolean hasChangedSinceSyncStart = false;
 
@@ -119,14 +119,14 @@ public class ProfileStorage {
         eSharedPreferences.commit();
     }
 
-    public void setQuestionsVersion(int questionsVersion) {
-        Logger.d(TAG, "{} - Setting questionsVersion to {}", statusManager.getCurrentModeName(), questionsVersion);
-        eSharedPreferences.putInt(statusManager.getCurrentModeName() + PROFILE_QUESTIONS_VERSION, questionsVersion);
+    public void setParametersVersion(int version) {
+        Logger.d(TAG, "{} - Setting parametersVersion to {}", statusManager.getCurrentModeName(), version);
+        eSharedPreferences.putInt(statusManager.getCurrentModeName() + PROFILE_PARAMETERS_VERSION, version);
         setIsDirtyAndCommit();
     }
 
-    private int getQuestionsVersion() {
-        return sharedPreferences.getInt(statusManager.getCurrentModeName() + PROFILE_QUESTIONS_VERSION, -1);
+    private int getParametersVersion() {
+        return sharedPreferences.getInt(statusManager.getCurrentModeName() + PROFILE_PARAMETERS_VERSION, -1);
     }
 
     public void setSyncStart() {
@@ -161,7 +161,7 @@ public class ProfileStorage {
     public Profile getProfile() {
         Logger.d(TAG, "Building Profile instance from saved data");
         return profileFactory.create(getAge(), getGender(), getEducation(),
-                getTipiAnswers(), getQuestionsVersion(), statusManager.getCurrentModeName());
+                getTipiAnswers(), getParametersVersion(), statusManager.getCurrentModeName());
     }
 
     public boolean clearProfile() {
@@ -175,7 +175,7 @@ public class ProfileStorage {
         eSharedPreferences.remove(statusManager.getCurrentModeName() + PROFILE_GENDER);
         eSharedPreferences.remove(statusManager.getCurrentModeName() + PROFILE_EDUCATION);
         eSharedPreferences.remove(statusManager.getCurrentModeName() + PROFILE_TIPI_NUMBER_OF_ANSWERS);
-        eSharedPreferences.remove(statusManager.getCurrentModeName() + PROFILE_QUESTIONS_VERSION);
+        eSharedPreferences.remove(statusManager.getCurrentModeName() + PROFILE_PARAMETERS_VERSION);
         eSharedPreferences.commit();
         return true;
     }
