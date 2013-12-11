@@ -296,6 +296,11 @@ public class SettingsActivity extends RoboFragmentActivity {
                 Logger.d(TAG, "User accepted switch to prod mode -> doing it");
                 statusManager.switchToProdMode();
                 Toast.makeText(getApplicationContext(), "Switched back to production mode", Toast.LENGTH_SHORT).show();
+
+                // Restart dashboard (other instances will stop themselves because of theming discrepancy)
+                Intent intent = new Intent(SettingsActivity.this, DashboardActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
             }
         })
         .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -380,8 +385,9 @@ public class SettingsActivity extends RoboFragmentActivity {
     }
 
     private void checkTestModeActivatedDirty() {
-        if (statusManager.getCurrentMode() == StatusManager.MODE_TEST && !testModeThemeActivated) {
-            Logger.w(TAG, "Test mode is activated, but test theme has not been activated, " +
+        if ((statusManager.getCurrentMode() == StatusManager.MODE_TEST && !testModeThemeActivated)
+            || (statusManager.getCurrentMode() == StatusManager.MODE_PROD && testModeThemeActivated)) {
+            Logger.w(TAG, "Test/production mode theme discrepancy, " +
                     "meaning a vicious activity path didn't let us update");
             finish();
         } else {

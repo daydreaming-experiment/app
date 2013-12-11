@@ -58,7 +58,7 @@ public class DashboardActivity extends RoboFragmentActivity {
         aboutLayout.setAlpha(0.3f);
         aboutLayout.setClickable(false);
 
-        checkTestModeActivatedDirty();
+        checkExperimentModeActivatedDirty();
         updateRunningTime();
         updateChromeMode();
         super.onStart();
@@ -67,7 +67,7 @@ public class DashboardActivity extends RoboFragmentActivity {
     @Override
     public void onResume() {
         Logger.v(TAG, "Resuming");
-        checkTestModeActivatedDirty();
+        checkExperimentModeActivatedDirty();
         super.onResume();
     }
 
@@ -259,9 +259,10 @@ public class DashboardActivity extends RoboFragmentActivity {
         }
     }
 
-    private void checkTestModeActivatedDirty() {
-        if (statusManager.getCurrentMode() == StatusManager.MODE_TEST && !testModeThemeActivated) {
-            Logger.w(TAG, "Test mode is activated, but test theme has not been activated, " +
+    private void checkExperimentModeActivatedDirty() {
+        if ((statusManager.getCurrentMode() == StatusManager.MODE_TEST && !testModeThemeActivated)
+            || (statusManager.getCurrentMode() == StatusManager.MODE_PROD && testModeThemeActivated)) {
+            Logger.w(TAG, "Test/production mode theme discrepancy, " +
                     "meaning a vicious activity path didn't let us update");
             finish();
         } else {

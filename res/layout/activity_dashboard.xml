@@ -417,7 +417,7 @@
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
     android:onClick="runPollNow"
-    android:text="Notify a poll now (5 secs)" />
+    android:text="Probe now" />
 
     </LinearLayout>
 

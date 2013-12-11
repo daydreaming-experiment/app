@@ -67,13 +67,13 @@ public abstract class FirstLaunchActivity extends RoboFragmentActivity {
         FontUtils.setRobotoFont(activity, godfatherView);
     }
 
-    protected boolean isTestModeActivatedDirty() {
-        if (statusManager.getCurrentMode() == StatusManager.MODE_TEST && !testModeThemeActivated) {
-            Logger.w(TAG, "Test mode is activated, but test theme has not been activated, " +
-                    "meaning a vicious activity path didn't let us update");
+    protected boolean isExperimentModeActivatedDirty() {
+        if ((statusManager.getCurrentMode() == StatusManager.MODE_TEST && !testModeThemeActivated)
+            || (statusManager.getCurrentMode() == StatusManager.MODE_PROD && testModeThemeActivated)) {
+            Logger.w(TAG, "Discrepancy between theme and test/production mode");
             return true;
         } else {
-            Logger.v(TAG, "No test mode theming discrepancy");
+            Logger.v(TAG, "No test/production mode theming discrepancy");
             return false;
         }
     }
@@ -82,7 +82,7 @@ public abstract class FirstLaunchActivity extends RoboFragmentActivity {
      * Kills activity if first launch already fully completed.
      */
     protected void checkFirstLaunch() {
-        if (statusManager.isFirstLaunchCompleted() || isTestModeActivatedDirty()) {
+        if (statusManager.isFirstLaunchCompleted() || isExperimentModeActivatedDirty()) {
             Logger.i(TAG, "First launch completed or test mode theming discrepancy -> finishing");
             finish();
         } else {
