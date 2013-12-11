@@ -80,6 +80,8 @@ public class StatusManager {
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor eSharedPreferences;
 
+    private int cachedCurrentMode = MODE_DEFAULT;
+
     /**
      * Initialize the {@link SharedPreferences} editor.
      */
@@ -88,6 +90,7 @@ public class StatusManager {
         Logger.d(TAG, "StatusManager created");
         this.sharedPreferences = sharedPreferences;
         eSharedPreferences = sharedPreferences.edit();
+        updateCachedCurrentMode();
     }
 
     /**
@@ -349,13 +352,14 @@ public class StatusManager {
         return sharedPreferences.getLong(LATEST_NTP_TIMESTAMP, -1);
     }
 
-    /**
-     * Get current mode (test or prod).
-     */
-    public synchronized int getCurrentMode() {
+    private synchronized void updateCachedCurrentMode() {
         int mode = sharedPreferences.getInt(EXP_CURRENT_MODE, MODE_DEFAULT);
-        Logger.d(TAG, "Current mode is {}", mode);
-        return mode;
+        Logger.d(TAG, "Updating cached mode (is {})", mode);
+        cachedCurrentMode = mode;
+    }
+
+    public synchronized int getCurrentMode() {
+        return cachedCurrentMode;
     }
 
     public synchronized String getCurrentModeName() {
@@ -376,6 +380,7 @@ public class StatusManager {
         Logger.d(TAG, "Setting current mode to {}", mode);
         eSharedPreferences.putInt(EXP_CURRENT_MODE, mode);
         eSharedPreferences.commit();
+        updateCachedCurrentMode();
     }
 
     public synchronized void switchToTestMode() {
