@@ -85,6 +85,7 @@ public class DashboardActivity extends RoboFragmentActivity {
         Intent intent = new Intent(this, SettingsActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         startActivity(intent);
+        finish();
         overridePendingTransition(R.anim.push_top_in, R.anim.push_top_out);
     }
 

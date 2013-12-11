@@ -112,6 +112,17 @@ public class StatusManager {
         eSharedPreferences.commit();
     }
 
+
+    /**
+     * Set the first launch flag to not completed.
+     */
+    public synchronized void setFirstLaunchNotCompleted() {
+        Logger.d(TAG, "Setting first launch to not completed");
+
+        eSharedPreferences.putBoolean(EXP_STATUS_FL_COMPLETED, false);
+        eSharedPreferences.commit();
+    }
+
     public synchronized boolean isTipiQuestionnaireCompleted() {
         if (sharedPreferences.getBoolean(EXP_STATUS_TIPI_COMPLETED, false)) {
             Logger.d(TAG, "Tipi questionnaire is completed");
@@ -128,6 +139,14 @@ public class StatusManager {
         eSharedPreferences.putBoolean(EXP_STATUS_TIPI_COMPLETED, true);
         eSharedPreferences.commit();
     }
+
+    public synchronized void setTipiQuestionnaireNotCompleted() {
+        Logger.d(TAG, "Setting Tipi questionnaire to not completed");
+
+        eSharedPreferences.putBoolean(EXP_STATUS_TIPI_COMPLETED, false);
+        eSharedPreferences.commit();
+    }
+
 
     /**
      * Check if the questions have been updated.
@@ -153,6 +172,16 @@ public class StatusManager {
         Logger.d(TAG, "Setting questions to updated");
 
         eSharedPreferences.putBoolean(EXP_STATUS_QUESTIONS_UPDATED, true);
+        eSharedPreferences.commit();
+    }
+
+    /**
+     * Set the updated questions flag to completed.
+     */
+    public synchronized void setQuestionsNotUpdated() {
+        Logger.d(TAG, "Setting questions to updated");
+
+        eSharedPreferences.putBoolean(EXP_STATUS_QUESTIONS_UPDATED, false);
         eSharedPreferences.commit();
     }
 

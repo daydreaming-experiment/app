@@ -295,11 +295,11 @@ public class SettingsActivity extends RoboFragmentActivity {
         Intent intent = new Intent(this, DashboardActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);   // restart to launch oncreate
         startActivity(intent);
+        finish();
         overridePendingTransition(R.anim.push_bottom_in, R.anim.push_bottom_out);
     }
 
     public void onClick_backtodashboard(View v) {
-        finish();
         onBackPressed();
     }
 
@@ -347,6 +347,7 @@ public class SettingsActivity extends RoboFragmentActivity {
                         // switch to prod
                         statusManager.setCurrentModeToProd();
 
+
                     }
                 })
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -388,6 +389,11 @@ public class SettingsActivity extends RoboFragmentActivity {
                     profileStorage.clearProfile();
                     cryptoStorage.clearStore();
                     Toast.makeText(getApplicationContext(),"mode set to test",Toast.LENGTH_SHORT).show();
+                    // set firstlaunch sequence to not complete and reset
+                    statusManager.setFirstLaunchNotCompleted();
+                    statusManager.setQuestionsNotUpdated();
+                    statusManager.setTipiQuestionnaireNotCompleted(); //Todo : share the questionnaires when creating test profile. redoing is a pain
+                    onBackPressed();
 
                 } else {
                     Toast.makeText(getApplicationContext(),"wrong pass",Toast.LENGTH_SHORT).show();
