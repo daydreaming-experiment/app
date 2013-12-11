@@ -11,6 +11,7 @@ public interface ProfileFactory {
                           @Assisted("gender") String gender,
                           @Assisted("education") String education,
                           HashMap<String, Integer> tipiAnswers,
-                          int questionsVersion);
+                          int questionsVersion,
+                          @Assisted("mode") String mode);
 
 }

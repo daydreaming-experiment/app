@@ -152,7 +152,7 @@ public class ProfileStorage {
     public Profile getProfile() {
         Logger.d(TAG, "Building Profile instance from saved data");
         return profileFactory.create(getAge(), getGender(), getEducation(),
-                getTipiAnswers(), getQuestionsVersion());
+                getTipiAnswers(), getQuestionsVersion(), statusManager.getProfileName());
     }
 
     public boolean clearProfile(){

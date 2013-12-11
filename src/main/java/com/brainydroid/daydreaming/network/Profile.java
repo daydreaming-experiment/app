@@ -34,10 +34,11 @@ public class Profile {
                    @Assisted("gender") String gender,
                    @Assisted("education") String education,
                    @Assisted HashMap<String, Integer> tipiAnswers,
-                   @Assisted int questionsVersion) {
+                   @Assisted int questionsVersion,
+                   @Assisted("mode") String mode) {
         Logger.v(TAG, "Creating a Profile instance with detailed data");
         this.profile_data = profileDataFactory.create(age, gender, education,
-                tipiAnswers, questionsVersion);
+                tipiAnswers, questionsVersion, mode);
     }
 
     public synchronized String getId() {
