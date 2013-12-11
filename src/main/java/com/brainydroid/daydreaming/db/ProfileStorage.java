@@ -110,6 +110,18 @@ public class ProfileStorage {
         return tipiAnswers;
     }
 
+    private void clearTipiAnswers() {
+        Logger.d(TAG, "{} - Clearing tipiAnswers", statusManager.getCurrentModeName());
+
+        int numberOfAnswers = sharedPreferences.getInt(statusManager.getCurrentModeName() +
+                PROFILE_TIPI_NUMBER_OF_ANSWERS, 0);
+        for (int index = 0; index < numberOfAnswers; index++) {
+            eSharedPreferences.remove(statusManager.getCurrentModeName() + PROFILE_TIPI_NAME_PREFIX + index);
+        }
+
+        eSharedPreferences.commit();
+    }
+
     public void setQuestionsVersion(int questionsVersion) {
         Logger.d(TAG, "{} - Setting questionsVersion to {}", statusManager.getCurrentModeName(), questionsVersion);
         eSharedPreferences.putInt(statusManager.getCurrentModeName() + PROFILE_QUESTIONS_VERSION, questionsVersion);
@@ -155,13 +167,16 @@ public class ProfileStorage {
                 getTipiAnswers(), getQuestionsVersion(), statusManager.getCurrentModeName());
     }
 
-    public boolean clearProfile(){
+    public boolean clearProfile() {
+        Logger.d(TAG, "{} - Clearing profile", statusManager.getCurrentModeName());
+
+        // First clear tipi answers, since it uses the tipiNumberOfQuestions key
+        clearTipiAnswers();
+
         eSharedPreferences.remove(statusManager.getCurrentModeName() + PROFILE_IS_DIRTY);
         eSharedPreferences.remove(statusManager.getCurrentModeName() + PROFILE_AGE);
         eSharedPreferences.remove(statusManager.getCurrentModeName() + PROFILE_GENDER);
         eSharedPreferences.remove(statusManager.getCurrentModeName() + PROFILE_EDUCATION);
-        eSharedPreferences.remove(statusManager.getCurrentModeName() + PROFILE_TIPI_NAME_PREFIX);
-        eSharedPreferences.remove(statusManager.getCurrentModeName() + PROFILE_TIPI_ANSWER_PREFIX);
         eSharedPreferences.remove(statusManager.getCurrentModeName() + PROFILE_TIPI_NUMBER_OF_ANSWERS);
         eSharedPreferences.remove(statusManager.getCurrentModeName() + PROFILE_QUESTIONS_VERSION);
         eSharedPreferences.commit();

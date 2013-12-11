@@ -119,7 +119,7 @@ public class StatusManager {
         eSharedPreferences.commit();
     }
 
-    public synchronized void clearFirstLaunchCompleted() {
+    private synchronized void clearFirstLaunchCompleted() {
         Logger.d(TAG, "{} - Clearing first launch completed", getCurrentModeName());
 
         eSharedPreferences.remove(getCurrentModeName() + EXP_STATUS_FL_COMPLETED);

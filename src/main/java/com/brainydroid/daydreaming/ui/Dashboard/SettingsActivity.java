@@ -262,6 +262,7 @@ public class SettingsActivity extends RoboFragmentActivity {
 
         Intent intent = new Intent(this, DashboardActivity.class);
         startActivity(intent);
+        finish();
         overridePendingTransition(R.anim.push_bottom_in, R.anim.push_bottom_out);
     }
 
@@ -298,7 +299,7 @@ public class SettingsActivity extends RoboFragmentActivity {
             }
         })
         .setNegativeButton("No", new DialogInterface.OnClickListener() {
-
+            
             public void onClick(DialogInterface dialog, int id) {
                 Logger.d(TAG, "User cancelled switch to prod mode");
                 dialog.cancel();

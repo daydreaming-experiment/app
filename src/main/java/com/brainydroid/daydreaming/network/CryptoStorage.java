@@ -42,7 +42,8 @@ public class CryptoStorage {
     public CryptoStorage(Application application, StatusManager statusManager) {
         Logger.d(TAG, "Initializing CryptoStorage for profile '{}'", statusManager.getCurrentModeName());
 
-        File storageDir = application.getDir(statusManager.getCurrentModeName() + STORAGE_DIRNAME, Context.MODE_PRIVATE);
+        File storageDir = application.getDir(statusManager.getCurrentModeName() + STORAGE_DIRNAME,
+                Context.MODE_PRIVATE);
         maiIdFile = new File(storageDir, MAI_ID_FILENAME);
         publicFile = new File(storageDir,PUBLIC_FILENAME);
         privateFile = new File(storageDir, PRIVATE_FILENAME);
