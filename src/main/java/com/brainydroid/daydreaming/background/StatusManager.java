@@ -12,6 +12,7 @@ import com.brainydroid.daydreaming.db.PollsStorage;
 import com.brainydroid.daydreaming.db.ProfileStorage;
 import com.brainydroid.daydreaming.network.CryptoStorage;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 /**
@@ -70,10 +71,11 @@ public class StatusManager {
     @Inject LocationManager locationManager;
     @Inject ConnectivityManager connectivityManager;
     @Inject ActivityManager activityManager;
-    @Inject CryptoStorage cryptoStorage;
     @Inject ProfileStorage profileStorage;
     @Inject PollsStorage pollsStorage;
     @Inject LocationPointsStorage locationPointsStorage;
+    // Use a provider here to prevent circular dependencies
+    @Inject Provider<CryptoStorage> cryptoStorageProvider;
 
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor eSharedPreferences;
@@ -126,7 +128,7 @@ public class StatusManager {
         eSharedPreferences.commit();
     }
 
-    private synchronized boolean isTipiQuestionnaireCompleted() {
+    public synchronized boolean isTipiQuestionnaireCompleted() {
         if (sharedPreferences.getBoolean(getCurrentModeName() + EXP_STATUS_TIPI_COMPLETED, false)) {
             Logger.d(TAG, "{} - Tipi questionnaire is completed", getCurrentModeName());
             return true;
@@ -352,26 +354,26 @@ public class StatusManager {
      */
     public synchronized int getCurrentMode() {
         int mode = sharedPreferences.getInt(EXP_CURRENT_MODE, MODE_DEFAULT);
-        Logger.d(TAG, "Current mode is '{}'", mode);
+        Logger.d(TAG, "Current mode is {}", mode);
         return mode;
     }
 
     public synchronized String getCurrentModeName() {
-        String profileName;
+        String modeName;
         if (getCurrentMode() == MODE_PROD) {
-            profileName = ProfileStorage.PROFILE_NAME_PROD;
+            modeName = ProfileStorage.PROFILE_NAME_PROD;
         } else {
-            profileName = ProfileStorage.PROFILE_NAME_TEST;
+            modeName = ProfileStorage.PROFILE_NAME_TEST;
         }
-        Logger.v(TAG, "Current profile name is '{}'", profileName);
-        return profileName;
+        Logger.v(TAG, "Current mode name is {}", modeName);
+        return modeName;
     }
 
     /**
      * Set current mode.
      */
     private synchronized void setCurrentMode(int mode) {
-        Logger.d(TAG, "Setting current mode to '{}'", mode);
+        Logger.d(TAG, "Setting current mode to {}", mode);
         eSharedPreferences.putInt(EXP_CURRENT_MODE, mode);
         eSharedPreferences.commit();
     }
@@ -395,7 +397,7 @@ public class StatusManager {
 
         // Clear test profile and crypto storage (after switch)
         profileStorage.clearProfile();
-        cryptoStorage.clearStore();
+        cryptoStorageProvider.get().clearStore();
     }
 
     public synchronized void switchToProdMode() {

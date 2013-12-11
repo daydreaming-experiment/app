@@ -31,7 +31,7 @@ public class QuestionsStorage {
     public static final String COL_SYSTEM_TIMESTAMP =
             "questionSystemTimestamp";
 
-    private static String TABLE_QUESTIONS = "questions";
+    private static String TABLE_QUESTIONS = "Questions";
 
     private static final String SQL_CREATE_TABLE_QUESTIONS =
             "CREATE TABLE IF NOT EXISTS {}" + TABLE_QUESTIONS + " (" +
@@ -51,8 +51,7 @@ public class QuestionsStorage {
     private final SQLiteDatabase db;
 
     @Inject
-    public QuestionsStorage(Storage storage) {
-
+    public QuestionsStorage(Storage storage, StatusManager statusManager) {
         Logger.d(TAG, "{} - Building QuestionsStorage: creating table if it " +
                 "doesn't exist", statusManager.getCurrentModeName());
 

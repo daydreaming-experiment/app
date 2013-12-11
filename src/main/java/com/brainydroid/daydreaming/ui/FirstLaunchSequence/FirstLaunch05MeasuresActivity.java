@@ -148,9 +148,6 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
         mainScrollView.post(updateView);
     }
 
-
-
-
     public void onClick_buttonLocationSettings(
             @SuppressWarnings("UnusedParameters") View view) {
         Logger.v(TAG, "Location settings button clicked");
@@ -194,7 +191,6 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
         // show it
         alertDialog.show();
     }
-
 
     private void launchNetworkDataSettings() {
         Intent settingsIntent = new Intent(Settings.ACTION_DATA_ROAMING_SETTINGS);

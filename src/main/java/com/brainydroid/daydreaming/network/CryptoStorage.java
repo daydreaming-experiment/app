@@ -40,7 +40,7 @@ public class CryptoStorage {
 
     @Inject
     public CryptoStorage(Application application, StatusManager statusManager) {
-        Logger.d(TAG, "Initializing CryptoStorage for profile '{}'", statusManager.getCurrentModeName());
+        Logger.d(TAG, "Initializing CryptoStorage for profile {}", statusManager.getCurrentModeName());
 
         File storageDir = application.getDir(statusManager.getCurrentModeName() + STORAGE_DIRNAME,
                 Context.MODE_PRIVATE);
