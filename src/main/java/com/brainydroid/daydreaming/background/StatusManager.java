@@ -7,8 +7,10 @@ import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.SystemClock;
+import com.brainydroid.daydreaming.db.LocationPointsStorage;
+import com.brainydroid.daydreaming.db.PollsStorage;
 import com.brainydroid.daydreaming.db.ProfileStorage;
-import com.brainydroid.daydreaming.network.Profile;
+import com.brainydroid.daydreaming.network.CryptoStorage;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -68,6 +70,10 @@ public class StatusManager {
     @Inject LocationManager locationManager;
     @Inject ConnectivityManager connectivityManager;
     @Inject ActivityManager activityManager;
+    @Inject CryptoStorage cryptoStorage;
+    @Inject ProfileStorage profileStorage;
+    @Inject PollsStorage pollsStorage;
+    @Inject LocationPointsStorage locationPointsStorage;
 
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor eSharedPreferences;
@@ -89,11 +95,11 @@ public class StatusManager {
      *         {@code false} otherwise
      */
     public synchronized boolean isFirstLaunchCompleted() {
-        if (sharedPreferences.getBoolean(EXP_STATUS_FL_COMPLETED, false)) {
-            Logger.d(TAG, "First launch is completed");
+        if (sharedPreferences.getBoolean(getCurrentModeName() + EXP_STATUS_FL_COMPLETED, false)) {
+            Logger.d(TAG, "{} - First launch is completed", getCurrentModeName());
             return true;
         } else {
-            Logger.d(TAG, "First launch not completed yet");
+            Logger.d(TAG, "{} - First launch not completed yet", getCurrentModeName());
             return false;
         }
     }
@@ -102,31 +108,45 @@ public class StatusManager {
      * Set the first launch flag to completed.
      */
     public synchronized void setFirstLaunchCompleted() {
-        Logger.d(TAG, "Setting first launch to completed");
+        Logger.d(TAG, "{} - Setting first launch to completed", getCurrentModeName());
 
         if (!isTipiQuestionnaireCompleted()) {
             throw new RuntimeException("Setting first launch to completed can" +
                     " only be done if Tipi questionnaire is also completed");
         }
 
-        eSharedPreferences.putBoolean(EXP_STATUS_FL_COMPLETED, true);
+        eSharedPreferences.putBoolean(getCurrentModeName() + EXP_STATUS_FL_COMPLETED, true);
         eSharedPreferences.commit();
     }
 
-    public synchronized boolean isTipiQuestionnaireCompleted() {
-        if (sharedPreferences.getBoolean(EXP_STATUS_TIPI_COMPLETED, false)) {
-            Logger.d(TAG, "Tipi questionnaire is completed");
+    public synchronized void clearFirstLaunchCompleted() {
+        Logger.d(TAG, "{} - Clearing first launch completed", getCurrentModeName());
+
+        eSharedPreferences.remove(getCurrentModeName() + EXP_STATUS_FL_COMPLETED);
+        eSharedPreferences.commit();
+    }
+
+    private synchronized boolean isTipiQuestionnaireCompleted() {
+        if (sharedPreferences.getBoolean(getCurrentModeName() + EXP_STATUS_TIPI_COMPLETED, false)) {
+            Logger.d(TAG, "{} - Tipi questionnaire is completed", getCurrentModeName());
             return true;
         } else {
-            Logger.d(TAG, "Tipi questionnaire not completed yet");
+            Logger.d(TAG, "{} - Tipi questionnaire not completed yet", getCurrentModeName());
             return false;
         }
     }
 
     public synchronized void setTipiQuestionnaireCompleted() {
-        Logger.d(TAG, "Setting Tipi questionnaire to completed");
+        Logger.d(TAG, "{} - Setting Tipi questionnaire to completed", getCurrentModeName());
 
-        eSharedPreferences.putBoolean(EXP_STATUS_TIPI_COMPLETED, true);
+        eSharedPreferences.putBoolean(getCurrentModeName() + EXP_STATUS_TIPI_COMPLETED, true);
+        eSharedPreferences.commit();
+    }
+
+    private synchronized void clearTipiQuestionnaireCompleted() {
+        Logger.d(TAG, "{} - Clearing Tipi questionnaire completed", getCurrentModeName());
+
+        eSharedPreferences.remove(getCurrentModeName() + EXP_STATUS_TIPI_COMPLETED);
         eSharedPreferences.commit();
     }
 
@@ -137,12 +157,12 @@ public class StatusManager {
      *         {@code false} otherwise
      */
     public synchronized boolean areQuestionsUpdated() {
-        if (sharedPreferences.getBoolean(EXP_STATUS_QUESTIONS_UPDATED,
+        if (sharedPreferences.getBoolean(getCurrentModeName() + EXP_STATUS_QUESTIONS_UPDATED,
                 false)) {
-            Logger.d(TAG, "Questions are updated");
+            Logger.d(TAG, "{} - Questions are updated", getCurrentModeName());
             return true;
         } else {
-            Logger.d(TAG, "Questions not updated yet");
+            Logger.d(TAG, "{} - Questions not updated yet", getCurrentModeName());
             return false;
         }
     }
@@ -151,9 +171,16 @@ public class StatusManager {
      * Set the updated questions flag to completed.
      */
     public synchronized void setQuestionsUpdated() {
-        Logger.d(TAG, "Setting questions to updated");
+        Logger.d(TAG, "{} - Setting questions to updated", getCurrentModeName());
 
-        eSharedPreferences.putBoolean(EXP_STATUS_QUESTIONS_UPDATED, true);
+        eSharedPreferences.putBoolean(getCurrentModeName() + EXP_STATUS_QUESTIONS_UPDATED, true);
+        eSharedPreferences.commit();
+    }
+
+    private synchronized void clearQuestionsUpdated() {
+        Logger.d(TAG, "{} - Clearing questions updated", getCurrentModeName());
+
+        eSharedPreferences.remove(getCurrentModeName() + EXP_STATUS_QUESTIONS_UPDATED);
         eSharedPreferences.commit();
     }
 
@@ -162,14 +189,20 @@ public class StatusManager {
      */
     public synchronized int getNSlotsPerPoll() {
         int nSlotsPerPoll = sharedPreferences.getInt(
-                QUESTIONS_N_SLOTS_PER_POLL, -1);
-        Logger.v(TAG, "nSlotsPerPoll is {}", nSlotsPerPoll);
+                getCurrentModeName() + QUESTIONS_N_SLOTS_PER_POLL, -1);
+        Logger.v(TAG, "{} - nSlotsPerPoll is {}", getCurrentModeName(), nSlotsPerPoll);
         return nSlotsPerPoll;
     }
 
     public synchronized void setNSlotsPerPoll(int nSlotsPerPoll) {
-        Logger.d(TAG, "Setting nSlotsPerPoll to {}", nSlotsPerPoll);
-        eSharedPreferences.putInt(QUESTIONS_N_SLOTS_PER_POLL, nSlotsPerPoll);
+        Logger.d(TAG, "{} - Setting nSlotsPerPoll to {}", getCurrentModeName(), nSlotsPerPoll);
+        eSharedPreferences.putInt(getCurrentModeName() + QUESTIONS_N_SLOTS_PER_POLL, nSlotsPerPoll);
+        eSharedPreferences.commit();
+    }
+
+    private synchronized void clearNSlotsPerPoll() {
+        Logger.d(TAG, "{} - Clearing nSlotsPerPoll", getCurrentModeName());
+        eSharedPreferences.remove(getCurrentModeName() + QUESTIONS_N_SLOTS_PER_POLL);
         eSharedPreferences.commit();
     }
 
@@ -251,8 +284,8 @@ public class StatusManager {
      */
     public synchronized void setLastSyncToNow() {
         long now = SystemClock.elapsedRealtime();
-        Logger.d(TAG, "Setting last sync timestamp to now");
-        eSharedPreferences.putLong(LAST_SYNC_TIMESTAMP, now);
+        Logger.d(TAG, "{} - Setting last sync timestamp to now", getCurrentModeName());
+        eSharedPreferences.putLong(getCurrentModeName() + LAST_SYNC_TIMESTAMP, now);
         eSharedPreferences.commit();
     }
 
@@ -270,25 +303,31 @@ public class StatusManager {
     public synchronized boolean isLastSyncLongAgo() {
         // If last sync timestamp is present, make sure now is after the
         // threshold to force a sync.
-        long threshold = sharedPreferences.getLong(LAST_SYNC_TIMESTAMP,
+        long threshold = sharedPreferences.getLong(getCurrentModeName() + LAST_SYNC_TIMESTAMP,
                 - SYNC_INTERVAL) + SYNC_INTERVAL;
         if (threshold < SystemClock.elapsedRealtime()) {
-            Logger.d(TAG, "Last sync was long ago");
+            Logger.d(TAG, "{} - Last sync was long ago", getCurrentModeName());
             return true;
         } else {
-            Logger.d(TAG, "Last sync was not long ago");
+            Logger.d(TAG, "{} - Last sync was not long ago", getCurrentModeName());
             return false;
         }
     }
 
+    public synchronized long getExperimentStartTimestamp() {
+        return sharedPreferences.getLong(getCurrentModeName() + EXP_START_TIMESTAMP, -1);
+    }
+
     public synchronized void setExperimentStartTimestamp(long timestamp) {
-        Logger.d(TAG, "Setting experiment start timestamp to {}", timestamp);
-        eSharedPreferences.putLong(EXP_START_TIMESTAMP, timestamp);
+        Logger.d(TAG, "{} - Setting experiment start timestamp to {}", getCurrentModeName(), timestamp);
+        eSharedPreferences.putLong(getCurrentModeName() + EXP_START_TIMESTAMP, timestamp);
         eSharedPreferences.commit();
     }
 
-    public synchronized long getExperimentStartTimestamp() {
-        return sharedPreferences.getLong(EXP_START_TIMESTAMP, -1);
+    private synchronized void clearExperimentStartTimestamp() {
+        Logger.d(TAG, "{} - Clearing experiment start timestamp", getCurrentModeName());
+        eSharedPreferences.remove(getCurrentModeName() + EXP_START_TIMESTAMP);
+        eSharedPreferences.commit();
     }
 
     public synchronized void setLatestNtpTime(long timestamp) {
@@ -296,7 +335,7 @@ public class StatusManager {
         eSharedPreferences.putLong(LATEST_NTP_TIMESTAMP, timestamp);
         eSharedPreferences.commit();
 
-        if (!sharedPreferences.contains(EXP_START_TIMESTAMP)) {
+        if (!sharedPreferences.contains(getCurrentModeName() + EXP_START_TIMESTAMP)) {
             Logger.w(TAG, "expStartTimestamp doesn't seem to have been set. " +
                     "Setting it to this latest (and probably first) NTP " +
                     "timestamp");
@@ -317,7 +356,7 @@ public class StatusManager {
         return mode;
     }
 
-    public synchronized String getProfileName() {
+    public synchronized String getCurrentModeName() {
         String profileName;
         if (getCurrentMode() == MODE_PROD) {
             profileName = ProfileStorage.PROFILE_NAME_PROD;
@@ -331,10 +370,47 @@ public class StatusManager {
     /**
      * Set current mode.
      */
-    public synchronized void setCurrentMode(int mode) {
+    private synchronized void setCurrentMode(int mode) {
         Logger.d(TAG, "Setting current mode to '{}'", mode);
         eSharedPreferences.putInt(EXP_CURRENT_MODE, mode);
         eSharedPreferences.commit();
+    }
+
+    public synchronized void switchToTestMode() {
+        Logger.d(TAG, "Doing full switch to test mode");
+
+        // Clear pending uploads (before switch)
+        pollsStorage.removeUploadablePolls();
+        locationPointsStorage.removeUploadableLocationPoints();
+
+        // Do the switch
+        setCurrentMode(MODE_TEST);
+
+        // Clear local flags (after switch)
+        clearFirstLaunchCompleted();
+        clearTipiQuestionnaireCompleted();
+        clearQuestionsUpdated();
+        clearNSlotsPerPoll();
+        clearExperimentStartTimestamp();
+
+        // Clear test profile and crypto storage (after switch)
+        profileStorage.clearProfile();
+        cryptoStorage.clearStore();
+    }
+
+    public synchronized void switchToProdMode() {
+        Logger.d(TAG, "Doing full switch to production mode");
+
+        // Clear pending uploads (before switch)
+        pollsStorage.removeUploadablePolls();
+        locationPointsStorage.removeUploadableLocationPoints();
+
+        // Do the switch
+        setCurrentMode(MODE_PROD);
+
+        // Don't clear local flags (after switch), so that experiment isn't restarted
+
+        // And don't clear test profile and crypto storage (after switch)
     }
 
 }

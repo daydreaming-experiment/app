@@ -16,11 +16,7 @@ import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.background.SchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
-import com.brainydroid.daydreaming.db.LocationPointsStorage;
-import com.brainydroid.daydreaming.db.PollsStorage;
-import com.brainydroid.daydreaming.db.ProfileStorage;
 import com.brainydroid.daydreaming.db.Util;
-import com.brainydroid.daydreaming.network.CryptoStorage;
 import com.brainydroid.daydreaming.ui.FontUtils;
 import com.brainydroid.daydreaming.ui.TimePickerFragment;
 import com.google.inject.Inject;
@@ -54,10 +50,6 @@ public class SettingsActivity extends RoboFragmentActivity {
 
     @Inject SharedPreferences sharedPreferences;
     @Inject StatusManager statusManager;
-    @Inject ProfileStorage profileStorage;
-    @Inject CryptoStorage cryptoStorage;
-    @Inject PollsStorage pollsStorage;
-    @Inject LocationPointsStorage locationPointsStorage;
 
     @InjectResource(R.pref.settings_time_window_lb_default) String defaultTimePreferenceMin;
     @InjectResource(R.pref.settings_time_window_ub_default) String defaultTimePreferenceMax;
@@ -301,14 +293,7 @@ public class SettingsActivity extends RoboFragmentActivity {
 
             public void onClick(DialogInterface dialog, int id) {
                 Logger.d(TAG, "User accepted switch to prod mode -> doing it");
-
-                // Removing pending uploadable polls and locationPoints
-                pollsStorage.removeUploadablePolls();
-                locationPointsStorage.removeUploadableLocationPoints();
-
-                // Switch to production mode
-                statusManager.setCurrentMode(StatusManager.MODE_PROD);
-
+                statusManager.switchToProdMode();
                 Toast.makeText(getApplicationContext(), "Switched back to production mode", Toast.LENGTH_SHORT).show();
             }
         })
@@ -340,19 +325,11 @@ public class SettingsActivity extends RoboFragmentActivity {
                 String truePass = getResources().getString(R.string.mode_switch_pass);
 
                 if (enteredPass.equals(truePass)) {
-                    // Removing pending uploadable polls and locationPoints
-                    pollsStorage.removeUploadablePolls();
-                    locationPointsStorage.removeUploadableLocationPoints();
-
-                    // Switch to test mode
-                    statusManager.setCurrentMode(StatusManager.MODE_TEST);
-
-                    // Clear test profile and crypto storage
-                    profileStorage.clearProfile();
-                    cryptoStorage.clearStore();
-
+                    Logger.d(TAG, "Good password to switch to test mode -> switching");
+                    statusManager.switchToTestMode();
                     Toast.makeText(getApplicationContext(), "Switched to test mode", Toast.LENGTH_SHORT).show();
                 } else {
+                    Logger.d(TAG, "Wrong password to switch to test mode -> aborting");
                     Toast.makeText(getApplicationContext(), "Wrong password", Toast.LENGTH_SHORT).show();
                 }
 

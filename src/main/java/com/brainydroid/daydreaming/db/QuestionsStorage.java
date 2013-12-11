@@ -9,6 +9,7 @@ import com.google.gson.JsonSyntaxException;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -33,7 +34,7 @@ public class QuestionsStorage {
     private static String TABLE_QUESTIONS = "questions";
 
     private static final String SQL_CREATE_TABLE_QUESTIONS =
-            "CREATE TABLE IF NOT EXISTS " + TABLE_QUESTIONS + " (" +
+            "CREATE TABLE IF NOT EXISTS {}" + TABLE_QUESTIONS + " (" +
                     COL_NAME + " TEXT NOT NULL, " +
                     COL_CATEGORY + " TEXT NOT NULL, " +
                     COL_SUB_CATEGORY + " TEXT, " +
@@ -52,20 +53,20 @@ public class QuestionsStorage {
     @Inject
     public QuestionsStorage(Storage storage) {
 
-        Logger.d(TAG, "Building QuestionsStorage: creating table if it " +
-                "doesn't exist");
+        Logger.d(TAG, "{} - Building QuestionsStorage: creating table if it " +
+                "doesn't exist", statusManager.getCurrentModeName());
 
         db = storage.getWritableDatabase();
-        db.execSQL(SQL_CREATE_TABLE_QUESTIONS);
+        db.execSQL(MessageFormat.format(SQL_CREATE_TABLE_QUESTIONS, statusManager.getCurrentModeName()));
     }
 
     private synchronized void setQuestionsVersion(int questionsVersion) {
-        Logger.d(TAG, "Setting questions version to {0}", questionsVersion);
+        Logger.d(TAG, "{} - Setting questions version to {}", statusManager.getCurrentModeName(), questionsVersion);
         profileStorage.setQuestionsVersion(questionsVersion);
     }
 
     private synchronized void setNSlotsPerPoll(int nSlotsPerPoll) {
-        Logger.d(TAG, "Setting nSlotsPerPoll to {0}", nSlotsPerPoll);
+        Logger.d(TAG, "{} - Setting nSlotsPerPoll to {}",statusManager.getCurrentModeName(),  nSlotsPerPoll);
         statusManager.setNSlotsPerPoll(nSlotsPerPoll);
     }
 
@@ -75,9 +76,9 @@ public class QuestionsStorage {
 
     // get question from id in db
     public synchronized Question create(String questionName) {
-        Logger.d(TAG, "Retrieving question {0} from db", questionName);
+        Logger.d(TAG, "{} - Retrieving question {} from db", statusManager.getCurrentModeName(), questionName);
 
-        Cursor res = db.query(TABLE_QUESTIONS, null,
+        Cursor res = db.query(statusManager.getCurrentModeName() + TABLE_QUESTIONS, null,
                 COL_NAME + "=?", new String[]{questionName},
                 null, null, null);
         if (!res.moveToFirst()) {
@@ -99,9 +100,9 @@ public class QuestionsStorage {
     }
 
     public synchronized SlottedQuestions getSlottedQuestions() {
-        Logger.d(TAG, "Retrieving all questions from db");
+        Logger.d(TAG, "{} - Retrieving all questions from db", statusManager.getCurrentModeName());
 
-        Cursor res = db.query(TABLE_QUESTIONS, null, null, null, null, null,
+        Cursor res = db.query(statusManager.getCurrentModeName() + TABLE_QUESTIONS, null, null, null, null, null,
                 null);
         if (!res.moveToFirst()) {
             res.close();
@@ -127,12 +128,12 @@ public class QuestionsStorage {
     }
 
     public synchronized void flush() {
-        Logger.d(TAG, "Flushing questions from db");
-        db.delete(TABLE_QUESTIONS, null, null);
+        Logger.d(TAG, "{} - Flushing questions from db", statusManager.getCurrentModeName());
+        db.delete(statusManager.getCurrentModeName() + TABLE_QUESTIONS, null, null);
     }
 
     private synchronized void add(ArrayList<Question> questions) {
-        Logger.d(TAG, "Storing an array of questions to db");
+        Logger.d(TAG, "{} - Storing an array of questions to db", statusManager.getCurrentModeName());
         for (Question q : questions) {
             add(q);
         }
@@ -140,12 +141,12 @@ public class QuestionsStorage {
 
     // add question in database
     private synchronized void add(Question question) {
-        Logger.d(TAG, "Storing question {0} to db", question.getName());
-        db.insert(TABLE_QUESTIONS, null, getQuestionValues(question));
+        Logger.d(TAG, "{} - Storing question {} to db", statusManager.getCurrentModeName(), question.getName());
+        db.insert(statusManager.getCurrentModeName() + TABLE_QUESTIONS, null, getQuestionValues(question));
     }
 
     private synchronized ContentValues getQuestionValues(Question question) {
-        Logger.d(TAG, "Building question values");
+        Logger.d(TAG, "{} - Building question values", statusManager.getCurrentModeName());
 
         ContentValues qValues = new ContentValues();
         qValues.put(COL_NAME, question.getName());
@@ -160,7 +161,7 @@ public class QuestionsStorage {
     // import questions from json file into database
     public synchronized void importQuestions(String jsonQuestionsString)
             throws QuestionsSyntaxException {
-        Logger.d(TAG, "Importing questions from JSON");
+        Logger.d(TAG, "{} - Importing questions from JSON", statusManager.getCurrentModeName());
 
         try {
             ServerQuestionsJson serverQuestionsJson = json.fromJson(
