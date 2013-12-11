@@ -56,7 +56,9 @@ public class QuestionsStorage {
                 "doesn't exist", statusManager.getCurrentModeName());
 
         db = storage.getWritableDatabase();
-        db.execSQL(MessageFormat.format(SQL_CREATE_TABLE_QUESTIONS, statusManager.getCurrentModeName()));
+        for (String modeName : StatusManager.AVAILABLE_MODE_NAMES) {
+            db.execSQL(MessageFormat.format(SQL_CREATE_TABLE_QUESTIONS, modeName));
+        }
     }
 
     private synchronized void setQuestionsVersion(int questionsVersion) {

@@ -60,6 +60,9 @@ public class StatusManager {
     public static int MODE_PROD = 0;
     public static int MODE_TEST = 1;
     public static int MODE_DEFAULT = MODE_PROD;
+    public static String MODE_NAME_TEST = "test";
+    public static String MODE_NAME_PROD = "production";
+    public static String[] AVAILABLE_MODE_NAMES = {MODE_NAME_PROD, MODE_NAME_TEST};
 
     /**
      * Interval below which we don't need to re-sync data to servers (in
@@ -365,9 +368,9 @@ public class StatusManager {
     public synchronized String getCurrentModeName() {
         String modeName;
         if (getCurrentMode() == MODE_PROD) {
-            modeName = ProfileStorage.PROFILE_NAME_PROD;
+            modeName = MODE_NAME_PROD;
         } else {
-            modeName = ProfileStorage.PROFILE_NAME_TEST;
+            modeName = MODE_NAME_TEST;
         }
         Logger.v(TAG, "Current mode name is {}", modeName);
         return modeName;

@@ -27,9 +27,6 @@ public class ProfileStorage {
     private static String PROFILE_QUESTIONS_VERSION =
             "profileQuestionsVersion";
 
-    public static String PROFILE_NAME_TEST = "test";
-    public static String PROFILE_NAME_PROD = "prod";
-
     private boolean hasChangedSinceSyncStart = false;
 
     private SharedPreferences sharedPreferences;
