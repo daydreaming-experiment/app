@@ -34,6 +34,7 @@ public abstract class FirstLaunchActivity extends RoboFragmentActivity {
     @Override
     public void onStart() {
         Logger.v(TAG, "Starting");
+        checkTestMode();
         checkFirstLaunch();
         super.onStart();
     }
@@ -159,6 +160,17 @@ public abstract class FirstLaunchActivity extends RoboFragmentActivity {
                 LocationPointService.class);
         Logger.d(TAG, "Starting LocationPointService");
         startService(locationPointServiceIntent);
+    }
+
+    public void checkTestMode(){
+        Logger.d(TAG, "Checking test mode status");
+        if (statusManager.getCurrentMode() == StatusManager.MODE_PROD) {
+            Logger.d(TAG, "Setting production theme");
+            setTheme(R.style.MyCustomTheme);
+        } else {
+            Logger.d(TAG, "Setting test theme");
+            setTheme(R.style.MyCustomTheme_test);
+        }
     }
 
 }

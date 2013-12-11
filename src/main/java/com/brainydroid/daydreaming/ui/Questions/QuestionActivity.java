@@ -75,6 +75,13 @@ public class QuestionActivity extends RoboFragmentActivity {
     }
 
     @Override
+    public void onStart() {
+        Logger.v(TAG, "Starting");
+        checkTestMode();
+        super.onStart();
+    }
+
+    @Override
     public void onResume() {
         Logger.d(TAG, "Resuming");
         super.onResume();
@@ -299,4 +306,16 @@ public class QuestionActivity extends RoboFragmentActivity {
         ViewGroup godfatherView = (ViewGroup) activity.getWindow().getDecorView();
         FontUtils.setRobotoFont(activity, godfatherView);
     }
+
+    public void checkTestMode(){
+        Logger.d(TAG, "Checking test mode status");
+        if (statusManager.getCurrentMode() == StatusManager.MODE_PROD) {
+            Logger.d(TAG, "Setting production theme");
+            setTheme(R.style.MyCustomTheme);
+        } else {
+            Logger.d(TAG, "Setting test theme");
+            setTheme(R.style.MyCustomTheme_test);
+        }
+    }
+    
 }

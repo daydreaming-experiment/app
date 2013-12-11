@@ -45,10 +45,11 @@ public class DashboardActivity extends RoboFragmentActivity {
 
         checkTestMode();
         updateRunningTime();
-        super.onStart();
 
         aboutLayout.setAlpha(0.3f);
         aboutLayout.setClickable(false);
+
+        super.onStart();
     }
 
     @Override
@@ -56,7 +57,6 @@ public class DashboardActivity extends RoboFragmentActivity {
         Logger.v(TAG, "Creating");
 
         super.onCreate(savedInstanceState);
-        setTheme(getCustomThemeId(statusManager.getCurrentMode()));
         checkFirstLaunch();
         setRobotoFont(this);
     }
@@ -238,7 +238,6 @@ public class DashboardActivity extends RoboFragmentActivity {
         Logger.d(TAG, "Checking test mode status");
         if (statusManager.getCurrentMode() == StatusManager.MODE_PROD) {
             Logger.d(TAG, "Setting production theme");
-
             testButton.setVisibility(View.INVISIBLE);
             testButton.setClickable(false);
             testText.setVisibility(View.INVISIBLE);
@@ -249,14 +248,6 @@ public class DashboardActivity extends RoboFragmentActivity {
             testButton.setClickable(true);
             testText.setVisibility(View.VISIBLE);
             setTheme(R.style.MyCustomTheme_test);
-        }
-    }
-
-    public static int getCustomThemeId(int themeSetting) {
-        if(themeSetting == StatusManager.MODE_PROD) {
-            return R.style.MyCustomTheme;
-        } else {
-            return R.style.MyCustomTheme_test;
         }
     }
 

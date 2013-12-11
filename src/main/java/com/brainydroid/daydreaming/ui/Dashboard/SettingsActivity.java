@@ -63,6 +63,13 @@ public class SettingsActivity extends RoboFragmentActivity {
     @InjectResource(R.pref.settings_time_window_ub_default) String defaultTimePreferenceMax;
 
     @Override
+    public void onStart() {
+        Logger.v(TAG, "Starting");
+        checkTestMode();
+        super.onStart();
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         Logger.v(TAG, "Creating");
         super.onCreate(savedInstanceState);
@@ -91,9 +98,6 @@ public class SettingsActivity extends RoboFragmentActivity {
         //sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
     }
 
-
-
-    @SuppressWarnings("deprecation")
     private void initVars() {
         Logger.d(TAG, "Initializing variables");
         updateTimeViews();
@@ -286,7 +290,6 @@ public class SettingsActivity extends RoboFragmentActivity {
         }
     }
 
-
     public void testToProdDialog(){
         Logger.v(TAG, "Proposing to switch back to prod mode");
 
@@ -377,6 +380,17 @@ public class SettingsActivity extends RoboFragmentActivity {
         blink_check.setChecked(sharedPreferences.getBoolean(NOTIF_BLINK, true));
         sound_check.setChecked(sharedPreferences.getBoolean(NOTIF_SOUND, true));
         vibrations_check.setChecked(sharedPreferences.getBoolean(NOTIF_VIBRATION, true));
+    }
+
+    public void checkTestMode(){
+        Logger.d(TAG, "Checking test mode status");
+        if (statusManager.getCurrentMode() == StatusManager.MODE_PROD) {
+            Logger.d(TAG, "Setting production theme");
+            setTheme(R.style.MyCustomTheme);
+        } else {
+            Logger.d(TAG, "Setting test theme");
+            setTheme(R.style.MyCustomTheme_test);
+        }
     }
 
 }

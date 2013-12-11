@@ -37,9 +37,6 @@ public class TermsActivity extends FirstLaunch02TermsActivity {
         text.setVisibility(View.GONE); // Clear TextView asking to scroll down
 
         setRobotoFont(this);
-
-
-
         ViewGroup parent = (ViewGroup)findViewById(R.id.firstLaunchTerms_main_layout);
         LayoutInflater.from(this).inflate(R.layout.return_to_dashboard_button, parent, true);
 
