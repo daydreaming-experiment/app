@@ -269,7 +269,7 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
             buttonNext.setClickable(true);
             // When hitting 'back' from the dashboard right after the first launch, the activity stack is emptied
             // and goes through this activity. Let's not show this alert.
-            if (!statusManager.isFirstLaunchCompleted()) {
+            if (!statusManager.isFirstLaunchCompleted() && !isTestModeActivatedDirty()) {
                 Toast.makeText(this, goodToGoOk, Toast.LENGTH_SHORT).show();
             }
         }

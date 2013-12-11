@@ -24,6 +24,8 @@ public abstract class FirstLaunchActivity extends RoboFragmentActivity {
     @Inject StatusManager statusManager;
     @Inject SntpClient sntpClient;
 
+    private boolean testModeThemeActivated = false;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Logger.v(TAG, "Creating");
@@ -65,15 +67,26 @@ public abstract class FirstLaunchActivity extends RoboFragmentActivity {
         FontUtils.setRobotoFont(activity, godfatherView);
     }
 
+    protected boolean isTestModeActivatedDirty() {
+        if (statusManager.getCurrentMode() == StatusManager.MODE_TEST && !testModeThemeActivated) {
+            Logger.w(TAG, "Test mode is activated, but test theme has not been activated, " +
+                    "meaning a vicious activity path didn't let us update");
+            return true;
+        } else {
+            Logger.v(TAG, "No test mode theming discrepancy");
+            return false;
+        }
+    }
+
     /**
      * Kills activity if first launch already fully completed.
      */
-    public void checkFirstLaunch() {
-        if (statusManager.isFirstLaunchCompleted()) {
-            Logger.i(TAG, "First launch completed -> finishing");
+    protected void checkFirstLaunch() {
+        if (statusManager.isFirstLaunchCompleted() || isTestModeActivatedDirty()) {
+            Logger.i(TAG, "First launch completed or test mode theming discrepancy -> finishing");
             finish();
         } else {
-            Logger.v(TAG, "First launch not completed");
+            Logger.v(TAG, "First launch not completed, and no test mode theming discrepancy");
 
             if(shouldFinishIfTipiQuestionnaireCompleted() &&
                     statusManager.isTipiQuestionnaireCompleted())
@@ -166,9 +179,11 @@ public abstract class FirstLaunchActivity extends RoboFragmentActivity {
         if (StatusManager.getCurrentModeStatic(this) == StatusManager.MODE_PROD) {
             Logger.d(TAG, "Setting production theme");
             setTheme(R.style.MyCustomTheme);
+            testModeThemeActivated = false;
         } else {
             Logger.d(TAG, "Setting test theme");
             setTheme(R.style.MyCustomTheme_test);
+            testModeThemeActivated = true;
         }
     }
 

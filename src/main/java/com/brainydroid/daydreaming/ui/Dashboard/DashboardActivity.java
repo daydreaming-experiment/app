@@ -39,17 +39,7 @@ public class DashboardActivity extends RoboFragmentActivity {
     @InjectView(R.id.button_test_poll) Button testButton;
     @InjectView(R.id.dashboard_about_layout) AlphaLinearLayout aboutLayout;
 
-    @Override
-    public void onStart() {
-        Logger.v(TAG, "Starting");
-
-        aboutLayout.setAlpha(0.3f);
-        aboutLayout.setClickable(false);
-
-        updateRunningTime();
-        updateChromeMode();
-        super.onStart();
-    }
+    private boolean testModeThemeActivated = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,15 +51,33 @@ public class DashboardActivity extends RoboFragmentActivity {
         setRobotoFont(this);
     }
 
+    @Override
+    public void onStart() {
+        Logger.v(TAG, "Starting");
+
+        aboutLayout.setAlpha(0.3f);
+        aboutLayout.setClickable(false);
+
+        checkTestModeActivatedDirty();
+        updateRunningTime();
+        updateChromeMode();
+        super.onStart();
+    }
+
+    @Override
+    public void onResume() {
+        Logger.v(TAG, "Resuming");
+        checkTestModeActivatedDirty();
+        super.onResume();
+    }
+
     /**
      * Launching app settings activity
      */
     public void  onClick_openAppSettings(
             @SuppressWarnings("UnusedParameters") View view){
         Intent intent = new Intent(this, SettingsActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         startActivity(intent);
-        finish();
         overridePendingTransition(R.anim.push_top_in, R.anim.push_top_out);
     }
 
@@ -80,7 +88,6 @@ public class DashboardActivity extends RoboFragmentActivity {
     public void onClick_ReOpenTerms(
             @SuppressWarnings("UnusedParameters") View view){
         Intent intent = new Intent(this, TermsActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         startActivity(intent);
         overridePendingTransition(R.anim.push_top_in, R.anim.push_top_out);
     }
@@ -92,7 +99,6 @@ public class DashboardActivity extends RoboFragmentActivity {
     public void onClick_ReOpenDescription(
             @SuppressWarnings("UnusedParameters") View view){
         Intent intent = new Intent(this, DescriptionActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         startActivity(intent);
         overridePendingTransition(R.anim.push_top_in, R.anim.push_top_out);
     }
@@ -110,16 +116,6 @@ public class DashboardActivity extends RoboFragmentActivity {
     public void  onClick_SeeResults(
             @SuppressWarnings("UnusedParameters") View view){
         Toast.makeText(this, "Not yet!", Toast.LENGTH_SHORT).show();
-    }
-
-    /**
-     * Completely leave the app when back button is pressed
-     */
-    @Override
-    public void onBackPressed() {
-        Logger.v(TAG, "Back pressed");
-        super.onBackPressed();
-        finish();
     }
 
     private void updateRunningTime() {
@@ -240,9 +236,11 @@ public class DashboardActivity extends RoboFragmentActivity {
         if (StatusManager.getCurrentModeStatic(this) == StatusManager.MODE_PROD) {
             Logger.d(TAG, "Setting production theme");
             setTheme(R.style.MyCustomTheme);
+            testModeThemeActivated = false;
         } else {
             Logger.d(TAG, "Setting test theme");
             setTheme(R.style.MyCustomTheme_test);
+            testModeThemeActivated = true;
         }
     }
 
@@ -259,7 +257,16 @@ public class DashboardActivity extends RoboFragmentActivity {
             testButton.setClickable(true);
             testText.setVisibility(View.VISIBLE);
         }
+    }
 
+    private void checkTestModeActivatedDirty() {
+        if (statusManager.getCurrentMode() == StatusManager.MODE_TEST && !testModeThemeActivated) {
+            Logger.w(TAG, "Test mode is activated, but test theme has not been activated, " +
+                    "meaning a vicious activity path didn't let us update");
+            finish();
+        } else {
+            Logger.v(TAG, "No test mode theming discrepancy");
+        }
     }
 
 }

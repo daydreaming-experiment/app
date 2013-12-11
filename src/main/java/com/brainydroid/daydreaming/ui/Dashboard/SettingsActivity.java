@@ -17,6 +17,7 @@ import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.background.SchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.db.Util;
+import com.brainydroid.daydreaming.ui.FirstLaunchSequence.FirstLaunch00WelcomeActivity;
 import com.brainydroid.daydreaming.ui.FontUtils;
 import com.brainydroid.daydreaming.ui.TimePickerFragment;
 import com.google.inject.Inject;
@@ -54,6 +55,8 @@ public class SettingsActivity extends RoboFragmentActivity {
     @InjectResource(R.pref.settings_time_window_lb_default) String defaultTimePreferenceMin;
     @InjectResource(R.pref.settings_time_window_ub_default) String defaultTimePreferenceMax;
 
+    private boolean testModeThemeActivated = false;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Logger.v(TAG, "Creating");
@@ -69,13 +72,19 @@ public class SettingsActivity extends RoboFragmentActivity {
         loadCheckBoxPreferences();
     }
 
+
+    @Override
+    public void onStart() {
+        Logger.v(TAG, "Starting");
+        checkTestModeActivatedDirty();
+        super.onStart();
+    }
+
     @Override
     protected void onResume() {
         Logger.v(TAG, "Resuming");
+        checkTestModeActivatedDirty();
         super.onResume();
-
-        // Set up a listener for whenever a key changes
-        // sharedPreferences.registerOnSharedPreferenceChangeListener(this);
     }
 
     @Override
@@ -254,10 +263,6 @@ public class SettingsActivity extends RoboFragmentActivity {
     public void onBackPressed() {
         Logger.v(TAG, "Back pressed, setting slide transition");
         super.onBackPressed();
-
-        Intent intent = new Intent(this, DashboardActivity.class);
-        startActivity(intent);
-        finish();
         overridePendingTransition(R.anim.push_bottom_in, R.anim.push_bottom_out);
     }
 
@@ -322,8 +327,14 @@ public class SettingsActivity extends RoboFragmentActivity {
 
                 if (enteredPass.equals(truePass)) {
                     Logger.d(TAG, "Good password to switch to test mode -> switching");
+
                     statusManager.switchToTestMode();
                     Toast.makeText(getApplicationContext(), "Switched to test mode", Toast.LENGTH_SHORT).show();
+
+                    // Restart first launch
+                    Intent intent = new Intent(SettingsActivity.this, FirstLaunch00WelcomeActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
                 } else {
                     Logger.d(TAG, "Wrong password to switch to test mode -> aborting");
                     Toast.makeText(getApplicationContext(), "Wrong password", Toast.LENGTH_SHORT).show();
@@ -360,9 +371,21 @@ public class SettingsActivity extends RoboFragmentActivity {
         if (StatusManager.getCurrentModeStatic(this) == StatusManager.MODE_PROD) {
             Logger.d(TAG, "Setting production theme");
             setTheme(R.style.MyCustomTheme);
+            testModeThemeActivated = false;
         } else {
             Logger.d(TAG, "Setting test theme");
             setTheme(R.style.MyCustomTheme_test);
+            testModeThemeActivated = true;
+        }
+    }
+
+    private void checkTestModeActivatedDirty() {
+        if (statusManager.getCurrentMode() == StatusManager.MODE_TEST && !testModeThemeActivated) {
+            Logger.w(TAG, "Test mode is activated, but test theme has not been activated, " +
+                    "meaning a vicious activity path didn't let us update");
+            finish();
+        } else {
+            Logger.v(TAG, "No test mode theming discrepancy");
         }
     }
 
