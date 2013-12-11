@@ -49,7 +49,6 @@ public class QuestionsStorage {
 
     private final SQLiteDatabase db;
 
-    // Constructor
     @Inject
     public QuestionsStorage(Storage storage) {
 
@@ -97,28 +96,6 @@ public class QuestionsStorage {
         res.close();
 
         return q;
-    }
-
-    // get questions ids in questions db
-    public synchronized ArrayList<String> getQuestionNames() {
-        Logger.d(TAG, "Retrieving available question names from db");
-
-        Cursor res = db.query(TABLE_QUESTIONS,
-                new String[] {COL_NAME}, null, null, null,
-                null, null);
-        if (!res.moveToFirst()) {
-            res.close();
-            return null;
-        }
-
-        ArrayList<String> questionNames = new ArrayList<String>();
-        do {
-            questionNames.add(res.getString(
-                    res.getColumnIndex(COL_NAME)));
-        } while (res.moveToNext());
-        res.close();
-
-        return questionNames;
     }
 
     public synchronized SlottedQuestions getSlottedQuestions() {
