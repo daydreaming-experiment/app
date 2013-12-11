@@ -1,7 +1,9 @@
 package com.brainydroid.daydreaming.ui.FirstLaunchSequence;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.graphics.Point;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
@@ -42,10 +44,6 @@ public class FirstLaunch01DescriptionActivity extends FirstLaunchActivity {
 
     protected ImageButton nextButton;
 
-    /**
-     *
-     * @param savedInstanceState
-     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Logger.v(TAG, "Creating");
@@ -54,7 +52,7 @@ public class FirstLaunch01DescriptionActivity extends FirstLaunchActivity {
         nextButton = (ImageButton)findViewById(R.id.firstLaunchDescription_buttonNext);
 
 
-        makelayoutdesign();
+        makeLayoutDesign();
         populateDescription();
         setButton();
 
@@ -66,24 +64,24 @@ public class FirstLaunch01DescriptionActivity extends FirstLaunchActivity {
 
     /**
      * OnClick Listener, launches next activity in sequence when next button of view is clicked on
-     * @param view
      */
     public void onClick_buttonNext(@SuppressWarnings("UnusedParameters") View view) {
         Logger.d(TAG, "Next button clicked -> launching consent dialog");
         launchNextActivity(FirstLaunch02TermsActivity.class);
     }
 
-
-    public void makelayoutdesign(){
+    // FIXME: bugs on API < 13
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    public void makeLayoutDesign(){
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
-        int screen_height = (int)(size.y/getResources().getDisplayMetrics().density);   // gets the size of my screen programatically
+        int screen_height = (int)(size.y/getResources().getDisplayMetrics().density);   // gets the size of my screen programmatically
 
-        int personcomplex_dp_height = (int) (getResources().getDimension(R.dimen.cloud_cone_person_heigth) / getResources().getDisplayMetrics().density);     // size of cloud/person/cone complex
+        int personComplexDpHeight = (int) (getResources().getDimension(R.dimen.cloud_cone_person_heigth) / getResources().getDisplayMetrics().density);     // size of cloud/person/cone complex
         ViewGroup.LayoutParams params = myScrollLayout.getLayoutParams();
 
-        params.height = (int)( ((float)(screen_height-personcomplex_dp_height))*(getResources().getDisplayMetrics().density) )+1;
+        params.height = (int)( ((float)(screen_height-personComplexDpHeight))*(getResources().getDisplayMetrics().density) )+1;
 
 
     }
@@ -112,12 +110,10 @@ public class FirstLaunch01DescriptionActivity extends FirstLaunchActivity {
     /**
      * Terms activity separated in sequence.
      * Exiting at this point completely leaves the app.
-     * @param activity
      */
     @Override
     protected void launchNextActivity(Class activity) {
         Intent intent = new Intent(this, activity);
-        intent.putExtra("nextClass", activity);
         intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
         overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
