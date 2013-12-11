@@ -26,8 +26,6 @@ public class CryptoStorage {
     private static final String PRIVATE_FILENAME = "key";
     private static final String STORAGE_DIRNAME = "cryptoStorage";
 
-    private static final String NOKP_EXCEPTION_MSG = "No keypair present";
-
     private static final String DEFAULT_CURVE_NAME = "secp256r1"; // Corresponds to NIST256p in python-ecdsa;
     private static final String JWS_HEADER = "{\"alg\": \"ES256\"}";
 
@@ -41,10 +39,10 @@ public class CryptoStorage {
     private final File privateFile;
 
     @Inject
-    public CryptoStorage(Application application, StatusManager sm) {
-        Logger.d(TAG,"Initializing CryptoStorage for profile " + sm.getProfileName());
+    public CryptoStorage(Application application, StatusManager statusManager) {
+        Logger.d(TAG, "Initializing CryptoStorage for profile '{}'", statusManager.getProfileName());
 
-        File storageDir = application.getDir(sm.getProfileName() + STORAGE_DIRNAME, Context.MODE_PRIVATE);
+        File storageDir = application.getDir(statusManager.getProfileName() + STORAGE_DIRNAME, Context.MODE_PRIVATE);
         maiIdFile = new File(storageDir, MAI_ID_FILENAME);
         publicFile = new File(storageDir,PUBLIC_FILENAME);
         privateFile = new File(storageDir, PRIVATE_FILENAME);

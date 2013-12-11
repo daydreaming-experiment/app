@@ -7,6 +7,8 @@ import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.SystemClock;
+import com.brainydroid.daydreaming.db.ProfileStorage;
+import com.brainydroid.daydreaming.network.Profile;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -52,10 +54,9 @@ public class StatusManager {
     /** Preference key storing the current mode */
     private static String EXP_CURRENT_MODE = "expCurrentMode";
 
-    private static String TEST_MODE = "test";
-    private static String PROD_MODE = "prod";
-    private static String DEFAULT_MODE = PROD_MODE;
-
+    public static int MODE_PROD = 0;
+    public static int MODE_TEST = 1;
+    public static int MODE_DEFAULT = MODE_PROD;
 
     /**
      * Interval below which we don't need to re-sync data to servers (in
@@ -307,61 +308,33 @@ public class StatusManager {
         return sharedPreferences.getLong(LATEST_NTP_TIMESTAMP, -1);
     }
 
-
-   // ------------- Mode related functions
     /**
-     * get current mode (test or prod)
-     * @return
+     * Get current mode (test or prod).
      */
-    public synchronized String getCurrentMode() {
-        String mode = sharedPreferences.getString(EXP_CURRENT_MODE, DEFAULT_MODE);
-            Logger.d(TAG, "Current mode is " + mode);
-            return mode;
+    public synchronized int getCurrentMode() {
+        int mode = sharedPreferences.getInt(EXP_CURRENT_MODE, MODE_DEFAULT);
+        Logger.d(TAG, "Current mode is '{}'", mode);
+        return mode;
     }
 
     public synchronized String getProfileName() {
-        String profileName =  getCurrentMode();
-        Logger.v(TAG, "Current profile name is " + profileName);
+        String profileName;
+        if (getCurrentMode() == MODE_PROD) {
+            profileName = ProfileStorage.PROFILE_NAME_PROD;
+        } else {
+            profileName = ProfileStorage.PROFILE_NAME_TEST;
+        }
+        Logger.v(TAG, "Current profile name is '{}'", profileName);
         return profileName;
     }
 
     /**
-     * Set current mode
-     * @param mode
+     * Set current mode.
      */
-    private synchronized void setCurrentMode(String mode) {
-        Logger.d(TAG, "Setting current mode to " + mode);
-        eSharedPreferences.putString(EXP_CURRENT_MODE, mode);
+    public synchronized void setCurrentMode(int mode) {
+        Logger.d(TAG, "Setting current mode to '{}'", mode);
+        eSharedPreferences.putInt(EXP_CURRENT_MODE, mode);
         eSharedPreferences.commit();
-    }
-
-    public synchronized boolean isCurrentModeTest() {
-        if (getCurrentMode().equals(TEST_MODE)) {
-            Logger.d(TAG, "Current mode is test");
-            return true;
-        } else {
-            Logger.d(TAG, "Current mode is not test");
-            return false;
-        }
-    }
-
-    public synchronized boolean isCurrentModeProd() {
-        if (getCurrentMode().equals(PROD_MODE)) {
-            Logger.d(TAG, "Current mode is prod");
-            return true;
-        } else {
-            Logger.d(TAG, "Current mode is not prod");
-            return false;
-        }
-    }
-
-    public synchronized void setCurrentModeToTest() {
-        Logger.d(TAG, "Setting current mode to test");
-        setCurrentMode(TEST_MODE);
-    }
-    public synchronized void setCurrentModeToProd() {
-        Logger.d(TAG, "Setting current mode to prod");
-        setCurrentMode(PROD_MODE);
     }
 
 }

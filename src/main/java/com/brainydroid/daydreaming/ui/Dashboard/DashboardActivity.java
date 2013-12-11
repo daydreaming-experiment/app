@@ -3,11 +3,9 @@ package com.brainydroid.daydreaming.ui.Dashboard;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.brainydroid.daydreaming.R;
@@ -29,52 +27,38 @@ import roboguice.inject.InjectView;
 @ContentView(R.layout.activity_dashboard)
 public class DashboardActivity extends RoboFragmentActivity {
 
-    public static int THEME = 0;
-
-
     private static String TAG = "DashboardActivity";
 
     @Inject StatusManager statusManager;
     @Inject SntpClient sntpClient;
+
     @InjectView(R.id.dashboard_ExperimentTimeElapsed2)
     TextView timeElapsedTextView;
     @InjectView(R.id.dashboard_ExperimentResultsIn2) TextView timeToGoTextView;
-    @InjectView(R.id.dashboard_titleTesting)  TextView test_text;
-    @InjectView(R.id.button_test_poll) Button test_button;
-    @InjectView(R.id.dashboard_testing_linearlayout)   LinearLayout test_layout;
-
-
+    @InjectView(R.id.dashboard_titleTesting)  TextView testText;
+    @InjectView(R.id.button_test_poll) Button testButton;
+    @InjectView(R.id.dashboard_about_layout) AlphaLinearLayout aboutLayout;
 
     @Override
     public void onStart() {
-        checktest();
-
         Logger.v(TAG, "Starting");
+
+        checkTestMode();
         updateRunningTime();
         super.onStart();
 
-        //TODO: change this temporary setting
-        AlphaLinearLayout aboutLayout =
-                (AlphaLinearLayout)findViewById(R.id.dashboard_about_layout);
         aboutLayout.setAlpha(0.3f);
         aboutLayout.setClickable(false);
-
     }
-
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Logger.v(TAG, "Creating");
 
-        //TODO: change this rather dirty access to preferences
-        String mode = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("expCurrentMode", "prod");
-        setTheme(getCustomThemeId(mode));
-
         super.onCreate(savedInstanceState);
+        setTheme(getCustomThemeId(statusManager.getCurrentMode()));
         checkFirstLaunch();
         setRobotoFont(this);
-
     }
 
     /**
@@ -213,7 +197,7 @@ public class DashboardActivity extends RoboFragmentActivity {
 
     /**
      * Dashboard is main launcher. At start up of app, the whole firstLaunch
-     * sequence is ran. If they were already ran, user directly end up on
+     * sequence is run. If they were already ran, user directly end up on
      * dashboard layout.
      */
 
@@ -250,34 +234,30 @@ public class DashboardActivity extends RoboFragmentActivity {
         FontUtils.setRobotoFont(activity, godfatherView);
     }
 
-    public void checktest(){
-        if (statusManager.isCurrentModeProd()){
-            test_button.setVisibility(View.INVISIBLE);
-            test_button.setClickable(false);
-            test_text.setVisibility(View.INVISIBLE);
+    public void checkTestMode(){
+        Logger.d(TAG, "Checking test mode status");
+        if (statusManager.getCurrentMode() == StatusManager.MODE_PROD) {
+            Logger.d(TAG, "Setting production theme");
+
+            testButton.setVisibility(View.INVISIBLE);
+            testButton.setClickable(false);
+            testText.setVisibility(View.INVISIBLE);
             setTheme(R.style.MyCustomTheme);
-            Logger.v(TAG, "On start: setting prod theme");
-
-        } else if (statusManager.isCurrentModeTest()){
-            test_button.setVisibility(View.VISIBLE);
-            test_button.setClickable(true);
-            test_text.setVisibility(View.VISIBLE);
+        } else {
+            Logger.d(TAG, "Setting test theme");
+            testButton.setVisibility(View.VISIBLE);
+            testButton.setClickable(true);
+            testText.setVisibility(View.VISIBLE);
             setTheme(R.style.MyCustomTheme_test);
-            Logger.v(TAG, "On start: setting test theme");
         }
-
     }
 
-
-    public static int getCustomThemeId(String themeSetting){
-        int themeId;
-        if(themeSetting.equals("prod")){
-            themeId = R.style.MyCustomTheme;
-        }else{
-            themeId = R.style.MyCustomTheme_test;}
-        return themeId;
+    public static int getCustomThemeId(int themeSetting) {
+        if(themeSetting == StatusManager.MODE_PROD) {
+            return R.style.MyCustomTheme;
+        } else {
+            return R.style.MyCustomTheme_test;
+        }
     }
-
-
 
 }

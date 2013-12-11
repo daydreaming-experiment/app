@@ -29,7 +29,6 @@ import roboguice.inject.ContentView;
 import roboguice.inject.InjectResource;
 import roboguice.inject.InjectView;
 
-
 @ContentView(R.layout.activity_appsettings_layout)
 public class SettingsActivity extends RoboFragmentActivity {
 
@@ -37,7 +36,7 @@ public class SettingsActivity extends RoboFragmentActivity {
     public static String TIME_UNTIL = "time_until";
 
     private static String TAG = "SettingsActivity";
-    private static int MIN_WINDOW_HOURS = 5; // 5 hours (in hours)
+    @SuppressWarnings("FieldCanBeLocal") private static int MIN_WINDOW_HOURS = 5; // 5 hours (in hours)
 
     private static String NOTIF_VIBRATION = "notification_vibrator_key";
     private static String NOTIF_BLINK = "notification_blink_key";
@@ -73,7 +72,7 @@ public class SettingsActivity extends RoboFragmentActivity {
 
         initVars();
         addListenerOnButton();
-        loadcheckboxfrompreference();
+        loadCheckBoxPreferences();
     }
 
     @Override
@@ -104,10 +103,6 @@ public class SettingsActivity extends RoboFragmentActivity {
 
         Logger.v(TAG, "Creating Listeners");
 
-        //TODO: deal with loading defautls when no shared pref and sharedpref otherwise
-
-        Logger.v(TAG, "Creating Listeners");
-
         layout_time_from.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -125,22 +120,21 @@ public class SettingsActivity extends RoboFragmentActivity {
 
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        //TODO Set text and save preference and relaunch scheduler if conflict
-
-                        StringBuilder sb = new StringBuilder().append(pad(hourOfDay)).append(":").append(pad(minute));
+                        // Update shared preference
                         SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putString(TIME_FROM, sb.toString()); // value to store
+                        editor.putString(TIME_FROM, pad(hourOfDay) + ":" + pad(minute));
                         editor.commit();
 
-                        // listener will here eventually correct and update the view
+                        // Listener can correct and update the view here
                         correctTimeWindow();
                         updateTimeViews();
                         startSchedulerService();
 
                     }
+
                 };
-                newFragment.show(getSupportFragmentManager(),
-                        "timePicker_from");
+
+                newFragment.show(getSupportFragmentManager(), "timePicker_from");
             }
         });
 
@@ -153,6 +147,7 @@ public class SettingsActivity extends RoboFragmentActivity {
                 final int hour_until = Integer.parseInt(Time_until.substring(0, 2));
 
                 DialogFragment newFragment = new TimePickerFragment() {
+
                     @Override
                     public Dialog onCreateDialog(Bundle savedInstanceState) {
                         return new TimePickerDialog(getActivity(), this, hour_until, minute_until, DateFormat.is24HourFormat(getActivity()));
@@ -160,98 +155,76 @@ public class SettingsActivity extends RoboFragmentActivity {
 
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        //TODO Set text and save preference and relaunch scheduler if conflict
-
-                        // update sharedpreference
-                        StringBuilder sb = new StringBuilder().append(pad(hourOfDay)).append(":").append(pad(minute));
+                        // Update shared preference
                         SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putString(TIME_UNTIL, sb.toString()); // value to store
+                        editor.putString(TIME_UNTIL, pad(hourOfDay) + ":" + pad(minute));
                         editor.commit();
 
-                        // listener will here eventually correct and update the view
+                        // Listener can correct and update the view here
                         correctTimeWindow();
                         updateTimeViews();
                         startSchedulerService();
-
-
                     }
+
                 };
-                newFragment.show(getSupportFragmentManager(),
-                        "timePicker_until");
+
+                newFragment.show(getSupportFragmentManager(), "timePicker_until");
             }
         });
 
         blink_check.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putBoolean(NOTIF_BLINK, blink_check.isChecked()); // value to store
-                editor.commit();     }
+                editor.commit();
+            }
+
         });
 
         vibrations_check.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putBoolean(NOTIF_VIBRATION, vibrations_check.isChecked()); // value to store
-                editor.commit();        }
+                editor.commit();
+            }
+
         });
 
         sound_check.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putBoolean(NOTIF_SOUND, sound_check.isChecked()); // value to store
-                editor.commit();        }
+                editor.commit();
+            }
+
         });
 
-
-
-
     }
 
-           /*
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        Logger.d(TAG, "Preferences changed");
-
-        if (key.equals("time_window_ub_key") || key.equals("time_window_lb_key")) {
-            Logger.d(TAG, "Time window preferences_appsettings changed -> correcting " +
-                    "it, updating summaries, and starting scheduler " +
-                    "service");
-            correctTimeWindow();
-            updateTimeViews();
-            startSchedulerService();
-        }
-    }
-             */
-
-    //TODO: redo the checks
     private void correctTimeWindow() {
         if (!checkTimeWindow()) {
-            Logger.d(TAG, "Time window set by user is not allowed, " +
-                    "correcting");
+            Logger.d(TAG, "Time window set by user is too short, correcting");
 
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString(TIME_FROM, defaultTimePreferenceMin); // value to store
-            editor.putString(TIME_UNTIL, defaultTimePreferenceMax); // value to store
+            editor.putString(TIME_FROM, defaultTimePreferenceMin);
+            editor.putString(TIME_UNTIL, defaultTimePreferenceMax);
             editor.commit();
-
-            //          timePreferenceMin.setTime(defaultTimePreferenceMin);
-            //          timePreferenceMax.setTime(defaultTimePreferenceMax);
-            // Toast.makeText(this, timeCorrectedText1 + " " + MIN_WINDOW_HOURS +
-            //        " " + timeCorrectedText2, Toast.LENGTH_LONG).show();
         } else {
-            Logger.w(TAG, "Time window set by user is OK");
+            Logger.v(TAG, "Time window set by user is OK");
         }
     }
 
-    // TODO redo check time without time preference
     private boolean checkTimeWindow() {
+        Logger.v(TAG, "Checking time window");
 
-
-        String timeFirst = sharedPreferences.getString(TIME_FROM,defaultTimePreferenceMin);
-        String timeLast = sharedPreferences.getString(TIME_UNTIL,defaultTimePreferenceMax);
+        String timeFirst = sharedPreferences.getString(TIME_FROM, defaultTimePreferenceMin);
+        String timeLast = sharedPreferences.getString(TIME_UNTIL, defaultTimePreferenceMax);
 
         int firstHour = Util.getHour(timeFirst);
         int firstMinute = Util.getMinute(timeFirst);
@@ -267,15 +240,15 @@ public class SettingsActivity extends RoboFragmentActivity {
         }
 
         return (first + MIN_WINDOW_HOURS * 60) <= last;
-
     }
 
     /**
-     * Update the view from sharedpreferences
+     * Update the view from shared preferences.
      */
     private void updateTimeViews(){
-        String Time_from = sharedPreferences.getString(TIME_FROM,defaultTimePreferenceMin);
-        String Time_until = sharedPreferences.getString(TIME_UNTIL,defaultTimePreferenceMax);
+        Logger.d(TAG, "Updating view");
+        String Time_from = sharedPreferences.getString(TIME_FROM, defaultTimePreferenceMin);
+        String Time_until = sharedPreferences.getString(TIME_UNTIL, defaultTimePreferenceMax);
         tv_time_from.setText(Time_from);
         tv_time_until.setText(Time_until);
     }
@@ -290,160 +263,120 @@ public class SettingsActivity extends RoboFragmentActivity {
     public void onBackPressed() {
         Logger.v(TAG, "Back pressed, setting slide transition");
         super.onBackPressed();
-        //overridePendingTransition(R.anim.push_bottom_in, R.anim.push_top_out);
 
         Intent intent = new Intent(this, DashboardActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);   // restart to launch oncreate
         startActivity(intent);
         overridePendingTransition(R.anim.push_bottom_in, R.anim.push_bottom_out);
     }
 
-    public void onClick_backtodashboard(View v) {
+    public void onClick_backToDashboard(@SuppressWarnings("UnusedParameters") View v) {
+        Logger.v(TAG, "Back to dashboard button clicked");
         onBackPressed();
     }
 
-    public void onClick_switchmode(View v) {
-        // TODO
-        // high level description
-        if (statusManager.isCurrentModeTest()){
-            // simple dialog proposing to switch back to prod mode
-            testtoprod_dialog();
-        } else if (statusManager.isCurrentModeProd()){
-            prodtotest_dialog();
-        }
+    public void onClick_switchMode(@SuppressWarnings("UnusedParameters") View v) {
+        Logger.d(TAG, "Mode switch button clicked");
 
-        // -- propose switch to standard mode
-        // if prod
-        // -- propose to switch to test mode
-        // ---- ask for password
-        // ---- if correct
-        // ------ setcurrentmode('prod')
-        // ------ create new profile
-        // ------ switch profile
-        // endif
+        if (statusManager.getCurrentMode() == StatusManager.MODE_TEST) {
+            Logger.v(TAG, "We're in test mode, initiating switch to prod");
+            testToProdDialog();
+        } else if (statusManager.getCurrentMode() == StatusManager.MODE_PROD) {
+            Logger.v(TAG, "We're in prod mode, initiating switch to test");
+            prodToTestDialog();
+        }
     }
 
 
-    public void testtoprod_dialog(){
+    public void testToProdDialog(){
         Logger.v(TAG, "Proposing to switch back to prod mode");
 
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-                this);
+        new AlertDialog.Builder(this)
+        .setTitle("Switch mode")
+        .setMessage("Back to production mode?")
+        .setCancelable(false)
+        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 
-        // set title
-        alertDialogBuilder.setTitle("Mode change");
+            public void onClick(DialogInterface dialog, int id) {
+                Logger.d(TAG, "User accepted switch to prod mode -> doing it");
 
-        // set dialog message
-        alertDialogBuilder
-                .setMessage("Back to production mode?")
-                .setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
+                // Removing pending uploadable polls and locationPoints
+                pollsStorage.removeUploadablePolls();
+                locationPointsStorage.removeUploadableLocationPoints();
 
-                        // removing pending
-                        pollsStorage.removeUploadablePolls();
-                        locationPointsStorage.removeUploadablePolls();
-                        // switch to prod
-                        statusManager.setCurrentModeToProd();
+                // Switch to production mode
+                statusManager.setCurrentMode(StatusManager.MODE_PROD);
 
-                    }
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
+                Toast.makeText(getApplicationContext(), "Switched back to production mode", Toast.LENGTH_SHORT).show();
+            }
+        })
+        .setNegativeButton("No", new DialogInterface.OnClickListener() {
 
-        // create alert dialog
-        AlertDialog alertDialog = alertDialogBuilder.create();
+            public void onClick(DialogInterface dialog, int id) {
+                Logger.d(TAG, "User cancelled switch to prod mode");
+                dialog.cancel();
+            }
 
-        // show it
-        alertDialog.show();        }
+        })
+        .show();
+    }
 
-    public void prodtotest_dialog(){
+    public void prodToTestDialog(){
         Logger.v(TAG, "Proposing to switch from prod to test mode");
 
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
-
-        alert.setTitle("Mode Switch");
-        alert.setMessage("Insert pass to switch to test mode");
-
         // Set an EditText view to get user input
-        final EditText input_pass = new EditText(this);
-        alert.setView(input_pass);
+        final EditText inputPass = new EditText(this);
 
-        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+        new AlertDialog.Builder(this)
+        .setTitle("Switch mode")
+        .setMessage("Type the password to switch to test mode")
+        .setView(inputPass)
+        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+
             public void onClick(DialogInterface dialog, int whichButton) {
-                String entered_pass = input_pass.getText().toString();
-                String true_pass = getResources().getString(R.string.mode_switch_pass);
-                if (entered_pass.equals(true_pass)){
+                String enteredPass = inputPass.getText().toString();
+                String truePass = getResources().getString(R.string.mode_switch_pass);
 
-                    // remove pending
+                if (enteredPass.equals(truePass)) {
+                    // Removing pending uploadable polls and locationPoints
                     pollsStorage.removeUploadablePolls();
-                    locationPointsStorage.removeUploadablePolls();
-                    // switch to test
-                    statusManager.setCurrentModeToTest();
-                    // clear test
+                    locationPointsStorage.removeUploadableLocationPoints();
+
+                    // Switch to test mode
+                    statusManager.setCurrentMode(StatusManager.MODE_TEST);
+
+                    // Clear test profile and crypto storage
                     profileStorage.clearProfile();
                     cryptoStorage.clearStore();
-                    Toast.makeText(getApplicationContext(),"mode set to test",Toast.LENGTH_SHORT).show();
 
+                    Toast.makeText(getApplicationContext(), "Switched to test mode", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getApplicationContext(),"wrong pass",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Wrong password", Toast.LENGTH_SHORT).show();
                 }
 
             }
-        });
-
-        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        })
+        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                // Canceled.
+                Logger.d(TAG, "User cancelled switch to test mode");
+                dialog.cancel();
             }
-        });
-
-        alert.show();  }
-
-
-
-
-    /**
-     // see http://www.mkyong.com/android/android-time-picker-example/ for timepicker example.. we don't need time preference anymore
-     public void onClick_time_from(View v){
-     DialogFragment newFragment = new TimePickerFragment(){
-    @Override
-    public void onTimeSet(){
-    //TODO Set text and save preference and relaunch scheduler if conflict
+        })
+        .show();
     }
-    };
-     newFragment.show(getFragmentManager(), "timePicker_from");
-     }
-
-     public void onClick_time_until(View v){
-     DialogFragment newFragment = new TimePickerFragment(){
-    @Override
-    public void onTimeSet(){
-    //TODO Set text and save preference and relaunch scheduler if conflict
-    }
-    };newFragment.show(getFragmentManager(), "timePicker_until");
-     }
-     */
 
     private static String pad(int c) {
-        if (c >= 10)
+        if (c >= 10) {
             return String.valueOf(c);
-        else
+        } else {
             return "0" + String.valueOf(c);
+        }
     }
 
-
-    public void loadcheckboxfrompreference(){
-
-        blink_check.setChecked(sharedPreferences.getBoolean(NOTIF_BLINK,true));
-        sound_check.setChecked(sharedPreferences.getBoolean(NOTIF_SOUND,true));
-        vibrations_check.setChecked(sharedPreferences.getBoolean(NOTIF_VIBRATION,true));
-
-
+    public void loadCheckBoxPreferences() {
+        Logger.v(TAG, "Loading checkBox preferences");
+        blink_check.setChecked(sharedPreferences.getBoolean(NOTIF_BLINK, true));
+        sound_check.setChecked(sharedPreferences.getBoolean(NOTIF_SOUND, true));
+        vibrations_check.setChecked(sharedPreferences.getBoolean(NOTIF_VIBRATION, true));
     }
-
 
 }

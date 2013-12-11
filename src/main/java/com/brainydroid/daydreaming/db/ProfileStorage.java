@@ -27,13 +27,16 @@ public class ProfileStorage {
     private static String PROFILE_QUESTIONS_VERSION =
             "profileQuestionsVersion";
 
+    public static String PROFILE_NAME_TEST = "test";
+    public static String PROFILE_NAME_PROD = "prod";
+
     private boolean hasChangedSinceSyncStart = false;
 
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor eSharedPreferences;
 
     @Inject ProfileFactory profileFactory;
-    @Inject StatusManager sm;
+    @Inject StatusManager statusManager;
 
     @Inject
     public ProfileStorage(SharedPreferences sharedPreferences) {
@@ -43,64 +46,64 @@ public class ProfileStorage {
     }
 
     public void setAge(String age) {
-        Logger.d(TAG, sm.getProfileName()+" - "+"Setting age to {}", age);
-        eSharedPreferences.putString(sm.getProfileName()+PROFILE_AGE, age);
+        Logger.d(TAG, "{} - Setting age to {}", statusManager.getProfileName(), age);
+        eSharedPreferences.putString(statusManager.getProfileName() + PROFILE_AGE, age);
         setIsDirtyAndCommit();
     }
 
     private String getAge() {
-        return sharedPreferences.getString(sm.getProfileName()+PROFILE_AGE, null);
+        return sharedPreferences.getString(statusManager.getProfileName() + PROFILE_AGE, null);
     }
 
     public void setGender(String gender) {
-        Logger.d(TAG, sm.getProfileName()+" - "+"Setting gender to {}", gender);
-        eSharedPreferences.putString(sm.getProfileName()+PROFILE_GENDER, gender);
+        Logger.d(TAG, "{} - Setting gender to {}", statusManager.getProfileName(), gender);
+        eSharedPreferences.putString(statusManager.getProfileName() + PROFILE_GENDER, gender);
         setIsDirtyAndCommit();
     }
 
     private String getGender() {
-        return sharedPreferences.getString(sm.getProfileName()+PROFILE_GENDER, null);
+        return sharedPreferences.getString(statusManager.getProfileName() + PROFILE_GENDER, null);
     }
 
     public void setEducation(String education) {
-        Logger.d(TAG, sm.getProfileName()+" - "+"Setting education to {}", education);
-        eSharedPreferences.putString(sm.getProfileName()+PROFILE_EDUCATION, education);
+        Logger.d(TAG, "{} - Setting education to {}", statusManager.getProfileName(), education);
+        eSharedPreferences.putString(statusManager.getProfileName() + PROFILE_EDUCATION, education);
         setIsDirtyAndCommit();
     }
 
     private String getEducation() {
-        return sharedPreferences.getString(sm.getProfileName()+PROFILE_EDUCATION, null);
+        return sharedPreferences.getString(statusManager.getProfileName() + PROFILE_EDUCATION, null);
     }
 
     public void setTipiAnswers(HashMap<String, Integer> tipiAnswers) {
-        Logger.d(TAG, sm.getProfileName()+" - "+"Setting tipi questionnaire answers");
+        Logger.d(TAG, "{} - Setting tipi questionnaire answers", statusManager.getProfileName());
         int index = 0;
         for (Map.Entry<String, Integer> answer : tipiAnswers.entrySet()) {
             eSharedPreferences.putString(
-                    sm.getProfileName()+PROFILE_TIPI_NAME_PREFIX + index, answer.getKey());
+                    statusManager.getProfileName() + PROFILE_TIPI_NAME_PREFIX + index, answer.getKey());
             eSharedPreferences.putInt(
-                    sm.getProfileName()+PROFILE_TIPI_ANSWER_PREFIX + index, answer.getValue());
+                    statusManager.getProfileName() + PROFILE_TIPI_ANSWER_PREFIX + index, answer.getValue());
             index++;
         }
-        eSharedPreferences.putInt(sm.getProfileName()+PROFILE_TIPI_NUMBER_OF_ANSWERS, index);
+        eSharedPreferences.putInt(statusManager.getProfileName() + PROFILE_TIPI_NUMBER_OF_ANSWERS, index);
         setIsDirtyAndCommit();
     }
 
     private HashMap<String, Integer> getTipiAnswers() {
-        Logger.d(TAG, sm.getProfileName()+" - "+"Building tipiAnswers HashMap");
+        Logger.d(TAG, "{} - Building tipiAnswers HashMap", statusManager.getProfileName());
 
         HashMap<String, Integer> tipiAnswers =
                 new HashMap<String, Integer>();
-        int numberOfAnswers = sharedPreferences.getInt(sm.getProfileName()+
+        int numberOfAnswers = sharedPreferences.getInt(statusManager.getProfileName() +
                 PROFILE_TIPI_NUMBER_OF_ANSWERS, 0);
         String questionName;
         int answer;
 
         for (int index = 0; index < numberOfAnswers; index++) {
             questionName = sharedPreferences.getString(
-                    sm.getProfileName()+PROFILE_TIPI_NAME_PREFIX + index, null);
+                    statusManager.getProfileName() + PROFILE_TIPI_NAME_PREFIX + index, null);
             answer = sharedPreferences.getInt(
-                    sm.getProfileName()+PROFILE_TIPI_ANSWER_PREFIX + index, -1);
+                    statusManager.getProfileName() + PROFILE_TIPI_ANSWER_PREFIX + index, -1);
             tipiAnswers.put(questionName, answer);
         }
 
@@ -108,13 +111,13 @@ public class ProfileStorage {
     }
 
     public void setQuestionsVersion(int questionsVersion) {
-        Logger.d(TAG, sm.getProfileName()+" - "+"Setting questionsVersion to {}", questionsVersion);
-        eSharedPreferences.putInt(sm.getProfileName()+PROFILE_QUESTIONS_VERSION, questionsVersion);
+        Logger.d(TAG, "{} - Setting questionsVersion to {}", statusManager.getProfileName(), questionsVersion);
+        eSharedPreferences.putInt(statusManager.getProfileName() + PROFILE_QUESTIONS_VERSION, questionsVersion);
         setIsDirtyAndCommit();
     }
 
     private int getQuestionsVersion() {
-        return sharedPreferences.getInt(sm.getProfileName()+PROFILE_QUESTIONS_VERSION, -1);
+        return sharedPreferences.getInt(statusManager.getProfileName() + PROFILE_QUESTIONS_VERSION, -1);
     }
 
     public void setSyncStart() {
@@ -127,23 +130,23 @@ public class ProfileStorage {
     }
 
     private void setIsDirtyAndCommit() {
-        Logger.d(TAG, sm.getProfileName()+" - "+"Setting isDirty and hasChangedSinceSyncStart flags and " +
-                "committing");
+        Logger.d(TAG, "{} - Setting isDirty and hasChangedSinceSyncStart flags and committing",
+                statusManager.getProfileName());
         hasChangedSinceSyncStart = true;
-        eSharedPreferences.putBoolean(sm.getProfileName()+PROFILE_IS_DIRTY, true);
+        eSharedPreferences.putBoolean(statusManager.getProfileName() + PROFILE_IS_DIRTY, true);
         eSharedPreferences.commit();
     }
 
     public void clearIsDirtyAndCommit() {
-        Logger.d(TAG, sm.getProfileName()+" - "+"Clearing isDirty and hasChangedSinceSyncStart flag and " +
-                "committing");
+        Logger.d(TAG, "{} - Clearing isDirty and hasChangedSinceSyncStart flag and committing",
+                statusManager.getProfileName());
         hasChangedSinceSyncStart = false;
-        eSharedPreferences.putBoolean(sm.getProfileName()+PROFILE_IS_DIRTY, false);
+        eSharedPreferences.putBoolean(statusManager.getProfileName() + PROFILE_IS_DIRTY, false);
         eSharedPreferences.commit();
     }
 
     public boolean isDirty() {
-        return sharedPreferences.getBoolean(sm.getProfileName()+PROFILE_IS_DIRTY, false);
+        return sharedPreferences.getBoolean(statusManager.getProfileName() + PROFILE_IS_DIRTY, false);
     }
 
     public Profile getProfile() {
@@ -153,14 +156,14 @@ public class ProfileStorage {
     }
 
     public boolean clearProfile(){
-        eSharedPreferences.remove(sm.getProfileName()+PROFILE_IS_DIRTY);
-        eSharedPreferences.remove(sm.getProfileName()+PROFILE_AGE);
-        eSharedPreferences.remove(sm.getProfileName()+PROFILE_GENDER);
-        eSharedPreferences.remove(sm.getProfileName()+PROFILE_EDUCATION);
-        eSharedPreferences.remove(sm.getProfileName()+PROFILE_TIPI_NAME_PREFIX);
-        eSharedPreferences.remove(sm.getProfileName()+PROFILE_TIPI_ANSWER_PREFIX);
-        eSharedPreferences.remove(sm.getProfileName()+PROFILE_TIPI_NUMBER_OF_ANSWERS);
-        eSharedPreferences.remove(sm.getProfileName()+PROFILE_QUESTIONS_VERSION);
+        eSharedPreferences.remove(statusManager.getProfileName() + PROFILE_IS_DIRTY);
+        eSharedPreferences.remove(statusManager.getProfileName() + PROFILE_AGE);
+        eSharedPreferences.remove(statusManager.getProfileName() + PROFILE_GENDER);
+        eSharedPreferences.remove(statusManager.getProfileName() + PROFILE_EDUCATION);
+        eSharedPreferences.remove(statusManager.getProfileName() + PROFILE_TIPI_NAME_PREFIX);
+        eSharedPreferences.remove(statusManager.getProfileName() + PROFILE_TIPI_ANSWER_PREFIX);
+        eSharedPreferences.remove(statusManager.getProfileName() + PROFILE_TIPI_NUMBER_OF_ANSWERS);
+        eSharedPreferences.remove(statusManager.getProfileName() + PROFILE_QUESTIONS_VERSION);
         eSharedPreferences.commit();
         return true;
     }
