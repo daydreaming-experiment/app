@@ -7,6 +7,7 @@ import com.brainydroid.daydreaming.network.*;
 import com.google.inject.Inject;
 import roboguice.service.RoboService;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 
 // FIXME: Worker thread restart on runtime configuration change.
@@ -177,9 +178,8 @@ public class SyncService extends RoboService {
     private void asyncUpdateQuestions() {
         Logger.d(TAG, "Updating questions");
 
-        HttpGetData updateQuestionsData =
-                new HttpGetData(ServerConfig.QUESTIONS_URL,
-                        updateQuestionsCallback);
+        String getUrl = MessageFormat.format(ServerConfig.QUESTIONS_URL_BASE, statusManager.getCurrentModeName());
+        HttpGetData updateQuestionsData = new HttpGetData(getUrl, updateQuestionsCallback);
         HttpGetTask updateQuestionsTask = new HttpGetTask();
         updateQuestionsTask.execute(updateQuestionsData);
     }
