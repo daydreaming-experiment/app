@@ -71,7 +71,7 @@ public class StatusManager {
     @SuppressWarnings("FieldCanBeLocal")
     private static int SYNC_DELAY_PROD = 5 * 60 * 1000;  // 5 minutes
     @SuppressWarnings("FieldCanBeLocal")
-    private static int SYNC_DELAY_TEST = 10 * 1000;      // 15 seconds
+    private static int SYNC_DELAY_TEST = 10 * 1000;      // 10 seconds
 
     @Inject LocationManager locationManager;
     @Inject ConnectivityManager connectivityManager;
