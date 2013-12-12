@@ -399,26 +399,27 @@
             android:id="@+id/dashboard_testing_linearlayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
             android:layout_alignParentBottom="true"
             android:gravity="right">
-<TextView
-    android:id="@+id/dashboard_titleTesting"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
-    android:text="Testing"
-    android:textAppearance="?android:attr/textAppearanceMedium" />
 
-<Button
-    android:id="@+id/button_test_poll"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
-    android:onClick="runPollNow"
-    android:text="Probe now" />
+        <Button
+            android:id="@+id/button_test_poll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="8dp"
+            android:onClick="runPollNow"
+            android:text="Probe now"/>
 
+        <Button
+                android:id="@+id/button_reload_parameters"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="16dp"
+                android:onClick="reloadParametersKeepProfileAnswers"
+                android:text="Reload parameters" />
     </LinearLayout>
 
 

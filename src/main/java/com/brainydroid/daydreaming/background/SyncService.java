@@ -30,6 +30,9 @@ public class SyncService extends RoboService {
 
     protected static String TAG = "SyncService";
 
+    public static String DEBUG_SYNC = "debugSync";
+    private boolean isDebugSync = false;
+
     @Inject StatusManager statusManager;
     @Inject PollsStorage pollsStorage;
     @Inject LocationPointsStorage locationPointsStorage;
@@ -126,28 +129,38 @@ public class SyncService extends RoboService {
 
                 Logger.i(TAG, "Parameters successfully imported");
                 statusManager.setParametersUpdated();
+                if (isDebugSync && statusManager.getCurrentMode() == StatusManager.MODE_TEST) {
+                    Toast.makeText(SyncService.this, "Parameters successfully updated", Toast.LENGTH_SHORT).show();
+                }
             } else {
                 Logger.w(TAG, "Error while retrieving new parameters from " +
                         "server");
+                if (isDebugSync && statusManager.getCurrentMode() == StatusManager.MODE_TEST) {
+                    Toast.makeText(SyncService.this, "Error retrieving parameters from server. " +
+                            "Are you connected to internet?", Toast.LENGTH_LONG).show();
+                }
             }
         }
 
     };
 
     @Override
-    public void onCreate() {
-        Logger.d(TAG, "SyncService created");
-        super.onCreate();
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Logger.d(TAG, "SyncService started");
+        super.onStartCommand(intent, flags, startId);
 
         // Launch synchronization tasks if we haven't done so not long ago
-        if (statusManager.isLastSyncLongAgo()) {
-            Logger.d(TAG, "Last sync was long ago -> starting updates");
+        isDebugSync = intent.getBooleanExtra(DEBUG_SYNC, false);
+        if (statusManager.isLastSyncLongAgo() || isDebugSync) {
+            Logger.d(TAG, "Last sync was long ago or this is a debug sync -> starting updates");
             statusManager.setLastSyncToNow();
             startUpdates();
         } else {
             Logger.v(TAG, "Last sync was not long ago -> exiting");
             stopSelf();
         }
+
+        return START_REDELIVER_INTENT;
     }
 
     @Override
@@ -181,6 +194,10 @@ public class SyncService extends RoboService {
      */
     private void asyncUpdateParameters() {
         Logger.d(TAG, "Updating parameters");
+
+        if (statusManager.getCurrentMode() == StatusManager.MODE_TEST && isDebugSync) {
+            Toast.makeText(this, "Reloading parameters...", Toast.LENGTH_SHORT).show();
+        }
 
         String getUrl = MessageFormat.format(ServerConfig.PARAMETERS_URL_BASE, statusManager.getCurrentModeName());
         HttpGetData updateParametersData = new HttpGetData(getUrl, updateParametersCallback);

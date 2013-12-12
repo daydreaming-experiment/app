@@ -407,6 +407,24 @@ public class StatusManager {
         cryptoStorageProvider.get().clearStore();
     }
 
+    public synchronized void resetParametersKeepProfileAnswers() {
+        Logger.d(TAG, "Resetting parameters and profile_id, keeping the profile answers");
+
+        // Clear pending uploads (before clearing)
+        pollsStorageProvider.get().removeUploadablePolls();
+        locationPointsStorageProvider.get().removeUploadableLocationPoints();
+
+        // Clear local experiment started flag
+        clearExperimentStartTimestamp();
+
+        // Clear parameters storage
+        clearParametersUpdated();
+        parametersStorageProvider.get().flush();
+
+        // Clear crypto storage to force a new handshake
+        cryptoStorageProvider.get().clearStore();
+    }
+
     public synchronized void switchToProdMode() {
         Logger.d(TAG, "Doing full switch to production mode");
 

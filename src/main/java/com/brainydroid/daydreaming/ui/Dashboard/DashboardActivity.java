@@ -12,6 +12,7 @@ import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.background.SchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
+import com.brainydroid.daydreaming.background.SyncService;
 import com.brainydroid.daydreaming.network.ServerConfig;
 import com.brainydroid.daydreaming.network.SntpClient;
 import com.brainydroid.daydreaming.network.SntpClientCallback;
@@ -35,8 +36,8 @@ public class DashboardActivity extends RoboFragmentActivity {
     @InjectView(R.id.dashboard_ExperimentTimeElapsed2)
     TextView timeElapsedTextView;
     @InjectView(R.id.dashboard_ExperimentResultsIn2) TextView timeToGoTextView;
-    @InjectView(R.id.dashboard_titleTesting)  TextView testText;
-    @InjectView(R.id.button_test_poll) Button testButton;
+    @InjectView(R.id.button_test_poll) Button testProbeButton;
+    @InjectView(R.id.button_reload_parameters) Button testReloadButton;
     @InjectView(R.id.dashboard_about_layout) AlphaLinearLayout aboutLayout;
 
     private boolean testModeThemeActivated = false;
@@ -225,6 +226,21 @@ public class DashboardActivity extends RoboFragmentActivity {
         Toast.makeText(this, "Now wait for 5 secs", Toast.LENGTH_SHORT).show();
     }
 
+    public void reloadParametersKeepProfileAnswers(@SuppressWarnings("UnusedParameters") View view) {
+        Logger.d(TAG, "Resetting parameters and profile_id, but keeping profile answers");
+
+        if (!statusManager.isDataEnabled()) {
+            Toast.makeText(this, "You're not connected to the internet!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        statusManager.resetParametersKeepProfileAnswers();
+
+        Intent syncIntent = new Intent(this, SyncService.class);
+        syncIntent.putExtra(SyncService.DEBUG_SYNC, true);
+        startService(syncIntent);
+    }
+
     public void setRobotoFont(Activity activity){
         ViewGroup godfatherView =
                 (ViewGroup)activity.getWindow().getDecorView();
@@ -248,14 +264,16 @@ public class DashboardActivity extends RoboFragmentActivity {
         Logger.d(TAG, "Updating chrome depending on test mode");
         if (statusManager.getCurrentMode() == StatusManager.MODE_PROD) {
             Logger.d(TAG, "Setting production chrome");
-            testButton.setVisibility(View.INVISIBLE);
-            testButton.setClickable(false);
-            testText.setVisibility(View.INVISIBLE);
+            testProbeButton.setVisibility(View.INVISIBLE);
+            testProbeButton.setClickable(false);
+            testReloadButton.setVisibility(View.INVISIBLE);
+            testReloadButton.setClickable(false);
         } else {
             Logger.d(TAG, "Setting test chrome");
-            testButton.setVisibility(View.VISIBLE);
-            testButton.setClickable(true);
-            testText.setVisibility(View.VISIBLE);
+            testProbeButton.setVisibility(View.VISIBLE);
+            testProbeButton.setClickable(true);
+            testReloadButton.setVisibility(View.VISIBLE);
+            testReloadButton.setClickable(true);
         }
     }
 
