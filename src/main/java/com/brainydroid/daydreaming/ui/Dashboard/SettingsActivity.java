@@ -8,9 +8,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.text.InputType;
 import android.text.format.DateFormat;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
@@ -319,8 +322,9 @@ public class SettingsActivity extends RoboFragmentActivity {
 
         // Set an EditText view to get user input
         final EditText inputPass = new EditText(this);
+        inputPass.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
-        new AlertDialog.Builder(this)
+        AlertDialog testAlert = new AlertDialog.Builder(this)
         .setTitle("Switch mode")
         .setMessage("Type the password to switch to test mode")
         .setView(inputPass)
@@ -353,7 +357,10 @@ public class SettingsActivity extends RoboFragmentActivity {
                 dialog.cancel();
             }
         })
-        .show();
+        .create();
+
+        testAlert.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        testAlert.show();
     }
 
     private static String pad(int c) {
