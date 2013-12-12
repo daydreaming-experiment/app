@@ -1,6 +1,14 @@
 Changelog
 =========
 
+0.12
+----
+
+* New "test mode" in the app, allowing easy updating of parameters without breaking running subjects' setups (uses multiple profiles in background)
+* Test mode comes with the new `daydreaming-experiment/parameters` repository to deal with test parameters and different grammar versions
+* Update and clean up some dependencies
+* Switch back average inter-probe interval to 2 hours
+
 0.11
 ----
 
