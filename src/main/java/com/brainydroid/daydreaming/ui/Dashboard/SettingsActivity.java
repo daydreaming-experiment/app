@@ -13,7 +13,6 @@ import android.text.format.DateFormat;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
@@ -110,7 +109,7 @@ public class SettingsActivity extends RoboFragmentActivity {
             @Override
             public void onClick(View v) {
 
-                String Time_from = sharedPreferences.getString(TIME_FROM,defaultTimePreferenceMin);
+                String Time_from = sharedPreferences.getString(TIME_FROM, defaultTimePreferenceMin);
                 final int minute_from = Integer.parseInt(Time_from.substring(3, 5));
                 final int hour_from = Integer.parseInt(Time_from.substring(0, 2));
 
@@ -145,7 +144,7 @@ public class SettingsActivity extends RoboFragmentActivity {
             @Override
             public void onClick(View v) {
 
-                String Time_until = sharedPreferences.getString(TIME_UNTIL,defaultTimePreferenceMax);
+                String Time_until = sharedPreferences.getString(TIME_UNTIL, defaultTimePreferenceMax);
                 final int minute_until = Integer.parseInt(Time_until.substring(3, 5));
                 final int hour_until = Integer.parseInt(Time_until.substring(0, 2));
 
@@ -290,8 +289,8 @@ public class SettingsActivity extends RoboFragmentActivity {
         Logger.v(TAG, "Proposing to switch back to prod mode");
 
         new AlertDialog.Builder(this)
-        .setTitle("Switch mode")
-        .setMessage("Back to production mode?")
+        .setTitle("Production mode")
+        .setMessage("Switch back to production mode?")
         .setCancelable(false)
         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 
@@ -325,7 +324,7 @@ public class SettingsActivity extends RoboFragmentActivity {
         inputPass.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
         AlertDialog testAlert = new AlertDialog.Builder(this)
-        .setTitle("Switch mode")
+        .setTitle("Test mode")
         .setMessage("Type the password to switch to test mode")
         .setView(inputPass)
         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {

@@ -18,7 +18,7 @@
                 android:padding="@dimen/dashboard_settings_button_margin"
                 android:scaleType="fitCenter"
                 android:onClick="onClick_switchMode"
-                android:src="@drawable/icon_location"
+                android:src="@drawable/icon_test"
                 android:background="@null"/>
     </LinearLayout>
 
