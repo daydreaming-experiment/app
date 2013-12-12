@@ -2,11 +2,13 @@ package com.brainydroid.daydreaming.background;
 
 import android.content.Intent;
 import android.os.IBinder;
+import android.widget.Toast;
 import com.brainydroid.daydreaming.db.*;
 import com.brainydroid.daydreaming.network.*;
 import com.google.inject.Inject;
 import roboguice.service.RoboService;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 
 // FIXME: Worker thread restart on runtime configuration change.
@@ -17,7 +19,7 @@ import java.util.ArrayList;
 // right above the "Thread-safe methods" title.
 
 /**
- * Update the question pool, upload answers and location points.
+ * Update the parameter  pool, upload answers and location points.
  *
  * @author Sébastien Lerique
  * @author Vincent Adam
@@ -28,10 +30,13 @@ public class SyncService extends RoboService {
 
     protected static String TAG = "SyncService";
 
+    public static String DEBUG_SYNC = "debugSync";
+    private boolean isDebugSync = false;
+
     @Inject StatusManager statusManager;
     @Inject PollsStorage pollsStorage;
     @Inject LocationPointsStorage locationPointsStorage;
-    @Inject QuestionsStorage questionsStorage;
+    @Inject ParametersStorage parametersStorage;
     @Inject ProfileStorage profileStorage;
     @Inject CryptoStorage cryptoStorage;
     @Inject ServerTalker serverTalker;
@@ -58,13 +63,13 @@ public class SyncService extends RoboService {
             if (hasKeyPairAndMaiId && statusManager.isDataEnabled()) {
                 Logger.d(TAG, "Have keypair and id, and data is enabled");
 
-                // We only update questions once in the experiment's
+                // We only update parameters once in the experiment's
                 // lifecycle.
-                if (!statusManager.areQuestionsUpdated()) {
-                    Logger.d(TAG, "Launching questions update");
-                    asyncUpdateQuestions();
+                if (!statusManager.areParametersUpdated()) {
+                    Logger.d(TAG, "Launching parameters update");
+                    asyncUpdateParameters();
                 } else {
-                    Logger.v(TAG, "Questions already updated");
+                    Logger.v(TAG, "Parameters already updated");
                 }
 
                 // We only sync the profile if stored data has been changed
@@ -88,60 +93,74 @@ public class SyncService extends RoboService {
     };
 
     /**
-     * Callback called when the questions are finished downloading,
-     * to import them into the {@link QuestionsStorage}.
+     * Callback called when the parameters are finished downloading,
+     * to import them into the {@link com.brainydroid.daydreaming.db.ParametersStorage}.
      */
-    HttpConversationCallback updateQuestionsCallback =
+    HttpConversationCallback updateParametersCallback =
             new HttpConversationCallback() {
 
-        private String TAG = "Questions HttpConversationCallback";
+        private String TAG = "Parameters HttpConversationCallback";
 
         @Override
         public void onHttpConversationFinished(boolean success,
                                                String serverAnswer) {
-            Logger.d(TAG, "Question update HttpConversation finished");
+            Logger.d(TAG, "Parameters update HttpConversation finished");
 
             if (success) {
-                Logger.i(TAG, "Successfully retrieved questions from " +
+                Logger.i(TAG, "Successfully retrieved parameters from " +
                         "server");
                 Logger.td(SyncService.this, SyncService.TAG + ": new " +
-                        "questions downloaded from server");
+                        "parameters downloaded from server");
 
-                // Import the questions, and remember not to update
-                // questions again.
+                // Import the parameters, and remember not to update
+                // parameters again.
                 try {
-                    questionsStorage.importQuestions(serverAnswer);
-                    Logger.d(TAG, "Importing new questions to storage");
-                } catch (QuestionsSyntaxException e) {
-                    Logger.e(TAG, "Downloaded questions were malformed -> " +
-                            "questions not updated");
+                    parametersStorage.importParameters(serverAnswer);
+                    Logger.d(TAG, "Importing new parameters to storage");
+                } catch (ParametersSyntaxException e) {
+                    Logger.e(TAG, "Downloaded parameters were malformed -> " +
+                            "parameters not updated");
+                    if (statusManager.getCurrentMode() == StatusManager.MODE_TEST) {
+                        Toast.makeText(SyncService.this, "Test parameters from server were malformed! " +
+                                "Correct them and try again", Toast.LENGTH_LONG).show();
+                    }
                     return;
                 }
 
-                Logger.i(TAG, "Questions successfully imported");
-                statusManager.setQuestionsUpdated();
+                Logger.i(TAG, "Parameters successfully imported");
+                statusManager.setParametersUpdated();
+                if (isDebugSync && statusManager.getCurrentMode() == StatusManager.MODE_TEST) {
+                    Toast.makeText(SyncService.this, "Parameters successfully updated", Toast.LENGTH_SHORT).show();
+                }
             } else {
-                Logger.w(TAG, "Error while retrieving new questions from " +
+                Logger.w(TAG, "Error while retrieving new parameters from " +
                         "server");
+                if (isDebugSync && statusManager.getCurrentMode() == StatusManager.MODE_TEST) {
+                    Toast.makeText(SyncService.this, "Error retrieving parameters from server. " +
+                            "Are you connected to internet?", Toast.LENGTH_LONG).show();
+                }
             }
         }
 
     };
 
     @Override
-    public void onCreate() {
-        Logger.d(TAG, "SyncService created");
-        super.onCreate();
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Logger.d(TAG, "SyncService started");
+        super.onStartCommand(intent, flags, startId);
 
         // Launch synchronization tasks if we haven't done so not long ago
-        if (statusManager.isLastSyncLongAgo()) {
-            Logger.d(TAG, "Last sync was long ago -> starting updates");
+        isDebugSync = intent.getBooleanExtra(DEBUG_SYNC, false);
+        if (statusManager.isLastSyncLongAgo() || isDebugSync) {
+            Logger.d(TAG, "Last sync was long ago or this is a debug sync -> starting updates");
             statusManager.setLastSyncToNow();
             startUpdates();
         } else {
             Logger.v(TAG, "Last sync was not long ago -> exiting");
             stopSelf();
         }
+
+        return START_REDELIVER_INTENT;
     }
 
     @Override
@@ -171,17 +190,19 @@ public class SyncService extends RoboService {
     }
 
     /**
-     * Download and import {@link com.brainydroid.daydreaming.db.Question}s
-     * from the server into our pool of questions, asynchronously.
+     * Download and import server parameters from the server, asynchronously.
      */
-    private void asyncUpdateQuestions() {
-        Logger.d(TAG, "Updating questions");
+    private void asyncUpdateParameters() {
+        Logger.d(TAG, "Updating parameters");
 
-        HttpGetData updateQuestionsData =
-                new HttpGetData(ServerConfig.QUESTIONS_URL,
-                        updateQuestionsCallback);
-        HttpGetTask updateQuestionsTask = new HttpGetTask();
-        updateQuestionsTask.execute(updateQuestionsData);
+        if (statusManager.getCurrentMode() == StatusManager.MODE_TEST && isDebugSync) {
+            Toast.makeText(this, "Reloading parameters...", Toast.LENGTH_SHORT).show();
+        }
+
+        String getUrl = MessageFormat.format(ServerConfig.PARAMETERS_URL_BASE, statusManager.getCurrentModeName());
+        HttpGetData updateParametersData = new HttpGetData(getUrl, updateParametersCallback);
+        HttpGetTask updateParametersTask = new HttpGetTask();
+        updateParametersTask.execute(updateParametersData);
     }
 
     /**

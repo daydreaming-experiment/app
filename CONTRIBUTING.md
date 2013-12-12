@@ -15,9 +15,9 @@ Instructions follow on how get up and running.
 
 ### Building the project
 
-Once IntelliJ is well configured (see below) you can use it directly to
-build the project, but the simplest and most reproducible way is to use
-[Apache Maven](http://maven.apache.org/). That's what we use.
+Once IntelliJ IDEA is well configured (see below) you can use it directly to
+build the project, but the simplest and most reproducible way is to use [Apache
+Maven](http://maven.apache.org/). That's what we use.
 
 ### Version control
 
@@ -64,7 +64,7 @@ ActionBarSherlock.
 First we need the SDK Tools from the Android website:
 
 ```sh
-wget -O android-sdk-linux.tgz http://dl.google.com/android/android-sdk_r22-linux.tgz
+wget -O android-sdk-linux.tgz http://dl.google.com/android/android-sdk_r22.3-linux.tgz
 tar xzf android-sdk-linux.tgz
 ```
 
@@ -92,19 +92,10 @@ Now, install the necessary SDK packages by running the following command
 (from any folder):
 
 ```sh
-android update sdk --no-ui --force --filter platform-tools,build-tools-17.0.0,android-14,android-16,extra-android-support
+android update sdk --no-ui --force --filter platform-tools,build-tools-19.0.0,android-16
 ```
 
 (And answering `y` to the license agreement.)
-
-Finally we'll be needing a small workaround to make sure the version of
-the `maven-android-plugin` we use is compatible with the latest version
-of the SDK tools (otherwise we'll be facing errors like `aapt not found`
-later on):
-
-```sh
-cp -r ${ANDROID_HOME}/build-tools/17.0.0/* ${ANDROID_HOME}/platform-tools/
-```
 
 #### Configure Maven to have the right Android SDK home
 
@@ -137,41 +128,11 @@ home folder to make it look like this:
 </settings>
 ```
 
-#### Deploy Android packages to Maven
-
-Maven is great, it downloads most packages we need automatically, but
-not all packages in the Maven repository are up to date with the latest
-versions. And Android tools tend to change about once a month these
-days. To help with this we use the [Maven Android SDK
-Deployer](https://github.com/mosabua/maven-android-sdk-deployer):
-
-```sh
-# Get the deployer
-git clone https://github.com/mosabua/maven-android-sdk-deployer.git
-cd maven-android-sdk-deployer
-
-# Install only what we need
-mvn install -N
-cd extras
-mvn install -N
-cd compatibility-v4
-mvn install -N
-cd ../compatibility-v7-gridlayout
-mvn install -N
-```
-
-Now we should be good to go for a full build of the app. `cd` into
-daydreaming's repository, and run `mvn package`. This should take a few
-minutes, and when finished there should be a nice
-`daydreaming-x.y.z.apk` in the `target` folder of the repository.  If
-there isn't, or if a problem appears before this stage, please file an
-issue so we can fix this document!
-
 ## Setting up IntelliJ IDEA
 
 Now that we've set up Maven and that we can build the app, it's time to
 get the IDE running. I'm using IntelliJ IDEA Community Edition, version
-12.1 ; if your experience is different with a different version, please
+13 ; if your experience is different with a different version, please
 send us feedback!
 
 ### Importing the Maven project
@@ -201,13 +162,6 @@ environment variable), and click `OK`. Accept the `Java SDK` version
 clicking `OK` at the popup dialog. Now click `Next`, and then `Finish`
 at the next window to finalize the import.
 
-The import will take a few minutes to complete, and on its way it will
-most probably give you an `Error when importing module
-'~apklib-android.support_compatibility-v7_13': Cannot find appropriate
-Android platform for API level`. Not to worry, it's [a known
-bug](http://youtrack.jetbrains.com/issue/IDEA-104800) and has no
-tangible impact (it's fixed in IntelliJ 12.1.2).
-
 ### Configuring IntelliJ
 
 IntelliJ has its own build system (configured by importing the Maven
@@ -215,10 +169,7 @@ settings), and there's still a few options to fix before you can cleanly
 build from inside IntelliJ (remember you can always `mvn package` at the
 command line if IntelliJ won't cooperate).
 
-Go to `File > Project Structure...` and select the `modules` item in the
-leftmost pane of the window. Now in the second pane (from the left), select `~apklib-android.support_compatibility-v7_13` ; in the `Dependencies` tab, make sure the `Module SDK` is set to `Project SDK`. Confirm the changes by clicking `OK` at the bottom.
-
-Finally, go to `Run > Edit Configurations...` ; create a new run
+Go to `Run > Edit Configurations...` ; create a new run
 configuration by clicking the green `+` button and selecting `Android
 Application`. Now on the right side, you can name the configuration
 `daydreaming-run` ; in the `General` tab, select `daydreaming` in the

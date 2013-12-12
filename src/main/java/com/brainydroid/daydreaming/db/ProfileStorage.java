@@ -2,6 +2,7 @@ package com.brainydroid.daydreaming.db;
 
 import android.content.SharedPreferences;
 import com.brainydroid.daydreaming.background.Logger;
+import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.network.Profile;
 import com.brainydroid.daydreaming.network.ProfileFactory;
 import com.google.inject.Inject;
@@ -23,8 +24,8 @@ public class ProfileStorage {
     private static String PROFILE_TIPI_ANSWER_PREFIX = "profileTipiAnswer";
     private static String PROFILE_TIPI_NUMBER_OF_ANSWERS =
             "profileTipiNumberOfAnswers";
-    private static String PROFILE_QUESTIONS_VERSION =
-            "profileQuestionsVersion";
+    private static String PROFILE_PARAMETERS_VERSION =
+            "profileParametersVersion";
 
     private boolean hasChangedSinceSyncStart = false;
 
@@ -32,6 +33,7 @@ public class ProfileStorage {
     private SharedPreferences.Editor eSharedPreferences;
 
     @Inject ProfileFactory profileFactory;
+    @Inject StatusManager statusManager;
 
     @Inject
     public ProfileStorage(SharedPreferences sharedPreferences) {
@@ -41,78 +43,90 @@ public class ProfileStorage {
     }
 
     public void setAge(String age) {
-        Logger.d(TAG, "Setting age to {}", age);
-        eSharedPreferences.putString(PROFILE_AGE, age);
+        Logger.d(TAG, "{} - Setting age to {}", statusManager.getCurrentModeName(), age);
+        eSharedPreferences.putString(statusManager.getCurrentModeName() + PROFILE_AGE, age);
         setIsDirtyAndCommit();
     }
 
     private String getAge() {
-        return sharedPreferences.getString(PROFILE_AGE, null);
+        return sharedPreferences.getString(statusManager.getCurrentModeName() + PROFILE_AGE, null);
     }
 
     public void setGender(String gender) {
-        Logger.d(TAG, "Setting gender to {}", gender);
-        eSharedPreferences.putString(PROFILE_GENDER, gender);
+        Logger.d(TAG, "{} - Setting gender to {}", statusManager.getCurrentModeName(), gender);
+        eSharedPreferences.putString(statusManager.getCurrentModeName() + PROFILE_GENDER, gender);
         setIsDirtyAndCommit();
     }
 
     private String getGender() {
-        return sharedPreferences.getString(PROFILE_GENDER, null);
+        return sharedPreferences.getString(statusManager.getCurrentModeName() + PROFILE_GENDER, null);
     }
 
     public void setEducation(String education) {
-        Logger.d(TAG, "Setting education to {}", education);
-        eSharedPreferences.putString(PROFILE_EDUCATION, education);
+        Logger.d(TAG, "{} - Setting education to {}", statusManager.getCurrentModeName(), education);
+        eSharedPreferences.putString(statusManager.getCurrentModeName() + PROFILE_EDUCATION, education);
         setIsDirtyAndCommit();
     }
 
     private String getEducation() {
-        return sharedPreferences.getString(PROFILE_EDUCATION, null);
+        return sharedPreferences.getString(statusManager.getCurrentModeName() + PROFILE_EDUCATION, null);
     }
 
     public void setTipiAnswers(HashMap<String, Integer> tipiAnswers) {
-        Logger.d(TAG, "Setting tipi questionnaire answers");
+        Logger.d(TAG, "{} - Setting tipi questionnaire answers", statusManager.getCurrentModeName());
         int index = 0;
         for (Map.Entry<String, Integer> answer : tipiAnswers.entrySet()) {
             eSharedPreferences.putString(
-                    PROFILE_TIPI_NAME_PREFIX + index, answer.getKey());
+                    statusManager.getCurrentModeName() + PROFILE_TIPI_NAME_PREFIX + index, answer.getKey());
             eSharedPreferences.putInt(
-                    PROFILE_TIPI_ANSWER_PREFIX + index, answer.getValue());
+                    statusManager.getCurrentModeName() + PROFILE_TIPI_ANSWER_PREFIX + index, answer.getValue());
             index++;
         }
-        eSharedPreferences.putInt(PROFILE_TIPI_NUMBER_OF_ANSWERS, index);
+        eSharedPreferences.putInt(statusManager.getCurrentModeName() + PROFILE_TIPI_NUMBER_OF_ANSWERS, index);
         setIsDirtyAndCommit();
     }
 
     private HashMap<String, Integer> getTipiAnswers() {
-        Logger.d(TAG, "Building tipiAnswers HashMap");
+        Logger.d(TAG, "{} - Building tipiAnswers HashMap", statusManager.getCurrentModeName());
 
         HashMap<String, Integer> tipiAnswers =
                 new HashMap<String, Integer>();
-        int numberOfAnswers = sharedPreferences.getInt(
+        int numberOfAnswers = sharedPreferences.getInt(statusManager.getCurrentModeName() +
                 PROFILE_TIPI_NUMBER_OF_ANSWERS, 0);
         String questionName;
         int answer;
 
         for (int index = 0; index < numberOfAnswers; index++) {
             questionName = sharedPreferences.getString(
-                    PROFILE_TIPI_NAME_PREFIX + index, null);
+                    statusManager.getCurrentModeName() + PROFILE_TIPI_NAME_PREFIX + index, null);
             answer = sharedPreferences.getInt(
-                    PROFILE_TIPI_ANSWER_PREFIX + index, -1);
+                    statusManager.getCurrentModeName() + PROFILE_TIPI_ANSWER_PREFIX + index, -1);
             tipiAnswers.put(questionName, answer);
         }
 
         return tipiAnswers;
     }
 
-    public void setQuestionsVersion(int questionsVersion) {
-        Logger.d(TAG, "Setting questionsVersion to {}", questionsVersion);
-        eSharedPreferences.putInt(PROFILE_QUESTIONS_VERSION, questionsVersion);
+    private void clearTipiAnswers() {
+        Logger.d(TAG, "{} - Clearing tipiAnswers", statusManager.getCurrentModeName());
+
+        int numberOfAnswers = sharedPreferences.getInt(statusManager.getCurrentModeName() +
+                PROFILE_TIPI_NUMBER_OF_ANSWERS, 0);
+        for (int index = 0; index < numberOfAnswers; index++) {
+            eSharedPreferences.remove(statusManager.getCurrentModeName() + PROFILE_TIPI_NAME_PREFIX + index);
+        }
+
+        eSharedPreferences.commit();
+    }
+
+    public void setParametersVersion(int version) {
+        Logger.d(TAG, "{} - Setting parametersVersion to {}", statusManager.getCurrentModeName(), version);
+        eSharedPreferences.putInt(statusManager.getCurrentModeName() + PROFILE_PARAMETERS_VERSION, version);
         setIsDirtyAndCommit();
     }
 
-    private int getQuestionsVersion() {
-        return sharedPreferences.getInt(PROFILE_QUESTIONS_VERSION, -1);
+    private int getParametersVersion() {
+        return sharedPreferences.getInt(statusManager.getCurrentModeName() + PROFILE_PARAMETERS_VERSION, -1);
     }
 
     public void setSyncStart() {
@@ -125,28 +139,44 @@ public class ProfileStorage {
     }
 
     private void setIsDirtyAndCommit() {
-        Logger.d(TAG, "Setting isDirty and hasChangedSinceSyncStart flags and " +
-                "committing");
+        Logger.d(TAG, "{} - Setting isDirty and hasChangedSinceSyncStart flags and committing",
+                statusManager.getCurrentModeName());
         hasChangedSinceSyncStart = true;
-        eSharedPreferences.putBoolean(PROFILE_IS_DIRTY, true);
+        eSharedPreferences.putBoolean(statusManager.getCurrentModeName() + PROFILE_IS_DIRTY, true);
         eSharedPreferences.commit();
     }
 
     public void clearIsDirtyAndCommit() {
-        Logger.d(TAG, "Clearing isDirty and hasChangedSinceSyncStart flag and " +
-                "committing");
+        Logger.d(TAG, "{} - Clearing isDirty and hasChangedSinceSyncStart flag and committing",
+                statusManager.getCurrentModeName());
         hasChangedSinceSyncStart = false;
-        eSharedPreferences.putBoolean(PROFILE_IS_DIRTY, false);
+        eSharedPreferences.putBoolean(statusManager.getCurrentModeName() + PROFILE_IS_DIRTY, false);
         eSharedPreferences.commit();
     }
 
     public boolean isDirty() {
-        return sharedPreferences.getBoolean(PROFILE_IS_DIRTY, false);
+        return sharedPreferences.getBoolean(statusManager.getCurrentModeName() + PROFILE_IS_DIRTY, false);
     }
 
     public Profile getProfile() {
         Logger.d(TAG, "Building Profile instance from saved data");
         return profileFactory.create(getAge(), getGender(), getEducation(),
-                getTipiAnswers(), getQuestionsVersion());
+                getTipiAnswers(), getParametersVersion(), statusManager.getCurrentModeName());
+    }
+
+    public boolean clearProfile() {
+        Logger.d(TAG, "{} - Clearing profile", statusManager.getCurrentModeName());
+
+        // First clear tipi answers, since it uses the tipiNumberOfQuestions key
+        clearTipiAnswers();
+
+        eSharedPreferences.remove(statusManager.getCurrentModeName() + PROFILE_IS_DIRTY);
+        eSharedPreferences.remove(statusManager.getCurrentModeName() + PROFILE_AGE);
+        eSharedPreferences.remove(statusManager.getCurrentModeName() + PROFILE_GENDER);
+        eSharedPreferences.remove(statusManager.getCurrentModeName() + PROFILE_EDUCATION);
+        eSharedPreferences.remove(statusManager.getCurrentModeName() + PROFILE_TIPI_NUMBER_OF_ANSWERS);
+        eSharedPreferences.remove(statusManager.getCurrentModeName() + PROFILE_PARAMETERS_VERSION);
+        eSharedPreferences.commit();
+        return true;
     }
 }

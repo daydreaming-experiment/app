@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import com.brainydroid.daydreaming.background.Logger;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import java.util.ArrayList;
@@ -33,15 +34,15 @@ public final class PollsStorage extends StatusModelStorage<Poll,
     private static final String SQL_CREATE_TABLE_POLL_QUESTIONS =
             "CREATE TABLE IF NOT EXISTS " + TABLE_POLL_QUESTIONS + " (" +
                     COL_ID + " INTEGER NOT NULL, " +
-                    QuestionsStorage.COL_NAME + " TEXT NOT NULL, " +
-                    QuestionsStorage.COL_STATUS + " TEXT, " +
-                    QuestionsStorage.COL_ANSWER + " TEXT, " +
-                    QuestionsStorage.COL_LOCATION + " TEXT, " +
-                    QuestionsStorage.COL_NTP_TIMESTAMP + " REAL, " +
-                    QuestionsStorage.COL_SYSTEM_TIMESTAMP + " REAL" +
+                    ParametersStorage.COL_NAME + " TEXT NOT NULL, " +
+                    ParametersStorage.COL_STATUS + " TEXT, " +
+                    ParametersStorage.COL_ANSWER + " TEXT, " +
+                    ParametersStorage.COL_LOCATION + " TEXT, " +
+                    ParametersStorage.COL_NTP_TIMESTAMP + " REAL, " +
+                    ParametersStorage.COL_SYSTEM_TIMESTAMP + " REAL" +
                     ");";
 
-    @Inject QuestionsStorage questionsStorage;
+    @Inject Provider<ParametersStorage> questionsStorageProvider;
     @Inject PollFactory pollFactory;
 
     @Inject
@@ -85,13 +86,13 @@ public final class PollsStorage extends StatusModelStorage<Poll,
 
         ContentValues qValues = new ContentValues();
         qValues.put(COL_ID, pollId);
-        qValues.put(QuestionsStorage.COL_NAME, question.getName());
-        qValues.put(QuestionsStorage.COL_STATUS, question.getStatus());
-        qValues.put(QuestionsStorage.COL_ANSWER, question.getAnswerAsJson());
-        qValues.put(QuestionsStorage.COL_LOCATION, question.getLocationAsJson());
-        qValues.put(QuestionsStorage.COL_NTP_TIMESTAMP,
+        qValues.put(ParametersStorage.COL_NAME, question.getName());
+        qValues.put(ParametersStorage.COL_STATUS, question.getStatus());
+        qValues.put(ParametersStorage.COL_ANSWER, question.getAnswerAsJson());
+        qValues.put(ParametersStorage.COL_LOCATION, question.getLocationAsJson());
+        qValues.put(ParametersStorage.COL_NTP_TIMESTAMP,
                 question.getNtpTimestamp());
-        qValues.put(QuestionsStorage.COL_SYSTEM_TIMESTAMP,
+        qValues.put(ParametersStorage.COL_SYSTEM_TIMESTAMP,
                 question.getSystemTimestamp());
         return qValues;
     }
@@ -119,7 +120,7 @@ public final class PollsStorage extends StatusModelStorage<Poll,
         for (Question q : poll.getQuestions()) {
             ContentValues qValues = getQuestionValues(pollId, q);
             getDb().update(TABLE_POLL_QUESTIONS, qValues,
-                    COL_ID + "=? AND " + QuestionsStorage.COL_NAME + "=?",
+                    COL_ID + "=? AND " + ParametersStorage.COL_NAME + "=?",
                     new String[] {Integer.toString(pollId), q.getName()});
         }
     }
@@ -143,18 +144,18 @@ public final class PollsStorage extends StatusModelStorage<Poll,
         }
 
         do {
-            Question q = questionsStorage.create(qRes.getString(
-                    qRes.getColumnIndex(QuestionsStorage.COL_NAME)));
+            Question q = questionsStorageProvider.get().create(qRes.getString(
+                    qRes.getColumnIndex(ParametersStorage.COL_NAME)));
             q.setStatus(qRes.getString(
-                    qRes.getColumnIndex(QuestionsStorage.COL_STATUS)));
+                    qRes.getColumnIndex(ParametersStorage.COL_STATUS)));
             q.setAnswerFromJson(qRes.getString(
-                    qRes.getColumnIndex(QuestionsStorage.COL_ANSWER)));
+                    qRes.getColumnIndex(ParametersStorage.COL_ANSWER)));
             q.setLocationFromJson(qRes.getString(
-                    qRes.getColumnIndex(QuestionsStorage.COL_LOCATION)));
+                    qRes.getColumnIndex(ParametersStorage.COL_LOCATION)));
             q.setNtpTimestamp(qRes.getLong(
-                    qRes.getColumnIndex(QuestionsStorage.COL_NTP_TIMESTAMP)));
+                    qRes.getColumnIndex(ParametersStorage.COL_NTP_TIMESTAMP)));
             q.setSystemTimestamp(qRes.getLong(
-                    qRes.getColumnIndex(QuestionsStorage.COL_SYSTEM_TIMESTAMP)
+                    qRes.getColumnIndex(ParametersStorage.COL_SYSTEM_TIMESTAMP)
             ));
 
             poll.addQuestion(q);
@@ -179,6 +180,21 @@ public final class PollsStorage extends StatusModelStorage<Poll,
         Logger.d(TAG, "Removing questions of poll {0} from db", pollId);
         getDb().delete(TABLE_POLL_QUESTIONS, COL_ID + "=?",
                 new String[]{Integer.toString(pollId)});
+    }
+
+    public synchronized void removePolls(ArrayList<Poll> polls) {
+        Logger.d(TAG, "Removing multiple polls");
+
+        if (polls != null){
+            for (Poll poll : polls) {
+                remove(poll.getId());
+            }
+        }
+    }
+
+    public synchronized void removeUploadablePolls() {
+        Logger.d(TAG, "Removing uploadable polls");
+        removePolls(getUploadablePolls());
     }
 
 }

@@ -24,9 +24,12 @@ public abstract class FirstLaunchActivity extends RoboFragmentActivity {
     @Inject StatusManager statusManager;
     @Inject SntpClient sntpClient;
 
+    private boolean testModeThemeActivated = false;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Logger.v(TAG, "Creating");
+        checkTestMode();
         super.onCreate(savedInstanceState);
         setRobotoFont(this);
     }
@@ -64,15 +67,26 @@ public abstract class FirstLaunchActivity extends RoboFragmentActivity {
         FontUtils.setRobotoFont(activity, godfatherView);
     }
 
+    protected boolean isExperimentModeActivatedDirty() {
+        if ((statusManager.getCurrentMode() == StatusManager.MODE_TEST && !testModeThemeActivated)
+            || (statusManager.getCurrentMode() == StatusManager.MODE_PROD && testModeThemeActivated)) {
+            Logger.w(TAG, "Discrepancy between theme and test/production mode");
+            return true;
+        } else {
+            Logger.v(TAG, "No test/production mode theming discrepancy");
+            return false;
+        }
+    }
+
     /**
      * Kills activity if first launch already fully completed.
      */
-    public void checkFirstLaunch() {
-        if (statusManager.isFirstLaunchCompleted()) {
-            Logger.i(TAG, "First launch completed -> finishing");
+    protected void checkFirstLaunch() {
+        if (statusManager.isFirstLaunchCompleted() || isExperimentModeActivatedDirty()) {
+            Logger.i(TAG, "First launch completed or test mode theming discrepancy -> finishing");
             finish();
         } else {
-            Logger.v(TAG, "First launch not completed");
+            Logger.v(TAG, "First launch not completed, and no test mode theming discrepancy");
 
             if(shouldFinishIfTipiQuestionnaireCompleted() &&
                     statusManager.isTipiQuestionnaireCompleted())
@@ -100,7 +114,6 @@ public abstract class FirstLaunchActivity extends RoboFragmentActivity {
      */
     protected void launchNextActivity(Class activity) {
         Intent intent = new Intent(this, activity);
-        intent.putExtra("nextClass", activity);
         intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         startActivity(intent);
         overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
@@ -159,6 +172,19 @@ public abstract class FirstLaunchActivity extends RoboFragmentActivity {
                 LocationPointService.class);
         Logger.d(TAG, "Starting LocationPointService");
         startService(locationPointServiceIntent);
+    }
+
+    public void checkTestMode() {
+        Logger.d(TAG, "Checking test mode status");
+        if (StatusManager.getCurrentModeStatic(this) == StatusManager.MODE_PROD) {
+            Logger.d(TAG, "Setting production theme");
+            setTheme(R.style.MyCustomTheme);
+            testModeThemeActivated = false;
+        } else {
+            Logger.d(TAG, "Setting test theme");
+            setTheme(R.style.MyCustomTheme_test);
+            testModeThemeActivated = true;
+        }
     }
 
 }

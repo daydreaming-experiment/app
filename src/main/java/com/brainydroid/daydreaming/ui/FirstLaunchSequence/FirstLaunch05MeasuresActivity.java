@@ -148,9 +148,6 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
         mainScrollView.post(updateView);
     }
 
-
-
-
     public void onClick_buttonLocationSettings(
             @SuppressWarnings("UnusedParameters") View view) {
         Logger.v(TAG, "Location settings button clicked");
@@ -194,7 +191,6 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
         // show it
         alertDialog.show();
     }
-
 
     private void launchNetworkDataSettings() {
         Intent settingsIntent = new Intent(Settings.ACTION_DATA_ROAMING_SETTINGS);
@@ -271,7 +267,11 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
         buttonNext.setAlpha(1f);
         if (!buttonNext.isClickable()) {
             buttonNext.setClickable(true);
-            Toast.makeText(this, goodToGoOk, Toast.LENGTH_SHORT).show();
+            // When hitting 'back' from the dashboard right after the first launch, the activity stack is emptied
+            // and goes through this activity. Let's not show this alert.
+            if (!statusManager.isFirstLaunchCompleted() && !isExperimentModeActivatedDirty()) {
+                Toast.makeText(this, goodToGoOk, Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

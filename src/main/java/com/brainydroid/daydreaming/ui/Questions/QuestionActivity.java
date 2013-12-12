@@ -46,7 +46,7 @@ public class QuestionActivity extends RoboFragmentActivity {
     private IQuestionViewAdapter questionViewAdapter;
 
     @InjectView(R.id.question_linearLayout) LinearLayout questionLinearLayout;
-    @InjectView(R.id.question_introlinearLayout) LinearLayout questionintroLinearLayout;
+    @InjectView(R.id.question_introlinearLayout) LinearLayout questionIntroLinearLayout;
 
     @InjectView(R.id.question_nextButton)   ImageButton nextButton;
     @InjectView(R.id.question_finishButton)   ImageButton finishButton;
@@ -60,6 +60,8 @@ public class QuestionActivity extends RoboFragmentActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Logger.v(TAG, "Creating");
+
+        checkTestMode();
         super.onCreate(savedInstanceState);
 
         initVars();
@@ -148,7 +150,7 @@ public class QuestionActivity extends RoboFragmentActivity {
 
         if (!isFirstQuestion()) {
             Logger.d(TAG, "Not the first question -> removing welcome text");
-            TextView welcomeText = (TextView)questionintroLinearLayout.findViewById(R.id.question_welcomeText);
+            TextView welcomeText = (TextView) questionIntroLinearLayout.findViewById(R.id.question_welcomeText);
             welcomeText.setVisibility(View.GONE);
             if (isLastQuestion()) {
                 Logger.d(TAG, "Last question -> setting finish button text");
@@ -295,8 +297,20 @@ public class QuestionActivity extends RoboFragmentActivity {
         startService(schedulerIntent);
     }
 
-    public void setRobotoFont(Activity activity){
+    public void setRobotoFont(Activity activity) {
         ViewGroup godfatherView = (ViewGroup) activity.getWindow().getDecorView();
         FontUtils.setRobotoFont(activity, godfatherView);
     }
+
+    public void checkTestMode() {
+        Logger.d(TAG, "Checking test mode status");
+        if (StatusManager.getCurrentModeStatic(this) == StatusManager.MODE_PROD) {
+            Logger.d(TAG, "Setting production theme");
+            setTheme(R.style.MyCustomTheme);
+        } else {
+            Logger.d(TAG, "Setting test theme");
+            setTheme(R.style.MyCustomTheme_test);
+        }
+    }
+
 }
