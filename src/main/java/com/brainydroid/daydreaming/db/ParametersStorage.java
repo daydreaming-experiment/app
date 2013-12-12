@@ -204,6 +204,10 @@ public class ParametersStorage {
             ServerParametersJson serverParametersJson = json.fromJson(
                     jsonParametersString, ServerParametersJson.class);
 
+            if (serverParametersJson == null) {
+                throw new JsonSyntaxException("Server Json was malformed, could not be parsed");
+            }
+
             // Check nSlotsPerPoll is set
             int nSlotsPerPoll = serverParametersJson.getNSlotsPerPoll();
             if (nSlotsPerPoll == -1) {

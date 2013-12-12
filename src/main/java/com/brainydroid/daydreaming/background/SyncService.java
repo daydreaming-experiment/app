@@ -2,6 +2,7 @@ package com.brainydroid.daydreaming.background;
 
 import android.content.Intent;
 import android.os.IBinder;
+import android.widget.Toast;
 import com.brainydroid.daydreaming.db.*;
 import com.brainydroid.daydreaming.network.*;
 import com.google.inject.Inject;
@@ -116,6 +117,10 @@ public class SyncService extends RoboService {
                 } catch (ParametersSyntaxException e) {
                     Logger.e(TAG, "Downloaded parameters were malformed -> " +
                             "parameters not updated");
+                    if (statusManager.getCurrentMode() == StatusManager.MODE_TEST) {
+                        Toast.makeText(SyncService.this, "Test parameters from server were malformed! " +
+                                "Correct them and try again", Toast.LENGTH_LONG).show();
+                    }
                     return;
                 }
 

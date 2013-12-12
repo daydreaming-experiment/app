@@ -65,20 +65,22 @@ public class StatusManager {
     private int cachedCurrentMode = MODE_DEFAULT;
 
     /**
-     * Interval below which we don't need to re-sync data to servers (in
-     * milliseconds)
+     * Delay below which we don't need to re-sync data to servers (in
+     * milliseconds), for production and test modes
      */
     @SuppressWarnings("FieldCanBeLocal")
-    private static int SYNC_INTERVAL = 15 * 1000;
+    private static int SYNC_DELAY_PROD = 5 * 60 * 1000;  // 5 minutes
+    @SuppressWarnings("FieldCanBeLocal")
+    private static int SYNC_DELAY_TEST = 10 * 1000;      // 15 seconds
 
     @Inject LocationManager locationManager;
     @Inject ConnectivityManager connectivityManager;
     @Inject ActivityManager activityManager;
-    @Inject ProfileStorage profileStorage;
-    @Inject PollsStorage pollsStorage;
-    @Inject LocationPointsStorage locationPointsStorage;
-    @Inject ParametersStorage parametersStorage;
-    // Use a provider here to prevent circular dependencies
+    // Use providers here to prevent circular dependencies
+    @Inject Provider<ProfileStorage> profileStorageProvider;
+    @Inject Provider<PollsStorage> pollsStorageProvider;
+    @Inject Provider<LocationPointsStorage> locationPointsStorageProvider;
+    @Inject Provider<ParametersStorage> parametersStorageProvider;
     @Inject Provider<CryptoStorage> cryptoStorageProvider;
 
     private SharedPreferences sharedPreferences;
@@ -277,7 +279,7 @@ public class StatusManager {
     /**
      * Check if a sync operation was made not long ago.
      * <p/>
-     * If a sync operation was made less than {@link #SYNC_INTERVAL}
+     * If a sync operation was made less than {@code syncDelay}
      * milliseconds ago, this method will return false. Otherwise it will
      * return true. Use {@link #setLastSyncToNow} to set the timestamp of the
      * last sync operation when syncing.
@@ -288,14 +290,25 @@ public class StatusManager {
     public synchronized boolean isLastSyncLongAgo() {
         // If last sync timestamp is present, make sure now is after the
         // threshold to force a sync.
+        int syncDelay = getSyncDelay();
         long threshold = sharedPreferences.getLong(getCurrentModeName() + LAST_SYNC_TIMESTAMP,
-                - SYNC_INTERVAL) + SYNC_INTERVAL;
+                - syncDelay) + syncDelay;
         if (threshold < SystemClock.elapsedRealtime()) {
             Logger.d(TAG, "{} - Last sync was long ago", getCurrentModeName());
             return true;
         } else {
             Logger.d(TAG, "{} - Last sync was not long ago", getCurrentModeName());
             return false;
+        }
+    }
+
+    private synchronized int getSyncDelay() {
+        if (getCurrentMode() == MODE_PROD) {
+            Logger.v(TAG, "Using production sync delay");
+            return SYNC_DELAY_PROD;
+        } else {
+            Logger.v(TAG, "Using test sync delay");
+            return SYNC_DELAY_TEST;
         }
     }
 
@@ -374,8 +387,8 @@ public class StatusManager {
         Logger.d(TAG, "Doing full switch to test mode");
 
         // Clear pending uploads (before switch)
-        pollsStorage.removeUploadablePolls();
-        locationPointsStorage.removeUploadableLocationPoints();
+        pollsStorageProvider.get().removeUploadablePolls();
+        locationPointsStorageProvider.get().removeUploadableLocationPoints();
 
         // Do the switch
         setCurrentMode(MODE_TEST);
@@ -387,10 +400,10 @@ public class StatusManager {
 
         // Clear parameters storage
         clearParametersUpdated();
-        parametersStorage.flush();
+        parametersStorageProvider.get().flush();
 
         // Clear test profile and crypto storage (after switch)
-        profileStorage.clearProfile();
+        profileStorageProvider.get().clearProfile();
         cryptoStorageProvider.get().clearStore();
     }
 
@@ -398,8 +411,8 @@ public class StatusManager {
         Logger.d(TAG, "Doing full switch to production mode");
 
         // Clear pending uploads (before switch)
-        pollsStorage.removeUploadablePolls();
-        locationPointsStorage.removeUploadableLocationPoints();
+        pollsStorageProvider.get().removeUploadablePolls();
+        locationPointsStorageProvider.get().removeUploadableLocationPoints();
 
         // Do the switch
         setCurrentMode(MODE_PROD);
