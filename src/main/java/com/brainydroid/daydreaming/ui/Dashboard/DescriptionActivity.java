@@ -32,7 +32,7 @@ public class DescriptionActivity extends FirstLaunch01DescriptionActivity {
         overridePendingTransition(R.anim.push_bottom_in, R.anim.push_bottom_out);
     }
 
-    public void onClick_backtodashboard(View v) {
+    public void onClick_backToDashboard(View v) {
         onBackPressed();
     }
 

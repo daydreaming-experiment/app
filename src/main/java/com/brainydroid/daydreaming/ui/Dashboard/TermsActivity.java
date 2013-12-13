@@ -64,7 +64,7 @@ public class TermsActivity extends FirstLaunch02TermsActivity {
     @Override
     public void checkFirstLaunch() { }
 
-    public void onClick_backtodashboard(View v) {
+    public void onClick_backToDashboard(View v) {
         onBackPressed();
     }
 
