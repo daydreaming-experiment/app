@@ -51,6 +51,8 @@ public class SettingsActivity extends RoboFragmentActivity {
     @InjectView(R.id.appsettings_allow_sound_check) CheckBox sound_check;
     @InjectView(R.id.appsettings_allow_vibrations_check) CheckBox vibrations_check;
 
+    @InjectView(R.id.appsettings_testmode_button) ImageButton test_button;
+
     @Inject SharedPreferences sharedPreferences;
     @Inject StatusManager statusManager;
 
@@ -205,6 +207,22 @@ public class SettingsActivity extends RoboFragmentActivity {
                 editor.commit();
             }
 
+        });
+
+        test_button.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Logger.d(TAG, "Mode switch button clicked");
+
+                if (statusManager.getCurrentMode() == StatusManager.MODE_TEST) {
+                    Logger.v(TAG, "We're in test mode, initiating switch to prod");
+                    testToProdDialog();
+                } else if (statusManager.getCurrentMode() == StatusManager.MODE_PROD) {
+                    Logger.v(TAG, "We're in prod mode, initiating switch to test");
+                    prodToTestDialog();
+                }
+                return true;
+            }
         });
 
     }
@@ -400,5 +418,8 @@ public class SettingsActivity extends RoboFragmentActivity {
             Logger.v(TAG, "No test mode theming discrepancy");
         }
     }
+
+
+
 
 }

@@ -17,10 +17,11 @@
                 android:layout_height="@dimen/dashboard_settings_button_size_withmargin"
                 android:padding="@dimen/dashboard_settings_button_margin"
                 android:scaleType="fitCenter"
-                android:onClick="onClick_switchMode"
                 android:src="@drawable/icon_test"
                 android:background="@null"/>
     </LinearLayout>
+
+    <!--    android:onClick="onClick_switchMode"    -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
