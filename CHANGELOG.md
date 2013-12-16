@@ -1,6 +1,17 @@
 Changelog
 =========
 
+0.13.1
+------
+
+* No changes, just doing the release process fully (only half done in 0.13)
+
+0.13
+----
+
+* Fix two IllegalStateException crashes
+* Minor UI update on test mode button
+
 0.12
 ----
 
