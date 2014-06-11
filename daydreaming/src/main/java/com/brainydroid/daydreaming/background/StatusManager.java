@@ -439,7 +439,7 @@ public class StatusManager {
 
         // Don't clear local flags (after switch), so that experiment isn't restarted
         // Don't clear parameters storage
-        // And don't clear test profile and crypto storage (after switch)
+        // And don't clear prod profile and crypto storage (after switch)
     }
 
 }
