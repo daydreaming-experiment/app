@@ -1,6 +1,8 @@
 package com.brainydroid.daydreaming.db;
 
+import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.network.Profile;
@@ -34,6 +36,7 @@ public class ProfileStorage {
 
     @Inject ProfileFactory profileFactory;
     @Inject StatusManager statusManager;
+    @Inject Context context;
 
     @Inject
     public ProfileStorage(SharedPreferences sharedPreferences) {
@@ -129,6 +132,24 @@ public class ProfileStorage {
         return sharedPreferences.getInt(statusManager.getCurrentModeName() + PROFILE_PARAMETERS_VERSION, -1);
     }
 
+    private String getAppVersionName() {
+        try {
+            return context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            Logger.e(TAG, "Package not found when retrieving versionName");
+            throw new RuntimeException(e);
+        }
+    }
+
+    private int getAppVersionCode() {
+        try {
+            return context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            Logger.e(TAG, "Package not found when retrieving app versionCode");
+            throw new RuntimeException(e);
+        }
+    }
+
     public void setSyncStart() {
         Logger.d(TAG, "Setting hasChangedSinceSyncStart to false");
         hasChangedSinceSyncStart = false;
@@ -161,7 +182,8 @@ public class ProfileStorage {
     public Profile getProfile() {
         Logger.d(TAG, "Building Profile instance from saved data");
         return profileFactory.create(getAge(), getGender(), getEducation(),
-                getTipiAnswers(), getParametersVersion(), statusManager.getCurrentModeName());
+                getTipiAnswers(), getParametersVersion(), getAppVersionName(),
+                getAppVersionCode(), statusManager.getCurrentModeName());
     }
 
     public boolean clearProfile() {
