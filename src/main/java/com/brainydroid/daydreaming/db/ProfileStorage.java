@@ -136,7 +136,7 @@ public class ProfileStorage {
         try {
             return context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
         } catch (PackageManager.NameNotFoundException e) {
-            Logger.e(TAG, "Package not found when retrieving versionName");
+            Logger.e(TAG, "Package not found when retrieving app versionName");
             throw new RuntimeException(e);
         }
     }
