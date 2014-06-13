@@ -17,6 +17,8 @@ public class ProfileData {
     @Expose private String education;
     @Expose private HashMap<String, Integer> tipi_answers;
     @Expose private int parametersVersion;
+    @Expose private String appVersionName;
+    @Expose private int appVersionCode;
     @Expose private String mode;
 
     @Inject
@@ -24,7 +26,9 @@ public class ProfileData {
                        @Assisted("gender") String gender,
                        @Assisted("education") String education,
                        @Assisted HashMap<String, Integer> tipiAnswers,
-                       @Assisted int parametersVersion,
+                       @Assisted("parametersVersion") int parametersVersion,
+                       @Assisted("appVersionName") String appVersionName,
+                       @Assisted("appVersionCode") int appVersionCode,
                        @Assisted("mode") String mode) {
         Logger.v(TAG, "Creating a ProfileData instance");
         this.age = age;
@@ -32,6 +36,8 @@ public class ProfileData {
         this.education = education;
         tipi_answers = tipiAnswers;
         this.parametersVersion = parametersVersion;
+        this.appVersionName = appVersionName;
+        this.appVersionCode = appVersionCode;
         this.mode = mode;
     }
 }
