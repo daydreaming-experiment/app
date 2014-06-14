@@ -12,7 +12,5 @@
         <item name="android:colorBackgroundCacheHint">@color/white</item>
         <item name="android:typeface">serif</item>
     </style>
-    <style name="MyCustomTheme_test" parent="MyCustomTheme">
-    </style>
 
 </resources>
