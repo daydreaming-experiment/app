@@ -12,6 +12,9 @@
 bin/
 gen/
 
+# gradle files
+.gradle
+
 # maven-generated files
 tmp/
 target/
