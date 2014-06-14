@@ -111,10 +111,10 @@ public class SchedulerService extends RoboService {
         // Get the user's allowed time window
         String startAllowedString = sharedPreferences.getString(
                 "time_window_lb_key",
-                getString(R.pref.settings_time_window_lb_default));
+                getString(R.string.settings_time_window_lb_default));
         String endAllowedString = sharedPreferences.getString(
                 "time_window_ub_key",
-                getString(R.pref.settings_time_window_ub_default));
+                getString(R.string.settings_time_window_ub_default));
 
         startAllowedHour = Util.getHour(startAllowedString);
         startAllowedMinute = Util.getMinute(startAllowedString);

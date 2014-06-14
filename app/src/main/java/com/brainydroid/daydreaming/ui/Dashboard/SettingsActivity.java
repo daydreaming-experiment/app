@@ -56,8 +56,8 @@ public class SettingsActivity extends RoboFragmentActivity {
     @Inject SharedPreferences sharedPreferences;
     @Inject StatusManager statusManager;
 
-    @InjectResource(R.pref.settings_time_window_lb_default) String defaultTimePreferenceMin;
-    @InjectResource(R.pref.settings_time_window_ub_default) String defaultTimePreferenceMax;
+    @InjectResource(R.string.settings_time_window_lb_default) String defaultTimePreferenceMin;
+    @InjectResource(R.string.settings_time_window_ub_default) String defaultTimePreferenceMax;
 
     private boolean testModeThemeActivated = false;
 
@@ -324,7 +324,7 @@ public class SettingsActivity extends RoboFragmentActivity {
             }
         })
         .setNegativeButton("No", new DialogInterface.OnClickListener() {
-            
+
             public void onClick(DialogInterface dialog, int id) {
                 Logger.d(TAG, "User cancelled switch to prod mode");
                 dialog.cancel();

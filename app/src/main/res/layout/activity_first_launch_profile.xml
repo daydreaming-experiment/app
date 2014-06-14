@@ -73,7 +73,7 @@
 
 
             <TextView
-                    android:id="@+id/firstLaunchProfile_textGender"
+                    android:id="@+id/firstLaunchProfile_textAge"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"

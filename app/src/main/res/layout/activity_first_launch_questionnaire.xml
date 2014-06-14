@@ -43,7 +43,7 @@
                 android:textColor="@color/ui_white_text_color"/>
 
         <TextView
-                android:id="@+id/Questionnaire_title"
+                android:id="@+id/Questionnaire_intro"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/Questionnaire_intro"
