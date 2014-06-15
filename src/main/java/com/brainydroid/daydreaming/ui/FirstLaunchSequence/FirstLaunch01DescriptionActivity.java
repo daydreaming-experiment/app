@@ -1,6 +1,5 @@
 package com.brainydroid.daydreaming.ui.FirstLaunchSequence;
 
-import android.annotation.TargetApi;
 import android.content.Intent;
 import android.graphics.Point;
 import android.os.Build;
@@ -70,20 +69,25 @@ public class FirstLaunch01DescriptionActivity extends FirstLaunchActivity {
         launchNextActivity(FirstLaunch02TermsActivity.class);
     }
 
-    // FIXME: bugs on API < 13
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     public void makeLayoutDesign(){
+        int y;
         Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        int screen_height = (int)(size.y/getResources().getDisplayMetrics().density);   // gets the size of my screen programmatically
+
+        // Get screen size programmatically
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            Point size = new Point();
+            display.getSize(size);
+            y = size.y;
+        } else {
+            //noinspection deprecation
+            y = display.getHeight();
+        }
+        int screen_height = (int)(y / getResources().getDisplayMetrics().density);
 
         int personComplexDpHeight = (int) (getResources().getDimension(R.dimen.cloud_cone_person_heigth) / getResources().getDisplayMetrics().density);     // size of cloud/person/cone complex
         ViewGroup.LayoutParams params = myScrollLayout.getLayoutParams();
 
         params.height = (int)( ((float)(screen_height-personComplexDpHeight))*(getResources().getDisplayMetrics().density) )+1;
-
-
     }
 
     /**
