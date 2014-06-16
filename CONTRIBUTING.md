@@ -6,6 +6,14 @@ You are very welcome.
 Here goes a description of the tools and workflow we use in development; it
 should help in getting up and running.
 
+## Passwords
+
+The app uses passwords that must be hard-coded in the APKs, but are not included
+in the repository. Once you've cloned the repository, you should copy the
+`passes.template.xml` file to `passes.local.xml` and fill it with the passwords
+you want to use (or the daydreaming team's passwords). Trying to build app (see
+further down) will fail if you haven't done this.
+
 ## Development tools
 
 ### IDE
