@@ -1,9 +1,6 @@
 buildscript {
     repositories {
         mavenCentral()
-        maven {
-            url "https://raw.githubusercontent.com/kmchugh/android.support/mvn-repo"
-        }
     }
 
     dependencies {
