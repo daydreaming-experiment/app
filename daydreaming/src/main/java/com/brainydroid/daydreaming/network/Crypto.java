@@ -1,5 +1,7 @@
 package com.brainydroid.daydreaming.network;
 
+import android.annotation.SuppressLint;
+
 import com.brainydroid.daydreaming.background.Logger;
 import com.google.inject.Singleton;
 import org.spongycastle.jce.ECNamedCurveTable;
@@ -35,11 +37,13 @@ public class Crypto {
         Security.addProvider(new org.spongycastle.jce.provider.BouncyCastleProvider());
     }
 
+    @SuppressLint("TrulyRandom")
     public Crypto() {
         Logger.d(TAG, "Initializing crypto");
 
         try {
             kf = KeyFactory.getInstance(KEYGEN_ALG, PROVIDER);
+            // SecureRandom vulnerability fixed with PRNGFixes
             kpg = KeyPairGenerator.getInstance(KEYGEN_ALG, PROVIDER);
             sg = Signature.getInstance(SIGN_ALG, PROVIDER);
         } catch (NoSuchAlgorithmException e) {

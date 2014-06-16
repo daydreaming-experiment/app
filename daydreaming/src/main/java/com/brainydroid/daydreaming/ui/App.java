@@ -3,6 +3,8 @@ package com.brainydroid.daydreaming.ui;
 import android.app.Application;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
+import com.brainydroid.daydreaming.network.PRNGFixes;
+
 import org.acra.ACRA;
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
@@ -34,6 +36,7 @@ public class App extends Application {
 
         super.onCreate();
 
+        PRNGFixes.apply();
         ACRA.init(this);
         RoboGuice.setBaseApplicationInjector(this, RoboGuice.DEFAULT_STAGE,
                 RoboGuice.newDefaultRoboModule(this), new AppModule());
