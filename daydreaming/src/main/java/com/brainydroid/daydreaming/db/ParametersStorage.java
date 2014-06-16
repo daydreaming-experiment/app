@@ -1,5 +1,6 @@
 package com.brainydroid.daydreaming.db;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -57,6 +58,7 @@ public class ParametersStorage {
 
     private final SQLiteDatabase db;
 
+    @SuppressLint("CommitPrefEdits")
     @Inject
     public ParametersStorage(Storage storage, StatusManager statusManager,
                              SharedPreferences sharedPreferences) {

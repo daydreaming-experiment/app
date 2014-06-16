@@ -1,5 +1,6 @@
 package com.brainydroid.daydreaming.background;
 
+import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.content.Context;
@@ -89,6 +90,7 @@ public class StatusManager {
     /**
      * Initialize the {@link SharedPreferences} editor.
      */
+    @SuppressLint("CommitPrefEdits")
     @Inject
     public StatusManager(SharedPreferences sharedPreferences) {
         Logger.d(TAG, "StatusManager created");

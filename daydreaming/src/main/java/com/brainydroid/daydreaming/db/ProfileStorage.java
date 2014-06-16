@@ -1,5 +1,6 @@
 package com.brainydroid.daydreaming.db;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -38,6 +39,7 @@ public class ProfileStorage {
     @Inject StatusManager statusManager;
     @Inject Context context;
 
+    @SuppressLint("CommitPrefEdits")
     @Inject
     public ProfileStorage(SharedPreferences sharedPreferences) {
         Logger.d(TAG, "Creating");
