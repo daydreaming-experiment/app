@@ -13,7 +13,7 @@ import com.brainydroid.daydreaming.db.Poll;
 import com.brainydroid.daydreaming.db.PollsStorage;
 import com.brainydroid.daydreaming.network.SntpClient;
 import com.brainydroid.daydreaming.network.SntpClientCallback;
-import com.brainydroid.daydreaming.ui.Questions.QuestionActivity;
+import com.brainydroid.daydreaming.ui.questions.QuestionActivity;
 import com.google.inject.Inject;
 import roboguice.service.RoboService;
 

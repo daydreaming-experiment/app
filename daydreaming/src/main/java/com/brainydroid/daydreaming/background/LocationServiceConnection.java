@@ -45,19 +45,19 @@ import com.google.inject.Inject;
  *     After some time, the {@link LocationPointService} starts again
  *     and clears its listener, which will stop the {@link LocationService}
  *     if no other listeners are registered (i.e. if no {@link
- *     com.brainydroid.daydreaming.ui.Questions.QuestionActivity} is listening for
+ *     com.brainydroid.daydreaming.ui.questions.QuestionActivity} is listening for
  *     updates). This is done with the same procedure: record the message
  *     to pass ({@link #clearLocationPointCallback}),
  *     set a {@link ServiceConnectionCallback} to stop the {@link
  *     LocationPointService} and unbind, then bind to start the chain of
  *     callbacks.</li>
- *     <li>{@link com.brainydroid.daydreaming.ui.Questions.QuestionActivity}: needs
+ *     <li>{@link com.brainydroid.daydreaming.ui.questions.QuestionActivity}: needs
  *     to start the {@code LocationService}, bind to it,
  *     register a callback, and stay bound to be able to send messages at
  *     will (the difference with {@link LocationPointService} is that the
- *     {@link com.brainydroid.daydreaming.ui.Questions.QuestionActivity} keeps running
+ *     {@link com.brainydroid.daydreaming.ui.questions.QuestionActivity} keeps running
  *     all the time while it is listening for location updates. When {@link
- *     com.brainydroid.daydreaming.ui.Questions.QuestionActivity} stops,
+ *     com.brainydroid.daydreaming.ui.questions.QuestionActivity} stops,
  *     it clears its callback and unbinds. That will stop the {@link
  *     LocationService} if no other callback is registered (i.e. if no {@link
  *     com.brainydroid.daydreaming.db.LocationPoint} is listening for

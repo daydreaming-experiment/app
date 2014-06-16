@@ -36,7 +36,7 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".ui.Dashboard.DashboardActivity"
+        <activity android:name=".ui.dashboard.DashboardActivity"
                   android:label="@string/app_name"
                   android:screenOrientation="portrait">
             <intent-filter>
@@ -45,14 +45,14 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.Dashboard.SettingsActivity"
+        <activity android:name=".ui.dashboard.SettingsActivity"
                   android:label="@string/settings_title_activity"
                   android:theme="@style/MyCustomTheme"
                   android:screenOrientation="portrait">
         </activity>
 
 
-        <activity android:name=".ui.Questions.QuestionActivity"
+        <activity android:name=".ui.questions.QuestionActivity"
                   android:label="@string/app_name"
                   android:taskAffinity=""
                   android:theme="@style/MyCustomTheme"
@@ -61,38 +61,38 @@
 
         <!-- The FirstLaunch Sequence Activities -->
 
-        <activity android:name=".ui.FirstLaunchSequence.FirstLaunch04PersonalityQuestionnaireActivity"
+        <activity android:name=".ui.firstlaunchsequence.FirstLaunch04PersonalityQuestionnaireActivity"
                   android:theme="@style/MyCustomTheme"
                   android:noHistory="true"
                   android:screenOrientation="portrait">
         </activity>
 
-        <activity android:name=".ui.FirstLaunchSequence.FirstLaunch00WelcomeActivity"
+        <activity android:name=".ui.firstlaunchsequence.FirstLaunch00WelcomeActivity"
                   android:label="@string/firstLaunchWelcome_title_activity"
                   android:theme="@style/MyCustomTheme"
                   android:noHistory="true"
                   android:screenOrientation="portrait">
         </activity>
 
-        <activity android:name=".ui.FirstLaunchSequence.FirstLaunch01DescriptionActivity"
+        <activity android:name=".ui.firstlaunchsequence.FirstLaunch01DescriptionActivity"
                   android:label="@string/firstLaunchDescription_title_activity"
                   android:theme="@style/MyCustomTheme"
                   android:screenOrientation="portrait">
         </activity>
 
-        <activity android:name=".ui.FirstLaunchSequence.FirstLaunch03ProfileActivity"
+        <activity android:name=".ui.firstlaunchsequence.FirstLaunch03ProfileActivity"
                   android:label="@string/firstLaunchProfile_title_activity"
                   android:theme="@style/MyCustomTheme"
                   android:screenOrientation="portrait">
         </activity>
 
-        <activity android:name=".ui.FirstLaunchSequence.FirstLaunch02TermsActivity"
+        <activity android:name=".ui.firstlaunchsequence.FirstLaunch02TermsActivity"
                   android:label="@string/firstLaunchTerms_title_activity"
                   android:theme="@style/MyCustomTheme"
                   android:screenOrientation="portrait">
         </activity>
 
-        <activity android:name=".ui.FirstLaunchSequence.FirstLaunch05MeasuresActivity"
+        <activity android:name=".ui.firstlaunchsequence.FirstLaunch05MeasuresActivity"
                   android:label="@string/firstLaunchMeasures2_title_activity"
                   android:theme="@style/MyCustomTheme"
                   android:screenOrientation="portrait">
@@ -101,18 +101,18 @@
 
         <!-- The Single Opening Activities -->
 
-        <activity android:name=".ui.Dashboard.DescriptionActivity"
+        <activity android:name=".ui.dashboard.DescriptionActivity"
                   android:theme="@style/MyCustomTheme"
                   android:screenOrientation="portrait">
         </activity>
 
 
-        <activity android:name=".ui.Dashboard.TermsActivity"
+        <activity android:name=".ui.dashboard.TermsActivity"
                   android:theme="@style/MyCustomTheme"
                   android:screenOrientation="portrait">
         </activity>
 
-        <activity android:name=".ui.Dashboard.AboutActivity"
+        <activity android:name=".ui.dashboard.AboutActivity"
                   android:theme="@style/MyCustomTheme"
                   android:screenOrientation="portrait">
         </activity>
