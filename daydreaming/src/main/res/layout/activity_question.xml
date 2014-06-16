@@ -34,7 +34,6 @@
                     android:gravity="center_horizontal"
                     android:text="@string/question_welcome_text"
                     android:textAppearance="@style/ui_font_title_bold"
-                    android:textAllCaps="true"
                     android:textColor="@color/ui_white_text_color"/>
 
             <TextView

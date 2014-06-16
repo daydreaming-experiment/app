@@ -41,9 +41,8 @@
                 android:id="@+id/dashboard_textExperimentRunning_p1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="EXPERIMENT IS "
+                android:text="@string/dashboard_text_experiment_is"
                 android:singleLine="true"
-                android:textAllCaps="true"
                 android:textAppearance="@style/ui_font_title_bold"
                 android:textColor="@color/ui_white_text_color"
                 />
@@ -59,9 +58,8 @@
                 android:id="@+id/dashboard_textExperimentRunning_p2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="RUNNING"
+                android:text="@string/dashboard_text_running"
                 android:singleLine="true"
-                android:textAllCaps="true"
                 android:textAppearance="@style/ui_font_title_bold"
                 android:textColor="@color/ui_dark_blue_color"/>
 

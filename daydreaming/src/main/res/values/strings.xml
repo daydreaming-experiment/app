@@ -16,7 +16,8 @@
 
     <!-- Dashboard -->
     <string name="dashboard_title_activity">Dashboard</string>
-    <string name="dashboard_text_experiment_running">Experiment is running.</string>
+    <string name="dashboard_text_experiment_is">EXPERIMENT IS\ </string>
+    <string name="dashboard_text_running">RUNNING</string>
     <string name="dashboard_quit_experiment">Quit</string>
     <string name="dashboard_text_days_elapsed">Days elapsed</string>
     <string name="dashboard_title_results">Results:</string>
@@ -44,10 +45,6 @@
     <string name="firstLaunchDescription_button_next">Next</string>
 
     <!-- Terms Activity -->
-    <string name="consentAlert_title">Experiment consent</string>
-    <string name="consentAlert_text">Bla bla bla do you consent?</string>
-    <string name="consentAlert_button_consent">Agree</string>
-    <string name="consentAlert_button_no_consent">Disagree</string>
     <string name="firstLaunchTerms_title_activity">Consent</string>
     <string name="firstLaunchTerms_text_title">CONSENT</string>
     <string name="firstLaunchTerms_text_consent">Consent</string>
@@ -58,7 +55,7 @@
 
 
     <!-- App Settings Activity -->
-    <string name="time_window_lb">From </string>
+    <string name="time_window_lb">From</string>
     <string name="time_window_ub">Until</string>
     <string name="time_window_settings">Time window for notifications</string>
     <string name="notifications_settings">Notifications</string>
@@ -127,7 +124,7 @@
 
 
     <!-- Display question Activity -->
-    <string name="question_welcome_text">Here are a few quick questions:</string>
+    <string name="question_welcome_text">HERE ARE A FEW QUICK QUESTIONS:</string>
     <string name="question_button_next">Next</string>
     <string name="question_button_finish">Finish</string>
     <string name="question_thank_you">Thank you for answering these questions!</string>
