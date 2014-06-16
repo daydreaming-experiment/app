@@ -1,5 +1,6 @@
 package com.brainydroid.daydreaming.ui.FirstLaunchSequence;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.graphics.Point;
 import android.os.Build;
@@ -69,6 +70,7 @@ public class FirstLaunch01DescriptionActivity extends FirstLaunchActivity {
         launchNextActivity(FirstLaunch02TermsActivity.class);
     }
 
+    @TargetApi(13)
     public void makeLayoutDesign(){
         int y;
         Display display = getWindowManager().getDefaultDisplay();

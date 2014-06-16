@@ -1,24 +1,21 @@
 package com.brainydroid.daydreaming.ui.FirstLaunchSequence;
 
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Html;
-import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
-import com.brainydroid.daydreaming.db.Util;
 import com.brainydroid.daydreaming.ui.AlphaButton;
+
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
-
-import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * Activity at first launch
@@ -66,6 +63,7 @@ public class FirstLaunch02TermsActivity extends FirstLaunchActivity implements S
      * called by ScrollView listener when ScrollView position changes.
      * Enables agreement when text is scrolled down
      */
+    @TargetApi(11)
     @Override
     public void onScrollChanged(ScrollViewExt scrollView, int x, int y, int oldX, int oldY) {
         // We take the last son in the ScrollView
@@ -77,7 +75,9 @@ public class FirstLaunch02TermsActivity extends FirstLaunchActivity implements S
             agreeButton.setEnabled(true);
             TextView text = (TextView) findViewById(R.id.firstLaunchTerms_please_scroll);
             text.setVisibility(View.INVISIBLE); // Clear TextView asking to scroll down
-
+            // Lint erroneously catches this as a call that requires API >= 11
+            // (which is exactly why AlphaButton exists),
+            // hence the @TargetApi(11) above.
             agreeButton.setAlpha(1f);
             agreeButton.setClickable(true);
 

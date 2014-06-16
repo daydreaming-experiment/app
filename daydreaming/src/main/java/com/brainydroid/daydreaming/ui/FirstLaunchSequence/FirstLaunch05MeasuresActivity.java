@@ -1,5 +1,6 @@
 package com.brainydroid.daydreaming.ui.FirstLaunchSequence;
 
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.*;
 import android.net.ConnectivityManager;
@@ -256,14 +257,22 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
 
 
 
+    @TargetApi(11)
     private void forbidNextButton() {
         Logger.d(TAG, "Forbidding buttonNext");
+        // Lint erroneously catches this as a call that requires API >= 11
+        // (which is exactly why AlphaButton exists),
+        // hence the @TargetApi(11) above.
         buttonNext.setAlpha(0.3f);
         buttonNext.setClickable(false);
     }
 
+    @TargetApi(11)
     private void allowNextButton() {
         Logger.d(TAG, "Allowing buttonNext");
+        // Lint erroneously catches this as a call that requires API >= 11
+        // (which is exactly why AlphaButton exists),
+        // hence the @TargetApi(11) above.
         buttonNext.setAlpha(1f);
         if (!buttonNext.isClickable()) {
             buttonNext.setClickable(true);

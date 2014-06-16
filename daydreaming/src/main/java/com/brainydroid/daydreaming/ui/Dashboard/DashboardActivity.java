@@ -1,5 +1,6 @@
 package com.brainydroid.daydreaming.ui.Dashboard;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -52,10 +53,14 @@ public class DashboardActivity extends RoboFragmentActivity {
         setRobotoFont(this);
     }
 
+    @TargetApi(11)
     @Override
     public void onStart() {
         Logger.v(TAG, "Starting");
 
+        // Lint erroneously catches this as a call that requires API >= 11
+        // (which is exactly why AlphaLinearLayout exists),
+        // hence the @TargetApi(11) above.
         aboutLayout.setAlpha(0.3f);
         aboutLayout.setClickable(false);
 

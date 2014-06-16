@@ -1,5 +1,6 @@
 package com.brainydroid.daydreaming.ui.FirstLaunchSequence;
 
+import android.annotation.TargetApi;
 import android.os.Bundle;
 import android.util.FloatMath;
 import android.view.View;
@@ -113,6 +114,7 @@ public class FirstLaunch04PersonalityQuestionnaireActivity
      * Creating and adding each individual question view to question layout
      * Addition from Question string.
      */
+    @TargetApi(11)
     private SeekBar inflateView(final String questionText) {
         Logger.v(TAG, "Inflating view for tipi question");
 
@@ -136,6 +138,9 @@ public class FirstLaunch04PersonalityQuestionnaireActivity
         //seekBar.setPadding(thumbOffset, 0, thumbOffset, 0);
         seekBar.setProgressDrawable(view.getResources().getDrawable(R
                 .drawable.question_slider_progress));
+        // Lint erroneously catches this as a call that requires API >= 11
+        // (which is exactly why AlphaSeekBar exists),
+        // hence the @TargetApi(11) above.
         seekBar.setAlpha(0.5f);
 
         seekBar.setThumb(view.getResources().getDrawable(
@@ -144,12 +149,16 @@ public class FirstLaunch04PersonalityQuestionnaireActivity
         AlphaSeekBar.OnAlphaSeekBarChangeListener onSeekBarChange =
                 new AlphaSeekBar.OnAlphaSeekBarChangeListener() {
 
+            @TargetApi(11)
             @Override
             public void onProgressChanged(AlphaSeekBar seekBar, int progress,
                                           boolean fromUser) {
                 int index = (int)FloatMath.floor((progress / 101f) * nHints);
                 answer.setText(hints.get(index));
                 seekBarsTouchedStates.put(questionText, true);
+                // Lint erroneously catches this as a call that requires API >= 11
+                // (which is exactly why AlphaSeekBar exists),
+                // hence the @TargetApi(11) above.
                 seekBar.setAlpha(1f);
             }
 

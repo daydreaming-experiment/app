@@ -1,5 +1,6 @@
 package com.brainydroid.daydreaming.ui;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
@@ -12,18 +13,22 @@ public class AlphaRatingBar extends RatingBar {
     @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "AlphaRatingBar";
 
+    @SuppressWarnings("UnusedDeclaration")
     public AlphaRatingBar(Context context) {
         super(context);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public AlphaRatingBar(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public AlphaRatingBar(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 
+    @TargetApi(11)
     @Override
     public void setAlpha(float alpha) {
         Logger.v(TAG, "Setting alpha to {}", alpha);

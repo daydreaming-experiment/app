@@ -1,5 +1,6 @@
 package com.brainydroid.daydreaming.ui.Questions;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.util.FloatMath;
 import android.view.View;
@@ -52,6 +53,7 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
 
     }
 
+    @TargetApi(11)
     private View inflateView(SliderSubQuestion subQuestion) {
         Logger.v(TAG, "Inflating view for subQuestion");
 
@@ -73,6 +75,9 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
                 (AlphaSeekBar)view.findViewById(R.id.question_slider_seekBar);
         seekBar.setProgressDrawable(view.getResources().getDrawable(R.drawable.question_slider_progress));
         seekBar.setThumb(view.getResources().getDrawable(R.drawable.question_slider_thumb));
+        // Lint erroneously catches this as a call that requires API >= 11
+        // (which is exactly why AlphaSeekBar exists),
+        // hence the @TargetApi(11) above.
         seekBar.setAlpha(0.5f);
 
         final int initialPosition = subQuestion.getInitialPosition();
@@ -96,6 +101,7 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
         AlphaSeekBar.OnAlphaSeekBarChangeListener progressListener =
                 new AlphaSeekBar.OnAlphaSeekBarChangeListener() {
 
+            @TargetApi(11)
             @Override
             public void onProgressChanged(AlphaSeekBar seekBar, int progress,
                                           boolean fromUser) {
@@ -109,6 +115,9 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
                     }
 
                     selectedSeek.setText(hints.get(index));
+                    // Lint erroneously catches this as a call that requires API >= 11
+                    // (which is exactly why AlphaSeekBar exists),
+                    // hence the @TargetApi(11) above.
                     seekBar.setAlpha(1f);
                 } else {
                     // Only reset the progress if the change came from the
@@ -133,9 +142,13 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
         CheckBox.OnCheckedChangeListener naListener =
                 new CheckBox.OnCheckedChangeListener() {
 
+            @TargetApi(11)
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 seekBar.setProgress(initialPosition);
+                // Lint erroneously catches this as a call that requires API >= 11
+                // (which is exactly why AlphaSeekBar exists),
+                // hence the @TargetApi(11) above.
                 seekBar.setAlpha(0.5f);
                 if (b) {
                     Logger.d(TAG, "Skipping checkBox checked, " +
