@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Random;
 
 @Singleton
@@ -20,7 +21,7 @@ public class Util {
     private static String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
     // Date and time formatter for logging
-    private static SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
+    private static SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT, Locale.US);
 
     @Inject Random random;
 
