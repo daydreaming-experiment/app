@@ -1,9 +1,5 @@
 language: java
 
-# Make sure the whole app can be built, not just compiled
-# (checks for pom.xml errors)
-script: mvn package
-
 # Install our dependencies
 before_install:
   # Don't mess with the main repository
@@ -23,6 +19,3 @@ before_install:
 
   # Come back into main repository
   - cd ${MAIN_REPO}
-
-  # Maven 3.2.1 on Travis needs android-maven-plugin 3.8.0
-  - if mvn --version | grep -q "Apache Maven 3.2.1"; then echo "Updating android-maven-plugin version to 3.8.0"; sed -i 's/3.7.0/3.8.0/' pom.xml; fi
