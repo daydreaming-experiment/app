@@ -14,13 +14,11 @@
             android:id="@+id/firstLaunchQuestionnaire_Scrollview" >
 
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                  android:orientation="vertical"
+    <LinearLayout android:orientation="vertical"
                   android:layout_width="fill_parent"
                   android:layout_height="wrap_content"  >
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                  android:id = "@+id/questions_linear_layout"
+    <LinearLayout android:id = "@+id/questions_linear_layout"
                   android:orientation="vertical"
                   android:layout_width="fill_parent"
                   android:layout_height="fill_parent"
@@ -60,8 +58,7 @@
 
     </LinearLayout>
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                  android:orientation="vertical"
+    <LinearLayout android:orientation="vertical"
                   android:layout_width="fill_parent"
                   android:layout_height="fill_parent"
                   android:layout_marginRight="@dimen/next_button_right_margin_inc_scrollpadding"
