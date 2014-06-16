@@ -319,7 +319,6 @@ public class SettingsActivity extends RoboFragmentActivity {
 
                 // Restart dashboard (other instances will stop themselves because of theming discrepancy)
                 Intent intent = new Intent(SettingsActivity.this, DashboardActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
             }
         })
@@ -359,7 +358,6 @@ public class SettingsActivity extends RoboFragmentActivity {
 
                     // Restart first launch
                     Intent intent = new Intent(SettingsActivity.this, FirstLaunch00WelcomeActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
                 } else {
                     Logger.d(TAG, "Wrong password to switch to test mode -> aborting");
