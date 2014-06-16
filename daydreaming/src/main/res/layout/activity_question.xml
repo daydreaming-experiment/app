@@ -9,7 +9,7 @@
     <RelativeLayout
             android:id="@+id/question_relativeLayout"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_height="wrap_content"
             android:paddingLeft="@dimen/question_horizontal_margin"
             android:paddingRight="@dimen/question_horizontal_margin"
             android:paddingBottom="@dimen/question_vertical_margin"
