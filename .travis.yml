@@ -2,6 +2,9 @@ language: java
 
 # Install our dependencies
 before_install:
+  # Copy template passwords file to local file
+  - cp "passes.template.xml" "passes.local.xml"
+
   # Don't mess with the main repository
   - export MAIN_REPO="$(pwd)"
   - cd ..

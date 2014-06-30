@@ -6,6 +6,7 @@ import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.network.PRNGFixes;
 
 import org.acra.ACRA;
+import org.acra.ACRAConfiguration;
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
 import org.acra.sender.HttpSender;
@@ -17,7 +18,6 @@ import roboguice.RoboGuice;
         reportType = HttpSender.Type.JSON,
         httpMethod = HttpSender.Method.PUT,
         formUriBasicAuthLogin="daydreaming-reporter",
-        formUriBasicAuthPassword="faiRoh4geiphaPh4",
         mode = ReportingInteractionMode.DIALOG,
         resToastText = R.string.crash_toast_text,
         resDialogText = R.string.crash_dialog_text,
@@ -36,8 +36,16 @@ public class App extends Application {
 
         super.onCreate();
 
+        // Fix SecureRandom vulnerability
         PRNGFixes.apply();
+
+        // Initialize ACRA with the right password
         ACRA.init(this);
+        ACRAConfiguration acraConfig = ACRA.getNewDefaultConfig(this);
+        acraConfig.setFormUriBasicAuthPassword(getResources().getString(R.string.crash_pass));
+        ACRA.setConfig(acraConfig);
+
+        // Initialize RoboGuice
         RoboGuice.setBaseApplicationInjector(this, RoboGuice.DEFAULT_STAGE,
                 RoboGuice.newDefaultRoboModule(this), new AppModule());
     }
