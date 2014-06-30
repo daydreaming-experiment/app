@@ -1,8 +1,0 @@
-<resources>
-
-    <item type="pref" name="settings_time_window_lb_default">10:00</item>
-    <item type="pref" name="settings_time_window_ub_default">19:00</item>
-
-    <string name="startdatestring">00/00/0000</string>
-
-</resources>

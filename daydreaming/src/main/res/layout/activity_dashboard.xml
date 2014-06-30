@@ -1,0 +1,438 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+<!-- Top-right button settings -->
+
+    <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:orientation="horizontal" >
+
+        <ImageButton
+                android:id="@+id/dashboard_openAppSettings"
+                android:layout_width="@dimen/dashboard_settings_button_size_withmargin"
+                android:layout_height="@dimen/dashboard_settings_button_size_withmargin"
+                android:padding="@dimen/dashboard_settings_button_margin"
+                android:scaleType="fitCenter"
+                android:onClick="onClick_openAppSettings"
+                android:src="@drawable/settings_icon_selector"
+                android:background="@null"/>
+
+    </LinearLayout>
+
+<!-- Experiment is RUNNING -->
+
+    <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:orientation="horizontal"
+                android:gravity="center_horizontal">
+
+        <LinearLayout
+                android:id="@+id/dashboard_layout_textExperimentRunning_p1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+        <TextView
+                android:id="@+id/dashboard_textExperimentRunning_p1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/dashboard_text_experiment_is"
+                android:singleLine="true"
+                android:textAppearance="@style/ui_font_title_bold"
+                android:textColor="@color/ui_white_text_color"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+                android:id="@+id/dashboard_layout_textExperimentRunning_p2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/dashboard_layout_textExperimentRunning_p1">
+
+        <TextView
+                android:id="@+id/dashboard_textExperimentRunning_p2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/dashboard_text_running"
+                android:singleLine="true"
+                android:textAppearance="@style/ui_font_title_bold"
+                android:textColor="@color/ui_dark_blue_color"/>
+
+        </LinearLayout>
+
+        </RelativeLayout>
+
+
+
+
+    <!-- Two colums time-elapsed / results -->
+
+
+
+
+    <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_gravity="center_horizontal" android:gravity="center_horizontal">
+
+
+        <!-- column time-elapsed -->
+
+        <RelativeLayout
+                android:id="@+id/dashboard_ExperimentTimeElapsed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="16dp"
+                >
+
+            <TextView
+                    android:id="@+id/dashboard_ExperimentTimeElapsed0"
+                    android:layout_width="@dimen/dashboard_calendar_width"
+                    android:layout_height="30dp"
+                    android:text="Time elapsed"
+                    android:textAppearance="@style/ui_font_bodytext"
+                    android:textColor="@color/ui_white_text_color"
+                    android:gravity="center_horizontal"
+                     />
+
+
+            <ImageView
+                android:id="@+id/dashboard_ExperimentTimeElapsed1"
+                android:layout_below="@id/dashboard_ExperimentTimeElapsed0"
+                android:layout_width="@dimen/dashboard_calendar_width"
+                android:layout_height="@dimen/dashboard_calendar_holder_width"
+                android:src="@drawable/dark_blue_rect_button"
+                android:layout_marginBottom="@dimen/dashboard_calendar_inbetween"
+
+                />
+
+        <TextView
+                android:id="@+id/dashboard_ExperimentTimeElapsed2"
+                android:layout_width="@dimen/dashboard_calendar_width"
+                android:layout_height="@dimen/dashboard_calendarblock_number_height"
+                android:layout_below="@id/dashboard_ExperimentTimeElapsed1"
+                android:text="XX"
+                android:textAppearance="@style/ui_font_days_font"
+                android:textColor="@color/ui_dark_blue_color"
+                android:gravity="center"
+                android:background="@drawable/white_rectangle"
+
+                />
+
+            <TextView
+                    android:id="@+id/dashboard_ExperimentTimeElapsed2days"
+                    android:layout_width="@dimen/dashboard_calendar_width"
+                    android:layout_height="@dimen/dashboard_calendarblock_days_height"
+                    android:layout_below="@id/dashboard_ExperimentTimeElapsed2"
+                    android:textColor="@color/ui_dark_blue_color"
+                    android:text="days"
+                    android:gravity="center"
+                    android:background="@drawable/white_rectangle"/>
+
+
+
+        </RelativeLayout>
+
+
+        <!-- column See results -->
+
+
+
+        <RelativeLayout
+                android:id="@+id/dashboard_ExperimentSeeResults"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_toRightOf="@id/dashboard_ExperimentTimeElapsed"
+                >
+
+            <TextView
+                    android:id="@+id/dashboard_ExperimentResultsIn0"
+                    android:layout_width="@dimen/dashboard_calendar_width"
+                    android:layout_height="30dp"
+                    android:text="Results in"
+                    android:textAppearance="@style/ui_font_bodytext"
+                    android:textColor="@color/ui_white_text_color"
+                    android:gravity="center_horizontal"
+                    />
+        <ImageView
+                android:id="@+id/dashboard_ExperimentResultsIn1"
+                android:layout_below="@id/dashboard_ExperimentResultsIn0"
+                android:layout_width="@dimen/dashboard_calendar_width"
+                android:layout_height="@dimen/dashboard_calendar_holder_width"
+                android:src="@drawable/white_rectangle"
+                android:layout_marginBottom="@dimen/dashboard_calendar_inbetween"
+                />
+
+
+
+
+        <TextView
+                android:id="@+id/dashboard_ExperimentResultsIn2"
+                android:layout_width="@dimen/dashboard_calendar_width"
+                android:layout_height="@dimen/dashboard_calendarblock_number_height"
+                android:layout_below="@id/dashboard_ExperimentResultsIn1"
+                android:text="YY"
+                android:textAppearance="@style/ui_font_days_font"
+                android:textColor="@color/ui_white_text_color"
+                android:gravity="center"
+                android:background="@drawable/dark_blue_rectangle"
+                android:src="@drawable/settings_icon"
+                />
+
+            <TextView
+                    android:id="@+id/dashboard_ExperimentResultsIn2days"
+                    android:layout_width="@dimen/dashboard_calendar_width"
+                    android:layout_height="@dimen/dashboard_calendarblock_days_height"
+                    android:layout_below="@id/dashboard_ExperimentResultsIn2"
+                    android:textColor="@color/white"
+                    android:text="days"
+                    android:gravity="center"
+                    android:background="@drawable/dark_blue_rectangle"
+                    android:src="@drawable/settings_icon"
+                    />
+
+        <Button
+                android:layout_width="@dimen/dashboard_calendar_width"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/dashboard_ExperimentResultsIn2days"
+                android:textAppearance="@style/ui_font_button"
+                android:textColor="@color/ui_dark_blue_color"
+                android:text="See Results"
+                android:paddingBottom="@dimen/block_button_vertical_padding"
+                android:paddingTop="@dimen/block_button_vertical_padding"
+                android:gravity="center"
+                android:background="@drawable/white_rectangle"
+                android:layout_marginTop="10dp"
+                android:onClick="onClick_SeeResults"
+                />
+
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+
+
+
+     <!-- The 3 buttons -->
+
+
+
+
+    <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_below="@id/dashboard_ExperimentSeeResults"
+                android:paddingTop="@dimen/dashboard_calendar_buttons_spacing"
+                android:orientation="horizontal" >
+
+        <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content">
+            <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content">
+
+
+                <ImageButton
+                      android:id="@+id/dashboard_terms_button"
+                      android:layout_width="@dimen/dashboard_icon_size"
+                      android:layout_height="@dimen/dashboard_icon_size"
+                      android:scaleType="centerInside"
+                      android:background="@drawable/icon_terms_selector"
+                      android:layout_margin="10dp"
+                      android:onClick="onClick_ReOpenTerms"
+                      android:layout_centerHorizontal="true"/>
+
+                <TextView
+                      android:text="@string/dashboard_button_text_terms"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:textAppearance="@style/ui_font_bodytext"
+                      android:textColor="@color/ui_white_text_color"
+                      android:layout_centerHorizontal="true"
+                      android:layout_below="@id/dashboard_terms_button"/>
+        </RelativeLayout>
+        </LinearLayout>
+
+
+
+
+        <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal">
+        <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+            <ImageButton
+                    android:id="@+id/dashboard_description_button"
+                    android:layout_width="@dimen/dashboard_icon_size"
+                    android:layout_height="@dimen/dashboard_icon_size"
+                    android:scaleType="centerInside"
+                    android:background="@drawable/icon_description_selector"
+                    android:layout_margin="10dp"
+                    android:onClick="onClick_ReOpenDescription"
+                    android:layout_centerHorizontal="true"/>
+            <TextView
+                    android:text="@string/dashboard_button_text_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/ui_font_bodytext"
+                    android:textColor="@color/ui_white_text_color"
+                    android:layout_below="@id/dashboard_description_button"
+                    android:layout_centerHorizontal="true"/>
+        </RelativeLayout>
+        </LinearLayout>
+
+
+
+
+
+        <com.brainydroid.daydreaming.ui.AlphaLinearLayout
+                android:id="@+id/dashboard_about_layout"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal">
+            <RelativeLayout
+                android:id="@+id/btn_plus_container"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+            <ImageButton
+                    android:id="@+id/dashboard_about_button"
+                    android:layout_width="@dimen/dashboard_icon_size"
+                    android:layout_height="@dimen/dashboard_icon_size"
+                    android:scaleType="centerInside"
+                    android:background="@drawable/icon_about_selector"
+                    android:layout_margin="10dp"
+                    android:onClick="onClick_OpenAboutActivity"
+                    android:layout_centerHorizontal="true"/>
+                <TextView
+                    android:text="@string/dashboard_button_text_about"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:textAppearance="@style/ui_font_bodytext"
+                    android:textColor="@color/ui_white_text_color"
+                    android:layout_below="@id/dashboard_about_button"
+                    />
+        </RelativeLayout>
+        </com.brainydroid.daydreaming.ui.AlphaLinearLayout>
+
+
+
+
+ </LinearLayout>
+
+
+
+
+
+
+
+
+    <!--
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="16dp"
+    android:orientation="horizontal" >
+
+    <TextView
+        android:id="@+id/dashboard_textDaysElapsed"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"
+        android:text="@string/dashboard_text_days_elapsed"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/dashboard_textDaysElapsedNumber"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"
+        android:gravity="center_horizontal"
+        android:text="XX/YY"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+</LinearLayout>
+
+<TextView
+    android:id="@+id/dashboard_titleResults"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="16dp"
+    android:text="@string/dashboard_title_results"
+    android:textAppearance="?android:attr/textAppearanceLarge" />
+
+<TextView
+    android:id="@+id/dashboard_textResults"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="16dp"
+    android:layout_marginLeft="16dp"
+    android:layout_marginRight="16dp"
+    android:text="@string/dashboard_text_results" />
+
+-->
+    <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+    <LinearLayout
+            android:id="@+id/dashboard_testing_linearlayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:layout_alignParentBottom="true"
+            android:gravity="right">
+
+        <Button
+            android:id="@+id/button_test_poll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="8dp"
+            android:onClick="runPollNow"
+            android:text="Probe now"/>
+
+        <Button
+                android:id="@+id/button_reload_parameters"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="16dp"
+                android:onClick="reloadParametersKeepProfileAnswers"
+                android:text="Reload parameters" />
+    </LinearLayout>
+
+
+</RelativeLayout>
+
+        <!--
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:onClick="startSyncService"
+            android:text="Sync" />
+        -->
+
+
+</LinearLayout>

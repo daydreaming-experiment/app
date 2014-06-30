@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent" >
+
+
+    <LinearLayout android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_alignParentTop="true"
+                  android:layout_alignParentRight="true">
+
+        <ImageButton
+                android:id="@+id/appsettings_testmode_button"
+                android:layout_width="@dimen/dashboard_settings_button_size_withmargin"
+                android:layout_height="@dimen/dashboard_settings_button_size_withmargin"
+                android:padding="@dimen/dashboard_settings_button_margin"
+                android:scaleType="fitCenter"
+                android:src="@drawable/icon_test"
+                android:background="@null"/>
+    </LinearLayout>
+
+    <!--    android:onClick="onClick_switchMode"    -->
+
+<LinearLayout android:orientation="vertical"
+              android:layout_width="fill_parent"
+              android:layout_height="match_parent"
+              android:layout_marginLeft="@dimen/settings_side_margins"
+              android:layout_marginRight="@dimen/settings_side_margins"
+              android:gravity="center_vertical"
+              android:layout_centerHorizontal="true">
+
+    <!-- TITLE -->
+    <LinearLayout android:layout_height="wrap_content"
+                  android:layout_width="fill_parent"
+                  android:id="@+id/appsettings_title_layout"
+            >
+
+        <TextView
+                android:text="@string/appsettings_title"
+                android:gravity="center_horizontal"
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:textAppearance="@style/ui_font_big_title_bold"
+                android:textColor="@color/ui_white_text_color"/>
+
+    </LinearLayout>
+
+
+    <!-- SOUND / BLINK / VIBRATE -->
+
+
+        <LinearLayout android:layout_height="wrap_content"
+                      android:layout_width="wrap_content"
+                      android:orientation="vertical"
+                      android:layout_marginTop="20dp"
+                      android:id="@+id/appsettings_settings_notification">
+
+            <LinearLayout android:layout_height="fill_parent"
+                          android:layout_width="wrap_content"
+                          android:layout_marginBottom="@dimen/settings_line_spacing">
+            <TextView
+                    android:text="@string/appsettings_notification_title"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:textAppearance="@style/ui_font_bodytext_bold"
+                    android:textColor="@color/ui_white_text_color"
+                    />
+            </LinearLayout>
+
+
+                <RelativeLayout android:layout_height="wrap_content"
+                              android:layout_width="fill_parent"
+                              android:id="@+id/appsettings_notif_sound_layout"
+                              android:layout_marginBottom="@dimen/settings_line_spacing">
+
+
+                       <ImageView
+                            android:layout_width="@dimen/settings_icon_size"
+                            android:layout_height="@dimen/settings_icon_size"
+                            android:scaleType="fitCenter"
+                            android:layout_centerVertical="true"
+                            android:src="@drawable/icon_notif_sound"
+                            android:id ="@+id/appsettings_sound_icon"
+                               />
+
+                    <TextView
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:text="@string/appsettings_allow_sound_text"
+                           android:textAppearance="@style/ui_font_bodytext"
+                            android:textColor="@color/ui_white_text_color"
+                           android:paddingLeft="@dimen/settings_textpadding_from_icons"
+                           android:layout_toRightOf="@id/appsettings_sound_icon"
+                           android:layout_centerVertical="true"
+
+                            />
+
+                       <CheckBox
+                           android:id="@+id/appsettings_allow_sound_check"
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:text=""
+                           android:layout_centerVertical="true"
+
+                           android:button="@drawable/custom_checkbox"
+                           android:layout_alignParentRight="true"/>
+                </RelativeLayout>
+
+                <RelativeLayout android:layout_height="wrap_content"
+                              android:layout_width="wrap_content"
+                              android:id="@+id/appsettings_notif_vibrate_layout"
+                              android:layout_marginBottom="@dimen/settings_line_spacing">
+
+                    <ImageView
+                            android:id ="@+id/appsettings_vibrate_icon"
+                            android:layout_width="@dimen/settings_icon_size"
+                            android:layout_height="@dimen/settings_icon_size"
+                            android:scaleType="fitCenter"
+                            android:layout_centerVertical="true"
+                            android:src="@drawable/icon_notif_vibrate"/>
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/appsettings_allow_vibrations_text"
+                            android:textAppearance="@style/ui_font_bodytext"
+                            android:textColor="@color/ui_white_text_color"
+                            android:paddingLeft="@dimen/settings_textpadding_from_icons"
+                            android:layout_toRightOf="@id/appsettings_vibrate_icon"
+                            android:layout_centerVertical="true"
+
+                            />
+
+
+                    <CheckBox
+                            android:id="@+id/appsettings_allow_vibrations_check"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:text=""
+                            android:layout_centerVertical="true"
+                            android:button="@drawable/custom_checkbox"
+                            />
+
+
+                </RelativeLayout>
+
+                <RelativeLayout android:layout_height="wrap_content"
+                              android:layout_width="wrap_content"
+                              android:id="@+id/appsettings_notif_blink_layout"
+                              android:layout_marginBottom="@dimen/settings_line_spacing">
+                    <ImageView
+                            android:id ="@+id/appsettings_blink_icon"
+                            android:layout_width="@dimen/settings_icon_size"
+                            android:layout_height="@dimen/settings_icon_size"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/icon_notif_blink"
+                            android:layout_centerVertical="true"
+                            />
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/appsettings_allow_blink_text"
+                            android:textAppearance="@style/ui_font_bodytext"
+                            android:textColor="@color/ui_white_text_color"
+                            android:paddingLeft="@dimen/settings_textpadding_from_icons"
+                            android:layout_toRightOf="@id/appsettings_blink_icon"
+                            android:layout_centerVertical="true"
+                            />
+                    <CheckBox
+                            android:id="@+id/appsettings_allow_blink_check"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=""
+                            android:button="@drawable/custom_checkbox"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            />
+                </RelativeLayout>
+
+
+
+        </LinearLayout>
+
+        <!-- TIME SETTINGS -->
+
+        <LinearLayout android:layout_height="wrap_content"
+                      android:layout_width="wrap_content"
+                      android:orientation="vertical"
+                      android:layout_marginTop="20dp"
+                      android:id="@+id/appsettings_settings_time">
+
+            <LinearLayout android:layout_height="wrap_content"
+                          android:layout_width="fill_parent"
+                          android:layout_marginBottom="@dimen/settings_line_spacing">
+                <TextView
+                        android:text="@string/appsettings_time_title"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:textAppearance="@style/ui_font_bodytext_bold"
+                        android:textColor="@color/ui_white_text_color"
+                        />
+            </LinearLayout>
+
+            <LinearLayout android:layout_height="wrap_content"
+                          android:layout_width="wrap_content"
+                          android:orientation="horizontal"
+                          android:gravity="center_vertical"
+                          android:id="@+id/settings_time_text_from_layout"
+                          android:layout_marginBottom="@dimen/settings_line_spacing">
+
+
+                    <ImageView
+                        android:src="@drawable/icon_time_window_from"
+                        android:layout_width="@dimen/settings_time_arrow_size"
+                        android:layout_height="@dimen/settings_time_arrow_size"
+                        android:gravity="center_vertical"
+                        android:scaleType="fitStart"/>
+
+
+                    <TextView
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:text="@string/appsettings_time_from"
+                        android:textAppearance="@style/ui_font_bodytext"
+                        android:textColor="@color/ui_white_text_color"
+                        android:paddingLeft="@dimen/settings_textpadding_from_icons"
+                        android:gravity="center_vertical"/>
+                    <TextView
+                        android:id="@+id/settings_time_text_from"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:text=""
+                        android:textAppearance="@style/ui_font_bodytext_bold"
+                        android:textColor="@color/ui_dark_blue_color"
+                        android:paddingLeft="@dimen/settings_textpadding_from_icons"
+                        android:gravity="center_vertical"/>
+
+            </LinearLayout>
+
+
+            <LinearLayout android:layout_height="wrap_content"
+                          android:layout_width="wrap_content"
+                          android:orientation="horizontal"
+                          android:gravity="center_vertical"
+                          android:id="@+id/settings_time_text_until_layout"
+                          android:layout_marginBottom="@dimen/settings_line_spacing">
+                        <ImageView
+                                android:layout_width="@dimen/settings_time_arrow_size"
+                                android:layout_height="@dimen/settings_time_arrow_size"
+                                android:scaleType="fitStart"
+                                android:gravity="center_vertical"
+                                android:src="@drawable/icon_time_window_until"/>
+                        <TextView
+                                android:layout_height="wrap_content"
+                                android:layout_width="wrap_content"
+                                android:text="@string/appsettings_time_until"
+                                android:textAppearance="@style/ui_font_bodytext"
+                                android:textColor="@color/ui_white_text_color"
+                                android:paddingLeft="@dimen/settings_textpadding_from_icons"
+                                android:gravity="center_vertical"/>
+                        <TextView
+                                android:id="@+id/settings_time_text_until"
+                                android:layout_height="wrap_content"
+                                android:layout_width="wrap_content"
+                                android:text=""
+                                android:textAppearance="@style/ui_font_bodytext_bold"
+                                android:textColor="@color/ui_dark_blue_color"
+                                android:paddingLeft="@dimen/settings_textpadding_from_icons"
+                                android:gravity="center_vertical"/>
+             </LinearLayout>
+
+
+
+
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+
+
+    <LinearLayout android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_alignParentBottom="true"
+                  android:layout_alignParentRight="true">
+
+        <ImageButton
+                android:id="@+id/appsettings_backtodashboard_button"
+                android:layout_width="@dimen/dashboard_settings_button_size_withmargin"
+                android:layout_height="@dimen/dashboard_settings_button_size_withmargin"
+                android:padding="@dimen/dashboard_settings_button_margin"
+                android:scaleType="fitCenter"
+                android:onClick="onClick_backToDashboard"
+                android:src="@drawable/dashboard_arrow"
+                android:background="@null"/>
+    </LinearLayout>
+
+
+
+
+</RelativeLayout>

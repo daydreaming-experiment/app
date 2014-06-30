@@ -1,0 +1,108 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/question_rootView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="15dp"
+            android:scrollbarSize="5dp"
+            android:scrollbarThumbVertical="@drawable/scrollbar_vertical_thumb">
+
+    <RelativeLayout
+            android:id="@+id/question_relativeLayout"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/question_horizontal_margin"
+            android:paddingRight="@dimen/question_horizontal_margin"
+            android:paddingBottom="@dimen/question_vertical_margin"
+            android:paddingTop="@dimen/question_vertical_margin"
+            android:orientation="vertical" >
+
+
+
+
+        <LinearLayout
+                android:id="@+id/question_introlinearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/question_vertical_margin"
+                android:orientation="vertical" >
+
+            <TextView
+                    android:id="@+id/question_welcomeText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:gravity="center_horizontal"
+                    android:text="@string/question_welcome_text"
+                    android:textAppearance="@style/ui_font_title_bold"
+                    android:textColor="@color/ui_white_text_color"/>
+
+            <TextView
+                    android:id="@+id/question_commonQuestionIntroText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:text="@string/question_common_question_intro_text"
+                    android:textAppearance="@style/ui_font_big_title_bold"
+                    android:textColor="@color/ui_white_text_color"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+                android:id="@+id/question_linearLayout"
+                android:layout_below="@id/question_introlinearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/question_vertical_margin"
+                android:paddingTop="@dimen/question_vertical_margin"
+                android:orientation="vertical" >
+
+                       <TextView
+                               android:id="@+id/question_empty"
+                               android:layout_width="wrap_content"
+                               android:layout_height="wrap_content"
+                               android:gravity="center_horizontal"
+                               android:text=""/>
+
+
+
+        </LinearLayout>
+
+        <LinearLayout
+                android:id="@+id/question_buttonlinearLayout"
+                android:layout_below="@id/question_linearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:layout_marginBottom="30dp"
+                android:layout_marginTop="30dp">
+
+            <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                <ImageButton
+                        android:id="@+id/question_nextButton"
+                        android:layout_width="@dimen/button_next_width"
+                        android:layout_height="@dimen/button_next_height"
+                        android:onClick="onClick_nextButton"
+                        android:background="@drawable/button_cloud_next_selector"
+                        />
+                <ImageButton
+                        android:id="@+id/question_finishButton"
+                        android:layout_width="@dimen/button_next_width"
+                        android:layout_height="@dimen/button_next_height"
+                        android:onClick="onClick_nextButton"
+                        android:visibility="invisible"
+                        android:clickable="false"
+                        android:background="@drawable/button_finish_selector"
+                        />
+
+
+            </FrameLayout>
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+</ScrollView>
