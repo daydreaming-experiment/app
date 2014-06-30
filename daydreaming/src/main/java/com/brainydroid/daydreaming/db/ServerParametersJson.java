@@ -26,10 +26,6 @@ public class ServerParametersJson {
         return nSlotsPerProbe;
     }
 
-    public synchronized int getNSlotsPerProbe() {
-        return nSlotsPerProbe;
-    }
-
     public synchronized int getSchedulingMeanDelay() {
         return schedulingMeanDelay;
     }
