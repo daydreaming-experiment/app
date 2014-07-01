@@ -268,7 +268,7 @@ public class ParametersStorage {
             // All is good, do the real import
             flush();
             setParametersVersion(serverParametersJson.getVersion());
-            setNSlotsPerPoll(nSlotsPerProbe);
+            setNSlotsPerProbe(nSlotsPerProbe);
             add(serverParametersJson.getQuestionsArrayList());
         } catch (JsonSyntaxException e) {
             throw new ParametersSyntaxException();
