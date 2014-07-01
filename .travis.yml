@@ -1,4 +1,5 @@
 language: java
+install: ./gradlew --stacktrace --debug assemble
 
 # Install our dependencies
 before_install:
