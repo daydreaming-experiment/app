@@ -18,7 +18,9 @@ before_install:
   - tar xzf android-sdk-linux.tgz
   - export ANDROID_HOME="$(pwd)/android-sdk-linux"
   - export PATH="${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools"
-  - echo "y" | android update sdk --no-ui --force --filter build-tools-20.0.0,android-16,platform-tools,extra-android-support,extra-android-m2repository
+  # Partition downloads into licence groups, otherwise `echo "y"` doesn't work
+  - echo "y" | android update sdk --no-ui --force --filter build-tools-20.0.0,android-16,platform-tools,extra-android-support
+  - echo "y" | android update sdk --no-ui --force --filter extra-android-m2repository
 
   # Come back into main repository
   - cd ${MAIN_REPO}
