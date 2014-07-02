@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+<!-- TODO: a few elements that would be good to externalize in this file
+
+    <dimen  name="next_button_width">1Odp</dimen>
+    <dimen  name="next_button_heigth">10dp</dimen>
+
+    <dimen  name="check_width">10dp</dimen>
+    <dimen  name="check_heigth">10dp</dimen>
+                                                                    -->
+
+<!-- LATENCIES -->
+    <integer name="welcome_animation_duration">2000</integer> <!-- given in milliseconds-->
+
+
+<!-- GENERAL GRAPHICS -->
+
+    <!-- Scrollview -->
+    <dimen  name="scrollview_thumb_border_margin" >15dp</dimen>
+    <dimen  name="scrollview_content_thumb_margin" >15dp</dimen>
+    <dimen  name="standard_top_margin" >35dp</dimen>
+
+
+    <!-- Image Buttons -->
+    <dimen  name="next_button_right_margin" >30dp</dimen>
+    <dimen  name="button_next_width" >100dp</dimen>
+    <dimen  name="button_next_height" >60dp</dimen>
+    <dimen  name="next_button_right_margin_inc_scrollpadding" >15dp</dimen>
+
+    <dimen  name="settings_notif_icon_size" >30dp</dimen>
+
+
+    <!-- Seekbarthumb -->
+
+    <dimen  name="thumboffset" >15dp</dimen>
+
+    <dimen  name="seekbar_touchzone_diameter" >40dp</dimen>
+    <dimen  name="seekbar_touchzone_radius" >20dp</dimen>
+    <dimen  name="seekbar_big_circle_diameter" >20dp</dimen>
+    <dimen  name="seekbar_big_circle_offset" >10dp</dimen>
+    <dimen  name="seekbar_small_circle_diameter" >10dp</dimen>
+    <dimen  name="seekbar_small_circle_offset" >15dp</dimen>
+
+
+
+    <!--
+ finish : 200*118      r =        0.59
+ next:    193*113      r =          0.585
+-->
+
+    <dimen  name="dashboard_settings_button_size_withmargin" >60dp</dimen>
+    <dimen  name="dashboard_settings_button_margin" >15dp</dimen>
+
+
+    <!-- Block buttons -->
+    <dimen  name="block_button_vertical_padding" >6dp</dimen>
+    <dimen  name="block_button_horizontal_padding" >20dp</dimen>
+
+    <!-- Text -->
+    <dimen  name="text_linespacing" >5dp</dimen>
+    <!-- Questions -->
+    <dimen  name="slider_question_bar_width" >3dp</dimen>
+
+    <!-- Seekbar -->
+    <integer name="thumb_lateral_offset">0</integer>  <!-- in dps! -->
+
+
+<!-- Individual activities -->
+
+
+    <!-- Aims and goals -->
+    <dimen  name="description_text_padding" >15dp</dimen>
+    <dimen  name="description_text_titleTopMargin" >50dp</dimen>
+    <dimen  name="description_text_linespacing" >5dp</dimen>
+    <dimen  name="description_scrollview_heigth">300dp</dimen>
+    <dimen  name="description_cone_vertical_offset">350dp</dimen>
+    <dimen  name="description_cloud_vertical_offset">500dp</dimen>
+
+    <dimen  name="cloud_cone_person_heigth">300dp</dimen>             <!-- TODO CHANGE -->
+    <dimen  name="cloud_cone_person_width">600dp</dimen>              <!-- TODO CHANGE -->
+
+
+
+    <!-- SettingsActivity -->
+    <dimen  name="settings_side_margins" >30dp</dimen>
+    <dimen  name="settings_icon_size" >30dp</dimen>
+    <dimen  name="settings_time_arrow_size" >30dp</dimen>
+    <dimen  name="settings_checkbox_size" >20dp</dimen>
+    <dimen  name="settings_textpadding_from_icons" >20dp</dimen>
+    <dimen  name="settings_line_spacing" >10dp</dimen>
+
+
+    <!-- DashboardActivity -->
+    <dimen  name="dashboard_calendar_holder_width" >5dp</dimen>
+    <dimen  name="dashboard_calendar_inbetween" >5dp</dimen>
+    <dimen  name="dashboard_calendar_width" >120dp</dimen>
+    <dimen  name="dashboard_calendarblock_number_height" >60dp</dimen>
+    <dimen  name="dashboard_calendarblock_days_height" >30dp</dimen>
+    <dimen  name="dashboard_icon_size" >50dp</dimen>
+    <dimen  name="dashboard_result_vert_padding_size" >20dp</dimen>
+    <dimen  name="dashboard_calendar_buttons_spacing" >20dp</dimen>
+
+    <!-- TermsActivity -->
+    <dimen  name="terms_text_side_padding" >15dp</dimen>
+    <dimen  name="terms_vertical_spacing_title_text">20dp</dimen>
+    <dimen  name="terms_vertical_paddingTop_title">35dp</dimen>
+
+    <!-- ProfileActivity -->
+    <dimen  name="profile_title_vertical_space" >30dp</dimen>
+    <dimen  name="profile_field_vertical_spacing" >20dp</dimen>
+    <dimen  name="profile_spinner_text_vertical_padding" >10sp</dimen>
+    <dimen  name="profile_spinner_text_left_padding" >30dp</dimen>
+    <dimen  name="profile_spinner_icon_left_margin" >5dp</dimen>
+    <dimen  name="profile_paddingTop" >40dp</dimen>
+    <dimen  name="profile_paddingBottom" >5dp</dimen>
+    <dimen  name="profile_lateralPadding" >0dp</dimen>
+
+    <!-- MeasuresActivity -->
+    <dimen  name="measures_item_vertical_spacing" >20dp</dimen>
+    <dimen  name="measures_paddingTop" >10dp</dimen>
+    <dimen  name="measures_paddingBottom" >10dp</dimen>
+    <dimen  name="measures_lateralPadding" >15dp</dimen>
+    <dimen  name="measures_side_margin" >30dp</dimen>
+
+    <!-- QuestionnaireActivity -->
+    <dimen  name="questionnaire_scrollbar_margin" >15dp</dimen>
+
+    <dimen  name="questionnaire_side_margin" >15dp</dimen>
+    <dimen  name="questionnaire_bar_width" >20dp</dimen>
+    <dimen  name="questionnaire_marginTop" >30dp</dimen>
+    <dimen  name="questionnaire_paddingBottom" >30dp</dimen>
+    <dimen  name="questionnaire_lateralPadding" >0dp</dimen>
+
+
+
+    <!-- QuestionsMultipleChoiceActivity -->
+    <dimen  name="question_occupation_line_marginBottom" >20dp</dimen>
+    <dimen  name="question_horizontal_margin" >25dp</dimen>
+    <dimen  name="question_vertical_margin" >25dp</dimen>
+
+
+
+</resources>

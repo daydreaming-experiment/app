@@ -1,0 +1,153 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/firstLaunchTerms_main_layout"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+    <LinearLayout android:orientation="vertical"
+            android:id="@+id/ll1"
+            android:layout_alignParentTop="true"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"/>
+
+
+
+    <RelativeLayout
+            android:id="@+id/firstLaunchTerms_agreement_buttons"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:background="@drawable/white_background"
+            android:layout_alignParentBottom="true"
+            android:padding="50dp"
+            >
+
+        <LinearLayout android:orientation="horizontal"
+                      android:id="@+id/firstLaunchTerms_buttons"
+                      android:layout_width="fill_parent"
+                      android:layout_height="wrap_content"
+                      android:layout_marginBottom="2dp">
+        <com.brainydroid.daydreaming.ui.AlphaButton
+                android:id="@+id/firstLaunchTerms_buttonDisagree"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/firstLaunchTerms_button_disagree"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/ui_white_text_color"
+                android:background="@drawable/dark_blue_rect_button_selector"
+                android:layout_marginRight="10dp"/>
+
+        <com.brainydroid.daydreaming.ui.AlphaButton
+                android:id="@+id/firstLaunchTerms_buttonAgree"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_toRightOf="@id/firstLaunchTerms_buttonDisagree"
+                android:text="@string/firstLaunchTerms_button_agree"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/ui_white_text_color"
+                android:background="@drawable/light_blue_rect_button_selector"
+                />
+          </LinearLayout>
+
+        <TextView
+                android:id="@+id/firstLaunchTerms_please_scroll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/firstLaunchTerms_text_please_scroll"
+                android:textAppearance="@style/ui_font_caption"
+                android:textColor="@color/ui_dark_blue_color"
+                android:layout_alignParentRight="true"
+                android:layout_below="@id/firstLaunchTerms_buttons"/>
+
+
+
+    </RelativeLayout>
+
+
+    <com.brainydroid.daydreaming.ui.firstlaunchsequence.ScrollViewExt
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/firstLaunchTerms_Scrollview"
+            android:layout_below="@id/ll1"
+            android:layout_above="@id/firstLaunchTerms_agreement_buttons"
+            android:paddingRight="15dp"
+            android:paddingLeft="15dp"
+            android:scrollbarSize="5dp"
+            android:scrollbarThumbVertical="@drawable/scrollbar_vertical_thumb"
+            >
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+             >
+
+
+            <TextView
+                    android:id="@+id/firstLaunchTerms_titleConsent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:text="@string/firstLaunchTerms_text_title"
+                    android:paddingBottom="@dimen/terms_vertical_spacing_title_text"
+                    android:paddingTop="@dimen/terms_vertical_paddingTop_title"
+                    android:textAppearance="@style/ui_font_big_title_bold"
+                    android:textColor="@color/ui_white_text_color"/>
+
+
+            <TextView
+                    android:id="@+id/firstLaunchTerms_textConsent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/firstLaunchTerms_titleConsent"
+                    android:gravity="left"
+                    android:text=""
+                    android:paddingRight="@dimen/terms_text_side_padding"
+                    android:paddingLeft="@dimen/terms_text_side_padding"
+                    android:lineSpacingExtra="@dimen/text_linespacing"
+                    android:textAppearance="@style/ui_font_title"
+                    android:textColor="@color/ui_white_text_color"/>
+
+            <TextView
+                    android:id="@+id/firstLaunchTerms_moreConsent_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/firstLaunchTerms_textConsent"
+                    android:gravity="left"
+                    android:paddingBottom="30dp"
+                    android:paddingLeft="@dimen/terms_text_side_padding"
+                    android:text="@string/firstLaunchTerms_text_more_consent"
+                    android:textAppearance="@style/ui_font_title_bold"
+                    android:textColor="@color/ui_yellow"
+                    />
+
+
+            <TextView
+                    android:id="@+id/firstLaunchTerms_moreConsent_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/firstLaunchTerms_moreConsent_button"
+                    android:gravity="left"
+                    android:text=""
+                    android:paddingBottom="30dp"
+                    android:paddingRight="@dimen/terms_text_side_padding"
+                    android:paddingLeft="@dimen/terms_text_side_padding"
+                    android:lineSpacingExtra="@dimen/text_linespacing"
+                    android:textAppearance="@style/ui_font_title"
+                    android:textColor="@color/ui_white_text_color"/>
+
+
+
+        </RelativeLayout>
+
+
+    </com.brainydroid.daydreaming.ui.firstlaunchsequence.ScrollViewExt>
+
+
+
+
+
+
+
+
+</RelativeLayout>

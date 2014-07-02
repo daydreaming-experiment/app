@@ -1,0 +1,54 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.12.+' // 11
+    }
+}
+
+apply plugin: 'android'
+
+repositories {
+    mavenCentral()
+}
+
+android {
+    compileSdkVersion 16
+    buildToolsVersion "20.0.0"
+
+    buildTypes {
+        debug {
+            applicationIdSuffix ".debug"
+        }
+
+        qa.initWith(buildTypes.debug)
+        qa {
+            applicationIdSuffix ".qa"
+        }
+    }
+
+    // Fix for duplicate files copied
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+    }
+}
+
+dependencies {
+    compile 'com.android.support:support-v4:20.0.0'
+    compile 'com.google.code.gson:gson:2.2.4'
+    compile 'org.apache.httpcomponents:httpmime:4.3.4'
+    compile 'com.madgag:scprov-jdk15on:1.47.0.3'
+    // guice is replaced with roboguice in code, for later testing
+    // compile 'com.google.inject:guice:3.0'
+    compile 'org.roboguice:roboguice:2.0'
+    compile('com.google.inject.extensions:guice-assistedinject:3.0') {
+        exclude group: 'com.google.inject', module: 'guice'
+    }
+    compile 'ch.acra:acra:4.5.0'
+    compile 'com.google.android:annotations:4.1.1.4'
+}

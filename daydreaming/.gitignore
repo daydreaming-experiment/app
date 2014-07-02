@@ -2,12 +2,6 @@
 build
 .gradle
 
-# Local configuration file (sdk path, etc)
-local.properties
-
-# Passwords file
-passes.local.xml
-
 # IntelliJ IDEA files
 .idea/
 gen-external-apklibs/

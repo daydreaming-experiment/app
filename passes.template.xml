@@ -1,0 +1,19 @@
+<!--
+
+  ======================================
+  = Template file for passes.local.xml =
+  ======================================
+
+  Copy this file to passes.local.xml at the root of the repository,
+  and fill it with the passwords you want to use for your build of the app.
+
+  If you don't have the team's passwords (especially for ACRA, whithout which
+  your crash reports will be rejected) you should set up your own instance
+  of ACRA and update the corresponding URL in the app.
+
+ -->
+
+<resources>
+    <string name="mode_switch_pass">XXXXX</string>
+    <string name="crash_pass">XXXXX</string>
+</resources>
