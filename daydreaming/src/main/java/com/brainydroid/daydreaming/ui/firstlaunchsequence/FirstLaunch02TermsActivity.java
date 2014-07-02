@@ -104,13 +104,13 @@ public class FirstLaunch02TermsActivity extends FirstLaunchActivity implements S
             alertDialogBuilder
                     .setMessage("You haven't read the terms. Are you sure you want to carry on?")
                     .setCancelable(false)
-                    .setPositiveButton("Yes",new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog,int id) {
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
                             launchNextActivity(FirstLaunch03ProfileActivity.class);
                         }
                     })
-                    .setNegativeButton("No",new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog,int id) {
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
                             dialog.cancel();
                         }
                     });

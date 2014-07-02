@@ -58,7 +58,7 @@ public class FirstLaunch01DescriptionActivity extends FirstLaunchActivity {
 
 
         setRobotoFont(this);
-        Linkify.addLinks(description,Linkify.WEB_URLS | Linkify.EMAIL_ADDRESSES);
+        Linkify.addLinks(description, Linkify.WEB_URLS | Linkify.EMAIL_ADDRESSES);
 
     }
 

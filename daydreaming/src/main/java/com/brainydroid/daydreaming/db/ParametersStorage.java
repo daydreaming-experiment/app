@@ -115,7 +115,7 @@ public class ParametersStorage {
 
 
     private synchronized void setNSlotsPerProbe(int nSlotsPerProbe) {
-        Logger.d(TAG, "{} - Setting nSlotsPerProbe to {}",statusManager.getCurrentModeName(),  nSlotsPerProbe);
+        Logger.d(TAG, "{} - Setting nSlotsPerProbe to {}", statusManager.getCurrentModeName(), nSlotsPerProbe);
         eSharedPreferences.putInt(statusManager.getCurrentModeName() + QUESTIONS_N_SLOTS_PER_PROBE, nSlotsPerProbe);
         eSharedPreferences.commit();
     }
