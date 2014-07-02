@@ -10,7 +10,7 @@ public interface ProfileDataFactory {
                               @Assisted("gender") String gender,
                               @Assisted("education") String education,
                               HashMap<String, Integer> tipiAnswers,
-                              @Assisted("parametersVersion") int parametersVersion,
+                              @Assisted("parametersVersion") String parametersVersion,
                               @Assisted("appVersionName") String appVersionName,
                               @Assisted("appVersionCode") int appVersionCode,
                               @Assisted("mode") String mode);

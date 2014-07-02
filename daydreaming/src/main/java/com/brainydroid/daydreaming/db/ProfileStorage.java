@@ -130,8 +130,8 @@ public class ProfileStorage {
         setIsDirtyAndCommit();
     }
 
-    private int getParametersVersion() {
-        return sharedPreferences.getInt(statusManager.getCurrentModeName() + PROFILE_PARAMETERS_VERSION, -1);
+    private String getParametersVersion() {
+        return sharedPreferences.getString(statusManager.getCurrentModeName() + PROFILE_PARAMETERS_VERSION, "not given");
     }
 
     private String getAppVersionName() {
