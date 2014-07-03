@@ -34,6 +34,8 @@ public class ParametersStorage {
             "questionSystemTimestamp";
 
     private static String TABLE_QUESTIONS = "Questions";
+    private static String TIPI_QUESTIONS = "TipiQuestions";
+
 
     private static final String SQL_CREATE_TABLE_QUESTIONS =
             "CREATE TABLE IF NOT EXISTS {}" + TABLE_QUESTIONS + " (" +
@@ -48,6 +50,12 @@ public class ParametersStorage {
     private static String QUESTIONS_SCHEDULING_MEAN_DELAY = "schedulingMeanDelay";
     private static String QUESTIONS_N_SLOTS_PER_PROBE = "questionsNSlotsPerPoll";
     private static String PARAMETERS_VERSION = "parametersVersion";
+    private static String EXP_DURATION = "expDuration"; // no need to make global but listing is nice
+    private static String EXP_ID = "expId";
+    private static String URL_BACKEND_API = "urlBackendApi";
+    private static String URL_RESULTS_PAGE = "urlResultsPage";
+    private static String WELCOME_TEXT = "welcomeText";
+    private static String DESCRIPTION_TEXT = "descriptionText";
 
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor eSharedPreferences;
@@ -81,6 +89,43 @@ public class ParametersStorage {
         eSharedPreferences.putString(statusManager.getCurrentModeName() + PARAMETERS_VERSION, version);
         eSharedPreferences.commit();
         profileStorage.setParametersVersion(version);
+    }
+
+    //setExpDuration    setExpId    setUrlBackendApi    setUrlResultsPage
+    private synchronized void setExpDuration(int expDuration) {
+        Logger.d(TAG, "{} - Setting expDuration to {}", statusManager.getCurrentModeName(), expDuration);
+        eSharedPreferences.putInt(statusManager.getCurrentModeName() + EXP_DURATION, expDuration);
+        eSharedPreferences.commit();
+    }
+
+    private synchronized void setExpId(String expId) {
+        Logger.d(TAG, "{} - Setting expId to {}", statusManager.getCurrentModeName(), expId);
+        eSharedPreferences.putString(statusManager.getCurrentModeName() + EXP_ID, expId);
+        eSharedPreferences.commit();
+    }
+
+    private synchronized void setUrlBackendApi(String urlBackendApi) {
+        Logger.d(TAG, "{} - Setting urlBackendApi to {}", statusManager.getCurrentModeName(), urlBackendApi);
+        eSharedPreferences.putString(statusManager.getCurrentModeName() + URL_BACKEND_API, urlBackendApi);
+        eSharedPreferences.commit();
+    }
+
+    private synchronized void setUrlResultsPage(String urlResultsPage) {
+        Logger.d(TAG, "{} - Setting urlResultsPage to {}", statusManager.getCurrentModeName(), urlResultsPage);
+        eSharedPreferences.putString(statusManager.getCurrentModeName() + URL_RESULTS_PAGE, urlResultsPage);
+        eSharedPreferences.commit();
+    }
+
+    private synchronized void setDescriptionText(String descriptionText) {
+        Logger.d(TAG, "{} - Setting urlResultsPage to {}", statusManager.getCurrentModeName(), descriptionText);
+        eSharedPreferences.putString(statusManager.getCurrentModeName() + DESCRIPTION_TEXT, descriptionText);
+        eSharedPreferences.commit();
+    }
+
+    private synchronized void setWelcomeText(String welcomeText) {
+        Logger.d(TAG, "{} - Setting urlResultsPage to {}", statusManager.getCurrentModeName(), welcomeText);
+        eSharedPreferences.putString(statusManager.getCurrentModeName() + WELCOME_TEXT, welcomeText);
+        eSharedPreferences.commit();
     }
 
     private synchronized void clearParametersVersion() {
@@ -157,6 +202,8 @@ public class ParametersStorage {
         return q;
     }
 
+
+
     public synchronized SlottedQuestions getSlottedQuestions() {
         Logger.d(TAG, "{} - Retrieving all questions from db", statusManager.getCurrentModeName());
 
@@ -209,6 +256,8 @@ public class ParametersStorage {
         Logger.d(TAG, "{} - Storing question {} to db", statusManager.getCurrentModeName(), question.getName());
         db.insert(statusManager.getCurrentModeName() + TABLE_QUESTIONS, null, getQuestionValues(question));
     }
+
+
 
     private synchronized ContentValues getQuestionValues(Question question) {
         Logger.d(TAG, "{} - Building question values", statusManager.getCurrentModeName());
@@ -268,8 +317,21 @@ public class ParametersStorage {
             // All is good, do the real import
             flush();
             setParametersVersion(serverParametersJson.getVersion());
+            setExpDuration(serverParametersJson.getExpDuration());
+            setExpId(serverParametersJson.getExpId());
+            setUrlBackendApi(serverParametersJson.getUrlBackendApi());
+            setUrlResultsPage(serverParametersJson.getUrlResultsPage());
+            setWelcomeText(serverParametersJson.getWelcomeText());
+            setDescriptionText(serverParametersJson.getDescriptionText());
+
+            setUrlResultsPage(serverParametersJson.getUrlResultsPage());
+
+            // testing execution of json parsing for new grammar
+            FirstLaunch firstLaunch = serverParametersJson.getFirstLaunch();
+
             setNSlotsPerProbe(nSlotsPerProbe);
             add(serverParametersJson.getQuestionsArrayList());
+
         } catch (JsonSyntaxException e) {
             throw new ParametersSyntaxException();
         }
