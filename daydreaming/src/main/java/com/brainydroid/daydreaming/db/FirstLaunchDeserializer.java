@@ -40,6 +40,7 @@ public class FirstLaunchDeserializer
 
             // second level
             final JsonObject details = jsonObject.get("tipiQuestionnaire").getAsJsonObject();
+            details.addProperty("type","Slider");
             final JsonArray subQuestions = details.get("subQuestions").getAsJsonArray();
             final JsonArray hints = details.get("hintsForAllSubQuestions").getAsJsonArray();
             for (int i = 0; i < subQuestions.size(); i++) {
