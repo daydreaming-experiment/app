@@ -23,32 +23,37 @@ public class FirstLaunchDeserializer
 
         Logger.v(TAG, "Deserializing firstlaunch");
 
+            final FirstLaunch firstLaunch = new FirstLaunch();
+
             final JsonObject jsonObject = json.getAsJsonObject();
+
+            // first level
             final String welcomeText = jsonObject.get("welcomeText").getAsString();
             final String descriptionText = jsonObject.get("descriptionText").getAsString();
-            final JsonObject tipiQuestionnaire = jsonObject.get("tipiQuestionnaire").getAsJsonObject();
+            final String tipiIntroText = jsonObject.get("text").getAsString();
+            final Question tipiQuestions = new Question();
+            tipiQuestions.setName("TipiQuestion");
+            tipiQuestions.setCategory("TipiQuestion");
+            tipiQuestions.setSubCategory("TipiQuestion");
+            tipiQuestions.setSlot("-1");
 
 
-            final FirstLaunch firstLaunch = new FirstLaunch();
+            // second level
+            final JsonObject details = jsonObject.get("tipiQuestionnaire").getAsJsonObject();
+            final JsonArray subQuestions = details.get("subQuestions").getAsJsonArray();
+            final JsonArray hints = details.get("hintsForAllSubQuestions").getAsJsonArray();
+            for (int i = 0; i < subQuestions.size(); i++) {
+                    JsonObject subq = subQuestions.get(i).getAsJsonObject();
+                    subq.add("hints",hints);
+            }
+            tipiQuestions.setDetailsFromJson(details.getAsString());
+
+            // assignment
             firstLaunch.setDescriptionText(descriptionText);
             firstLaunch.setWelcomeText(welcomeText);
-            //firstLaunch.setTipiQuestionnaire(tipiQuestionnaire);
-
-
-            // Extracting tipi questions
-            final JsonArray hints = tipiQuestionnaire.get("subQuestions").getAsJsonArray();
-            final JsonArray questions = tipiQuestionnaire.get("hintsForAllSubQuestions").getAsJsonArray();
-            final ArrayList<Question> tipiQuestions = new ArrayList<Question>();
-            for (int i = 0; i < questions.size(); i++) {
-                Question q = new Question();
-                //individual details
-                JsonObject details = questions.get(i).getAsJsonObject();
-                //shared hints
-                details.add("hints",hints);
-                q.setDetailsFromJson(details.getAsString());
-                tipiQuestions.add(q);
-            }
+            firstLaunch.setTipiIntroText(tipiIntroText);
             firstLaunch.setTipiQuestions(tipiQuestions);
-            return firstLaunch;
+
+        return firstLaunch;
     }
 }

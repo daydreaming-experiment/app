@@ -9,6 +9,7 @@ import java.util.ArrayList;
  */
 public class TipiQuestionnaire {
     private String text = null;
+    private String name = null;
     private ArrayList<String> hintsForAllSubQuestions = null;
     private ArrayList<JsonObject> subQuestions = null;
     public synchronized String getText(){return text;}

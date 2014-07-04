@@ -12,9 +12,9 @@ import java.util.ArrayList;
 public class FirstLaunch {
     private String welcomeText = null;
     private String descriptionText = null;
-    // Sequential deserialization
-    //private JsonObject tipiQuestionnaire = null;
-    private ArrayList<Question> tipiQuestions = null;
+    private String tipiIntroText = null;
+    // tipi Questionnaire is a single question with multiple subquestions
+    private Question tipiQuestions = null;
 
     public synchronized String getWelcomeText() {
         return welcomeText;
@@ -24,11 +24,6 @@ public class FirstLaunch {
         return descriptionText;
     }
 
-    //public synchronized JsonObject getTipiQuestionnaire() {
-    //    return tipiQuestionnaire;
-    //}
-
-
     public synchronized void setWelcomeText(String welcomeText) {
         this.welcomeText = welcomeText;
     }
@@ -37,11 +32,12 @@ public class FirstLaunch {
         this.descriptionText = descriptionText;
     }
 
-    //public synchronized void setTipiQuestionnaire(JsonObject tipiQuestionnaire) {
-    //    this.tipiQuestionnaire = tipiQuestionnaire;
-    //}
+    public synchronized void setTipiIntroText(String tipiIntroText) {
+        this.tipiIntroText = tipiIntroText;
+    }
 
-    public synchronized void setTipiQuestions(ArrayList<Question> tipiQuestions) {
+    public synchronized void setTipiQuestions(Question tipiQuestions) {
         this.tipiQuestions = tipiQuestions;
     }
+
 }
