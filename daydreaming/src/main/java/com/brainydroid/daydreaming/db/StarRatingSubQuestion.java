@@ -8,6 +8,7 @@ public class StarRatingSubQuestion {
     private static String TAG = "StarRatingSubQuestion";
 
     private String text = null;
+    private String glossaryText = null;
     private ArrayList<String> hints = new ArrayList<String>();
     @SuppressWarnings("FieldCanBeLocal")
     private int numStars = -1;
@@ -19,6 +20,10 @@ public class StarRatingSubQuestion {
     private boolean notApplyAllowed = false;
     @SuppressWarnings("FieldCanBeLocal")
     private boolean showHints = false;
+
+    public synchronized String getGlossaryText() {
+        return glossaryText;
+    }
 
     public synchronized String getText() {
         return text;

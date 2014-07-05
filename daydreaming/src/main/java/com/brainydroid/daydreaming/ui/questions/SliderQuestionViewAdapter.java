@@ -65,6 +65,10 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
                 (TextView)view.findViewById(R.id.question_slider_mainText);
         qText.setText(subQuestion.getText());
 
+        final TextView qSecondaryText =
+                (TextView)view.findViewById(R.id.question_slider_secondaryText);
+        qText.setText(subQuestion.getGlossaryText());
+
         TextView leftHintText = (TextView)view.findViewById(R.id.question_slider_leftHint);
         leftHintText.setText(hints.get(0));
 
