@@ -37,7 +37,9 @@
                 android:id="@+id/question_slider_glossarybutton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/icon_questionmark" />
+                android:src="@drawable/icon_questionmark"
+                android:onClick="switchGlossaryVisibility"/>
+
         </LinearLayout>
 
         <TextView

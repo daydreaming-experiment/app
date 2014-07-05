@@ -172,6 +172,16 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
         return view;
     }
 
+    public void switchGlossaryVisibility(View view) {
+        final TextView glossaryText =
+                (TextView)view.findViewById(R.id.question_slider_secondaryText);
+        if (glossaryText.getVisibility() == View.VISIBLE){
+            glossaryText.setVisibility(View.INVISIBLE);
+        } else if (glossaryText.getVisibility() == View.INVISIBLE){
+            glossaryText.setVisibility(View.VISIBLE);
+        }
+    }
+
     @Override
     public boolean validate() {
         Logger.i(TAG, "Validating answer");
