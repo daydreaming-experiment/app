@@ -46,6 +46,10 @@ public class MultipleChoiceQuestionViewAdapter
                 R.id.question_multiple_choice_mainText);
         qText.setText(details.getText());
 
+        TextView qSecondaryText = (TextView)choicesView.findViewById(
+                R.id.question_multiple_choice_secondaryText);
+        qText.setText(details.getGlossaryText());
+
         final CheckBox otherCheck = (CheckBox)choicesView.findViewById(
                 R.id.question_multiple_choice_otherCheckBox);
         final EditText otherEdit = (EditText)choicesView.findViewById(

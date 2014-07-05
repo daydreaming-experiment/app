@@ -64,6 +64,9 @@ public class StarRatingQuestionViewAdapter extends BaseQuestionViewAdapter
         TextView qText = (TextView)view.findViewById(R.id.question_star_rating_mainText);
         qText.setText(subQuestion.getText());
 
+        TextView qSecondaryText = (TextView)view.findViewById(R.id.question_star_rating_secondaryText);
+        qText.setText(subQuestion.getGlossaryText());
+
         TextView leftHintText = (TextView)view.findViewById(R.id.question_star_rating_leftHint);
         leftHintText.setText(hints.get(0));
 
