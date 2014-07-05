@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:tag="subquestion" >
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout
         android:id="@+id/question_star_rating_questionTextLinearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -14,7 +14,7 @@
         android:orientation="vertical"
         android:tag="subquestion" >
 
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        <LinearLayout
             android:id="@+id/question_star_rating_mainQuestionTextLinearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
