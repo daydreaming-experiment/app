@@ -16,6 +16,18 @@
             android:gravity="center_horizontal"
             android:paddingTop="20dp"
             />
+
+    <TextView
+        android:id="@+id/Questionnaire_question_secondary"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textAppearance="@style/ui_font_bodytext"
+        android:textColor="@color/ui_white_text_color"
+        android:gravity="center_horizontal"
+        android:paddingTop="20dp"
+        />
+
     <com.brainydroid.daydreaming.ui.AlphaSeekBar
             android:id="@+id/Questionnaire_seekBar"
             android:layout_width="match_parent"
