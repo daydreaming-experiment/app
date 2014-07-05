@@ -6,25 +6,50 @@
     android:orientation="vertical"
     android:tag="subquestion" >
 
-    <TextView
-        android:id="@+id/question_star_rating_mainText"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/question_star_rating_questionTextLinearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
         android:layout_marginBottom="16dp"
-        android:text=""
-        android:textAppearance="@style/ui_font_big_title_bold"
-        android:textColor="@color/ui_white_text_color"/>
+        android:orientation="vertical"
+        android:tag="subquestion" >
 
-    <TextView
-        android:id="@+id/question_star_rating_secondaryText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_marginBottom="16dp"
-        android:text=""
-        android:textAppearance="@style/ui_font_bodytext"
-        android:textColor="@color/ui_white_text_color"/>
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/question_star_rating_mainQuestionTextLinearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:orientation="horizontal"
+            android:tag="subquestion" >
+
+            <TextView
+                android:id="@+id/question_star_rating_mainText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginBottom="16dp"
+                android:text=""
+                android:textAppearance="@style/ui_font_big_title_bold"
+                android:textColor="@color/ui_white_text_color"/>
+
+            <ImageButton
+                android:id="@+id/question_star_rating_glossarybutton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_questionmark" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/question_star_rating_secondaryText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginBottom="16dp"
+            android:text=""
+            android:textAppearance="@style/ui_font_bodytext"
+            android:textColor="@color/ui_white_text_color"/>
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/question_star_rating_selectedRating"
