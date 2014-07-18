@@ -45,7 +45,7 @@ public class CryptoStorage {
         File storageDir = application.getDir(statusManager.getCurrentModeName() + STORAGE_DIRNAME,
                 Context.MODE_PRIVATE);
         maiIdFile = new File(storageDir, MAI_ID_FILENAME);
-        publicFile = new File(storageDir,PUBLIC_FILENAME);
+        publicFile = new File(storageDir, PUBLIC_FILENAME);
         privateFile = new File(storageDir, PRIVATE_FILENAME);
     }
 
