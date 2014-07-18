@@ -47,7 +47,7 @@ public class Logger {
      */
     public static void i(String tag, String messagePattern,
                          Object... messageArgs) {
-        if (BuildConfig.LOGI) Log.i(tag, MessageFormat.format(messagePattern,
+        if (LoggerConfig.LOGI) Log.i(tag, MessageFormat.format(messagePattern,
                 messageArgs));
     }
 
@@ -60,7 +60,7 @@ public class Logger {
      */
     public static void d(String tag, String messagePattern,
                          Object... messageArgs) {
-        if (BuildConfig.LOGD) Log.d(tag, MessageFormat.format(messagePattern,
+        if (LoggerConfig.LOGD) Log.d(tag, MessageFormat.format(messagePattern,
                 messageArgs));
     }
 
@@ -73,7 +73,7 @@ public class Logger {
      */
     public static void v(String tag, String messagePattern,
                          Object... messageArgs) {
-        if (BuildConfig.LOGV) Log.v(tag, MessageFormat.format(messagePattern,
+        if (LoggerConfig.LOGV) Log.v(tag, MessageFormat.format(messagePattern,
                 messageArgs));
     }
 
@@ -86,7 +86,7 @@ public class Logger {
      */
     public static void td(Context context, String messagePattern,
                           Object... messageArgs) {
-        if (BuildConfig.TOASTD) Toast.makeText(context,
+        if (LoggerConfig.TOASTD) Toast.makeText(context,
                 MessageFormat.format(messagePattern, messageArgs),
                 Toast.LENGTH_LONG).show();
     }

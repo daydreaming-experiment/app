@@ -21,11 +21,13 @@ android {
     buildTypes {
         debug {
             applicationIdSuffix ".debug"
+            versionNameSuffix "+debug"
         }
 
         qa.initWith(buildTypes.debug)
         qa {
             applicationIdSuffix ".qa"
+            versionNameSuffix "+qa"
         }
     }
 
