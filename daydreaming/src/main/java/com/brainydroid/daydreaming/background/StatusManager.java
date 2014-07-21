@@ -407,6 +407,8 @@ public class StatusManager {
         // Clear test profile and crypto storage (after switch)
         profileStorageProvider.get().clearProfile();
         cryptoStorageProvider.get().clearStore();
+
+        // FIXME: also cancel pending notifications and polls
     }
 
     public synchronized void resetParametersKeepProfileAnswers() {
@@ -425,6 +427,12 @@ public class StatusManager {
 
         // Clear crypto storage to force a new handshake
         cryptoStorageProvider.get().clearStore();
+
+        // Set the dirty flag on the profile, so that what information we have now
+        // gets uploaded at next sync (which will also trigger the crypto handshake).
+        profileStorageProvider.get().setIsDirtyAndCommit();
+
+        // FIXME: also cancel pending notifications and polls
     }
 
     public synchronized void switchToProdMode() {
@@ -440,6 +448,8 @@ public class StatusManager {
         // Don't clear local flags (after switch), so that experiment isn't restarted
         // Don't clear parameters storage
         // And don't clear prod profile and crypto storage (after switch)
+
+        // FIXME: also cancel pending notifications and polls
     }
 
 }
