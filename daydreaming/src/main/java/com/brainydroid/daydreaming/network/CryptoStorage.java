@@ -296,9 +296,11 @@ public class CryptoStorage {
         return getPublicFile().delete();
     }
 
-    public synchronized boolean clearStore() {
+    public synchronized void clearStore() {
         Logger.v(TAG, "{} - Clearing whole store", statusManager.getCurrentModeName());
-        return clearPrivateKey() && clearPublicKey() && clearMaiId();
+        clearPrivateKey();
+        clearPublicKey();
+        clearMaiId();
     }
 
     public synchronized String createArmoredPublicKey(PublicKey publicKey) {
