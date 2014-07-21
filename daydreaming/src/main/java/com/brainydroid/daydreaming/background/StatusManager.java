@@ -319,7 +319,7 @@ public class StatusManager {
     }
 
     public synchronized void setExperimentStartTimestamp(long timestamp) {
-        Logger.d(TAG, "{} - Setting experiment start timestamp to {}", getCurrentModeName(), timestamp);
+        Logger.d(TAG, "{0} - Setting experiment start timestamp to {1}", getCurrentModeName(), timestamp);
         eSharedPreferences.putLong(getCurrentModeName() + EXP_START_TIMESTAMP, timestamp);
         eSharedPreferences.commit();
     }
