@@ -319,7 +319,7 @@ public class StatusManager {
     }
 
     public synchronized void setExperimentStartTimestamp(long timestamp) {
-        Logger.d(TAG, "{} - Setting experiment start timestamp to {}", getCurrentModeName(), timestamp);
+        Logger.d(TAG, "{0} - Setting experiment start timestamp to {1}", getCurrentModeName(), timestamp);
         eSharedPreferences.putLong(getCurrentModeName() + EXP_START_TIMESTAMP, timestamp);
         eSharedPreferences.commit();
     }
@@ -425,6 +425,10 @@ public class StatusManager {
 
         // Clear crypto storage to force a new handshake
         cryptoStorageProvider.get().clearStore();
+
+        // Set the dirty flag on the profile, so that what information we have now
+        // gets uploaded at next sync (which will also trigger the crypto handshake).
+        profileStorageProvider.get().setIsDirtyAndCommit();
     }
 
     public synchronized void switchToProdMode() {
@@ -439,7 +443,7 @@ public class StatusManager {
 
         // Don't clear local flags (after switch), so that experiment isn't restarted
         // Don't clear parameters storage
-        // And don't clear test profile and crypto storage (after switch)
+        // And don't clear prod profile and crypto storage (after switch)
     }
 
 }

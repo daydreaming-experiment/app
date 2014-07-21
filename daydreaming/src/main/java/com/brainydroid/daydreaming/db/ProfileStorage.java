@@ -48,7 +48,7 @@ public class ProfileStorage {
     }
 
     public void setAge(String age) {
-        Logger.d(TAG, "{} - Setting age to {}", statusManager.getCurrentModeName(), age);
+        Logger.d(TAG, "{0} - Setting age to {1}", statusManager.getCurrentModeName(), age);
         eSharedPreferences.putString(statusManager.getCurrentModeName() + PROFILE_AGE, age);
         setIsDirtyAndCommit();
     }
@@ -58,7 +58,7 @@ public class ProfileStorage {
     }
 
     public void setGender(String gender) {
-        Logger.d(TAG, "{} - Setting gender to {}", statusManager.getCurrentModeName(), gender);
+        Logger.d(TAG, "{0} - Setting gender to {1}", statusManager.getCurrentModeName(), gender);
         eSharedPreferences.putString(statusManager.getCurrentModeName() + PROFILE_GENDER, gender);
         setIsDirtyAndCommit();
     }
@@ -68,7 +68,7 @@ public class ProfileStorage {
     }
 
     public void setEducation(String education) {
-        Logger.d(TAG, "{} - Setting education to {}", statusManager.getCurrentModeName(), education);
+        Logger.d(TAG, "{0} - Setting education to {1}", statusManager.getCurrentModeName(), education);
         eSharedPreferences.putString(statusManager.getCurrentModeName() + PROFILE_EDUCATION, education);
         setIsDirtyAndCommit();
     }
@@ -125,7 +125,7 @@ public class ProfileStorage {
     }
 
     public void setParametersVersion(int version) {
-        Logger.d(TAG, "{} - Setting parametersVersion to {}", statusManager.getCurrentModeName(), version);
+        Logger.d(TAG, "{0} - Setting parametersVersion to {1}", statusManager.getCurrentModeName(), version);
         eSharedPreferences.putInt(statusManager.getCurrentModeName() + PROFILE_PARAMETERS_VERSION, version);
         setIsDirtyAndCommit();
     }
@@ -161,7 +161,7 @@ public class ProfileStorage {
         return hasChangedSinceSyncStart;
     }
 
-    private void setIsDirtyAndCommit() {
+    public void setIsDirtyAndCommit() {
         Logger.d(TAG, "{} - Setting isDirty and hasChangedSinceSyncStart flags and committing",
                 statusManager.getCurrentModeName());
         hasChangedSinceSyncStart = true;
