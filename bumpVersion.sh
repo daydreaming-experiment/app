@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 if [ $# != 1 ]
 then
   echo "Usage: $(basename $0) version-name"
@@ -7,24 +9,24 @@ then
 fi
 
 VERSION_NAME="$1"
-MANIFEST=daydreaming/src/main/AndroidManifest.xml
+BUILD=daydreaming/build.gradle
 
 echo "Updating version name to ${VERSION_NAME} ..."
 
-## Update AndroidManifest.xml
-echo "Updating $MANIFEST ..."
+## Update daydreaming/build.gradle
+echo "Updating $BUILD ..."
 TMP1="$(tempfile)"
 TMP2="$(tempfile)"
 
 # First the version name
-cat $MANIFEST | sed "s/android:versionName=\"[^\"]*\"/android:versionName=\"${VERSION_NAME}\"/" > "$TMP1"
+cat $BUILD | sed "s/versionName \"[^\"]*\"/versionName \"${VERSION_NAME}\"/" > "$TMP1"
 
 # Then bump the version code
-VERSION_CODE=$(cat $MANIFEST | grep 'android:versionCode=' | sed 's/^[^\"]*\"\([^\"]*\)\".*$/\1/g')
+VERSION_CODE=$(cat $BUILD | grep 'versionCode ' | sed 's/^ *versionCode //')
 (( VERSION_CODE += 1 ))
-cat "$TMP1" | sed "s/android:versionCode=\"[^\"]*\"/android:versionCode=\"${VERSION_CODE}\"/" > "$TMP2"
+cat "$TMP1" | sed "s/versionCode .*/versionCode ${VERSION_CODE}/" > "$TMP2"
 
-cp "$TMP2" $MANIFEST
+cp "$TMP2" $BUILD
 rm "$TMP1"
 rm "$TMP2"
 
