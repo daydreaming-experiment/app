@@ -161,7 +161,7 @@ public class ProfileStorage {
         return hasChangedSinceSyncStart;
     }
 
-    private void setIsDirtyAndCommit() {
+    public void setIsDirtyAndCommit() {
         Logger.d(TAG, "{} - Setting isDirty and hasChangedSinceSyncStart flags and committing",
                 statusManager.getCurrentModeName());
         hasChangedSinceSyncStart = true;
