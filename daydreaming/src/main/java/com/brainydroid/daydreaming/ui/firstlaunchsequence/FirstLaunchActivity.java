@@ -177,11 +177,11 @@ public abstract class FirstLaunchActivity extends RoboFragmentActivity {
         Logger.d(TAG, "Checking test mode status");
         if (StatusManager.getCurrentModeStatic(this) == StatusManager.MODE_PROD) {
             Logger.d(TAG, "Setting production theme");
-            setTheme(R.style.MyCustomTheme);
+            setTheme(R.style.daydreamingTheme);
             testModeThemeActivated = false;
         } else {
             Logger.d(TAG, "Setting test theme");
-            setTheme(R.style.MyCustomTheme_test);
+            setTheme(R.style.daydreamingTestTheme);
             testModeThemeActivated = true;
         }
     }
