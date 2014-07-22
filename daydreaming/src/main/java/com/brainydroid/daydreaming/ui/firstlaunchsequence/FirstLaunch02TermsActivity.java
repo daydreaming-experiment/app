@@ -111,8 +111,6 @@ public class FirstLaunch02TermsActivity extends FirstLaunchActivity implements S
         } else {
             launchNextActivity(FirstLaunch03ProfileActivity.class);
         }
-
-
     }
 
     /**
