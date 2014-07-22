@@ -68,6 +68,7 @@ public class FirstLaunch00WelcomeActivity extends FirstLaunchActivity {
     protected void launchNextActivity(Class activity) {
         Logger.v(TAG, "Launching next activity, fade-out-fade-in transition");
         Intent intent = new Intent(this, activity);
+        intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         startActivity(intent);
         overridePendingTransition(R.anim.mainfadein, R.anim.splashfadeout);
     }
