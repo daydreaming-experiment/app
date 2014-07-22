@@ -118,7 +118,6 @@ public class FirstLaunch01DescriptionActivity extends FirstLaunchActivity {
     @Override
     protected void launchNextActivity(Class activity) {
         Intent intent = new Intent(this, activity);
-        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
         overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
     }

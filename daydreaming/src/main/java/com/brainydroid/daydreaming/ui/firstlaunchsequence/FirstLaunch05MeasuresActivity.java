@@ -199,7 +199,7 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
             ComponentName cName = new ComponentName("com.android.phone", "com.android.phone.Settings");
             settingsIntent.setComponent(cName);
         }
-        settingsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+        settingsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
         startActivity(settingsIntent);
     }
 
@@ -209,7 +209,7 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
             ComponentName cName = new ComponentName("com.android.phone", "com.android.phone.Settings");
             settingsIntent.setComponent(cName);
         }
-        settingsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+        settingsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
         startActivity(settingsIntent);
     }
 
@@ -217,8 +217,7 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
         Logger.d(TAG, "Launching location settings");
         Intent settingsIntent = new Intent(Settings
                 .ACTION_LOCATION_SOURCE_SETTINGS);
-        settingsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET |
-                Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+        settingsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
         startActivity(settingsIntent);
     }
 

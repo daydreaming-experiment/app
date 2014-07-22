@@ -113,7 +113,6 @@ public class DashboardActivity extends RoboFragmentActivity {
     public void  onClick_OpenAboutActivity(
             @SuppressWarnings("UnusedParameters") View view){
 //        Intent intent = new Intent(this, AboutActivity.class);
-//        intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
 //        startActivity(intent);
 //        overridePendingTransition(R.anim.push_top_in, R.anim.push_top_out);
     }
@@ -209,8 +208,7 @@ public class DashboardActivity extends RoboFragmentActivity {
             Logger.i(TAG, "First launch not completed -> starting first " +
                     "launch sequence and finishing this activity");
             Intent intent = new Intent(this, FirstLaunch00WelcomeActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION |
-                    Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             startActivity(intent);
             finish();
         } else {

@@ -113,7 +113,6 @@ public abstract class FirstLaunchActivity extends RoboFragmentActivity {
      */
     protected void launchNextActivity(Class activity) {
         Intent intent = new Intent(this, activity);
-        intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         startActivity(intent);
         overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
     }
@@ -123,7 +122,6 @@ public abstract class FirstLaunchActivity extends RoboFragmentActivity {
      */
     protected void launchDashBoardActivity() {
         Intent intent = new Intent(this, DashboardActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
 
