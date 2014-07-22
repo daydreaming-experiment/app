@@ -29,23 +29,18 @@ import roboguice.inject.InjectView;
  *
  */
 @ContentView(R.layout.activity_first_launch_terms)
-
 public class FirstLaunch02TermsActivity extends FirstLaunchActivity implements ScrollViewListener {
 
     private static String TAG = "FirstLaunch02TermsActivity";
 
     @InjectView(R.id.firstLaunchTerms_textConsent) protected TextView consent;
-    @InjectView(R.id.firstLaunchTerms_moreConsent_button)
-    protected TextView more_consent_button;
-    @InjectView(R.id.firstLaunchTerms_moreConsent_text)
-    protected TextView more_consent_text;
+    @InjectView(R.id.firstLaunchTerms_moreConsent_button) protected TextView moreConsentButton;
+    @InjectView(R.id.firstLaunchTerms_moreConsent_text) protected TextView more_consent_text;
     @InjectView(R.id.firstLaunchTerms_Scrollview) ScrollViewExt sv;
-    @InjectView(R.id.firstLaunchTerms_buttonAgree)
-    protected AlphaButton agreeButton;
-    @InjectView(R.id.firstLaunchTerms_buttonDisagree)
-    protected AlphaButton disagreeButton;
+    @InjectView(R.id.firstLaunchTerms_buttonAgree) protected AlphaButton agreeButton;
+    @InjectView(R.id.firstLaunchTerms_buttonDisagree) protected AlphaButton disagreeButton;
 
-    public boolean readtheterms = false;
+    public boolean readTheTerms = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -57,7 +52,6 @@ public class FirstLaunch02TermsActivity extends FirstLaunchActivity implements S
         addInfoButtonListener();
         consent.setText(Html.fromHtml(getString(R.string.terms_html)));
     }
-
 
     /**
      * called by ScrollView listener when ScrollView position changes.
@@ -81,21 +75,15 @@ public class FirstLaunch02TermsActivity extends FirstLaunchActivity implements S
             agreeButton.setAlpha(1f);
             agreeButton.setClickable(true);
 
-            readtheterms = true;
-
-
+            readTheTerms = true;
         }
     }
 
     public void onClick_buttonAgree(@SuppressWarnings("UnusedParameters") View view) {
         Logger.v(TAG, "Agree button clicked, launching next activity");
 
-
-
-        if (readtheterms == false){
-
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-                    this);
+        if (!readTheTerms) {
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
             // set title
             alertDialogBuilder.setTitle("Agreement");
@@ -119,8 +107,8 @@ public class FirstLaunch02TermsActivity extends FirstLaunchActivity implements S
             AlertDialog alertDialog = alertDialogBuilder.create();
 
             // show it
-            alertDialog.show();        }
-        else {
+            alertDialog.show();
+        } else {
             launchNextActivity(FirstLaunch03ProfileActivity.class);
         }
 
@@ -139,42 +127,38 @@ public class FirstLaunch02TermsActivity extends FirstLaunchActivity implements S
      * Loads terms res/raw/terms into adequate TextView
      */
 
-    public void addInfoButtonListener(){
-
-        //agreeButton.setAlpha(0.5f);
-        //agreeButton.setClickable(false);
-
+    public void addInfoButtonListener() {
         agreeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onClick_buttonAgree(view);
             }
         });
+
         disagreeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onClick_buttonDisagree(view);
             }
         });
-        more_consent_button.setOnClickListener(new View.OnClickListener() {
+
+        moreConsentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-        more_consent_text.setText(Html.fromHtml(getString(R.string.more_terms_html)));
-        Linkify.addLinks(more_consent_text, Linkify.WEB_URLS | Linkify.EMAIL_ADDRESSES);
-
-
+                more_consent_text.setText(Html.fromHtml(getString(R.string.more_terms_html)));
+                Linkify.addLinks(more_consent_text, Linkify.WEB_URLS | Linkify.EMAIL_ADDRESSES);
             }
         });
-
     }
 
-    public void addAgreementButtonListener(){
+    public void addAgreementButtonListener() {
         agreeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onClick_buttonAgree(view);
             }
         });
+
         disagreeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -183,13 +167,10 @@ public class FirstLaunch02TermsActivity extends FirstLaunchActivity implements S
         });
     }
 
-    public  void setButtonAndScrollViewListener(){
-        //agreeButton.setEnabled(false);
+    public  void setButtonAndScrollViewListener() {
         disagreeButton.setEnabled(true);
         sv.setScrollViewListener(this);
-
     }
-
 
     // Overriding parent method
     @Override

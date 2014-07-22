@@ -39,8 +39,8 @@ public class TermsActivity extends FirstLaunch02TermsActivity {
     }
 
     @Override
-    public void addInfoButtonListener(){
-        more_consent_button.setOnClickListener(new View.OnClickListener() {
+    public void addInfoButtonListener() {
+        moreConsentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 more_consent_text.setText(Html.fromHtml(getString(R.string.more_terms_html)));  }
@@ -49,7 +49,6 @@ public class TermsActivity extends FirstLaunch02TermsActivity {
 
     @Override
     public void addAgreementButtonListener() { }
-
 
     @Override
     public void onBackPressed() {
