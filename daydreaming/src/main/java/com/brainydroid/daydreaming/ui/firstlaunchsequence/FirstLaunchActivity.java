@@ -89,8 +89,7 @@ public abstract class FirstLaunchActivity extends RoboFragmentActivity {
             Logger.v(TAG, "First launch not completed, and no test mode theming discrepancy");
 
             if(shouldFinishIfTipiQuestionnaireCompleted() &&
-                    statusManager.isTipiQuestionnaireCompleted())
-            {
+                    statusManager.isTipiQuestionnaireCompleted()) {
                 Logger.i(TAG, "Tipi questionnaire completed, " +
                         "and we should finish because of that -> finishing");
                 finish();
