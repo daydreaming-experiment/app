@@ -107,7 +107,6 @@ public class FirstLaunch01DescriptionActivity extends FirstLaunchActivity {
         }
     }
 
-
     public void setButton(){
         nextButton.setVisibility(View.VISIBLE);
         nextButton.setClickable(true);
