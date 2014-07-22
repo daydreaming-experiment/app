@@ -51,11 +51,9 @@ public class FirstLaunch01DescriptionActivity extends FirstLaunchActivity {
 
         nextButton = (ImageButton)findViewById(R.id.firstLaunchDescription_buttonNext);
 
-
         makeLayoutDesign();
         populateDescription();
         setButton();
-
 
         setRobotoFont(this);
         Linkify.addLinks(description,Linkify.WEB_URLS | Linkify.EMAIL_ADDRESSES);
