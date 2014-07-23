@@ -310,7 +310,7 @@ public class SettingsActivity extends RoboFragmentActivity {
         .setTitle("Production mode")
         .setMessage("Switch back to production mode?")
         .setCancelable(false)
-        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+        .setPositiveButton("Go into production", new DialogInterface.OnClickListener() {
 
             public void onClick(DialogInterface dialog, int id) {
                 Logger.d(TAG, "User accepted switch to prod mode -> switching");
@@ -324,7 +324,7 @@ public class SettingsActivity extends RoboFragmentActivity {
                 startActivity(intent);
             }
         })
-        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+        .setNegativeButton("Stay in test mode", new DialogInterface.OnClickListener() {
 
             public void onClick(DialogInterface dialog, int id) {
                 Logger.d(TAG, "User cancelled switch to prod mode");

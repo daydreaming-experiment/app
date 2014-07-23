@@ -237,13 +237,13 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
         alertDialogBuilder
                 .setMessage(measures_warning)
                 .setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Yes, I got it", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog,int id) {
                         finishFirstLaunch();
                         launchDashBoardActivity();
                     }
                 })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                .setNegativeButton("Hmm, not really", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog,int id) {
                         dialog.cancel();
                     }
