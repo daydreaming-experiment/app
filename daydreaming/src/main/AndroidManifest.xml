@@ -16,6 +16,8 @@
                  android:name=".ui.App"
                  android:allowBackup="true">
 
+        <!-- Intent Broadcast Receivers -->
+
         <receiver android:name=".background.BootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
@@ -35,6 +37,8 @@
             </intent-filter>
         </receiver>
 
+        <!-- Dashboard Activities -->
+
         <activity android:name=".ui.dashboard.DashboardActivity"
                   android:label="@string/app_name"
                   android:screenOrientation="portrait">
@@ -45,11 +49,27 @@
         </activity>
 
         <activity android:name=".ui.dashboard.SettingsActivity"
-                  android:label="@string/settings_title_activity"
-                  android:theme="@style/daydreamingTheme"
-                  android:screenOrientation="portrait">
+            android:label="@string/settings_title_activity"
+            android:theme="@style/daydreamingTheme"
+            android:screenOrientation="portrait">
         </activity>
 
+        <activity android:name=".ui.dashboard.DescriptionActivity"
+            android:theme="@style/daydreamingTheme"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity android:name=".ui.dashboard.TermsActivity"
+            android:theme="@style/daydreamingTheme"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity android:name=".ui.dashboard.AboutActivity"
+            android:theme="@style/daydreamingTheme"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <!-- Question Activity -->
 
         <activity android:name=".ui.questions.QuestionActivity"
                   android:label="@string/app_name"
@@ -57,7 +77,7 @@
                   android:screenOrientation="portrait">
         </activity>
 
-        <!-- The FirstLaunch Sequence Activities -->
+        <!-- FirstLaunch Sequence Activities -->
 
         <activity android:name=".ui.firstlaunchsequence.FirstLaunch04PersonalityQuestionnaireActivity"
                   android:theme="@style/daydreamingTheme"
@@ -95,33 +115,7 @@
                   android:screenOrientation="portrait">
         </activity>
 
-
-        <!-- The Single Opening Activities -->
-
-        <activity android:name=".ui.dashboard.DescriptionActivity"
-                  android:theme="@style/daydreamingTheme"
-                  android:screenOrientation="portrait">
-        </activity>
-
-
-        <activity android:name=".ui.dashboard.TermsActivity"
-                  android:theme="@style/daydreamingTheme"
-                  android:screenOrientation="portrait">
-        </activity>
-
-        <activity android:name=".ui.dashboard.AboutActivity"
-                  android:theme="@style/daydreamingTheme"
-                  android:screenOrientation="portrait">
-        </activity>
-
-
-        <!-- Crash Report activity -->
-
-        <activity android:name="org.acra.CrashReportDialog"
-            android:theme="@android:style/Theme.Dialog"
-            android:launchMode="singleInstance"
-            android:excludeFromRecents="true"
-            android:finishOnTaskLaunch="true" />
+        <!-- Background Services -->
 
         <service android:name=".background.LocationService"
                  android:exported="false"/>
@@ -137,6 +131,14 @@
 
         <service android:name=".background.LocationPointService"
                  android:exported="false"/>
+
+        <!-- Crash Report Activity -->
+
+        <activity android:name="org.acra.CrashReportDialog"
+            android:theme="@android:style/Theme.Dialog"
+            android:launchMode="singleInstance"
+            android:excludeFromRecents="true"
+            android:finishOnTaskLaunch="true" />
 
     </application>
 
