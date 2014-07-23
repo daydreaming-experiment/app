@@ -18,7 +18,7 @@
                 />
 
     <ImageView
-            android:id="@+id/firstLaunchWelcome_helice"
+            android:id="@+id/firstLaunchWelcome_helix"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/helice2"

@@ -85,10 +85,8 @@ public class PollService extends RoboService {
         // Set the index of the question to open
         intent.putExtra(QuestionActivity.EXTRA_QUESTION_INDEX, 0);
 
-        // Create a new task and don't show up in various Android UI
-        // screens
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+        // Create a new task. The rest is defined in the App manifest.
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         return intent;
     }
 
