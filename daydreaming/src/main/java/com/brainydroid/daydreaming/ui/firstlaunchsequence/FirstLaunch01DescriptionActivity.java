@@ -111,17 +111,6 @@ public class FirstLaunch01DescriptionActivity extends FirstLaunchActivity {
         nextButton.setClickable(true);
     }
 
-    /**
-     * Terms activity separated in sequence.
-     * Exiting at this point completely leaves the app.
-     */
-    @Override
-    protected void launchNextActivity(Class activity) {
-        Intent intent = new Intent(this, activity);
-        startActivity(intent);
-        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
-    }
-
     // Overriding parent method
     @Override
     public boolean shouldFinishIfTipiQuestionnaireCompleted() {

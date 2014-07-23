@@ -313,12 +313,14 @@ public class SettingsActivity extends RoboFragmentActivity {
         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 
             public void onClick(DialogInterface dialog, int id) {
-                Logger.d(TAG, "User accepted switch to prod mode -> doing it");
+                Logger.d(TAG, "User accepted switch to prod mode -> switching");
+
                 statusManager.switchToProdMode();
                 Toast.makeText(getApplicationContext(), "Switched back to production mode", Toast.LENGTH_SHORT).show();
 
-                // Restart dashboard (other instances will stop themselves because of theming discrepancy)
+                // Restart Dashboard
                 Intent intent = new Intent(SettingsActivity.this, DashboardActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
             }
         })
@@ -358,6 +360,7 @@ public class SettingsActivity extends RoboFragmentActivity {
 
                     // Restart first launch
                     Intent intent = new Intent(SettingsActivity.this, FirstLaunch00WelcomeActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                 } else {
                     Logger.d(TAG, "Wrong password to switch to test mode -> aborting");
