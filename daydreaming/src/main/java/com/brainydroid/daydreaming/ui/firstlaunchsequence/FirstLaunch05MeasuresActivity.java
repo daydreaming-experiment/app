@@ -283,4 +283,9 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
         }
     }
 
+    @Override
+    public void backHook() {
+        Logger.v(TAG, "Leaving default transition");
+    }
+
 }

@@ -51,9 +51,8 @@ public class TermsActivity extends FirstLaunch02TermsActivity {
     public void addAgreementButtonListener() { }
 
     @Override
-    public void onBackPressed() {
-        Logger.v(TAG, "Back pressed, setting slide transition");
-        super.onBackPressed();
+    public void backHook() {
+        Logger.v(TAG, "Setting vertical slide transition");
         overridePendingTransition(R.anim.push_bottom_in, R.anim.push_bottom_out);
     }
 

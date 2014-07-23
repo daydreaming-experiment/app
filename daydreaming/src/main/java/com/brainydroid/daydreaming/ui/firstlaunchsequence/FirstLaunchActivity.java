@@ -56,8 +56,13 @@ public abstract class FirstLaunchActivity extends RoboFragmentActivity {
 
     @Override
     public void onBackPressed() {
-        Logger.v(TAG, "Back pressed, setting slide transition");
+        Logger.v(TAG, "Back pressed");
         super.onBackPressed();
+        backHook();
+    }
+
+    public void backHook() {
+        Logger.v(TAG, "Setting slide transition");
         overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
     }
 

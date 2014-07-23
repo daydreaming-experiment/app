@@ -117,4 +117,9 @@ public class FirstLaunch01DescriptionActivity extends FirstLaunchActivity {
         return true;
     }
 
+    @Override
+    public void backHook() {
+        Logger.v(TAG, "Leaving default transition");
+    }
+
 }

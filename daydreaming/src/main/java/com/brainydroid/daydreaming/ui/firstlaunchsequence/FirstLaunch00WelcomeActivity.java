@@ -73,4 +73,10 @@ public class FirstLaunch00WelcomeActivity extends FirstLaunchActivity {
         overridePendingTransition(R.anim.mainfadein, R.anim.splashfadeout);
     }
 
+    @Override
+    public void backHook() {
+        Logger.v(TAG, "Cancelling animation and leaving default transition");
+        animationTimer.cancel();
+    }
+
 }

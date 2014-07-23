@@ -118,7 +118,6 @@ public class FirstLaunch02TermsActivity extends FirstLaunchActivity implements S
      */
     public void onClick_buttonDisagree(@SuppressWarnings("UnusedParameters") View view) {
         Toast.makeText(this, "We require your agreement to proceed further. If you disagree with the terms, you should uninstall the app. No connection to the internet will be made.", Toast.LENGTH_LONG).show();
-        onBackPressed();
     }
 
     /**
@@ -126,20 +125,6 @@ public class FirstLaunch02TermsActivity extends FirstLaunchActivity implements S
      */
 
     public void addInfoButtonListener() {
-        agreeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onClick_buttonAgree(view);
-            }
-        });
-
-        disagreeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onClick_buttonDisagree(view);
-            }
-        });
-
         moreConsentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
