@@ -41,6 +41,7 @@
 
         <activity android:name=".ui.dashboard.DashboardActivity"
             android:label="@string/app_name"
+            android:taskAffinity=".dashboard"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -51,21 +52,25 @@
         <activity android:name=".ui.dashboard.SettingsActivity"
             android:label="@string/settings_title_activity"
             android:theme="@style/daydreamingTheme"
+            android:taskAffinity=".dashboard"
             android:screenOrientation="portrait">
         </activity>
 
         <activity android:name=".ui.dashboard.DescriptionActivity"
             android:theme="@style/daydreamingTheme"
+            android:taskAffinity=".dashboard"
             android:screenOrientation="portrait">
         </activity>
 
         <activity android:name=".ui.dashboard.TermsActivity"
             android:theme="@style/daydreamingTheme"
+            android:taskAffinity=".dashboard"
             android:screenOrientation="portrait">
         </activity>
 
         <activity android:name=".ui.dashboard.AboutActivity"
             android:theme="@style/daydreamingTheme"
+            android:taskAffinity=".dashboard"
             android:screenOrientation="portrait">
         </activity>
 
@@ -74,6 +79,8 @@
         <activity android:name=".ui.questions.QuestionActivity"
             android:label="@string/app_name"
             android:theme="@style/daydreamingTheme"
+            android:excludeFromRecents="true"
+            android:taskAffinity=".question"
             android:screenOrientation="portrait">
         </activity>
 
@@ -83,35 +90,41 @@
             android:label="@string/firstLaunchWelcome_title_activity"
             android:theme="@style/daydreamingTheme"
             android:noHistory="true"
+            android:taskAffinity=".dashboard"
             android:screenOrientation="portrait">
         </activity>
 
         <activity android:name=".ui.firstlaunchsequence.FirstLaunch01DescriptionActivity"
             android:label="@string/firstLaunchDescription_title_activity"
             android:theme="@style/daydreamingTheme"
+            android:taskAffinity=".dashboard"
             android:screenOrientation="portrait">
         </activity>
 
         <activity android:name=".ui.firstlaunchsequence.FirstLaunch02TermsActivity"
             android:label="@string/firstLaunchTerms_title_activity"
             android:theme="@style/daydreamingTheme"
+            android:taskAffinity=".dashboard"
             android:screenOrientation="portrait">
         </activity>
 
         <activity android:name=".ui.firstlaunchsequence.FirstLaunch03ProfileActivity"
             android:label="@string/firstLaunchProfile_title_activity"
             android:theme="@style/daydreamingTheme"
+            android:taskAffinity=".dashboard"
             android:screenOrientation="portrait">
         </activity>
 
         <activity android:name=".ui.firstlaunchsequence.FirstLaunch04PersonalityQuestionnaireActivity"
             android:theme="@style/daydreamingTheme"
+            android:taskAffinity=".dashboard"
             android:screenOrientation="portrait">
         </activity>
 
         <activity android:name=".ui.firstlaunchsequence.FirstLaunch05MeasuresActivity"
             android:label="@string/firstLaunchMeasures2_title_activity"
             android:theme="@style/daydreamingTheme"
+            android:taskAffinity=".dashboard"
             android:screenOrientation="portrait">
         </activity>
 
