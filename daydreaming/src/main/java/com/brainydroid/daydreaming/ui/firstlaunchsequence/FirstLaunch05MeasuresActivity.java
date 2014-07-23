@@ -256,8 +256,6 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
         alertDialog.show();
     }
 
-
-
     @TargetApi(11)
     private void forbidNextButton() {
         Logger.d(TAG, "Forbidding buttonNext");
