@@ -43,6 +43,9 @@ public class StatusManager {
     /** Preference key storing the status of initial questions update */
     private static String EXP_STATUS_PARAMETERS_UPDATED =
             "expStatusQuestionsUpdated";
+    /** Preference key storing the status of initial questions update */
+    private static String EXP_STATUS_PARAMETERS_FLUSHED =
+            "expStatusQuestionsFlushed";
 
     /** Preference key storing timestamp of the last sync operation */
     private static String LAST_SYNC_TIMESTAMP = "lastSyncTimestamp";
@@ -194,6 +197,40 @@ public class StatusManager {
         Logger.d(TAG, "{} - Clearing parameters updated", getCurrentModeName());
 
         eSharedPreferences.remove(getCurrentModeName() + EXP_STATUS_PARAMETERS_UPDATED);
+        eSharedPreferences.commit();
+    }
+
+    /**
+     * Check if the parameters have been flushed.
+     *
+     * @return {@code true} if the parameters have been flushed,
+     *         {@code false} otherwise
+     */
+    public synchronized boolean areParametersFlushed() {
+        if (sharedPreferences.getBoolean(getCurrentModeName() + EXP_STATUS_PARAMETERS_FLUSHED,
+                false)) {
+            Logger.d(TAG, "{} - Parameters are flushed", getCurrentModeName());
+            return true;
+        } else {
+            Logger.d(TAG, "{} - Parameters not flushed", getCurrentModeName());
+            return false;
+        }
+    }
+
+    /**
+     * Set the flushed parameters flag to on.
+     */
+    public synchronized void setParametersFlushed() {
+        Logger.d(TAG, "{} - Setting parameters to flushed", getCurrentModeName());
+
+        eSharedPreferences.putBoolean(getCurrentModeName() + EXP_STATUS_PARAMETERS_FLUSHED, true);
+        eSharedPreferences.commit();
+    }
+
+    public synchronized void clearParametersFlushed() {
+        Logger.d(TAG, "{} - Clearing parameters flushed", getCurrentModeName());
+
+        eSharedPreferences.remove(getCurrentModeName() + EXP_STATUS_PARAMETERS_FLUSHED);
         eSharedPreferences.commit();
     }
 
@@ -430,6 +467,7 @@ public class StatusManager {
 
         // Clear parameters storage
         clearParametersUpdated();
+        setParametersFlushed();
         parametersStorageProvider.get().flush();
 
         // Cancel any running location collection and pending notifications
@@ -479,8 +517,6 @@ public class StatusManager {
         Intent pollServiceIntent = new Intent(context, PollService.class);
         pollServiceIntent.putExtra(PollService.CANCEL_PENDING_POLLS, true);
         context.startService(pollServiceIntent);
-
-        // FIXME: also cancel running network requests
     }
 
 }
