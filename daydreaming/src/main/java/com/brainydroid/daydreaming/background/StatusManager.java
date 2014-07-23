@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
@@ -77,6 +78,7 @@ public class StatusManager {
     @Inject LocationManager locationManager;
     @Inject ConnectivityManager connectivityManager;
     @Inject ActivityManager activityManager;
+    @Inject Context context;
     // Use providers here to prevent circular dependencies
     @Inject Provider<ProfileStorage> profileStorageProvider;
     @Inject Provider<PollsStorage> pollsStorageProvider;
@@ -400,6 +402,13 @@ public class StatusManager {
         clearTipiQuestionnaireCompleted();
         clearExperimentStartTimestamp();
 
+        // Cancel any running location collection and pending notifications.
+        // This is done after the switch to make sure no polls / location collection are
+        // started between cancellation of previous ones and switch. It _can_ be done after
+        // the switch, because these polls and location collections have no notion of
+        // app mode.
+        cancelNotifiedPollsAndCollectingLocations();
+
         // Clear parameters storage
         clearParametersUpdated();
         parametersStorageProvider.get().flush();
@@ -423,6 +432,9 @@ public class StatusManager {
         clearParametersUpdated();
         parametersStorageProvider.get().flush();
 
+        // Cancel any running location collection and pending notifications
+        cancelNotifiedPollsAndCollectingLocations();
+
         // Clear crypto storage to force a new handshake
         cryptoStorageProvider.get().clearStore();
 
@@ -441,9 +453,34 @@ public class StatusManager {
         // Do the switch
         setCurrentMode(MODE_PROD);
 
+        // Cancel any running location collection and pending notifications.
+        // This is done after the switch to make sure no polls / location collection are
+        // started between cancellation of previous ones and switch. It _can_ be done after
+        // the switch, because these polls and location collections have no notion of
+        // app mode.
+        cancelNotifiedPollsAndCollectingLocations();
+
         // Don't clear local flags (after switch), so that experiment isn't restarted
         // Don't clear parameters storage
         // And don't clear prod profile and crypto storage (after switch)
+    }
+
+    private synchronized void cancelNotifiedPollsAndCollectingLocations() {
+        Logger.d(TAG, "Cancelling collecting locationPoints by calling LocationPointService");
+        Intent locationPointServiceIntent = new Intent(context, LocationPointService.class);
+        locationPointServiceIntent.putExtra(
+                LocationPointService.STOP_LOCATION_LISTENING, true);
+        locationPointServiceIntent.putExtra(
+                LocationPointService.CANCEL_COLLECTING_LOCATION_POINTS, true);
+        // The service will auto-reschedule itself for the next location listening
+        context.startService(locationPointServiceIntent);
+
+        Logger.d(TAG, "Cancelling notified polls");
+        Intent pollServiceIntent = new Intent(context, PollService.class);
+        pollServiceIntent.putExtra(PollService.CANCEL_PENDING_POLLS, true);
+        context.startService(pollServiceIntent);
+
+        // FIXME: also cancel running network requests
     }
 
 }

@@ -46,6 +46,10 @@ public class LocationPointService extends RoboService {
     public static long SAMPLE_INTERVAL = 18 * 60 * 1000;  // 18 min (in ms)
     /** Extra to set to {@code true} to stop the listening. */
     public static String STOP_LOCATION_LISTENING = "stopLocationListening";
+    /** Extra to set to {@code true} to additionally cancel any collecting
+     * locationPoints when stopping location listening.
+     */
+    public static String CANCEL_COLLECTING_LOCATION_POINTS = "cancelCollectingLocationPoints";
 
     @Inject SntpClient sntpClient;
     @Inject LocationPoint locationPoint;
@@ -62,7 +66,7 @@ public class LocationPointService extends RoboService {
         private String TAG = "ServiceConnectionCallback";
 
         @Override
-        public void onServiceConnected() {
+        public synchronized void onServiceConnected() {
             Logger.d(TAG, "LocationPointService connected");
 
             // Stop LocationPointService, we're done. This in turn will
@@ -77,7 +81,7 @@ public class LocationPointService extends RoboService {
     };
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+    public synchronized int onStartCommand(Intent intent, int flags, int startId) {
         Logger.d(TAG, "LocationPointService started");
         super.onStartCommand(intent, flags, startId);
 
@@ -86,12 +90,13 @@ public class LocationPointService extends RoboService {
             Logger.d(TAG, "Meant to stop location listening");
 
             // If so, schedule ourselves for the next listening
-            stopLocationListening();
+            stopLocationListening(intent.getBooleanExtra(
+                    CANCEL_COLLECTING_LOCATION_POINTS, false));
             scheduleNextService();
         } else {
             Logger.d(TAG, "Meant to start location listening");
 
-            // Only start listening if there a chance to obtain something
+            // Only start listening if there is a chance to obtain something
             if (statusManager.isDataAndLocationEnabled()) {
                 Logger.d(TAG, "Data and location are enabled");
 
@@ -114,7 +119,7 @@ public class LocationPointService extends RoboService {
     }
 
     @Override
-    public IBinder onBind(Intent intent) {
+    public synchronized IBinder onBind(Intent intent) {
         // Don't allow binding to ourselves
         return null;
     }
@@ -123,7 +128,7 @@ public class LocationPointService extends RoboService {
      * Stop the {@link LocationService} service and stop ourselves when
      * that's done.
      */
-    private void stopLocationListening() {
+    private synchronized void stopLocationListening(boolean cancelCollectingLocationPoints) {
         Logger.d(TAG, "Stopping location listening");
 
         // locationServiceConnection will clear our listener (registered on
@@ -138,13 +143,19 @@ public class LocationPointService extends RoboService {
         // reduced to only one item.
         ArrayList<LocationPoint> collectingLocationPoints =
                 locationPointsStorage.getCollectingLocationPoints();
-        if (collectingLocationPoints != null) {
-            Logger.d(TAG, "Setting collecting LocationPoints to completed");
 
-            for (LocationPoint collectingLocationPoint :
-                    collectingLocationPoints) {
-                collectingLocationPoint.setStatus(
-                        LocationPoint.STATUS_COMPLETED);
+        if (collectingLocationPoints != null) {
+            if (cancelCollectingLocationPoints) {
+                Logger.d(TAG, "Cancelling collecting LocationPoints");
+                locationPointsStorage.removeLocationPoints(collectingLocationPoints);
+            } else {
+                Logger.d(TAG, "Setting collecting LocationPoints to completed");
+
+                for (LocationPoint collectingLocationPoint :
+                        collectingLocationPoints) {
+                    collectingLocationPoint.setStatus(
+                            LocationPoint.STATUS_COMPLETED);
+                }
             }
 
             // Try and spot bugs
@@ -154,7 +165,7 @@ public class LocationPointService extends RoboService {
                         " but is {0}", collectingLocationPoints.size());
             }
         } else {
-            Logger.v(TAG, "No LocationPoints to set to completed");
+            Logger.v(TAG, "No collecting LocationPoints to set to completed or to cancel");
         }
 
         // If LocationService is not running there's no need to stop it,
@@ -195,7 +206,7 @@ public class LocationPointService extends RoboService {
      * Start the {@link LocationService} service and register a listener on
      * it.
      */
-    private void startLocationListening() {
+    private synchronized void startLocationListening() {
         Logger.d(TAG, "Starting location listening");
 
         // Mark the location point as not yet uploadable
@@ -283,7 +294,7 @@ public class LocationPointService extends RoboService {
      * Schedule the next run of {@link LocationPointService},
      * after SAMPLE_INTERVAL milliseconds.
      */
-    private void scheduleNextService() {
+    private synchronized void scheduleNextService() {
         Logger.d(TAG, "Scheduling next location listening");
 
         // Build the scheduled time
@@ -303,7 +314,7 @@ public class LocationPointService extends RoboService {
      * Schedule the end of the listening to location updates,
      * when we stop the LocationService after LISTENING_TIME.
      */
-    private void scheduleStopLocationListening() {
+    private synchronized void scheduleStopLocationListening() {
         Logger.d(TAG, "Scheduling stopping of location listening");
 
         // Build the scheduled time
