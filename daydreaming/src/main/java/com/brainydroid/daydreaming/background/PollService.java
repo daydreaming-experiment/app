@@ -211,7 +211,15 @@ public class PollService extends RoboService {
      */
     private synchronized void cancelPendingPolls() {
         Logger.d(TAG, "Cancelling pending polls");
-        pollsStorage.removePolls(pollsStorage.getPendingPolls());
+        ArrayList<Poll> pendingPolls = pollsStorage.getPendingPolls();
+        if (pendingPolls != null) {
+            for (Poll poll : pendingPolls) {
+                notificationManager.cancel(poll.getId());
+                pollsStorage.remove(poll.getId());
+            }
+        } else {
+            Logger.v(TAG, "No pending polls to cancel");
+        }
     }
 
 }
