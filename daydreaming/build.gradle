@@ -4,7 +4,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.11.+'
+        classpath 'com.android.tools.build:gradle:0.12.+' // 11
     }
 }
 
@@ -19,8 +19,8 @@ android {
     buildToolsVersion "20.0.0"
 
     defaultConfig {
-        versionCode 28
-        versionName "0.13.1+next"
+        versionCode 29
+        versionName "0.14.0"
     }
 
     buildTypes {

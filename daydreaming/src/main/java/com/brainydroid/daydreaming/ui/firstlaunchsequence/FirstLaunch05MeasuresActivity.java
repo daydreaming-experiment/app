@@ -173,14 +173,14 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
         alertDialogBuilder
                 .setMessage("Select the connectivity settings you wish to change")
                 .setCancelable(true)
-                .setPositiveButton("Network data",new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog,int id) {
+                .setPositiveButton("Network data", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
                         Logger.d(TAG, "Launching data settings");
                         launchNetworkDataSettings();
                     }
                 })
-                .setNegativeButton("Wifi",new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog,int id) {
+                .setNegativeButton("Wifi", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
                         Logger.d(TAG, "Launching wifi settings");
                         launchNetworkWifiSettings();
                     }
