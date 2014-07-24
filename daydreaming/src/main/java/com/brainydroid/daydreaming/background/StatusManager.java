@@ -494,8 +494,7 @@ public class StatusManager {
         cancelNotifiedPollsAndCollectingLocations();
 
         // Don't clear local flags (after switch), so that experiment isn't restarted
-        // Don't clear parameters storage
-        // And don't clear prod profile and crypto storage (after switch)
+        // And don't clear prod profile, or parameters storage, or crypto storage (after switch)
     }
 
     private synchronized void cancelNotifiedPollsAndCollectingLocations() {
