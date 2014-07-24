@@ -76,19 +76,6 @@ public class ParametersStorage {
         eSharedPreferences = sharedPreferences.edit();
     }
 
-    private synchronized void setParametersVersion(String version) {
-        Logger.d(TAG, "{0} - Setting parametersVersion to {1}", statusManager.getCurrentModeName(), version);
-        eSharedPreferences.putString(statusManager.getCurrentModeName() + PARAMETERS_VERSION, version);
-        eSharedPreferences.commit();
-        profileStorage.setParametersVersion(version);
-    }
-
-    private synchronized void clearParametersVersion() {
-        Logger.d(TAG, "{} - Clearing parameters version", statusManager.getCurrentModeName());
-        eSharedPreferences.remove(PARAMETERS_VERSION);
-        eSharedPreferences.commit();
-    }
-
     private synchronized void setSchedulingMinDelay(int schedulingMinDelay) {
         Logger.d(TAG, "{0} - Setting schedulingMinDelay to {1}", statusManager.getCurrentModeName(), schedulingMinDelay);
         eSharedPreferences.putInt(statusManager.getCurrentModeName() + QUESTIONS_SCHEDULING_MIN_DELAY, schedulingMinDelay);
@@ -111,7 +98,6 @@ public class ParametersStorage {
         eSharedPreferences.remove(statusManager.getCurrentModeName() + QUESTIONS_SCHEDULING_MEAN_DELAY);
         eSharedPreferences.commit();
     }
-
 
     private synchronized void setNSlotsPerProbe(int nSlotsPerProbe) {
         Logger.d(TAG, "{0} - Setting nSlotsPerProbe to {1}", statusManager.getCurrentModeName(), nSlotsPerProbe);
@@ -188,8 +174,10 @@ public class ParametersStorage {
 
     public synchronized void flush() {
         Logger.d(TAG, "{} - Flushing all parameters", statusManager.getCurrentModeName());
+        statusManager.clearParametersUpdated();
+        statusManager.setParametersFlushed();
         flushQuestions();
-        clearParametersVersion();
+        profileStorage.clearParametersVersion();
         clearSchedulingMinDelay();
         clearSchedulingMeanDelay();
         clearNSlotsPerProbe();
@@ -276,7 +264,7 @@ public class ParametersStorage {
 
             // All is good, do the real import
             flush();
-            setParametersVersion(version);
+            profileStorage.setParametersVersion(version);
             setSchedulingMinDelay(schedulingMinDelay);
             setSchedulingMeanDelay(schedulingMeanDelay);
             setNSlotsPerProbe(nSlotsPerProbe);

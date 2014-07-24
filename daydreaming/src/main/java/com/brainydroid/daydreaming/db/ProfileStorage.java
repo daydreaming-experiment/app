@@ -9,6 +9,7 @@ import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.network.Profile;
 import com.brainydroid.daydreaming.network.ProfileFactory;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import java.util.HashMap;
@@ -37,6 +38,7 @@ public class ProfileStorage {
 
     @Inject ProfileFactory profileFactory;
     @Inject StatusManager statusManager;
+    @Inject Provider<ParametersStorage> parametersStorageProvider;
     @Inject Context context;
 
     @SuppressLint("CommitPrefEdits")
@@ -136,6 +138,12 @@ public class ProfileStorage {
                 ServerParametersJson.DEFAULT_PARAMETERS_VERSION);
     }
 
+    public synchronized void clearParametersVersion() {
+        Logger.d(TAG, "{} - Clearing parametersVersion", statusManager.getCurrentModeName());
+        eSharedPreferences.remove(statusManager.getCurrentModeName() + PROFILE_PARAMETERS_VERSION);
+        setIsDirtyAndCommit();
+    }
+
     private String getAppVersionName() {
         try {
             return context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
@@ -192,6 +200,10 @@ public class ProfileStorage {
 
     public boolean clearProfile() {
         Logger.d(TAG, "{} - Clearing profile", statusManager.getCurrentModeName());
+
+        // Clear parameters storage
+        statusManager.clearParametersUpdated();
+        parametersStorageProvider.get().flush();
 
         // First clear tipi answers, since it uses the tipiNumberOfQuestions key
         clearTipiAnswers();
