@@ -310,19 +310,21 @@ public class SettingsActivity extends RoboFragmentActivity {
         .setTitle("Production mode")
         .setMessage("Switch back to production mode?")
         .setCancelable(false)
-        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+        .setPositiveButton("Go into production", new DialogInterface.OnClickListener() {
 
             public void onClick(DialogInterface dialog, int id) {
-                Logger.d(TAG, "User accepted switch to prod mode -> doing it");
+                Logger.d(TAG, "User accepted switch to prod mode -> switching");
+
                 statusManager.switchToProdMode();
                 Toast.makeText(getApplicationContext(), "Switched back to production mode", Toast.LENGTH_SHORT).show();
 
-                // Restart dashboard (other instances will stop themselves because of theming discrepancy)
+                // Restart Dashboard
                 Intent intent = new Intent(SettingsActivity.this, DashboardActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
             }
         })
-        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+        .setNegativeButton("Stay in test mode", new DialogInterface.OnClickListener() {
 
             public void onClick(DialogInterface dialog, int id) {
                 Logger.d(TAG, "User cancelled switch to prod mode");
@@ -358,6 +360,7 @@ public class SettingsActivity extends RoboFragmentActivity {
 
                     // Restart first launch
                     Intent intent = new Intent(SettingsActivity.this, FirstLaunch00WelcomeActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                 } else {
                     Logger.d(TAG, "Wrong password to switch to test mode -> aborting");
@@ -397,11 +400,11 @@ public class SettingsActivity extends RoboFragmentActivity {
         Logger.d(TAG, "Checking test mode status");
         if (StatusManager.getCurrentModeStatic(this) == StatusManager.MODE_PROD) {
             Logger.d(TAG, "Setting production theme");
-            setTheme(R.style.MyCustomTheme);
+            setTheme(R.style.daydreamingTheme);
             testModeThemeActivated = false;
         } else {
             Logger.d(TAG, "Setting test theme");
-            setTheme(R.style.MyCustomTheme_test);
+            setTheme(R.style.daydreamingTestTheme);
             testModeThemeActivated = true;
         }
     }

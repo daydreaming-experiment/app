@@ -18,14 +18,28 @@ android {
     compileSdkVersion 16
     buildToolsVersion "20.0.0"
 
+    defaultConfig {
+        versionCode 29
+        versionName "0.14.0"
+    }
+
     buildTypes {
         debug {
             applicationIdSuffix ".debug"
+            versionNameSuffix "+debug"
         }
 
         qa.initWith(buildTypes.debug)
         qa {
             applicationIdSuffix ".qa"
+            versionNameSuffix "+qa"
+        }
+
+        applicationVariants.all { variant ->
+            def file = variant.outputFile
+            variant.outputFile = new File(file.parent,
+                                          file.name.replace(variant.buildType.name + ".apk",
+                                                            defaultConfig.versionName + "+" + variant.buildType.name + ".apk"))
         }
     }
 

@@ -56,8 +56,13 @@ public abstract class FirstLaunchActivity extends RoboFragmentActivity {
 
     @Override
     public void onBackPressed() {
-        Logger.v(TAG, "Back pressed, setting slide transition");
+        Logger.v(TAG, "Back pressed");
         super.onBackPressed();
+        backHook();
+    }
+
+    public void backHook() {
+        Logger.v(TAG, "Setting slide transition");
         overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
     }
 
@@ -89,8 +94,7 @@ public abstract class FirstLaunchActivity extends RoboFragmentActivity {
             Logger.v(TAG, "First launch not completed, and no test mode theming discrepancy");
 
             if(shouldFinishIfTipiQuestionnaireCompleted() &&
-                    statusManager.isTipiQuestionnaireCompleted())
-            {
+                    statusManager.isTipiQuestionnaireCompleted()) {
                 Logger.i(TAG, "Tipi questionnaire completed, " +
                         "and we should finish because of that -> finishing");
                 finish();
@@ -114,7 +118,7 @@ public abstract class FirstLaunchActivity extends RoboFragmentActivity {
      */
     protected void launchNextActivity(Class activity) {
         Intent intent = new Intent(this, activity);
-        intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
     }
@@ -178,11 +182,11 @@ public abstract class FirstLaunchActivity extends RoboFragmentActivity {
         Logger.d(TAG, "Checking test mode status");
         if (StatusManager.getCurrentModeStatic(this) == StatusManager.MODE_PROD) {
             Logger.d(TAG, "Setting production theme");
-            setTheme(R.style.MyCustomTheme);
+            setTheme(R.style.daydreamingTheme);
             testModeThemeActivated = false;
         } else {
             Logger.d(TAG, "Setting test theme");
-            setTheme(R.style.MyCustomTheme_test);
+            setTheme(R.style.daydreamingTestTheme);
             testModeThemeActivated = true;
         }
     }

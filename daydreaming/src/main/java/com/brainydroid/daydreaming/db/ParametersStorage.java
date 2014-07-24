@@ -76,9 +76,9 @@ public class ParametersStorage {
         eSharedPreferences = sharedPreferences.edit();
     }
 
-    private synchronized void setParametersVersion(String version) {
-        Logger.d(TAG, "{} - Setting parametersVersion to {}", statusManager.getCurrentModeName(), version);
-        eSharedPreferences.putString(statusManager.getCurrentModeName() + PARAMETERS_VERSION, version);
+    private synchronized void setParametersVersion(int version) {
+        Logger.d(TAG, "{0} - Setting parametersVersion to {1}", statusManager.getCurrentModeName(), version);
+        eSharedPreferences.putInt(statusManager.getCurrentModeName() + PARAMETERS_VERSION, version);
         eSharedPreferences.commit();
         profileStorage.setParametersVersion(version);
     }
@@ -89,16 +89,17 @@ public class ParametersStorage {
         eSharedPreferences.commit();
     }
 
-    private void setSchedulingMinDelay(int schedulingMinDelay){
-        Logger.d(TAG, "{} - Setting schedulingMinDelay to {}", statusManager.getCurrentModeName(), schedulingMinDelay);
-        eSharedPreferences.putInt(statusManager.getCurrentModeName() + QUESTIONS_SCHEDULING_MIN_DELAY, schedulingMinDelay);
+    private synchronized void setNSlotsPerPoll(int nSlotsPerPoll) {
+        Logger.d(TAG, "{0} - Setting nSlotsPerPoll to {1}",statusManager.getCurrentModeName(),  nSlotsPerPoll);
+        eSharedPreferences.putInt(statusManager.getCurrentModeName() + QUESTIONS_N_SLOTS_PER_POLL, nSlotsPerPoll);
         eSharedPreferences.commit();
     }
 
-    private void clearSchedulingMinDelay(){
-        Logger.d(TAG, "{} - Clearing schedulingMinDelay", statusManager.getCurrentModeName());
-        eSharedPreferences.remove(statusManager.getCurrentModeName() + QUESTIONS_SCHEDULING_MIN_DELAY);
-        eSharedPreferences.commit();
+    public synchronized int getNSlotsPerPoll() {
+        int nSlotsPerPoll = sharedPreferences.getInt(
+                statusManager.getCurrentModeName() + QUESTIONS_N_SLOTS_PER_POLL, -1);
+        Logger.v(TAG, "{0} - nSlotsPerPoll is {1}", statusManager.getCurrentModeName(), nSlotsPerPoll);
+        return nSlotsPerPoll;
     }
 
     private void setSchedulingMeanDelay(int schedulingMeanDelay){
@@ -134,7 +135,7 @@ public class ParametersStorage {
 
     // get question from id in db
     public synchronized Question create(String questionName) {
-        Logger.d(TAG, "{} - Retrieving question {} from db", statusManager.getCurrentModeName(), questionName);
+        Logger.d(TAG, "{0} - Retrieving question {1} from db", statusManager.getCurrentModeName(), questionName);
 
         Cursor res = db.query(statusManager.getCurrentModeName() + TABLE_QUESTIONS, null,
                 COL_NAME + "=?", new String[]{questionName},
@@ -206,7 +207,7 @@ public class ParametersStorage {
 
     // add question in database
     private synchronized void add(Question question) {
-        Logger.d(TAG, "{} - Storing question {} to db", statusManager.getCurrentModeName(), question.getName());
+        Logger.d(TAG, "{0} - Storing question {1} to db", statusManager.getCurrentModeName(), question.getName());
         db.insert(statusManager.getCurrentModeName() + TABLE_QUESTIONS, null, getQuestionValues(question));
     }
 

@@ -1,6 +1,21 @@
 Changelog
 =========
 
+0.14.0
+------
+
+* Enhancements
+  * [#111] `appVersionName` and `appVersionCode` are included in the user's profile
+  * [#102] Switched to gradle build system for build variables and debug/qa/release builds
+  * [#98] Cleaned up debug/qa/release build variables thanks to gradle build system
+  * [#140] Add test scripts to check consistency and correctness of profiles on server
+  * [#93] Outsource in-app password and ACRA credentials to local out-of-git file
+  * [#138] Cancel pending notifications, running location collections, and network operations, when switching app mode
+* Bug fixes
+  * [#104] App crashes on API 10
+  * [#108] Inconsistent profiles on server due to bad test/production mode switches
+  * [#139] Buggy activity paths leading to inconsistent profiles on server
+
 0.13.1
 ------
 

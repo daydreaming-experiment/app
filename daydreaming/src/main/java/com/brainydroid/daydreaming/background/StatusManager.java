@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
@@ -42,6 +43,9 @@ public class StatusManager {
     /** Preference key storing the status of initial questions update */
     private static String EXP_STATUS_PARAMETERS_UPDATED =
             "expStatusQuestionsUpdated";
+    /** Preference key storing the status of initial questions update */
+    private static String EXP_STATUS_PARAMETERS_FLUSHED =
+            "expStatusQuestionsFlushed";
 
     /** Preference key storing timestamp of the last sync operation */
     private static String LAST_SYNC_TIMESTAMP = "lastSyncTimestamp";
@@ -77,6 +81,7 @@ public class StatusManager {
     @Inject LocationManager locationManager;
     @Inject ConnectivityManager connectivityManager;
     @Inject ActivityManager activityManager;
+    @Inject Context context;
     // Use providers here to prevent circular dependencies
     @Inject Provider<ProfileStorage> profileStorageProvider;
     @Inject Provider<PollsStorage> pollsStorageProvider;
@@ -192,6 +197,40 @@ public class StatusManager {
         Logger.d(TAG, "{} - Clearing parameters updated", getCurrentModeName());
 
         eSharedPreferences.remove(getCurrentModeName() + EXP_STATUS_PARAMETERS_UPDATED);
+        eSharedPreferences.commit();
+    }
+
+    /**
+     * Check if the parameters have been flushed.
+     *
+     * @return {@code true} if the parameters have been flushed,
+     *         {@code false} otherwise
+     */
+    public synchronized boolean areParametersFlushed() {
+        if (sharedPreferences.getBoolean(getCurrentModeName() + EXP_STATUS_PARAMETERS_FLUSHED,
+                false)) {
+            Logger.d(TAG, "{} - Parameters are flushed", getCurrentModeName());
+            return true;
+        } else {
+            Logger.d(TAG, "{} - Parameters not flushed", getCurrentModeName());
+            return false;
+        }
+    }
+
+    /**
+     * Set the flushed parameters flag to on.
+     */
+    public synchronized void setParametersFlushed() {
+        Logger.d(TAG, "{} - Setting parameters to flushed", getCurrentModeName());
+
+        eSharedPreferences.putBoolean(getCurrentModeName() + EXP_STATUS_PARAMETERS_FLUSHED, true);
+        eSharedPreferences.commit();
+    }
+
+    public synchronized void clearParametersFlushed() {
+        Logger.d(TAG, "{} - Clearing parameters flushed", getCurrentModeName());
+
+        eSharedPreferences.remove(getCurrentModeName() + EXP_STATUS_PARAMETERS_FLUSHED);
         eSharedPreferences.commit();
     }
 
@@ -319,7 +358,7 @@ public class StatusManager {
     }
 
     public synchronized void setExperimentStartTimestamp(long timestamp) {
-        Logger.d(TAG, "{} - Setting experiment start timestamp to {}", getCurrentModeName(), timestamp);
+        Logger.d(TAG, "{0} - Setting experiment start timestamp to {1}", getCurrentModeName(), timestamp);
         eSharedPreferences.putLong(getCurrentModeName() + EXP_START_TIMESTAMP, timestamp);
         eSharedPreferences.commit();
     }
@@ -400,6 +439,13 @@ public class StatusManager {
         clearTipiQuestionnaireCompleted();
         clearExperimentStartTimestamp();
 
+        // Cancel any running location collection and pending notifications.
+        // This is done after the switch to make sure no polls / location collection are
+        // started between cancellation of previous ones and switch. It _can_ be done after
+        // the switch, because these polls and location collections have no notion of
+        // app mode.
+        cancelNotifiedPollsAndCollectingLocations();
+
         // Clear parameters storage
         clearParametersUpdated();
         parametersStorageProvider.get().flush();
@@ -421,10 +467,18 @@ public class StatusManager {
 
         // Clear parameters storage
         clearParametersUpdated();
+        setParametersFlushed();
         parametersStorageProvider.get().flush();
+
+        // Cancel any running location collection and pending notifications
+        cancelNotifiedPollsAndCollectingLocations();
 
         // Clear crypto storage to force a new handshake
         cryptoStorageProvider.get().clearStore();
+
+        // Set the dirty flag on the profile, so that what information we have now
+        // gets uploaded at next sync (which will also trigger the crypto handshake).
+        profileStorageProvider.get().setIsDirtyAndCommit();
     }
 
     public synchronized void switchToProdMode() {
@@ -437,9 +491,32 @@ public class StatusManager {
         // Do the switch
         setCurrentMode(MODE_PROD);
 
+        // Cancel any running location collection and pending notifications.
+        // This is done after the switch to make sure no polls / location collection are
+        // started between cancellation of previous ones and switch. It _can_ be done after
+        // the switch, because these polls and location collections have no notion of
+        // app mode.
+        cancelNotifiedPollsAndCollectingLocations();
+
         // Don't clear local flags (after switch), so that experiment isn't restarted
         // Don't clear parameters storage
-        // And don't clear test profile and crypto storage (after switch)
+        // And don't clear prod profile and crypto storage (after switch)
+    }
+
+    private synchronized void cancelNotifiedPollsAndCollectingLocations() {
+        Logger.d(TAG, "Cancelling collecting locationPoints by calling LocationPointService");
+        Intent locationPointServiceIntent = new Intent(context, LocationPointService.class);
+        locationPointServiceIntent.putExtra(
+                LocationPointService.STOP_LOCATION_LISTENING, true);
+        locationPointServiceIntent.putExtra(
+                LocationPointService.CANCEL_COLLECTING_LOCATION_POINTS, true);
+        // The service will auto-reschedule itself for the next location listening
+        context.startService(locationPointServiceIntent);
+
+        Logger.d(TAG, "Cancelling notified polls");
+        Intent pollServiceIntent = new Intent(context, PollService.class);
+        pollServiceIntent.putExtra(PollService.CANCEL_PENDING_POLLS, true);
+        context.startService(pollServiceIntent);
     }
 
 }
