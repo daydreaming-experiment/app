@@ -1,6 +1,14 @@
 Changelog
 =========
 
+0.15.0
+------
+
+* Enhancements
+  * [#126] Use grammar v2
+* Bug fixes
+  * Duplicated `parametersVersion` between `ProfileStorage` and `ParametersStorage` (leading to bugs)
+
 0.14.0
 ------
 
