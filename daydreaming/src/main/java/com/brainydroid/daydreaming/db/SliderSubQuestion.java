@@ -14,7 +14,7 @@ public class SliderSubQuestion {
     @SuppressWarnings("FieldCanBeLocal")
     private boolean notApplyAllowed = false;
     @SuppressWarnings("FieldCanBeLocal")
-    private boolean showHints = false;
+    private boolean showLiveIndication = false;
 
     public synchronized String getText() {
         return text;
@@ -32,8 +32,8 @@ public class SliderSubQuestion {
         return notApplyAllowed;
     }
 
-    public synchronized boolean getShowHints() {
-        return showHints;
+    public synchronized boolean getShowLiveIndication() {
+        return showLiveIndication;
     }
 
 }

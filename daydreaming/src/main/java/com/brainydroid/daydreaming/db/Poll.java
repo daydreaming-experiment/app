@@ -28,7 +28,7 @@ public final class Poll extends StatusModel<Poll,PollsStorage> {
     public synchronized void populateQuestions() {
         Logger.d(TAG, "Populating poll");
 
-        int nSlots = parametersStorage.getNSlotsPerPoll();
+        int nSlots = parametersStorage.getNSlotsPerProbe();
         HashMap<Integer, ArrayList<Question>> slots =
                 new HashMap<Integer, ArrayList<Question>>();
 

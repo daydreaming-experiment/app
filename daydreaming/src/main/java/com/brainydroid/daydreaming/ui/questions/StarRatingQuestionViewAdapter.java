@@ -103,7 +103,7 @@ public class StarRatingQuestionViewAdapter extends BaseQuestionViewAdapter
         }
 
         final TextView selectedRating = (TextView)view.findViewById(R.id.question_star_rating_selectedRating);
-        if (!subQuestion.getShowHints()) {
+        if (!subQuestion.getShowLiveIndication()) {
             selectedRating.setVisibility(View.GONE);
         }
 

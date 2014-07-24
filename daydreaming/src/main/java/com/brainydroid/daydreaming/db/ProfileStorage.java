@@ -124,14 +124,14 @@ public class ProfileStorage {
         eSharedPreferences.commit();
     }
 
-    public void setParametersVersion(int version) {
+    public void setParametersVersion(String version) {
         Logger.d(TAG, "{0} - Setting parametersVersion to {1}", statusManager.getCurrentModeName(), version);
-        eSharedPreferences.putInt(statusManager.getCurrentModeName() + PROFILE_PARAMETERS_VERSION, version);
+        eSharedPreferences.putString(statusManager.getCurrentModeName() + PROFILE_PARAMETERS_VERSION, version);
         setIsDirtyAndCommit();
     }
 
-    private int getParametersVersion() {
-        return sharedPreferences.getInt(statusManager.getCurrentModeName() + PROFILE_PARAMETERS_VERSION, -1);
+    private String getParametersVersion() {
+        return sharedPreferences.getString(statusManager.getCurrentModeName() + PROFILE_PARAMETERS_VERSION, null);
     }
 
     private String getAppVersionName() {

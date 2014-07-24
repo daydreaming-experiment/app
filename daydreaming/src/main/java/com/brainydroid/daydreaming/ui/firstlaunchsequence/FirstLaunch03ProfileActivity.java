@@ -99,14 +99,14 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
     public void populate_spinners(){
 
         ArrayAdapter<CharSequence> adapter_gender =
-                ArrayAdapter.createFromResource(this,R.array.genders,
+                ArrayAdapter.createFromResource(this ,R.array.genders,
                         R.layout.spinner_layout);
         adapter_gender.setDropDownViewResource(R.layout.spinner_layout);
         genderSpinner.setAdapter(new MyGenderAdapter(getApplicationContext(),
                 R.layout.spinner_layout_icon, R.array.genders));
 
         ArrayAdapter<CharSequence> adapter_education =
-                ArrayAdapter.createFromResource(this,R.array.education,
+                ArrayAdapter.createFromResource(this, R.array.education,
                         R.layout.spinner_layout);
         adapter_education.setDropDownViewResource(R.layout.spinner_layout);
         educationSpinner.setAdapter(
