@@ -32,6 +32,7 @@ public class SyncService extends RoboService {
 
     public static String DEBUG_SYNC = "debugSync";
     private boolean isDebugSync = false;
+    private String startSyncAppMode;
 
     @Inject StatusManager statusManager;
     @Inject PollsStorage pollsStorage;
@@ -73,8 +74,7 @@ public class SyncService extends RoboService {
                 }
 
                 // We only sync the profile if stored data has been changed
-                if (profileStorage.isDirty())
-                {
+                if (profileStorage.isDirty()) {
                     Logger.d(TAG, "Launching profile update");
                     asyncPutProfile();
                 } else {
@@ -105,6 +105,22 @@ public class SyncService extends RoboService {
         public void onHttpConversationFinished(boolean success,
                                                String serverAnswer) {
             Logger.d(TAG, "Parameters update HttpConversation finished");
+
+            // Exit if app mode has changed before we could import parameters
+            if (! statusManager.getCurrentModeName().equals(startSyncAppMode)) {
+                Logger.i(TAG, "App mode has changed from {0} to {1} since sync started, "
+                        + "aborting parameters update.", startSyncAppMode,
+                        statusManager.getCurrentModeName());
+                return;
+            }
+
+            // Exit if parameters have been flushed since we started
+            if (statusManager.areParametersFlushed()) {
+                Logger.i(TAG, "Parameters have been flushed since sync started, "
+                    + "aborting parameters update.");
+                statusManager.clearParametersFlushed();
+                return;
+            }
 
             if (success) {
                 Logger.i(TAG, "Successfully retrieved parameters from " +
@@ -148,6 +164,9 @@ public class SyncService extends RoboService {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Logger.d(TAG, "SyncService started");
         super.onStartCommand(intent, flags, startId);
+
+        // Record the current app mode for later comparison in the callbacks
+        startSyncAppMode = statusManager.getCurrentModeName();
 
         // Launch synchronization tasks if we haven't done so not long ago
         isDebugSync = intent.getBooleanExtra(DEBUG_SYNC, false);
@@ -235,6 +254,12 @@ public class SyncService extends RoboService {
                                                    String serverAnswer) {
                 Logger.d(TAG, "Polls sync HttpConversation finished");
 
+                // If at this point, the app has changed from one of test/prod modes
+                // to the other between the POST start and finish, the polls we're about
+                // to remove from the database are probably already gone. The app shouldn't
+                // crash, but if it does, we should be able to see what happened in the
+                // ACRA logs.
+
                 if (success) {
                     // TODO: handle the case where returned JSON is in fact an error.
                     Logger.i(TAG, "Successfully uploaded polls to server " +
@@ -290,6 +315,12 @@ public class SyncService extends RoboService {
                                                    String serverAnswer) {
                 Logger.d(TAG, "LocationPoints HttpConversation finished");
 
+                // If at this point, the app has changed from one of test/prod modes
+                // to the other between the POST start and finish, the locationPoints we're about
+                // to remove from the database are probably already gone. The app shouldn't
+                // crash, but if it does, we should be able to see what happened in the
+                // ACRA logs.
+
                 if (success) {
                     // TODO: handle the case where returned JSON is in fact an error.
                     Logger.i(TAG, "Successfully uploaded locationPoints to " +
@@ -334,6 +365,14 @@ public class SyncService extends RoboService {
                                                    String serverAnswer) {
 
                 Logger.d(TAG, "PutProfile HttpConversation finished");
+
+                // Exit if app mode has changed before we could finish PUTing the profile
+                if (! statusManager.getCurrentModeName().equals(startSyncAppMode)) {
+                    Logger.i(TAG, "App mode has changed from {0} to {1} since sync started, "
+                            + "aborting profile put.", startSyncAppMode,
+                            statusManager.getCurrentModeName());
+                    return;
+                }
 
                 if (success) {
                     // TODO: handle the case where returned JSON is in fact an error.

@@ -96,6 +96,7 @@ public class CryptoStorage {
 
         Logger.d(TAG, "{} - Generating a keypair for registration",
                 statusManager.getCurrentModeName());
+        final String registrationStartAppMode = statusManager.getCurrentModeName();
         final KeyPair kp = crypto.generateKeyPairNamedCurve(DEFAULT_CURVE_NAME);
         final CryptoStorageCallback parentCallback = callback;
 
@@ -108,6 +109,14 @@ public class CryptoStorage {
             public void onHttpConversationFinished(boolean success, String serverAnswer) {
                 Logger.d(TAG, "{} - Registration HttpConversation finished",
                         statusManager.getCurrentModeName());
+
+                if (! statusManager.getCurrentModeName().equals(registrationStartAppMode)) {
+                    Logger.i(TAG, "App mode has changed from {0} to {1} during "
+                            + "registration, aborting crypto init.", registrationStartAppMode,
+                            statusManager.getCurrentModeName());
+                    parentCallback.onCryptoStorageReady(false);
+                    return;
+                }
 
                 boolean storageSuccess = false;
 
