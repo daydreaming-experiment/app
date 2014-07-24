@@ -98,7 +98,6 @@ public class ParametersStorage {
     private synchronized void clearSchedulingMinDelay() {
         Logger.d(TAG, "{} - Clearing schedulingMinDelay", statusManager.getCurrentModeName());
         eSharedPreferences.remove(statusManager.getCurrentModeName() + QUESTIONS_SCHEDULING_MIN_DELAY);
-        eSharedPreferences.commit();
     }
 
     private synchronized void setSchedulingMeanDelay(int schedulingMeanDelay) {
