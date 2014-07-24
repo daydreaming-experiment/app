@@ -131,7 +131,9 @@ public class ProfileStorage {
     }
 
     private String getParametersVersion() {
-        return sharedPreferences.getString(statusManager.getCurrentModeName() + PROFILE_PARAMETERS_VERSION, null);
+        return sharedPreferences.getString(
+                statusManager.getCurrentModeName() + PROFILE_PARAMETERS_VERSION,
+                ServerParametersJson.DEFAULT_PARAMETERS_VERSION);
     }
 
     private String getAppVersionName() {

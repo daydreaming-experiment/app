@@ -209,7 +209,7 @@ class ProfilesCorrectnessTestCase(LoadedProfilesTestCase):
         self._test_presence_and_type_on_all_profiles(
             ['profile_data', 'parametersVersion'], int,
             filter_func=lambda p: p['n_results'] != 0,
-            attr_tester=lambda v: v != None,
+            attr_tester=lambda v: v is not None and v != '-1',
             attr_tester_error='is emtpy but profile has results')
 
 

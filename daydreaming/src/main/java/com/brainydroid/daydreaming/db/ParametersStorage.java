@@ -77,7 +77,7 @@ public class ParametersStorage {
     }
 
     private synchronized void setParametersVersion(String version) {
-        Logger.d(TAG, "{} - Setting parametersVersion to {}", statusManager.getCurrentModeName(), version);
+        Logger.d(TAG, "{0} - Setting parametersVersion to {1}", statusManager.getCurrentModeName(), version);
         eSharedPreferences.putString(statusManager.getCurrentModeName() + PARAMETERS_VERSION, version);
         eSharedPreferences.commit();
         profileStorage.setParametersVersion(version);
@@ -120,7 +120,9 @@ public class ParametersStorage {
     }
 
     public synchronized int getNSlotsPerProbe() {
-        int nSlotsPerProbe = sharedPreferences.getInt(statusManager.getCurrentModeName() + QUESTIONS_N_SLOTS_PER_PROBE, -1);
+        int nSlotsPerProbe = sharedPreferences.getInt(
+                statusManager.getCurrentModeName() + QUESTIONS_N_SLOTS_PER_PROBE,
+                ServerParametersJson.DEFAULT_N_SLOTS_PER_PROBE);
         Logger.v(TAG, "{0} - nSlotsPerProbe is {1}", statusManager.getCurrentModeName(), nSlotsPerProbe);
         return nSlotsPerProbe;
     }
@@ -239,26 +241,26 @@ public class ParametersStorage {
 
             // Check version is set
             String version = serverParametersJson.getVersion();
-            if (version == null) {
-                throw new JsonSyntaxException("version can't be null");
+            if (version.equals(ServerParametersJson.DEFAULT_PARAMETERS_VERSION)) {
+                throw new JsonSyntaxException("version can't be its unset value");
             }
 
             // Check nSlotsPerProbe is set
             int nSlotsPerProbe = serverParametersJson.getNSlotsPerProbe();
-            if (nSlotsPerProbe == -1) {
-                throw new JsonSyntaxException("nSlotsPerProbe can't be -1");
+            if (nSlotsPerProbe == ServerParametersJson.DEFAULT_N_SLOTS_PER_PROBE) {
+                throw new JsonSyntaxException("nSlotsPerProbe can't be its unset value");
             }
 
             // Check schedulingMinDelay is set
             int schedulingMinDelay = serverParametersJson.getSchedulingMinDelay();
-            if (schedulingMinDelay == -1) {
-                throw new JsonSyntaxException("schedulingMinDelay can't be -1");
+            if (schedulingMinDelay == ServerParametersJson.DEFAULT_SCHEDULING_MIN_DELAY) {
+                throw new JsonSyntaxException("schedulingMinDelay can't be its unset value");
             }
 
             // Check schedulingMeanDelay is set
             int schedulingMeanDelay = serverParametersJson.getSchedulingMeanDelay();
-            if (schedulingMeanDelay == -1) {
-                throw new JsonSyntaxException("schedulingMeanDelay can't be -1");
+            if (schedulingMeanDelay == ServerParametersJson.DEFAULT_SCHEDULING_MEAN_DELAY) {
+                throw new JsonSyntaxException("schedulingMeanDelay can't be its unset value");
             }
 
             // Get all question slots and check there are at least as many as
