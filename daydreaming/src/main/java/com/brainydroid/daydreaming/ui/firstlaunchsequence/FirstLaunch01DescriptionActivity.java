@@ -1,7 +1,6 @@
 package com.brainydroid.daydreaming.ui.firstlaunchsequence;
 
 import android.annotation.TargetApi;
-import android.content.Intent;
 import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,14 +12,16 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.Util;
-import roboguice.inject.ContentView;
-import roboguice.inject.InjectView;
 
 import java.io.IOException;
 import java.io.InputStream;
+
+import roboguice.inject.ContentView;
+import roboguice.inject.InjectView;
 
 /**
  * Activity at first launch
@@ -56,7 +57,7 @@ public class FirstLaunch01DescriptionActivity extends FirstLaunchActivity {
         setButton();
 
         setRobotoFont(this);
-        Linkify.addLinks(description,Linkify.WEB_URLS | Linkify.EMAIL_ADDRESSES);
+        Linkify.addLinks(description, Linkify.WEB_URLS | Linkify.EMAIL_ADDRESSES);
     }
 
     /**

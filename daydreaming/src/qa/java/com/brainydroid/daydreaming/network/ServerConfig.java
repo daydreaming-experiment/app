@@ -9,7 +9,7 @@ public class ServerConfig {
     public static int NETWORK_TIMEOUT = 10 * 1000; // 10 seconds
 
     public static String PARAMETERS_URL_BASE =
-            "https://raw.github.com/daydreaming-experiment/parameters/master/grammar-v1/{}.json";
+            "https://raw.github.com/daydreaming-experiment/parameters/master/grammar-v2/{}.json";
 
     // FIXME: move all this into parameters file in grammar v2
     public static int EXP_DURATION_DAYS = 30;

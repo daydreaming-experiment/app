@@ -14,7 +14,6 @@ import re
 import sys
 from textwrap import indent
 import unittest
-from warnings import warn
 
 
 class ProfilesFileTestCase(unittest.TestCase):
@@ -207,12 +206,10 @@ class ProfilesCorrectnessTestCase(LoadedProfilesTestCase):
                          and len(p['profile_data']) != 0))
 
     def test_nonzero_parametersVersion_if_nonzero_results(self):
-        warn('Testing parametersVersion, and supposing default is empty '
-             'string. Is that right?')
         self._test_presence_and_type_on_all_profiles(
             ['profile_data', 'parametersVersion'], int,
             filter_func=lambda p: p['n_results'] != 0,
-            attr_tester=lambda v: v != '',
+            attr_tester=lambda v: v is not None and v != '-1',
             attr_tester_error='is emtpy but profile has results')
 
 

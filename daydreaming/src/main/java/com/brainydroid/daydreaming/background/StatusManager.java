@@ -193,7 +193,7 @@ public class StatusManager {
         eSharedPreferences.commit();
     }
 
-    private synchronized void clearParametersUpdated() {
+    public synchronized void clearParametersUpdated() {
         Logger.d(TAG, "{} - Clearing parameters updated", getCurrentModeName());
 
         eSharedPreferences.remove(getCurrentModeName() + EXP_STATUS_PARAMETERS_UPDATED);
@@ -446,11 +446,8 @@ public class StatusManager {
         // app mode.
         cancelNotifiedPollsAndCollectingLocations();
 
-        // Clear parameters storage
-        clearParametersUpdated();
-        parametersStorageProvider.get().flush();
-
-        // Clear test profile and crypto storage (after switch)
+        // Clear test profile and crypto storage (after switch).
+        // Clearing the profile also clears the parametersStorage.
         profileStorageProvider.get().clearProfile();
         cryptoStorageProvider.get().clearStore();
     }
@@ -466,8 +463,6 @@ public class StatusManager {
         clearExperimentStartTimestamp();
 
         // Clear parameters storage
-        clearParametersUpdated();
-        setParametersFlushed();
         parametersStorageProvider.get().flush();
 
         // Cancel any running location collection and pending notifications
@@ -499,8 +494,7 @@ public class StatusManager {
         cancelNotifiedPollsAndCollectingLocations();
 
         // Don't clear local flags (after switch), so that experiment isn't restarted
-        // Don't clear parameters storage
-        // And don't clear prod profile and crypto storage (after switch)
+        // And don't clear prod profile, or parameters storage, or crypto storage (after switch)
     }
 
     private synchronized void cancelNotifiedPollsAndCollectingLocations() {

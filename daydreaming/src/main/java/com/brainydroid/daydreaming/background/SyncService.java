@@ -68,6 +68,12 @@ public class SyncService extends RoboService {
                 // lifecycle.
                 if (!statusManager.areParametersUpdated()) {
                     Logger.d(TAG, "Launching parameters update");
+
+                    // If during our network request, parameters are flushed,
+                    // we won't import the received parameters
+                    Logger.v(TAG, "Clearing parameters flushed");
+                    statusManager.clearParametersFlushed();
+
                     asyncUpdateParameters();
                 } else {
                     Logger.v(TAG, "Parameters already updated");
@@ -118,7 +124,6 @@ public class SyncService extends RoboService {
             if (statusManager.areParametersFlushed()) {
                 Logger.i(TAG, "Parameters have been flushed since sync started, "
                     + "aborting parameters update.");
-                statusManager.clearParametersFlushed();
                 return;
             }
 
