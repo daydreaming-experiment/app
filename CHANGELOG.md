@@ -1,6 +1,12 @@
 Changelog
 =========
 
+0.15.1
+------
+
+* Bug fixes
+  * [#150] `schedulingMinDelay` and `schedulingMeanDelay` are ignored
+
 0.15.0
 ------
 

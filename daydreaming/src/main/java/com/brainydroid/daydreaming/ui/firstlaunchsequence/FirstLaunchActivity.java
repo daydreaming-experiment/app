@@ -167,10 +167,7 @@ public abstract class FirstLaunchActivity extends RoboFragmentActivity {
         Logger.d(TAG, "Starting SyncService");
         startService(syncServiceIntent);
 
-        Logger.d(TAG, "Starting SchedulerService");
-        Intent schedulerServiceIntent = new Intent(this,
-                SchedulerService.class);
-        startService(schedulerServiceIntent);
+        // SchedulerService will be started when the SyncService successfully updates parameters
 
         Intent locationPointServiceIntent = new Intent(this,
                 LocationPointService.class);

@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.os.SystemClock;
 import com.brainydroid.daydreaming.R;
+import com.brainydroid.daydreaming.db.ParametersStorage;
 import com.brainydroid.daydreaming.db.Util;
 import com.google.inject.Inject;
 import roboguice.service.RoboService;
@@ -34,13 +35,6 @@ public class SchedulerService extends RoboService {
 
     /** Scheduling delay when debugging is activated */
     public static long DEBUG_DELAY = 5 * 1000; // 5 seconds
-    /** Minimal delay between two polls: serves in normalizing the poisson
-     * process
-     */
-    public static double MIN_DELAY = 5 * 60 * 1000; // 5 minutes
-
-    /** Mean delay in the poisson process scheduling polls */
-    public static double MEAN_DELAY = 2 * 60 * 60 * 1000; // 2 hours
 
     // Handy object that will be holding the 'now' time
     private Calendar now;
@@ -53,6 +47,8 @@ public class SchedulerService extends RoboService {
     private int forbiddenSpan;
 
     @Inject SharedPreferences sharedPreferences;
+    @Inject StatusManager statusManager;
+    @Inject ParametersStorage parametersStorage;
     @Inject Random random;
     @Inject AlarmManager alarmManager;
 
@@ -62,15 +58,18 @@ public class SchedulerService extends RoboService {
 
         super.onStartCommand(intent, flags, startId);
 
-        // Synchronize answers, schedule a poll and stop ourselves
+        // Synchronise answers and get parameters if we don't have them. If parameters
+        // happen to be updated, the SchedulerService will be run again.
         startSyncService();
+
+        if (! statusManager.areParametersUpdated()) {
+            Logger.d(TAG, "Parameters not updated yet. aborting scheduling.");
+            return START_REDELIVER_INTENT;
+        }
+
+        // Schedule a poll and stop ourselves
         schedulePoll(intent.getBooleanExtra(SCHEDULER_DEBUGGING, false));
         stopSelf();
-
-        // Since the poll gets created when the notification shows up,
-        // there's a good chance the questions will have finished updating
-        // (if internet connection is available) before poll creation in
-        // PollService.
 
         return START_REDELIVER_INTENT;
     }
@@ -152,7 +151,7 @@ public class SchedulerService extends RoboService {
      * com.brainydroid.daydreaming.db.Poll} should appear.
      * <p/>
      * A delay is sampled from an exponential distribution with parameter
-     * {@link 1 / MEAN_DELAY}, and is then prolonged to observe the user's
+     * {@link 1 / meanDelay}, and is then prolonged to observe the user's
      * preferences in notification time window. This is done by
      * "compactifying" each prohibited time window to one point: imagine a
      * time line where the beginning of a forbidden time window is the same
@@ -212,14 +211,17 @@ public class SchedulerService extends RoboService {
 
     /**
      * Sample a delay following an exponential distribution with parameter
-     * {@link 1 / MEAN_DELAY}.
+     * {@link 1 / meanDelay}.
      *
      * @return Sampled delay in milliseconds
      */
     private synchronized long sampleDelay() {
         Logger.d(TAG, "Sampling delay");
-        return (long)(MIN_DELAY -
-                Math.log(random.nextDouble()) * (MEAN_DELAY - MIN_DELAY));
+        // Delays are given in seconds by the parameters
+        int minDelayMilli = 1000 * parametersStorage.getSchedulingMinDelay();
+        int meanDelayMilli = 1000 * parametersStorage.getSchedulingMeanDelay();
+        return (long)(minDelayMilli -
+                Math.log(random.nextDouble()) * (meanDelayMilli - minDelayMilli));
     }
 
     /**
