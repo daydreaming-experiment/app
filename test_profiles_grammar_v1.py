@@ -88,7 +88,7 @@ class LoadedProfilesTestCase(ProfilesFileTestCase):
                                 attr_tester=None, attr_tester_error=None,
                                 str_regex=None, str_regex_error=None):
         # Test for presence
-        continer, container_name, attr_name = self._test_presence(
+        container, container_name, attr_name = self._test_presence(
             container, container_name, attr_name_rec)
 
         # Test type

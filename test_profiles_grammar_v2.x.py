@@ -88,7 +88,7 @@ class LoadedProfilesTestCase(ProfilesFileTestCase):
                                 attr_tester=None, attr_tester_error=None,
                                 str_regex=None, str_regex_error=None):
         # Test for presence
-        continer, container_name, attr_name = self._test_presence(
+        container, container_name, attr_name = self._test_presence(
             container, container_name, attr_name_rec)
 
         # Test type
@@ -207,7 +207,7 @@ class ProfilesCorrectnessTestCase(LoadedProfilesTestCase):
 
     def test_nonzero_parametersVersion_if_nonzero_results(self):
         self._test_presence_and_type_on_all_profiles(
-            ['profile_data', 'parametersVersion'], int,
+            ['profile_data', 'parametersVersion'], str,
             filter_func=lambda p: p['n_results'] != 0,
             attr_tester=lambda v: v is not None and v != '-1',
             attr_tester_error='is emtpy but profile has results')
