@@ -151,7 +151,7 @@ public class SchedulerService extends RoboService {
      * com.brainydroid.daydreaming.db.Poll} should appear.
      * <p/>
      * A delay is sampled from an exponential distribution with parameter
-     * {@link 1 / MEAN_DELAY}, and is then prolonged to observe the user's
+     * {@link 1 / meanDelay}, and is then prolonged to observe the user's
      * preferences in notification time window. This is done by
      * "compactifying" each prohibited time window to one point: imagine a
      * time line where the beginning of a forbidden time window is the same
@@ -211,16 +211,17 @@ public class SchedulerService extends RoboService {
 
     /**
      * Sample a delay following an exponential distribution with parameter
-     * {@link 1 / MEAN_DELAY}.
+     * {@link 1 / meanDelay}.
      *
      * @return Sampled delay in milliseconds
      */
     private synchronized long sampleDelay() {
         Logger.d(TAG, "Sampling delay");
-        int minDelay = parametersStorage.getSchedulingMinDelay();
-        int meanDelay = parametersStorage.getSchedulingMeanDelay();
-        return (long)(minDelay -
-                Math.log(random.nextDouble()) * (meanDelay - minDelay));
+        // Delays are given in seconds by the parameters
+        int minDelayMilli = 1000 * parametersStorage.getSchedulingMinDelay();
+        int meanDelayMilli = 1000 * parametersStorage.getSchedulingMeanDelay();
+        return (long)(minDelayMilli -
+                Math.log(random.nextDouble()) * (meanDelayMilli - minDelayMilli));
     }
 
     /**
