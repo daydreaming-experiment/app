@@ -81,6 +81,19 @@ public class ParametersStorage {
         eSharedPreferences.commit();
     }
 
+    public synchronized int getSchedulingMinDelay() {
+        int schedulingMinDelay = sharedPreferences.getInt(
+                statusManager.getCurrentModeName() + QUESTIONS_SCHEDULING_MIN_DELAY, -1);
+        if (schedulingMinDelay == -1) {
+            Logger.e(TAG, "{} - SchedulingMinDelay is asked for but not set",
+                    statusManager.getCurrentMode());
+            throw new RuntimeException("SchedulingMinDelay is asked for but not set");
+        }
+        Logger.d(TAG, "{0} - schedulingMinDelay is {1}", statusManager.getCurrentModeName(),
+                schedulingMinDelay);
+        return schedulingMinDelay;
+    }
+
     private synchronized void clearSchedulingMinDelay() {
         Logger.d(TAG, "{} - Clearing schedulingMinDelay", statusManager.getCurrentModeName());
         eSharedPreferences.remove(statusManager.getCurrentModeName() + QUESTIONS_SCHEDULING_MIN_DELAY);
@@ -90,6 +103,19 @@ public class ParametersStorage {
         Logger.d(TAG, "{0} - Setting schedulingMeanDelay to {1}", statusManager.getCurrentModeName(), schedulingMeanDelay);
         eSharedPreferences.putInt(statusManager.getCurrentModeName() + QUESTIONS_SCHEDULING_MEAN_DELAY, schedulingMeanDelay);
         eSharedPreferences.commit();
+    }
+
+    public synchronized int getSchedulingMeanDelay() {
+        int schedulingMeanDelay = sharedPreferences.getInt(
+                statusManager.getCurrentModeName() + QUESTIONS_SCHEDULING_MEAN_DELAY, -1);
+        if (schedulingMeanDelay == -1) {
+            Logger.e(TAG, "{} - SchedulingMeanDelay is asked for but not set",
+                    statusManager.getCurrentMode());
+            throw new RuntimeException("SchedulingMeanDelay is asked for but not set");
+        }
+        Logger.d(TAG, "{0} - schedulingMeanDelay is {1}", statusManager.getCurrentModeName(),
+                schedulingMeanDelay);
+        return schedulingMeanDelay;
     }
 
     private synchronized void clearSchedulingMeanDelay() {
