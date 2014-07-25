@@ -46,8 +46,7 @@ public class ParametersStorage {
 
     private static String QUESTIONS_SCHEDULING_MIN_DELAY = "schedulingMinDelay";
     private static String QUESTIONS_SCHEDULING_MEAN_DELAY = "schedulingMeanDelay";
-    private static String QUESTIONS_N_SLOTS_PER_PROBE = "questionsNSlotsPerPoll";
-    private static String PARAMETERS_VERSION = "parametersVersion";
+    private static String QUESTIONS_N_SLOTS_PER_PROBE = "questionsNSlotsPerProbe";
 
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor eSharedPreferences;
