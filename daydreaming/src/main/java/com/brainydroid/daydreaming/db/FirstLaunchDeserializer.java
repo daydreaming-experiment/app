@@ -27,33 +27,33 @@ public class FirstLaunchDeserializer
 
             final JsonObject jsonObject = json.getAsJsonObject();
 
-            // first level
+            // literal extraction (objects directly map that described in parameter JSON of grammar-v2.1)
             final String welcomeText = jsonObject.get("welcomeText").getAsString();
             final String descriptionText = jsonObject.get("descriptionText").getAsString();
             final String tipiIntroText = jsonObject.get("text").getAsString();
-            final Question tipiQuestions = new Question();
-            tipiQuestions.setName("TipiQuestion");
-            tipiQuestions.setCategory("TipiQuestion");
-            tipiQuestions.setSubCategory("TipiQuestion");
-            tipiQuestions.setSlot("-1");
 
 
+            //previous draft of creation of standard Question object from compressed declaration of tipi questions in parameter
+            //final Question tipiQuestions = new Question();
+            //tipiQuestions.setName("TipiQuestion");
+            //tipiQuestions.setCategory("TipiQuestion");
+            //tipiQuestions.setSubCategory("TipiQuestion");
+            //tipiQuestions.setSlot("-1");
             // second level
-            final JsonObject details = jsonObject.get("tipiQuestionnaire").getAsJsonObject();
-            details.addProperty("type","Slider");
-            final JsonArray subQuestions = details.get("subQuestions").getAsJsonArray();
-            final JsonArray hints = details.get("hintsForAllSubQuestions").getAsJsonArray();
-            for (int i = 0; i < subQuestions.size(); i++) {
-                    JsonObject subq = subQuestions.get(i).getAsJsonObject();
-                    subq.add("hints",hints);
-            }
-            tipiQuestions.setDetailsFromJson(details.getAsString());
+            //final JsonObject details = jsonObject.get("tipiQuestionnaire").getAsJsonObject();
+            //details.addProperty("type","Slider");
+            //final JsonArray subQuestions = details.get("subQuestions").getAsJsonArray();
+            //final JsonArray hints = details.get("hintsForAllSubQuestions").getAsJsonArray();
+            //for (int i = 0; i < subQuestions.size(); i++) {
+            //        JsonObject subq = subQuestions.get(i).getAsJsonObject();
+            //        subq.add("hints",hints);
+            //}
+            //tipiQuestions.setDetailsFromJson(details.getAsString());
 
             // assignment
             firstLaunch.setDescriptionText(descriptionText);
             firstLaunch.setWelcomeText(welcomeText);
             firstLaunch.setTipiIntroText(tipiIntroText);
-            firstLaunch.setTipiQuestions(tipiQuestions);
 
         return firstLaunch;
     }
