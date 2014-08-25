@@ -62,7 +62,10 @@ public class Json {
                 LocationDeserializer locationDeserializer,
                 LocationSerializer locationSerializer,
                 JWSSignatureSerializer jwsSignatureSerializer,
-                QuestionSerializer questionSerializer) {
+                QuestionSerializer questionSerializer,
+                FirstLaunchDeserializer firstLaunchDeserializer,
+                TipiQuestionnaireDeserializer tipiQuestionnaireDeserializer
+                ) {
         Logger.v(TAG, "Building Gson instances");
 
         // Register all our type adapters
@@ -77,6 +80,8 @@ public class Json {
         gsonBuilder.registerTypeAdapter(JWSSignature.class,
                 jwsSignatureSerializer);
         gsonBuilder.registerTypeAdapter(Question.class, questionSerializer);
+        gsonBuilder.registerTypeAdapter(FirstLaunch.class, firstLaunchDeserializer);
+        gsonBuilder.registerTypeAdapter(TipiQuestionnaire.class, tipiQuestionnaireDeserializer);
 
         // Build the two Gson instances
         gson = gsonBuilder.create();
