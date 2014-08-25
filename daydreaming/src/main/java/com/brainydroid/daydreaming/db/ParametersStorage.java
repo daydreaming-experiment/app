@@ -51,9 +51,9 @@ public class ParametersStorage {
 
     private static String PARAMETERS_VERSION = "parametersVersion";
     private static String EXP_DURATION = "expDuration"; // no need to make global but listing is nice
-    private static String EXP_ID = "expId";
-    private static String URL_BACKEND_API = "urlBackendApi";
-    private static String URL_RESULTS_PAGE = "urlResultsPage";
+    private static String BACKEND_EXP_ID = "backendExpId";
+    private static String URL_BACKEND_API = "backendUrlApi";
+    private static String URL_RESULTS_PAGE = "resultsPageUrl";
     private static String WELCOME_TEXT = "welcomeText";
     private static String DESCRIPTION_TEXT = "descriptionText";
 
@@ -102,7 +102,7 @@ public class ParametersStorage {
 
     private synchronized void setBackendExpId(String expId) {
         Logger.d(TAG, "{} - Setting expId to {}", statusManager.getCurrentModeName(), expId);
-        eSharedPreferences.putString(statusManager.getCurrentModeName() + EXP_ID, expId);
+        eSharedPreferences.putString(statusManager.getCurrentModeName() + BACKEND_EXP_ID, expId);
         eSharedPreferences.commit();
     }
 
