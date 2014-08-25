@@ -9,18 +9,19 @@ public class ServerParametersJson {
 
     @SuppressWarnings("UnusedDeclaration")
     private static String TAG = "ServerParametersJson";
-
-    public String backendExpId = "not given";
-    public int expDuration = -1;
-    public String urlBackendApi = "";
-    public String urlResultsPage = "";
-
     public static String DEFAULT_PARAMETERS_VERSION = "-1";
     public static int DEFAULT_N_SLOTS_PER_PROBE = -1;
     public static int DEFAULT_SCHEDULING_MEAN_DELAY = -1;
     public static int DEFAULT_SCHEDULING_MIN_DELAY = -1;
 
+    //elements in root of JSON grammar file
     public String version = DEFAULT_PARAMETERS_VERSION;
+    public String backendExpId = "not given";
+    public String backendDbName = "not given";
+    public int expDuration = -1;
+    public String backendUrlApi = "";
+    public String resultsPageUrl = "";
+    public FirstLaunch firstLaunch = null;
     public int nSlotsPerProbe = DEFAULT_N_SLOTS_PER_PROBE;
     public int schedulingMeanDelay = DEFAULT_SCHEDULING_MEAN_DELAY;
     public int schedulingMinDelay = DEFAULT_SCHEDULING_MIN_DELAY;
@@ -29,12 +30,11 @@ public class ServerParametersJson {
     public String welcomeText = "not given";
     public String descriptionText = "not given";
 
-    public FirstLaunch firstLaunch = null;
+    //methods
 
     public synchronized ArrayList<Question> getQuestionsArrayList() {
         return questions;
     }
-
     public synchronized String getVersion() {
         return version;
     }
@@ -47,7 +47,6 @@ public class ServerParametersJson {
         return descriptionText;
     }
 
-
     public synchronized int getExpDuration() {
         return expDuration;
     }
@@ -56,15 +55,17 @@ public class ServerParametersJson {
         return backendExpId;
     }
 
-    public synchronized String getUrlBackendApi() {
-        return urlBackendApi;
+    public synchronized String getBackendDbName() {
+        return backendDbName;
     }
 
-    public synchronized String getUrlResultsPage() {
-        return urlResultsPage;
+    public synchronized String getBackendApiUrl() {
+        return backendUrlApi;
     }
 
-
+    public synchronized String getResultsPageUrl() {
+        return resultsPageUrl;
+    }
 
     public synchronized int getNSlotsPerProbe() {
         return nSlotsPerProbe;
