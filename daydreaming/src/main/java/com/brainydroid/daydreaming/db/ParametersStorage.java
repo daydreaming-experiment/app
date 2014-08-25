@@ -93,26 +93,26 @@ public class ParametersStorage {
         profileStorage.setParametersVersion(version);
     }
 
-    //setExpDuration    setExpId    setUrlBackendApi    setUrlResultsPage
+    //setExpDuration    setBackendExpId    setBackendUrlApi    setResultsPageUrl
     private synchronized void setExpDuration(int expDuration) {
         Logger.d(TAG, "{} - Setting expDuration to {}", statusManager.getCurrentModeName(), expDuration);
         eSharedPreferences.putInt(statusManager.getCurrentModeName() + EXP_DURATION, expDuration);
         eSharedPreferences.commit();
     }
 
-    private synchronized void setExpId(String expId) {
+    private synchronized void setBackendExpId(String expId) {
         Logger.d(TAG, "{} - Setting expId to {}", statusManager.getCurrentModeName(), expId);
         eSharedPreferences.putString(statusManager.getCurrentModeName() + EXP_ID, expId);
         eSharedPreferences.commit();
     }
 
-    private synchronized void setUrlBackendApi(String urlBackendApi) {
+    private synchronized void setBackendUrlApi(String urlBackendApi) {
         Logger.d(TAG, "{} - Setting urlBackendApi to {}", statusManager.getCurrentModeName(), urlBackendApi);
         eSharedPreferences.putString(statusManager.getCurrentModeName() + URL_BACKEND_API, urlBackendApi);
         eSharedPreferences.commit();
     }
 
-    private synchronized void setUrlResultsPage(String urlResultsPage) {
+    private synchronized void setResultsPageUrl(String urlResultsPage) {
         Logger.d(TAG, "{} - Setting urlResultsPage to {}", statusManager.getCurrentModeName(), urlResultsPage);
         eSharedPreferences.putString(statusManager.getCurrentModeName() + URL_RESULTS_PAGE, urlResultsPage);
         eSharedPreferences.commit();
@@ -355,13 +355,11 @@ public class ParametersStorage {
             flush();
             setParametersVersion(serverParametersJson.getVersion());
             setExpDuration(serverParametersJson.getExpDuration());
-            setExpId(serverParametersJson.getExpId());
-            setUrlBackendApi(serverParametersJson.getUrlBackendApi());
-            setUrlResultsPage(serverParametersJson.getUrlResultsPage());
+            setBackendExpId(serverParametersJson.getBackendExpId());
+            setBackendUrlApi(serverParametersJson.getBackendApiUrl());
+            setResultsPageUrl(serverParametersJson.getResultsPageUrl());
             setWelcomeText(serverParametersJson.getWelcomeText());
             setDescriptionText(serverParametersJson.getDescriptionText());
-
-            setUrlResultsPage(serverParametersJson.getUrlResultsPage());
 
             // testing execution of json parsing for new grammar
             FirstLaunch firstLaunch = serverParametersJson.getFirstLaunch();
