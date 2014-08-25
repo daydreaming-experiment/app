@@ -12,9 +12,13 @@ import java.util.ArrayList;
 public class FirstLaunch {
     private String welcomeText = null;
     private String descriptionText = null;
-    private String tipiIntroText = null;
-    // tipi Questionnaire is a single question with multiple subquestions
-    private Question tipiQuestions = null;
+    private String tipiIntroText = null; //TODO: see if necessary and add to ParameterStorage
+    private TipiQuestionnaire tipiQuestionnaire = null;
+
+    // naive implementation that follows precisely the grammar definition in terms of the object created
+    // parameters of the tipi questionnaires are very "compressed" in the grammar definition
+    // they will be extracted as such
+    // TODO Question objects to be fed to UI, will be constructed from TipiQuestionnaire class method
 
     public synchronized String getWelcomeText() {
         return welcomeText;
@@ -36,8 +40,6 @@ public class FirstLaunch {
         this.tipiIntroText = tipiIntroText;
     }
 
-    public synchronized void setTipiQuestions(Question tipiQuestions) {
-        this.tipiQuestions = tipiQuestions;
-    }
+
 
 }
