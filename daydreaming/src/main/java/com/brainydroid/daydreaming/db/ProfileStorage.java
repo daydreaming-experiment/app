@@ -9,6 +9,7 @@ import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.network.Profile;
 import com.brainydroid.daydreaming.network.ProfileFactory;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import java.util.HashMap;
@@ -37,6 +38,7 @@ public class ProfileStorage {
 
     @Inject ProfileFactory profileFactory;
     @Inject StatusManager statusManager;
+    @Inject Provider<ParametersStorage> parametersStorageProvider;
     @Inject Context context;
 
     @SuppressLint("CommitPrefEdits")
@@ -48,7 +50,7 @@ public class ProfileStorage {
     }
 
     public void setAge(String age) {
-        Logger.d(TAG, "{} - Setting age to {}", statusManager.getCurrentModeName(), age);
+        Logger.d(TAG, "{0} - Setting age to {1}", statusManager.getCurrentModeName(), age);
         eSharedPreferences.putString(statusManager.getCurrentModeName() + PROFILE_AGE, age);
         setIsDirtyAndCommit();
     }
@@ -58,7 +60,7 @@ public class ProfileStorage {
     }
 
     public void setGender(String gender) {
-        Logger.d(TAG, "{} - Setting gender to {}", statusManager.getCurrentModeName(), gender);
+        Logger.d(TAG, "{0} - Setting gender to {1}", statusManager.getCurrentModeName(), gender);
         eSharedPreferences.putString(statusManager.getCurrentModeName() + PROFILE_GENDER, gender);
         setIsDirtyAndCommit();
     }
@@ -68,7 +70,7 @@ public class ProfileStorage {
     }
 
     public void setEducation(String education) {
-        Logger.d(TAG, "{} - Setting education to {}", statusManager.getCurrentModeName(), education);
+        Logger.d(TAG, "{0} - Setting education to {1}", statusManager.getCurrentModeName(), education);
         eSharedPreferences.putString(statusManager.getCurrentModeName() + PROFILE_EDUCATION, education);
         setIsDirtyAndCommit();
     }
@@ -125,13 +127,21 @@ public class ProfileStorage {
     }
 
     public void setParametersVersion(String version) {
-        Logger.d(TAG, "{} - Setting parametersVersion to {}", statusManager.getCurrentModeName(), version);
+        Logger.d(TAG, "{0} - Setting parametersVersion to {1}", statusManager.getCurrentModeName(), version);
         eSharedPreferences.putString(statusManager.getCurrentModeName() + PROFILE_PARAMETERS_VERSION, version);
         setIsDirtyAndCommit();
     }
 
     private String getParametersVersion() {
-        return sharedPreferences.getString(statusManager.getCurrentModeName() + PROFILE_PARAMETERS_VERSION, "not given");
+        return sharedPreferences.getString(
+                statusManager.getCurrentModeName() + PROFILE_PARAMETERS_VERSION,
+                ServerParametersJson.DEFAULT_PARAMETERS_VERSION);
+    }
+
+    public synchronized void clearParametersVersion() {
+        Logger.d(TAG, "{} - Clearing parametersVersion", statusManager.getCurrentModeName());
+        eSharedPreferences.remove(statusManager.getCurrentModeName() + PROFILE_PARAMETERS_VERSION);
+        setIsDirtyAndCommit();
     }
 
     private String getAppVersionName() {
@@ -161,7 +171,7 @@ public class ProfileStorage {
         return hasChangedSinceSyncStart;
     }
 
-    private void setIsDirtyAndCommit() {
+    public void setIsDirtyAndCommit() {
         Logger.d(TAG, "{} - Setting isDirty and hasChangedSinceSyncStart flags and committing",
                 statusManager.getCurrentModeName());
         hasChangedSinceSyncStart = true;
@@ -190,6 +200,10 @@ public class ProfileStorage {
 
     public boolean clearProfile() {
         Logger.d(TAG, "{} - Clearing profile", statusManager.getCurrentModeName());
+
+        // Clear parameters storage
+        statusManager.clearParametersUpdated();
+        parametersStorageProvider.get().flush();
 
         // First clear tipi answers, since it uses the tipiNumberOfQuestions key
         clearTipiAnswers();

@@ -25,7 +25,7 @@ public class FirstLaunch00WelcomeActivity extends FirstLaunchActivity {
 
     @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "FirstLaunch00WelcomeActivity";
-    private static CountDownTimer Animation_Timer;
+    private CountDownTimer animationTimer;
 
     /**
      * onCreate
@@ -37,18 +37,17 @@ public class FirstLaunch00WelcomeActivity extends FirstLaunchActivity {
         Logger.v(TAG, "Creating");
         super.onCreate(savedInstanceState);
 
-
         launchAnimation();
-            }
+    }
 
-    public void launchAnimation(){
-        ImageView MyImageView = (ImageView)findViewById(R.id.firstLaunchWelcome_helice);
-        MyImageView.setBackgroundResource(R.drawable.animated_helix);
-        AnimationDrawable AniFrame = (AnimationDrawable) MyImageView.getBackground();
-        AniFrame.start();
+    private void launchAnimation() {
+        ImageView helixView = (ImageView)findViewById(R.id.firstLaunchWelcome_helix);
+        helixView.setBackgroundResource(R.drawable.animated_helix);
+        AnimationDrawable animationFrame = (AnimationDrawable)helixView.getBackground();
+        animationFrame.start();
 
-        int duration =  getResources().getInteger(R.integer.welcome_animation_duration);
-        Animation_Timer =  new CountDownTimer(2000, 1000) {
+        int duration = getResources().getInteger(R.integer.welcome_animation_duration);
+        animationTimer = new CountDownTimer(duration, 1000) {
             public void onTick(long millisUntilFinished) {}
             public void onFinish() {
                 if (statusManager.isTipiQuestionnaireCompleted()) {
@@ -56,7 +55,7 @@ public class FirstLaunch00WelcomeActivity extends FirstLaunchActivity {
                 } else {
                     launchNextActivity(FirstLaunch01DescriptionActivity.class);
                 }
-                Animation_Timer.cancel();
+                animationTimer.cancel();
             }
         }.start();
     }
@@ -67,11 +66,17 @@ public class FirstLaunch00WelcomeActivity extends FirstLaunchActivity {
      */
     @Override
     protected void launchNextActivity(Class activity) {
-        Logger.v(TAG, "Launching next activity, custom transition");
+        Logger.v(TAG, "Launching next activity, fade-out-fade-in transition");
         Intent intent = new Intent(this, activity);
-        intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         overridePendingTransition(R.anim.mainfadein, R.anim.splashfadeout);
+    }
+
+    @Override
+    public void backHook() {
+        Logger.v(TAG, "Cancelling animation and leaving default transition");
+        animationTimer.cancel();
     }
 
 }

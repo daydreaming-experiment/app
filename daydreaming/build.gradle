@@ -4,7 +4,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.12.+' // 11
+        classpath 'com.android.tools.build:gradle:0.12.+'
     }
 }
 
@@ -18,14 +18,28 @@ android {
     compileSdkVersion 16
     buildToolsVersion "20.0.0"
 
+    defaultConfig {
+        versionCode 31
+        versionName "0.15.1"
+    }
+
     buildTypes {
         debug {
             applicationIdSuffix ".debug"
+            versionNameSuffix "+debug"
         }
 
         qa.initWith(buildTypes.debug)
         qa {
             applicationIdSuffix ".qa"
+            versionNameSuffix "+qa"
+        }
+
+        applicationVariants.all { variant ->
+            def file = variant.outputFile
+            variant.outputFile = new File(file.parent,
+                                          file.name.replace(variant.buildType.name + ".apk",
+                                                            defaultConfig.versionName + "+" + variant.buildType.name + ".apk"))
         }
     }
 
