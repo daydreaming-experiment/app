@@ -10,7 +10,7 @@ public class ServerParametersJson {
     @SuppressWarnings("UnusedDeclaration")
     private static String TAG = "ServerParametersJson";
 
-    public String expId = "not given";
+    public String backendExpId = "not given";
     public int expDuration = -1;
     public String urlBackendApi = "";
     public String urlResultsPage = "";
@@ -52,8 +52,8 @@ public class ServerParametersJson {
         return expDuration;
     }
 
-    public synchronized String getExpId() {
-        return expId;
+    public synchronized String getBackendExpId() {
+        return backendExpId;
     }
 
     public synchronized String getUrlBackendApi() {
