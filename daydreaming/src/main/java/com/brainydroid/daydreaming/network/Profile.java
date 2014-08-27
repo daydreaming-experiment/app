@@ -15,8 +15,9 @@ public class Profile {
     @Expose private String id;
     @SuppressWarnings({"FieldCanBeLocal", "UnusedDeclaration"})
     @Expose private String vk_pem;
-    @SuppressWarnings({"FieldCanBeLocal", "UnusedDeclaration"})
-    @Expose private String exp_id = ServerConfig.EXP_ID;
+    //@SuppressWarnings({"FieldCanBeLocal", "UnusedDeclaration"})
+    //@Expose private String exp_id = ServerConfig.EXP_ID;
+
     @SuppressWarnings("FieldCanBeLocal")
     @Expose private ProfileData profile_data;
 

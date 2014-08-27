@@ -20,6 +20,7 @@ import com.brainydroid.daydreaming.network.SntpClientCallback;
 import com.brainydroid.daydreaming.ui.AlphaLinearLayout;
 import com.brainydroid.daydreaming.ui.firstlaunchsequence.FirstLaunch00WelcomeActivity;
 import com.brainydroid.daydreaming.ui.FontUtils;
+import android.content.SharedPreferences;
 
 import com.google.inject.Inject;
 import roboguice.activity.RoboFragmentActivity;
@@ -30,6 +31,8 @@ import roboguice.inject.InjectView;
 public class DashboardActivity extends RoboFragmentActivity {
 
     private static String TAG = "DashboardActivity";
+
+    private static String EXP_DURATION = "expDuration";
 
     @Inject StatusManager statusManager;
     @Inject SntpClient sntpClient;
@@ -42,6 +45,7 @@ public class DashboardActivity extends RoboFragmentActivity {
     @InjectView(R.id.dashboard_about_layout) AlphaLinearLayout aboutLayout;
 
     private boolean testModeThemeActivated = false;
+    private SharedPreferences sharedPreferences;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -166,7 +170,9 @@ public class DashboardActivity extends RoboFragmentActivity {
         final int daysElapsed = (int)((timestampNow - expStartTimestamp) /
                 (24 * 60 * 60 * 1000));
         Logger.i(TAG, "Days elapsed: {}", daysElapsed);
-        final int daysToGo = ServerConfig.EXP_DURATION_DAYS - daysElapsed;
+        int expDurationDays = sharedPreferences.getInt(EXP_DURATION,0);
+
+        final int daysToGo = expDurationDays - daysElapsed;
         Logger.i(TAG, "Days to go: {}", daysToGo);
 
         Runnable timeElapsedUpdater = new Runnable() {
