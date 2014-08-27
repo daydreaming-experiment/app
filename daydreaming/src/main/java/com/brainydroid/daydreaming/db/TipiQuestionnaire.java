@@ -64,26 +64,3 @@ public class TipiQuestionnaire {
     }
 }
 
-/**
- *
- * A question object contains the following mandatory properties:
-
- name: a string defining a name for the question (used to identify questions when retrieving the uploaded results; it's recommended that question names be unique across questions).
- category: a string representing the question's category.
- subCategory: a string representing the question's sub-category (both are used for classification purposes when analysing results).
- slot: a string representing both the question's group and group position (see below the explanation about question groups and slots).
- details: a JSON object containing the details of the question, as detailed in the following rule.
-
-
- A details object contains the following mandatory properties:
-
- type: a string representing the type of question asked; can be either "MultipleChoice", "Slider", or "StarRating" (star-ratings appear like sliders in the app, but behave in a discreet manner instead of continuous).
- If type is "MultipleChoice", the following properties are mandatory:
- text: a string containing the actual question asked to the user.
- choices: a list of strings, each one being a choice proposed to the user (the order is conserved).
- If type is either "Slider" or "StarRating", the following property is mandatory:
- subQuestions: a list of sub-question objects, as detailed in the following rule.
-
-
-
- **/
