@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.background.StatusManager;
+import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -53,6 +54,10 @@ public class ParametersStorage {
     private static String EXP_DURATION = "expDuration"; // no need to make global but listing is nice
     private static String BACKEND_EXP_ID = "backendExpId";
     private static String URL_BACKEND_API = "backendUrlApi";
+    private static String BACKEND_DB_NAME = "backendDbName";
+
+    private static String FIRST_LAUNCH =  "firstLaunch";
+
     private static String URL_RESULTS_PAGE = "resultsPageUrl";
     private static String WELCOME_TEXT = "welcomeText";
     private static String DESCRIPTION_TEXT = "descriptionText";
@@ -109,6 +114,12 @@ public class ParametersStorage {
     private synchronized void setBackendUrlApi(String urlBackendApi) {
         Logger.d(TAG, "{} - Setting urlBackendApi to {}", statusManager.getCurrentModeName(), urlBackendApi);
         eSharedPreferences.putString(statusManager.getCurrentModeName() + URL_BACKEND_API, urlBackendApi);
+        eSharedPreferences.commit();
+    }
+
+    private synchronized void setBackendDbName(String backendDbName) {
+        Logger.d(TAG, "{} - Setting backendDbName to {}", statusManager.getCurrentModeName(), backendDbName);
+        eSharedPreferences.putString(statusManager.getCurrentModeName() + BACKEND_DB_NAME, backendDbName);
         eSharedPreferences.commit();
     }
 
@@ -203,6 +214,18 @@ public class ParametersStorage {
         eSharedPreferences.remove(statusManager.getCurrentModeName() + QUESTIONS_N_SLOTS_PER_PROBE);
         eSharedPreferences.commit();
     }
+
+
+    // storing first launch as json, might be useful later on
+    // see here for retrievial http://stackoverflow.com/questions/7145606/how-android-sharedpreferences-save-store-object
+    public synchronized void setFirstLaunch(FirstLaunch firstLaunch){
+        Logger.d(TAG, "{0} - Setting FirstLaunch to {1}", statusManager.getCurrentModeName(), firstLaunch);
+        Gson gson = new Gson();
+        String json_firstLaunch = gson.toJson(firstLaunch);
+        eSharedPreferences.putString(statusManager.getCurrentModeName() + FIRST_LAUNCH, json_firstLaunch);
+        eSharedPreferences.commit();
+    }
+
 
     // get question from id in db
     public synchronized Question create(String questionName) {
@@ -351,23 +374,19 @@ public class ParametersStorage {
                         " slots defined in the questions as nSlotsPerProbe");
             }
 
-            // All is good, do the real import
+            // All is good, do the real import of all objects in the root
             flush();
             setParametersVersion(serverParametersJson.getVersion());
-            setExpDuration(serverParametersJson.getExpDuration());
             setBackendExpId(serverParametersJson.getBackendExpId());
+            setBackendDbName(serverParametersJson.getBackendDbName());
+            setExpDuration(serverParametersJson.getExpDuration());
             setBackendUrlApi(serverParametersJson.getBackendApiUrl());
             setResultsPageUrl(serverParametersJson.getResultsPageUrl());
-            setWelcomeText(serverParametersJson.getWelcomeText());
-            setDescriptionText(serverParametersJson.getDescriptionText());
-
-            // testing execution of json parsing for new grammar
-            FirstLaunch firstLaunch = serverParametersJson.getFirstLaunch();
-
-            profileStorage.setParametersVersion(version);
+            setFirstLaunch(serverParametersJson.getFirstLaunch());
+            setNSlotsPerProbe(nSlotsPerProbe);
             setSchedulingMinDelay(schedulingMinDelay);
             setSchedulingMeanDelay(schedulingMeanDelay);
-            setNSlotsPerProbe(nSlotsPerProbe);
+            // loading the questions
             add(serverParametersJson.getQuestionsArrayList());
 
         } catch (JsonSyntaxException e) {
