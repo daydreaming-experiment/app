@@ -36,4 +36,18 @@ public class SliderSubQuestion {
         return showLiveIndication;
     }
 
+    // -----------------------------------------
+
+    public synchronized void setText(String text_){
+        text = text_;
+    }
+
+    public synchronized void setHints(ArrayList<String> hints_){
+        hints = hints_;
+    }
+
+    public synchronized void setInitialPosition(int initialPosition_){
+        initialPosition = initialPosition_;
+    }
+
 }
