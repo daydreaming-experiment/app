@@ -70,8 +70,7 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
             Logger.d(TAG, "Launching next activity");
 //          launchNextActivity(
 //                  FirstLaunch04PersonalityQuestionnaireActivity.class);
-            launchNextActivity(
-                    FirstLaunch05MeasuresActivity.class);
+            launchNextActivity( FirstLaunch05MeasuresActivity.class);
         }
     }
 

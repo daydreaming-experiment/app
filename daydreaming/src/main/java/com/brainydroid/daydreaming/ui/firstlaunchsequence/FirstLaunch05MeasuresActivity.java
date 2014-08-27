@@ -241,7 +241,7 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
                     public void onClick(DialogInterface dialog,int id) {
                         //finishFirstLaunch();
                         //launchDashBoardActivity();
-                        downloadParameters();
+                        //downloadParameters();
                         statusManager.setTipiQuestionnaireCompleted();
                         statusManager.setFirstLaunchCompleted();
                         launchDashBoardActivity();
