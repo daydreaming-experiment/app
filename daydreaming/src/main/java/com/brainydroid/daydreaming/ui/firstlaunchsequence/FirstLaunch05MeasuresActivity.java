@@ -239,8 +239,14 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
                 .setCancelable(false)
                 .setPositiveButton("Yes, I got it", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog,int id) {
-                        finishFirstLaunch();
+                        //finishFirstLaunch();
+                        //launchDashBoardActivity();
+                        downloadParameters();
+                        statusManager.setTipiQuestionnaireCompleted();
+                        statusManager.setFirstLaunchCompleted();
                         launchDashBoardActivity();
+                        //launchNextActivity(FirstLaunch04PersonalityQuestionnaireActivity.class);
+
                     }
                 })
                 .setNegativeButton("Hmm, not really", new DialogInterface.OnClickListener() {

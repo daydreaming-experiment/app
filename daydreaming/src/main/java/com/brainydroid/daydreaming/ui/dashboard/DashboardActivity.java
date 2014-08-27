@@ -170,7 +170,7 @@ public class DashboardActivity extends RoboFragmentActivity {
         final int daysElapsed = (int)((timestampNow - expStartTimestamp) /
                 (24 * 60 * 60 * 1000));
         Logger.i(TAG, "Days elapsed: {}", daysElapsed);
-        int expDurationDays = sharedPreferences.getInt(EXP_DURATION,0);
+        int expDurationDays = 0; //sharedPreferences.getInt(EXP_DURATION,0);
 
         final int daysToGo = expDurationDays - daysElapsed;
         Logger.i(TAG, "Days to go: {}", daysToGo);
