@@ -64,6 +64,9 @@ public class ParametersStorage {
 
     private static String QUESTIONS_N_SLOTS_PER_PROBE = "questionsNSlotsPerProbe";
 
+    private static String TIPI_QUESTIONS_HINTS = "tipiQuestionsHints";
+    private static String TIPI_QUESTIONS_TEXTS = "tipiQuestionsTexts";
+
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor eSharedPreferences;
 
@@ -220,10 +223,27 @@ public class ParametersStorage {
     // see here for retrievial http://stackoverflow.com/questions/7145606/how-android-sharedpreferences-save-store-object
     public synchronized void setFirstLaunch(FirstLaunch firstLaunch){
         Logger.d(TAG, "{0} - Setting FirstLaunch to {1}", statusManager.getCurrentModeName(), firstLaunch);
+        // Save raw JSON
         Gson gson = new Gson();
         String json_firstLaunch = gson.toJson(firstLaunch);
         eSharedPreferences.putString(statusManager.getCurrentModeName() + FIRST_LAUNCH, json_firstLaunch);
         eSharedPreferences.commit();
+
+        // save tipi related
+        // saving the shared hints
+        String json_tipiHints = gson.toJson(firstLaunch.getTipiQuestionnaire().getHintsForAllSubQuestions());
+        eSharedPreferences.putString(statusManager.getCurrentModeName() + TIPI_QUESTIONS_HINTS, json_tipiHints);
+        eSharedPreferences.commit();
+
+        // saving the tipi question titles
+        ArrayList<String> tipiQuestionsTexts = new ArrayList<String>();
+        for (TipiQuestion tipiSubQuestion : firstLaunch.getTipiQuestionnaire().getTipiSubQuestions()){
+            tipiQuestionsTexts.add(tipiSubQuestion.getText());
+        }
+        String json_tipiTexts = gson.toJson(tipiQuestionsTexts);
+        eSharedPreferences.putString(statusManager.getCurrentModeName() + TIPI_QUESTIONS_TEXTS, json_tipiTexts);
+        eSharedPreferences.commit();
+
     }
 
 

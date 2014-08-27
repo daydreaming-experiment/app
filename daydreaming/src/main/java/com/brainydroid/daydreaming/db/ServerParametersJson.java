@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class ServerParametersJson {
 
-    @SuppressWarnings("UnusedDeclaration")
+    //default Parameters
     private static String TAG = "ServerParametersJson";
     public static String DEFAULT_PARAMETERS_VERSION = "-1";
     public static int DEFAULT_N_SLOTS_PER_PROBE = -1;
@@ -25,7 +25,6 @@ public class ServerParametersJson {
     public int nSlotsPerProbe = DEFAULT_N_SLOTS_PER_PROBE;
     public int schedulingMeanDelay = DEFAULT_SCHEDULING_MEAN_DELAY;
     public int schedulingMinDelay = DEFAULT_SCHEDULING_MIN_DELAY;
-
     ArrayList<Question> questions = new ArrayList<Question>();
     public String welcomeText = "not given";
     public String descriptionText = "not given";

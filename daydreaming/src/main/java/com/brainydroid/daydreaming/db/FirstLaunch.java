@@ -28,6 +28,11 @@ public class FirstLaunch {
         return descriptionText;
     }
 
+    public synchronized TipiQuestionnaire getTipiQuestionnaire() {
+        return tipiQuestionnaire;
+    }
+
+
     public synchronized void setWelcomeText(String welcomeText) {
         this.welcomeText = welcomeText;
     }
