@@ -126,6 +126,10 @@ public class DashboardActivity extends RoboFragmentActivity {
     }
 
     private void updateRunningTime() {
+        if (!statusManager.areParametersUpdated()) {
+            Logger.i(TAG, "parameters not downloaded yet, not updating timestamp");
+            return;
+        }
         // Set the running time from last trustworthy timestamp
         long lastNtpTimestamp = statusManager.getLatestNtpTime();
         updateRunningTimeFromTimestamp(lastNtpTimestamp);
@@ -147,7 +151,6 @@ public class DashboardActivity extends RoboFragmentActivity {
                     Logger.i(TAG, "NTP request failed, sntpClient is null");
                 }
             }
-
         };
 
         sntpClient.asyncRequestTime(callback);

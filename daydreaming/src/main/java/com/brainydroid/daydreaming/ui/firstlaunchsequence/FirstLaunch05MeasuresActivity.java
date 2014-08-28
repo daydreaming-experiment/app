@@ -243,7 +243,7 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
                         // TODO[seb]: check all this (commits 0f4e485f4bafc1788b7d84955c5056a6d977c26b and 2d7e45287ce878a4886144fdef33917fae589812
                         //finishFirstLaunch();
                         //launchDashBoardActivity();
-                        //downloadParameters();
+                        downloadParameters();
                         statusManager.setTipiQuestionnaireCompleted();
                         statusManager.setFirstLaunchCompleted();
                         launchDashBoardActivity();
