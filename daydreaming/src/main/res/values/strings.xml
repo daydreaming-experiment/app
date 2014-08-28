@@ -232,5 +232,8 @@
 
 ]]>
     </string>
+    <string name="credits_text_title">CREDITS</string>
+    <string name="credits_text_main">Here are our \n supporting institutions</string>
+    <string name="dashboard_button_text_credits">Credits</string>
 
 </resources>
