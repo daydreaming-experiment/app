@@ -126,8 +126,9 @@ public class DashboardActivity extends RoboFragmentActivity {
     }
 
     private void updateRunningTime() {
+        // TODO: this should update automatically once parameters are updated (through an observer)
         if (!statusManager.areParametersUpdated()) {
-            Logger.i(TAG, "parameters not downloaded yet, not updating timestamp");
+            Logger.i(TAG, "Parameters not downloaded yet, not updating timestamp");
             return;
         }
         // Set the running time from last trustworthy timestamp
