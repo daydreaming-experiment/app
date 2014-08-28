@@ -127,7 +127,6 @@ public class DashboardActivity extends RoboFragmentActivity {
         overridePendingTransition(R.anim.push_top_in, R.anim.push_top_out);
     }
 
-
     //TODO: Decide what should happen when results button is clicked.
     public void  onClick_SeeResults(
             @SuppressWarnings("UnusedParameters") View view){
