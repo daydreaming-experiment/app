@@ -22,36 +22,36 @@ public class TipiQuestionnaire {
         this.text = text;
     }
 
-    // TODO[seb]: check
-    public synchronized ArrayList<SliderSubQuestion> buildQuestion() {
-        /**
-        * function to return Question object from TipiQuestion Object, that is, add fields
-        */
-        Logger.v(TAG, "Setting subCategory");
-
-        Question question = new Question();
-        question.setName("tipiQuestion");
-        question.setCategory("tipiQuestion");
-        question.setSubCategory("tipiQuestion");
-        //question.setSlot();
-
-        // construction details for the list of tipiQuestions
-        SliderQuestionDetails tipiQuestionDetails = new SliderQuestionDetails();
-
-        // constructing the subQuestion for the details
-        ArrayList<SliderSubQuestion> subQuestions = new ArrayList<SliderSubQuestion>();
-
-        // looping over the tipiQuestions to construct SliderSubQuestion
-        SliderSubQuestion sliderSubQuestion;
-        final ArrayList<TipiQuestion> tipiSubQuestions = this.tipiQuestions;
-        for (TipiQuestion tipiQuestion : tipiSubQuestions) {
-            sliderSubQuestion = new SliderSubQuestion();
-            sliderSubQuestion.setHints(hintsForAllSubQuestions);
-            sliderSubQuestion.setText(tipiQuestion.getText());
-            subQuestions.add(sliderSubQuestion);
-        }
-        return subQuestions;
-    }
+    // TODO[seb]: check, it mixes SliderSubQuestions which shouldn't be used. Do when implementing tipi layout inflation
+//    public synchronized ArrayList<SliderSubQuestion> buildQuestion() {
+//        /**
+//        * function to return Question object from TipiQuestion Object, that is, add fields
+//        */
+//        Logger.v(TAG, "Setting subCategory");
+//
+//        Question question = new Question();
+//        question.setName("tipiQuestion");
+//        question.setCategory("tipiQuestion");
+//        question.setSubCategory("tipiQuestion");
+//        //question.setSlot();
+//
+//        // construction details for the list of tipiQuestions
+//        SliderQuestionDetails tipiQuestionDetails = new SliderQuestionDetails();
+//
+//        // constructing the subQuestion for the details
+//        ArrayList<SliderSubQuestion> subQuestions = new ArrayList<SliderSubQuestion>();
+//
+//        // looping over the tipiQuestions to construct SliderSubQuestion
+//        SliderSubQuestion sliderSubQuestion;
+//        final ArrayList<TipiQuestion> tipiSubQuestions = this.tipiQuestions;
+//        for (TipiQuestion tipiQuestion : tipiSubQuestions) {
+//            sliderSubQuestion = new SliderSubQuestion();
+//            sliderSubQuestion.setHints(hintsForAllSubQuestions);
+//            sliderSubQuestion.setText(tipiQuestion.getText());
+//            subQuestions.add(sliderSubQuestion);
+//        }
+//        return subQuestions;
+//    }
 
     public synchronized void validateInitialization() throws JsonParametersException {
         Logger.v(TAG, "Validating tipiQuestionnaire");
