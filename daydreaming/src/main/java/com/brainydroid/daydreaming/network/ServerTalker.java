@@ -14,20 +14,18 @@ import java.security.KeyPair;
 public class ServerTalker {
 
     private static String TAG = "ServerTalker";
-    private SharedPreferences sharedPreferences;
 
+    @Inject ParametersStorage parametersStorage;
     @Inject ProfileFactory profileFactory;
     @Inject CryptoStorage cryptoStorage;
     @Inject Json json;
 
     private synchronized String getPostResultUrl() {
-        String backendApiUrl = sharedPreferences.getString(ParametersStorage.BACKEND_API_URL, "");
-        return backendApiUrl + ServerConfig.YE_URL_RESULTS;
+        return parametersStorage.getBackendApiUrl() + ServerConfig.YE_URL_RESULTS;
     }
 
     private synchronized String getPutProfileUrl() {
-        String backendApiUrl = sharedPreferences.getString(ParametersStorage.BACKEND_API_URL, "");
-        return backendApiUrl + ServerConfig.YE_URL_PROFILES + "/"
+        return parametersStorage.getBackendApiUrl() + ServerConfig.YE_URL_PROFILES + "/"
                 + cryptoStorage.getMaiId();
     }
 
@@ -41,8 +39,7 @@ public class ServerTalker {
         String jsonPayload = json.toJsonExposed(profileWrap);
         String signedJson = cryptoStorage.signJws(jsonPayload, keyPair.getPrivate());
 
-        String backendApiUrl = sharedPreferences.getString(ParametersStorage.BACKEND_API_URL, "");
-        String postUrl = backendApiUrl +
+        String postUrl = parametersStorage.getBackendApiUrl() +
                 ServerConfig.YE_URL_PROFILES;
 
         HttpPostData postData = new HttpPostData(postUrl, callback);
