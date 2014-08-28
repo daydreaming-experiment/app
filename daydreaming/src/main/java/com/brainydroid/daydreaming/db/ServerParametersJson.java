@@ -8,6 +8,7 @@ import java.util.HashSet;
 
 public class ServerParametersJson {
 
+    @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "ServerParametersJson";
 
     public static String DEFAULT_PARAMETERS_VERSION = "n/c";

@@ -4,6 +4,7 @@ import com.brainydroid.daydreaming.background.Logger;
 
 public class FirstLaunch {
 
+    @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "FirstLaunch";
 
     public static String DEFAULT_WELCOME_TEXT = "n/c";

@@ -68,6 +68,8 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
                     educationSpinner.getSelectedItem().toString());
 
             Logger.d(TAG, "Launching next activity");
+
+            // TODO[seb]: check all this (commits 0f4e485f4bafc1788b7d84955c5056a6d977c26b and 2d7e45287ce878a4886144fdef33917fae589812
 //          launchNextActivity(
 //                  FirstLaunch04PersonalityQuestionnaireActivity.class);
             launchNextActivity( FirstLaunch05MeasuresActivity.class);
