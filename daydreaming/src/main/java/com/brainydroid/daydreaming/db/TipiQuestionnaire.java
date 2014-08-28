@@ -12,7 +12,7 @@ public class TipiQuestionnaire {
 
     private String text = DEFAULT_TEXT;
     private ArrayList<String> hintsForAllSubQuestions = null;
-    private ArrayList<TipiQuestion> tipiQuestions = null;
+    private ArrayList<TipiQuestion> subQuestions = null;
 
     public synchronized String getText() {
         return text;
@@ -70,11 +70,11 @@ public class TipiQuestionnaire {
             );
         }
 
-        // Check tipiQuestions
-        if (tipiQuestions.size() == 0) {
+        // Check subQuestions
+        if (subQuestions.size() == 0) {
             throw new JsonParametersException("tipiQuestionnaire must have at least one question");
         }
-        for (TipiQuestion q : tipiQuestions) {
+        for (TipiQuestion q : subQuestions) {
             q.validateInitialization();
         }
     }
