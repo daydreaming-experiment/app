@@ -117,6 +117,17 @@ public class DashboardActivity extends RoboFragmentActivity {
 //        overridePendingTransition(R.anim.push_top_in, R.anim.push_top_out);
     }
 
+    /**
+     * Launching a credit activity
+     */
+    public void onClick_OpenCredits(
+            @SuppressWarnings("UnusedParameters") View view){
+        Intent intent = new Intent(this, CreditsActivity.class);
+        startActivity(intent);
+        overridePendingTransition(R.anim.push_top_in, R.anim.push_top_out);
+    }
+
+
     //TODO: Decide what should happen when results button is clicked.
     public void  onClick_SeeResults(
             @SuppressWarnings("UnusedParameters") View view){
