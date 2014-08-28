@@ -110,7 +110,7 @@ public class CryptoStorage {
                 Logger.d(TAG, "{} - Registration HttpConversation finished",
                         statusManager.getCurrentModeName());
 
-                if (! statusManager.getCurrentModeName().equals(registrationStartAppMode)) {
+                if (!statusManager.getCurrentModeName().equals(registrationStartAppMode)) {
                     Logger.i(TAG, "App mode has changed from {0} to {1} during "
                             + "registration, aborting crypto init.", registrationStartAppMode,
                             statusManager.getCurrentModeName());
@@ -126,9 +126,10 @@ public class CryptoStorage {
                     ProfileWrapper registrationAnswer = json.fromJson(serverAnswer,
                             ProfileWrapper.class);
                     // TODO: handle the case where returned JSON is in fact an error.
-                    Logger.td(context, "Server answer: ",
-                            serverAnswer.replace("{", "'{'")
-                                    .replace("}", "'}'"));
+                    Logger.i(TAG, "Server answer:\n"
+                            + serverAnswer.replace("{", "'{'").replace("}", "'}'"));
+                    Logger.td(context, "Server answer:\n"
+                            + serverAnswer.replace("{", "'{'").replace("}", "'}'"));
                     String maiId = registrationAnswer.getProfile().getId();
                     storageSuccess = storeKeyPairAndMaiId(kp, maiId);
 
@@ -139,6 +140,8 @@ public class CryptoStorage {
                         Logger.e(TAG, "{} - Registration successful on server " +
                                 "but failed to store locally", statusManager.getCurrentModeName());
                     }
+                } else {
+                    Logger.w(TAG, "Error while registering on server");
                 }
 
                 parentCallback.onCryptoStorageReady(success && storageSuccess);
