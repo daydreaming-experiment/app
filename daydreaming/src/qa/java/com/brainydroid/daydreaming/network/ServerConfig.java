@@ -11,6 +11,4 @@ public class ServerConfig {
     public static String PARAMETERS_URL_BASE =
             "https://raw.github.com/daydreaming-experiment/parameters/master/grammar-v2.1/{}.json";
 
-
-
 }
