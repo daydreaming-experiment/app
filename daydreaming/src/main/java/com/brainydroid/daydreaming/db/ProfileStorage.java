@@ -28,7 +28,7 @@ public class ProfileStorage {
     private static String PROFILE_TIPI_ANSWER_PREFIX = "profileTipiAnswer";
     private static String PROFILE_TIPI_NUMBER_OF_ANSWERS =
             "profileTipiNumberOfAnswers";
-    private static String PROFILE_PARAMETERS_VERSION =
+    public static String PROFILE_PARAMETERS_VERSION =
             "profileParametersVersion";
 
     private boolean hasChangedSinceSyncStart = false;

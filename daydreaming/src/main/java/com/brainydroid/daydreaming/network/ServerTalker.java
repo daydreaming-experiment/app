@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.Json;
+import com.brainydroid.daydreaming.db.ParametersStorage;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -15,19 +16,17 @@ public class ServerTalker {
     private static String TAG = "ServerTalker";
     private SharedPreferences sharedPreferences;
 
-    private static String URL_BACKEND_API = "backendUrlApi";
-
     @Inject ProfileFactory profileFactory;
     @Inject CryptoStorage cryptoStorage;
     @Inject Json json;
 
     private synchronized String getPostResultUrl() {
-        String backendApiUrl = sharedPreferences.getString(URL_BACKEND_API,"");
+        String backendApiUrl = sharedPreferences.getString(ParametersStorage.BACKEND_API_URL, "");
         return backendApiUrl + ServerConfig.YE_URL_RESULTS;
     }
 
     private synchronized String getPutProfileUrl() {
-        String backendApiUrl = sharedPreferences.getString(URL_BACKEND_API,"");
+        String backendApiUrl = sharedPreferences.getString(ParametersStorage.BACKEND_API_URL, "");
         return backendApiUrl + ServerConfig.YE_URL_PROFILES + "/"
                 + cryptoStorage.getMaiId();
     }
@@ -42,7 +41,7 @@ public class ServerTalker {
         String jsonPayload = json.toJsonExposed(profileWrap);
         String signedJson = cryptoStorage.signJws(jsonPayload, keyPair.getPrivate());
 
-        String backendApiUrl = sharedPreferences.getString(URL_BACKEND_API,"");
+        String backendApiUrl = sharedPreferences.getString(ParametersStorage.BACKEND_API_URL, "");
         String postUrl = backendApiUrl +
                 ServerConfig.YE_URL_PROFILES;
 

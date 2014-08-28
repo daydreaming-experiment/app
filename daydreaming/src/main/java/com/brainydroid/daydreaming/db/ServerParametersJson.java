@@ -1,7 +1,5 @@
 package com.brainydroid.daydreaming.db;
 
-import com.google.gson.JsonObject;
-
 import java.lang.String;
 import java.util.ArrayList;
 
@@ -19,7 +17,7 @@ public class ServerParametersJson {
     public String backendExpId = "not given";
     public String backendDbName = "not given";
     public int expDuration = -1;
-    public String backendUrlApi = "";
+    public String backendApiUrl = "";
     public String resultsPageUrl = "";
     public FirstLaunch firstLaunch = null;
     public int nSlotsPerProbe = DEFAULT_N_SLOTS_PER_PROBE;
@@ -59,7 +57,7 @@ public class ServerParametersJson {
     }
 
     public synchronized String getBackendApiUrl() {
-        return backendUrlApi;
+        return backendApiUrl;
     }
 
     public synchronized String getResultsPageUrl() {
