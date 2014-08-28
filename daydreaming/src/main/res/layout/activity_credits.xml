@@ -89,7 +89,6 @@
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/imageView3"
                         android:src="@drawable/icon_terms"
                         android:padding="5dp" />
 
@@ -98,8 +97,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="center_horizontal"
                         android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="Text"
-                        android:id="@+id/textView3" />
+                        android:text="Text" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -110,7 +108,6 @@
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/imageView4"
                         android:src="@drawable/icon_terms"
                         android:padding="5dp" />
 
@@ -119,8 +116,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="center_horizontal"
                         android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="Text"
-                        android:id="@+id/textView3" />
+                        android:text="Text" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -131,7 +127,6 @@
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/imageView4"
                         android:src="@drawable/icon_terms"
                         android:padding="5dp" />
 
@@ -140,8 +135,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="center_horizontal"
                         android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="Text"
-                        android:id="@+id/textView3" />
+                        android:text="Text" />
                 </LinearLayout>
 
 
@@ -160,7 +154,6 @@
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/imageView4"
                         android:src="@drawable/icon_terms"
                         android:padding="5dp" />
 
@@ -169,8 +162,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="center_horizontal"
                         android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="Text"
-                        android:id="@+id/textView3" />
+                        android:text="Text" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -190,8 +182,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="center_horizontal"
                         android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="Text"
-                        android:id="@+id/textView3" />
+                        android:text="Text" />
                 </LinearLayout>
 
 
