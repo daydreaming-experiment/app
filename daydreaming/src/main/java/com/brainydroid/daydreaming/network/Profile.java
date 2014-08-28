@@ -15,7 +15,6 @@ public class Profile {
     @Expose private String id;
     @SuppressWarnings({"FieldCanBeLocal", "UnusedDeclaration"})
     @Expose private String vk_pem;
-    // TODO[seb]: exp_id field must be assigned before profile is posted to server
     @SuppressWarnings({"FieldCanBeLocal", "UnusedDeclaration"})
     @Expose private String exp_id;
 
@@ -25,13 +24,16 @@ public class Profile {
     @Inject ProfileWrapperFactory profileWrapperFactory;
 
     @AssistedInject
-    public Profile(@Assisted String vkPem) {
-        Logger.v(TAG, "Creating a Profile instance with only vkPem");
+    public Profile(@Assisted("expId") String expId,
+                   @Assisted("vkPem") String vkPem) {
+        Logger.v(TAG, "Creating a Profile instance with only expId and vkPem");
+        exp_id = expId;
         vk_pem = vkPem;
     }
 
     @AssistedInject
     public Profile(ProfileDataFactory profileDataFactory,
+                   @Assisted("expId") String expId,
                    @Assisted("age") String age,
                    @Assisted("gender") String gender,
                    @Assisted("education") String education,
@@ -41,6 +43,7 @@ public class Profile {
                    @Assisted("appVersionCode") int appVersionCode,
                    @Assisted("mode") String mode) {
         Logger.v(TAG, "Creating a Profile instance with detailed data");
+        this.exp_id = expId;
         this.profile_data = profileDataFactory.create(age, gender, education,
                 tipiAnswers, parametersVersion, appVersionName, appVersionCode, mode);
     }

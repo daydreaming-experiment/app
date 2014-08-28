@@ -193,7 +193,8 @@ public class ProfileStorage {
 
     public Profile getProfile() {
         Logger.d(TAG, "Building Profile instance from saved data");
-        return profileFactory.create(getAge(), getGender(), getEducation(),
+        return profileFactory.create(parametersStorageProvider.get().getBackendExpId(),
+                getAge(), getGender(), getEducation(),
                 getTipiAnswers(), getParametersVersion(), getAppVersionName(),
                 getAppVersionCode(), statusManager.getCurrentModeName());
     }
