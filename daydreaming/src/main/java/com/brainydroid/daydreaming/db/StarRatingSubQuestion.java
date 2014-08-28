@@ -1,5 +1,7 @@
 package com.brainydroid.daydreaming.db;
 
+import com.brainydroid.daydreaming.background.Logger;
+
 import java.util.ArrayList;
 
 public class StarRatingSubQuestion {
@@ -46,6 +48,26 @@ public class StarRatingSubQuestion {
 
     public synchronized boolean getShowLiveIndication() {
         return showLiveIndication;
+    }
+
+    public synchronized void validateInitialization() throws JsonParametersException {
+        Logger.v(TAG, "Validating subQuestion");
+
+        if (text == null) {
+            throw new JsonParametersException("text can't be null in StarRatingSubQuestion");
+        }
+        if (numStars < 2) {
+            throw new JsonParametersException("There must be at least two possible stars in "
+                    + "StarRatingSubQuestion");
+        }
+        if (stepSize <= 0) {
+            throw new JsonParametersException("stepSize must be strictly positive in "
+                    + "StarRatingSubQuestion");
+        }
+        if (initialRating < 0 || initialRating > numStars) {
+            throw new JsonParametersException("initialRating must be between 0 and numStars in "
+                    + "StarRatingSubQuestion");
+        }
     }
 
 }

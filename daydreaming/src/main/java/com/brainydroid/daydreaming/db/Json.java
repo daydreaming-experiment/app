@@ -1,6 +1,7 @@
 package com.brainydroid.daydreaming.db;
 
 import android.location.Location;
+
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.network.JWSSignature;
 import com.brainydroid.daydreaming.network.JWSSignatureSerializer;
@@ -9,7 +10,6 @@ import com.google.gson.GsonBuilder;
 import com.google.inject.Singleton;
 
 import javax.inject.Inject;
-import java.util.Collection;
 
 /**
  * Singleton JSON serializer and deserializer to centralize registration of
@@ -62,10 +62,7 @@ public class Json {
                 LocationDeserializer locationDeserializer,
                 LocationSerializer locationSerializer,
                 JWSSignatureSerializer jwsSignatureSerializer,
-                QuestionSerializer questionSerializer,
-                FirstLaunchDeserializer firstLaunchDeserializer,
-                TipiQuestionnaireDeserializer tipiQuestionnaireDeserializer
-                ) {
+                QuestionSerializer questionSerializer) {
         Logger.v(TAG, "Building Gson instances");
 
         // Register all our type adapters
@@ -80,8 +77,6 @@ public class Json {
         gsonBuilder.registerTypeAdapter(JWSSignature.class,
                 jwsSignatureSerializer);
         gsonBuilder.registerTypeAdapter(Question.class, questionSerializer);
-        gsonBuilder.registerTypeAdapter(FirstLaunch.class, firstLaunchDeserializer);
-        gsonBuilder.registerTypeAdapter(TipiQuestionnaire.class, tipiQuestionnaireDeserializer);
 
         // Build the two Gson instances
         gson = gsonBuilder.create();

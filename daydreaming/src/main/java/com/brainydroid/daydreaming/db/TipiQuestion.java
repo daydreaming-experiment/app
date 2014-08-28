@@ -1,26 +1,35 @@
 package com.brainydroid.daydreaming.db;
 
-/**
- * Created by vincent on 25/08/14.
- */
+import com.brainydroid.daydreaming.background.Logger;
+
 public class TipiQuestion {
-    // class is a literal implementation of object structure in the grammar-v2.1 definition
 
     private static String TAG = "TipiQuestion";
 
-    private String text = "";
-    private Integer initialPosition = 50;
+    public static String DEFAULT_TEXT = "n/c";
+    public static int DEFAULT_INITIAL_POSITION = 50;
 
-    public static final String TIPI_QUESTION_CATEGORY = "TipiQuestion";
-    public static final String TIPI_QUESTION_SUBCATEGORY = "";
+    private String text = DEFAULT_TEXT;
+    private int initialPosition = DEFAULT_INITIAL_POSITION;
 
     public synchronized String getText(){
         return text;
     }
 
-    public synchronized int getInitialPosition(){
+    public synchronized int getInitialPosition() {
         return initialPosition;
     }
 
+    public synchronized void validateInitialization() throws JsonParametersException {
+        Logger.v(TAG, "Validating tipiQuestion");
+
+        if (text.equals(DEFAULT_TEXT)) {
+            throw new JsonParametersException("text in tipiQuestion is the default text");
+        }
+        if (initialPosition < 0 || initialPosition > 100) {
+            throw new JsonParametersException("initialPosition in tipiQuestion must be "
+                    + "between 0 and 100");
+        }
+    }
 
 }

@@ -1,5 +1,7 @@
 package com.brainydroid.daydreaming.db;
 
+import com.brainydroid.daydreaming.background.Logger;
+
 import java.util.ArrayList;
 
 public class SliderSubQuestion {
@@ -48,6 +50,18 @@ public class SliderSubQuestion {
 
     public synchronized void setInitialPosition(int initialPosition_){
         initialPosition = initialPosition_;
+    }
+
+    public synchronized void validateInitialization() throws JsonParametersException {
+        Logger.v(TAG, "Validating subQuestion");
+
+        if (text == null) {
+            throw new JsonParametersException("text can't be null in SliderSubQuestion");
+        }
+        if (initialPosition < 0 || initialPosition > 100) {
+            throw new JsonParametersException("initialPosition must be between 0 and 100 in "
+                    + "SliderSubQuestion");
+        }
     }
 
 }

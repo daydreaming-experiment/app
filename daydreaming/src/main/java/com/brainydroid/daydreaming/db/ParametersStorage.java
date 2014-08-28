@@ -5,9 +5,9 @@ import android.content.ContentValues;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.background.StatusManager;
-import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -35,8 +35,6 @@ public class ParametersStorage {
             "questionSystemTimestamp";
 
     private static String TABLE_QUESTIONS = "Questions";
-    private static String TIPI_QUESTIONS = "TipiQuestions";
-
 
     private static final String SQL_CREATE_TABLE_QUESTIONS =
             "CREATE TABLE IF NOT EXISTS {}" + TABLE_QUESTIONS + " (" +
@@ -49,22 +47,14 @@ public class ParametersStorage {
 
     public static String QUESTIONS_SCHEDULING_MIN_DELAY = "schedulingMinDelay";
     public static String QUESTIONS_SCHEDULING_MEAN_DELAY = "schedulingMeanDelay";
-
-    public static String EXP_DURATION = "expDuration"; // no need to make global but listing is nice
-    public static String BACKEND_EXP_ID = "backendExpId";
-    public static String BACKEND_API_URL = "backendApiUrl";
-    public static String BACKEND_DB_NAME = "backendDbName";
-
-    public static String FIRST_LAUNCH =  "firstLaunch";
-
-    public static String URL_RESULTS_PAGE = "resultsPageUrl";
-    public static String WELCOME_TEXT = "welcomeText";
-    public static String DESCRIPTION_TEXT = "descriptionText";
-
     public static String QUESTIONS_N_SLOTS_PER_PROBE = "questionsNSlotsPerProbe";
 
-    public static String TIPI_QUESTIONS_HINTS = "tipiQuestionsHints";
-    public static String TIPI_QUESTIONS_TEXTS = "tipiQuestionsTexts";
+    public static String BACKEND_EXP_ID = "backendExpId";
+    public static String BACKEND_DB_NAME = "backendDbName";
+    public static String EXP_DURATION = "expDuration";
+    public static String BACKEND_API_URL = "backendApiUrl";
+    public static String RESULTS_PAGE_URL = "resultsPageUrl";
+    public static String FIRST_LAUNCH =  "firstLaunch";
 
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor eSharedPreferences;
@@ -93,23 +83,28 @@ public class ParametersStorage {
         eSharedPreferences = sharedPreferences.edit();
     }
 
-    //setExpDuration    setBackendExpId    setBackendApiUrl    setResultsPageUrl
-    private synchronized void setExpDuration(int expDuration) {
-        Logger.d(TAG, "{} - Setting expDuration to {}", statusManager.getCurrentModeName(), expDuration);
-        eSharedPreferences.putInt(statusManager.getCurrentModeName() + EXP_DURATION, expDuration);
+    private synchronized void setBackendExpId(String backendExpId) {
+        Logger.d(TAG, "{} - Setting backendExpId to {}", statusManager.getCurrentModeName(), backendExpId);
+        eSharedPreferences.putString(statusManager.getCurrentModeName() + BACKEND_EXP_ID, backendExpId);
         eSharedPreferences.commit();
     }
 
-    private synchronized void setBackendExpId(String expId) {
-        Logger.d(TAG, "{} - Setting expId to {}", statusManager.getCurrentModeName(), expId);
-        eSharedPreferences.putString(statusManager.getCurrentModeName() + BACKEND_EXP_ID, expId);
-        eSharedPreferences.commit();
+    public synchronized String getBackendExpId() {
+        String backendExpId = sharedPreferences.getString(
+                statusManager.getCurrentModeName() + BACKEND_EXP_ID, null);
+        if (backendExpId == null) {
+            Logger.e(TAG, "{} - backendExpId is asked for but not set",
+                    statusManager.getCurrentMode());
+            throw new RuntimeException("backendExpId is asked for but not set");
+        }
+        Logger.d(TAG, "{0} - backendExpId is {1}", statusManager.getCurrentModeName(),
+                backendExpId);
+        return backendExpId;
     }
 
-    private synchronized void setBackendApiUrl(String backendApiUrl) {
-        Logger.d(TAG, "{} - Setting backendApiUrl to {}", statusManager.getCurrentModeName(), backendApiUrl);
-        eSharedPreferences.putString(statusManager.getCurrentModeName() + BACKEND_API_URL, backendApiUrl);
-        eSharedPreferences.commit();
+    private synchronized void clearBackendExpId() {
+        Logger.d(TAG, "{} - Clearing backendExpId", statusManager.getCurrentModeName());
+        eSharedPreferences.remove(statusManager.getCurrentModeName() + BACKEND_EXP_ID);
     }
 
     private synchronized void setBackendDbName(String backendDbName) {
@@ -118,22 +113,94 @@ public class ParametersStorage {
         eSharedPreferences.commit();
     }
 
-    private synchronized void setResultsPageUrl(String urlResultsPage) {
-        Logger.d(TAG, "{} - Setting urlResultsPage to {}", statusManager.getCurrentModeName(), urlResultsPage);
-        eSharedPreferences.putString(statusManager.getCurrentModeName() + URL_RESULTS_PAGE, urlResultsPage);
+    public synchronized String getBackendDbName() {
+        String backendDbName = sharedPreferences.getString(
+                statusManager.getCurrentModeName() + BACKEND_DB_NAME, null);
+        if (backendDbName == null) {
+            Logger.e(TAG, "{} - backendDbName is asked for but not set",
+                    statusManager.getCurrentMode());
+            throw new RuntimeException("backendDbName is asked for but not set");
+        }
+        Logger.d(TAG, "{0} - backendDbName is {1}", statusManager.getCurrentModeName(),
+                backendDbName);
+        return backendDbName;
+    }
+
+    private synchronized void clearBackendDbName() {
+        Logger.d(TAG, "{} - Clearing backendDbName", statusManager.getCurrentModeName());
+        eSharedPreferences.remove(statusManager.getCurrentModeName() + BACKEND_DB_NAME);
+    }
+
+    private synchronized void setExpDuration(int expDuration) {
+        Logger.d(TAG, "{} - Setting expDuration to {}", statusManager.getCurrentModeName(), expDuration);
+        eSharedPreferences.putInt(statusManager.getCurrentModeName() + EXP_DURATION, expDuration);
         eSharedPreferences.commit();
     }
 
-    private synchronized void setDescriptionText(String descriptionText) {
-        Logger.d(TAG, "{} - Setting urlResultsPage to {}", statusManager.getCurrentModeName(), descriptionText);
-        eSharedPreferences.putString(statusManager.getCurrentModeName() + DESCRIPTION_TEXT, descriptionText);
+    public synchronized int getExpDuration() {
+        int expDuration = sharedPreferences.getInt(
+                statusManager.getCurrentModeName() + EXP_DURATION, -1);
+        if (expDuration == -1) {
+            Logger.e(TAG, "{} - expDuration is asked for but not set",
+                    statusManager.getCurrentMode());
+            throw new RuntimeException("expDuration is asked for but not set");
+        }
+        Logger.d(TAG, "{0} - expDuration is {1}", statusManager.getCurrentModeName(),
+                expDuration);
+        return expDuration;
+    }
+
+    private synchronized void clearExpDuration() {
+        Logger.d(TAG, "{} - Clearing expDuration", statusManager.getCurrentModeName());
+        eSharedPreferences.remove(statusManager.getCurrentModeName() + EXP_DURATION);
+    }
+
+    private synchronized void setBackendApiUrl(String backendApiUrl) {
+        Logger.d(TAG, "{} - Setting backendApiUrl to {}", statusManager.getCurrentModeName(), backendApiUrl);
+        eSharedPreferences.putString(statusManager.getCurrentModeName() + BACKEND_API_URL, backendApiUrl);
         eSharedPreferences.commit();
     }
 
-    private synchronized void setWelcomeText(String welcomeText) {
-        Logger.d(TAG, "{} - Setting urlResultsPage to {}", statusManager.getCurrentModeName(), welcomeText);
-        eSharedPreferences.putString(statusManager.getCurrentModeName() + WELCOME_TEXT, welcomeText);
+    public synchronized String getBackendApiUrl() {
+        String backendApiUrl = sharedPreferences.getString(
+                statusManager.getCurrentModeName() + BACKEND_API_URL, null);
+        if (backendApiUrl == null) {
+            Logger.e(TAG, "{} - backendApiUrl is asked for but not set",
+                    statusManager.getCurrentMode());
+            throw new RuntimeException("backendApiUrl is asked for but not set");
+        }
+        Logger.d(TAG, "{0} - backendApiUrl is {1}", statusManager.getCurrentModeName(),
+                backendApiUrl);
+        return backendApiUrl;
+    }
+
+    private synchronized void clearBackendApiUrl() {
+        Logger.d(TAG, "{} - Clearing backendApiUrl", statusManager.getCurrentModeName());
+        eSharedPreferences.remove(statusManager.getCurrentModeName() + BACKEND_API_URL);
+    }
+
+    private synchronized void setResultsPageUrl(String resultsPageUrl) {
+        Logger.d(TAG, "{} - Setting resultsPageUrl to {}", statusManager.getCurrentModeName(), resultsPageUrl);
+        eSharedPreferences.putString(statusManager.getCurrentModeName() + RESULTS_PAGE_URL, resultsPageUrl);
         eSharedPreferences.commit();
+    }
+
+    public synchronized String getResultsPageUrl() {
+        String resultsPageUrl = sharedPreferences.getString(
+                statusManager.getCurrentModeName() + RESULTS_PAGE_URL, null);
+        if (resultsPageUrl == null) {
+            Logger.e(TAG, "{} - resultsPageUrl is asked for but not set",
+                    statusManager.getCurrentMode());
+            throw new RuntimeException("resultsPageUrl is asked for but not set");
+        }
+        Logger.d(TAG, "{0} - resultsPageUrl is {1}", statusManager.getCurrentModeName(),
+                resultsPageUrl);
+        return resultsPageUrl;
+    }
+
+    private synchronized void clearResultsPageUrl() {
+        Logger.d(TAG, "{} - Clearing resultsPageUrl", statusManager.getCurrentModeName());
+        eSharedPreferences.remove(statusManager.getCurrentModeName() + RESULTS_PAGE_URL);
     }
 
     private synchronized void setSchedulingMinDelay(int schedulingMinDelay) {
@@ -205,34 +272,35 @@ public class ParametersStorage {
         eSharedPreferences.commit();
     }
 
-
-    // storing first launch as json, might be useful later on
-    // see here for retrievial http://stackoverflow.com/questions/7145606/how-android-sharedpreferences-save-store-object
-    public synchronized void setFirstLaunch(FirstLaunch firstLaunch){
-        Logger.d(TAG, "{0} - Setting FirstLaunch to {1}", statusManager.getCurrentModeName(), firstLaunch);
+    public synchronized void setFirstLaunch(FirstLaunch firstLaunch) {
         // Save raw JSON
-        Gson gson = new Gson();
-        String json_firstLaunch = gson.toJson(firstLaunch);
-        eSharedPreferences.putString(statusManager.getCurrentModeName() + FIRST_LAUNCH, json_firstLaunch);
-        eSharedPreferences.commit();
+        String jsonFirstLaunch = json.toJson(firstLaunch);
+        Logger.d(TAG, "{0} - Setting (json)firstLaunch to {1}",
+                statusManager.getCurrentModeName(), jsonFirstLaunch);
 
-        // save tipi related
-        // saving the shared hints
-        String json_tipiHints = gson.toJson(firstLaunch.getTipiQuestionnaire().getHintsForAllSubQuestions());
-        eSharedPreferences.putString(statusManager.getCurrentModeName() + TIPI_QUESTIONS_HINTS, json_tipiHints);
+        eSharedPreferences.putString(statusManager.getCurrentModeName() + FIRST_LAUNCH, jsonFirstLaunch);
         eSharedPreferences.commit();
-
-        // saving the tipi question titles
-        ArrayList<String> tipiQuestionsTexts = new ArrayList<String>();
-        for (TipiQuestion tipiSubQuestion : firstLaunch.getTipiQuestionnaire().getTipiSubQuestions()){
-            tipiQuestionsTexts.add(tipiSubQuestion.getText());
-        }
-        String json_tipiTexts = gson.toJson(tipiQuestionsTexts);
-        eSharedPreferences.putString(statusManager.getCurrentModeName() + TIPI_QUESTIONS_TEXTS, json_tipiTexts);
-        eSharedPreferences.commit();
-
     }
 
+    public synchronized FirstLaunch getFirstLaunch() {
+        String jsonFirstLaunch = sharedPreferences.getString(
+                statusManager.getCurrentModeName() + FIRST_LAUNCH, null);
+        if (jsonFirstLaunch == null) {
+            Logger.e(TAG, "{} - (json)firstLaunch is asked for but not set",
+                    statusManager.getCurrentMode());
+            throw new RuntimeException("(json)firstLaunch is asked for but not set");
+        }
+        Logger.d(TAG, "{0} - (json)FirstLaunch is {1}", statusManager.getCurrentModeName(),
+                jsonFirstLaunch);
+
+        // Deserialize the JSON
+        return json.fromJson(jsonFirstLaunch, FirstLaunch.class);
+    }
+
+    private synchronized void clearFirstLaunch() {
+        Logger.d(TAG, "{} - Clearing firstLaunch", statusManager.getCurrentModeName());
+        eSharedPreferences.remove(statusManager.getCurrentModeName() + FIRST_LAUNCH);
+    }
 
     // get question from id in db
     public synchronized Question create(String questionName) {
@@ -258,8 +326,6 @@ public class ParametersStorage {
 
         return q;
     }
-
-
 
     public synchronized SlottedQuestions getSlottedQuestions() {
         Logger.d(TAG, "{} - Retrieving all questions from db", statusManager.getCurrentModeName());
@@ -318,8 +384,6 @@ public class ParametersStorage {
         db.insert(statusManager.getCurrentModeName() + TABLE_QUESTIONS, null, getQuestionValues(question));
     }
 
-
-
     private synchronized ContentValues getQuestionValues(Question question) {
         Logger.d(TAG, "{} - Building question values", statusManager.getCurrentModeName());
 
@@ -346,40 +410,7 @@ public class ParametersStorage {
                 throw new JsonSyntaxException("Server Json was malformed, could not be parsed");
             }
 
-            // Check version is set
-            String version = serverParametersJson.getVersion();
-            if (version.equals(ServerParametersJson.DEFAULT_PARAMETERS_VERSION)) {
-                throw new JsonSyntaxException("version can't be its unset value");
-            }
-
-            // Check nSlotsPerProbe is set
-            int nSlotsPerProbe = serverParametersJson.getNSlotsPerProbe();
-            if (nSlotsPerProbe == ServerParametersJson.DEFAULT_N_SLOTS_PER_PROBE) {
-                throw new JsonSyntaxException("nSlotsPerProbe can't be its unset value");
-            }
-
-            // Check schedulingMinDelay is set
-            int schedulingMinDelay = serverParametersJson.getSchedulingMinDelay();
-            if (schedulingMinDelay == ServerParametersJson.DEFAULT_SCHEDULING_MIN_DELAY) {
-                throw new JsonSyntaxException("schedulingMinDelay can't be its unset value");
-            }
-
-            // Check schedulingMeanDelay is set
-            int schedulingMeanDelay = serverParametersJson.getSchedulingMeanDelay();
-            if (schedulingMeanDelay == ServerParametersJson.DEFAULT_SCHEDULING_MEAN_DELAY) {
-                throw new JsonSyntaxException("schedulingMeanDelay can't be its unset value");
-            }
-
-            // Get all question slots and check there are at least as many as
-            // nSlotsPerProbe
-            HashSet<String> slots = new HashSet<String>();
-            for (Question q : serverParametersJson.getQuestionsArrayList()) {
-                slots.add(q.getSlot());
-            }
-            if (slots.size() < nSlotsPerProbe) {
-                throw new JsonSyntaxException("There must be at least as many" +
-                        " slots defined in the questions as nSlotsPerProbe");
-            }
+            serverParametersJson.validateInitialization();
 
             // All is good, do the real import of all objects in the root
             flush();
@@ -390,13 +421,13 @@ public class ParametersStorage {
             setBackendApiUrl(serverParametersJson.getBackendApiUrl());
             setResultsPageUrl(serverParametersJson.getResultsPageUrl());
             setFirstLaunch(serverParametersJson.getFirstLaunch());
-            setNSlotsPerProbe(nSlotsPerProbe);
-            setSchedulingMinDelay(schedulingMinDelay);
-            setSchedulingMeanDelay(schedulingMeanDelay);
+            setNSlotsPerProbe(serverParametersJson.getNSlotsPerProbe());
+            setSchedulingMinDelay(serverParametersJson.getSchedulingMinDelay());
+            setSchedulingMeanDelay(serverParametersJson.getSchedulingMeanDelay());
             // loading the questions
             add(serverParametersJson.getQuestionsArrayList());
 
-        } catch (JsonSyntaxException e) {
+        } catch (JsonParametersException e) {
             throw new ParametersSyntaxException();
         }
     }

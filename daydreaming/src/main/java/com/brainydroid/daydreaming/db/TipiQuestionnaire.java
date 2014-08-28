@@ -1,39 +1,29 @@
 package com.brainydroid.daydreaming.db;
 
 import com.brainydroid.daydreaming.background.Logger;
-import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 
-/**
- * Created by vincenta on 03/07/14.
- */
 public class TipiQuestionnaire {
-    // Naive implementation that closely matches the grammar definition (at least for extraction from parameter JSON)
 
     private static String TAG = "TipiQuestionnaire";
 
-    private String text = null;
+    public static String DEFAULT_TEXT = "n/c";
+
+    private String text = DEFAULT_TEXT;
     private ArrayList<String> hintsForAllSubQuestions = null;
-    private ArrayList<TipiQuestion> tipiSubQuestions = null;
-    private ArrayList<SliderSubQuestion> subQuestions = null;
+    private ArrayList<TipiQuestion> tipiQuestions = null;
 
-    public synchronized String getText(){return text;}
-    public synchronized ArrayList<String> getHintsForAllSubQuestions(){return hintsForAllSubQuestions;}
-    public synchronized ArrayList<TipiQuestion> getTipiSubQuestions(){return tipiSubQuestions;}
+    public synchronized String getText() {
+        return text;
+    }
 
-    public synchronized void setText(String text){
+    public synchronized void setText(String text) {
         this.text = text;
     }
-    public synchronized void setHintsForAllSubQuestions(ArrayList<String> hintsForAllSubQuestions){
-        this.hintsForAllSubQuestions = hintsForAllSubQuestions;
-    }
 
-    public synchronized void setSubQuestions(ArrayList<TipiQuestion> tipiSubQuestions){
-        this.tipiSubQuestions = tipiSubQuestions;
-    }
-
-    public synchronized ArrayList<SliderSubQuestion> buildQuestion(){
+    // TODO[seb]: check
+    public synchronized ArrayList<SliderSubQuestion> buildQuestion() {
         /**
         * function to return Question object from TipiQuestion Object, that is, add fields
         */
@@ -53,7 +43,7 @@ public class TipiQuestionnaire {
 
         // looping over the tipiQuestions to construct SliderSubQuestion
         SliderSubQuestion sliderSubQuestion;
-        final ArrayList<TipiQuestion> tipiSubQuestions = this.tipiSubQuestions;
+        final ArrayList<TipiQuestion> tipiSubQuestions = this.tipiQuestions;
         for (TipiQuestion tipiQuestion : tipiSubQuestions) {
             sliderSubQuestion = new SliderSubQuestion();
             sliderSubQuestion.setHints(hintsForAllSubQuestions);
@@ -61,6 +51,32 @@ public class TipiQuestionnaire {
             subQuestions.add(sliderSubQuestion);
         }
         return subQuestions;
+    }
+
+    public synchronized void validateInitialization() throws JsonParametersException {
+        Logger.v(TAG, "Validating tipiQuestionnaire");
+
+        // Check firstLaunch.tipiQuestionnaire.text
+        if (text.equals(DEFAULT_TEXT)) {
+            throw new JsonParametersException("firstLaunch.tipiQuestionnaire.text can't be its "
+                    + "unset value");
+        }
+
+        // Check firstLaunch.tipiQuestionnaire.hintsForAllSubQuestions
+        if (hintsForAllSubQuestions == null) {
+            throw new JsonParametersException(
+                    "firstLaunch.tipiQuestionnaire.hintsForAllSubQuestions can't be its "
+                            + "unset value"
+            );
+        }
+
+        // Check tipiQuestions
+        if (tipiQuestions.size() == 0) {
+            throw new JsonParametersException("tipiQuestionnaire must have at least one question");
+        }
+        for (TipiQuestion q : tipiQuestions) {
+            q.validateInitialization();
+        }
     }
 }
 
