@@ -54,7 +54,7 @@ public class FirstLaunch04PersonalityQuestionnaireActivity
     private List<String> hints;
     private int nHints;
 
-    // TODO[seb]: check all this (commits 0f4e485f4bafc1788b7d84955c5056a6d977c26b and 2d7e45287ce878a4886144fdef33917fae589812
+    // FIXME: All this is skipped since tipi questionnaire moves to generic questionnaires in grammar v3
     private static String TIPI_QUESTIONS_HINTS = "tipiQuestionsHints";
     private static String TIPI_QUESTIONS_TEXTS = "tipiQuestionsTexts";
 

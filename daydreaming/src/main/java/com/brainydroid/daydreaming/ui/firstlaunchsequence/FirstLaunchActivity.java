@@ -175,45 +175,6 @@ public abstract class FirstLaunchActivity extends RoboFragmentActivity {
         startService(locationPointServiceIntent);
     }
 
-    // TODO[seb]: check all this (commits 0f4e485f4bafc1788b7d84955c5056a6d977c26b and 2d7e45287ce878a4886144fdef33917fae589812
-    protected void downloadParameters() {
-        Logger.i(TAG, "Setting first launch to finished");
-
-
-        SntpClientCallback callback = new SntpClientCallback() {
-
-            private String TAG = "FirstLaunch SntpClientCallback";
-
-            @Override
-            public void onTimeReceived(SntpClient sntpClient) {
-                Logger.d(TAG, "NTP request completed");
-
-                if (sntpClient != null) {
-                    Logger.i(TAG, "NTP request successful, " +
-                            "setting timestamp for start of experiment");
-                    statusManager.setExperimentStartTimestamp(
-                            sntpClient.getNow());
-                } else {
-                    Logger.i(TAG, "NTP request failed, sntpClient is null");
-                }
-            }
-
-        };
-
-        sntpClient.asyncRequestTime(callback);
-
-        Intent syncServiceIntent = new Intent(this, SyncService.class);
-        Logger.d(TAG, "Starting SyncService");
-        startService(syncServiceIntent);
-
-        // SchedulerService will be started when the SyncService successfully updates parameters
-
-        Intent locationPointServiceIntent = new Intent(this,
-                LocationPointService.class);
-        Logger.d(TAG, "Starting LocationPointService");
-        startService(locationPointServiceIntent);
-    }
-
     public void checkTestMode() {
         Logger.d(TAG, "Checking test mode status");
         if (StatusManager.getCurrentModeStatic(this) == StatusManager.MODE_PROD) {
