@@ -47,25 +47,24 @@ public class ParametersStorage {
                     COL_SLOT + " TEXT NOT NULL" +
                     ");";
 
-    private static String QUESTIONS_SCHEDULING_MIN_DELAY = "schedulingMinDelay";
-    private static String QUESTIONS_SCHEDULING_MEAN_DELAY = "schedulingMeanDelay";
+    public static String QUESTIONS_SCHEDULING_MIN_DELAY = "schedulingMinDelay";
+    public static String QUESTIONS_SCHEDULING_MEAN_DELAY = "schedulingMeanDelay";
 
-    private static String PARAMETERS_VERSION = "parametersVersion";
-    private static String EXP_DURATION = "expDuration"; // no need to make global but listing is nice
-    private static String BACKEND_EXP_ID = "backendExpId";
-    private static String URL_BACKEND_API = "backendUrlApi";
-    private static String BACKEND_DB_NAME = "backendDbName";
+    public static String EXP_DURATION = "expDuration"; // no need to make global but listing is nice
+    public static String BACKEND_EXP_ID = "backendExpId";
+    public static String BACKEND_API_URL = "backendApiUrl";
+    public static String BACKEND_DB_NAME = "backendDbName";
 
-    private static String FIRST_LAUNCH =  "firstLaunch";
+    public static String FIRST_LAUNCH =  "firstLaunch";
 
-    private static String URL_RESULTS_PAGE = "resultsPageUrl";
-    private static String WELCOME_TEXT = "welcomeText";
-    private static String DESCRIPTION_TEXT = "descriptionText";
+    public static String URL_RESULTS_PAGE = "resultsPageUrl";
+    public static String WELCOME_TEXT = "welcomeText";
+    public static String DESCRIPTION_TEXT = "descriptionText";
 
-    private static String QUESTIONS_N_SLOTS_PER_PROBE = "questionsNSlotsPerProbe";
+    public static String QUESTIONS_N_SLOTS_PER_PROBE = "questionsNSlotsPerProbe";
 
-    private static String TIPI_QUESTIONS_HINTS = "tipiQuestionsHints";
-    private static String TIPI_QUESTIONS_TEXTS = "tipiQuestionsTexts";
+    public static String TIPI_QUESTIONS_HINTS = "tipiQuestionsHints";
+    public static String TIPI_QUESTIONS_TEXTS = "tipiQuestionsTexts";
 
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor eSharedPreferences;
@@ -94,14 +93,7 @@ public class ParametersStorage {
         eSharedPreferences = sharedPreferences.edit();
     }
 
-    private synchronized void setParametersVersion(String version) {
-        Logger.d(TAG, "{} - Setting parametersVersion to {}", statusManager.getCurrentModeName(), version);
-        eSharedPreferences.putString(statusManager.getCurrentModeName() + PARAMETERS_VERSION, version);
-        eSharedPreferences.commit();
-        profileStorage.setParametersVersion(version);
-    }
-
-    //setExpDuration    setBackendExpId    setBackendUrlApi    setResultsPageUrl
+    //setExpDuration    setBackendExpId    setBackendApiUrl    setResultsPageUrl
     private synchronized void setExpDuration(int expDuration) {
         Logger.d(TAG, "{} - Setting expDuration to {}", statusManager.getCurrentModeName(), expDuration);
         eSharedPreferences.putInt(statusManager.getCurrentModeName() + EXP_DURATION, expDuration);
@@ -114,9 +106,9 @@ public class ParametersStorage {
         eSharedPreferences.commit();
     }
 
-    private synchronized void setBackendUrlApi(String urlBackendApi) {
-        Logger.d(TAG, "{} - Setting urlBackendApi to {}", statusManager.getCurrentModeName(), urlBackendApi);
-        eSharedPreferences.putString(statusManager.getCurrentModeName() + URL_BACKEND_API, urlBackendApi);
+    private synchronized void setBackendApiUrl(String backendApiUrl) {
+        Logger.d(TAG, "{} - Setting backendApiUrl to {}", statusManager.getCurrentModeName(), backendApiUrl);
+        eSharedPreferences.putString(statusManager.getCurrentModeName() + BACKEND_API_URL, backendApiUrl);
         eSharedPreferences.commit();
     }
 
@@ -142,11 +134,6 @@ public class ParametersStorage {
         Logger.d(TAG, "{} - Setting urlResultsPage to {}", statusManager.getCurrentModeName(), welcomeText);
         eSharedPreferences.putString(statusManager.getCurrentModeName() + WELCOME_TEXT, welcomeText);
         eSharedPreferences.commit();
-    }
-
-    private synchronized void clearParametersVersion() {
-        Logger.d(TAG, "{} - Clearing parameters version", statusManager.getCurrentModeName());
-        eSharedPreferences.remove(PARAMETERS_VERSION);
     }
 
     private synchronized void setSchedulingMinDelay(int schedulingMinDelay) {
@@ -396,11 +383,11 @@ public class ParametersStorage {
 
             // All is good, do the real import of all objects in the root
             flush();
-            setParametersVersion(serverParametersJson.getVersion());
+            profileStorage.setParametersVersion(serverParametersJson.getVersion());
             setBackendExpId(serverParametersJson.getBackendExpId());
             setBackendDbName(serverParametersJson.getBackendDbName());
             setExpDuration(serverParametersJson.getExpDuration());
-            setBackendUrlApi(serverParametersJson.getBackendApiUrl());
+            setBackendApiUrl(serverParametersJson.getBackendApiUrl());
             setResultsPageUrl(serverParametersJson.getResultsPageUrl());
             setFirstLaunch(serverParametersJson.getFirstLaunch());
             setNSlotsPerProbe(nSlotsPerProbe);
