@@ -9,10 +9,12 @@ public class SliderSubQuestion {
     @SuppressWarnings("UnusedDeclaration")
     private static String TAG = "SliderSubQuestion";
 
+    public static int DEFAULT_INITIAL_POSITION = -1;
+
     private String text = null;
     private ArrayList<String> hints = new ArrayList<String>();
     @SuppressWarnings("FieldCanBeLocal")
-    private int initialPosition = -1;
+    private int initialPosition = DEFAULT_INITIAL_POSITION;
     @SuppressWarnings("FieldCanBeLocal")
     private boolean notApplyAllowed = false;
     @SuppressWarnings("FieldCanBeLocal")
@@ -36,20 +38,6 @@ public class SliderSubQuestion {
 
     public synchronized boolean getShowLiveIndication() {
         return showLiveIndication;
-    }
-
-    // -----------------------------------------
-
-    public synchronized void setText(String text_){
-        text = text_;
-    }
-
-    public synchronized void setHints(ArrayList<String> hints_){
-        hints = hints_;
-    }
-
-    public synchronized void setInitialPosition(int initialPosition_){
-        initialPosition = initialPosition_;
     }
 
     public synchronized void validateInitialization() throws JsonParametersException {

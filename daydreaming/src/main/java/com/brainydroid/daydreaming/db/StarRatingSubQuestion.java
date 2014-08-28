@@ -9,6 +9,8 @@ public class StarRatingSubQuestion {
     @SuppressWarnings("UnusedDeclaration")
     private static String TAG = "StarRatingSubQuestion";
 
+    public static int DEFAULT_INITIAL_RATING = -1;
+
     private String text = null;
     private ArrayList<String> hints = new ArrayList<String>();
     @SuppressWarnings("FieldCanBeLocal")
@@ -16,7 +18,7 @@ public class StarRatingSubQuestion {
     @SuppressWarnings("FieldCanBeLocal")
     private float stepSize = -1f;
     @SuppressWarnings("FieldCanBeLocal")
-    private float initialRating = -1;
+    private float initialRating = DEFAULT_INITIAL_RATING;
     @SuppressWarnings("FieldCanBeLocal")
     private boolean notApplyAllowed = false;
     @SuppressWarnings("FieldCanBeLocal")
