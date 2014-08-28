@@ -74,6 +74,12 @@
             android:screenOrientation="portrait">
         </activity>
 
+
+        <activity android:name=".ui.dashboard.CreditsActivity"
+            android:theme="@style/daydreamingTheme"
+            android:taskAffinity=".dashboard"
+            android:screenOrientation="portrait">
+        </activity>
         <!-- Question Activity -->
 
         <activity android:name=".ui.questions.QuestionActivity"

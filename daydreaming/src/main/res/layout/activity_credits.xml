@@ -12,7 +12,7 @@
         android:orientation="horizontal"
         android:gravity="center_horizontal"
         android:id="@+id/credits_relativelayout_title"
-        android:layout_alignParentStart="false">
+        >
 
         <LinearLayout
             android:id="@+id/credits_layout_title"
@@ -36,9 +36,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
-        android:layout_alignParentEnd="false"
         android:layout_alignParentBottom="false"
-        android:layout_alignParentStart="false"
         android:id="@+id/credits_relativelayout_maintext"
         android:layout_below="@id/credits_relativelayout_title">
 
@@ -63,8 +61,6 @@
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_alignParentEnd="false"
-        android:id="@+id/"
         android:layout_centerInParent="true"
         android:gravity="center_vertical"
         android:layout_below="@id/credits_relativelayout_maintext">
@@ -78,7 +74,6 @@
             <TableRow
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:id="@+id/"
                 android:gravity="center_horizontal"
                 android:clickable="false"
                 android:focusableInTouchMode="false"
