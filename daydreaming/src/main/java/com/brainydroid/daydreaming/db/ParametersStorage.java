@@ -2,12 +2,22 @@ package com.brainydroid.daydreaming.db;
 
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.widget.Toast;
 
 import com.brainydroid.daydreaming.background.Logger;
+import com.brainydroid.daydreaming.background.SchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
+import com.brainydroid.daydreaming.network.CryptoStorageCallback;
+import com.brainydroid.daydreaming.network.HttpConversationCallback;
+import com.brainydroid.daydreaming.network.HttpGetData;
+import com.brainydroid.daydreaming.network.HttpGetTask;
+import com.brainydroid.daydreaming.network.ParametersStorageCallback;
+import com.brainydroid.daydreaming.network.ServerConfig;
 import com.google.gson.JsonSyntaxException;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -64,6 +74,7 @@ public class ParametersStorage {
     @Inject ProfileStorage profileStorage;
     @Inject SlottedQuestionsFactory slottedQuestionsFactory;
     @Inject StatusManager statusManager;
+    @Inject Context context;
 
     private final SQLiteDatabase db;
 
@@ -430,6 +441,116 @@ public class ParametersStorage {
         } catch (JsonParametersException e) {
             throw new ParametersSyntaxException();
         }
+    }
+
+    public synchronized void onReady(ParametersStorageCallback callback, String startSyncAppMode,
+                                     boolean isDebug) {
+        if (!statusManager.areParametersUpdated()) {
+            Logger.i(TAG, "{} - ParametersStorage not ready -> " +
+                    "updating parameters", statusManager.getCurrentModeName());
+
+            // If during our network request, parameters are flushed,
+            // we won't import the received parameters
+            Logger.v(TAG, "Clearing parameters flushed");
+            statusManager.clearParametersFlushed();
+
+            asyncUpdateParameters(callback, startSyncAppMode, isDebug);
+        } else {
+            Logger.i(TAG, "{} - ParametersStorage ready -> calling back callback " +
+                    "straight away", statusManager.getCurrentModeName());
+            callback.onParametersStorageReady(true);
+        }
+    }
+
+    // TODO[seb]: check this is still ok when switching back and forth from test mode, and resetting parameters while keeping profile answers (esp. when exp_id has changed server-side)
+    private synchronized void asyncUpdateParameters(final ParametersStorageCallback callback,
+                                                    final String startSyncAppMode,
+                                                    final boolean isDebug) {
+        Logger.d(TAG, "Updating parameters");
+
+        if (statusManager.getCurrentMode() == StatusManager.MODE_TEST && isDebug) {
+            Toast.makeText(context, "Reloading parameters...", Toast.LENGTH_SHORT).show();
+        }
+
+        HttpConversationCallback updateParametersCallback =
+                new HttpConversationCallback() {
+
+            private String TAG = "Parameters HttpConversationCallback";
+
+            @Override
+            public void onHttpConversationFinished(boolean success,
+                                                   String serverAnswer) {
+                Logger.d(TAG, "Parameters update HttpConversation finished");
+
+                // Exit if app mode has changed before we could import parameters
+                if (!statusManager.getCurrentModeName().equals(startSyncAppMode)) {
+                    Logger.i(TAG, "App mode has changed from {0} to {1} since sync started, "
+                                    + "aborting parameters update.", startSyncAppMode,
+                            statusManager.getCurrentModeName());
+                    callback.onParametersStorageReady(false);
+                    return;
+                }
+
+                // Exit if parameters have been flushed since we started
+                if (statusManager.areParametersFlushed()) {
+                    Logger.i(TAG, "Parameters have been flushed since sync started, "
+                            + "aborting parameters update.");
+                    callback.onParametersStorageReady(false);
+                    return;
+                }
+
+                if (success) {
+                    Logger.i(TAG, "Successfully retrieved parameters from " +
+                            "server");
+                    Logger.td(context, TAG + ": new " +
+                            "parameters downloaded from server");
+
+                    // Import the parameters, and remember not to update
+                    // parameters again.
+                    try {
+                        ParametersStorage.this.importParameters(serverAnswer);
+                        Logger.d(TAG, "Importing new parameters to storage");
+                    } catch (ParametersSyntaxException e) {
+                        Logger.e(TAG, "Downloaded parameters were malformed -> " +
+                                "parameters not updated");
+                        callback.onParametersStorageReady(false);
+                        if (statusManager.getCurrentMode() == StatusManager.MODE_TEST) {
+                            Toast.makeText(context, "Test parameters from server were malformed! " +
+                                    "Correct them and try again", Toast.LENGTH_LONG).show();
+                        }
+                        return;
+                    }
+
+                    Logger.i(TAG, "Parameters successfully imported");
+                    statusManager.setParametersUpdated();
+                    callback.onParametersStorageReady(true);
+
+                    if (isDebug && statusManager.getCurrentMode() == StatusManager.MODE_TEST) {
+                        Toast.makeText(context, "Parameters successfully updated",
+                                Toast.LENGTH_SHORT).show();
+                    }
+
+                    Logger.d(TAG, "Starting SchedulerService to take new parameters into account");
+                    Intent schedulerIntent = new Intent(context, SchedulerService.class);
+                    context.startService(schedulerIntent);
+                } else {
+                    Logger.w(TAG, "Error while retrieving new parameters from " +
+                            "server");
+                    callback.onParametersStorageReady(false);
+                    if (isDebug && statusManager.getCurrentMode() == StatusManager.MODE_TEST) {
+                        Toast.makeText(context, "Error retrieving parameters from server. " +
+                                "Are you connected to internet?", Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+
+        };
+
+        String getUrl = MessageFormat.format(ServerConfig.PARAMETERS_URL_BASE,
+                statusManager.getCurrentModeName());
+        HttpGetData updateParametersData = new HttpGetData(getUrl, updateParametersCallback);
+        HttpGetTask updateParametersTask = new HttpGetTask();
+        updateParametersTask.execute(updateParametersData);
     }
 
 }
