@@ -173,14 +173,14 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
         alertDialogBuilder
                 .setMessage("Select the connectivity settings you wish to change")
                 .setCancelable(true)
-                .setPositiveButton("Network data",new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog,int id) {
+                .setPositiveButton("Network data", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
                         Logger.d(TAG, "Launching data settings");
                         launchNetworkDataSettings();
                     }
                 })
-                .setNegativeButton("Wifi",new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog,int id) {
+                .setNegativeButton("Wifi", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
                         Logger.d(TAG, "Launching wifi settings");
                         launchNetworkWifiSettings();
                     }
@@ -199,7 +199,7 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
             ComponentName cName = new ComponentName("com.android.phone", "com.android.phone.Settings");
             settingsIntent.setComponent(cName);
         }
-        settingsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+        settingsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
         startActivity(settingsIntent);
     }
 
@@ -209,7 +209,7 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
             ComponentName cName = new ComponentName("com.android.phone", "com.android.phone.Settings");
             settingsIntent.setComponent(cName);
         }
-        settingsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+        settingsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
         startActivity(settingsIntent);
     }
 
@@ -217,8 +217,7 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
         Logger.d(TAG, "Launching location settings");
         Intent settingsIntent = new Intent(Settings
                 .ACTION_LOCATION_SOURCE_SETTINGS);
-        settingsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET |
-                Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+        settingsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
         startActivity(settingsIntent);
     }
 
@@ -238,12 +237,13 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
         alertDialogBuilder
                 .setMessage(measures_warning)
                 .setCancelable(false)
-                .setPositiveButton("Yes",new DialogInterface.OnClickListener() {
+                .setPositiveButton("Yes, I got it", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog,int id) {
                         finishFirstLaunch();
-                        launchDashBoardActivity();                    }
+                        launchDashBoardActivity();
+                    }
                 })
-                .setNegativeButton("No",new DialogInterface.OnClickListener() {
+                .setNegativeButton("Hmm, not really", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog,int id) {
                         dialog.cancel();
                     }
@@ -253,9 +253,8 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
         AlertDialog alertDialog = alertDialogBuilder.create();
 
         // show it
-        alertDialog.show();        }
-
-
+        alertDialog.show();
+    }
 
     @TargetApi(11)
     private void forbidNextButton() {
@@ -282,6 +281,11 @@ public class FirstLaunch05MeasuresActivity extends FirstLaunchActivity {
                 Toast.makeText(this, goodToGoOk, Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    @Override
+    public void backHook() {
+        Logger.v(TAG, "Leaving default transition");
     }
 
 }

@@ -18,7 +18,7 @@ public class DescriptionActivity extends FirstLaunch01DescriptionActivity {
     public void checkFirstLaunch() { }
 
     @Override
-    public void setButton(){
+    public void setButton() {
         nextButton.setVisibility(View.INVISIBLE);
         nextButton.setClickable(false);
         ViewGroup parent = (ViewGroup)findViewById(R.id.firstLaunchDescription_main_layout);
@@ -26,9 +26,8 @@ public class DescriptionActivity extends FirstLaunch01DescriptionActivity {
     }
 
     @Override
-    public void onBackPressed() {
-        Logger.v(TAG, "Back pressed, setting slide transition");
-        super.onBackPressed();
+    public void backHook() {
+        Logger.v(TAG, "Setting vertical slide transition");
         overridePendingTransition(R.anim.push_bottom_in, R.anim.push_bottom_out);
     }
 

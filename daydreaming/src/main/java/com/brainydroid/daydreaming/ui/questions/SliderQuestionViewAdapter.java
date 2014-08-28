@@ -92,7 +92,7 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
         }
 
         final TextView selectedSeek = (TextView)view.findViewById(R.id.question_slider_selectedSeek);
-        if (!subQuestion.getShowHints()) {
+        if (!subQuestion.getShowLiveIndication()) {
             selectedSeek.setVisibility(View.GONE);
         }
 

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="MyCustomTheme" parent="android:Theme.Light.NoTitleBar.Fullscreen">
+    <style name="daydreamingTheme" parent="android:Theme.Light.NoTitleBar.Fullscreen">
         <item name="android:windowBackground">@drawable/ui_layered_background</item>
         <item name="android:colorBackgroundCacheHint">@color/white</item>
         <item name="android:typeface">serif</item>
     </style>
 
-    <style name="MyCustomTheme_test" parent="MyCustomTheme">
+    <style name="daydreamingTestTheme" parent="daydreamingTheme">
         <item name="android:windowBackground">@drawable/ui_layered_background_test</item>
     </style>
 

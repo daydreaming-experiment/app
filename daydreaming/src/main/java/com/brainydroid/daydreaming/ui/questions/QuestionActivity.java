@@ -237,7 +237,6 @@ public class QuestionActivity extends RoboFragmentActivity {
         Intent intent = new Intent(this, QuestionActivity.class);
         intent.putExtra(EXTRA_POLL_ID, pollId);
         intent.putExtra(EXTRA_QUESTION_INDEX, questionIndex + 1);
-        intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         startActivity(intent);
 
         overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
@@ -306,10 +305,10 @@ public class QuestionActivity extends RoboFragmentActivity {
         Logger.d(TAG, "Checking test mode status");
         if (StatusManager.getCurrentModeStatic(this) == StatusManager.MODE_PROD) {
             Logger.d(TAG, "Setting production theme");
-            setTheme(R.style.MyCustomTheme);
+            setTheme(R.style.daydreamingTheme);
         } else {
             Logger.d(TAG, "Setting test theme");
-            setTheme(R.style.MyCustomTheme_test);
+            setTheme(R.style.daydreamingTestTheme);
         }
     }
 

@@ -124,7 +124,7 @@ and run the tests and checks.
 ## Setting up Android Studio
 
 Now that we've set up Gradle and that we can build the app, it's time to get the
-IDE running. I'm using Android Studio version 0.6.1; any later version should
+IDE running. I'm using Android Studio version 0.8.1; any later version should
 also work well, but if your experience is different with a different version
 please send us feedback!
 

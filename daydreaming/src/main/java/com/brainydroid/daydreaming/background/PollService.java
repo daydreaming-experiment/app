@@ -33,6 +33,8 @@ public class PollService extends RoboService {
 
     private static String TAG = "PollService";
 
+    public static String CANCEL_PENDING_POLLS = "cancelPendingPolls";
+
     @Inject NotificationManager notificationManager;
     @Inject PollsStorage pollsStorage;
     @Inject SharedPreferences sharedPreferences;
@@ -41,30 +43,37 @@ public class PollService extends RoboService {
     @Inject StatusManager statusManager;
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+    public synchronized int onStartCommand(Intent intent, int flags, int startId) {
         Logger.d(TAG, "PollService started");
 
         super.onStartCommand(intent, flags, startId);
 
-        // If the questions haven't been downloaded (which is probably
-        // because the json was malformed), only reschedule (which will
-        // re-download the questions; hopefully they will have been fixed)
-        // and don't show any poll.
-        if (statusManager.areParametersUpdated()) {
-            // Populate and notify the poll
-            populatePoll();
-            notifyPoll();
-        }
+        if (intent.getBooleanExtra(CANCEL_PENDING_POLLS, false)) {
+            Logger.v(TAG, "Started to cancel pending polls");
+            cancelPendingPolls();
+        } else {
+            Logger.v(TAG, "Started to create and notify a poll");
 
-        // Schedule the next poll
-        startSchedulerService();
+            // If the questions haven't been downloaded (which is probably
+            // because the json was malformed), only reschedule (which will
+            // re-download the questions; hopefully they will have been fixed)
+            // and don't show any poll.
+            if (statusManager.areParametersUpdated()) {
+                // Populate and notify the poll
+                populatePoll();
+                notifyPoll();
+            }
+
+            // Schedule the next poll
+            startSchedulerService();
+        }
 
         stopSelf();
         return START_REDELIVER_INTENT;
     }
 
     @Override
-    public IBinder onBind(Intent intent) {
+    public synchronized IBinder onBind(Intent intent) {
         // Don't allow binding
         return null;
     }
@@ -74,7 +83,7 @@ public class PollService extends RoboService {
      *
      * @return An {@link Intent} to launch our {@link Poll}
      */
-    private Intent createPollIntent() {
+    private synchronized Intent createPollIntent() {
         Logger.d(TAG, "Creating poll Intent");
 
         Intent intent = new Intent(this, QuestionActivity.class);
@@ -85,17 +94,15 @@ public class PollService extends RoboService {
         // Set the index of the question to open
         intent.putExtra(QuestionActivity.EXTRA_QUESTION_INDEX, 0);
 
-        // Create a new task and don't show up in various Android UI
-        // screens
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+        // Create a new task. The rest is defined in the App manifest.
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         return intent;
     }
 
     /**
      * Notify our poll to the user.
      */
-    private void notifyPoll() {
+    private synchronized void notifyPoll() {
         Logger.d(TAG, "Notifying poll");
 
         // Create the PendingIntent
@@ -118,8 +125,6 @@ public class PollService extends RoboService {
             flags |= Notification.DEFAULT_VIBRATE;
         }
 
-
-
         // Create our notification
         Notification notification = new NotificationCompat.Builder(this)
         .setTicker(getString(R.string.pollNotification_ticker))
@@ -138,7 +143,6 @@ public class PollService extends RoboService {
             notification.sound = Uri.parse("android.resource://" + "com.brainydroid.daydreaming" + "/" + R.raw.notification);
         }
 
-
         // And send it to the system
         notificationManager.cancel(poll.getId());
         notificationManager.notify(poll.getId(), notification);
@@ -147,7 +151,7 @@ public class PollService extends RoboService {
     /**
      * Fill our {@link Poll} with questions.
      */
-    private void populatePoll() {
+    private synchronized void populatePoll() {
         Logger.d(TAG, "Populating poll with questions");
 
         // Pick from already created polls that were never shown to the
@@ -195,11 +199,27 @@ public class PollService extends RoboService {
     /**
      * Start {@link SchedulerService} for the next {@link Poll}.
      */
-    private void startSchedulerService() {
+    private synchronized void startSchedulerService() {
         Logger.d(TAG, "Starting SchedulerService");
 
         Intent schedulerIntent = new Intent(this, SchedulerService.class);
         startService(schedulerIntent);
+    }
+
+    /**
+     * Cancel any pending {@link Poll}s already notified.
+     */
+    private synchronized void cancelPendingPolls() {
+        Logger.d(TAG, "Cancelling pending polls");
+        ArrayList<Poll> pendingPolls = pollsStorage.getPendingPolls();
+        if (pendingPolls != null) {
+            for (Poll poll : pendingPolls) {
+                notificationManager.cancel(poll.getId());
+                pollsStorage.remove(poll.getId());
+            }
+        } else {
+            Logger.v(TAG, "No pending polls to cancel");
+        }
     }
 
 }

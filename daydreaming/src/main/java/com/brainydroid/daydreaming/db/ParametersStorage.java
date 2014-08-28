@@ -44,8 +44,9 @@ public class ParametersStorage {
                     COL_SLOT + " TEXT NOT NULL" +
                     ");";
 
-    private static String QUESTIONS_N_SLOTS_PER_POLL = "questionsNSlotsPerPoll";
-    private static String PARAMETERS_VERSION = "parametersVersion";
+    private static String QUESTIONS_SCHEDULING_MIN_DELAY = "schedulingMinDelay";
+    private static String QUESTIONS_SCHEDULING_MEAN_DELAY = "schedulingMeanDelay";
+    private static String QUESTIONS_N_SLOTS_PER_PROBE = "questionsNSlotsPerProbe";
 
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor eSharedPreferences;
@@ -74,41 +75,78 @@ public class ParametersStorage {
         eSharedPreferences = sharedPreferences.edit();
     }
 
-    private synchronized void setParametersVersion(int version) {
-        Logger.d(TAG, "{} - Setting parametersVersion to {}", statusManager.getCurrentModeName(), version);
-        eSharedPreferences.putInt(statusManager.getCurrentModeName() + PARAMETERS_VERSION, version);
-        eSharedPreferences.commit();
-        profileStorage.setParametersVersion(version);
-    }
-
-    private synchronized void clearParametersVersion() {
-        Logger.d(TAG, "{} - Clearing parameters version", statusManager.getCurrentModeName());
-        eSharedPreferences.remove(PARAMETERS_VERSION);
+    private synchronized void setSchedulingMinDelay(int schedulingMinDelay) {
+        Logger.d(TAG, "{0} - Setting schedulingMinDelay to {1}", statusManager.getCurrentModeName(), schedulingMinDelay);
+        eSharedPreferences.putInt(statusManager.getCurrentModeName() + QUESTIONS_SCHEDULING_MIN_DELAY, schedulingMinDelay);
         eSharedPreferences.commit();
     }
 
-    private synchronized void setNSlotsPerPoll(int nSlotsPerPoll) {
-        Logger.d(TAG, "{} - Setting nSlotsPerPoll to {}",statusManager.getCurrentModeName(),  nSlotsPerPoll);
-        eSharedPreferences.putInt(statusManager.getCurrentModeName() + QUESTIONS_N_SLOTS_PER_POLL, nSlotsPerPoll);
+    public synchronized int getSchedulingMinDelay() {
+        int schedulingMinDelay = sharedPreferences.getInt(
+                statusManager.getCurrentModeName() + QUESTIONS_SCHEDULING_MIN_DELAY, -1);
+        if (schedulingMinDelay == -1) {
+            Logger.e(TAG, "{} - SchedulingMinDelay is asked for but not set",
+                    statusManager.getCurrentMode());
+            throw new RuntimeException("SchedulingMinDelay is asked for but not set");
+        }
+        Logger.d(TAG, "{0} - schedulingMinDelay is {1}", statusManager.getCurrentModeName(),
+                schedulingMinDelay);
+        return schedulingMinDelay;
+    }
+
+    private synchronized void clearSchedulingMinDelay() {
+        Logger.d(TAG, "{} - Clearing schedulingMinDelay", statusManager.getCurrentModeName());
+        eSharedPreferences.remove(statusManager.getCurrentModeName() + QUESTIONS_SCHEDULING_MIN_DELAY);
+    }
+
+    private synchronized void setSchedulingMeanDelay(int schedulingMeanDelay) {
+        Logger.d(TAG, "{0} - Setting schedulingMeanDelay to {1}", statusManager.getCurrentModeName(), schedulingMeanDelay);
+        eSharedPreferences.putInt(statusManager.getCurrentModeName() + QUESTIONS_SCHEDULING_MEAN_DELAY, schedulingMeanDelay);
         eSharedPreferences.commit();
     }
 
-    public synchronized int getNSlotsPerPoll() {
-        int nSlotsPerPoll = sharedPreferences.getInt(
-                statusManager.getCurrentModeName() + QUESTIONS_N_SLOTS_PER_POLL, -1);
-        Logger.v(TAG, "{} - nSlotsPerPoll is {}", statusManager.getCurrentModeName(), nSlotsPerPoll);
-        return nSlotsPerPoll;
+    public synchronized int getSchedulingMeanDelay() {
+        int schedulingMeanDelay = sharedPreferences.getInt(
+                statusManager.getCurrentModeName() + QUESTIONS_SCHEDULING_MEAN_DELAY, -1);
+        if (schedulingMeanDelay == -1) {
+            Logger.e(TAG, "{} - SchedulingMeanDelay is asked for but not set",
+                    statusManager.getCurrentMode());
+            throw new RuntimeException("SchedulingMeanDelay is asked for but not set");
+        }
+        Logger.d(TAG, "{0} - schedulingMeanDelay is {1}", statusManager.getCurrentModeName(),
+                schedulingMeanDelay);
+        return schedulingMeanDelay;
     }
 
-    public synchronized void clearNSlotsPerPoll() {
-        Logger.d(TAG, "{} - Clearing nSlotsPerPoll", statusManager.getCurrentModeName());
-        eSharedPreferences.remove(statusManager.getCurrentModeName() + QUESTIONS_N_SLOTS_PER_POLL);
+    private synchronized void clearSchedulingMeanDelay() {
+        Logger.d(TAG, "{} - Clearing schedulingMeanDelay", statusManager.getCurrentModeName());
+        eSharedPreferences.remove(statusManager.getCurrentModeName() + QUESTIONS_SCHEDULING_MEAN_DELAY);
+        eSharedPreferences.commit();
+    }
+
+    private synchronized void setNSlotsPerProbe(int nSlotsPerProbe) {
+        Logger.d(TAG, "{0} - Setting nSlotsPerProbe to {1}", statusManager.getCurrentModeName(), nSlotsPerProbe);
+        eSharedPreferences.putInt(statusManager.getCurrentModeName() + QUESTIONS_N_SLOTS_PER_PROBE, nSlotsPerProbe);
+        eSharedPreferences.commit();
+    }
+
+    public synchronized int getNSlotsPerProbe() {
+        int nSlotsPerProbe = sharedPreferences.getInt(
+                statusManager.getCurrentModeName() + QUESTIONS_N_SLOTS_PER_PROBE,
+                ServerParametersJson.DEFAULT_N_SLOTS_PER_PROBE);
+        Logger.v(TAG, "{0} - nSlotsPerProbe is {1}", statusManager.getCurrentModeName(), nSlotsPerProbe);
+        return nSlotsPerProbe;
+    }
+
+    public synchronized void clearNSlotsPerProbe() {
+        Logger.d(TAG, "{} - Clearing nSlotsPerProbe", statusManager.getCurrentModeName());
+        eSharedPreferences.remove(statusManager.getCurrentModeName() + QUESTIONS_N_SLOTS_PER_PROBE);
         eSharedPreferences.commit();
     }
 
     // get question from id in db
     public synchronized Question create(String questionName) {
-        Logger.d(TAG, "{} - Retrieving question {} from db", statusManager.getCurrentModeName(), questionName);
+        Logger.d(TAG, "{0} - Retrieving question {1} from db", statusManager.getCurrentModeName(), questionName);
 
         Cursor res = db.query(statusManager.getCurrentModeName() + TABLE_QUESTIONS, null,
                 COL_NAME + "=?", new String[]{questionName},
@@ -161,9 +199,13 @@ public class ParametersStorage {
 
     public synchronized void flush() {
         Logger.d(TAG, "{} - Flushing all parameters", statusManager.getCurrentModeName());
+        statusManager.clearParametersUpdated();
+        statusManager.setParametersFlushed();
         flushQuestions();
-        clearNSlotsPerPoll();
-        clearParametersVersion();
+        profileStorage.clearParametersVersion();
+        clearSchedulingMinDelay();
+        clearSchedulingMeanDelay();
+        clearNSlotsPerProbe();
     }
 
     public synchronized void flushQuestions() {
@@ -180,7 +222,7 @@ public class ParametersStorage {
 
     // add question in database
     private synchronized void add(Question question) {
-        Logger.d(TAG, "{} - Storing question {} to db", statusManager.getCurrentModeName(), question.getName());
+        Logger.d(TAG, "{0} - Storing question {1} to db", statusManager.getCurrentModeName(), question.getName());
         db.insert(statusManager.getCurrentModeName() + TABLE_QUESTIONS, null, getQuestionValues(question));
     }
 
@@ -210,27 +252,47 @@ public class ParametersStorage {
                 throw new JsonSyntaxException("Server Json was malformed, could not be parsed");
             }
 
-            // Check nSlotsPerPoll is set
-            int nSlotsPerPoll = serverParametersJson.getNSlotsPerPoll();
-            if (nSlotsPerPoll == -1) {
-                throw new JsonSyntaxException("nSlotsPerPoll can't be -1");
+            // Check version is set
+            String version = serverParametersJson.getVersion();
+            if (version.equals(ServerParametersJson.DEFAULT_PARAMETERS_VERSION)) {
+                throw new JsonSyntaxException("version can't be its unset value");
+            }
+
+            // Check nSlotsPerProbe is set
+            int nSlotsPerProbe = serverParametersJson.getNSlotsPerProbe();
+            if (nSlotsPerProbe == ServerParametersJson.DEFAULT_N_SLOTS_PER_PROBE) {
+                throw new JsonSyntaxException("nSlotsPerProbe can't be its unset value");
+            }
+
+            // Check schedulingMinDelay is set
+            int schedulingMinDelay = serverParametersJson.getSchedulingMinDelay();
+            if (schedulingMinDelay == ServerParametersJson.DEFAULT_SCHEDULING_MIN_DELAY) {
+                throw new JsonSyntaxException("schedulingMinDelay can't be its unset value");
+            }
+
+            // Check schedulingMeanDelay is set
+            int schedulingMeanDelay = serverParametersJson.getSchedulingMeanDelay();
+            if (schedulingMeanDelay == ServerParametersJson.DEFAULT_SCHEDULING_MEAN_DELAY) {
+                throw new JsonSyntaxException("schedulingMeanDelay can't be its unset value");
             }
 
             // Get all question slots and check there are at least as many as
-            // nSlotsPerPoll
+            // nSlotsPerProbe
             HashSet<String> slots = new HashSet<String>();
             for (Question q : serverParametersJson.getQuestionsArrayList()) {
                 slots.add(q.getSlot());
             }
-            if (slots.size() < nSlotsPerPoll) {
+            if (slots.size() < nSlotsPerProbe) {
                 throw new JsonSyntaxException("There must be at least as many" +
-                        " slots defined in the questions as nSlotsPerPoll");
+                        " slots defined in the questions as nSlotsPerProbe");
             }
 
             // All is good, do the real import
             flush();
-            setParametersVersion(serverParametersJson.getVersion());
-            setNSlotsPerPoll(nSlotsPerPoll);
+            profileStorage.setParametersVersion(version);
+            setSchedulingMinDelay(schedulingMinDelay);
+            setSchedulingMeanDelay(schedulingMeanDelay);
+            setNSlotsPerProbe(nSlotsPerProbe);
             add(serverParametersJson.getQuestionsArrayList());
         } catch (JsonSyntaxException e) {
             throw new ParametersSyntaxException();
