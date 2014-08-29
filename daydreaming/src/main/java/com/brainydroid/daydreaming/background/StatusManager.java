@@ -513,4 +513,8 @@ public class StatusManager {
         context.startService(pollServiceIntent);
     }
 
+    public synchronized Boolean expIsRunning(){
+        return (areParametersUpdated() && isFirstLaunchCompleted());
+    }
+
 }

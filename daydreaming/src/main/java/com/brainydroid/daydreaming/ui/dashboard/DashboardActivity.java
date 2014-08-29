@@ -43,6 +43,9 @@ public class DashboardActivity extends RoboFragmentActivity {
     @InjectView(R.id.button_reload_parameters) Button testReloadButton;
     @InjectView(R.id.dashboard_about_layout) AlphaLinearLayout aboutLayout;
 
+
+    @InjectView(R.id.dashboard_textExperimentStatus) TextView expStatus;
+
     private boolean testModeThemeActivated = false;
 
     @Override
@@ -69,6 +72,7 @@ public class DashboardActivity extends RoboFragmentActivity {
         checkExperimentModeActivatedDirty();
         updateRunningTime();
         updateChromeMode();
+        setExperimentStatusText();
         super.onStart();
     }
 
@@ -76,6 +80,7 @@ public class DashboardActivity extends RoboFragmentActivity {
     public void onResume() {
         Logger.v(TAG, "Resuming");
         checkExperimentModeActivatedDirty();
+        setExperimentStatusText();
         super.onResume();
     }
 
@@ -219,6 +224,15 @@ public class DashboardActivity extends RoboFragmentActivity {
      * sequence is run. If they were already ran, user directly end up on
      * dashboard layout.
      */
+
+    //TODO[Vincent] Think of a way to deal with experiment being paused (status : running paused stopped)
+    protected void setExperimentStatusText() {
+        if (statusManager.expIsRunning()){
+            expStatus.setText(R.string.dashboard_text_exp_running);
+        } else {
+            expStatus.setText(R.string.dashboard_text_exp_stopped);
+        }
+    }
 
     protected void checkFirstLaunch() {
         if (!statusManager.isFirstLaunchCompleted()) {

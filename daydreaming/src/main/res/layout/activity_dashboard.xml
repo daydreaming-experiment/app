@@ -58,7 +58,7 @@
                 android:id="@+id/dashboard_textExperimentStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/dashboard_text_exp_running"
+                android:text="XXX"
                 android:singleLine="true"
                 android:textAppearance="@style/ui_font_title_bold"
                 android:paddingLeft="10dp"
