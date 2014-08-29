@@ -2,7 +2,7 @@ package com.brainydroid.daydreaming.sequence;
 
 import java.util.ArrayList;
 
-public class Sequence {
+public class Sequence extends AbstractSequence {
 
     private static String TAG = "Sequence";
 

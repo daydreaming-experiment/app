@@ -2,7 +2,7 @@ package com.brainydroid.daydreaming.sequence;
 
 import java.util.ArrayList;
 
-public class PageGroup {
+public class PageGroup extends AbstractPageGroup {
 
     private static String TAG = "PageGroup";
 
@@ -16,5 +16,4 @@ public class PageGroup {
     public ArrayList<Page> getPages() {
         return pages;
     }
-
 }

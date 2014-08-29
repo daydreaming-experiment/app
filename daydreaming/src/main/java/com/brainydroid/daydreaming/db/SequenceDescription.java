@@ -1,8 +1,10 @@
 package com.brainydroid.daydreaming.db;
 
+import com.brainydroid.daydreaming.sequence.AbstractSequence;
+
 import java.util.ArrayList;
 
-public class SequenceDescription {
+public class SequenceDescription extends AbstractSequence {
 
     private static String TAG = "SequenceDescription";
 

@@ -1,8 +1,10 @@
 package com.brainydroid.daydreaming.db;
 
+import com.brainydroid.daydreaming.sequence.AbstractPage;
+
 import java.util.ArrayList;
 
-public class PageDescription {
+public class PageDescription extends AbstractPage {
 
     private static String TAG = "PageDescription";
 
