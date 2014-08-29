@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,7 +43,6 @@ public class DashboardActivity extends RoboFragmentActivity {
     @InjectView(R.id.button_test_poll) Button testProbeButton;
     @InjectView(R.id.button_reload_parameters) Button testReloadButton;
     @InjectView(R.id.dashboard_about_layout) AlphaLinearLayout aboutLayout;
-
 
     @InjectView(R.id.dashboard_textExperimentStatus) TextView expStatus;
 
@@ -80,7 +80,6 @@ public class DashboardActivity extends RoboFragmentActivity {
     public void onResume() {
         Logger.v(TAG, "Resuming");
         checkExperimentModeActivatedDirty();
-        setExperimentStatusText();
         super.onResume();
     }
 
@@ -231,6 +230,15 @@ public class DashboardActivity extends RoboFragmentActivity {
             expStatus.setText(R.string.dashboard_text_exp_running);
         } else {
             expStatus.setText(R.string.dashboard_text_exp_stopped);
+
+            View timeBoxLayout =  findViewById(R.id.dashboard_TimeBox_layout);
+            ViewGroup parent = (ViewGroup)timeBoxLayout.getParent();
+            int index = parent.indexOfChild(timeBoxLayout);
+            parent.removeView(timeBoxLayout);
+            timeBoxLayout = getLayoutInflater().inflate(R.layout.dashboard_timebox_no_parameters, parent, false);
+            parent.addView(timeBoxLayout, index);
+
+
         }
     }
 
