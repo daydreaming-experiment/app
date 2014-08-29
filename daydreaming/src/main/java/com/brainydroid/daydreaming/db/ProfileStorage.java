@@ -28,7 +28,7 @@ public class ProfileStorage {
     private static String PROFILE_TIPI_ANSWER_PREFIX = "profileTipiAnswer";
     private static String PROFILE_TIPI_NUMBER_OF_ANSWERS =
             "profileTipiNumberOfAnswers";
-    private static String PROFILE_PARAMETERS_VERSION =
+    public static String PROFILE_PARAMETERS_VERSION =
             "profileParametersVersion";
 
     private boolean hasChangedSinceSyncStart = false;
@@ -193,7 +193,8 @@ public class ProfileStorage {
 
     public Profile getProfile() {
         Logger.d(TAG, "Building Profile instance from saved data");
-        return profileFactory.create(getAge(), getGender(), getEducation(),
+        return profileFactory.create(parametersStorageProvider.get().getBackendExpId(),
+                getAge(), getGender(), getEducation(),
                 getTipiAnswers(), getParametersVersion(), getAppVersionName(),
                 getAppVersionCode(), statusManager.getCurrentModeName());
     }

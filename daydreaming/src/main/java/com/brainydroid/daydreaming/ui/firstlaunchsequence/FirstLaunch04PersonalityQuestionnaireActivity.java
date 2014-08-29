@@ -1,6 +1,7 @@
 package com.brainydroid.daydreaming.ui.firstlaunchsequence;
 
 import android.annotation.TargetApi;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.FloatMath;
 import android.view.View;
@@ -12,9 +13,12 @@ import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.ProfileStorage;
 import com.brainydroid.daydreaming.ui.AlphaSeekBar;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
 import roboguice.inject.ContentView;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -50,11 +54,21 @@ public class FirstLaunch04PersonalityQuestionnaireActivity
     private List<String> hints;
     private int nHints;
 
+    // FIXME: All this is skipped since tipi questionnaire moves to generic questionnaires in grammar v3
+    private static String TIPI_QUESTIONS_HINTS = "tipiQuestionsHints";
+    private static String TIPI_QUESTIONS_TEXTS = "tipiQuestionsTexts";
+
+    private SharedPreferences sharedPreferences;
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Logger.v(TAG, "Creating");
         super.onCreate(savedInstanceState);
 
+        // loading from internal ressources
+
+/*
         String[] hintsPre = getBaseContext().getResources().getStringArray(
                 R.array.tipi_answers);
         hints = Arrays.asList(hintsPre);
@@ -62,6 +76,31 @@ public class FirstLaunch04PersonalityQuestionnaireActivity
         String[] objects = getBaseContext().getResources().getStringArray(
                 R.array.tipi_questions);
         for (String s : objects) {
+            seekBarsTouchedStates.put(s, false);
+            seekBars.put(s, inflateView(s));
+        }
+*/
+        Logger.v(TAG, "Loading from internal JSON");
+
+        // loading from internal JSON
+        Gson gson = new Gson();
+        String hints_json = sharedPreferences.getString(statusManager.getCurrentModeName() + TIPI_QUESTIONS_HINTS, "");
+        hints = gson.fromJson(hints_json, new TypeToken<List<String>>(){}.getType());
+        //hints = gson.fromJson(hints_json, ArrayList.class);
+
+        //String[] hintsPre = getBaseContext().getResources().getStringArray(
+        //        R.array.tipi_answers);
+        //hints = Arrays.asList(hintsPre);
+        nHints = hints.size();
+
+        String tipiQuestionsTexts_json = sharedPreferences.getString(statusManager.getCurrentModeName() + TIPI_QUESTIONS_TEXTS, "");
+        //ArrayList<String> tipiQuestionsTexts = gson.fromJson(tipiQuestionsTexts_json, ArrayList.class);
+        ArrayList<String> tipiQuestionsTexts = gson.fromJson(tipiQuestionsTexts_json, new TypeToken<ArrayList<String>>(){}.getType());
+
+
+        //String[] objects = getBaseContext().getResources().getStringArray(
+        //        R.array.tipi_questions);
+        for (String s : tipiQuestionsTexts) {
             seekBarsTouchedStates.put(s, false);
             seekBars.put(s, inflateView(s));
         }
@@ -75,7 +114,10 @@ public class FirstLaunch04PersonalityQuestionnaireActivity
 
         if (retrieveTipiAnswers()) {
             statusManager.setTipiQuestionnaireCompleted();
-            launchNextActivity(FirstLaunch05MeasuresActivity.class);
+            //finishFirstLaunch();
+            statusManager.setFirstLaunchCompleted();
+            launchDashBoardActivity();
+            //launchNextActivity(FirstLaunch05MeasuresActivity.class);
         }
     }
 

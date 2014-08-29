@@ -1,7 +1,10 @@
 package com.brainydroid.daydreaming.network;
 
+import android.content.SharedPreferences;
+
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.Json;
+import com.brainydroid.daydreaming.db.ParametersStorage;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -12,16 +15,17 @@ public class ServerTalker {
 
     private static String TAG = "ServerTalker";
 
+    @Inject ParametersStorage parametersStorage;
     @Inject ProfileFactory profileFactory;
     @Inject CryptoStorage cryptoStorage;
     @Inject Json json;
 
     private synchronized String getPostResultUrl() {
-        return ServerConfig.SERVER_NAME + ServerConfig.YE_URL_RESULTS;
+        return parametersStorage.getBackendApiUrl() + ServerConfig.YE_URL_RESULTS;
     }
 
     private synchronized String getPutProfileUrl() {
-        return ServerConfig.SERVER_NAME + ServerConfig.YE_URL_PROFILES + "/"
+        return parametersStorage.getBackendApiUrl() + ServerConfig.YE_URL_PROFILES + "/"
                 + cryptoStorage.getMaiId();
     }
 
@@ -31,10 +35,15 @@ public class ServerTalker {
 
         Logger.d(TAG, "Getting key to register");
         String vkPem = cryptoStorage.createArmoredPublicKey(keyPair.getPublic());
-        ProfileWrapper profileWrap = profileFactory.create(vkPem).buildWrapper();
+        ProfileWrapper profileWrap = profileFactory.create(
+                parametersStorage.getBackendExpId(), vkPem).buildWrapper();
         String jsonPayload = json.toJsonExposed(profileWrap);
+
+        Logger.i(TAG, "Going to send the following to server (signed) :\n"
+                + jsonPayload.replace("{", "'{'").replace("}", "'}'"));
         String signedJson = cryptoStorage.signJws(jsonPayload, keyPair.getPrivate());
-        String postUrl = ServerConfig.SERVER_NAME +
+
+        String postUrl = parametersStorage.getBackendApiUrl() +
                 ServerConfig.YE_URL_PROFILES;
 
         HttpPostData postData = new HttpPostData(postUrl, callback);

@@ -68,12 +68,14 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
                     educationSpinner.getSelectedItem().toString());
 
             Logger.d(TAG, "Launching next activity");
-            launchNextActivity(
-                    FirstLaunch04PersonalityQuestionnaireActivity.class);
+
+            // FIXME: we skip the tipiQuestionnaire since it moves to generic questionnaires in grammar v3
+            statusManager.setTipiQuestionnaireCompleted();
+            launchNextActivity(FirstLaunch05MeasuresActivity.class);
+//          launchNextActivity(
+//                  FirstLaunch04PersonalityQuestionnaireActivity.class);
         }
     }
-
-
 
     public void launchAnimation(){
         ImageView MyImageView = (ImageView)findViewById(R.id.firstLaunchProfile_helice);

@@ -2,14 +2,27 @@ package com.brainydroid.daydreaming.background;
 
 import android.content.Intent;
 import android.os.IBinder;
-import android.widget.Toast;
-import com.brainydroid.daydreaming.db.*;
-import com.brainydroid.daydreaming.network.*;
-import com.google.inject.Inject;
-import roboguice.service.RoboService;
 
-import java.text.MessageFormat;
+import com.brainydroid.daydreaming.db.Json;
+import com.brainydroid.daydreaming.db.LocationPoint;
+import com.brainydroid.daydreaming.db.LocationPointsStorage;
+import com.brainydroid.daydreaming.db.ParametersStorage;
+import com.brainydroid.daydreaming.db.Poll;
+import com.brainydroid.daydreaming.db.PollsStorage;
+import com.brainydroid.daydreaming.db.ProfileStorage;
+import com.brainydroid.daydreaming.network.CryptoStorage;
+import com.brainydroid.daydreaming.network.CryptoStorageCallback;
+import com.brainydroid.daydreaming.network.HttpConversationCallback;
+import com.brainydroid.daydreaming.network.ParametersStorageCallback;
+import com.brainydroid.daydreaming.network.ProfileWrapper;
+import com.brainydroid.daydreaming.network.ResultsWrapper;
+import com.brainydroid.daydreaming.network.ResultsWrapperFactory;
+import com.brainydroid.daydreaming.network.ServerTalker;
+import com.google.inject.Inject;
+
 import java.util.ArrayList;
+
+import roboguice.service.RoboService;
 
 // FIXME: Worker thread restart on runtime configuration change.
 // There might be a problem if the service is started from an
@@ -45,6 +58,28 @@ public class SyncService extends RoboService {
     @Inject ResultsWrapperFactory<Poll> pollsWrapperFactory;
     @Inject ResultsWrapperFactory<LocationPoint> locationPointsWrapperFactory;
 
+    ParametersStorageCallback parametersStorageCallback =
+            new ParametersStorageCallback() {
+
+        private String TAG = "ParametersStorageCallback";
+
+        @Override
+        public void onParametersStorageReady(boolean areParametersUpdated) {
+            Logger.d(TAG, "ParametersStorage is ready");
+
+            // Only launch the rest of the synchronization tasks if ParametersStorage is
+            // really ready and we have Internet access.
+            if (areParametersUpdated && statusManager.isDataEnabled()) {
+                Logger.d(TAG, "Parameters have been update, and data is enabled");
+                cryptoStorage.onReady(cryptoStorageCallback);
+            } else {
+                Logger.v(TAG, "Either parameters were not updated, or data is disabled "
+                + "-> doing nothing");
+            }
+
+        }
+    };
+
     /**
      * Callback called once the {@link CryptoStorage} is ready,
      * launching the synchronization tasks.
@@ -64,21 +99,6 @@ public class SyncService extends RoboService {
             if (hasKeyPairAndMaiId && statusManager.isDataEnabled()) {
                 Logger.d(TAG, "Have keypair and id, and data is enabled");
 
-                // We only update parameters once in the experiment's
-                // lifecycle.
-                if (!statusManager.areParametersUpdated()) {
-                    Logger.d(TAG, "Launching parameters update");
-
-                    // If during our network request, parameters are flushed,
-                    // we won't import the received parameters
-                    Logger.v(TAG, "Clearing parameters flushed");
-                    statusManager.clearParametersFlushed();
-
-                    asyncUpdateParameters();
-                } else {
-                    Logger.v(TAG, "Parameters already updated");
-                }
-
                 // We only sync the profile if stored data has been changed
                 if (profileStorage.isDirty()) {
                     Logger.d(TAG, "Launching profile update");
@@ -93,77 +113,6 @@ public class SyncService extends RoboService {
             } else {
                 Logger.v(TAG, "Either no keypair or no id or no data " +
                         "connection -> doing nothing");
-            }
-        }
-
-    };
-
-    /**
-     * Callback called when the parameters are finished downloading,
-     * to import them into the {@link com.brainydroid.daydreaming.db.ParametersStorage}.
-     */
-    HttpConversationCallback updateParametersCallback =
-            new HttpConversationCallback() {
-
-        private String TAG = "Parameters HttpConversationCallback";
-
-        @Override
-        public void onHttpConversationFinished(boolean success,
-                                               String serverAnswer) {
-            Logger.d(TAG, "Parameters update HttpConversation finished");
-
-            // Exit if app mode has changed before we could import parameters
-            if (! statusManager.getCurrentModeName().equals(startSyncAppMode)) {
-                Logger.i(TAG, "App mode has changed from {0} to {1} since sync started, "
-                        + "aborting parameters update.", startSyncAppMode,
-                        statusManager.getCurrentModeName());
-                return;
-            }
-
-            // Exit if parameters have been flushed since we started
-            if (statusManager.areParametersFlushed()) {
-                Logger.i(TAG, "Parameters have been flushed since sync started, "
-                    + "aborting parameters update.");
-                return;
-            }
-
-            if (success) {
-                Logger.i(TAG, "Successfully retrieved parameters from " +
-                        "server");
-                Logger.td(SyncService.this, SyncService.TAG + ": new " +
-                        "parameters downloaded from server");
-
-                // Import the parameters, and remember not to update
-                // parameters again.
-                try {
-                    parametersStorage.importParameters(serverAnswer);
-                    Logger.d(TAG, "Importing new parameters to storage");
-                } catch (ParametersSyntaxException e) {
-                    Logger.e(TAG, "Downloaded parameters were malformed -> " +
-                            "parameters not updated");
-                    if (statusManager.getCurrentMode() == StatusManager.MODE_TEST) {
-                        Toast.makeText(SyncService.this, "Test parameters from server were malformed! " +
-                                "Correct them and try again", Toast.LENGTH_LONG).show();
-                    }
-                    return;
-                }
-
-                Logger.i(TAG, "Parameters successfully imported");
-                statusManager.setParametersUpdated();
-                if (isDebugSync && statusManager.getCurrentMode() == StatusManager.MODE_TEST) {
-                    Toast.makeText(SyncService.this, "Parameters successfully updated", Toast.LENGTH_SHORT).show();
-                }
-
-                Logger.d(TAG, "Starting SchedulerService to take new parameters into account");
-                Intent schedulerIntent = new Intent(SyncService.this, SchedulerService.class);
-                startService(schedulerIntent);
-            } else {
-                Logger.w(TAG, "Error while retrieving new parameters from " +
-                        "server");
-                if (isDebugSync && statusManager.getCurrentMode() == StatusManager.MODE_TEST) {
-                    Toast.makeText(SyncService.this, "Error retrieving parameters from server. " +
-                            "Are you connected to internet?", Toast.LENGTH_LONG).show();
-                }
             }
         }
 
@@ -205,7 +154,7 @@ public class SyncService extends RoboService {
             Logger.td(this, TAG + ": starting sync...");
 
             // This will launch all the calls through the callback
-            cryptoStorage.onReady(cryptoStorageCallback);
+            parametersStorage.onReady(parametersStorageCallback, startSyncAppMode, isDebugSync);
         } else {
             Logger.i(TAG, "No data connection available -> exiting");
             Logger.td(this, TAG + ": no internet connection");
@@ -215,22 +164,6 @@ public class SyncService extends RoboService {
         // they finish or time out.
         Logger.d(TAG, "Stopping self");
         stopSelf();
-    }
-
-    /**
-     * Download and import server parameters from the server, asynchronously.
-     */
-    private void asyncUpdateParameters() {
-        Logger.d(TAG, "Updating parameters");
-
-        if (statusManager.getCurrentMode() == StatusManager.MODE_TEST && isDebugSync) {
-            Toast.makeText(this, "Reloading parameters...", Toast.LENGTH_SHORT).show();
-        }
-
-        String getUrl = MessageFormat.format(ServerConfig.PARAMETERS_URL_BASE, statusManager.getCurrentModeName());
-        HttpGetData updateParametersData = new HttpGetData(getUrl, updateParametersCallback);
-        HttpGetTask updateParametersTask = new HttpGetTask();
-        updateParametersTask.execute(updateParametersData);
     }
 
     /**

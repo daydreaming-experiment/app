@@ -9,19 +9,20 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.background.SchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.background.SyncService;
-import com.brainydroid.daydreaming.network.ServerConfig;
+import com.brainydroid.daydreaming.db.ParametersStorage;
 import com.brainydroid.daydreaming.network.SntpClient;
 import com.brainydroid.daydreaming.network.SntpClientCallback;
 import com.brainydroid.daydreaming.ui.AlphaLinearLayout;
-import com.brainydroid.daydreaming.ui.firstlaunchsequence.FirstLaunch00WelcomeActivity;
 import com.brainydroid.daydreaming.ui.FontUtils;
-
+import com.brainydroid.daydreaming.ui.firstlaunchsequence.FirstLaunch00WelcomeActivity;
 import com.google.inject.Inject;
+
 import roboguice.activity.RoboFragmentActivity;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
@@ -31,6 +32,7 @@ public class DashboardActivity extends RoboFragmentActivity {
 
     private static String TAG = "DashboardActivity";
 
+    @Inject ParametersStorage parametersStorage;
     @Inject StatusManager statusManager;
     @Inject SntpClient sntpClient;
 
@@ -134,6 +136,11 @@ public class DashboardActivity extends RoboFragmentActivity {
     }
 
     private void updateRunningTime() {
+        // TODO: this should update automatically once parameters are updated (through an observer)
+        if (!statusManager.areParametersUpdated()) {
+            Logger.i(TAG, "Parameters not downloaded yet, not updating timestamp");
+            return;
+        }
         // Set the running time from last trustworthy timestamp
         long lastNtpTimestamp = statusManager.getLatestNtpTime();
         updateRunningTimeFromTimestamp(lastNtpTimestamp);
@@ -155,7 +162,6 @@ public class DashboardActivity extends RoboFragmentActivity {
                     Logger.i(TAG, "NTP request failed, sntpClient is null");
                 }
             }
-
         };
 
         sntpClient.asyncRequestTime(callback);
@@ -176,7 +182,8 @@ public class DashboardActivity extends RoboFragmentActivity {
         final int daysElapsed = (int)((timestampNow - expStartTimestamp) /
                 (24 * 60 * 60 * 1000));
         Logger.i(TAG, "Days elapsed: {}", daysElapsed);
-        final int daysToGo = ServerConfig.EXP_DURATION_DAYS - daysElapsed;
+
+        final int daysToGo = parametersStorage.getExpDuration() - daysElapsed;
         Logger.i(TAG, "Days to go: {}", daysToGo);
 
         Runnable timeElapsedUpdater = new Runnable() {

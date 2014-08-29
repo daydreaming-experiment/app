@@ -20,4 +20,13 @@ public interface IQuestionDetails {
      */
     public String getType();
 
+    /**
+     * Validate the question details are properly initialized.
+     * <p/>
+     * Throw a {@link com.brainydroid.daydreaming.db.JsonParametersException} if not.
+     *
+     * @throws JsonParametersException
+     */
+    public void validateInitialization() throws JsonParametersException;
+
 }

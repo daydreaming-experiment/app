@@ -1,5 +1,7 @@
 package com.brainydroid.daydreaming.db;
 
+import com.brainydroid.daydreaming.background.Logger;
+
 import java.util.ArrayList;
 
 public class StarRatingQuestionDetails implements IQuestionDetails {
@@ -20,6 +22,19 @@ public class StarRatingQuestionDetails implements IQuestionDetails {
 
     public synchronized ArrayList<StarRatingSubQuestion> getSubQuestions() {
         return subQuestions;
+    }
+
+    public synchronized void validateInitialization() throws JsonParametersException {
+        Logger.v(TAG, "Validating question details");
+
+        if (subQuestions.size() == 0) {
+            throw new JsonParametersException("subQuestions in StarRatingQuestionDetails must "
+                    + "have at least one subQuestion");
+        }
+
+        for (StarRatingSubQuestion q : subQuestions) {
+            q.validateInitialization();
+        }
     }
 
 }
