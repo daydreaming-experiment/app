@@ -129,7 +129,9 @@ public class DashboardActivity extends RoboFragmentActivity {
     public void onPause() {
         Logger.v(TAG, "Pausing");
         Logger.d(TAG, "Unregistering dashboardReceiver");
-        unregisterReceiver(networkReceiver);
+        try {
+            unregisterReceiver(networkReceiver);
+        } catch(IllegalArgumentException e) {}
         super.onPause();
     }
 
