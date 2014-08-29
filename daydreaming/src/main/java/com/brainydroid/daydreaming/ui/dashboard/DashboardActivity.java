@@ -61,7 +61,7 @@ public class DashboardActivity extends RoboFragmentActivity {
         public void onReceive(Context context, Intent intent) {
             // Were we called because Internet just became available?
             String action = intent.getAction();
-            if (action.equals("starting_poll_service")) {
+            if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
                 Logger.d(TAG, "Receiver started for starting_poll_service");
                 setExperimentStatusText();
             }
@@ -104,8 +104,9 @@ public class DashboardActivity extends RoboFragmentActivity {
     public void onResume() {
         Logger.v(TAG, "Resuming");
         checkExperimentModeActivatedDirty();
-        registerReceiver(dashboardReceiver, serviceIntentFilter);
-
+        if (!statusManager.areParametersUpdated()) {
+            //registerReceiver(dashboardReceiver, serviceIntentFilter);
+        }
         super.onResume();
     }
 
@@ -114,7 +115,7 @@ public class DashboardActivity extends RoboFragmentActivity {
     public void onPause() {
         Logger.v(TAG, "Pausing");
         Logger.d(TAG, "Unregistering dashboardReceiver");
-        unregisterReceiver(dashboardReceiver);
+        //unregisterReceiver(dashboardReceiver);
         super.onPause();
     }
 
@@ -261,18 +262,23 @@ public class DashboardActivity extends RoboFragmentActivity {
 
     //TODO[Vincent] Think of a way to deal with experiment being paused (status : running paused stopped)
     protected void setExperimentStatusText() {
+        View dashboard_TimeBox_layout = findViewById(R.id.dashboard_TimeBox_layout);
+        View dashboard_TimeBox_no_param = findViewById(R.id.dashboard_TimeBox_layout_no_params);
         if (statusManager.expIsRunning()){
-            setContentView(R.layout.activity_dashboard);
             expStatus.setText(R.string.dashboard_text_exp_running);
+            dashboard_TimeBox_layout.setVisibility(View.VISIBLE);
+            dashboard_TimeBox_no_param.setVisibility(View.INVISIBLE);
         } else {
             expStatus.setText(R.string.dashboard_text_exp_stopped);
+            dashboard_TimeBox_layout.setVisibility(View.INVISIBLE);
+            dashboard_TimeBox_no_param.setVisibility(View.VISIBLE);
 
-            View timeBoxLayout =  findViewById(R.id.dashboard_TimeBox_layout);
-            ViewGroup parent = (ViewGroup)timeBoxLayout.getParent();
-            int index = parent.indexOfChild(timeBoxLayout);
-            parent.removeView(timeBoxLayout);
-            timeBoxLayout = getLayoutInflater().inflate(R.layout.dashboard_timebox_no_parameters, parent, false);
-            parent.addView(timeBoxLayout, index);
+            //View timeBoxLayout =  findViewById(R.id.dashboard_TimeBox_layout);
+            //ViewGroup parent = (ViewGroup)timeBoxLayout.getParent();
+            //int index = parent.indexOfChild(timeBoxLayout);
+            //parent.removeView(timeBoxLayout);
+            //timeBoxLayout = getLayoutInflater().inflate(R.layout.dashboard_timebox_no_parameters, parent, false);
+            //parent.addView(timeBoxLayout, index);
 
 
         }
