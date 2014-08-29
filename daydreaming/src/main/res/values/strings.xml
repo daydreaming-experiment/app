@@ -16,8 +16,11 @@
 
     <!-- Dashboard -->
     <string name="dashboard_title_activity">Dashboard</string>
-    <string name="dashboard_text_experiment_is">EXPERIMENT IS\ </string>
-    <string name="dashboard_text_running">RUNNING</string>
+    <string name="dashboard_text_experiment_is">EXPERIMENT IS</string>
+    <string name="dashboard_text_exp_running">RUNNING</string>
+    <string name="dashboard_text_exp_paused">PAUSED</string>
+    <string name="dashboard_text_exp_stopped">STOPPED</string>
+
     <string name="dashboard_quit_experiment">Quit</string>
     <string name="dashboard_text_days_elapsed">Days elapsed</string>
     <string name="dashboard_title_results">Results:</string>

@@ -55,12 +55,13 @@
             android:layout_toRightOf="@id/dashboard_layout_textExperimentRunning_p1">
 
             <TextView
-                android:id="@+id/dashboard_textExperimentRunning_p2"
+                android:id="@+id/dashboard_textExperimentStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/dashboard_text_running"
+                android:text="@string/dashboard_text_exp_running"
                 android:singleLine="true"
                 android:textAppearance="@style/ui_font_title_bold"
+                android:paddingLeft="10dp"
                 android:textColor="@color/ui_dark_blue_color"/>
 
         </LinearLayout>
