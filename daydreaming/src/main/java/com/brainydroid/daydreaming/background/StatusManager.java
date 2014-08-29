@@ -514,7 +514,7 @@ public class StatusManager {
     }
 
     public synchronized Boolean expIsRunning(){
-        return (areParametersUpdated() && isFirstLaunchCompleted());
+        return (areParametersUpdated());
     }
 
 }

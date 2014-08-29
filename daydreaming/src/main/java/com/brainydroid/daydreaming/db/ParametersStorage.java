@@ -532,6 +532,7 @@ public class ParametersStorage {
 
                     Logger.d(TAG, "Starting SchedulerService to take new parameters into account");
                     Intent schedulerIntent = new Intent(context, SchedulerService.class);
+                    schedulerIntent.setAction("starting_poll_service");
                     context.startService(schedulerIntent);
                 } else {
                     Logger.w(TAG, "Error while retrieving new parameters from " +

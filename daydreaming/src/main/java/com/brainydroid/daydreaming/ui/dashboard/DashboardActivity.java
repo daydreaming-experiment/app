@@ -2,7 +2,11 @@ package com.brainydroid.daydreaming.ui.dashboard;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,6 +52,26 @@ public class DashboardActivity extends RoboFragmentActivity {
 
     private boolean testModeThemeActivated = false;
 
+
+    private BroadcastReceiver dashboardReceiver = new BroadcastReceiver() {
+
+        private String TAG = "Dashboard Receiver";
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // Were we called because Internet just became available?
+            String action = intent.getAction();
+            if (action.equals("starting_poll_service")) {
+                Logger.d(TAG, "Receiver started for starting_poll_service");
+                setExperimentStatusText();
+            }
+        }
+    };
+
+    private IntentFilter serviceIntentFilter =
+            new IntentFilter("starting_poll_service");
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Logger.v(TAG, "Creating");
@@ -80,7 +104,18 @@ public class DashboardActivity extends RoboFragmentActivity {
     public void onResume() {
         Logger.v(TAG, "Resuming");
         checkExperimentModeActivatedDirty();
+        registerReceiver(dashboardReceiver, serviceIntentFilter);
+
         super.onResume();
+    }
+
+
+    @Override
+    public void onPause() {
+        Logger.v(TAG, "Pausing");
+        Logger.d(TAG, "Unregistering dashboardReceiver");
+        unregisterReceiver(dashboardReceiver);
+        super.onPause();
     }
 
     /**
@@ -227,6 +262,7 @@ public class DashboardActivity extends RoboFragmentActivity {
     //TODO[Vincent] Think of a way to deal with experiment being paused (status : running paused stopped)
     protected void setExperimentStatusText() {
         if (statusManager.expIsRunning()){
+            setContentView(R.layout.activity_dashboard);
             expStatus.setText(R.string.dashboard_text_exp_running);
         } else {
             expStatus.setText(R.string.dashboard_text_exp_stopped);
