@@ -2,20 +2,28 @@ package com.brainydroid.daydreaming.ui.dashboard;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.text.Html;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.brainydroid.daydreaming.R;
+import com.brainydroid.daydreaming.background.LocationPointService;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.background.SchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
@@ -30,6 +38,7 @@ import com.google.inject.Inject;
 
 import roboguice.activity.RoboFragmentActivity;
 import roboguice.inject.ContentView;
+import roboguice.inject.InjectResource;
 import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_dashboard)
@@ -50,26 +59,30 @@ public class DashboardActivity extends RoboFragmentActivity {
 
     @InjectView(R.id.dashboard_textExperimentStatus) TextView expStatus;
 
+    @InjectView(R.id.dashboard_no_params_text) TextView
+            textNetworkConnection;
+    @InjectView(R.id.dashboard_main_layout)
+    LinearLayout dashboard_main_layout;
     private boolean testModeThemeActivated = false;
 
+    private BroadcastReceiver networkReceiver = new BroadcastReceiver() {
 
-    private BroadcastReceiver dashboardReceiver = new BroadcastReceiver() {
-
-        private String TAG = "Dashboard Receiver";
+        private String TAG = "FirstLaunch05MeasuresActivity networkReceiver";
 
         @Override
         public void onReceive(Context context, Intent intent) {
             // Were we called because Internet just became available?
             String action = intent.getAction();
             if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
-                Logger.d(TAG, "Receiver started for starting_poll_service");
-                setExperimentStatusText();
+                Logger.d(TAG, "networkReceiver started for CONNECTIVITY_ACTION");
+                asyncUpdateView();
             }
         }
     };
 
-    private IntentFilter serviceIntentFilter =
-            new IntentFilter("starting_poll_service");
+    private IntentFilter networkIntentFilter =
+            new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+
 
 
     @Override
@@ -105,7 +118,8 @@ public class DashboardActivity extends RoboFragmentActivity {
         Logger.v(TAG, "Resuming");
         checkExperimentModeActivatedDirty();
         if (!statusManager.areParametersUpdated()) {
-            //registerReceiver(dashboardReceiver, serviceIntentFilter);
+            registerReceiver(networkReceiver, networkIntentFilter);
+            asyncUpdateView();
         }
         super.onResume();
     }
@@ -115,7 +129,7 @@ public class DashboardActivity extends RoboFragmentActivity {
     public void onPause() {
         Logger.v(TAG, "Pausing");
         Logger.d(TAG, "Unregistering dashboardReceiver");
-        //unregisterReceiver(dashboardReceiver);
+        unregisterReceiver(networkReceiver);
         super.onPause();
     }
 
@@ -373,5 +387,123 @@ public class DashboardActivity extends RoboFragmentActivity {
             Logger.v(TAG, "No test mode theming discrepancy");
         }
     }
+
+
+    private void asyncUpdateView() {
+        Logger.d(TAG, "Asynchronously updating view of settings");
+
+        final boolean isDataEnabled = statusManager.isDataEnabled();
+
+        Runnable updateView = new Runnable() {
+
+            private String TAG = "Runnable updateView";
+
+            @Override
+            public void run() {
+                Logger.d(TAG, "Running task: update of view");
+
+                textNetworkConnection.setCompoundDrawablesWithIntrinsicBounds(
+                        isDataEnabled ? R.drawable.status_ok :
+                                R.drawable.status_wrong, 0, 0, 0
+                );
+                finishFirstLaunch();
+                setExperimentStatusText();
+
+            }
+        };
+        dashboard_main_layout.post(updateView);
+    }
+
+    private void launchNetworkSettings() {
+        Logger.d(TAG, "Launching network settings dialog");
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+
+        // set title
+        alertDialogBuilder.setTitle("Enable Data");
+
+        // set dialog message
+        alertDialogBuilder
+                .setMessage("Select the connectivity settings you wish to change")
+                .setCancelable(true)
+                .setPositiveButton("Network data", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        Logger.d(TAG, "Launching data settings");
+                        launchNetworkDataSettings();
+                    }
+                })
+                .setNegativeButton("Wifi", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        Logger.d(TAG, "Launching wifi settings");
+                        launchNetworkWifiSettings();
+                    }
+                });
+
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // show it
+        alertDialog.show();
+    }
+
+    private void launchNetworkDataSettings() {
+        Intent settingsIntent = new Intent(Settings.ACTION_DATA_ROAMING_SETTINGS);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            ComponentName cName = new ComponentName("com.android.phone", "com.android.phone.Settings");
+            settingsIntent.setComponent(cName);
+        }
+        settingsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        startActivity(settingsIntent);
+    }
+
+    private void launchNetworkWifiSettings() {
+        Intent settingsIntent = new Intent(Settings.ACTION_WIFI_SETTINGS);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            ComponentName cName = new ComponentName("com.android.phone", "com.android.phone.Settings");
+            settingsIntent.setComponent(cName);
+        }
+        settingsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        startActivity(settingsIntent);
+    }
+
+    protected void finishFirstLaunch() {
+        Logger.i(TAG, "Setting first launch to finished");
+
+        statusManager.setFirstLaunchCompleted();
+
+        SntpClientCallback callback = new SntpClientCallback() {
+
+            private String TAG = "FirstLaunch SntpClientCallback";
+
+            @Override
+            public void onTimeReceived(SntpClient sntpClient) {
+                Logger.d(TAG, "NTP request completed");
+
+                if (sntpClient != null) {
+                    Logger.i(TAG, "NTP request successful, " +
+                            "setting timestamp for start of experiment");
+                    statusManager.setExperimentStartTimestamp(
+                            sntpClient.getNow());
+                } else {
+                    Logger.i(TAG, "NTP request failed, sntpClient is null");
+                }
+            }
+
+        };
+
+        sntpClient.asyncRequestTime(callback);
+
+        Intent syncServiceIntent = new Intent(this, SyncService.class);
+        Logger.d(TAG, "Starting SyncService");
+        startService(syncServiceIntent);
+
+        // SchedulerService will be started when the SyncService successfully updates parameters
+
+        Intent locationPointServiceIntent = new Intent(this,
+                LocationPointService.class);
+        Logger.d(TAG, "Starting LocationPointService");
+        startService(locationPointServiceIntent);
+    }
+
 
 }

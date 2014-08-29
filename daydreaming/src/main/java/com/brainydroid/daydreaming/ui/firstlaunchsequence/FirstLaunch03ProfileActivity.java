@@ -71,7 +71,9 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
 
             // FIXME: we skip the tipiQuestionnaire since it moves to generic questionnaires in grammar v3
             statusManager.setTipiQuestionnaireCompleted();
-            launchNextActivity(FirstLaunch05MeasuresActivity.class);
+            statusManager.setFirstLaunchCompleted();
+            launchDashBoardActivity();
+            //launchNextActivity(FirstLaunch05MeasuresActivity.class);
 //          launchNextActivity(
 //                  FirstLaunch04PersonalityQuestionnaireActivity.class);
         }
