@@ -508,8 +508,8 @@ public class StatusManager {
         context.startService(locationPointServiceIntent);
 
         Logger.d(TAG, "Cancelling notified polls");
-        Intent pollServiceIntent = new Intent(context, PollService.class);
-        pollServiceIntent.putExtra(PollService.CANCEL_PENDING_POLLS, true);
+        Intent pollServiceIntent = new Intent(context, ProbeService.class);
+        pollServiceIntent.putExtra(ProbeService.CANCEL_PENDING_POLLS, true);
         context.startService(pollServiceIntent);
     }
 

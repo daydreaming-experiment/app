@@ -36,7 +36,7 @@ import roboguice.service.RoboService;
  *
  * @author Sébastien Lerique
  * @author Vincent Adam
- * @see PollService
+ * @see ProbeService
  * @see SchedulerService
  */
 public class SyncService extends RoboService {

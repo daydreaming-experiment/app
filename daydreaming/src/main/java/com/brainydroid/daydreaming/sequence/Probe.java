@@ -54,4 +54,9 @@ public class Probe extends StatusModel<Probe,ProbesStorage,ProbeFactory> {
     protected synchronized ProbesStorage getStorage() {
         return probesStorage;
     }
+
+    public synchronized void populate() {
+        // TODO do population
+        throw new RuntimeException("Not implemented");
+    }
 }

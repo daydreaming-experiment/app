@@ -152,10 +152,10 @@
     <string name="questionActivity_catch_key">Press again to exit.\nYou\'ll lose these questions!</string>
     <string name="question_common_question_intro_text">Right before the app interrupted you...</string>
 
-    <!-- Poll Notivifcation -->
-    <string name="pollNotification_ticker">Daydreaming poll</string>
-    <string name="pollNotification_title">Daydreaming</string>
-    <string name="pollNotification_text">A few quick questions</string>
+    <!-- Probe Notivifcation -->
+    <string name="probeNotification_ticker">Daydreaming poll</string>
+    <string name="probeNotification_title">Daydreaming</string>
+    <string name="probeNotification_text">A few quick questions</string>
 
 
     <!-- AppSettings -->
