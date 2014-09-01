@@ -9,7 +9,7 @@ import com.google.gson.annotations.Expose;
 // TODO: add some way to saveIfSync the phone's timezone and the user's
 // preferences_appSettings
 // about what times he allowed notifications to appear at.
-public class Question extends AbstractQuestion {
+public class Question implements IQuestion {
 
     private static String TAG = "Question";
 

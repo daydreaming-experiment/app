@@ -1,10 +1,12 @@
 package com.brainydroid.daydreaming.db;
 
-import com.brainydroid.daydreaming.sequence.AbstractPageGroup;
+import com.brainydroid.daydreaming.sequence.BuildableOrderable;
+import com.brainydroid.daydreaming.sequence.IPageGroup;
+import com.brainydroid.daydreaming.sequence.PageGroup;
 
 import java.util.ArrayList;
 
-public class PageGroupDescription extends AbstractPageGroup {
+public class PageGroupDescription extends BuildableOrderable<PageGroup> implements IPageGroup {
 
     @SuppressWarnings("UnusedDeclaration")
     private static String TAG = "PageGroupDescription";
@@ -28,6 +30,11 @@ public class PageGroupDescription extends AbstractPageGroup {
 
     public ArrayList<PageDescription> getPages() {
         return pages;
+    }
+
+    @Override
+    public PageGroup build() {
+        return null;
     }
 
 }

@@ -1,9 +1,13 @@
 package com.brainydroid.daydreaming.db;
 
 import com.brainydroid.daydreaming.background.Logger;
-import com.brainydroid.daydreaming.sequence.AbstractQuestion;
+import com.brainydroid.daydreaming.sequence.BuildableOrderable;
+import com.brainydroid.daydreaming.sequence.IQuestion;
+import com.brainydroid.daydreaming.sequence.Question;
+import com.brainydroid.daydreaming.sequence.QuestionBuilder;
+import com.google.inject.Inject;
 
-public class QuestionDescription extends AbstractQuestion {
+public class QuestionDescription extends BuildableOrderable<Question> implements IQuestion {
 
     @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "QuestionDescription";
@@ -11,6 +15,7 @@ public class QuestionDescription extends AbstractQuestion {
     private String name = null;
     private String position = null;
     private IQuestionDescriptionDetails details = null;
+    @Inject private transient QuestionBuilder questionBuilder;
 
     public String getName() {
         return name;
@@ -40,5 +45,10 @@ public class QuestionDescription extends AbstractQuestion {
 
         // Check the details
         details.validateInitialization();
+    }
+
+    @Override
+    public Question build() {
+        return questionBuilder.build(this);
     }
 }

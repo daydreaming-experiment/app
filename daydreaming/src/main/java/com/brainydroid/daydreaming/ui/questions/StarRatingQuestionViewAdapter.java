@@ -12,7 +12,7 @@ import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.StarRatingQuestionDescriptionDetails;
 import com.brainydroid.daydreaming.sequence.StarRatingAnswer;
-import com.brainydroid.daydreaming.sequence.StarRatingSubQuestion;
+import com.brainydroid.daydreaming.db.StarRatingSubQuestion;
 import com.brainydroid.daydreaming.ui.AlphaRatingBar;
 import com.google.inject.Inject;
 import roboguice.inject.InjectResource;

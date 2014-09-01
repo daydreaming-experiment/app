@@ -1,7 +1,6 @@
 package com.brainydroid.daydreaming.sequence;
 
 import com.brainydroid.daydreaming.background.Logger;
-import com.brainydroid.daydreaming.db.PollsStorage;
 import com.brainydroid.daydreaming.db.ProbeFactory;
 import com.brainydroid.daydreaming.db.ProbesStorage;
 import com.brainydroid.daydreaming.db.StatusModel;
@@ -21,21 +20,14 @@ public class Probe extends StatusModel<Probe,ProbesStorage,ProbeFactory> {
     public static final String STATUS_PARTIALLY_COMPLETED = "probePartiallyCompleted"; // ProbeActivity was stopped, and Probe expired
     public static final String STATUS_COMPLETED = "probeCompleted"; // ProbeActivity completed
 
+    @Inject transient SequenceBuilder sequenceBuilder;
     @Inject transient ProbesStorage probesStorage;
-
-    public synchronized long getNotificationNtpTimestamp() {
-        return notificationNtpTimestamp;
-    }
 
     public synchronized void setNotificationNtpTimestamp(
             long notificationNtpTimestamp) {
         Logger.v(TAG, "Setting notification ntpTimestamp");
         this.notificationNtpTimestamp = notificationNtpTimestamp;
         saveIfSync();
-    }
-
-    public synchronized long getNotificationSystemTimestamp() {
-        return notificationSystemTimestamp;
     }
 
     public synchronized void setNotificationSystemTimestamp(
@@ -56,7 +48,6 @@ public class Probe extends StatusModel<Probe,ProbesStorage,ProbeFactory> {
     }
 
     public synchronized void populate() {
-        // TODO do population
-        throw new RuntimeException("Not implemented");
+        sequence = sequenceBuilder.build(SequenceBuilder.SEQUENCE_PROBE);
     }
 }

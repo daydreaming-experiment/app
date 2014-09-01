@@ -283,6 +283,36 @@ public class ParametersStorage {
         eSharedPreferences.commit();
     }
 
+    public synchronized void setFirstLaunch(FirstLaunch firstLaunch) {
+        // Save raw JSON
+        String jsonFirstLaunch = json.toJson(firstLaunch);
+        Logger.d(TAG, "{0} - Setting (json)firstLaunch to {1}",
+                statusManager.getCurrentModeName(), jsonFirstLaunch);
+
+        eSharedPreferences.putString(statusManager.getCurrentModeName() + FIRST_LAUNCH, jsonFirstLaunch);
+        eSharedPreferences.commit();
+    }
+
+    public synchronized FirstLaunch getFirstLaunch() {
+        String jsonFirstLaunch = sharedPreferences.getString(
+                statusManager.getCurrentModeName() + FIRST_LAUNCH, null);
+        if (jsonFirstLaunch == null) {
+            Logger.e(TAG, "{} - (json)firstLaunch is asked for but not set",
+                    statusManager.getCurrentMode());
+            throw new RuntimeException("(json)firstLaunch is asked for but not set");
+        }
+        Logger.d(TAG, "{0} - (json)FirstLaunch is {1}", statusManager.getCurrentModeName(),
+                jsonFirstLaunch);
+
+        // Deserialize the JSON
+        return json.fromJson(jsonFirstLaunch, FirstLaunch.class);
+    }
+
+    private synchronized void clearFirstLaunch() {
+        Logger.d(TAG, "{} - Clearing firstLaunch", statusManager.getCurrentModeName());
+        eSharedPreferences.remove(statusManager.getCurrentModeName() + FIRST_LAUNCH);
+    }
+
     // get question from id in db
     public synchronized Question create(String questionName) {
         Logger.d(TAG, "{0} - Retrieving question {1} from db", statusManager.getCurrentModeName(), questionName);

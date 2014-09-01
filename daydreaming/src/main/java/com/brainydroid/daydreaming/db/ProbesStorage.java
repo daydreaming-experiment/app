@@ -31,12 +31,12 @@ public class ProbesStorage extends StatusModelStorage<Probe,ProbesStorage,ProbeF
     public synchronized ArrayList<Probe> getUploadableProbes() {
         Logger.v(TAG, "Getting uploadable polls");
         return getModelsByStatuses(
-                new String[] {Poll.STATUS_COMPLETED, Poll.STATUS_PARTIALLY_COMPLETED});
+                new String[] {Probe.STATUS_COMPLETED, Probe.STATUS_PARTIALLY_COMPLETED});
     }
 
     public synchronized ArrayList<Probe> getPendingProbes() {
         Logger.d(TAG, "Getting pending polls");
-        return getModelsByStatuses(new String[] {Poll.STATUS_PENDING});
+        return getModelsByStatuses(new String[] {Probe.STATUS_PENDING});
     }
 
     public synchronized void removeUploadableProbes() {

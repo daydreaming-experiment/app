@@ -1,7 +1,6 @@
 package com.brainydroid.daydreaming.db;
 
 import com.brainydroid.daydreaming.background.Logger;
-import com.brainydroid.daydreaming.sequence.StarRatingSubQuestion;
 
 import java.util.ArrayList;
 

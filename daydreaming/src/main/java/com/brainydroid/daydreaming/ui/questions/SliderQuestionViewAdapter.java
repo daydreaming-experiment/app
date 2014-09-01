@@ -12,7 +12,7 @@ import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.SliderQuestionDescriptionDetails;
 import com.brainydroid.daydreaming.sequence.SliderAnswer;
-import com.brainydroid.daydreaming.sequence.SliderSubQuestion;
+import com.brainydroid.daydreaming.db.SliderSubQuestion;
 import com.brainydroid.daydreaming.ui.AlphaSeekBar;
 import com.google.inject.Inject;
 import roboguice.inject.InjectResource;
