@@ -42,7 +42,6 @@ import roboguice.inject.InjectView;
 public class DashboardActivity extends RoboFragmentActivity {
 
     private static String TAG = "DashboardActivity";
-    private static final String ACTION_STRING_ACTIVITY = "ToActivity";
 
     @Inject ParametersStorage parametersStorage;
     @Inject StatusManager statusManager;
@@ -54,22 +53,21 @@ public class DashboardActivity extends RoboFragmentActivity {
     @InjectView(R.id.button_test_poll) Button testProbeButton;
     @InjectView(R.id.button_reload_parameters) Button testReloadButton;
     @InjectView(R.id.dashboard_about_layout) AlphaLinearLayout aboutLayout;
-
     @InjectView(R.id.dashboard_textExperimentStatus) TextView expStatus;
-
     @InjectView(R.id.dashboard_no_params_text) TextView
             textNetworkConnection;
     @InjectView(R.id.dashboard_main_layout)
     LinearLayout dashboard_main_layout;
+    
     private boolean testModeThemeActivated = false;
 
-    IntentFilter intentFilter = new IntentFilter(ACTION_STRING_ACTIVITY);
+    IntentFilter intentFilter = new IntentFilter(SchedulerService.ACTION_PARAMETERS_UPDATED);
 
     private BroadcastReceiver activityReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            if (action.equals(ACTION_STRING_ACTIVITY)) {
+            if (action.equals(SchedulerService.ACTION_PARAMETERS_UPDATED)) {
                 Logger.d(TAG, "networkReceiver started for CONNECTIVITY_ACTION");
                 setExperimentStatusText();
             }
@@ -87,7 +85,6 @@ public class DashboardActivity extends RoboFragmentActivity {
         if (activityReceiver != null) {
             registerReceiver(activityReceiver, intentFilter);
         }
-
         setRobotoFont(this);
     }
 

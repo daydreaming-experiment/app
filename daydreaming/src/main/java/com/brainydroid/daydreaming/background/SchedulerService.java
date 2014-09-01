@@ -2,15 +2,10 @@ package com.brainydroid.daydreaming.background;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.os.SystemClock;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.db.ParametersStorage;
@@ -38,7 +33,7 @@ public class SchedulerService extends RoboService {
 
     /** Extra to set to {@code true} for debugging */
     public static String SCHEDULER_DEBUGGING = "schedulerDebugging";
-    private static final String ACTION_STRING_ACTIVITY = "ToActivity";
+    public static final String ACTION_PARAMETERS_UPDATED = "ToDashboard";
 
     /** Scheduling delay when debugging is activated */
     public static long DEBUG_DELAY = 5 * 1000; // 5 seconds
@@ -62,7 +57,7 @@ public class SchedulerService extends RoboService {
 
     private void sendBroadcast() {
         Intent new_intent = new Intent();
-        new_intent.setAction(ACTION_STRING_ACTIVITY);
+        new_intent.setAction(ACTION_PARAMETERS_UPDATED);
         sendBroadcast(new_intent);
     }
 
