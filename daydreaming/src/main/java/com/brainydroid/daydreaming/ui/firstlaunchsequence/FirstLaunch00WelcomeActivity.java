@@ -51,6 +51,7 @@ public class FirstLaunch00WelcomeActivity extends FirstLaunchActivity {
             public void onTick(long millisUntilFinished) {}
             public void onFinish() {
                 launchNextActivity(FirstLaunch01DescriptionActivity.class);
+                // FIXME: this is commented while we rework the first launch
                 //if (statusManager.isTipiQuestionnaireCompleted()) {
                 //    launchNextActivity(FirstLaunch05MeasuresActivity.class);
                 //} else {
