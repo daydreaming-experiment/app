@@ -9,16 +9,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.text.Html;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -293,15 +290,6 @@ public class DashboardActivity extends RoboFragmentActivity {
             expStatus.setText(R.string.dashboard_text_exp_stopped);
             dashboard_TimeBox_layout.setVisibility(View.INVISIBLE);
             dashboard_TimeBox_no_param.setVisibility(View.VISIBLE);
-
-            //View timeBoxLayout =  findViewById(R.id.dashboard_TimeBox_layout);
-            //ViewGroup parent = (ViewGroup)timeBoxLayout.getParent();
-            //int index = parent.indexOfChild(timeBoxLayout);
-            //parent.removeView(timeBoxLayout);
-            //timeBoxLayout = getLayoutInflater().inflate(R.layout.dashboard_timebox_no_parameters, parent, false);
-            //parent.addView(timeBoxLayout, index);
-
-
         }
     }
 
@@ -340,9 +328,7 @@ public class DashboardActivity extends RoboFragmentActivity {
             Toast.makeText(this, "You're not connected to the internet!", Toast.LENGTH_SHORT).show();
             return;
         }
-
         statusManager.resetParametersKeepProfileAnswers();
-
         Intent syncIntent = new Intent(this, SyncService.class);
         syncIntent.putExtra(SyncService.DEBUG_SYNC, true);
         startService(syncIntent);
@@ -505,7 +491,6 @@ public class DashboardActivity extends RoboFragmentActivity {
         startService(syncServiceIntent);
 
         // SchedulerService will be started when the SyncService successfully updates parameters
-
         Intent locationPointServiceIntent = new Intent(this,
                 LocationPointService.class);
         Logger.d(TAG, "Starting LocationPointService");
