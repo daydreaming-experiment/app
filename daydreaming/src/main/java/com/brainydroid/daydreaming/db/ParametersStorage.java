@@ -2,11 +2,22 @@ package com.brainydroid.daydreaming.db;
 
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.widget.Toast;
+
 import com.brainydroid.daydreaming.background.Logger;
+import com.brainydroid.daydreaming.background.SchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
+import com.brainydroid.daydreaming.network.CryptoStorageCallback;
+import com.brainydroid.daydreaming.network.HttpConversationCallback;
+import com.brainydroid.daydreaming.network.HttpGetData;
+import com.brainydroid.daydreaming.network.HttpGetTask;
+import com.brainydroid.daydreaming.network.ParametersStorageCallback;
+import com.brainydroid.daydreaming.network.ServerConfig;
 import com.google.gson.JsonSyntaxException;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -44,9 +55,16 @@ public class ParametersStorage {
                     COL_SLOT + " TEXT NOT NULL" +
                     ");";
 
-    private static String QUESTIONS_SCHEDULING_MIN_DELAY = "schedulingMinDelay";
-    private static String QUESTIONS_SCHEDULING_MEAN_DELAY = "schedulingMeanDelay";
-    private static String QUESTIONS_N_SLOTS_PER_PROBE = "questionsNSlotsPerPoll";
+    public static String QUESTIONS_SCHEDULING_MIN_DELAY = "schedulingMinDelay";
+    public static String QUESTIONS_SCHEDULING_MEAN_DELAY = "schedulingMeanDelay";
+    public static String QUESTIONS_N_SLOTS_PER_PROBE = "questionsNSlotsPerProbe";
+
+    public static String BACKEND_EXP_ID = "backendExpId";
+    public static String BACKEND_DB_NAME = "backendDbName";
+    public static String EXP_DURATION = "expDuration";
+    public static String BACKEND_API_URL = "backendApiUrl";
+    public static String RESULTS_PAGE_URL = "resultsPageUrl";
+    public static String FIRST_LAUNCH =  "firstLaunch";
 
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor eSharedPreferences;
@@ -56,6 +74,7 @@ public class ParametersStorage {
     @Inject ProfileStorage profileStorage;
     @Inject SlottedQuestionsFactory slottedQuestionsFactory;
     @Inject StatusManager statusManager;
+    @Inject Context context;
 
     private final SQLiteDatabase db;
 
@@ -75,10 +94,143 @@ public class ParametersStorage {
         eSharedPreferences = sharedPreferences.edit();
     }
 
+    private synchronized void setBackendExpId(String backendExpId) {
+        Logger.d(TAG, "{} - Setting backendExpId to {}", statusManager.getCurrentModeName(), backendExpId);
+        eSharedPreferences.putString(statusManager.getCurrentModeName() + BACKEND_EXP_ID, backendExpId);
+        eSharedPreferences.commit();
+    }
+
+    public synchronized String getBackendExpId() {
+        String backendExpId = sharedPreferences.getString(
+                statusManager.getCurrentModeName() + BACKEND_EXP_ID, null);
+        if (backendExpId == null) {
+            Logger.e(TAG, "{} - backendExpId is asked for but not set",
+                    statusManager.getCurrentMode());
+            throw new RuntimeException("backendExpId is asked for but not set");
+        }
+        Logger.d(TAG, "{0} - backendExpId is {1}", statusManager.getCurrentModeName(),
+                backendExpId);
+        return backendExpId;
+    }
+
+    private synchronized void clearBackendExpId() {
+        Logger.d(TAG, "{} - Clearing backendExpId", statusManager.getCurrentModeName());
+        eSharedPreferences.remove(statusManager.getCurrentModeName() + BACKEND_EXP_ID);
+    }
+
+    private synchronized void setBackendDbName(String backendDbName) {
+        Logger.d(TAG, "{} - Setting backendDbName to {}", statusManager.getCurrentModeName(), backendDbName);
+        eSharedPreferences.putString(statusManager.getCurrentModeName() + BACKEND_DB_NAME, backendDbName);
+        eSharedPreferences.commit();
+    }
+
+    public synchronized String getBackendDbName() {
+        String backendDbName = sharedPreferences.getString(
+                statusManager.getCurrentModeName() + BACKEND_DB_NAME, null);
+        if (backendDbName == null) {
+            Logger.e(TAG, "{} - backendDbName is asked for but not set",
+                    statusManager.getCurrentMode());
+            throw new RuntimeException("backendDbName is asked for but not set");
+        }
+        Logger.d(TAG, "{0} - backendDbName is {1}", statusManager.getCurrentModeName(),
+                backendDbName);
+        return backendDbName;
+    }
+
+    private synchronized void clearBackendDbName() {
+        Logger.d(TAG, "{} - Clearing backendDbName", statusManager.getCurrentModeName());
+        eSharedPreferences.remove(statusManager.getCurrentModeName() + BACKEND_DB_NAME);
+    }
+
+    private synchronized void setExpDuration(int expDuration) {
+        Logger.d(TAG, "{} - Setting expDuration to {}", statusManager.getCurrentModeName(), expDuration);
+        eSharedPreferences.putInt(statusManager.getCurrentModeName() + EXP_DURATION, expDuration);
+        eSharedPreferences.commit();
+    }
+
+    public synchronized int getExpDuration() {
+        int expDuration = sharedPreferences.getInt(
+                statusManager.getCurrentModeName() + EXP_DURATION, -1);
+        if (expDuration == -1) {
+            Logger.e(TAG, "{} - expDuration is asked for but not set",
+                    statusManager.getCurrentMode());
+            throw new RuntimeException("expDuration is asked for but not set");
+        }
+        Logger.d(TAG, "{0} - expDuration is {1}", statusManager.getCurrentModeName(),
+                expDuration);
+        return expDuration;
+    }
+
+    private synchronized void clearExpDuration() {
+        Logger.d(TAG, "{} - Clearing expDuration", statusManager.getCurrentModeName());
+        eSharedPreferences.remove(statusManager.getCurrentModeName() + EXP_DURATION);
+    }
+
+    private synchronized void setBackendApiUrl(String backendApiUrl) {
+        Logger.d(TAG, "{} - Setting backendApiUrl to {}", statusManager.getCurrentModeName(), backendApiUrl);
+        eSharedPreferences.putString(statusManager.getCurrentModeName() + BACKEND_API_URL, backendApiUrl);
+        eSharedPreferences.commit();
+    }
+
+    public synchronized String getBackendApiUrl() {
+        String backendApiUrl = sharedPreferences.getString(
+                statusManager.getCurrentModeName() + BACKEND_API_URL, null);
+        if (backendApiUrl == null) {
+            Logger.e(TAG, "{} - backendApiUrl is asked for but not set",
+                    statusManager.getCurrentMode());
+            throw new RuntimeException("backendApiUrl is asked for but not set");
+        }
+        Logger.d(TAG, "{0} - backendApiUrl is {1}", statusManager.getCurrentModeName(),
+                backendApiUrl);
+        return backendApiUrl;
+    }
+
+    private synchronized void clearBackendApiUrl() {
+        Logger.d(TAG, "{} - Clearing backendApiUrl", statusManager.getCurrentModeName());
+        eSharedPreferences.remove(statusManager.getCurrentModeName() + BACKEND_API_URL);
+    }
+
+    private synchronized void setResultsPageUrl(String resultsPageUrl) {
+        Logger.d(TAG, "{} - Setting resultsPageUrl to {}", statusManager.getCurrentModeName(), resultsPageUrl);
+        eSharedPreferences.putString(statusManager.getCurrentModeName() + RESULTS_PAGE_URL, resultsPageUrl);
+        eSharedPreferences.commit();
+    }
+
+    public synchronized String getResultsPageUrl() {
+        String resultsPageUrl = sharedPreferences.getString(
+                statusManager.getCurrentModeName() + RESULTS_PAGE_URL, null);
+        if (resultsPageUrl == null) {
+            Logger.e(TAG, "{} - resultsPageUrl is asked for but not set",
+                    statusManager.getCurrentMode());
+            throw new RuntimeException("resultsPageUrl is asked for but not set");
+        }
+        Logger.d(TAG, "{0} - resultsPageUrl is {1}", statusManager.getCurrentModeName(),
+                resultsPageUrl);
+        return resultsPageUrl;
+    }
+
+    private synchronized void clearResultsPageUrl() {
+        Logger.d(TAG, "{} - Clearing resultsPageUrl", statusManager.getCurrentModeName());
+        eSharedPreferences.remove(statusManager.getCurrentModeName() + RESULTS_PAGE_URL);
+    }
+
     private synchronized void setSchedulingMinDelay(int schedulingMinDelay) {
         Logger.d(TAG, "{0} - Setting schedulingMinDelay to {1}", statusManager.getCurrentModeName(), schedulingMinDelay);
         eSharedPreferences.putInt(statusManager.getCurrentModeName() + QUESTIONS_SCHEDULING_MIN_DELAY, schedulingMinDelay);
         eSharedPreferences.commit();
+    }
+
+    public synchronized int getSchedulingMinDelay() {
+        int schedulingMinDelay = sharedPreferences.getInt(
+                statusManager.getCurrentModeName() + QUESTIONS_SCHEDULING_MIN_DELAY, -1);
+        if (schedulingMinDelay == -1) {
+            Logger.e(TAG, "{} - SchedulingMinDelay is asked for but not set",
+                    statusManager.getCurrentMode());
+            throw new RuntimeException("SchedulingMinDelay is asked for but not set");
+        }
+        Logger.d(TAG, "{0} - schedulingMinDelay is {1}", statusManager.getCurrentModeName(),
+                schedulingMinDelay);
+        return schedulingMinDelay;
     }
 
     private synchronized void clearSchedulingMinDelay() {
@@ -90,6 +242,19 @@ public class ParametersStorage {
         Logger.d(TAG, "{0} - Setting schedulingMeanDelay to {1}", statusManager.getCurrentModeName(), schedulingMeanDelay);
         eSharedPreferences.putInt(statusManager.getCurrentModeName() + QUESTIONS_SCHEDULING_MEAN_DELAY, schedulingMeanDelay);
         eSharedPreferences.commit();
+    }
+
+    public synchronized int getSchedulingMeanDelay() {
+        int schedulingMeanDelay = sharedPreferences.getInt(
+                statusManager.getCurrentModeName() + QUESTIONS_SCHEDULING_MEAN_DELAY, -1);
+        if (schedulingMeanDelay == -1) {
+            Logger.e(TAG, "{} - SchedulingMeanDelay is asked for but not set",
+                    statusManager.getCurrentMode());
+            throw new RuntimeException("SchedulingMeanDelay is asked for but not set");
+        }
+        Logger.d(TAG, "{0} - schedulingMeanDelay is {1}", statusManager.getCurrentModeName(),
+                schedulingMeanDelay);
+        return schedulingMeanDelay;
     }
 
     private synchronized void clearSchedulingMeanDelay() {
@@ -226,51 +391,136 @@ public class ParametersStorage {
                 throw new JsonSyntaxException("Server Json was malformed, could not be parsed");
             }
 
-            // Check version is set
-            String version = serverParametersJson.getVersion();
-            if (version.equals(ServerParametersJson.DEFAULT_PARAMETERS_VERSION)) {
-                throw new JsonSyntaxException("version can't be its unset value");
-            }
+            serverParametersJson.validateInitialization();
 
-            // Check nSlotsPerProbe is set
-            int nSlotsPerProbe = serverParametersJson.getNSlotsPerProbe();
-            if (nSlotsPerProbe == ServerParametersJson.DEFAULT_N_SLOTS_PER_PROBE) {
-                throw new JsonSyntaxException("nSlotsPerProbe can't be its unset value");
-            }
-
-            // Check schedulingMinDelay is set
-            int schedulingMinDelay = serverParametersJson.getSchedulingMinDelay();
-            if (schedulingMinDelay == ServerParametersJson.DEFAULT_SCHEDULING_MIN_DELAY) {
-                throw new JsonSyntaxException("schedulingMinDelay can't be its unset value");
-            }
-
-            // Check schedulingMeanDelay is set
-            int schedulingMeanDelay = serverParametersJson.getSchedulingMeanDelay();
-            if (schedulingMeanDelay == ServerParametersJson.DEFAULT_SCHEDULING_MEAN_DELAY) {
-                throw new JsonSyntaxException("schedulingMeanDelay can't be its unset value");
-            }
-
-            // Get all question slots and check there are at least as many as
-            // nSlotsPerProbe
-            HashSet<String> slots = new HashSet<String>();
-            for (Question q : serverParametersJson.getQuestionsArrayList()) {
-                slots.add(q.getSlot());
-            }
-            if (slots.size() < nSlotsPerProbe) {
-                throw new JsonSyntaxException("There must be at least as many" +
-                        " slots defined in the questions as nSlotsPerProbe");
-            }
-
-            // All is good, do the real import
+            // All is good, do the real import of all objects in the root
             flush();
-            profileStorage.setParametersVersion(version);
-            setSchedulingMinDelay(schedulingMinDelay);
-            setSchedulingMeanDelay(schedulingMeanDelay);
-            setNSlotsPerProbe(nSlotsPerProbe);
+            profileStorage.setParametersVersion(serverParametersJson.getVersion());
+            setBackendExpId(serverParametersJson.getBackendExpId());
+            setBackendDbName(serverParametersJson.getBackendDbName());
+            setExpDuration(serverParametersJson.getExpDuration());
+            setBackendApiUrl(serverParametersJson.getBackendApiUrl());
+            setResultsPageUrl(serverParametersJson.getResultsPageUrl());
+            setFirstLaunch(serverParametersJson.getFirstLaunch());
+            setNSlotsPerProbe(serverParametersJson.getNSlotsPerProbe());
+            setSchedulingMinDelay(serverParametersJson.getSchedulingMinDelay());
+            setSchedulingMeanDelay(serverParametersJson.getSchedulingMeanDelay());
+            // loading the questions
             add(serverParametersJson.getQuestionsArrayList());
-        } catch (JsonSyntaxException e) {
+
+        } catch (JsonParametersException e) {
             throw new ParametersSyntaxException();
         }
+    }
+
+    public synchronized void onReady(ParametersStorageCallback callback, String startSyncAppMode,
+                                     boolean isDebug) {
+        if (!statusManager.areParametersUpdated()) {
+            Logger.i(TAG, "{} - ParametersStorage not ready -> " +
+                    "updating parameters", statusManager.getCurrentModeName());
+
+            // If during our network request, parameters are flushed,
+            // we won't import the received parameters
+            Logger.v(TAG, "Clearing parameters flushed");
+            statusManager.clearParametersFlushed();
+
+            asyncUpdateParameters(callback, startSyncAppMode, isDebug);
+        } else {
+            Logger.i(TAG, "{} - ParametersStorage ready -> calling back callback " +
+                    "straight away", statusManager.getCurrentModeName());
+            callback.onParametersStorageReady(true);
+        }
+    }
+
+    // TODO[seb]: check this is still ok when switching back and forth from test mode, and resetting parameters while keeping profile answers (esp. when exp_id has changed server-side)
+    private synchronized void asyncUpdateParameters(final ParametersStorageCallback callback,
+                                                    final String startSyncAppMode,
+                                                    final boolean isDebug) {
+        Logger.d(TAG, "Updating parameters");
+
+        if (statusManager.getCurrentMode() == StatusManager.MODE_TEST && isDebug) {
+            Toast.makeText(context, "Reloading parameters...", Toast.LENGTH_SHORT).show();
+        }
+
+        HttpConversationCallback updateParametersCallback =
+                new HttpConversationCallback() {
+
+            private String TAG = "Parameters HttpConversationCallback";
+
+            @Override
+            public void onHttpConversationFinished(boolean success,
+                                                   String serverAnswer) {
+                Logger.d(TAG, "Parameters update HttpConversation finished");
+
+                // Exit if app mode has changed before we could import parameters
+                if (!statusManager.getCurrentModeName().equals(startSyncAppMode)) {
+                    Logger.i(TAG, "App mode has changed from {0} to {1} since sync started, "
+                                    + "aborting parameters update.", startSyncAppMode,
+                            statusManager.getCurrentModeName());
+                    callback.onParametersStorageReady(false);
+                    return;
+                }
+
+                // Exit if parameters have been flushed since we started
+                if (statusManager.areParametersFlushed()) {
+                    Logger.i(TAG, "Parameters have been flushed since sync started, "
+                            + "aborting parameters update.");
+                    callback.onParametersStorageReady(false);
+                    return;
+                }
+
+                if (success) {
+                    Logger.i(TAG, "Successfully retrieved parameters from " +
+                            "server");
+                    Logger.td(context, TAG + ": new " +
+                            "parameters downloaded from server");
+
+                    // Import the parameters, and remember not to update
+                    // parameters again.
+                    try {
+                        ParametersStorage.this.importParameters(serverAnswer);
+                        Logger.d(TAG, "Importing new parameters to storage");
+                    } catch (ParametersSyntaxException e) {
+                        Logger.e(TAG, "Downloaded parameters were malformed -> " +
+                                "parameters not updated");
+                        callback.onParametersStorageReady(false);
+                        if (statusManager.getCurrentMode() == StatusManager.MODE_TEST) {
+                            Toast.makeText(context, "Test parameters from server were malformed! " +
+                                    "Correct them and try again", Toast.LENGTH_LONG).show();
+                        }
+                        return;
+                    }
+
+                    Logger.i(TAG, "Parameters successfully imported");
+                    statusManager.setParametersUpdated();
+                    callback.onParametersStorageReady(true);
+
+                    if (isDebug && statusManager.getCurrentMode() == StatusManager.MODE_TEST) {
+                        Toast.makeText(context, "Parameters successfully updated",
+                                Toast.LENGTH_SHORT).show();
+                    }
+
+                    Logger.d(TAG, "Starting SchedulerService to take new parameters into account");
+                    Intent schedulerIntent = new Intent(context, SchedulerService.class);
+                    context.startService(schedulerIntent);
+                } else {
+                    Logger.w(TAG, "Error while retrieving new parameters from " +
+                            "server");
+                    callback.onParametersStorageReady(false);
+                    if (isDebug && statusManager.getCurrentMode() == StatusManager.MODE_TEST) {
+                        Toast.makeText(context, "Error retrieving parameters from server. " +
+                                "Are you connected to internet?", Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+
+        };
+
+        String getUrl = MessageFormat.format(ServerConfig.PARAMETERS_URL_BASE,
+                statusManager.getCurrentModeName());
+        HttpGetData updateParametersData = new HttpGetData(getUrl, updateParametersCallback);
+        HttpGetTask updateParametersTask = new HttpGetTask();
+        updateParametersTask.execute(updateParametersData);
     }
 
 }
