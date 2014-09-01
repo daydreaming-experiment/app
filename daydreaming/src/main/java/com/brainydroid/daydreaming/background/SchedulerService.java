@@ -33,7 +33,7 @@ public class SchedulerService extends RoboService {
 
     /** Extra to set to {@code true} for debugging */
     public static String SCHEDULER_DEBUGGING = "schedulerDebugging";
-    public static final String ACTION_PARAMETERS_UPDATED = "ToDashboard";
+    public static final String ACTION_PARAMETERS_UPDATED = "toDashboard";
 
     /** Scheduling delay when debugging is activated */
     public static long DEBUG_DELAY = 5 * 1000; // 5 seconds

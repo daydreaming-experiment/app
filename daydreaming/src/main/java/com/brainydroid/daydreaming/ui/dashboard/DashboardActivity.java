@@ -58,7 +58,7 @@ public class DashboardActivity extends RoboFragmentActivity {
             textNetworkConnection;
     @InjectView(R.id.dashboard_main_layout)
     LinearLayout dashboard_main_layout;
-    
+
     private boolean testModeThemeActivated = false;
 
     IntentFilter intentFilter = new IntentFilter(SchedulerService.ACTION_PARAMETERS_UPDATED);
