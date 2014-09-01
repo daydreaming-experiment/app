@@ -10,9 +10,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
-import com.brainydroid.daydreaming.db.SliderAnswer;
-import com.brainydroid.daydreaming.db.SliderQuestionDetails;
-import com.brainydroid.daydreaming.db.SliderSubQuestion;
+import com.brainydroid.daydreaming.db.SliderQuestionDescriptionDetails;
+import com.brainydroid.daydreaming.sequence.SliderAnswer;
+import com.brainydroid.daydreaming.sequence.SliderSubQuestion;
 import com.brainydroid.daydreaming.ui.AlphaSeekBar;
 import com.google.inject.Inject;
 import roboguice.inject.InjectResource;
@@ -42,7 +42,7 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
         Logger.d(TAG, "Inflating question views");
 
         ArrayList<SliderSubQuestion> subQuestions =
-                ((SliderQuestionDetails)question.getDetails())
+                ((SliderQuestionDescriptionDetails)question.getDetails())
                         .getSubQuestions();
 
         for (SliderSubQuestion subQuestion : subQuestions) {

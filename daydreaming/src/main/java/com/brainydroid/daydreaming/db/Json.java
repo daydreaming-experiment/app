@@ -5,6 +5,7 @@ import android.location.Location;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.network.JWSSignature;
 import com.brainydroid.daydreaming.network.JWSSignatureSerializer;
+import com.brainydroid.daydreaming.sequence.IAnswer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.inject.Singleton;
@@ -17,8 +18,7 @@ import javax.inject.Inject;
  * <p/>
  * Here is the place to register type adapters for custom serializing and
  * deserializing of classes. This is used for deserializing interfaces
- * (like {@link IAnswer}, {@link IQuestionDetails},
- * custom instance creation ({@link Question} instances),
+ * (like {@link com.brainydroid.daydreaming.sequence.IAnswer}, {@link IQuestionDescriptionDetails},
  * and useful serialization and deserialization of other classes (here
  * {@link Location} instances).
  *
@@ -26,7 +26,6 @@ import javax.inject.Inject;
  * @author Vincent Adam
  * @see AnswerDeserializer
  * @see QuestionDetailsDeserializer
- * @see QuestionInstanceCreator
  * @see LocationDeserializer
  * @see LocationSerializer
  */
@@ -48,8 +47,6 @@ public class Json {
      * @param answerDeserializer An instance of {@link AnswerDeserializer}
      * @param questionDetailsDeserializer An instance of {@link
      *                                    QuestionDetailsDeserializer}
-     * @param questionInstanceCreator An instance of {@link
-     *                                QuestionInstanceCreator}
      * @param locationDeserializer An instance of {@link
      *                             LocationDeserializer}
      * @param locationSerializer An instance of {@link LocationSerializer}
@@ -58,25 +55,20 @@ public class Json {
     public Json(GsonBuilder gsonBuilder,
                 AnswerDeserializer answerDeserializer,
                 QuestionDetailsDeserializer questionDetailsDeserializer,
-                QuestionInstanceCreator questionInstanceCreator,
                 LocationDeserializer locationDeserializer,
                 LocationSerializer locationSerializer,
-                JWSSignatureSerializer jwsSignatureSerializer,
-                QuestionSerializer questionSerializer) {
+                JWSSignatureSerializer jwsSignatureSerializer) {
         Logger.v(TAG, "Building Gson instances");
 
         // Register all our type adapters
         gsonBuilder.registerTypeAdapter(IAnswer.class, answerDeserializer);
-        gsonBuilder.registerTypeAdapter(IQuestionDetails.class,
+        gsonBuilder.registerTypeAdapter(IQuestionDescriptionDetails.class,
                 questionDetailsDeserializer);
-        gsonBuilder.registerTypeAdapter(Question.class,
-                questionInstanceCreator);
         gsonBuilder.registerTypeAdapter(Location.class,
                 locationDeserializer);
         gsonBuilder.registerTypeAdapter(Location.class, locationSerializer);
         gsonBuilder.registerTypeAdapter(JWSSignature.class,
                 jwsSignatureSerializer);
-        gsonBuilder.registerTypeAdapter(Question.class, questionSerializer);
 
         // Build the two Gson instances
         gson = gsonBuilder.create();

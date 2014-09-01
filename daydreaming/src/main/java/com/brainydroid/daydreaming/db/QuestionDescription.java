@@ -5,11 +5,12 @@ import com.brainydroid.daydreaming.sequence.AbstractQuestion;
 
 public class QuestionDescription extends AbstractQuestion {
 
+    @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "QuestionDescription";
 
-    private String name;
-    private String position;
-    private IQuestionDetails details;
+    private String name = null;
+    private String position = null;
+    private IQuestionDescriptionDetails details = null;
 
     public String getName() {
         return name;
@@ -19,7 +20,7 @@ public class QuestionDescription extends AbstractQuestion {
         return position;
     }
 
-    public IQuestionDetails getDetails() {
+    public IQuestionDescriptionDetails getDetails() {
         return details;
     }
 

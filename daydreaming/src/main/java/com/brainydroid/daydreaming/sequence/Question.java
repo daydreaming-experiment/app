@@ -3,10 +3,12 @@ package com.brainydroid.daydreaming.sequence;
 import android.location.Location;
 
 import com.brainydroid.daydreaming.background.Logger;
-import com.brainydroid.daydreaming.db.IAnswer;
-import com.brainydroid.daydreaming.db.IQuestionDetails;
+import com.brainydroid.daydreaming.db.IQuestionDescriptionDetails;
 import com.google.gson.annotations.Expose;
 
+// TODO: add some way to saveIfSync the phone's timezone and the user's
+// preferences_appSettings
+// about what times he allowed notifications to appear at.
 public class Question extends AbstractQuestion {
 
     private static String TAG = "Question";
@@ -16,7 +18,7 @@ public class Question extends AbstractQuestion {
     public static final String STATUS_ANSWERED = "questionAnswered";
 
     @Expose protected String name = null;
-    private IQuestionDetails details = null;
+    private IQuestionDescriptionDetails details = null;
 
     @Expose private IAnswer answer = null;
     @Expose private String status = null;
@@ -24,7 +26,7 @@ public class Question extends AbstractQuestion {
     @Expose private long ntpTimestamp = -1;
     @Expose private long systemTimestamp = -1;
 
-    private Sequence sequence = null;
+    private Probe probe = null;
 
     public synchronized String getName() {
         return name;
@@ -33,17 +35,17 @@ public class Question extends AbstractQuestion {
     private synchronized void setName(String name) {
         Logger.v(TAG, "Setting name");
         this.name = name;
-        save();
+        saveIfSync();
     }
 
-    public synchronized IQuestionDetails getDetails() {
+    public synchronized IQuestionDescriptionDetails getDetails() {
         return details;
     }
 
-    private synchronized void setDetails(IQuestionDetails details) {
+    private synchronized void setDetails(IQuestionDescriptionDetails details) {
         Logger.v(TAG, "Setting details");
         this.details = details;
-        save();
+        saveIfSync();
     }
 
     public synchronized IAnswer getAnswer() {
@@ -53,7 +55,7 @@ public class Question extends AbstractQuestion {
     private synchronized void setAnswer(IAnswer answer) {
         Logger.v(TAG, "Setting answer");
         this.answer = answer;
-        save();
+        saveIfSync();
     }
 
     public synchronized String getStatus() {
@@ -63,7 +65,7 @@ public class Question extends AbstractQuestion {
     public synchronized void setStatus(String status) {
         Logger.v(TAG, "Setting status");
         this.status = status;
-        save();
+        saveIfSync();
     }
 
     public synchronized Location getLocation() {
@@ -73,7 +75,7 @@ public class Question extends AbstractQuestion {
     public synchronized void setLocation(Location location) {
         Logger.v(TAG, "Setting location");
         this.location = location;
-        save();
+        saveIfSync();
     }
 
     public synchronized long getNtpTimestamp() {
@@ -83,7 +85,7 @@ public class Question extends AbstractQuestion {
     public synchronized void setNtpTimestamp(long ntpTimestamp) {
         Logger.v(TAG, "Setting ntpTimestamp");
         this.ntpTimestamp = ntpTimestamp;
-        save();
+        saveIfSync();
     }
 
     public synchronized long getSystemTimestamp() {
@@ -93,22 +95,22 @@ public class Question extends AbstractQuestion {
     public synchronized void setSystemTimestamp(long systemTimestamp) {
         Logger.v(TAG, "Setting systemTimestamp");
         this.systemTimestamp = systemTimestamp;
-        save();
+        saveIfSync();
     }
 
-    public synchronized Sequence getSequence() {
-        return sequence;
+    public synchronized Probe getProbe() {
+        return probe;
     }
 
-    private synchronized void setSequence(Sequence sequence) {
-        Logger.v(TAG, "Setting sequence");
-        this.sequence = sequence;
-        // FIXME[seb]: check if save() is necessary
+    private synchronized void setProbe(Probe probe) {
+        Logger.v(TAG, "Setting probe");
+        this.probe = probe;
+        // FIXME[seb]: check if saveIfSync() is necessary
     }
 
-    private synchronized void save() {
-        Logger.d(TAG, "Saving if sequence is persisted");
-        sequence.saveIfPersisted();
+    private synchronized void saveIfSync() {
+        Logger.d(TAG, "Saving if probe is persisted");
+        probe.saveIfSync();
     }
 
 }

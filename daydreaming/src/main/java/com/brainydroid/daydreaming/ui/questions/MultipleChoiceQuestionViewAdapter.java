@@ -8,8 +8,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
-import com.brainydroid.daydreaming.db.MultipleChoiceAnswer;
-import com.brainydroid.daydreaming.db.MultipleChoiceQuestionDetails;
+import com.brainydroid.daydreaming.db.MultipleChoiceQuestionDescriptionDetails;
+import com.brainydroid.daydreaming.sequence.MultipleChoiceAnswer;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import roboguice.inject.InjectResource;
@@ -36,8 +36,8 @@ public class MultipleChoiceQuestionViewAdapter
     protected ArrayList<View> inflateViews() {
         Logger.d(TAG, "Inflating question views");
 
-        MultipleChoiceQuestionDetails details =
-                (MultipleChoiceQuestionDetails)question.getDetails();
+        MultipleChoiceQuestionDescriptionDetails details =
+                (MultipleChoiceQuestionDescriptionDetails)question.getDetails();
         ArrayList<String> choices = details.getChoices();
         choicesView = layoutInflater.inflate(
                 R.layout.question_multiple_choice, null);

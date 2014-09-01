@@ -27,13 +27,12 @@ public class ServerParametersJson {
     public int expDuration = DEFAULT_EXP_DURATION;
     public String backendApiUrl = DEFAULT_BACKEND_API_URL;
     public String resultsPageUrl = DEFAULT_RESULTS_PAGE_URL;
-    public FirstLaunch firstLaunch = null;
     public int nSlotsPerProbe = DEFAULT_N_SLOTS_PER_PROBE;
     public int schedulingMeanDelay = DEFAULT_SCHEDULING_MEAN_DELAY;
     public int schedulingMinDelay = DEFAULT_SCHEDULING_MIN_DELAY;
-    ArrayList<Question> questions = new ArrayList<Question>();
+    ArrayList<QuestionDescription> questions = new ArrayList<QuestionDescription>();
 
-    public synchronized ArrayList<Question> getQuestionsArrayList() {
+    public synchronized ArrayList<QuestionDescription> getQuestionDescriptionsArrayList() {
         return questions;
     }
 
@@ -73,10 +72,6 @@ public class ServerParametersJson {
         return resultsPageUrl;
     }
 
-    public synchronized FirstLaunch getFirstLaunch() {
-        return firstLaunch;
-    }
-
     public synchronized void validateInitialization() throws JsonParametersException {
         Logger.v(TAG, "Validating parameters");
 
@@ -102,14 +97,14 @@ public class ServerParametersJson {
 
         // Get all question slots and check there are at least as many as
         // nSlotsPerProbe
-        HashSet<String> slots = new HashSet<String>();
-        for (Question q : questions) {
-            slots.add(q.getSlot());
+        HashSet<String> positions = new HashSet<String>();
+        for (QuestionDescription q : questions) {
+            positions.add(q.getPosition());
             q.validateInitialization();
         }
-        if (slots.size() < nSlotsPerProbe) {
+        if (positions.size() < nSlotsPerProbe) {
             throw new JsonParametersException("There must be at least as many" +
-                    " slots defined in the questions as nSlotsPerProbe");
+                    " positions defined in the questions as nSlotsPerProbe");
         }
 
         // Check backendExpId is set
@@ -136,8 +131,6 @@ public class ServerParametersJson {
         if (resultsPageUrl.equals(DEFAULT_RESULTS_PAGE_URL)) {
             throw new JsonParametersException("resultsPageUrl can't be its unset value");
         }
-
-        firstLaunch.validateInitialization();
     }
 
 }

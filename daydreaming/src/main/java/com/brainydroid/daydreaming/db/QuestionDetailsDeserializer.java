@@ -8,7 +8,7 @@ import com.google.inject.Injector;
 import java.lang.reflect.Type;
 
 public class QuestionDetailsDeserializer
-        implements JsonDeserializer<IQuestionDetails> {
+        implements JsonDeserializer<IQuestionDescriptionDetails> {
 
     @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "QuestionDetailsDeserializer";
@@ -19,7 +19,7 @@ public class QuestionDetailsDeserializer
     @Inject Injector injector;
 
     @Override
-    public IQuestionDetails deserialize(JsonElement json, Type typeOfT,
+    public IQuestionDescriptionDetails deserialize(JsonElement json, Type typeOfT,
                                         JsonDeserializationContext context)
             throws JsonParseException {
         Logger.v(TAG, "Deserializing question details");
@@ -29,7 +29,7 @@ public class QuestionDetailsDeserializer
             JsonObject obj = (JsonObject)json;
             Class klass = Class.forName(PACKAGE_PREFIX +
                     obj.get("type").getAsString() + QUESTION_DETAILS_SUFFIX);
-            IQuestionDetails questionDetails = context.deserialize(json,
+            IQuestionDescriptionDetails questionDetails = context.deserialize(json,
                     klass);
             injector.injectMembers(questionDetails);
             return questionDetails;

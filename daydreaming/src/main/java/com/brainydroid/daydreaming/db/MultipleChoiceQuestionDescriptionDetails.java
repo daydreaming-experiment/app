@@ -4,9 +4,9 @@ import com.brainydroid.daydreaming.background.Logger;
 
 import java.util.ArrayList;
 
-public class MultipleChoiceQuestionDetails implements IQuestionDetails {
+public class MultipleChoiceQuestionDescriptionDetails implements IQuestionDescriptionDetails {
 
-    @SuppressWarnings("UnusedDeclaration")
+    @SuppressWarnings({"FieldCanBeLocal"})
     private static String TAG = "MultipleChoiceQuestionDetails";
 
     @SuppressWarnings("FieldCanBeLocal")

@@ -7,8 +7,11 @@ import com.google.inject.Singleton;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.Random;
 
@@ -39,18 +42,23 @@ public class Util {
         return sb.toString();
     }
 
-    public static String joinStrings(String[] strings, String joinString) {
+    public static String joinStrings(Collection<?> s, String delimiter) {
         Logger.v(TAG, "Joining strings");
 
-        StringBuilder sb = new StringBuilder();
-        for (String string : strings) {
-            sb.append(string);
-            sb.append(joinString);
+        StringBuilder builder = new StringBuilder();
+        Iterator<?> iterator = s.iterator();
+        while (iterator.hasNext()) {
+            builder.append(iterator.next());
+            if (!iterator.hasNext()) {
+                break;
+            }
+            builder.append(delimiter);
         }
+        return builder.toString();
+    }
 
-        int sbLength = sb.length();
-        sb.delete(sbLength - joinString.length(), sbLength);
-        return sb.toString();
+    public static String joinStrings(String[] strings, String joinString) {
+        return joinStrings(new ArrayList<String>(Arrays.asList(strings)), joinString);
     }
 
     public static String convertStreamToString(InputStream is) {

@@ -1,12 +1,13 @@
-package com.brainydroid.daydreaming.db;
+package com.brainydroid.daydreaming.sequence;
 
 import com.brainydroid.daydreaming.background.Logger;
+import com.brainydroid.daydreaming.db.JsonParametersException;
 
 import java.util.ArrayList;
 
 public class StarRatingSubQuestion {
 
-    @SuppressWarnings("UnusedDeclaration")
+    @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "StarRatingSubQuestion";
 
     public static int DEFAULT_INITIAL_RATING = -1;

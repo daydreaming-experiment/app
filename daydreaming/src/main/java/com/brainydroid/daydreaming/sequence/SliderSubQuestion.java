@@ -1,12 +1,13 @@
-package com.brainydroid.daydreaming.db;
+package com.brainydroid.daydreaming.sequence;
 
 import com.brainydroid.daydreaming.background.Logger;
+import com.brainydroid.daydreaming.db.JsonParametersException;
 
 import java.util.ArrayList;
 
 public class SliderSubQuestion {
 
-    @SuppressWarnings("UnusedDeclaration")
+    @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "SliderSubQuestion";
 
     public static int DEFAULT_INITIAL_POSITION = -1;

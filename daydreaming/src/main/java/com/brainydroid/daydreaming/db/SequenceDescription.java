@@ -6,10 +6,11 @@ import java.util.ArrayList;
 
 public class SequenceDescription extends AbstractSequence {
 
+    @SuppressWarnings("UnusedDeclaration")
     private static String TAG = "SequenceDescription";
 
-    private String name;
-    private ArrayList<PageGroupDescription> pageGroups;
+    private String name = null;
+    private ArrayList<PageGroupDescription> pageGroups = new ArrayList<PageGroupDescription>();
 
     public String getName() {
         return name;

@@ -1,12 +1,13 @@
 package com.brainydroid.daydreaming.db;
 
 import com.brainydroid.daydreaming.background.Logger;
+import com.brainydroid.daydreaming.sequence.StarRatingSubQuestion;
 
 import java.util.ArrayList;
 
-public class StarRatingQuestionDetails implements IQuestionDetails {
+public class StarRatingQuestionDescriptionDetails implements IQuestionDescriptionDetails {
 
-    @SuppressWarnings("UnusedDeclaration")
+    @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "StarRatingQuestionDetails";
 
     @SuppressWarnings("FieldCanBeLocal")

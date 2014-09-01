@@ -10,9 +10,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
-import com.brainydroid.daydreaming.db.StarRatingAnswer;
-import com.brainydroid.daydreaming.db.StarRatingQuestionDetails;
-import com.brainydroid.daydreaming.db.StarRatingSubQuestion;
+import com.brainydroid.daydreaming.db.StarRatingQuestionDescriptionDetails;
+import com.brainydroid.daydreaming.sequence.StarRatingAnswer;
+import com.brainydroid.daydreaming.sequence.StarRatingSubQuestion;
 import com.brainydroid.daydreaming.ui.AlphaRatingBar;
 import com.google.inject.Inject;
 import roboguice.inject.InjectResource;
@@ -42,7 +42,7 @@ public class StarRatingQuestionViewAdapter extends BaseQuestionViewAdapter
         Logger.d(TAG, "Inflating question views");
 
         ArrayList<StarRatingSubQuestion> subQuestions =
-                ((StarRatingQuestionDetails)question.getDetails())
+                ((StarRatingQuestionDescriptionDetails)question.getDetails())
                         .getSubQuestions();
 
         for (StarRatingSubQuestion subQuestion : subQuestions) {

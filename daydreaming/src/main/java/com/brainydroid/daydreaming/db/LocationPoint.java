@@ -20,7 +20,7 @@ import com.google.inject.Inject;
  * @see com.brainydroid.daydreaming.background.LocationPointService
  */
 public final class LocationPoint extends
-        StatusModel<LocationPoint,LocationPointsStorage> {
+        StatusModel<LocationPoint,LocationPointsStorage,LocationPointFactory> {
 
     @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "LocationPoint";
@@ -55,86 +55,6 @@ public final class LocationPoint extends
     }
 
     /**
-     * Get the latitude of the {@link LocationPoint}.
-     *
-     * @return Latitude of the {@link LocationPoint}
-     */
-    public synchronized double getLocationLatitude() {
-        return locationLatitude;
-    }
-
-    /**
-     * Get the longitude of the {@link LocationPoint}.
-     *
-     * @return Longitude of the {@link LocationPoint}
-     */
-    public synchronized double getLocationLongitude() {
-        return locationLongitude;
-    }
-
-    /**
-     * Get the altitude of the {@link LocationPoint}.
-     *
-     * @return Altitude of the {@link LocationPoint} in meters
-     */
-    public synchronized double getLocationAltitude() {
-        return locationAltitude;
-    }
-
-    /**
-     * Get the accuracy of the {@link LocationPoint}.
-     *
-     * @return Accuracy of the {@link LocationPoint} in meters
-     */
-    public synchronized double getLocationAccuracy() {
-        return locationAccuracy;
-    }
-
-    /**
-     * Set the latitude of the {@link LocationPoint}, and persist to database
-     * if necessary.
-     *
-     * @param locationLatitude Latitude to set
-     */
-    public synchronized void setLocationLatitude(double locationLatitude) {
-        this.locationLatitude = locationLatitude;
-        saveIfSync();
-    }
-
-    /**
-     * Set the longitude of the {@link LocationPoint},
-     * and persist to database if necessary.
-     *
-     * @param locationLongitude Longitude to set
-     */
-    public synchronized void setLocationLongitude(double locationLongitude) {
-        this.locationLongitude = locationLongitude;
-        saveIfSync();
-    }
-
-    /**
-     * Set the altitude of the {@link LocationPoint}, and persist to database
-     * if necessary.
-     *
-     * @param locationAltitude Altitude to set, in meters
-     */
-    public synchronized void setLocationAltitude(double locationAltitude) {
-        this.locationAltitude = locationAltitude;
-        saveIfSync();
-    }
-
-    /**
-     * Set the accuracy of the {@link LocationPoint}, and persist to database
-     * if necessary.
-     *
-     * @param locationAccuracy Accuracy to set, in meters
-     */
-    public synchronized void setLocationAccuracy(double locationAccuracy) {
-        this.locationAccuracy = locationAccuracy;
-        saveIfSync();
-    }
-
-    /**
      * Set the location values for the {@link LocationPoint},
      * and persist to database if necessary. This includes latitude,
      * longitude, altitude, and accuracy.
@@ -149,15 +69,6 @@ public final class LocationPoint extends
             locationAccuracy = location.getAccuracy();
         }
         saveIfSync();
-    }
-
-    /**
-     * Get the {@link LocationPoint}'s timestamp.
-     *
-     * @return Timestamp, usually in milliseconds since epoch
-     */
-    public synchronized long getTimestamp() {
-        return timestamp;
     }
 
     /**

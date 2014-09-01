@@ -1,4 +1,4 @@
-package com.brainydroid.daydreaming.db;
+package com.brainydroid.daydreaming.sequence;
 
 /**
  * Interface to implement to represent answers to a certain type of

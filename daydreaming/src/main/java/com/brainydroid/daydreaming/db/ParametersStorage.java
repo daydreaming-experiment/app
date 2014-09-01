@@ -31,30 +31,6 @@ public class ParametersStorage {
 
     private static String TAG = "ParametersStorage";
 
-    public static final String COL_NAME = "questionName";
-    public static final String COL_CATEGORY = "questionCategory";
-    public static final String COL_SUB_CATEGORY = "questionSubCategory";
-    public static final String COL_DETAILS = "questionDetails";
-    public static final String COL_SLOT = "questionSlot";
-
-    public static final String COL_STATUS = "questionStatus";
-    public static final String COL_ANSWER = "questionAnswer";
-    public static final String COL_LOCATION = "questionLocation";
-    public static final String COL_NTP_TIMESTAMP = "questionNtpTimestamp";
-    public static final String COL_SYSTEM_TIMESTAMP =
-            "questionSystemTimestamp";
-
-    private static String TABLE_QUESTIONS = "Questions";
-
-    private static final String SQL_CREATE_TABLE_QUESTIONS =
-            "CREATE TABLE IF NOT EXISTS {}" + TABLE_QUESTIONS + " (" +
-                    COL_NAME + " TEXT NOT NULL, " +
-                    COL_CATEGORY + " TEXT NOT NULL, " +
-                    COL_SUB_CATEGORY + " TEXT, " +
-                    COL_DETAILS + " TEXT NOT NULL, " +
-                    COL_SLOT + " TEXT NOT NULL" +
-                    ");";
-
     public static String QUESTIONS_SCHEDULING_MIN_DELAY = "schedulingMinDelay";
     public static String QUESTIONS_SCHEDULING_MEAN_DELAY = "schedulingMeanDelay";
     public static String QUESTIONS_N_SLOTS_PER_PROBE = "questionsNSlotsPerProbe";
@@ -281,36 +257,6 @@ public class ParametersStorage {
         Logger.d(TAG, "{} - Clearing nSlotsPerProbe", statusManager.getCurrentModeName());
         eSharedPreferences.remove(statusManager.getCurrentModeName() + QUESTIONS_N_SLOTS_PER_PROBE);
         eSharedPreferences.commit();
-    }
-
-    public synchronized void setFirstLaunch(FirstLaunch firstLaunch) {
-        // Save raw JSON
-        String jsonFirstLaunch = json.toJson(firstLaunch);
-        Logger.d(TAG, "{0} - Setting (json)firstLaunch to {1}",
-                statusManager.getCurrentModeName(), jsonFirstLaunch);
-
-        eSharedPreferences.putString(statusManager.getCurrentModeName() + FIRST_LAUNCH, jsonFirstLaunch);
-        eSharedPreferences.commit();
-    }
-
-    public synchronized FirstLaunch getFirstLaunch() {
-        String jsonFirstLaunch = sharedPreferences.getString(
-                statusManager.getCurrentModeName() + FIRST_LAUNCH, null);
-        if (jsonFirstLaunch == null) {
-            Logger.e(TAG, "{} - (json)firstLaunch is asked for but not set",
-                    statusManager.getCurrentMode());
-            throw new RuntimeException("(json)firstLaunch is asked for but not set");
-        }
-        Logger.d(TAG, "{0} - (json)FirstLaunch is {1}", statusManager.getCurrentModeName(),
-                jsonFirstLaunch);
-
-        // Deserialize the JSON
-        return json.fromJson(jsonFirstLaunch, FirstLaunch.class);
-    }
-
-    private synchronized void clearFirstLaunch() {
-        Logger.d(TAG, "{} - Clearing firstLaunch", statusManager.getCurrentModeName());
-        eSharedPreferences.remove(statusManager.getCurrentModeName() + FIRST_LAUNCH);
     }
 
     // get question from id in db

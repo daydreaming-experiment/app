@@ -6,11 +6,12 @@ import java.util.ArrayList;
 
 public class PageDescription extends AbstractPage {
 
+    @SuppressWarnings("UnusedDeclaration")
     private static String TAG = "PageDescription";
 
-    private String name;
-    private String position;
-    private ArrayList<QuestionDescription> questions;
+    private String name = null;
+    private String position = null;
+    private ArrayList<QuestionDescription> questions = new ArrayList<QuestionDescription>();
 
     public String getName() {
         return name;

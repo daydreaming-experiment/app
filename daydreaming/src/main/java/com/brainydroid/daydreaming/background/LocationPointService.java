@@ -147,7 +147,7 @@ public class LocationPointService extends RoboService {
         if (collectingLocationPoints != null) {
             if (cancelCollectingLocationPoints) {
                 Logger.d(TAG, "Cancelling collecting LocationPoints");
-                locationPointsStorage.removeLocationPoints(collectingLocationPoints);
+                locationPointsStorage.remove(collectingLocationPoints);
             } else {
                 Logger.d(TAG, "Setting collecting LocationPoints to completed");
 

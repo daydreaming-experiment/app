@@ -6,12 +6,13 @@ import java.util.ArrayList;
 
 public class PageGroupDescription extends AbstractPageGroup {
 
+    @SuppressWarnings("UnusedDeclaration")
     private static String TAG = "PageGroupDescription";
 
-    private String name;
-    private String friendlyName;
-    private String position;
-    private ArrayList<PageDescription> pages;
+    private String name = null;
+    private String friendlyName = null;
+    private String position = null;
+    private ArrayList<PageDescription> pages = new ArrayList<PageDescription>();
 
     public String getName() {
         return name;

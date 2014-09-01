@@ -30,13 +30,12 @@ import com.brainydroid.daydreaming.background.Logger;
  * @see LocationPoint
  * @see Poll
  */
-public abstract class Model<M extends Model<M,S>,
-        S extends ModelStorage<M,S>> {
+public abstract class Model<M extends Model<M,S,F>,
+        S extends ModelStorage<M,S,F>, F extends ModelFactory<M,S,F>> {
 
     private static String TAG = "Model";
 
-    // These members don't need to be serialized
-    private transient int id = -1;
+    private int id = -1;
 
     /**
      * Set the {@link Model}'s id, used for database ordering and indexing.
@@ -81,7 +80,7 @@ public abstract class Model<M extends Model<M,S>,
      * {@code -1}. (In which case it's in fact an update of an existing
      * record in the database.) Otherwise do nothing.
      */
-    protected synchronized void saveIfSync() {
+    public synchronized void saveIfSync() {
         if (id != -1) {
             Logger.d(TAG, "Model has an id, syncing to db");
             save();

@@ -1,5 +1,8 @@
 package com.brainydroid.daydreaming.db;
 
+import com.brainydroid.daydreaming.background.Logger;
+import com.google.inject.Inject;
+
 /**
  * Create {@link LocationPoint}s whenever we need an instance that can't be
  * injected with Guice.
@@ -12,14 +15,18 @@ package com.brainydroid.daydreaming.db;
  * @author Vincent Adam
  * @see LocationPoint
  */
-public interface LocationPointFactory {
+public class LocationPointFactory
+        extends ModelFactory<LocationPoint,LocationPointsStorage,LocationPointFactory> {
 
-    /**
-     * Create an empty {@link LocationPoint} instance with injected
-     * dependencies (using Guice).
-     *
-     * @return New {@link LocationPoint} instance
-     */
-    public LocationPoint create();
+    @SuppressWarnings("FieldCanBeLocal")
+    private static String TAG = "LocationPointFactory";
+
+    @Inject Json json;
+
+    public LocationPoint createFromJson(String jsonContent) {
+        Logger.v(TAG, "Creating locationPoint from json");
+        return json.fromJson(jsonContent, LocationPoint.class);
+
+    }
 
 }

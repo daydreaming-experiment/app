@@ -1,6 +1,7 @@
 package com.brainydroid.daydreaming.db;
 
 import com.brainydroid.daydreaming.background.Logger;
+import com.brainydroid.daydreaming.sequence.IAnswer;
 import com.google.gson.*;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -8,12 +9,12 @@ import com.google.inject.Injector;
 import java.lang.reflect.Type;
 
 /**
- * Deserialize a serialized {@link IAnswer}, making sure it comes out as
+ * Deserialize a serialized {@link com.brainydroid.daydreaming.sequence.IAnswer}, making sure it comes out as
  * the proper class.
  *
  * @author Sébastien Lerique
  * @author Vincent Adam
- * @see IAnswer
+ * @see com.brainydroid.daydreaming.sequence.IAnswer
  */
 public class AnswerDeserializer implements JsonDeserializer<IAnswer> {
 

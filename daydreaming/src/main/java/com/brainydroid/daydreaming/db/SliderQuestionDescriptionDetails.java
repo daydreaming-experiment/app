@@ -1,12 +1,13 @@
 package com.brainydroid.daydreaming.db;
 
 import com.brainydroid.daydreaming.background.Logger;
+import com.brainydroid.daydreaming.sequence.SliderSubQuestion;
 
 import java.util.ArrayList;
 
-public class SliderQuestionDetails implements IQuestionDetails {
+public class SliderQuestionDescriptionDetails implements IQuestionDescriptionDetails {
 
-    @SuppressWarnings("UnusedDeclaration")
+    @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "SliderQuestionDetails";
 
     @SuppressWarnings("FieldCanBeLocal")
