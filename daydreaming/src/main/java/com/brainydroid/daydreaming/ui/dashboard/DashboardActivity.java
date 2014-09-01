@@ -45,6 +45,7 @@ import roboguice.inject.InjectView;
 public class DashboardActivity extends RoboFragmentActivity {
 
     private static String TAG = "DashboardActivity";
+    private static final String ACTION_STRING_ACTIVITY = "ToActivity";
 
     @Inject ParametersStorage parametersStorage;
     @Inject StatusManager statusManager;
@@ -65,25 +66,18 @@ public class DashboardActivity extends RoboFragmentActivity {
     LinearLayout dashboard_main_layout;
     private boolean testModeThemeActivated = false;
 
-    private BroadcastReceiver networkReceiver = new BroadcastReceiver() {
+    IntentFilter intentFilter = new IntentFilter(ACTION_STRING_ACTIVITY);
 
-        private String TAG = "FirstLaunch05MeasuresActivity networkReceiver";
-
+    private BroadcastReceiver activityReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            // Were we called because Internet just became available?
             String action = intent.getAction();
-            if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
+            if (action.equals(ACTION_STRING_ACTIVITY)) {
                 Logger.d(TAG, "networkReceiver started for CONNECTIVITY_ACTION");
-                asyncUpdateView();
+                setExperimentStatusText();
             }
         }
     };
-
-    private IntentFilter networkIntentFilter =
-            new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -92,6 +86,11 @@ public class DashboardActivity extends RoboFragmentActivity {
         checkTestMode();
         super.onCreate(savedInstanceState);
         checkFirstLaunch();
+
+        if (activityReceiver != null) {
+            registerReceiver(activityReceiver, intentFilter);
+        }
+
         setRobotoFont(this);
     }
 
@@ -118,7 +117,7 @@ public class DashboardActivity extends RoboFragmentActivity {
         Logger.v(TAG, "Resuming");
         checkExperimentModeActivatedDirty();
         if (!statusManager.areParametersUpdated()) {
-            registerReceiver(networkReceiver, networkIntentFilter);
+            registerReceiver(activityReceiver, intentFilter);
             asyncUpdateView();
         }
         super.onResume();
@@ -130,7 +129,7 @@ public class DashboardActivity extends RoboFragmentActivity {
         Logger.v(TAG, "Pausing");
         Logger.d(TAG, "Unregistering dashboardReceiver");
         try {
-            unregisterReceiver(networkReceiver);
+            unregisterReceiver(activityReceiver);
         } catch(IllegalArgumentException e) {}
         super.onPause();
     }
@@ -189,6 +188,11 @@ public class DashboardActivity extends RoboFragmentActivity {
     public void  onClick_SeeResults(
             @SuppressWarnings("UnusedParameters") View view){
         Toast.makeText(this, "Not yet!", Toast.LENGTH_SHORT).show();
+    }
+
+    public void  onClick_OpenNetworkSettings(
+            @SuppressWarnings("UnusedParameters") View view){
+        launchNetworkSettings();
     }
 
     private void updateRunningTime() {
@@ -284,6 +288,7 @@ public class DashboardActivity extends RoboFragmentActivity {
             expStatus.setText(R.string.dashboard_text_exp_running);
             dashboard_TimeBox_layout.setVisibility(View.VISIBLE);
             dashboard_TimeBox_no_param.setVisibility(View.INVISIBLE);
+            updateRunningTime();
         } else {
             expStatus.setText(R.string.dashboard_text_exp_stopped);
             dashboard_TimeBox_layout.setVisibility(View.INVISIBLE);

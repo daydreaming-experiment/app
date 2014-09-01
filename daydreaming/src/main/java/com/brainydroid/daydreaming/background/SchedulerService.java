@@ -2,10 +2,16 @@ package com.brainydroid.daydreaming.background;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.os.SystemClock;
+import android.util.Log;
+import android.widget.Toast;
+
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.db.ParametersStorage;
 import com.brainydroid.daydreaming.db.Util;
@@ -32,6 +38,7 @@ public class SchedulerService extends RoboService {
 
     /** Extra to set to {@code true} for debugging */
     public static String SCHEDULER_DEBUGGING = "schedulerDebugging";
+    private static final String ACTION_STRING_ACTIVITY = "ToActivity";
 
     /** Scheduling delay when debugging is activated */
     public static long DEBUG_DELAY = 5 * 1000; // 5 seconds
@@ -52,6 +59,13 @@ public class SchedulerService extends RoboService {
     @Inject Random random;
     @Inject AlarmManager alarmManager;
 
+
+    private void sendBroadcast() {
+        Intent new_intent = new Intent();
+        new_intent.setAction(ACTION_STRING_ACTIVITY);
+        sendBroadcast(new_intent);
+    }
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Logger.d(TAG, "SchedulerService started");
@@ -67,9 +81,12 @@ public class SchedulerService extends RoboService {
             return START_REDELIVER_INTENT;
         }
 
+        sendBroadcast();
+
         // Schedule a poll and stop ourselves
         schedulePoll(intent.getBooleanExtra(SCHEDULER_DEBUGGING, false));
         stopSelf();
+
 
         return START_REDELIVER_INTENT;
     }

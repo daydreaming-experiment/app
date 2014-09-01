@@ -251,8 +251,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Network settings"
-            android:id="@+id/button2"
-            android:onClick="launchNetworkSettings"/>
+            android:id="@+id/dashboard_network_settings_button"
+            android:onClick="onClick_OpenNetworkSettings"/>
 
 
     </LinearLayout>
