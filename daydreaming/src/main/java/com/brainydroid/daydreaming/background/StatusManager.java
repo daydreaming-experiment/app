@@ -11,6 +11,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
+
 import com.brainydroid.daydreaming.db.LocationPointsStorage;
 import com.brainydroid.daydreaming.db.ParametersStorage;
 import com.brainydroid.daydreaming.db.PollsStorage;
@@ -61,6 +62,8 @@ public class StatusManager {
     /** Preference key storing the current mode */
     private static String EXP_CURRENT_MODE = "expCurrentMode";
 
+    public static final String ACTION_PARAMETERS_UPDATED = "actionParametersUpdated";
+
     public static int MODE_PROD = 0;
     public static int MODE_TEST = 1;
     public static int MODE_DEFAULT = MODE_PROD;
@@ -91,6 +94,13 @@ public class StatusManager {
 
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor eSharedPreferences;
+
+    private void sendParametersUpdatedBroadcast() {
+        Logger.v(TAG, "Sending ACTION_PARAMETERS_UPDATED broadcast");
+        Intent broadcastIntent = new Intent();
+        broadcastIntent.setAction(ACTION_PARAMETERS_UPDATED);
+        context.sendBroadcast(broadcastIntent);
+    }
 
     /**
      * Initialize the {@link SharedPreferences} editor.
@@ -191,6 +201,9 @@ public class StatusManager {
 
         eSharedPreferences.putBoolean(getCurrentModeName() + EXP_STATUS_PARAMETERS_UPDATED, true);
         eSharedPreferences.commit();
+
+        // Broadcast the info so that the dashboard can update its view
+        sendParametersUpdatedBroadcast();
     }
 
     public synchronized void clearParametersUpdated() {
@@ -511,6 +524,10 @@ public class StatusManager {
         Intent pollServiceIntent = new Intent(context, ProbeService.class);
         pollServiceIntent.putExtra(ProbeService.CANCEL_PENDING_POLLS, true);
         context.startService(pollServiceIntent);
+    }
+
+    public synchronized Boolean isExpRunning() {
+        return areParametersUpdated();
     }
 
 }

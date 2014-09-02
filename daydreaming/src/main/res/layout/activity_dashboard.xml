@@ -1,5 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/dashboard_main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
@@ -55,12 +56,13 @@
             android:layout_toRightOf="@id/dashboard_layout_textExperimentRunning_p1">
 
             <TextView
-                android:id="@+id/dashboard_textExperimentRunning_p2"
+                android:id="@+id/dashboard_textExperimentStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/dashboard_text_running"
+                android:text="XXX"
                 android:singleLine="true"
                 android:textAppearance="@style/ui_font_title_bold"
+                android:paddingLeft="10dp"
                 android:textColor="@color/ui_dark_blue_color"/>
 
         </LinearLayout>
@@ -73,13 +75,22 @@
     <!-- Two colums time-elapsed / results -->
 
 
+<RelativeLayout
+    android:id="@+id/dashboard_TimeBoxorOptions_layout"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp"
+    android:gravity="center_horizontal"
+    >
 
 
     <RelativeLayout
-        android:layout_width="wrap_content"
+        android:id="@+id/dashboard_TimeBox_layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:layout_gravity="center_horizontal" android:gravity="center_horizontal">
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal">
 
 
         <!-- column time-elapsed -->
@@ -139,6 +150,7 @@
 
 
         </RelativeLayout>
+
 
 
         <!-- column See results -->
@@ -216,9 +228,38 @@
                 />
 
         </RelativeLayout>
-
-
     </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/dashboard_TimeBox_layout_no_params"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_gravity="center"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="@string/dashboard_text_enable_internet"
+            android:id="@+id/dashboard_no_params_text" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Network settings"
+            android:id="@+id/dashboard_network_settings_button"
+            android:onClick="onClick_OpenNetworkSettings"/>
+
+
+    </LinearLayout>
+
+
+
+</RelativeLayout>
 
 
 
@@ -231,9 +272,10 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_below="@id/dashboard_ExperimentSeeResults"
+        android:layout_below="@id/dashboard_TimeBoxorOptions_layout"
         android:paddingTop="@dimen/dashboard_calendar_buttons_spacing"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        android:baselineAligned="false">
 
         <LinearLayout
             android:layout_width="0dp"
