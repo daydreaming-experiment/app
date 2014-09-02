@@ -124,7 +124,9 @@ public class DashboardActivity extends RoboFragmentActivity {
         Logger.d(TAG, "Unregistering receiver for all intent filters");
         try {
             unregisterReceiver(receiver);
-        } catch(IllegalArgumentException e) {}
+        } catch(IllegalArgumentException e) {
+            Logger.v(TAG, "Receiver is not registered, so not unregistering");
+        }
         super.onPause();
     }
 
