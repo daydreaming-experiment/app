@@ -1,18 +1,14 @@
 package com.brainydroid.daydreaming.db;
 
 import android.annotation.SuppressLint;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.widget.Toast;
 
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.background.SchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
-import com.brainydroid.daydreaming.network.CryptoStorageCallback;
 import com.brainydroid.daydreaming.network.HttpConversationCallback;
 import com.brainydroid.daydreaming.network.HttpGetData;
 import com.brainydroid.daydreaming.network.HttpGetTask;
@@ -23,72 +19,33 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.HashSet;
 
 @Singleton
 public class ParametersStorage {
 
     private static String TAG = "ParametersStorage";
 
-    public static final String COL_NAME = "questionName";
-    public static final String COL_CATEGORY = "questionCategory";
-    public static final String COL_SUB_CATEGORY = "questionSubCategory";
-    public static final String COL_DETAILS = "questionDetails";
-    public static final String COL_SLOT = "questionSlot";
-
-    public static final String COL_STATUS = "questionStatus";
-    public static final String COL_ANSWER = "questionAnswer";
-    public static final String COL_LOCATION = "questionLocation";
-    public static final String COL_NTP_TIMESTAMP = "questionNtpTimestamp";
-    public static final String COL_SYSTEM_TIMESTAMP =
-            "questionSystemTimestamp";
-
-    private static String TABLE_QUESTIONS = "Questions";
-
-    private static final String SQL_CREATE_TABLE_QUESTIONS =
-            "CREATE TABLE IF NOT EXISTS {}" + TABLE_QUESTIONS + " (" +
-                    COL_NAME + " TEXT NOT NULL, " +
-                    COL_CATEGORY + " TEXT NOT NULL, " +
-                    COL_SUB_CATEGORY + " TEXT, " +
-                    COL_DETAILS + " TEXT NOT NULL, " +
-                    COL_SLOT + " TEXT NOT NULL" +
-                    ");";
-
     public static String QUESTIONS_SCHEDULING_MIN_DELAY = "schedulingMinDelay";
     public static String QUESTIONS_SCHEDULING_MEAN_DELAY = "schedulingMeanDelay";
-    public static String QUESTIONS_N_SLOTS_PER_PROBE = "questionsNSlotsPerProbe";
 
     public static String BACKEND_EXP_ID = "backendExpId";
     public static String BACKEND_DB_NAME = "backendDbName";
     public static String EXP_DURATION = "expDuration";
     public static String BACKEND_API_URL = "backendApiUrl";
     public static String RESULTS_PAGE_URL = "resultsPageUrl";
-    public static String FIRST_LAUNCH =  "firstLaunch";
 
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor eSharedPreferences;
 
     @Inject Json json;
-    @Inject QuestionFactory questionFactory;
     @Inject ProfileStorage profileStorage;
-    @Inject SlottedQuestionsFactory slottedQuestionsFactory;
     @Inject StatusManager statusManager;
     @Inject Context context;
 
-    private final SQLiteDatabase db;
-
     @SuppressLint("CommitPrefEdits")
     @Inject
-    public ParametersStorage(Storage storage, StatusManager statusManager,
-                             SharedPreferences sharedPreferences) {
-        Logger.d(TAG, "{} - Building ParametersStorage: creating table if it " +
-                "doesn't exist", statusManager.getCurrentModeName());
-
-        db = storage.getWritableDatabase();
-        for (String modeName : StatusManager.AVAILABLE_MODE_NAMES) {
-            db.execSQL(MessageFormat.format(SQL_CREATE_TABLE_QUESTIONS, modeName));
-        }
+    public ParametersStorage(SharedPreferences sharedPreferences) {
+        Logger.d(TAG, "{} - Building ParametersStorage", statusManager.getCurrentModeName());
 
         this.sharedPreferences = sharedPreferences;
         eSharedPreferences = sharedPreferences.edit();
@@ -263,149 +220,21 @@ public class ParametersStorage {
         eSharedPreferences.commit();
     }
 
-    private synchronized void setNSlotsPerProbe(int nSlotsPerProbe) {
-        Logger.d(TAG, "{0} - Setting nSlotsPerProbe to {1}", statusManager.getCurrentModeName(), nSlotsPerProbe);
-        eSharedPreferences.putInt(statusManager.getCurrentModeName() + QUESTIONS_N_SLOTS_PER_PROBE, nSlotsPerProbe);
-        eSharedPreferences.commit();
-    }
-
-    public synchronized int getNSlotsPerProbe() {
-        int nSlotsPerProbe = sharedPreferences.getInt(
-                statusManager.getCurrentModeName() + QUESTIONS_N_SLOTS_PER_PROBE,
-                ServerParametersJson.DEFAULT_N_SLOTS_PER_PROBE);
-        Logger.v(TAG, "{0} - nSlotsPerProbe is {1}", statusManager.getCurrentModeName(), nSlotsPerProbe);
-        return nSlotsPerProbe;
-    }
-
-    public synchronized void clearNSlotsPerProbe() {
-        Logger.d(TAG, "{} - Clearing nSlotsPerProbe", statusManager.getCurrentModeName());
-        eSharedPreferences.remove(statusManager.getCurrentModeName() + QUESTIONS_N_SLOTS_PER_PROBE);
-        eSharedPreferences.commit();
-    }
-
-    public synchronized void setFirstLaunch(FirstLaunch firstLaunch) {
-        // Save raw JSON
-        String jsonFirstLaunch = json.toJson(firstLaunch);
-        Logger.d(TAG, "{0} - Setting (json)firstLaunch to {1}",
-                statusManager.getCurrentModeName(), jsonFirstLaunch);
-
-        eSharedPreferences.putString(statusManager.getCurrentModeName() + FIRST_LAUNCH, jsonFirstLaunch);
-        eSharedPreferences.commit();
-    }
-
-    public synchronized FirstLaunch getFirstLaunch() {
-        String jsonFirstLaunch = sharedPreferences.getString(
-                statusManager.getCurrentModeName() + FIRST_LAUNCH, null);
-        if (jsonFirstLaunch == null) {
-            Logger.e(TAG, "{} - (json)firstLaunch is asked for but not set",
-                    statusManager.getCurrentMode());
-            throw new RuntimeException("(json)firstLaunch is asked for but not set");
-        }
-        Logger.d(TAG, "{0} - (json)FirstLaunch is {1}", statusManager.getCurrentModeName(),
-                jsonFirstLaunch);
-
-        // Deserialize the JSON
-        return json.fromJson(jsonFirstLaunch, FirstLaunch.class);
-    }
-
-    private synchronized void clearFirstLaunch() {
-        Logger.d(TAG, "{} - Clearing firstLaunch", statusManager.getCurrentModeName());
-        eSharedPreferences.remove(statusManager.getCurrentModeName() + FIRST_LAUNCH);
-    }
-
-    // get question from id in db
-    public synchronized Question create(String questionName) {
-        Logger.d(TAG, "{0} - Retrieving question {1} from db", statusManager.getCurrentModeName(), questionName);
-
-        Cursor res = db.query(statusManager.getCurrentModeName() + TABLE_QUESTIONS, null,
-                COL_NAME + "=?", new String[]{questionName},
-                null, null, null);
-        if (!res.moveToFirst()) {
-            res.close();
-            return null;
-        }
-
-        Question q = questionFactory.create();
-        q.setName(res.getString(res.getColumnIndex(COL_NAME)));
-        q.setCategory(res.getString(res.getColumnIndex(COL_CATEGORY)));
-        q.setSubCategory(res.getString(
-                res.getColumnIndex(COL_SUB_CATEGORY)));
-        q.setDetailsFromJson(res.getString(
-                res.getColumnIndex(COL_DETAILS)));
-        q.setSlot(res.getString(res.getColumnIndex(COL_SLOT)));
-        res.close();
-
-        return q;
-    }
-
-    public synchronized SlottedQuestions getSlottedQuestions() {
-        Logger.d(TAG, "{} - Retrieving all questions from db", statusManager.getCurrentModeName());
-
-        Cursor res = db.query(statusManager.getCurrentModeName() + TABLE_QUESTIONS, null, null, null, null, null,
-                null);
-        if (!res.moveToFirst()) {
-            res.close();
-            return null;
-        }
-
-        SlottedQuestions slottedQuestions = slottedQuestionsFactory.create();
-        do {
-            Question q = questionFactory.create();
-            q.setName(res.getString(res.getColumnIndex(COL_NAME)));
-            q.setCategory(res.getString(res.getColumnIndex(COL_CATEGORY)));
-            q.setSubCategory(res.getString(
-                    res.getColumnIndex(COL_SUB_CATEGORY)));
-            q.setDetailsFromJson(res.getString(
-                    res.getColumnIndex(COL_DETAILS)));
-            q.setSlot(res.getString(res.getColumnIndex(COL_SLOT)));
-
-            slottedQuestions.add(q);
-        } while (res.moveToNext());
-        res.close();
-
-        return slottedQuestions;
-    }
-
     public synchronized void flush() {
         Logger.d(TAG, "{} - Flushing all parameters", statusManager.getCurrentModeName());
         statusManager.clearParametersUpdated();
         statusManager.setParametersFlushed();
-        flushQuestions();
+
+        throw new RuntimeException("Should flush sequences here");
+
         profileStorage.clearParametersVersion();
+        clearBackendExpId();
+        clearBackendDbName();
+        clearExpDuration();
+        clearBackendApiUrl();
+        clearResultsPageUrl();
         clearSchedulingMinDelay();
         clearSchedulingMeanDelay();
-        clearNSlotsPerProbe();
-    }
-
-    public synchronized void flushQuestions() {
-        Logger.d(TAG, "{} - Flushing questions from db", statusManager.getCurrentModeName());
-        db.delete(statusManager.getCurrentModeName() + TABLE_QUESTIONS, null, null);
-    }
-
-    private synchronized void add(ArrayList<Question> questions) {
-        Logger.d(TAG, "{} - Storing an array of questions to db", statusManager.getCurrentModeName());
-        for (Question q : questions) {
-            add(q);
-        }
-    }
-
-    // add question in database
-    private synchronized void add(Question question) {
-        Logger.d(TAG, "{0} - Storing question {1} to db", statusManager.getCurrentModeName(), question.getName());
-        db.insert(statusManager.getCurrentModeName() + TABLE_QUESTIONS, null, getQuestionValues(question));
-    }
-
-    private synchronized ContentValues getQuestionValues(Question question) {
-        Logger.d(TAG, "{} - Building question values", statusManager.getCurrentModeName());
-
-        ContentValues qValues = new ContentValues();
-        qValues.put(COL_NAME, question.getName());
-        qValues.put(COL_CATEGORY, question.getCategory());
-        qValues.put(COL_SUB_CATEGORY,
-                question.getSubCategory());
-        qValues.put(COL_DETAILS, question.getDetailsAsJson());
-        qValues.put(COL_SLOT, question.getSlot());
-        return qValues;
     }
 
     // import parameters from json file into database
@@ -431,12 +260,11 @@ public class ParametersStorage {
             setExpDuration(serverParametersJson.getExpDuration());
             setBackendApiUrl(serverParametersJson.getBackendApiUrl());
             setResultsPageUrl(serverParametersJson.getResultsPageUrl());
-            setFirstLaunch(serverParametersJson.getFirstLaunch());
-            setNSlotsPerProbe(serverParametersJson.getNSlotsPerProbe());
             setSchedulingMinDelay(serverParametersJson.getSchedulingMinDelay());
             setSchedulingMeanDelay(serverParametersJson.getSchedulingMeanDelay());
-            // loading the questions
-            add(serverParametersJson.getQuestionsArrayList());
+
+            throw new RuntimeException("Should import sequences here");
+            true;
 
         } catch (JsonParametersException e) {
             throw new ParametersSyntaxException();
