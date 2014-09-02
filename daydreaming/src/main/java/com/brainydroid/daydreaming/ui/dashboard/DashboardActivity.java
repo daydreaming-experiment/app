@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -20,7 +21,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.brainydroid.daydreaming.R;
-import com.brainydroid.daydreaming.background.LocationPointService;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.background.SchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
@@ -58,15 +58,17 @@ public class DashboardActivity extends RoboFragmentActivity {
 
     private boolean testModeThemeActivated = false;
 
-    IntentFilter intentFilter = new IntentFilter(StatusManager.ACTION_PARAMETERS_UPDATED);
+    IntentFilter parametersUpdateIntentFilter = new IntentFilter(StatusManager.ACTION_PARAMETERS_UPDATED);
+    IntentFilter networkIntentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
 
-    private BroadcastReceiver parametersUpdatedReceiver = new BroadcastReceiver() {
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            if (action.equals(StatusManager.ACTION_PARAMETERS_UPDATED)) {
-                Logger.d(TAG, "parametersUpdatedReceiver started for ACTION_PARAMETERS_UPDATED");
-                setExperimentStatusText();
+            if (action.equals(StatusManager.ACTION_PARAMETERS_UPDATED) ||
+                    action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
+                Logger.d(TAG, "receiver started for ACTION_PARAMETERS_UPDATED or CONNECTIVITY_ACTION");
+                updateExperimentStatusViews();
             }
         }
     };
@@ -79,8 +81,8 @@ public class DashboardActivity extends RoboFragmentActivity {
         super.onCreate(savedInstanceState);
         checkFirstLaunch();
 
-        if (parametersUpdatedReceiver != null) {
-            registerReceiver(parametersUpdatedReceiver, intentFilter);
+        if (receiver != null) {
+            registerReceiver(receiver, parametersUpdateIntentFilter);
         }
         setRobotoFont(this);
     }
@@ -99,7 +101,7 @@ public class DashboardActivity extends RoboFragmentActivity {
         checkExperimentModeActivatedDirty();
         updateRunningTime();
         updateChromeMode();
-        setExperimentStatusText();
+        updateExperimentStatusViews();
         super.onStart();
     }
 
@@ -108,19 +110,20 @@ public class DashboardActivity extends RoboFragmentActivity {
         Logger.v(TAG, "Resuming");
         checkExperimentModeActivatedDirty();
         if (!statusManager.areParametersUpdated()) {
-            Logger.v(TAG, "Parameters not yet updated, registering parametersUpdateReceiver");
-            registerReceiver(parametersUpdatedReceiver, intentFilter);
-            asyncUpdateView();
+            Logger.v(TAG, "Parameters not yet updated, registering broadcast receiver");
+            registerReceiver(receiver, parametersUpdateIntentFilter);
+            registerReceiver(receiver, networkIntentFilter);
         }
+        updateExperimentStatusViews();
         super.onResume();
     }
 
     @Override
     public void onPause() {
         Logger.v(TAG, "Pausing");
-        Logger.d(TAG, "Unregistering dashboardReceiver");
+        Logger.d(TAG, "Unregistering receiver for all intent filters");
         try {
-            unregisterReceiver(parametersUpdatedReceiver);
+            unregisterReceiver(receiver);
         } catch(IllegalArgumentException e) {}
         super.onPause();
     }
@@ -272,19 +275,32 @@ public class DashboardActivity extends RoboFragmentActivity {
      */
 
     //TODO[Vincent] Think of a way to deal with experiment being paused (status : running paused stopped)
-    protected void setExperimentStatusText() {
+    protected void updateExperimentStatusViews() {
         View dashboard_TimeBox_layout = findViewById(R.id.dashboard_TimeBox_layout);
         View dashboard_TimeBox_no_param = findViewById(R.id.dashboard_TimeBox_layout_no_params);
+        View dashboardNetworkSettingsButton = findViewById(R.id.dashboard_network_settings_button);
+
         if (statusManager.isExpRunning()) {
+            Logger.v(TAG, "Experiment is running, setting text accordingly");
             expStatus.setText(R.string.dashboard_text_exp_running);
             dashboard_TimeBox_layout.setVisibility(View.VISIBLE);
             dashboard_TimeBox_no_param.setVisibility(View.INVISIBLE);
             updateRunningTime();
         } else {
+            Logger.v(TAG, "Experiment is NOT running, setting text accordingly");
             expStatus.setText(R.string.dashboard_text_exp_stopped);
             dashboard_TimeBox_layout.setVisibility(View.INVISIBLE);
             dashboard_TimeBox_no_param.setVisibility(View.VISIBLE);
         }
+
+        boolean isDataEnabled = statusManager.isDataEnabled();
+        textNetworkConnection.setCompoundDrawablesWithIntrinsicBounds(isDataEnabled ?
+                R.drawable.status_loading :
+                R.drawable.status_wrong, 0, 0, 0);
+        textNetworkConnection.setText(isDataEnabled ?
+                getString(R.string.dashboard_text_parameters_updating) :
+                getString(R.string.dashboard_text_enable_internet));
+        dashboardNetworkSettingsButton.setVisibility(isDataEnabled ? View.INVISIBLE : View.VISIBLE);
     }
 
     protected void checkFirstLaunch() {
@@ -377,11 +393,9 @@ public class DashboardActivity extends RoboFragmentActivity {
         }
     }
 
-
-    private void asyncUpdateView() {
-        Logger.d(TAG, "Asynchronously updating view of settings");
-
-        final boolean isDataEnabled = statusManager.isDataEnabled();
+    private void asyncUpdateExperimentStatusViews() {
+        Logger.d(TAG, "Asynchronously updating view of experiment "
+                + "(network settings and experiment running)");
 
         Runnable updateView = new Runnable() {
 
@@ -389,14 +403,8 @@ public class DashboardActivity extends RoboFragmentActivity {
 
             @Override
             public void run() {
-                Logger.d(TAG, "Running task: update of view");
-
-                textNetworkConnection.setCompoundDrawablesWithIntrinsicBounds(
-                        isDataEnabled ? R.drawable.status_ok :
-                                R.drawable.status_wrong, 0, 0, 0
-                );
-                setExperimentStatusText();
-
+                Logger.d(TAG, "Updating view of network settings and experiment text");
+                updateExperimentStatusViews();
             }
         };
         dashboardMainLayout.post(updateView);

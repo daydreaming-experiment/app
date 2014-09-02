@@ -30,6 +30,9 @@
     <string name="dashboard_button_text_terms">Terms</string>
     <string name="dashboard_button_text_description">Description</string>
 
+    <string name="dashboard_text_enable_internet">Please enable internet</string>
+    <string name="dashboard_text_parameters_updating">Parameters are updating…</string>
+
 
 
 
