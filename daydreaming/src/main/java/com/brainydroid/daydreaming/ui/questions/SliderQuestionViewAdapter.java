@@ -85,7 +85,7 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
         seekBar.setAlpha(0.5f);
 
         final int initialPosition = subQuestion.getInitialPosition();
-        if (initialPosition != -1) {
+        if (initialPosition != SliderSubQuestion.DEFAULT_INITIAL_RATING) {
             Logger.v(TAG, "Setting seekBar initial position to {0}",
                     initialPosition);
             seekBar.setProgress(initialPosition);

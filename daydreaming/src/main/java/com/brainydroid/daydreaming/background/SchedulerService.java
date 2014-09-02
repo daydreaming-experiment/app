@@ -6,14 +6,16 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.os.SystemClock;
+
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.db.ParametersStorage;
 import com.brainydroid.daydreaming.db.Util;
 import com.google.inject.Inject;
-import roboguice.service.RoboService;
 
 import java.util.Calendar;
 import java.util.Random;
+
+import roboguice.service.RoboService;
 
 /**
  * Schedule a {@link com.brainydroid.daydreaming.db.Poll} to be created and

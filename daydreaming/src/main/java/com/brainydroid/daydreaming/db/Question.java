@@ -33,6 +33,30 @@ public class Question {
 
     private Poll poll = null;
 
+    public synchronized void validateInitialization() throws JsonParametersException {
+        Logger.v(TAG, "Validating question");
+
+        // Check root parameters
+        if (name == null) {
+            throw new JsonParametersException("name in question can't be null");
+        }
+        if (category == null) {
+            throw new JsonParametersException("category in question can't be null");
+        }
+        if (subCategory == null) {
+            throw new JsonParametersException("subCategory in question can't be null");
+        }
+        if (details == null) {
+            throw new JsonParametersException("details in question can't be null");
+        }
+        if (slot == null) {
+            throw new JsonParametersException("slot in question can't be null");
+        }
+
+        // Check the details
+        details.validateInitialization();
+    }
+
     public synchronized String getName() {
         return name;
     }

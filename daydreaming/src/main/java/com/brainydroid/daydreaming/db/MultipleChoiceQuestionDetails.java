@@ -1,5 +1,7 @@
 package com.brainydroid.daydreaming.db;
 
+import com.brainydroid.daydreaming.background.Logger;
+
 import java.util.ArrayList;
 
 public class MultipleChoiceQuestionDetails implements IQuestionDetails {
@@ -30,6 +32,19 @@ public class MultipleChoiceQuestionDetails implements IQuestionDetails {
 
     public synchronized ArrayList<String> getChoices() {
         return choices;
+    }
+
+    public synchronized void validateInitialization() throws JsonParametersException {
+        Logger.v(TAG, "Validating question details");
+
+        if (text == null) {
+            throw new JsonParametersException("text in MultipleChoiceQuestionDetails "
+                    + "can't be null");
+        }
+        if (choices.size() < 2) {
+            throw new JsonParametersException("There must be at least two choices in "
+                    + "a MultipleChoiceQuestionsDetails");
+        }
     }
 
 }
