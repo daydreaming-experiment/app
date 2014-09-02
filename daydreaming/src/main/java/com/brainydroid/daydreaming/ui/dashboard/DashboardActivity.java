@@ -58,13 +58,13 @@ public class DashboardActivity extends RoboFragmentActivity {
 
     private boolean testModeThemeActivated = false;
 
-    IntentFilter intentFilter = new IntentFilter(SchedulerService.ACTION_PARAMETERS_UPDATED);
+    IntentFilter intentFilter = new IntentFilter(StatusManager.ACTION_PARAMETERS_UPDATED);
 
     private BroadcastReceiver parametersUpdatedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            if (action.equals(SchedulerService.ACTION_PARAMETERS_UPDATED)) {
+            if (action.equals(StatusManager.ACTION_PARAMETERS_UPDATED)) {
                 Logger.d(TAG, "parametersUpdatedReceiver started for ACTION_PARAMETERS_UPDATED");
                 setExperimentStatusText();
             }
@@ -275,7 +275,7 @@ public class DashboardActivity extends RoboFragmentActivity {
     protected void setExperimentStatusText() {
         View dashboard_TimeBox_layout = findViewById(R.id.dashboard_TimeBox_layout);
         View dashboard_TimeBox_no_param = findViewById(R.id.dashboard_TimeBox_layout_no_params);
-        if (statusManager.isExpRunning()){
+        if (statusManager.isExpRunning()) {
             expStatus.setText(R.string.dashboard_text_exp_running);
             dashboard_TimeBox_layout.setVisibility(View.VISIBLE);
             dashboard_TimeBox_no_param.setVisibility(View.INVISIBLE);

@@ -130,7 +130,6 @@ public class SyncService extends RoboService {
         isDebugSync = intent.getBooleanExtra(DEBUG_SYNC, false);
         if (statusManager.isLastSyncLongAgo() || isDebugSync) {
             Logger.d(TAG, "Last sync was long ago or this is a debug sync -> starting updates");
-            statusManager.setLastSyncToNow();
             startUpdates();
         } else {
             Logger.v(TAG, "Last sync was not long ago -> exiting");
@@ -152,6 +151,8 @@ public class SyncService extends RoboService {
         if (statusManager.isDataEnabled()) {
             Logger.i(TAG, "Data connection enabled -> starting sync tasks");
             Logger.td(this, TAG + ": starting sync...");
+
+            statusManager.setLastSyncToNow();
 
             // This will launch all the calls through the callback
             parametersStorage.onReady(parametersStorageCallback, startSyncAppMode, isDebugSync);

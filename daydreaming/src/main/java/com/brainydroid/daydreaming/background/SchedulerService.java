@@ -34,7 +34,6 @@ public class SchedulerService extends RoboService {
 
     /** Extra to set to {@code true} for debugging */
     public static String SCHEDULER_DEBUGGING = "schedulerDebugging";
-    public static final String ACTION_PARAMETERS_UPDATED = "actionParametersUpdated";
 
     /** Scheduling delay when debugging is activated */
     public static long DEBUG_DELAY = 5 * 1000; // 5 seconds
@@ -55,13 +54,6 @@ public class SchedulerService extends RoboService {
     @Inject Random random;
     @Inject AlarmManager alarmManager;
 
-    private void sendBroadcast() {
-        Logger.v(TAG, "Sending ACTION_PARAMETERS_UPDATED broadcast");
-        Intent broadcastIntent = new Intent();
-        broadcastIntent.setAction(ACTION_PARAMETERS_UPDATED);
-        sendBroadcast(broadcastIntent);
-    }
-
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Logger.d(TAG, "SchedulerService started");
@@ -76,9 +68,6 @@ public class SchedulerService extends RoboService {
             Logger.d(TAG, "Parameters not updated yet. aborting scheduling.");
             return START_REDELIVER_INTENT;
         }
-
-        // Broadcast the info so that the dashboard can update its view
-        sendBroadcast();
 
         // Schedule a poll and stop ourselves
         schedulePoll(intent.getBooleanExtra(SCHEDULER_DEBUGGING, false));
