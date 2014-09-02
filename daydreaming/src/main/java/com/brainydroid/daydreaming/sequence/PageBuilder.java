@@ -14,18 +14,18 @@ public class PageBuilder {
     @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "PageBuilder";
 
-    @Inject private Orderer orderer;
     @Inject private QuestionBuilder questionBuilder;
 
-    public Page build(PageDescription pageDescription) {
+    public Page build(PageDescription pageDescription, Probe probe) {
         Logger.v(TAG, "Building page from description {}", pageDescription.getName());
 
+        Orderer<QuestionDescription,Question> orderer =
+                new Orderer<QuestionDescription, Question>(pageDescription.getNSlots());
         ArrayList<QuestionDescription> questionDescriptions = pageDescription.getQuestions();
         BuildableOrder<QuestionDescription,Question> buildableOrder =
-                orderer.buildOrder(questionDescriptions, pageDescription.getNSlots(),
-                        Question.class);
+                orderer.buildOrder(questionDescriptions);
 
-        return new Page(buildableOrder.build());
+        return new Page(buildableOrder.build(probe));
     }
 
 }

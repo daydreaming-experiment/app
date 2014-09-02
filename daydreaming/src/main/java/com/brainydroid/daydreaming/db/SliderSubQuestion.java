@@ -1,7 +1,6 @@
 package com.brainydroid.daydreaming.db;
 
 import com.brainydroid.daydreaming.background.Logger;
-import com.brainydroid.daydreaming.db.JsonParametersException;
 
 import java.util.ArrayList;
 

@@ -19,6 +19,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 
 @Singleton
 public class ParametersStorage {
@@ -33,6 +34,11 @@ public class ParametersStorage {
     public static String EXP_DURATION = "expDuration";
     public static String BACKEND_API_URL = "backendApiUrl";
     public static String RESULTS_PAGE_URL = "resultsPageUrl";
+    public static String QUESTIONS = "questions";
+    public static String SEQUENCES = "sequences";
+
+    private QuestionDescriptionsArray questionsCache;
+    private SequenceDescriptionsArray sequencesCache;
 
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor eSharedPreferences;
@@ -220,12 +226,108 @@ public class ParametersStorage {
         eSharedPreferences.commit();
     }
 
+    public synchronized void setQuestions(QuestionDescriptionsArray questions) {
+        Logger.d(TAG, "{} - Setting questions array (and keeping in cache)",
+                statusManager.getCurrentModeName());
+        questionsCache = questions;
+        eSharedPreferences.putString(statusManager.getCurrentModeName() + QUESTIONS,
+                json.toJson(questions));
+        eSharedPreferences.commit();
+    }
+
+    public synchronized QuestionDescriptionsArray getQuestions() {
+        Logger.d(TAG, "{} - Getting questions", statusManager.getCurrentModeName());
+        if (questionsCache != null) {
+            Logger.v(TAG, "{} - Cache is present -> returning questions from cache",
+                    statusManager.getCurrentModeName());
+        } else {
+            Logger.v(TAG, "{} - Cache not present -> getting questions from sharedPreferences",
+                    statusManager.getCurrentModeName());
+            questionsCache = json.fromJson(
+                    sharedPreferences.getString(statusManager.getCurrentModeName() + QUESTIONS, null),
+                    QuestionDescriptionsArray.class);
+        }
+
+        if (questionsCache == null) {
+            Logger.e(TAG, "{} - Questions asked for but not set",
+                    statusManager.getCurrentModeName());
+            throw new RuntimeException("Questions asked for but not set");
+        }
+        return questionsCache;
+    }
+
+    private synchronized void clearQuestions() {
+        Logger.d(TAG, "{} - Clearing questions (and clearing cache)",
+                statusManager.getCurrentModeName());
+        questionsCache = null;
+        eSharedPreferences.remove(statusManager.getCurrentModeName() + QUESTIONS);
+        eSharedPreferences.commit();
+    }
+
+    public synchronized void setSequences(SequenceDescriptionsArray sequences) {
+        Logger.d(TAG, "{} - Setting sequences array (and keeping in cache)",
+                statusManager.getCurrentModeName());
+        sequencesCache = sequences;
+        eSharedPreferences.putString(statusManager.getCurrentModeName() + SEQUENCES,
+                json.toJson(sequences));
+        eSharedPreferences.commit();
+    }
+
+    public synchronized SequenceDescriptionsArray getSequences() {
+        Logger.d(TAG, "{} - Getting sequences", statusManager.getCurrentModeName());
+        if (sequencesCache != null) {
+            Logger.v(TAG, "{} - Cache is present -> returning sequences from cache",
+                    statusManager.getCurrentModeName());
+        } else {
+            Logger.v(TAG, "{} - Cache not present -> getting sequences from sharedPreferences",
+                    statusManager.getCurrentModeName());
+            sequencesCache = json.fromJson(
+                    sharedPreferences.getString(statusManager.getCurrentModeName() + SEQUENCES, null),
+                    SequenceDescriptionsArray.class);
+        }
+
+        if (sequencesCache == null) {
+            Logger.e(TAG, "{} - Sequences asked for but not set",
+                    statusManager.getCurrentModeName());
+            throw new RuntimeException("Sequences asked for but not set");
+        }
+        return sequencesCache;
+    }
+
+    private synchronized void clearSequences() {
+        Logger.d(TAG, "{} - Clearing sequences (and clearing cache)",
+                statusManager.getCurrentModeName());
+        sequencesCache = null;
+        eSharedPreferences.remove(statusManager.getCurrentModeName() + SEQUENCES);
+        eSharedPreferences.commit();
+    }
+
+    public synchronized SequenceDescription getSequenceDescription(String name) {
+        Logger.d(TAG, "{0} - Looking for sequenceDescription {1}",
+                statusManager.getCurrentModeName(), name);
+
+        // Get list of all names
+        SequenceDescriptionsArray sequences = getSequences();
+        ArrayList<String> names = new ArrayList<String>(sequences.size());
+        for (SequenceDescription s : sequences) {
+            names.add(s.getName());
+        }
+
+        int sequenceIndex = names.indexOf(name);
+        if (sequenceIndex == -1) {
+            Logger.e(TAG, "{0} - Sequence {1} asked for but not found",
+                    statusManager.getCurrentModeName(), name);
+            throw new RuntimeException("Sequence asked for but not found (see logs)");
+        }
+
+        return sequences.get(sequenceIndex);
+
+    }
+
     public synchronized void flush() {
         Logger.d(TAG, "{} - Flushing all parameters", statusManager.getCurrentModeName());
         statusManager.clearParametersUpdated();
         statusManager.setParametersFlushed();
-
-        throw new RuntimeException("Should flush sequences here");
 
         profileStorage.clearParametersVersion();
         clearBackendExpId();
@@ -235,6 +337,8 @@ public class ParametersStorage {
         clearResultsPageUrl();
         clearSchedulingMinDelay();
         clearSchedulingMeanDelay();
+        clearQuestions();
+        clearSequences();
     }
 
     // import parameters from json file into database
@@ -262,10 +366,8 @@ public class ParametersStorage {
             setResultsPageUrl(serverParametersJson.getResultsPageUrl());
             setSchedulingMinDelay(serverParametersJson.getSchedulingMinDelay());
             setSchedulingMeanDelay(serverParametersJson.getSchedulingMeanDelay());
-
-            throw new RuntimeException("Should import sequences here");
-            true;
-
+            setQuestions(serverParametersJson.getQuestions());
+            setSequences(serverParametersJson.getSequences());
         } catch (JsonParametersException e) {
             throw new ParametersSyntaxException();
         }

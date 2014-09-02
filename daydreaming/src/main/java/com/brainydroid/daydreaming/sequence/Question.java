@@ -22,11 +22,18 @@ public class Question implements IQuestion {
 
     @Expose private IAnswer answer = null;
     @Expose private String status = null;
-    @Expose private Location location;
+    @Expose private Location location = null;
     @Expose private long ntpTimestamp = -1;
     @Expose private long systemTimestamp = -1;
 
     private Probe probe = null;
+
+    public Question(String name, IQuestionDescriptionDetails details, Probe probe) {
+        Logger.d(TAG, "Creating question {}", name);
+        setName(name);
+        setDetails(details);
+        setProbe(probe);
+    }
 
     public synchronized String getName() {
         return name;
@@ -104,13 +111,21 @@ public class Question implements IQuestion {
 
     private synchronized void setProbe(Probe probe) {
         Logger.v(TAG, "Setting probe");
+        // setProbe is only called from the constructor, itself called by QuestionBuilder,
+        // itself called from (up to the top) ProbeService.populateProbe() which already
+        // triggers a save after populating its probe. So no need to trigger a real save here.
+        // Only saveIfSync() is called, which normally should never trigger a real save.
         this.probe = probe;
-        // FIXME[seb]: check if saveIfSync() is necessary
+        saveIfSync();
     }
 
     private synchronized void saveIfSync() {
-        Logger.d(TAG, "Saving if probe is persisted");
-        probe.saveIfSync();
+        Logger.d(TAG, "Saving if in syncing probe");
+        if (probe != null) {
+            probe.saveIfSync();
+        } else {
+            Logger.v(TAG, "Not saved since no probe present");
+        }
     }
 
 }

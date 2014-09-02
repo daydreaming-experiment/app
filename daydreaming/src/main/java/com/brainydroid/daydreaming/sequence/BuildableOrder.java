@@ -18,10 +18,10 @@ public class BuildableOrder<D extends BuildableOrderable<C>,C> {
         }
     }
 
-    public ArrayList<C> build() {
+    public ArrayList<C> build(Probe probe) {
         ArrayList<C> builtOrderables = new ArrayList<C>(map.size());
         for (D item : map) {
-            builtOrderables.add(item.build());
+            builtOrderables.add(item.build(probe));
         }
 
         return builtOrderables;

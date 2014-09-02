@@ -12,6 +12,7 @@ import java.util.ArrayList;
 @Singleton
 public class SequenceBuilder {
 
+    @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "SequenceBuilder";
 
     public static String SEQUENCE_PROBE = "probe";
@@ -19,7 +20,7 @@ public class SequenceBuilder {
     @Inject private ParametersStorage parametersStorage;
     @Inject private PageGroupBuilder pageGroupBuilder;
 
-    public Sequence build(SequenceDescription sequenceDescription) {
+    public Sequence build(SequenceDescription sequenceDescription, Probe probe) {
         Logger.v(TAG, "Building sequence from description {}", sequenceDescription.getName());
 
         Orderer<PageGroupDescription,PageGroup> orderer =
@@ -28,11 +29,11 @@ public class SequenceBuilder {
         BuildableOrder<PageGroupDescription,PageGroup> buildableOrder =
                 orderer.buildOrder(pageGroupDescriptions);
 
-        return new Sequence(buildableOrder.build());
+        return new Sequence(buildableOrder.build(probe));
     }
 
-    public Sequence build(String name) {
-        return build(parametersStorage.getSequenceDescription(name));
+    public Sequence build(String name, Probe probe) {
+        return build(parametersStorage.getSequenceDescription(name), probe);
     }
 
 }

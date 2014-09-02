@@ -48,6 +48,6 @@ public class Probe extends StatusModel<Probe,ProbesStorage,ProbeFactory> {
     }
 
     public synchronized void populate() {
-        sequence = sequenceBuilder.build(SequenceBuilder.SEQUENCE_PROBE);
+        sequence = sequenceBuilder.build(SequenceBuilder.SEQUENCE_PROBE, this);
     }
 }

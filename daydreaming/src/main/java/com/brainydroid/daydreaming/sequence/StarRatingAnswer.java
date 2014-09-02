@@ -1,7 +1,6 @@
 package com.brainydroid.daydreaming.sequence;
 
 import com.brainydroid.daydreaming.background.Logger;
-import com.brainydroid.daydreaming.sequence.IAnswer;
 import com.google.gson.annotations.Expose;
 
 import java.util.HashMap;
