@@ -395,7 +395,6 @@ public class DashboardActivity extends RoboFragmentActivity {
                         isDataEnabled ? R.drawable.status_ok :
                                 R.drawable.status_wrong, 0, 0, 0
                 );
-                finishFirstLaunch();
                 setExperimentStatusText();
 
             }
@@ -454,44 +453,5 @@ public class DashboardActivity extends RoboFragmentActivity {
         settingsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
         startActivity(settingsIntent);
     }
-
-    protected void finishFirstLaunch() {
-        Logger.i(TAG, "Setting first launch to finished");
-
-        statusManager.setFirstLaunchCompleted();
-
-        SntpClientCallback callback = new SntpClientCallback() {
-
-            private String TAG = "FirstLaunch SntpClientCallback";
-
-            @Override
-            public void onTimeReceived(SntpClient sntpClient) {
-                Logger.d(TAG, "NTP request completed");
-
-                if (sntpClient != null) {
-                    Logger.i(TAG, "NTP request successful, " +
-                            "setting timestamp for start of experiment");
-                    statusManager.setExperimentStartTimestamp(
-                            sntpClient.getNow());
-                } else {
-                    Logger.i(TAG, "NTP request failed, sntpClient is null");
-                }
-            }
-
-        };
-
-        sntpClient.asyncRequestTime(callback);
-
-        Intent syncServiceIntent = new Intent(this, SyncService.class);
-        Logger.d(TAG, "Starting SyncService");
-        startService(syncServiceIntent);
-
-        // SchedulerService will be started when the SyncService successfully updates parameters
-        Intent locationPointServiceIntent = new Intent(this,
-                LocationPointService.class);
-        Logger.d(TAG, "Starting LocationPointService");
-        startService(locationPointServiceIntent);
-    }
-
 
 }
