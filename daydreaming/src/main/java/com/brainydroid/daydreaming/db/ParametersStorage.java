@@ -22,6 +22,8 @@ import com.google.gson.JsonSyntaxException;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import org.json.JSONObject;
+
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -65,6 +67,7 @@ public class ParametersStorage {
     public static String BACKEND_API_URL = "backendApiUrl";
     public static String RESULTS_PAGE_URL = "resultsPageUrl";
     public static String FIRST_LAUNCH =  "firstLaunch";
+    public static String GLOSSARY = "glossary";
 
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor eSharedPreferences;
@@ -277,6 +280,21 @@ public class ParametersStorage {
         return nSlotsPerProbe;
     }
 
+    private synchronized void setGlossary(JSONObject glossary) {
+        Logger.d(TAG, "{0} - Setting glossary to {1}", statusManager.getCurrentModeName(), glossary.toString());
+        eSharedPreferences.putString(statusManager.getCurrentModeName() + GLOSSARY, glossary.toString());
+        eSharedPreferences.commit();
+    }
+
+    private synchronized String getGlossary() {
+        String glossaryString = sharedPreferences.getString(
+                statusManager.getCurrentModeName() + GLOSSARY,
+                ServerParametersJson.DEFAULT_GLOSSARY);
+        Logger.v(TAG, "{0} - glossary is {1}", statusManager.getCurrentModeName(), glossaryString);
+        return glossaryString;
+
+    }
+
     public synchronized void clearNSlotsPerProbe() {
         Logger.d(TAG, "{} - Clearing nSlotsPerProbe", statusManager.getCurrentModeName());
         eSharedPreferences.remove(statusManager.getCurrentModeName() + QUESTIONS_N_SLOTS_PER_PROBE);
@@ -435,6 +453,8 @@ public class ParametersStorage {
             setNSlotsPerProbe(serverParametersJson.getNSlotsPerProbe());
             setSchedulingMinDelay(serverParametersJson.getSchedulingMinDelay());
             setSchedulingMeanDelay(serverParametersJson.getSchedulingMeanDelay());
+            setGlossary(serverParametersJson.getGlossary());
+
             // loading the questions
             add(serverParametersJson.getQuestionsArrayList());
 
