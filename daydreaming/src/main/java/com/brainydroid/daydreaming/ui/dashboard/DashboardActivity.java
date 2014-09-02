@@ -80,10 +80,6 @@ public class DashboardActivity extends RoboFragmentActivity {
         checkTestMode();
         super.onCreate(savedInstanceState);
         checkFirstLaunch();
-
-        if (receiver != null) {
-            registerReceiver(receiver, parametersUpdateIntentFilter);
-        }
         setRobotoFont(this);
     }
 
