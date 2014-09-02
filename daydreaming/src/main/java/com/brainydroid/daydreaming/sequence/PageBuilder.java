@@ -16,7 +16,7 @@ public class PageBuilder {
 
     @Inject private QuestionBuilder questionBuilder;
 
-    public Page build(PageDescription pageDescription, Probe probe) {
+    public Page build(PageDescription pageDescription, Sequence sequence) {
         Logger.v(TAG, "Building page from description {}", pageDescription.getName());
 
         Orderer<QuestionDescription,Question> orderer =
@@ -25,7 +25,7 @@ public class PageBuilder {
         BuildableOrder<QuestionDescription,Question> buildableOrder =
                 orderer.buildOrder(questionDescriptions);
 
-        return new Page(buildableOrder.build(probe));
+        return new Page(buildableOrder.build(sequence));
     }
 
 }

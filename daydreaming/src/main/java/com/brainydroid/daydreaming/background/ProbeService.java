@@ -13,7 +13,8 @@ import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.db.ProbesStorage;
 import com.brainydroid.daydreaming.network.SntpClient;
 import com.brainydroid.daydreaming.network.SntpClientCallback;
-import com.brainydroid.daydreaming.sequence.Probe;
+import com.brainydroid.daydreaming.sequence.Sequence;
+import com.brainydroid.daydreaming.sequence.SequenceBuilder;
 import com.brainydroid.daydreaming.ui.questions.QuestionActivity;
 import com.google.inject.Inject;
 
@@ -23,11 +24,11 @@ import java.util.Calendar;
 import roboguice.service.RoboService;
 
 /**
- * Create and populate a {@link Probe}, then notify it to the user.
+ * Create and populate a {@link Sequence}, then notify it to the user.
  *
  * @author Sébastien Lerique
  * @author Vincent Adam
- * @see Probe
+ * @see Sequence
  * @see SchedulerService
  * @see SyncService
  */
@@ -38,10 +39,11 @@ public class ProbeService extends RoboService {
     public static String CANCEL_PENDING_POLLS = "cancelPendingProbes";
 
     @Inject NotificationManager notificationManager;
-    @Inject ProbesStorage probesStorage;
+    @Inject SequencesStorage sequencesStorage;
+    @Inject SequenceBuilder sequenceBuilder;
     @Inject SharedPreferences sharedPreferences;
     @Inject SntpClient sntpClient;
-    @Inject Probe probe;
+    @Inject Sequence probe;
     @Inject StatusManager statusManager;
 
     @Override
@@ -83,7 +85,7 @@ public class ProbeService extends RoboService {
     /**
      * Create the {@link QuestionActivity} {@link Intent}.
      *
-     * @return An {@link Intent} to launch our {@link Probe}
+     * @return An {@link Intent} to launch our {@link Sequence}
      */
     private synchronized Intent createProbeIntent() {
         Logger.d(TAG, "Creating probe Intent");
@@ -151,20 +153,22 @@ public class ProbeService extends RoboService {
     }
 
     /**
-     * Fill our {@link Probe} with questions.
+     * Fill our {@link Sequence} with questions.
      */
     private synchronized void populateProbe() {
         Logger.d(TAG, "Populating probe with sequence");
 
         // Pick from already created probes that were never shown to the
         // user, if there are any
-        ArrayList<Probe> pendingProbes = probesStorage.getPendingProbes();
+        ArrayList<Sequence> pendingProbes = sequencesStorage.getPendingSequences(
+                SequenceStorage.TYPE_PROBE);
 
         if (pendingProbes != null) {
             Logger.d(TAG, "Reusing previously pending probe");
             probe = pendingProbes.get(0);
         } else {
-            Logger.d(TAG, "Sampling new questions for probe");
+            Logger.d(TAG, "Creating new probe");
+            probe = sequenceBuilder.build(SequenceStorage.TYPE_PROBE);
             probe.populate();
         }
 
@@ -172,7 +176,7 @@ public class ProbeService extends RoboService {
         Logger.d(TAG, "Setting probe status and timestamp, and saving");
         probe.setNotificationSystemTimestamp(
                 Calendar.getInstance().getTimeInMillis());
-        probe.setStatus(Probe.STATUS_PENDING);
+        probe.setStatus(Sequence.STATUS_PENDING);
         probe.save();
 
         // Get a timestamp for the probe
@@ -199,7 +203,7 @@ public class ProbeService extends RoboService {
     }
 
     /**
-     * Start {@link SchedulerService} for the next {@link Probe}.
+     * Start {@link SchedulerService} for the next {@link Sequence}.
      */
     private synchronized void startSchedulerService() {
         Logger.d(TAG, "Starting SchedulerService");
@@ -209,15 +213,16 @@ public class ProbeService extends RoboService {
     }
 
     /**
-     * Cancel any pending {@link Probe}s already notified.
+     * Cancel any pending {@link Sequence}s already notified.
      */
     private synchronized void cancelPendingProbes() {
         Logger.d(TAG, "Cancelling pending probes");
-        ArrayList<Probe> pendingProbes = probesStorage.getPendingProbes();
+        ArrayList<Sequence> pendingProbes = sequencesStorage.getPendingSequences(
+                SequenceStorage.TYPE_PROBE);
         if (pendingProbes != null) {
-            for (Probe probe : pendingProbes) {
+            for (Sequence probe : pendingProbes) {
                 notificationManager.cancel(probe.getId());
-                probesStorage.remove(probe.getId());
+                sequencesStorage.remove(probe.getId());
             }
         } else {
             Logger.v(TAG, "No pending probes to cancel");

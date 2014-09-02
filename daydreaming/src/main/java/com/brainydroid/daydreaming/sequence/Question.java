@@ -26,13 +26,13 @@ public class Question implements IQuestion {
     @Expose private long ntpTimestamp = -1;
     @Expose private long systemTimestamp = -1;
 
-    private Probe probe = null;
+    private Sequence sequence = null;
 
-    public Question(String name, IQuestionDescriptionDetails details, Probe probe) {
+    public Question(String name, IQuestionDescriptionDetails details, Sequence sequence) {
         Logger.d(TAG, "Creating question {}", name);
         setName(name);
         setDetails(details);
-        setProbe(probe);
+        setSequence(sequence);
     }
 
     public synchronized String getName() {
@@ -105,26 +105,26 @@ public class Question implements IQuestion {
         saveIfSync();
     }
 
-    public synchronized Probe getProbe() {
-        return probe;
+    public synchronized Sequence getSequence() {
+        return sequence;
     }
 
-    private synchronized void setProbe(Probe probe) {
-        Logger.v(TAG, "Setting probe");
-        // setProbe is only called from the constructor, itself called by QuestionBuilder,
+    private synchronized void setSequence(Sequence sequence) {
+        Logger.v(TAG, "Setting sequence");
+        // setSequence is only called from the constructor, itself called by QuestionBuilder,
         // itself called from (up to the top) ProbeService.populateProbe() which already
-        // triggers a save after populating its probe. So no need to trigger a real save here.
+        // triggers a save after populating its sequence. So no need to trigger a real save here.
         // Only saveIfSync() is called, which normally should never trigger a real save.
-        this.probe = probe;
+        this.sequence = sequence;
         saveIfSync();
     }
 
     private synchronized void saveIfSync() {
-        Logger.d(TAG, "Saving if in syncing probe");
-        if (probe != null) {
-            probe.saveIfSync();
+        Logger.d(TAG, "Saving if in syncing sequence");
+        if (sequence != null) {
+            sequence.saveIfSync();
         } else {
-            Logger.v(TAG, "Not saved since no probe present");
+            Logger.v(TAG, "Not saved since no sequence present");
         }
     }
 

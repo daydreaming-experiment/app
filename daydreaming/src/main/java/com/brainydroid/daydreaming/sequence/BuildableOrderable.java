@@ -34,6 +34,6 @@ abstract public class BuildableOrderable<T> {
         }
     }
 
-    abstract public T build(Probe probe);
+    abstract public T build(Sequence sequence);
 
 }

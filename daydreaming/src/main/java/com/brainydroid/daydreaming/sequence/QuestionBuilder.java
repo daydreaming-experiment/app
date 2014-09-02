@@ -10,8 +10,9 @@ public class QuestionBuilder {
     @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "QuestionBuilder";
 
-    public Question build(QuestionDescription questionDescription, Probe probe) {
+    public Question build(QuestionDescription questionDescription, Sequence sequence) {
         Logger.v(TAG, "Building question from description {}", questionDescription.getName());
-        return new Question(questionDescription.getName(), questionDescription.getDetails(), probe);
+        return new Question(questionDescription.getName(), questionDescription.getDetails(),
+                sequence);
     }
 }

@@ -16,7 +16,7 @@ public class PageGroupBuilder {
 
     @Inject private PageBuilder pageBuilder;
 
-    public PageGroup build(PageGroupDescription pageGroupDescription, Probe probe) {
+    public PageGroup build(PageGroupDescription pageGroupDescription, Sequence sequence) {
         Logger.v(TAG, "Building pageGroup from description {}", pageGroupDescription.getName());
 
         Orderer<PageDescription,Page> orderer =
@@ -24,7 +24,7 @@ public class PageGroupBuilder {
         ArrayList<PageDescription> pageDescriptions = pageGroupDescription.getPages();
         BuildableOrder<PageDescription,Page> buildableOrder = orderer.buildOrder(pageDescriptions);
 
-        return new PageGroup(buildableOrder.build(probe));
+        return new PageGroup(buildableOrder.build(sequence));
     }
 
 }
