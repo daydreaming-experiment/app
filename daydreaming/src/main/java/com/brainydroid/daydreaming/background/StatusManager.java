@@ -20,6 +20,8 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
+import static com.brainydroid.daydreaming.background.SchedulerService.*;
+
 /**
  * Manage global application status (like first launch) and collect
  * information on the device's status.

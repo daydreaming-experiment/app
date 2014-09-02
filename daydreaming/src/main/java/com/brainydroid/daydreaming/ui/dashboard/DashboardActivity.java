@@ -112,8 +112,8 @@ public class DashboardActivity extends RoboFragmentActivity {
         checkExperimentModeActivatedDirty();
         if (!statusManager.areParametersUpdated()) {
             registerReceiver(activityReceiver, intentFilter);
-            asyncUpdateView();
         }
+        asyncUpdateView();
         super.onResume();
     }
 
@@ -121,10 +121,12 @@ public class DashboardActivity extends RoboFragmentActivity {
     @Override
     public void onPause() {
         Logger.v(TAG, "Pausing");
-        Logger.d(TAG, "Unregistering dashboardReceiver");
+        Logger.d(TAG, "Unregistering activityReceiver");
         try {
             unregisterReceiver(activityReceiver);
-        } catch(IllegalArgumentException e) {}
+        } catch(IllegalArgumentException e) {
+            Logger.v(TAG, "activityReciever is not registered. Skipping unregistration");
+        }
         super.onPause();
     }
 
