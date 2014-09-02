@@ -25,6 +25,7 @@ import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.background.SchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.background.SyncService;
+import com.brainydroid.daydreaming.db.Glossary;
 import com.brainydroid.daydreaming.db.ParametersStorage;
 import com.brainydroid.daydreaming.network.SntpClient;
 import com.brainydroid.daydreaming.network.SntpClientCallback;
@@ -164,6 +165,15 @@ public class DashboardActivity extends RoboFragmentActivity {
 //        Intent intent = new Intent(this, AboutActivity.class);
 //        startActivity(intent);
 //        overridePendingTransition(R.anim.push_top_in, R.anim.push_top_out);
+    }
+
+    public void  onClick_OpenGlossaryActivity(
+            @SuppressWarnings("UnusedParameters") View view){
+        if (statusManager.areParametersUpdated()) {
+            Intent intent = new Intent(this, GlossaryActivity.class);
+            startActivity(intent);
+            overridePendingTransition(R.anim.push_top_in, R.anim.push_top_out);
+        }
     }
 
     /**
