@@ -16,8 +16,11 @@
 
     <!-- Dashboard -->
     <string name="dashboard_title_activity">Dashboard</string>
-    <string name="dashboard_text_experiment_is">EXPERIMENT IS\ </string>
-    <string name="dashboard_text_running">RUNNING</string>
+    <string name="dashboard_text_experiment_is">EXPERIMENT IS</string>
+    <string name="dashboard_text_exp_running">RUNNING</string>
+    <string name="dashboard_text_exp_paused">PAUSED</string>
+    <string name="dashboard_text_exp_stopped">STOPPED</string>
+
     <string name="dashboard_quit_experiment">Quit</string>
     <string name="dashboard_text_days_elapsed">Days elapsed</string>
     <string name="dashboard_title_results">Results:</string>
@@ -26,6 +29,9 @@
     <string name="dashboard_button_text_about">About</string>
     <string name="dashboard_button_text_terms">Terms</string>
     <string name="dashboard_button_text_description">Description</string>
+
+    <string name="dashboard_text_enable_internet">Please enable internet</string>
+    <string name="dashboard_text_parameters_updating">Parameters are updating…</string>
 
 
 
@@ -232,5 +238,8 @@
 
 ]]>
     </string>
+    <string name="credits_text_title">CREDITS</string>
+    <string name="credits_text_main">Here are our \n supporting institutions</string>
+    <string name="dashboard_button_text_credits">Credits</string>
 
 </resources>

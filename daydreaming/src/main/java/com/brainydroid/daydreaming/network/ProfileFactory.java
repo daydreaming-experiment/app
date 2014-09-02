@@ -6,8 +6,10 @@ import java.util.HashMap;
 
 public interface ProfileFactory {
 
-    public Profile create(String vkPem);
-    public Profile create(@Assisted("age") String age,
+    public Profile create(@Assisted("expId") String expId,
+                          @Assisted("vkPem") String vkPem);
+    public Profile create(@Assisted("expId") String expId,
+                          @Assisted("age") String age,
                           @Assisted("gender") String gender,
                           @Assisted("education") String education,
                           HashMap<String, Integer> tipiAnswers,

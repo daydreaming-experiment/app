@@ -1,6 +1,7 @@
 package com.brainydroid.daydreaming.db;
 
 import android.location.Location;
+
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.network.JWSSignature;
 import com.brainydroid.daydreaming.network.JWSSignatureSerializer;
@@ -9,7 +10,6 @@ import com.google.gson.GsonBuilder;
 import com.google.inject.Singleton;
 
 import javax.inject.Inject;
-import java.util.Collection;
 
 /**
  * Singleton JSON serializer and deserializer to centralize registration of

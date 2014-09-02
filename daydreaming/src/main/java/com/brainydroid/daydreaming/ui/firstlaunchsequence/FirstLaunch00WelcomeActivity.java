@@ -50,12 +50,14 @@ public class FirstLaunch00WelcomeActivity extends FirstLaunchActivity {
         animationTimer = new CountDownTimer(duration, 1000) {
             public void onTick(long millisUntilFinished) {}
             public void onFinish() {
-                if (statusManager.isTipiQuestionnaireCompleted()) {
-                    launchNextActivity(FirstLaunch05MeasuresActivity.class);
-                } else {
-                    launchNextActivity(FirstLaunch01DescriptionActivity.class);
-                }
-                animationTimer.cancel();
+                launchNextActivity(FirstLaunch01DescriptionActivity.class);
+                // FIXME: this is commented while we rework the first launch
+                //if (statusManager.isTipiQuestionnaireCompleted()) {
+                //    launchNextActivity(FirstLaunch05MeasuresActivity.class);
+                //} else {
+                //    launchNextActivity(FirstLaunch01DescriptionActivity.class);
+                //}
+                //animationTimer.cancel();
             }
         }.start();
     }

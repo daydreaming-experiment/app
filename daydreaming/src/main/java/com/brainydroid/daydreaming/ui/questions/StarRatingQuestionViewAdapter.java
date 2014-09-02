@@ -96,7 +96,7 @@ public class StarRatingQuestionViewAdapter extends BaseQuestionViewAdapter
         }
 
         final float initialRating = subQuestion.getInitialRating();
-        if (initialRating != -1) {
+        if (initialRating != StarRatingSubQuestion.DEFAULT_INITIAL_RATING) {
             Logger.v(TAG, "Setting ratingBar initial rating to {0}",
                     initialRating);
             ratingBar.setRating(initialRating);

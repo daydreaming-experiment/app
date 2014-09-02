@@ -16,20 +16,24 @@ public class Profile {
     @SuppressWarnings({"FieldCanBeLocal", "UnusedDeclaration"})
     @Expose private String vk_pem;
     @SuppressWarnings({"FieldCanBeLocal", "UnusedDeclaration"})
-    @Expose private String exp_id = ServerConfig.EXP_ID;
+    @Expose private String exp_id;
+
     @SuppressWarnings("FieldCanBeLocal")
     @Expose private ProfileData profile_data;
 
     @Inject ProfileWrapperFactory profileWrapperFactory;
 
     @AssistedInject
-    public Profile(@Assisted String vkPem) {
-        Logger.v(TAG, "Creating a Profile instance with only vkPem");
+    public Profile(@Assisted("expId") String expId,
+                   @Assisted("vkPem") String vkPem) {
+        Logger.v(TAG, "Creating a Profile instance with only expId and vkPem");
+        exp_id = expId;
         vk_pem = vkPem;
     }
 
     @AssistedInject
     public Profile(ProfileDataFactory profileDataFactory,
+                   @Assisted("expId") String expId,
                    @Assisted("age") String age,
                    @Assisted("gender") String gender,
                    @Assisted("education") String education,
@@ -39,6 +43,7 @@ public class Profile {
                    @Assisted("appVersionCode") int appVersionCode,
                    @Assisted("mode") String mode) {
         Logger.v(TAG, "Creating a Profile instance with detailed data");
+        this.exp_id = expId;
         this.profile_data = profileDataFactory.create(age, gender, education,
                 tipiAnswers, parametersVersion, appVersionName, appVersionCode, mode);
     }
