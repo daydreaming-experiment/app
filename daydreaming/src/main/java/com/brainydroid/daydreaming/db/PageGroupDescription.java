@@ -5,7 +5,7 @@ import com.brainydroid.daydreaming.sequence.BuildableOrderable;
 import com.brainydroid.daydreaming.sequence.IPageGroup;
 import com.brainydroid.daydreaming.sequence.PageGroup;
 import com.brainydroid.daydreaming.sequence.PageGroupBuilder;
-import com.brainydroid.daydreaming.sequence.Probe;
+import com.brainydroid.daydreaming.sequence.Sequence;
 import com.google.inject.Inject;
 
 import java.util.ArrayList;
@@ -92,8 +92,8 @@ public class PageGroupDescription extends BuildableOrderable<PageGroup> implemen
     }
 
     @Override
-    public PageGroup build(Probe probe) {
-        return pageGroupBuilder.build(this, probe);
+    public PageGroup build(Sequence sequence) {
+        return pageGroupBuilder.build(this, sequence);
     }
 
 }

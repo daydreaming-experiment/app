@@ -18,9 +18,9 @@ import java.util.Random;
 import roboguice.service.RoboService;
 
 /**
- * Schedule a {@link com.brainydroid.daydreaming.sequence.Probe} to be created and
+ * Schedule a {@link com.brainydroid.daydreaming.sequence.Sequence} to be created and
  * notified later on. The delay before creation-notification of the {@link
- * com.brainydroid.daydreaming.sequence.Probe} is both well randomized (a Poisson
+ * com.brainydroid.daydreaming.sequence.Sequence} is both well randomized (a Poisson
  * process) and respectful of the user's notification settings.
  *
  * @author Sébastien Lerique
@@ -83,7 +83,7 @@ public class SchedulerService extends RoboService {
     }
 
     /**
-     * Schedule a {@link com.brainydroid.daydreaming.sequence.Probe} to be created
+     * Schedule a {@link com.brainydroid.daydreaming.sequence.Sequence} to be created
      * and notified by {@link ProbeService} later on.
      *
      * @param debugging Set to {@link true} for a fixed short delay before
@@ -150,7 +150,7 @@ public class SchedulerService extends RoboService {
 
     /**
      * Sample a moment at which the {@link
-     * com.brainydroid.daydreaming.sequence.Probe} should appear.
+     * com.brainydroid.daydreaming.sequence.Sequence} should appear.
      * <p/>
      * A delay is sampled from an exponential distribution with parameter
      * {@link 1 / meanDelay}, and is then prolonged to observe the user's

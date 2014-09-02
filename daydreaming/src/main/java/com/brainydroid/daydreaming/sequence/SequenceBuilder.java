@@ -15,8 +15,6 @@ public class SequenceBuilder {
     @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "SequenceBuilder";
 
-    public static String SEQUENCE_PROBE = "probe";
-
     @Inject private ParametersStorage parametersStorage;
     @Inject private PageGroupBuilder pageGroupBuilder;
 

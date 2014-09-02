@@ -13,7 +13,7 @@ public abstract class StatusModelStorage<M extends StatusModel<M,S,F>,
 
     private static String TAG = "StatusModelStorage";
 
-    public static final String COL_STATUS = "status";
+    protected static final String COL_STATUS = "status";
 
     @Inject
     public StatusModelStorage(Storage storage) {
@@ -29,9 +29,9 @@ public abstract class StatusModelStorage<M extends StatusModel<M,S,F>,
     }
 
     @Override
-    protected synchronized ContentValues getExtraModelValues(M model) {
-        Logger.d(TAG, "Getting model values (status)");
-        ContentValues modelValues = new ContentValues();
+    protected synchronized ContentValues getModelValues(M model) {
+        ContentValues modelValues = super.getModelValues(model);
+        Logger.d(TAG, "Adding status to model");
         modelValues.put(COL_STATUS, model.getStatus());
         return modelValues;
     }

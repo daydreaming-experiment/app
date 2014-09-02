@@ -15,8 +15,8 @@ public abstract class ModelStorage<M extends Model<M,S,F>,
 
     private static String TAG = "ModelStorage";
 
-    public static final String COL_ID = "id";
-    public static final String COL_CONTENT = "content";
+    protected static final String COL_ID = "id";
+    protected static final String COL_CONTENT = "content";
 
     @Inject Json json;
     @Inject F modelFactory;
@@ -49,11 +49,9 @@ public abstract class ModelStorage<M extends Model<M,S,F>,
         return db;
     }
 
-    protected abstract ContentValues getExtraModelValues(M model);
-
-    private synchronized ContentValues getModelValues(M model) {
-        Logger.v(TAG, "Getting extra model values");
-        ContentValues modelValues = getExtraModelValues(model);
+    protected synchronized ContentValues getModelValues(M model) {
+        Logger.d(TAG, "Getting model values");
+        ContentValues modelValues = new ContentValues();
 
         Logger.v(TAG, "Adding content to model");
         modelValues.put(COL_CONTENT, json.toJson(model));

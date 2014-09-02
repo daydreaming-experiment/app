@@ -61,6 +61,23 @@ public class Util {
         return joinStrings(new ArrayList<String>(Arrays.asList(strings)), joinString);
     }
 
+    public static String[] concatenateStringArrays(String[]... jobs) {
+        int len = 0;
+        for (final String[] job : jobs) {
+            len += job.length;
+        }
+
+        final String[] result = new String[len];
+
+        int currentPos = 0;
+        for (final String[] job : jobs) {
+            System.arraycopy(job, 0, result, currentPos, job.length);
+            currentPos += job.length;
+        }
+
+        return result;
+    }
+
     public static String convertStreamToString(InputStream is) {
         Logger.v(TAG, "Converting InputStream to String");
 

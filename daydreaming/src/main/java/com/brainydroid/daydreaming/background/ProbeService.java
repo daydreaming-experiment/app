@@ -10,7 +10,7 @@ import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 
 import com.brainydroid.daydreaming.R;
-import com.brainydroid.daydreaming.db.ProbesStorage;
+import com.brainydroid.daydreaming.db.SequencesStorage;
 import com.brainydroid.daydreaming.network.SntpClient;
 import com.brainydroid.daydreaming.network.SntpClientCallback;
 import com.brainydroid.daydreaming.sequence.Sequence;
@@ -161,15 +161,14 @@ public class ProbeService extends RoboService {
         // Pick from already created probes that were never shown to the
         // user, if there are any
         ArrayList<Sequence> pendingProbes = sequencesStorage.getPendingSequences(
-                SequenceStorage.TYPE_PROBE);
+                Sequence.TYPE_PROBE);
 
         if (pendingProbes != null) {
             Logger.d(TAG, "Reusing previously pending probe");
             probe = pendingProbes.get(0);
         } else {
             Logger.d(TAG, "Creating new probe");
-            probe = sequenceBuilder.build(SequenceStorage.TYPE_PROBE);
-            probe.populate();
+            probe = sequenceBuilder.build(Sequence.TYPE_PROBE);
         }
 
         // Update the probe's status
@@ -218,7 +217,7 @@ public class ProbeService extends RoboService {
     private synchronized void cancelPendingProbes() {
         Logger.d(TAG, "Cancelling pending probes");
         ArrayList<Sequence> pendingProbes = sequencesStorage.getPendingSequences(
-                SequenceStorage.TYPE_PROBE);
+                Sequence.TYPE_PROBE);
         if (pendingProbes != null) {
             for (Sequence probe : pendingProbes) {
                 notificationManager.cancel(probe.getId());

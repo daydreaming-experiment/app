@@ -14,9 +14,9 @@ import android.preference.PreferenceManager;
 
 import com.brainydroid.daydreaming.db.LocationPointsStorage;
 import com.brainydroid.daydreaming.db.ParametersStorage;
-import com.brainydroid.daydreaming.db.ProbesStorage;
-import com.brainydroid.daydreaming.db.ProfileStorage;
+import com.brainydroid.daydreaming.db.SequencesStorage;
 import com.brainydroid.daydreaming.network.CryptoStorage;
+import com.brainydroid.daydreaming.sequence.Sequence;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
@@ -87,7 +87,7 @@ public class StatusManager {
     @Inject Context context;
     // Use providers here to prevent circular dependencies
     @Inject Provider<ProfileStorage> profileStorageProvider;
-    @Inject Provider<ProbesStorage> probesStorageProvider;
+    @Inject Provider<SequencesStorage> sequencesStorageProvider;
     @Inject Provider<LocationPointsStorage> locationPointsStorageProvider;
     @Inject Provider<ParametersStorage> parametersStorageProvider;
     @Inject Provider<CryptoStorage> cryptoStorageProvider;
@@ -441,7 +441,7 @@ public class StatusManager {
         Logger.d(TAG, "Doing full switch to test mode");
 
         // Clear pending uploads (before switch)
-        probesStorageProvider.get().removeUploadableProbes();
+        sequencesStorageProvider.get().removeUploadableSequences(Sequence.TYPE_PROBE);
         locationPointsStorageProvider.get().removeUploadableLocationPoints();
 
         // Do the switch
@@ -469,7 +469,7 @@ public class StatusManager {
         Logger.d(TAG, "Resetting parameters and profile_id, keeping the profile answers");
 
         // Clear pending uploads (before clearing)
-        probesStorageProvider.get().removeUploadableProbes();
+        sequencesStorageProvider.get().removeUploadableSequences(Sequence.TYPE_PROBE);
         locationPointsStorageProvider.get().removeUploadableLocationPoints();
 
         // Clear local experiment started flag
@@ -493,7 +493,7 @@ public class StatusManager {
         Logger.d(TAG, "Doing full switch to production mode");
 
         // Clear pending uploads (before switch)
-        probesStorageProvider.get().removeUploadableProbes();
+        sequencesStorageProvider.get().removeUploadableSequences(Sequence.TYPE_PROBE);
         locationPointsStorageProvider.get().removeUploadableLocationPoints();
 
         // Do the switch

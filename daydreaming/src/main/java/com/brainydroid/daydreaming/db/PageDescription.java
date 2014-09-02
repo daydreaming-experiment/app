@@ -5,7 +5,7 @@ import com.brainydroid.daydreaming.sequence.BuildableOrderable;
 import com.brainydroid.daydreaming.sequence.IPage;
 import com.brainydroid.daydreaming.sequence.Page;
 import com.brainydroid.daydreaming.sequence.PageBuilder;
-import com.brainydroid.daydreaming.sequence.Probe;
+import com.brainydroid.daydreaming.sequence.Sequence;
 import com.google.inject.Inject;
 
 import java.util.ArrayList;
@@ -81,8 +81,8 @@ public class PageDescription extends BuildableOrderable<Page> implements IPage {
         }
     }
 
-    public Page build(Probe probe) {
-        return pageBuilder.build(this, probe);
+    public Page build(Sequence sequence) {
+        return pageBuilder.build(this, sequence);
     }
 
 }

@@ -3,9 +3,9 @@ package com.brainydroid.daydreaming.db;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.sequence.BuildableOrderable;
 import com.brainydroid.daydreaming.sequence.IQuestion;
-import com.brainydroid.daydreaming.sequence.Probe;
 import com.brainydroid.daydreaming.sequence.Question;
 import com.brainydroid.daydreaming.sequence.QuestionBuilder;
+import com.brainydroid.daydreaming.sequence.Sequence;
 import com.google.inject.Inject;
 
 public class QuestionDescription extends BuildableOrderable<Question> implements IQuestion {
@@ -49,7 +49,7 @@ public class QuestionDescription extends BuildableOrderable<Question> implements
     }
 
     @Override
-    public Question build(Probe probe) {
-        return questionBuilder.build(this, probe);
+    public Question build(Sequence sequence) {
+        return questionBuilder.build(this, sequence);
     }
 }
