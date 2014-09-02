@@ -35,7 +35,6 @@ import com.google.inject.Inject;
 
 import roboguice.activity.RoboFragmentActivity;
 import roboguice.inject.ContentView;
-import roboguice.inject.InjectResource;
 import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_dashboard)
@@ -54,21 +53,19 @@ public class DashboardActivity extends RoboFragmentActivity {
     @InjectView(R.id.button_reload_parameters) Button testReloadButton;
     @InjectView(R.id.dashboard_about_layout) AlphaLinearLayout aboutLayout;
     @InjectView(R.id.dashboard_textExperimentStatus) TextView expStatus;
-    @InjectView(R.id.dashboard_no_params_text) TextView
-            textNetworkConnection;
-    @InjectView(R.id.dashboard_main_layout)
-    LinearLayout dashboard_main_layout;
+    @InjectView(R.id.dashboard_no_params_text) TextView textNetworkConnection;
+    @InjectView(R.id.dashboard_main_layout) LinearLayout dashboardMainLayout;
 
     private boolean testModeThemeActivated = false;
 
     IntentFilter intentFilter = new IntentFilter(SchedulerService.ACTION_PARAMETERS_UPDATED);
 
-    private BroadcastReceiver activityReceiver = new BroadcastReceiver() {
+    private BroadcastReceiver parametersUpdatedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (action.equals(SchedulerService.ACTION_PARAMETERS_UPDATED)) {
-                Logger.d(TAG, "networkReceiver started for CONNECTIVITY_ACTION");
+                Logger.d(TAG, "parametersUpdatedReceiver started for ACTION_PARAMETERS_UPDATED");
                 setExperimentStatusText();
             }
         }
@@ -82,8 +79,8 @@ public class DashboardActivity extends RoboFragmentActivity {
         super.onCreate(savedInstanceState);
         checkFirstLaunch();
 
-        if (activityReceiver != null) {
-            registerReceiver(activityReceiver, intentFilter);
+        if (parametersUpdatedReceiver != null) {
+            registerReceiver(parametersUpdatedReceiver, intentFilter);
         }
         setRobotoFont(this);
     }
@@ -111,22 +108,21 @@ public class DashboardActivity extends RoboFragmentActivity {
         Logger.v(TAG, "Resuming");
         checkExperimentModeActivatedDirty();
         if (!statusManager.areParametersUpdated()) {
-            registerReceiver(activityReceiver, intentFilter);
+            Logger.v(TAG, "Parameters not yet updated, registering parametersUpdateReceiver");
+            registerReceiver(parametersUpdatedReceiver, intentFilter);
+            asyncUpdateView();
         }
         asyncUpdateView();
         super.onResume();
     }
-
 
     @Override
     public void onPause() {
         Logger.v(TAG, "Pausing");
         Logger.d(TAG, "Unregistering activityReceiver");
         try {
-            unregisterReceiver(activityReceiver);
-        } catch(IllegalArgumentException e) {
-            Logger.v(TAG, "activityReciever is not registered. Skipping unregistration");
-        }
+            unregisterReceiver(parametersUpdatedReceiver);
+        } catch(IllegalArgumentException e) {}
         super.onPause();
     }
 
@@ -280,7 +276,7 @@ public class DashboardActivity extends RoboFragmentActivity {
     protected void setExperimentStatusText() {
         View dashboard_TimeBox_layout = findViewById(R.id.dashboard_TimeBox_layout);
         View dashboard_TimeBox_no_param = findViewById(R.id.dashboard_TimeBox_layout_no_params);
-        if (statusManager.expIsRunning()){
+        if (statusManager.isExpRunning()){
             expStatus.setText(R.string.dashboard_text_exp_running);
             dashboard_TimeBox_layout.setVisibility(View.VISIBLE);
             dashboard_TimeBox_no_param.setVisibility(View.INVISIBLE);
@@ -327,7 +323,9 @@ public class DashboardActivity extends RoboFragmentActivity {
             Toast.makeText(this, "You're not connected to the internet!", Toast.LENGTH_SHORT).show();
             return;
         }
+
         statusManager.resetParametersKeepProfileAnswers();
+
         Intent syncIntent = new Intent(this, SyncService.class);
         syncIntent.putExtra(SyncService.DEBUG_SYNC, true);
         startService(syncIntent);
@@ -403,7 +401,7 @@ public class DashboardActivity extends RoboFragmentActivity {
 
             }
         };
-        dashboard_main_layout.post(updateView);
+        dashboardMainLayout.post(updateView);
     }
 
     private void launchNetworkSettings() {

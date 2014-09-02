@@ -11,10 +11,11 @@ import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.db.ParametersStorage;
 import com.brainydroid.daydreaming.db.Util;
 import com.google.inject.Inject;
-import roboguice.service.RoboService;
 
 import java.util.Calendar;
 import java.util.Random;
+
+import roboguice.service.RoboService;
 
 /**
  * Schedule a {@link com.brainydroid.daydreaming.db.Poll} to be created and
@@ -33,7 +34,7 @@ public class SchedulerService extends RoboService {
 
     /** Extra to set to {@code true} for debugging */
     public static String SCHEDULER_DEBUGGING = "schedulerDebugging";
-    public static final String ACTION_PARAMETERS_UPDATED = "toDashboard";
+    public static final String ACTION_PARAMETERS_UPDATED = "actionParametersUpdated";
 
     /** Scheduling delay when debugging is activated */
     public static long DEBUG_DELAY = 5 * 1000; // 5 seconds
@@ -54,11 +55,11 @@ public class SchedulerService extends RoboService {
     @Inject Random random;
     @Inject AlarmManager alarmManager;
 
-
     private void sendBroadcast() {
-        Intent new_intent = new Intent();
-        new_intent.setAction(ACTION_PARAMETERS_UPDATED);
-        sendBroadcast(new_intent);
+        Logger.v(TAG, "Sending ACTION_PARAMETERS_UPDATED broadcast");
+        Intent broadcastIntent = new Intent();
+        broadcastIntent.setAction(ACTION_PARAMETERS_UPDATED);
+        sendBroadcast(broadcastIntent);
     }
 
     @Override
@@ -76,12 +77,12 @@ public class SchedulerService extends RoboService {
             return START_REDELIVER_INTENT;
         }
 
+        // Broadcast the info so that the dashboard can update its view
         sendBroadcast();
 
         // Schedule a poll and stop ourselves
         schedulePoll(intent.getBooleanExtra(SCHEDULER_DEBUGGING, false));
         stopSelf();
-
 
         return START_REDELIVER_INTENT;
     }

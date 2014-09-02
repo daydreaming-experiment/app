@@ -11,6 +11,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
+
 import com.brainydroid.daydreaming.db.LocationPointsStorage;
 import com.brainydroid.daydreaming.db.ParametersStorage;
 import com.brainydroid.daydreaming.db.PollsStorage;
@@ -515,8 +516,8 @@ public class StatusManager {
         context.startService(pollServiceIntent);
     }
 
-    public synchronized Boolean expIsRunning(){
-        return (areParametersUpdated());
+    public synchronized Boolean isExpRunning() {
+        return areParametersUpdated();
     }
 
 }
