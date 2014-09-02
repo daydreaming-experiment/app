@@ -401,6 +401,36 @@
             </RelativeLayout>
         </com.brainydroid.daydreaming.ui.AlphaLinearLayout>
 
+        <com.brainydroid.daydreaming.ui.AlphaLinearLayout
+            android:id="@+id/dashboard_glossary_layout"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal">
+            <RelativeLayout
+                android:id="@+id/btn_plus_container"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+                <ImageButton
+                    android:id="@+id/dashboard_glossary_button"
+                    android:layout_width="@dimen/dashboard_icon_size"
+                    android:layout_height="@dimen/dashboard_icon_size"
+                    android:scaleType="centerInside"
+                    android:background="@drawable/icon_glossary_selector"
+                    android:layout_margin="10dp"
+                    android:onClick="onClick_OpenGlossaryActivity"
+                    android:layout_centerHorizontal="true"/>
+                <TextView
+                    android:text="@string/dashboard_button_text_glossary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:textAppearance="@style/ui_font_bodytext"
+                    android:textColor="@color/ui_white_text_color"
+                    android:layout_below="@id/dashboard_glossary_button"
+                    />
+            </RelativeLayout>
+        </com.brainydroid.daydreaming.ui.AlphaLinearLayout>
 
 
 

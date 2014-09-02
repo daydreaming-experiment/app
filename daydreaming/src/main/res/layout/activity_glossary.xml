@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:id="@+id/linearLayout2">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Large Text"
+            android:id="@+id/textView" />
+    </LinearLayout>
+
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/glossary_items_layout"
+
+        android:layout_below="@+id/linearLayout2"
+        android:layout_above="@+id/linearLayout3"></RelativeLayout>
+
+    <LinearLayout android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:id="@+id/linearLayout3">
+
+        <ImageButton
+            android:id="@+id/glossary_backtodashboard_button"
+            android:layout_width="@dimen/dashboard_settings_button_size_withmargin"
+            android:layout_height="@dimen/dashboard_settings_button_size_withmargin"
+            android:padding="@dimen/dashboard_settings_button_margin"
+            android:scaleType="fitCenter"
+            android:onClick="onClick_backToDashboard"
+            android:src="@drawable/dashboard_arrow"
+            android:background="@null"/>
+    </LinearLayout>
+</RelativeLayout>
