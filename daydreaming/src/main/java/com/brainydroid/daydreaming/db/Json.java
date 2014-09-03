@@ -88,7 +88,6 @@ public class Json {
         gsonBuilder.registerTypeAdapter(JWSSignature.class,
                 jwsSignatureSerializer);
         gsonBuilder.registerTypeAdapter(Question.class, questionSerializer);
-        gsonBuilder.registerTypeAdapter(JsonArray.class, new JsonArraySerializationHandler());
 
         // Build the two Gson instances
         gson = gsonBuilder.create();
@@ -135,28 +134,11 @@ public class Json {
         return gson.fromJson(json, classOfT);
     }
 
-    private static class JsonArraySerializationHandler
-            implements JsonSerializer<JsonArray>, JsonDeserializer<JsonArray>
-    {
-        @Override
-        public JsonArray serialize(JsonArray src, Type typeOfSrc,
-                                   JsonSerializationContext context)
-        {
-            return src;
-        }
-        @Override
-        public JsonArray deserialize(JsonElement json, Type typeOfT,
-                                     JsonDeserializationContext context) throws JsonParseException
-        {
-            if (json.isJsonArray() && JsonArray.class.equals(typeOfT))
-            {
-                return json.getAsJsonArray();
-            }
-            else
-            {
-                return new JsonArray();
-            }
-        }
+    public <T> T fromJson(String json, Type typeOfT) {
+        Logger.v(TAG, "Deserializing from JSON");
+        return gson.fromJson(json, typeOfT);
     }
+
+
 
 }
