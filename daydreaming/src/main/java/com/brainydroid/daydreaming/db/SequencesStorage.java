@@ -3,9 +3,11 @@ package com.brainydroid.daydreaming.db;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.sequence.Sequence;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import java.util.ArrayList;
 
+@Singleton
 public class SequencesStorage
         extends TypedStatusModelStorage<Sequence,SequencesStorage,SequenceJsonFactory> {
 

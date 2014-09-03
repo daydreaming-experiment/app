@@ -10,14 +10,10 @@ public class BuildableOrder<D extends BuildableOrderable<C>,C> {
     private static String TAG = "Order";
 
     @Inject private ArrayList<D> map;
-    private boolean isInitialized = false;
-    private boolean isBuilt = false;
+    private boolean isConsumed = false;
 
     public void initialize(ArrayList<ArrayList<D>> deepMap) {
         Logger.d(TAG, "Initializing");
-        if (isInitialized) {
-            throw new RuntimeException("BuildableOrder already initialized");
-        }
 
         for (ArrayList<D> group : deepMap) {
             for (D item : group) {
@@ -25,14 +21,15 @@ public class BuildableOrder<D extends BuildableOrderable<C>,C> {
             }
         }
 
-        isInitialized = true;
+        isConsumed = false;
     }
 
     public ArrayList<C> build(Sequence sequence) {
         Logger.d(TAG, "Building order from sequence");
-        if (isBuilt) {
+        if (isConsumed) {
             throw new RuntimeException("This BuildableOrder has already been used to build " +
-                    "an order. You shouldn't reuse it.");
+                    "an order and not reinitialized. You should reinitialize it before using " +
+                    "it again.");
         }
 
         ArrayList<C> builtOrderables = new ArrayList<C>(map.size());
@@ -40,7 +37,7 @@ public class BuildableOrder<D extends BuildableOrderable<C>,C> {
             builtOrderables.add(item.build(sequence));
         }
 
-        isBuilt = true;
+        isConsumed = true;
         return builtOrderables;
     }
 }

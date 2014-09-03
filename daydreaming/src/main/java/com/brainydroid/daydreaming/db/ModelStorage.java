@@ -102,6 +102,8 @@ public abstract class ModelStorage<M extends Model<M,S,F>,
         ContentValues modelValues = getModelValuesWithId(model);
         db.update(getTableName(), modelValues, COL_ID + "=?",
                 new String[]{Integer.toString(modelId)});
+        Logger.d(TAG, "Updating model {0} in cache", modelId);
+        modelsCache.put(modelId, model);
     }
 
     public synchronized M get(int modelId) {
