@@ -27,12 +27,12 @@ public class PageViewAdapter {
         this.page = page;
     }
 
-    public void inflate(LinearLayout layout, boolean isFirstPage) {
+    public void inflate(LinearLayout layout) {
         Logger.d(TAG, "Inflating page view");
 
-        int index = isFirstPage ? 1 : 0;
         inflateViews();
 
+        int index = 0;
         for (View view : questionViews) {
             layout.addView(view, index, layout.getLayoutParams());
             index++;
@@ -52,5 +52,9 @@ public class PageViewAdapter {
             questionViewAdapters.add(questionViewAdapter);
         }
     }
+
+    public boolean validate() {}
+
+    public void saveAnswers() {}
 
 }
