@@ -14,7 +14,7 @@ public class QuestionDetailsDeserializer
     private static String TAG = "QuestionDetailsDeserializer";
 
     @SuppressWarnings("FieldCanBeLocal")
-    private static String QUESTION_DETAILS_SUFFIX = "QuestionDetails";
+    private static String QUESTION_DETAILS_SUFFIX = "QuestionDescriptionDetails";
 
     @Inject Injector injector;
 
