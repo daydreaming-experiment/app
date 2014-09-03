@@ -57,7 +57,16 @@ public class SequencesStorage
         ArrayList<Sequence> uploadableSequences = getUploadableSequences(type);
         if (uploadableSequences != null) {
             Logger.d(TAG, "Removing {} uploadable sequences", uploadableSequences.size());
-            remove(getUploadableSequences(type));
+            remove(uploadableSequences);
+        }
+    }
+
+    public synchronized void removeAllSequences(String type) {
+        Logger.d(TAG, "Removing all sequences of type {}", type);
+        ArrayList<Sequence> sequences = getModelsByType(type);
+        if (sequences != null) {
+            Logger.d(TAG, "Removing {}  sequences", sequences.size());
+            remove(sequences);
         }
     }
 }

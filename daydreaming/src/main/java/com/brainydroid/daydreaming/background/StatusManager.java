@@ -442,7 +442,7 @@ public class StatusManager {
         Logger.d(TAG, "Doing full switch to test mode");
 
         // Clear pending uploads (before switch)
-        sequencesStorageProvider.get().removeUploadableSequences(Sequence.TYPE_PROBE);
+        sequencesStorageProvider.get().removeAllSequences(Sequence.TYPE_PROBE);
         locationPointsStorageProvider.get().removeUploadableLocationPoints();
 
         // Do the switch
@@ -470,7 +470,7 @@ public class StatusManager {
         Logger.d(TAG, "Resetting parameters and profile_id, keeping the profile answers");
 
         // Clear pending uploads (before clearing)
-        sequencesStorageProvider.get().removeUploadableSequences(Sequence.TYPE_PROBE);
+        sequencesStorageProvider.get().removeAllSequences(Sequence.TYPE_PROBE);
         locationPointsStorageProvider.get().removeUploadableLocationPoints();
 
         // Clear local experiment started flag
@@ -494,7 +494,7 @@ public class StatusManager {
         Logger.d(TAG, "Doing full switch to production mode");
 
         // Clear pending uploads (before switch)
-        sequencesStorageProvider.get().removeUploadableSequences(Sequence.TYPE_PROBE);
+        sequencesStorageProvider.get().removeAllSequences(Sequence.TYPE_PROBE);
         locationPointsStorageProvider.get().removeUploadableLocationPoints();
 
         // Do the switch
