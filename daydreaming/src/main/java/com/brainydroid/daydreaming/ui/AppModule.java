@@ -22,12 +22,9 @@ public class AppModule implements Module {
         Logger.d(TAG, "Configuring application module");
 
         binder.install(new FactoryModuleBuilder()
-                .build(LocationPointFactory.class));
-        binder.install(new FactoryModuleBuilder()
                 .build(new TypeLiteral<ResultsWrapperFactory<Sequence>>() {}));
         binder.install(new FactoryModuleBuilder()
-                .build(new TypeLiteral<ResultsWrapperFactory<LocationPoint>>() {
-                }));
+                .build(new TypeLiteral<ResultsWrapperFactory<LocationPoint>>() {}));
         binder.install(new FactoryModuleBuilder().
                 build(ProfileWrapperFactory.class));
         binder.install(new FactoryModuleBuilder().
