@@ -30,12 +30,12 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage> implem
         Logger.v(TAG, "Creating empty sequence");
     }
 
-    public void setPageGroups(ArrayList<PageGroup> pageGroups) {
+    public synchronized void setPageGroups(ArrayList<PageGroup> pageGroups) {
         Logger.v(TAG, "Setting pageGroups");
         this.pageGroups = pageGroups;
     }
 
-    public ArrayList<PageGroup> getPageGroups() {
+    public synchronized ArrayList<PageGroup> getPageGroups() {
         return pageGroups;
     }
 
@@ -53,7 +53,7 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage> implem
         saveIfSync();
     }
 
-    private void populateAllPagesCache() {
+    private synchronized void populateAllPagesCache() {
         Logger.v(TAG, "Populating pages cache");
         if (allPagesCache == null) {
             // Get all pages
@@ -64,7 +64,7 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage> implem
         }
     }
 
-    public Page getCurrentPage() {
+    public synchronized Page getCurrentPage() {
         Logger.d(TAG, "Getting current page");
 
         populateAllPagesCache();

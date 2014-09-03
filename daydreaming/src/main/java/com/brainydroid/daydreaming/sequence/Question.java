@@ -3,6 +3,7 @@ package com.brainydroid.daydreaming.sequence;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.IQuestionDescriptionDetails;
 import com.brainydroid.daydreaming.db.QuestionDescription;
+import com.brainydroid.daydreaming.db.SequencesStorage;
 import com.brainydroid.daydreaming.ui.sequences.BaseQuestionViewAdapter;
 import com.brainydroid.daydreaming.ui.sequences.IQuestionViewAdapter;
 import com.google.gson.annotations.Expose;
@@ -17,22 +18,24 @@ public class Question implements IQuestion {
     private static String TAG = "Question";
 
     @Expose protected String name = null;
-    private IQuestionDescriptionDetails details = null;
-
     @Expose private IAnswer answer = null;
 
-    private Sequence sequence = null;
+    private IQuestionDescriptionDetails details = null;
+    private int sequenceId = -1;
 
+    private transient Sequence sequenceCache = null;
     @Inject private transient Injector injector;
+    @Inject private transient SequencesStorage sequencesStorage;
 
     public Question(QuestionDescription questionDescription, Sequence sequence) {
         Logger.d(TAG, "Creating question {}", questionDescription.getName());
         setName(questionDescription.getName());
         setDetails(questionDescription.getDetails());
         setSequence(sequence);
+        saveIfSync();
     }
 
-    public IQuestionViewAdapter getAdapter() {
+    public synchronized IQuestionViewAdapter getAdapter() {
         Logger.d(TAG, "Getting adapter for question");
 
         String logSuffix = "for question " + name + " of type " + details.getType();
@@ -89,24 +92,27 @@ public class Question implements IQuestion {
         saveIfSync();
     }
 
-    public synchronized Sequence getSequence() {
-        return sequence;
+    private synchronized void setSequence(Sequence sequence) {
+        this.sequenceCache = sequence;
+        this.sequenceId = sequenceCache.getId();
+        saveIfSync();
     }
 
-    private synchronized void setSequence(Sequence sequence) {
-        Logger.v(TAG, "Setting sequence");
-        // setSequence is only called from the constructor, itself called by QuestionBuilder,
-        // itself called from (up to the top) ProbeService.populateProbe() which already
-        // triggers a save after populating its sequence. So no need to trigger a real save here.
-        // Only saveIfSync() is called, which normally should never trigger a real save.
-        this.sequence = sequence;
-        saveIfSync();
+    private synchronized Sequence getSequence() {
+        if (sequenceCache == null) {
+            sequenceCache = sequencesStorage.get(sequenceId);
+        }
+        return sequenceCache;
+    }
+
+    private synchronized boolean hasSequence() {
+        return sequenceId != -1;
     }
 
     private synchronized void saveIfSync() {
         Logger.d(TAG, "Saving if in syncing sequence");
-        if (sequence != null) {
-            sequence.saveIfSync();
+        if (hasSequence()) {
+            getSequence().saveIfSync();
         } else {
             Logger.v(TAG, "Not saved since no sequence present");
         }

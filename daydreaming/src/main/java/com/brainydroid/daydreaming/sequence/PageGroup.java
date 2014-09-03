@@ -17,11 +17,11 @@ public class PageGroup implements IPageGroup {
         this.pages = pages;
     }
 
-    public String getFriendlyName() {
+    public synchronized String getFriendlyName() {
         return friendlyName;
     }
 
-    public ArrayList<Page> getPages() {
+    public synchronized ArrayList<Page> getPages() {
         return pages;
     }
 }

@@ -16,8 +16,6 @@ public class Page implements IPage {
     public static final String STATUS_ASKED = "pageAsked";
     public static final String STATUS_ANSWERED = "pageAnswered";
 
-    @Inject SequencesStorage sequencesStorage;
-
     @Expose private String status = null;
     @Expose private Location location = null;
     @Expose private long ntpTimestamp = -1;
@@ -29,11 +27,13 @@ public class Page implements IPage {
     private boolean isLastOfSequence = false;
 
     private transient Sequence sequenceCache = null;
+    @Inject private transient SequencesStorage sequencesStorage;
 
     public Page(ArrayList<Question> questions, Sequence sequence) {
         Logger.v(TAG, "Creating page from list of questions");
         this.questions = questions;
         setSequence(sequence);
+        saveIfSync();
     }
 
     public synchronized String getStatus() {
@@ -76,39 +76,40 @@ public class Page implements IPage {
         saveIfSync();
     }
 
-    private void setSequence(Sequence sequence) {
+    private synchronized void setSequence(Sequence sequence) {
         this.sequenceCache = sequence;
         this.sequenceId = sequenceCache.getId();
+        saveIfSync();
     }
 
-    private Sequence getSequence() {
+    private synchronized Sequence getSequence() {
         if (sequenceCache == null) {
             sequenceCache = sequencesStorage.get(sequenceId);
         }
         return sequenceCache;
     }
 
-    private boolean hasSequence() {
+    private synchronized boolean hasSequence() {
         return sequenceId != -1;
     }
 
-    public boolean isFirstOfSequence() {
+    public synchronized boolean isFirstOfSequence() {
         return isFirstOfSequence;
     }
 
-    public void setIsFirstOfSequence() {
+    public synchronized void setIsFirstOfSequence() {
         isFirstOfSequence = true;
     }
 
-    public boolean isLastOfSequence() {
+    public synchronized boolean isLastOfSequence() {
         return isLastOfSequence;
     }
 
-    public void setIsLastOfSequence() {
+    public synchronized void setIsLastOfSequence() {
         isLastOfSequence = true;
     }
 
-    public ArrayList<Question> getQuestions() {
+    public synchronized ArrayList<Question> getQuestions() {
         return questions;
     }
 
