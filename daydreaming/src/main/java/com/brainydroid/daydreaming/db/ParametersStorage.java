@@ -280,9 +280,9 @@ public class ParametersStorage {
         return nSlotsPerProbe;
     }
 
-    private synchronized void setGlossary(JSONObject glossary) {
-        Logger.d(TAG, "{0} - Setting glossary to {1}", statusManager.getCurrentModeName(), glossary.toString());
-        eSharedPreferences.putString(statusManager.getCurrentModeName() + GLOSSARY, glossary.toString());
+    private synchronized void setGlossary(String glossary) {
+        Logger.d(TAG, "{0} - Setting glossary to {1}", statusManager.getCurrentModeName(), glossary);
+        eSharedPreferences.putString(statusManager.getCurrentModeName() + GLOSSARY, glossary);
         eSharedPreferences.commit();
     }
 
@@ -430,6 +430,7 @@ public class ParametersStorage {
     public synchronized void importParameters(String jsonParametersString)
             throws ParametersSyntaxException {
         Logger.d(TAG, "{} - Importing parameters from JSON", statusManager.getCurrentModeName());
+        Logger.v(TAG, jsonParametersString);
 
         try {
             ServerParametersJson serverParametersJson = json.fromJson(

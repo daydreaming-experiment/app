@@ -7,7 +7,18 @@ import com.brainydroid.daydreaming.network.JWSSignature;
 import com.brainydroid.daydreaming.network.JWSSignatureSerializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
+import com.google.gson.reflect.TypeToken;
 import com.google.inject.Singleton;
+
+import java.lang.reflect.Type;
+import java.util.HashMap;
 
 import javax.inject.Inject;
 
@@ -77,6 +88,7 @@ public class Json {
         gsonBuilder.registerTypeAdapter(JWSSignature.class,
                 jwsSignatureSerializer);
         gsonBuilder.registerTypeAdapter(Question.class, questionSerializer);
+        gsonBuilder.registerTypeAdapter(JsonArray.class, new JsonArraySerializationHandler());
 
         // Build the two Gson instances
         gson = gsonBuilder.create();
@@ -121,6 +133,30 @@ public class Json {
     public <T> T fromJson(String json, Class<T> classOfT) {
         Logger.v(TAG, "Deserializing from JSON");
         return gson.fromJson(json, classOfT);
+    }
+
+    private static class JsonArraySerializationHandler
+            implements JsonSerializer<JsonArray>, JsonDeserializer<JsonArray>
+    {
+        @Override
+        public JsonArray serialize(JsonArray src, Type typeOfSrc,
+                                   JsonSerializationContext context)
+        {
+            return src;
+        }
+        @Override
+        public JsonArray deserialize(JsonElement json, Type typeOfT,
+                                     JsonDeserializationContext context) throws JsonParseException
+        {
+            if (json.isJsonArray() && JsonArray.class.equals(typeOfT))
+            {
+                return json.getAsJsonArray();
+            }
+            else
+            {
+                return new JsonArray();
+            }
+        }
     }
 
 }

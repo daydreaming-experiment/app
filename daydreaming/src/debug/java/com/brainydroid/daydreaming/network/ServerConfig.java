@@ -9,6 +9,6 @@ public class ServerConfig {
     public static int NETWORK_TIMEOUT = 10 * 1000; // 10 seconds
 
     public static String PARAMETERS_URL_BASE =
-            "https://raw.github.com/daydreaming-experiment/parameters/master/grammar-v2.1/{}.json";
+            "https://raw.github.com/daydreaming-experiment/parameters/feaure/glossary/grammar-v2.1/glossary-{}.json";
 
 }

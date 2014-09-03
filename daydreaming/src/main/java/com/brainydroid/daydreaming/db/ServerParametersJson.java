@@ -2,6 +2,7 @@ package com.brainydroid.daydreaming.db;
 
 import com.brainydroid.daydreaming.background.Logger;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.lang.String;
@@ -23,7 +24,7 @@ public class ServerParametersJson {
     public static String DEFAULT_BACKEND_API_URL = "n/c";
     public static String DEFAULT_RESULTS_PAGE_URL = "n/c";
     public static String DEFAULT_GLOSSARY = "n/c";
-    public static JSONObject DEFAULT_GLOSSARY_JSON = null;
+    public static JSONArray DEFAULT_GLOSSARY_JSON = null;
 
     public String version = DEFAULT_PARAMETERS_VERSION;
     public String backendExpId = DEFAULT_BACKEND_EXP_ID;
@@ -36,7 +37,7 @@ public class ServerParametersJson {
     public int schedulingMeanDelay = DEFAULT_SCHEDULING_MEAN_DELAY;
     public int schedulingMinDelay = DEFAULT_SCHEDULING_MIN_DELAY;
     ArrayList<Question> questions = new ArrayList<Question>();
-    public JSONObject glossary = DEFAULT_GLOSSARY_JSON;
+    public JSONArray glossary = DEFAULT_GLOSSARY_JSON;
 
     public synchronized ArrayList<Question> getQuestionsArrayList() {
         return questions;
@@ -58,8 +59,8 @@ public class ServerParametersJson {
         return schedulingMinDelay;
     }
 
-    public synchronized JSONObject getGlossary() {
-        return glossary;
+    public synchronized String getGlossary() {
+        return glossary.toString();
     }
 
     public synchronized String getBackendExpId() {
