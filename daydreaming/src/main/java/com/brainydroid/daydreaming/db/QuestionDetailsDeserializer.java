@@ -31,6 +31,12 @@ public class QuestionDetailsDeserializer
                     obj.get("type").getAsString() + QUESTION_DETAILS_SUFFIX);
             IQuestionDescriptionDetails questionDetails = context.deserialize(json,
                     klass);
+
+            // No QuestionDetails class can have injection or this line will override any
+            // value set by Json. To use injection in those classes, register Factories and
+            // InstanceCreators on Json and AppModule, and remove this line (since the injection
+            // will be done in the instance creation in context.deserialize() above. But, please,
+            // only do this once #160 is fixed.
             injector.injectMembers(questionDetails);
             return questionDetails;
         } catch (ClassNotFoundException e) {
