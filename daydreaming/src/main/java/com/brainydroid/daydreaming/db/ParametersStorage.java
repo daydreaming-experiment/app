@@ -52,7 +52,7 @@ public class ParametersStorage {
 
     @SuppressLint("CommitPrefEdits")
     @Inject
-    public ParametersStorage(SharedPreferences sharedPreferences) {
+    public ParametersStorage(SharedPreferences sharedPreferences, StatusManager statusManager) {
         Logger.d(TAG, "{} - Building ParametersStorage", statusManager.getCurrentModeName());
 
         this.sharedPreferences = sharedPreferences;
