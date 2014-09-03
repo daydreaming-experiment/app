@@ -11,12 +11,17 @@ public class QuestionBuilder {
     @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "QuestionBuilder";
 
+    @Inject QuestionFactory questionFactory;
     @Inject ParametersStorage parametersStorage;
 
     public Question build(QuestionPositionDescription questionPositionDescription, Sequence sequence) {
         Logger.v(TAG, "Building question from description {}", questionPositionDescription.getName());
         QuestionDescription questionDescription =
                 parametersStorage.getQuestionDescription(questionPositionDescription.getName());
-        return new Question(questionDescription, sequence);
+
+        Question question = questionFactory.create();
+        question.importFromQuestionDescription(questionDescription);
+        question.setSequence(sequence);
+        return question;
     }
 }

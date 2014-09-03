@@ -26,10 +26,6 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage> implem
     @Inject transient SequencesStorage sequencesStorage;
     private transient ArrayList<Page> allPagesCache = null;
 
-    public Sequence() {
-        Logger.v(TAG, "Creating empty sequence");
-    }
-
     public synchronized void setPageGroups(ArrayList<PageGroup> pageGroups) {
         Logger.v(TAG, "Setting pageGroups");
         this.pageGroups = pageGroups;

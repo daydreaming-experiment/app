@@ -13,7 +13,7 @@ public class MultipleChoiceAnswer implements IAnswer {
 
     @SuppressWarnings("FieldCanBeLocal")
     @Expose private String type = "MultipleChoice";
-    @Inject @Expose HashSet<String> choices = new HashSet<String>();
+    @Inject @Expose HashSet<String> choices;
 
     public synchronized String getType() {
         return type;

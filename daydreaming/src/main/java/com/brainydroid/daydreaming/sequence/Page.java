@@ -29,13 +29,6 @@ public class Page implements IPage {
     private transient Sequence sequenceCache = null;
     @Inject private transient SequencesStorage sequencesStorage;
 
-    public Page(ArrayList<Question> questions, Sequence sequence) {
-        Logger.v(TAG, "Creating page from list of questions");
-        this.questions = questions;
-        setSequence(sequence);
-        saveIfSync();
-    }
-
     public synchronized String getStatus() {
         return status;
     }
@@ -76,7 +69,7 @@ public class Page implements IPage {
         saveIfSync();
     }
 
-    private synchronized void setSequence(Sequence sequence) {
+    public synchronized void setSequence(Sequence sequence) {
         this.sequenceCache = sequence;
         this.sequenceId = sequenceCache.getId();
         saveIfSync();
@@ -107,6 +100,11 @@ public class Page implements IPage {
 
     public synchronized void setIsLastOfSequence() {
         isLastOfSequence = true;
+    }
+
+    public synchronized void setQuestions(ArrayList<Question> questions) {
+        this.questions = questions;
+        saveIfSync();
     }
 
     public synchronized ArrayList<Question> getQuestions() {

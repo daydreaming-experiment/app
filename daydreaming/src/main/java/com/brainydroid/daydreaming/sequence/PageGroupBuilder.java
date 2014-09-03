@@ -12,6 +12,7 @@ public class PageGroupBuilder {
     @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "PageGroupBuilder";
 
+    @Inject private PageGroupFactory pageGroupFactory;
     @Inject private PageBuilder pageBuilder;
     @Inject private Orderer<PageDescription,Page> orderer;
 
@@ -22,7 +23,9 @@ public class PageGroupBuilder {
         BuildableOrder<PageDescription,Page> buildableOrder =
                 orderer.buildOrder(pageGroupDescription.getNSlots(), pageDescriptions);
 
-        return new PageGroup(buildableOrder.build(sequence));
+        PageGroup pageGroup = pageGroupFactory.create();
+        pageGroup.setPages(buildableOrder.build(sequence));
+        return pageGroup;
     }
 
 }

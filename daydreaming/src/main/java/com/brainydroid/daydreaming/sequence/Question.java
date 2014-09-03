@@ -27,12 +27,10 @@ public class Question implements IQuestion {
     @Inject private transient Injector injector;
     @Inject private transient SequencesStorage sequencesStorage;
 
-    public Question(QuestionDescription questionDescription, Sequence sequence) {
-        Logger.d(TAG, "Creating question {}", questionDescription.getName());
-        setName(questionDescription.getName());
-        setDetails(questionDescription.getDetails());
-        setSequence(sequence);
-        saveIfSync();
+    public synchronized void importFromQuestionDescription(QuestionDescription description) {
+        Logger.d(TAG, "Importing information from QuestionDescription");
+        setName(description.getName());
+        setDetails(description.getDetails());
     }
 
     public synchronized IQuestionViewAdapter getAdapter() {
@@ -92,7 +90,7 @@ public class Question implements IQuestion {
         saveIfSync();
     }
 
-    private synchronized void setSequence(Sequence sequence) {
+    public synchronized void setSequence(Sequence sequence) {
         this.sequenceCache = sequence;
         this.sequenceId = sequenceCache.getId();
         saveIfSync();

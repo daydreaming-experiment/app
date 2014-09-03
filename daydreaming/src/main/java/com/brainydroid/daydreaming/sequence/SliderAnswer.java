@@ -13,7 +13,7 @@ public class SliderAnswer implements IAnswer {
 
     @SuppressWarnings("FieldCanBeLocal")
     @Expose private String type = "Slider";
-    @Inject @Expose HashMap<String, Integer> sliders = new HashMap<String, Integer>();
+    @Inject @Expose HashMap<String, Integer> sliders;
 
     public synchronized String getType() {
         return type;

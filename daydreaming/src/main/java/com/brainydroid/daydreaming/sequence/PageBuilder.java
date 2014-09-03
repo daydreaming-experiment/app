@@ -12,6 +12,7 @@ public class PageBuilder {
     @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "PageBuilder";
 
+    @Inject private PageFactory pageFactory;
     @Inject private QuestionBuilder questionBuilder;
     @Inject private Orderer<QuestionPositionDescription,Question> orderer;
 
@@ -22,7 +23,10 @@ public class PageBuilder {
         BuildableOrder<QuestionPositionDescription,Question> buildableOrder =
                 orderer.buildOrder(pageDescription.getNSlots(), questionPositionDescriptions);
 
-        return new Page(buildableOrder.build(sequence), sequence);
+        Page page = pageFactory.create();
+        page.setQuestions(buildableOrder.build(sequence));
+        page.setSequence(sequence);
+        return page;
     }
 
 }

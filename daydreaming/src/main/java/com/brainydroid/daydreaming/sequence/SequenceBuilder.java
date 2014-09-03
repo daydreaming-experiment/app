@@ -13,6 +13,7 @@ public class SequenceBuilder {
     @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "SequenceBuilder";
 
+    @Inject private SequenceFactory sequenceFactory;
     @Inject private ParametersStorage parametersStorage;
     @Inject private PageGroupBuilder pageGroupBuilder;
     @Inject private Orderer<PageGroupDescription,PageGroup> orderer;
@@ -24,7 +25,7 @@ public class SequenceBuilder {
         BuildableOrder<PageGroupDescription,PageGroup> buildableOrder =
                 orderer.buildOrder(sequenceDescription.getNSlots(), pageGroupDescriptions);
 
-        Sequence sequence = new Sequence();
+        Sequence sequence = sequenceFactory.create();
         sequence.setPageGroups(buildableOrder.build(sequence));
         return sequence;
     }
