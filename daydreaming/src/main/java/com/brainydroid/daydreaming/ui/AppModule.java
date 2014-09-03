@@ -40,6 +40,7 @@ public class AppModule implements Module {
         binder.install(new FactoryModuleBuilder().build(SliderAnswerFactory.class));
         binder.install(new FactoryModuleBuilder().build(StarRatingAnswerFactory.class));
         binder.install(new FactoryModuleBuilder().build(MultipleChoiceAnswerFactory.class));
+        binder.install(new FactoryModuleBuilder().build(LocationPointFactory.class));
         binder.install(new FactoryModuleBuilder()
                 .build(new TypeLiteral<ResultsWrapperFactory<Sequence>>() {}));
         binder.install(new FactoryModuleBuilder()
