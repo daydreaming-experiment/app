@@ -21,16 +21,18 @@ public class AppModule implements Module {
     public void configure(Binder binder) {
         Logger.d(TAG, "Configuring application module");
 
+        binder.install(new FactoryModuleBuilder().build(PageGroupDescriptionFactory.class));
+        binder.install(new FactoryModuleBuilder().build(PageDescriptionFactory.class));
         binder.install(new FactoryModuleBuilder()
                 .build(new TypeLiteral<ResultsWrapperFactory<Sequence>>() {}));
         binder.install(new FactoryModuleBuilder()
                 .build(new TypeLiteral<ResultsWrapperFactory<LocationPoint>>() {}));
-        binder.install(new FactoryModuleBuilder().
-                build(ProfileWrapperFactory.class));
-        binder.install(new FactoryModuleBuilder().
-                build(ProfileFactory.class));
-        binder.install(new FactoryModuleBuilder().
-                build(ProfileDataFactory.class));
+        binder.install(new FactoryModuleBuilder()
+                .build(ProfileWrapperFactory.class));
+        binder.install(new FactoryModuleBuilder()
+                .build(ProfileFactory.class));
+        binder.install(new FactoryModuleBuilder()
+                .build(ProfileDataFactory.class));
     }
 
 }
