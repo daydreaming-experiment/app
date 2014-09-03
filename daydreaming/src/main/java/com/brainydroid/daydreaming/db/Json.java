@@ -57,6 +57,7 @@ public class Json {
     public Json(GsonBuilder gsonBuilder,
                 AnswerDeserializer answerDeserializer,
                 QuestionDetailsDeserializer questionDetailsDeserializer,
+                SequenceDescriptionInstanceCreator sequenceDescriptionInstanceCreator,
                 PageGroupDescriptionInstanceCreator pageGroupDescriptionInstanceCreator,
                 PageDescriptionInstanceCreator pageDescriptionInstanceCreator,
                 QuestionDescriptionInstanceCreator questionDescriptionInstanceCreator,
@@ -69,6 +70,8 @@ public class Json {
         gsonBuilder.registerTypeAdapter(IAnswer.class, answerDeserializer);
         gsonBuilder.registerTypeAdapter(IQuestionDescriptionDetails.class,
                 questionDetailsDeserializer);
+        gsonBuilder.registerTypeAdapter(SequenceDescription.class,
+                sequenceDescriptionInstanceCreator);
         gsonBuilder.registerTypeAdapter(PageGroupDescription.class,
                 pageGroupDescriptionInstanceCreator);
         gsonBuilder.registerTypeAdapter(PageDescription.class,

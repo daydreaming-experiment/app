@@ -21,6 +21,7 @@ public class AppModule implements Module {
     public void configure(Binder binder) {
         Logger.d(TAG, "Configuring application module");
 
+        binder.install(new FactoryModuleBuilder().build(SequenceDescriptionFactory.class));
         binder.install(new FactoryModuleBuilder().build(PageGroupDescriptionFactory.class));
         binder.install(new FactoryModuleBuilder().build(PageDescriptionFactory.class));
         binder.install(new FactoryModuleBuilder().build(QuestionDescriptionFactory.class));
