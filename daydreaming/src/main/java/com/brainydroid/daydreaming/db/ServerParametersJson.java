@@ -2,6 +2,8 @@ package com.brainydroid.daydreaming.db;
 
 import com.brainydroid.daydreaming.background.Logger;
 
+import java.util.ArrayList;
+
 public class ServerParametersJson {
 
     @SuppressWarnings("FieldCanBeLocal")
@@ -24,8 +26,8 @@ public class ServerParametersJson {
     private String resultsPageUrl = DEFAULT_RESULTS_PAGE_URL;
     private int schedulingMeanDelay = DEFAULT_SCHEDULING_MEAN_DELAY;
     private int schedulingMinDelay = DEFAULT_SCHEDULING_MIN_DELAY;
-    private QuestionDescriptionsArray questions = null;
-    private SequenceDescriptionsArray sequences = null;
+    private ArrayList<QuestionDescription> questions = null;
+    private ArrayList<SequenceDescription> sequences = null;
 
     public synchronized String getVersion() {
         return version;
@@ -59,11 +61,11 @@ public class ServerParametersJson {
         return schedulingMinDelay;
     }
 
-    public synchronized QuestionDescriptionsArray getQuestions() {
+    public synchronized ArrayList<QuestionDescription> getQuestions() {
         return questions;
     }
 
-    public synchronized SequenceDescriptionsArray getSequences() {
+    public synchronized ArrayList<SequenceDescription> getSequences() {
         return sequences;
     }
 
@@ -111,16 +113,20 @@ public class ServerParametersJson {
         }
 
         // Validate questions
-        if (questions == null) {
-            throw new JsonParametersException("sequences can't be empty");
+        if (questions == null || questions.size() == 0) {
+            throw new JsonParametersException("questions can't be empty");
         }
-        questions.validateInitialization();
+        for (QuestionDescription q : questions) {
+            q.validateInitialization();
+        }
 
         // Validate sequences
-        if (sequences == null) {
+        if (sequences == null || sequences.size() == 0) {
             throw new JsonParametersException("sequences can't be empty");
         }
-        sequences.validateInitialization();
+        for (SequenceDescription s : sequences) {
+            s.validateInitialization();
+        }
     }
 
 }

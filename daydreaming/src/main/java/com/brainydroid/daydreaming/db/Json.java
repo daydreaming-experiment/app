@@ -10,6 +10,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.inject.Singleton;
 
+import java.lang.reflect.Type;
+
 import javax.inject.Inject;
 
 /**
@@ -113,6 +115,11 @@ public class Json {
     public <T> T fromJson(String json, Class<T> classOfT) {
         Logger.v(TAG, "Deserializing from JSON");
         return gson.fromJson(json, classOfT);
+    }
+
+    public <T> T fromJson(String json, Type typeOfT) {
+        Logger.v(TAG, "Deserializing from JSON");
+        return gson.fromJson(json, typeOfT);
     }
 
 }

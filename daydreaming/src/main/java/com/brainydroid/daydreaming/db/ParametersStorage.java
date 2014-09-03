@@ -15,9 +15,11 @@ import com.brainydroid.daydreaming.network.HttpGetTask;
 import com.brainydroid.daydreaming.network.ParametersStorageCallback;
 import com.brainydroid.daydreaming.network.ServerConfig;
 import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import java.lang.reflect.Type;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 
@@ -37,8 +39,8 @@ public class ParametersStorage {
     public static String QUESTIONS = "questions";
     public static String SEQUENCES = "sequences";
 
-    private QuestionDescriptionsArray questionsCache;
-    private SequenceDescriptionsArray sequencesCache;
+    private ArrayList<QuestionDescription> questionsCache;
+    private ArrayList<SequenceDescription> sequencesCache;
 
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor eSharedPreferences;
@@ -226,7 +228,7 @@ public class ParametersStorage {
         eSharedPreferences.commit();
     }
 
-    public synchronized void setQuestions(QuestionDescriptionsArray questions) {
+    public synchronized void setQuestions(ArrayList<QuestionDescription> questions) {
         Logger.d(TAG, "{} - Setting questions array (and keeping in cache)",
                 statusManager.getCurrentModeName());
         questionsCache = questions;
@@ -235,7 +237,7 @@ public class ParametersStorage {
         eSharedPreferences.commit();
     }
 
-    public synchronized QuestionDescriptionsArray getQuestions() {
+    public synchronized ArrayList<QuestionDescription> getQuestions() {
         Logger.d(TAG, "{} - Getting questions", statusManager.getCurrentModeName());
         if (questionsCache != null) {
             Logger.v(TAG, "{} - Cache is present -> returning questions from cache",
@@ -243,9 +245,11 @@ public class ParametersStorage {
         } else {
             Logger.v(TAG, "{} - Cache not present -> getting questions from sharedPreferences",
                     statusManager.getCurrentModeName());
+            Type questionDescriptionsArrayType =
+                    new TypeToken<ArrayList<QuestionDescription>>() {}.getType();
             questionsCache = json.fromJson(
                     sharedPreferences.getString(statusManager.getCurrentModeName() + QUESTIONS, null),
-                    QuestionDescriptionsArray.class);
+                    questionDescriptionsArrayType);
         }
 
         if (questionsCache == null) {
@@ -264,7 +268,7 @@ public class ParametersStorage {
         eSharedPreferences.commit();
     }
 
-    public synchronized void setSequences(SequenceDescriptionsArray sequences) {
+    public synchronized void setSequences(ArrayList<SequenceDescription> sequences) {
         Logger.d(TAG, "{} - Setting sequences array (and keeping in cache)",
                 statusManager.getCurrentModeName());
         sequencesCache = sequences;
@@ -273,7 +277,7 @@ public class ParametersStorage {
         eSharedPreferences.commit();
     }
 
-    public synchronized SequenceDescriptionsArray getSequences() {
+    public synchronized ArrayList<SequenceDescription> getSequences() {
         Logger.d(TAG, "{} - Getting sequences", statusManager.getCurrentModeName());
         if (sequencesCache != null) {
             Logger.v(TAG, "{} - Cache is present -> returning sequences from cache",
@@ -281,9 +285,11 @@ public class ParametersStorage {
         } else {
             Logger.v(TAG, "{} - Cache not present -> getting sequences from sharedPreferences",
                     statusManager.getCurrentModeName());
+            Type sequenceDescriptionsArrayType =
+                    new TypeToken<ArrayList<SequenceDescription>>() {}.getType();
             sequencesCache = json.fromJson(
                     sharedPreferences.getString(statusManager.getCurrentModeName() + SEQUENCES, null),
-                    SequenceDescriptionsArray.class);
+                    sequenceDescriptionsArrayType);
         }
 
         if (sequencesCache == null) {
@@ -307,7 +313,7 @@ public class ParametersStorage {
                 statusManager.getCurrentModeName(), name);
 
         // Get list of all names
-        SequenceDescriptionsArray sequences = getSequences();
+        ArrayList<SequenceDescription> sequences = getSequences();
         ArrayList<String> names = new ArrayList<String>(sequences.size());
         for (SequenceDescription s : sequences) {
             names.add(s.getName());
