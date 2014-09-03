@@ -19,7 +19,7 @@ import roboguice.service.RoboService;
  * <p/>
  * The lifecycle is as follows: a {@code Service} or an {@code Activity} (in
  * practice {@link LocationPointService} or {@link
- * com.brainydroid.daydreaming.ui.questions.QuestionActivity} wants to obtain some
+ * com.brainydroid.daydreaming.ui.sequences.QuestionActivity} wants to obtain some
  * location data. To do so it needs to listen for a given period of time to
  * leave the time to the location backend to acquire a proper location. So
  * it will start {@link LocationService} (through the {@link

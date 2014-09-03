@@ -15,7 +15,7 @@ import com.brainydroid.daydreaming.network.SntpClient;
 import com.brainydroid.daydreaming.network.SntpClientCallback;
 import com.brainydroid.daydreaming.sequence.Sequence;
 import com.brainydroid.daydreaming.sequence.SequenceBuilder;
-import com.brainydroid.daydreaming.ui.questions.QuestionActivity;
+import com.brainydroid.daydreaming.ui.sequences.QuestionActivity;
 import com.google.inject.Inject;
 
 import java.util.ArrayList;

@@ -82,7 +82,7 @@
         </activity>
         <!-- Question Activity -->
 
-        <activity android:name=".ui.questions.QuestionActivity"
+        <activity android:name=".ui.sequences.QuestionActivity"
             android:label="@string/app_name"
             android:theme="@style/daydreamingTheme"
             android:excludeFromRecents="true"

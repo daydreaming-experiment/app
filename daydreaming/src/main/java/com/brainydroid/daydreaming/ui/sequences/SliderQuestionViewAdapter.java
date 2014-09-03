@@ -1,4 +1,4 @@
-package com.brainydroid.daydreaming.ui.questions;
+package com.brainydroid.daydreaming.ui.sequences;
 
 import android.annotation.TargetApi;
 import android.content.Context;

@@ -2,8 +2,8 @@ package com.brainydroid.daydreaming.sequence;
 
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.IQuestionDescriptionDetails;
-import com.brainydroid.daydreaming.ui.questions.BaseQuestionViewAdapter;
-import com.brainydroid.daydreaming.ui.questions.IQuestionViewAdapter;
+import com.brainydroid.daydreaming.ui.sequences.BaseQuestionViewAdapter;
+import com.brainydroid.daydreaming.ui.sequences.IQuestionViewAdapter;
 import com.google.gson.annotations.Expose;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
