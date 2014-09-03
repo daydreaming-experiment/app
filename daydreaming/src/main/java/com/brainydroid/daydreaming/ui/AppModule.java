@@ -32,6 +32,7 @@ public class AppModule implements Module {
         binder.install(new FactoryModuleBuilder().build(PageGroupDescriptionFactory.class));
         binder.install(new FactoryModuleBuilder().build(PageDescriptionFactory.class));
         binder.install(new FactoryModuleBuilder().build(QuestionDescriptionFactory.class));
+        binder.install(new FactoryModuleBuilder().build(QuestionPositionDescriptionFactory.class));
         binder.install(new FactoryModuleBuilder().build(SequenceFactory.class));
         binder.install(new FactoryModuleBuilder().build(PageGroupFactory.class));
         binder.install(new FactoryModuleBuilder().build(PageFactory.class));

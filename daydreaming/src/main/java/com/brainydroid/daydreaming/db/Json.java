@@ -74,6 +74,7 @@ public class Json {
                 PageGroupDescriptionInstanceCreator pageGroupDescriptionInstanceCreator,
                 PageDescriptionInstanceCreator pageDescriptionInstanceCreator,
                 QuestionDescriptionInstanceCreator questionDescriptionInstanceCreator,
+                QuestionPositionDescriptionInstanceCreator questionPositionDescriptionInstanceCreator,
                 SequenceInstanceCreator sequenceInstanceCreator,
                 PageGroupInstanceCreator pageGroupInstanceCreator,
                 PageInstanceCreator pageInstanceCreator,
@@ -98,6 +99,8 @@ public class Json {
                 pageDescriptionInstanceCreator);
         gsonBuilder.registerTypeAdapter(QuestionDescription.class,
                 questionDescriptionInstanceCreator);
+        gsonBuilder.registerTypeAdapter(QuestionPositionDescription.class,
+                questionPositionDescriptionInstanceCreator);
         gsonBuilder.registerTypeAdapter(Sequence.class, sequenceInstanceCreator);
         gsonBuilder.registerTypeAdapter(PageGroup.class, pageGroupInstanceCreator);
         gsonBuilder.registerTypeAdapter(Page.class, pageInstanceCreator);
