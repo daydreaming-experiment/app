@@ -16,11 +16,10 @@ import com.brainydroid.daydreaming.sequence.Sequence;
 import com.brainydroid.daydreaming.sequence.SequenceInstanceCreator;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import java.lang.reflect.Type;
-
-import javax.inject.Inject;
 
 /**
  * Singleton JSON serializer and deserializer to centralize registration of
