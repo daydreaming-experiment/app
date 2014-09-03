@@ -19,7 +19,7 @@ public class PageDescription extends BuildableOrderable<Page> implements IPage {
     private String name = null;
     private String position = null;
     private int nSlots = -1;
-    private ArrayList<QuestionPositionDescription> questions;
+    private ArrayList<QuestionPositionDescription> questions = null;
     @Inject private transient PageBuilder pageBuilder;
 
     public String getName() {

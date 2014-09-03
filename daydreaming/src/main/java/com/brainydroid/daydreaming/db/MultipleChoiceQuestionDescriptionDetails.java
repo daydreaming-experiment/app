@@ -14,7 +14,7 @@ public class MultipleChoiceQuestionDescriptionDetails implements IQuestionDescri
     @SuppressWarnings("UnusedDeclaration")
     private String text = null;
     @SuppressWarnings("UnusedDeclaration")
-    private ArrayList<String> choices = new ArrayList<String>();
+    private ArrayList<String> choices = null;
 
     @Override
     public synchronized String getType() {
@@ -35,6 +35,11 @@ public class MultipleChoiceQuestionDescriptionDetails implements IQuestionDescri
         if (text == null) {
             throw new JsonParametersException("text in MultipleChoiceQuestionDetails "
                     + "can't be null");
+        }
+
+        if (choices == null) {
+            throw new JsonParametersException("choices in MultipleChoiceQuestionDetails " +
+                    "can't by null");
         }
         if (choices.size() < 2) {
             throw new JsonParametersException("There must be at least two choices in "

@@ -12,8 +12,7 @@ public class StarRatingQuestionDescriptionDetails implements IQuestionDescriptio
     @SuppressWarnings("FieldCanBeLocal")
     private String type = "StarRating";
     @SuppressWarnings("UnusedDeclaration")
-    private ArrayList<StarRatingSubQuestion> subQuestions =
-            new ArrayList<StarRatingSubQuestion>();
+    private ArrayList<StarRatingSubQuestion> subQuestions = null;
 
     @Override
     public synchronized String getType() {
@@ -26,6 +25,11 @@ public class StarRatingQuestionDescriptionDetails implements IQuestionDescriptio
 
     public synchronized void validateInitialization() throws JsonParametersException {
         Logger.v(TAG, "Validating question details");
+
+        if (subQuestions == null) {
+            throw new JsonParametersException("subQuestions in StarRatingQuestionDetails " +
+                    "can't be null");
+        }
 
         if (subQuestions.size() == 0) {
             throw new JsonParametersException("subQuestions in StarRatingQuestionDetails must "

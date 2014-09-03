@@ -12,8 +12,7 @@ public class SliderQuestionDescriptionDetails implements IQuestionDescriptionDet
     @SuppressWarnings("FieldCanBeLocal")
     private String type = "Slider";
     @SuppressWarnings("UnusedDeclaration")
-    private ArrayList<SliderSubQuestion> subQuestions =
-            new ArrayList<SliderSubQuestion>();
+    private ArrayList<SliderSubQuestion> subQuestions = null;
 
     @Override
     public synchronized String getType() {
@@ -26,6 +25,11 @@ public class SliderQuestionDescriptionDetails implements IQuestionDescriptionDet
 
     public synchronized void validateInitialization() throws JsonParametersException {
         Logger.v(TAG, "Validating question details");
+
+        if (subQuestions == null) {
+            throw new JsonParametersException("subQuestions in SliderQuestionDetails " +
+                    "can't be null");
+        }
 
         if (subQuestions.size() == 0) {
             throw new JsonParametersException("subQuestions in SliderQuestionDetails must "

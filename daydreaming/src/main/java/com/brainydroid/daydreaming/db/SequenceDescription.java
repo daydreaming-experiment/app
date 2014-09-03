@@ -13,7 +13,7 @@ public class SequenceDescription implements ISequence {
 
     private String name = null;
     private int nSlots = -1;
-    private ArrayList<PageGroupDescription> pageGroups;
+    private ArrayList<PageGroupDescription> pageGroups = null;
 
     public String getName() {
         return name;

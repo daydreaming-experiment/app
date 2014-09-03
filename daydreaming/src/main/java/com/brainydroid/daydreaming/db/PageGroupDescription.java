@@ -20,7 +20,7 @@ public class PageGroupDescription extends BuildableOrderable<PageGroup> implemen
     private String friendlyName = null;
     private String position = null;
     private int nSlots = -1;
-    private ArrayList<PageDescription> pages;
+    private ArrayList<PageDescription> pages = null;
     @Inject private transient PageGroupBuilder pageGroupBuilder;
 
     public String getName() {
