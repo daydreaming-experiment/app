@@ -17,12 +17,9 @@ public class Orderer<D extends BuildableOrderable<C>,C> {
     @Inject Util util;
     private int nSlots;
 
-    public Orderer(int nSlots) {
+    public BuildableOrder<D,C> buildOrder(int nSlots, ArrayList<D> descriptions) {
+
         this.nSlots = nSlots;
-    }
-
-    public BuildableOrder<D,C> buildOrder(ArrayList<D> descriptions) {
-
         @SuppressLint("UseSparseArrays")
         HashMap<Integer,ArrayList<D>> map = new HashMap<Integer,ArrayList<D>>();
 

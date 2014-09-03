@@ -15,14 +15,14 @@ public class PageGroupBuilder {
     private static String TAG = "PageGroupBuilder";
 
     @Inject private PageBuilder pageBuilder;
+    @Inject private Orderer<PageDescription,Page> orderer;
 
     public PageGroup build(PageGroupDescription pageGroupDescription, Sequence sequence) {
         Logger.v(TAG, "Building pageGroup from description {}", pageGroupDescription.getName());
 
-        Orderer<PageDescription,Page> orderer =
-                new Orderer<PageDescription, Page>(pageGroupDescription.getNSlots());
         ArrayList<PageDescription> pageDescriptions = pageGroupDescription.getPages();
-        BuildableOrder<PageDescription,Page> buildableOrder = orderer.buildOrder(pageDescriptions);
+        BuildableOrder<PageDescription,Page> buildableOrder =
+                orderer.buildOrder(pageGroupDescription.getNSlots(), pageDescriptions);
 
         return new PageGroup(buildableOrder.build(sequence));
     }

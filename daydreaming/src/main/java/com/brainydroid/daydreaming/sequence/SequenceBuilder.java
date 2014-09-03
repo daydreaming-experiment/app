@@ -17,15 +17,14 @@ public class SequenceBuilder {
 
     @Inject private ParametersStorage parametersStorage;
     @Inject private PageGroupBuilder pageGroupBuilder;
+    @Inject private Orderer<PageGroupDescription,PageGroup> orderer;
 
     public Sequence build(SequenceDescription sequenceDescription) {
         Logger.v(TAG, "Building sequence from description {}", sequenceDescription.getName());
 
-        Orderer<PageGroupDescription,PageGroup> orderer =
-                new Orderer<PageGroupDescription, PageGroup>(sequenceDescription.getNSlots());
         ArrayList<PageGroupDescription> pageGroupDescriptions = sequenceDescription.getPageGroups();
         BuildableOrder<PageGroupDescription,PageGroup> buildableOrder =
-                orderer.buildOrder(pageGroupDescriptions);
+                orderer.buildOrder(sequenceDescription.getNSlots(), pageGroupDescriptions);
 
         Sequence sequence = new Sequence();
         sequence.setPageGroups(buildableOrder.build(sequence));
