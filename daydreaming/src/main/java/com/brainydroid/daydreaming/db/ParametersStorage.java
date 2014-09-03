@@ -39,7 +39,7 @@ public class ParametersStorage {
     public static String QUESTIONS = "questions";
     public static String SEQUENCES = "sequences";
 
-    private ArrayList<QuestionDescription> questionsCache;
+    private ArrayList<QuestionPositionDescription> questionsCache;
     private ArrayList<SequenceDescription> sequencesCache;
 
     private SharedPreferences sharedPreferences;
@@ -228,7 +228,7 @@ public class ParametersStorage {
         eSharedPreferences.commit();
     }
 
-    public synchronized void setQuestions(ArrayList<QuestionDescription> questions) {
+    public synchronized void setQuestions(ArrayList<QuestionPositionDescription> questions) {
         Logger.d(TAG, "{} - Setting questions array (and keeping in cache)",
                 statusManager.getCurrentModeName());
         questionsCache = questions;
@@ -237,7 +237,7 @@ public class ParametersStorage {
         eSharedPreferences.commit();
     }
 
-    public synchronized ArrayList<QuestionDescription> getQuestions() {
+    public synchronized ArrayList<QuestionPositionDescription> getQuestions() {
         Logger.d(TAG, "{} - Getting questions", statusManager.getCurrentModeName());
         if (questionsCache != null) {
             Logger.v(TAG, "{} - Cache is present -> returning questions from cache",
@@ -246,7 +246,7 @@ public class ParametersStorage {
             Logger.v(TAG, "{} - Cache not present -> getting questions from sharedPreferences",
                     statusManager.getCurrentModeName());
             Type questionDescriptionsArrayType =
-                    new TypeToken<ArrayList<QuestionDescription>>() {}.getType();
+                    new TypeToken<ArrayList<QuestionPositionDescription>>() {}.getType();
             questionsCache = json.fromJson(
                     sharedPreferences.getString(statusManager.getCurrentModeName() + QUESTIONS, null),
                     questionDescriptionsArrayType);

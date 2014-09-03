@@ -8,7 +8,7 @@ import com.brainydroid.daydreaming.sequence.QuestionBuilder;
 import com.brainydroid.daydreaming.sequence.Sequence;
 import com.google.inject.Inject;
 
-public class QuestionDescription extends BuildableOrderable<Question> implements IQuestion {
+public class QuestionPositionDescription extends BuildableOrderable<Question> implements IQuestion {
 
     @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "QuestionDescription";

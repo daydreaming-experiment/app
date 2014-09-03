@@ -19,7 +19,7 @@ public class PageDescription extends BuildableOrderable<Page> implements IPage {
     private String name = null;
     private String position = null;
     private int nSlots = -1;
-    private ArrayList<QuestionDescription> questions = new ArrayList<QuestionDescription>();
+    private ArrayList<QuestionPositionDescription> questions = new ArrayList<QuestionPositionDescription>();
     @Inject private transient PageBuilder pageBuilder;
 
     public String getName() {
@@ -34,7 +34,7 @@ public class PageDescription extends BuildableOrderable<Page> implements IPage {
         return nSlots;
     }
 
-    public ArrayList<QuestionDescription> getQuestions() {
+    public ArrayList<QuestionPositionDescription> getQuestions() {
         return questions;
     }
 
@@ -52,7 +52,7 @@ public class PageDescription extends BuildableOrderable<Page> implements IPage {
         }
         HashSet<String> positions = new HashSet<String>();
         HashSet<Integer> explicitPositions = new HashSet<Integer>();
-        for (QuestionDescription q : questions) {
+        for (QuestionPositionDescription q : questions) {
             positions.add(q.getPosition());
             if (q.isPositionExplicit()) {
                 explicitPositions.add(q.getExplicitPosition());
@@ -76,7 +76,7 @@ public class PageDescription extends BuildableOrderable<Page> implements IPage {
         if (questions == null || questions.size() == 0) {
             throw new JsonParametersException("questions can't be empty");
         }
-        for (QuestionDescription q : questions) {
+        for (QuestionPositionDescription q : questions) {
             q.validateInitialization();
         }
     }

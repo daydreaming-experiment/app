@@ -26,7 +26,7 @@ public class ServerParametersJson {
     private String resultsPageUrl = DEFAULT_RESULTS_PAGE_URL;
     private int schedulingMeanDelay = DEFAULT_SCHEDULING_MEAN_DELAY;
     private int schedulingMinDelay = DEFAULT_SCHEDULING_MIN_DELAY;
-    private ArrayList<QuestionDescription> questions = null;
+    private ArrayList<QuestionPositionDescription> questions = null;
     private ArrayList<SequenceDescription> sequences = null;
 
     public synchronized String getVersion() {
@@ -61,7 +61,7 @@ public class ServerParametersJson {
         return schedulingMinDelay;
     }
 
-    public synchronized ArrayList<QuestionDescription> getQuestions() {
+    public synchronized ArrayList<QuestionPositionDescription> getQuestions() {
         return questions;
     }
 
@@ -116,7 +116,7 @@ public class ServerParametersJson {
         if (questions == null || questions.size() == 0) {
             throw new JsonParametersException("questions can't be empty");
         }
-        for (QuestionDescription q : questions) {
+        for (QuestionPositionDescription q : questions) {
             q.validateInitialization();
         }
 

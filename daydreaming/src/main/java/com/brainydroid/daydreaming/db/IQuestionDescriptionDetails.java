@@ -3,12 +3,12 @@ package com.brainydroid.daydreaming.db;
 /**
  * Interface to implement to represent details of a question.
  * <p/>
- * See {@link QuestionDescription} for further details on how this interface plays
+ * See {@link QuestionPositionDescription} for further details on how this interface plays
  * along with the other classes and interfaces.
  *
  * @author Sébastien Lerique
  * @author Vincent Adam
- * @see QuestionDescription
+ * @see QuestionPositionDescription
  */
 public interface IQuestionDescriptionDetails {
 
