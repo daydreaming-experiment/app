@@ -40,11 +40,7 @@ public class AnswerDeserializer implements JsonDeserializer<IAnswer> {
             JsonObject obj = (JsonObject)json;
             Class klass = Class.forName(PACKAGE_PREFIX +
                     obj.get("type").getAsString() + ANSWER_SUFFIX);
-            IAnswer answer = context.deserialize(json, klass);
-
-            // Inject missing members, because Guice didn't create our object
-            injector.injectMembers(answer);
-            return answer;
+            return context.deserialize(json, klass);
         } catch (Exception e) {
             throw new JsonParseException(e.getMessage());
         }

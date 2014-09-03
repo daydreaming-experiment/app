@@ -6,11 +6,14 @@ import com.brainydroid.daydreaming.network.ProfileDataFactory;
 import com.brainydroid.daydreaming.network.ProfileFactory;
 import com.brainydroid.daydreaming.network.ProfileWrapperFactory;
 import com.brainydroid.daydreaming.network.ResultsWrapperFactory;
+import com.brainydroid.daydreaming.sequence.MultipleChoiceAnswerFactory;
 import com.brainydroid.daydreaming.sequence.PageFactory;
 import com.brainydroid.daydreaming.sequence.PageGroupFactory;
 import com.brainydroid.daydreaming.sequence.QuestionFactory;
 import com.brainydroid.daydreaming.sequence.Sequence;
 import com.brainydroid.daydreaming.sequence.SequenceFactory;
+import com.brainydroid.daydreaming.sequence.SliderAnswerFactory;
+import com.brainydroid.daydreaming.sequence.StarRatingAnswerFactory;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.TypeLiteral;
@@ -33,6 +36,9 @@ public class AppModule implements Module {
         binder.install(new FactoryModuleBuilder().build(PageGroupFactory.class));
         binder.install(new FactoryModuleBuilder().build(PageFactory.class));
         binder.install(new FactoryModuleBuilder().build(QuestionFactory.class));
+        binder.install(new FactoryModuleBuilder().build(SliderAnswerFactory.class));
+        binder.install(new FactoryModuleBuilder().build(StarRatingAnswerFactory.class));
+        binder.install(new FactoryModuleBuilder().build(MultipleChoiceAnswerFactory.class));
         binder.install(new FactoryModuleBuilder()
                 .build(new TypeLiteral<ResultsWrapperFactory<Sequence>>() {}));
         binder.install(new FactoryModuleBuilder()

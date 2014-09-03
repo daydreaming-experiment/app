@@ -2,6 +2,7 @@ package com.brainydroid.daydreaming.sequence;
 
 import com.brainydroid.daydreaming.background.Logger;
 import com.google.gson.annotations.Expose;
+import com.google.inject.Inject;
 
 import java.util.HashMap;
 
@@ -11,11 +12,8 @@ public class StarRatingAnswer implements IAnswer {
     private static String TAG = "StarRatingAnswer";
 
     @SuppressWarnings("FieldCanBeLocal")
-    private String type = "StarRating";
-
-    // Don't inject this or it will override Json-loaded values when
-    // deserializing.
-    @Expose HashMap<String, Float> starRatings = new HashMap<String, Float>();
+    @Expose private String type = "StarRating";
+    @Inject @Expose HashMap<String, Float> starRatings;
 
     public synchronized String getType() {
         return type;

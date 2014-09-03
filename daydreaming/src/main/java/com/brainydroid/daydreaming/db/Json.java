@@ -6,6 +6,8 @@ import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.network.JWSSignature;
 import com.brainydroid.daydreaming.network.JWSSignatureSerializer;
 import com.brainydroid.daydreaming.sequence.IAnswer;
+import com.brainydroid.daydreaming.sequence.MultipleChoiceAnswer;
+import com.brainydroid.daydreaming.sequence.MultipleChoiceAnswerInstanceCreator;
 import com.brainydroid.daydreaming.sequence.Page;
 import com.brainydroid.daydreaming.sequence.PageGroup;
 import com.brainydroid.daydreaming.sequence.PageGroupInstanceCreator;
@@ -14,6 +16,10 @@ import com.brainydroid.daydreaming.sequence.Question;
 import com.brainydroid.daydreaming.sequence.QuestionInstanceCreator;
 import com.brainydroid.daydreaming.sequence.Sequence;
 import com.brainydroid.daydreaming.sequence.SequenceInstanceCreator;
+import com.brainydroid.daydreaming.sequence.SliderAnswer;
+import com.brainydroid.daydreaming.sequence.SliderAnswerInstanceCreator;
+import com.brainydroid.daydreaming.sequence.StarRatingAnswer;
+import com.brainydroid.daydreaming.sequence.StarRatingAnswerInstanceCreator;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.inject.Inject;
@@ -72,6 +78,9 @@ public class Json {
                 PageGroupInstanceCreator pageGroupInstanceCreator,
                 PageInstanceCreator pageInstanceCreator,
                 QuestionInstanceCreator questionInstanceCreator,
+                StarRatingAnswerInstanceCreator starRatingAnswerInstanceCreator,
+                SliderAnswerInstanceCreator sliderAnswerInstanceCreator,
+                MultipleChoiceAnswerInstanceCreator multipleChoiceAnswerInstanceCreator,
                 LocationDeserializer locationDeserializer,
                 LocationSerializer locationSerializer,
                 JWSSignatureSerializer jwsSignatureSerializer) {
@@ -93,6 +102,10 @@ public class Json {
         gsonBuilder.registerTypeAdapter(PageGroup.class, pageGroupInstanceCreator);
         gsonBuilder.registerTypeAdapter(Page.class, pageInstanceCreator);
         gsonBuilder.registerTypeAdapter(Question.class, questionInstanceCreator);
+        gsonBuilder.registerTypeAdapter(StarRatingAnswer.class, starRatingAnswerInstanceCreator);
+        gsonBuilder.registerTypeAdapter(SliderAnswer.class, sliderAnswerInstanceCreator);
+        gsonBuilder.registerTypeAdapter(MultipleChoiceAnswer.class,
+                multipleChoiceAnswerInstanceCreator);
         gsonBuilder.registerTypeAdapter(Location.class,
                 locationDeserializer);
         gsonBuilder.registerTypeAdapter(Location.class, locationSerializer);
