@@ -4,9 +4,8 @@ import com.brainydroid.daydreaming.background.Logger;
 import com.google.gson.annotations.Expose;
 
 // FIXME: adapt doc imported from LocationPoint
-public abstract class StatusModel<M extends StatusModel<M,S,F>,
-        S extends StatusModelStorage<M,S,F>, F extends ModelFactory<M,S,F>>
-        extends Model<M,S,F> {
+public abstract class StatusModel<M extends StatusModel<M,S>,
+        S extends StatusModelStorage<M,S>> extends Model<M,S> {
 
     @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "StatusModel";

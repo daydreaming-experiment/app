@@ -28,10 +28,9 @@ import com.brainydroid.daydreaming.background.Logger;
  * @see StatusModel
  * @see StatusModelStorage
  * @see LocationPoint
- * @see Poll
+ * @see com.brainydroid.daydreaming.sequence.Sequence
  */
-public abstract class Model<M extends Model<M,S,F>,
-        S extends ModelStorage<M,S,F>, F extends ModelFactory<M,S,F>> {
+public abstract class Model<M extends Model<M,S>, S extends ModelStorage<M,S>> {
 
     private static String TAG = "Model";
 

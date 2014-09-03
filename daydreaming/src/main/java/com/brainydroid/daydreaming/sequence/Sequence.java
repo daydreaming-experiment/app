@@ -1,16 +1,13 @@
 package com.brainydroid.daydreaming.sequence;
 
 import com.brainydroid.daydreaming.background.Logger;
-import com.brainydroid.daydreaming.db.SequenceFactory;
-import com.brainydroid.daydreaming.db.SequencesStorage;
-import com.brainydroid.daydreaming.db.TypedStatusModel;
+import com.brainydroid.daydreaming.db.*;
 import com.google.gson.annotations.Expose;
 import com.google.inject.Inject;
 
 import java.util.ArrayList;
 
-public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,SequenceFactory>
-        implements ISequence {
+public class Sequence extends TypedStatusModel<Sequence,SequencesStorage> implements ISequence {
 
     private static String TAG = "Sequence";
 

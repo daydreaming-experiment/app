@@ -6,8 +6,7 @@ import com.google.inject.Inject;
 
 import java.util.ArrayList;
 
-public class SequencesStorage
-        extends TypedStatusModelStorage<Sequence,SequencesStorage,SequenceFactory> {
+public class SequencesStorage extends TypedStatusModelStorage<Sequence,SequencesStorage> {
 
     private static String TAG = "SequencesStorage";
 

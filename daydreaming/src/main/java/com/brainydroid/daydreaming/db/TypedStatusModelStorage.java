@@ -8,9 +8,8 @@ import com.google.inject.Inject;
 
 import java.util.ArrayList;
 
-public abstract class TypedStatusModelStorage<M extends TypedStatusModel<M,S,F>,
-        S extends TypedStatusModelStorage<M,S,F>, F extends ModelFactory<M,S,F>>
-        extends StatusModelStorage<M,S,F> {
+public abstract class TypedStatusModelStorage<M extends TypedStatusModel<M,S>,
+        S extends TypedStatusModelStorage<M,S>> extends StatusModelStorage<M,S> {
 
     private static String TAG = "TypedStatusModelStorage";
 

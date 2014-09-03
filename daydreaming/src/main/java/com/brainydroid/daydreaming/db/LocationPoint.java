@@ -19,8 +19,7 @@ import com.google.inject.Inject;
  * @see LocationPointsStorage
  * @see com.brainydroid.daydreaming.background.LocationPointService
  */
-public final class LocationPoint extends
-        StatusModel<LocationPoint,LocationPointsStorage,LocationPointFactory> {
+public final class LocationPoint extends StatusModel<LocationPoint,LocationPointsStorage> {
 
     @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "LocationPoint";

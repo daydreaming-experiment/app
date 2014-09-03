@@ -5,13 +5,13 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import com.brainydroid.daydreaming.background.Logger;
 import com.google.inject.Inject;
+import com.google.inject.TypeLiteral;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-public abstract class ModelStorage<M extends Model<M,S,F>,
-        S extends ModelStorage<M,S,F>, F extends ModelFactory<M,S,F>> {
+public abstract class ModelStorage<M extends Model<M,S>, S extends ModelStorage<M,S>> {
 
     private static String TAG = "ModelStorage";
 
@@ -19,9 +19,13 @@ public abstract class ModelStorage<M extends Model<M,S,F>,
     protected static final String COL_CONTENT = "content";
 
     @Inject Json json;
-    @Inject F modelFactory;
     @Inject HashMap<Integer,M> modelsCache;
     private final SQLiteDatabase db;
+
+    protected synchronized M createModelFromJson(String jsonContent) {
+        Logger.d(TAG, "Creating model from JSON");
+        return json.fromJson(jsonContent, new TypeLiteral<M>() {}.getType());
+    }
 
     protected synchronized String getTableCreationString() {
         Logger.v(TAG, "Creating table creation string");
@@ -117,7 +121,7 @@ public abstract class ModelStorage<M extends Model<M,S,F>,
             return null;
         }
 
-        M model = modelFactory.createFromJson(res.getString(res.getColumnIndex(COL_CONTENT)));
+        M model = createModelFromJson(res.getString(res.getColumnIndex(COL_CONTENT)));
         res.close();
 
         Logger.d(TAG, "Saving model {0} to cache", modelId);
@@ -132,7 +136,7 @@ public abstract class ModelStorage<M extends Model<M,S,F>,
                 new String[]{Integer.toString(modelId)});
     }
 
-    public synchronized void remove(ArrayList<? extends Model<M,S,F>> models) {
+    public synchronized void remove(ArrayList<? extends Model<M,S>> models) {
         Logger.d(TAG, "Removing an array of models from cache and db");
         if (models == null) {
             Logger.d(TAG, "No models to remove (received null)");
