@@ -23,6 +23,7 @@ public class AppModule implements Module {
 
         binder.install(new FactoryModuleBuilder().build(PageGroupDescriptionFactory.class));
         binder.install(new FactoryModuleBuilder().build(PageDescriptionFactory.class));
+        binder.install(new FactoryModuleBuilder().build(QuestionDescriptionFactory.class));
         binder.install(new FactoryModuleBuilder()
                 .build(new TypeLiteral<ResultsWrapperFactory<Sequence>>() {}));
         binder.install(new FactoryModuleBuilder()

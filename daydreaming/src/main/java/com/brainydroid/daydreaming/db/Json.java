@@ -59,6 +59,7 @@ public class Json {
                 QuestionDetailsDeserializer questionDetailsDeserializer,
                 PageGroupDescriptionInstanceCreator pageGroupDescriptionInstanceCreator,
                 PageDescriptionInstanceCreator pageDescriptionInstanceCreator,
+                QuestionDescriptionInstanceCreator questionDescriptionInstanceCreator,
                 LocationDeserializer locationDeserializer,
                 LocationSerializer locationSerializer,
                 JWSSignatureSerializer jwsSignatureSerializer) {
@@ -72,6 +73,8 @@ public class Json {
                 pageGroupDescriptionInstanceCreator);
         gsonBuilder.registerTypeAdapter(PageDescription.class,
                 pageDescriptionInstanceCreator);
+        gsonBuilder.registerTypeAdapter(QuestionDescription.class,
+                questionDescriptionInstanceCreator);
         gsonBuilder.registerTypeAdapter(Location.class,
                 locationDeserializer);
         gsonBuilder.registerTypeAdapter(Location.class, locationSerializer);
