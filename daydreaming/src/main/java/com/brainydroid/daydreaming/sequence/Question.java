@@ -4,7 +4,11 @@ import android.location.Location;
 
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.IQuestionDescriptionDetails;
+import com.brainydroid.daydreaming.ui.questions.BaseQuestionViewAdapter;
+import com.brainydroid.daydreaming.ui.questions.IQuestionViewAdapter;
 import com.google.gson.annotations.Expose;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
 
 // TODO: add some way to saveIfSync the phone's timezone and the user's
 // preferences_appSettings
@@ -12,10 +16,6 @@ import com.google.gson.annotations.Expose;
 public class Question implements IQuestion {
 
     private static String TAG = "Question";
-
-    public static final String STATUS_ASKED = "questionAsked";
-    public static final String STATUS_ASKED_DISMISSED = "questionAskedDismissed";
-    public static final String STATUS_ANSWERED = "questionAnswered";
 
     @Expose protected String name = null;
     private IQuestionDescriptionDetails details = null;
@@ -28,11 +28,40 @@ public class Question implements IQuestion {
 
     private Sequence sequence = null;
 
+    @Inject private transient Injector injector;
+
     public Question(String name, IQuestionDescriptionDetails details, Sequence sequence) {
         Logger.d(TAG, "Creating question {}", name);
         setName(name);
         setDetails(details);
         setSequence(sequence);
+    }
+
+    public IQuestionViewAdapter getAdapter() {
+        Logger.d(TAG, "Getting adapter for question");
+
+        String logSuffix = "for question " + name + " of type " + details.getType();
+        String packagePrefix = BaseQuestionViewAdapter.class.getPackage().getName() + ".";
+        try {
+            Class klass = Class.forName(packagePrefix +
+                    details.getType() + BaseQuestionViewAdapter.QUESTION_VIEW_ADAPTER_SUFFIX);
+            IQuestionViewAdapter questionViewAdapter = (IQuestionViewAdapter)klass.newInstance();
+            questionViewAdapter.setQuestion(this);
+            injector.injectMembers(questionViewAdapter);
+            return questionViewAdapter;
+        } catch (ClassNotFoundException e) {
+            Logger.e(TAG, "Could not find adapter class {}", logSuffix);
+            e.printStackTrace();
+            throw new RuntimeException("Could not find adapter class " + logSuffix);
+        } catch (InstantiationException e) {
+            Logger.e(TAG, "Could not instantiate adapter {}", logSuffix);
+            e.printStackTrace();
+            throw new RuntimeException("Could not instantiate adapter class " + logSuffix);
+        } catch (IllegalAccessException e) {
+            Logger.e(TAG, "Not allowed to access adapter class {}", logSuffix);
+            e.printStackTrace();
+            throw new RuntimeException("Not allowed to access adapter class" + logSuffix);
+        }
     }
 
     public synchronized String getName() {
