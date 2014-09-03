@@ -25,7 +25,7 @@ public class PageBuilder {
         BuildableOrder<QuestionDescription,Question> buildableOrder =
                 orderer.buildOrder(questionDescriptions);
 
-        return new Page(buildableOrder.build(sequence));
+        return new Page(buildableOrder.build(sequence), sequence);
     }
 
 }

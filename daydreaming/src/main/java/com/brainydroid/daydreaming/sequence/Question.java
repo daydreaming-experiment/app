@@ -1,7 +1,5 @@
 package com.brainydroid.daydreaming.sequence;
 
-import android.location.Location;
-
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.IQuestionDescriptionDetails;
 import com.brainydroid.daydreaming.ui.questions.BaseQuestionViewAdapter;
@@ -21,10 +19,6 @@ public class Question implements IQuestion {
     private IQuestionDescriptionDetails details = null;
 
     @Expose private IAnswer answer = null;
-    @Expose private String status = null;
-    @Expose private Location location = null;
-    @Expose private long ntpTimestamp = -1;
-    @Expose private long systemTimestamp = -1;
 
     private Sequence sequence = null;
 
@@ -91,46 +85,6 @@ public class Question implements IQuestion {
     private synchronized void setAnswer(IAnswer answer) {
         Logger.v(TAG, "Setting answer");
         this.answer = answer;
-        saveIfSync();
-    }
-
-    public synchronized String getStatus() {
-        return status;
-    }
-
-    public synchronized void setStatus(String status) {
-        Logger.v(TAG, "Setting status");
-        this.status = status;
-        saveIfSync();
-    }
-
-    public synchronized Location getLocation() {
-        return location;
-    }
-
-    public synchronized void setLocation(Location location) {
-        Logger.v(TAG, "Setting location");
-        this.location = location;
-        saveIfSync();
-    }
-
-    public synchronized long getNtpTimestamp() {
-        return ntpTimestamp;
-    }
-
-    public synchronized void setNtpTimestamp(long ntpTimestamp) {
-        Logger.v(TAG, "Setting ntpTimestamp");
-        this.ntpTimestamp = ntpTimestamp;
-        saveIfSync();
-    }
-
-    public synchronized long getSystemTimestamp() {
-        return systemTimestamp;
-    }
-
-    public synchronized void setSystemTimestamp(long systemTimestamp) {
-        Logger.v(TAG, "Setting systemTimestamp");
-        this.systemTimestamp = systemTimestamp;
         saveIfSync();
     }
 
