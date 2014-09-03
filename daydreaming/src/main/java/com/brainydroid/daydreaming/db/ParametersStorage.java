@@ -15,9 +15,9 @@ import com.brainydroid.daydreaming.network.HttpGetTask;
 import com.brainydroid.daydreaming.network.ParametersStorageCallback;
 import com.brainydroid.daydreaming.network.ServerConfig;
 import com.google.gson.JsonSyntaxException;
-import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.google.inject.TypeLiteral;
 
 import java.lang.reflect.Type;
 import java.text.MessageFormat;
@@ -246,7 +246,7 @@ public class ParametersStorage {
             Logger.v(TAG, "{} - Cache not present -> getting questions from sharedPreferences",
                     statusManager.getCurrentModeName());
             Type questionDescriptionsArrayType =
-                    new TypeToken<ArrayList<QuestionDescription>>() {}.getType();
+                    new TypeLiteral<ArrayList<QuestionDescription>>() {}.getType();
             questionsCache = json.fromJson(
                     sharedPreferences.getString(statusManager.getCurrentModeName() + QUESTIONS, null),
                     questionDescriptionsArrayType);
@@ -308,7 +308,7 @@ public class ParametersStorage {
             Logger.v(TAG, "{} - Cache not present -> getting sequences from sharedPreferences",
                     statusManager.getCurrentModeName());
             Type sequenceDescriptionsArrayType =
-                    new TypeToken<ArrayList<SequenceDescription>>() {}.getType();
+                    new TypeLiteral<ArrayList<SequenceDescription>>() {}.getType();
             sequencesCache = json.fromJson(
                     sharedPreferences.getString(statusManager.getCurrentModeName() + SEQUENCES, null),
                     sequenceDescriptionsArrayType);
