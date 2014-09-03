@@ -39,7 +39,7 @@ public class ParametersStorage {
     public static String QUESTIONS = "questions";
     public static String SEQUENCES = "sequences";
 
-    private ArrayList<QuestionPositionDescription> questionsCache;
+    private ArrayList<QuestionDescription> questionsCache;
     private ArrayList<SequenceDescription> sequencesCache;
 
     private SharedPreferences sharedPreferences;
@@ -228,7 +228,7 @@ public class ParametersStorage {
         eSharedPreferences.commit();
     }
 
-    public synchronized void setQuestions(ArrayList<QuestionPositionDescription> questions) {
+    public synchronized void setQuestions(ArrayList<QuestionDescription> questions) {
         Logger.d(TAG, "{} - Setting questions array (and keeping in cache)",
                 statusManager.getCurrentModeName());
         questionsCache = questions;
@@ -237,7 +237,7 @@ public class ParametersStorage {
         eSharedPreferences.commit();
     }
 
-    public synchronized ArrayList<QuestionPositionDescription> getQuestions() {
+    public synchronized ArrayList<QuestionDescription> getQuestions() {
         Logger.d(TAG, "{} - Getting questions", statusManager.getCurrentModeName());
         if (questionsCache != null) {
             Logger.v(TAG, "{} - Cache is present -> returning questions from cache",
@@ -246,7 +246,7 @@ public class ParametersStorage {
             Logger.v(TAG, "{} - Cache not present -> getting questions from sharedPreferences",
                     statusManager.getCurrentModeName());
             Type questionDescriptionsArrayType =
-                    new TypeToken<ArrayList<QuestionPositionDescription>>() {}.getType();
+                    new TypeToken<ArrayList<QuestionDescription>>() {}.getType();
             questionsCache = json.fromJson(
                     sharedPreferences.getString(statusManager.getCurrentModeName() + QUESTIONS, null),
                     questionDescriptionsArrayType);
@@ -257,6 +257,7 @@ public class ParametersStorage {
                     statusManager.getCurrentModeName());
             throw new RuntimeException("Questions asked for but not set");
         }
+
         return questionsCache;
     }
 
@@ -266,6 +267,27 @@ public class ParametersStorage {
         questionsCache = null;
         eSharedPreferences.remove(statusManager.getCurrentModeName() + QUESTIONS);
         eSharedPreferences.commit();
+    }
+
+    public synchronized QuestionDescription getQuestionDescription(String name) {
+        Logger.d(TAG, "{0} - Looking for questionDescription {1}",
+                statusManager.getCurrentModeName(), name);
+
+        // Get list of all names
+        ArrayList<QuestionDescription> questions = getQuestions();
+        ArrayList<String> names = new ArrayList<String>(questions.size());
+        for (QuestionDescription s : questions) {
+            names.add(s.getName());
+        }
+
+        int questionIndex = names.indexOf(name);
+        if (questionIndex == -1) {
+            Logger.e(TAG, "{0} - Question {1} asked for but not found",
+                    statusManager.getCurrentModeName(), name);
+            throw new RuntimeException("Question asked for but not found (see logs)");
+        }
+
+        return questions.get(questionIndex);
     }
 
     public synchronized void setSequences(ArrayList<SequenceDescription> sequences) {
@@ -297,6 +319,7 @@ public class ParametersStorage {
                     statusManager.getCurrentModeName());
             throw new RuntimeException("Sequences asked for but not set");
         }
+
         return sequencesCache;
     }
 
@@ -327,7 +350,6 @@ public class ParametersStorage {
         }
 
         return sequences.get(sequenceIndex);
-
     }
 
     public synchronized void flush() {

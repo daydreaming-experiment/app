@@ -8,14 +8,13 @@ import com.brainydroid.daydreaming.sequence.QuestionBuilder;
 import com.brainydroid.daydreaming.sequence.Sequence;
 import com.google.inject.Inject;
 
-public class QuestionPositionDescription extends BuildableOrderable<Question> implements IQuestion {
+public class QuestionPositionDescription extends BuildableOrderable<Question>{
 
     @SuppressWarnings("FieldCanBeLocal")
-    private static String TAG = "QuestionDescription";
+    private static String TAG = "QuestionPositionDescription";
 
     private String name = null;
     private String position = null;
-    private IQuestionDescriptionDetails details = null;
     @Inject private transient QuestionBuilder questionBuilder;
 
     public String getName() {
@@ -24,10 +23,6 @@ public class QuestionPositionDescription extends BuildableOrderable<Question> im
 
     public String getPosition() {
         return position;
-    }
-
-    public IQuestionDescriptionDetails getDetails() {
-        return details;
     }
 
     public synchronized void validateInitialization() throws JsonParametersException {
@@ -40,16 +35,11 @@ public class QuestionPositionDescription extends BuildableOrderable<Question> im
         if (position == null) {
             throw new JsonParametersException("position in question can't be null");
         }
-        if (details == null) {
-            throw new JsonParametersException("details in question can't be null");
-        }
-
-        // Check the details
-        details.validateInitialization();
     }
 
     @Override
     public Question build(Sequence sequence) {
         return questionBuilder.build(this, sequence);
     }
+
 }

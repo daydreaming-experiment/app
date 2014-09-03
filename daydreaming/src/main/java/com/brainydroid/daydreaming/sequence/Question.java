@@ -2,6 +2,7 @@ package com.brainydroid.daydreaming.sequence;
 
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.IQuestionDescriptionDetails;
+import com.brainydroid.daydreaming.db.QuestionDescription;
 import com.brainydroid.daydreaming.ui.sequences.BaseQuestionViewAdapter;
 import com.brainydroid.daydreaming.ui.sequences.IQuestionViewAdapter;
 import com.google.gson.annotations.Expose;
@@ -24,10 +25,10 @@ public class Question implements IQuestion {
 
     @Inject private transient Injector injector;
 
-    public Question(String name, IQuestionDescriptionDetails details, Sequence sequence) {
-        Logger.d(TAG, "Creating question {}", name);
-        setName(name);
-        setDetails(details);
+    public Question(QuestionDescription questionDescription, Sequence sequence) {
+        Logger.d(TAG, "Creating question {}", questionDescription.getName());
+        setName(questionDescription.getName());
+        setDetails(questionDescription.getDetails());
         setSequence(sequence);
     }
 
