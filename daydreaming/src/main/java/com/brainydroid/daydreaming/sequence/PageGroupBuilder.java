@@ -24,6 +24,7 @@ public class PageGroupBuilder {
                 orderer.buildOrder(pageGroupDescription.getNSlots(), pageDescriptions);
 
         PageGroup pageGroup = pageGroupFactory.create();
+        pageGroup.importFromPageGroupDescription(pageGroupDescription);
         pageGroup.setPages(buildableOrder.build(sequence));
         return pageGroup;
     }

@@ -12,11 +12,16 @@ public class SequenceDescription implements ISequence {
     private static String TAG = "SequenceDescription";
 
     private String name = null;
+    private String type = null;
     private int nSlots = -1;
     private ArrayList<PageGroupDescription> pageGroups = null;
 
     public String getName() {
         return name;
+    }
+
+    public String getType() {
+        return type;
     }
 
     public int getNSlots() {
@@ -33,6 +38,12 @@ public class SequenceDescription implements ISequence {
         // Check name
         if (name == null) {
             throw new JsonParametersException("name in sequence can't be null");
+        }
+
+
+        // Check type
+        if (type == null) {
+            throw new JsonParametersException("type in sequence can't be null");
         }
 
         // Check nSlots

@@ -3,6 +3,7 @@ package com.brainydroid.daydreaming.sequence;
 import android.location.Location;
 
 import com.brainydroid.daydreaming.background.Logger;
+import com.brainydroid.daydreaming.db.PageDescription;
 import com.brainydroid.daydreaming.db.SequencesStorage;
 import com.google.gson.annotations.Expose;
 import com.google.inject.Inject;
@@ -16,6 +17,7 @@ public class Page implements IPage {
     public static final String STATUS_ASKED = "pageAsked";
     public static final String STATUS_ANSWERED = "pageAnswered";
 
+    @Expose private String name = null;
     @Expose private String status = null;
     @Expose private Location location = null;
     @Expose private long ntpTimestamp = -1;
@@ -28,6 +30,19 @@ public class Page implements IPage {
 
     private transient Sequence sequenceCache = null;
     @Inject private transient SequencesStorage sequencesStorage;
+
+    public void importFromPageDescription(PageDescription description) {
+        setName(description.getName());
+    }
+
+    public synchronized String getName() {
+        return name;
+    }
+
+    private synchronized void setName(String name) {
+        this.name = name;
+        saveIfSync();
+    }
 
     public synchronized String getStatus() {
         return status;

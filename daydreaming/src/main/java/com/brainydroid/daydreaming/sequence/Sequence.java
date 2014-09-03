@@ -11,6 +11,7 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage> implem
 
     private static String TAG = "Sequence";
 
+    @Expose private String name = null;
     @Expose private long notificationNtpTimestamp = -1;
     @Expose private long notificationSystemTimestamp = -1;
     @Expose private ArrayList<PageGroup> pageGroups = null;
@@ -26,9 +27,24 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage> implem
     @Inject transient SequencesStorage sequencesStorage;
     private transient ArrayList<Page> allPagesCache = null;
 
+    public synchronized String getName() {
+        return name;
+    }
+
+    private synchronized void setName(String name) {
+        this.name = name;
+        saveIfSync();
+    }
+
+    public synchronized void importFromSequenceDescription(SequenceDescription description) {
+        setName(description.getName());
+        setType(description.getType());
+    }
+
     public synchronized void setPageGroups(ArrayList<PageGroup> pageGroups) {
         Logger.v(TAG, "Setting pageGroups");
         this.pageGroups = pageGroups;
+        saveIfSync();
     }
 
     public synchronized ArrayList<PageGroup> getPageGroups() {

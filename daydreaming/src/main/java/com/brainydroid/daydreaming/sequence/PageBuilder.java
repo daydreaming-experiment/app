@@ -24,6 +24,7 @@ public class PageBuilder {
                 orderer.buildOrder(pageDescription.getNSlots(), questionPositionDescriptions);
 
         Page page = pageFactory.create();
+        page.importFromPageDescription(pageDescription);
         page.setQuestions(buildableOrder.build(sequence));
         page.setSequence(sequence);
         return page;

@@ -26,6 +26,7 @@ public class SequenceBuilder {
                 orderer.buildOrder(sequenceDescription.getNSlots(), pageGroupDescriptions);
 
         Sequence sequence = sequenceFactory.create();
+        sequence.importFromSequenceDescription(sequenceDescription);
         sequence.setPageGroups(buildableOrder.build(sequence));
         return sequence;
     }

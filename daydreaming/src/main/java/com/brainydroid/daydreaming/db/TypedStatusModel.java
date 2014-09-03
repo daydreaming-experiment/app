@@ -10,7 +10,7 @@ public abstract class TypedStatusModel<M extends TypedStatusModel<M,S>,
 
     @Expose protected String type;
 
-    public synchronized void setType(String type) {
+    protected synchronized void setType(String type) {
         Logger.v(TAG, "Setting type");
         this.type = type;
         saveIfSync();
