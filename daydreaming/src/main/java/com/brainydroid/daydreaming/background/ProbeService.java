@@ -165,7 +165,7 @@ public class ProbeService extends RoboService {
             probe = pendingProbes.get(0);
         } else {
             Logger.d(TAG, "Creating new probe");
-            probe = sequenceBuilder.build(Sequence.TYPE_PROBE);
+            probe = sequenceBuilder.buildSave(Sequence.TYPE_PROBE);
         }
 
         // Update the probe's status

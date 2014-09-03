@@ -24,7 +24,7 @@ public abstract class StatusModelStorage<M extends StatusModel<M,S,F>,
     protected synchronized ArrayList<String> getTableCreationElements() {
         ArrayList<String> elements = super.getTableCreationElements();
         Logger.v(TAG, "Adding status to table creation elements");
-        elements.add(COL_STATUS + " TEXT NOT NULL");
+        elements.add(COL_STATUS + " TEXT");
         return elements;
     }
 

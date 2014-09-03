@@ -18,7 +18,7 @@ public class SequenceBuilder {
     @Inject private PageGroupBuilder pageGroupBuilder;
     @Inject private Orderer<PageGroupDescription,PageGroup> orderer;
 
-    public Sequence build(SequenceDescription sequenceDescription) {
+    public Sequence buildSave(SequenceDescription sequenceDescription) {
         Logger.v(TAG, "Building sequence from description {}", sequenceDescription.getName());
 
         ArrayList<PageGroupDescription> pageGroupDescriptions = sequenceDescription.getPageGroups();
@@ -27,12 +27,13 @@ public class SequenceBuilder {
 
         Sequence sequence = sequenceFactory.create();
         sequence.importFromSequenceDescription(sequenceDescription);
+        sequence.save();
         sequence.setPageGroups(buildableOrder.build(sequence));
         return sequence;
     }
 
-    public Sequence build(String name) {
-        return build(parametersStorage.getSequenceDescription(name));
+    public Sequence buildSave(String name) {
+        return buildSave(parametersStorage.getSequenceDescription(name));
     }
 
 }

@@ -87,6 +87,12 @@ public class Page implements IPage {
     public synchronized void setSequence(Sequence sequence) {
         this.sequenceCache = sequence;
         this.sequenceId = sequenceCache.getId();
+        if (sequenceId == -1) {
+            String msg = "Can't set sequence in a page if the sequence that has no id " +
+                    "(i.e. it hasn't been saved yet)";
+            Logger.e(TAG, msg);
+            throw new RuntimeException(msg);
+        }
         saveIfSync();
     }
 
