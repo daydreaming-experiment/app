@@ -14,6 +14,7 @@ import android.preference.PreferenceManager;
 
 import com.brainydroid.daydreaming.db.LocationPointsStorage;
 import com.brainydroid.daydreaming.db.ParametersStorage;
+import com.brainydroid.daydreaming.db.ProfileStorage;
 import com.brainydroid.daydreaming.db.SequencesStorage;
 import com.brainydroid.daydreaming.network.CryptoStorage;
 import com.brainydroid.daydreaming.sequence.Sequence;

@@ -7,6 +7,7 @@ import com.brainydroid.daydreaming.db.Json;
 import com.brainydroid.daydreaming.db.LocationPoint;
 import com.brainydroid.daydreaming.db.LocationPointsStorage;
 import com.brainydroid.daydreaming.db.ParametersStorage;
+import com.brainydroid.daydreaming.db.ProfileStorage;
 import com.brainydroid.daydreaming.db.SequencesStorage;
 import com.brainydroid.daydreaming.network.CryptoStorage;
 import com.brainydroid.daydreaming.network.CryptoStorageCallback;

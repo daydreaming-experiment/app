@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.*;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
+import com.brainydroid.daydreaming.db.ProfileStorage;
 import com.google.inject.Inject;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
