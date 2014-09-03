@@ -15,6 +15,7 @@ public class Orderer<D extends BuildableOrderable<C>,C> {
     private static String TAG = "Orderer";
 
     @Inject Util util;
+    @Inject BuildableOrder<D,C> buildableOrder;
     private int nSlots;
 
     public BuildableOrder<D,C> buildOrder(int nSlots, ArrayList<D> descriptions) {
@@ -35,7 +36,8 @@ public class Orderer<D extends BuildableOrderable<C>,C> {
         putFloats(getRandomFloats(descriptions, nFloatingToFill), remainingIndices, map);
 
         // Shuffle groups internally, and build the resulting order
-        return new BuildableOrder<D, C>(shuffleGroups(map));
+        buildableOrder.initialize(shuffleGroups(map));
+        return buildableOrder;
     }
 
     private ArrayList<ArrayList<D>> shuffleGroups(HashMap<Integer,ArrayList<D>> map) {
