@@ -6,6 +6,6 @@ import java.util.ArrayList;
 
 abstract public interface IPage {
 
-    public ArrayList<QuestionPositionDescription> getQuestions();
+    public ArrayList<? extends IQuestion> getQuestions();
 
 }

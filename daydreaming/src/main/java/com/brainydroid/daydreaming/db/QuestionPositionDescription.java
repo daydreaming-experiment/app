@@ -2,13 +2,15 @@ package com.brainydroid.daydreaming.db;
 
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.sequence.BuildableOrderable;
+import com.brainydroid.daydreaming.sequence.IPage;
 import com.brainydroid.daydreaming.sequence.IQuestion;
 import com.brainydroid.daydreaming.sequence.Question;
 import com.brainydroid.daydreaming.sequence.QuestionBuilder;
 import com.brainydroid.daydreaming.sequence.Sequence;
 import com.google.inject.Inject;
 
-public class QuestionPositionDescription extends BuildableOrderable<Question>{
+public class QuestionPositionDescription extends BuildableOrderable<Question>
+        implements IQuestion {
 
     @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "QuestionPositionDescription";
