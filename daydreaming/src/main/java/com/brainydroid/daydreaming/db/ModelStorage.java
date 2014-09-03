@@ -134,6 +134,10 @@ public abstract class ModelStorage<M extends Model<M,S,F>,
 
     public synchronized void remove(ArrayList<? extends Model<M,S,F>> models) {
         Logger.d(TAG, "Removing an array of models from cache and db");
+        if (models == null) {
+            Logger.d(TAG, "No models to remove (received null)");
+            return;
+        }
         for (Model model : models) {
             remove(model.getId());
         }

@@ -397,6 +397,7 @@ public class ParametersStorage {
             setQuestions(serverParametersJson.getQuestions());
             setSequences(serverParametersJson.getSequences());
         } catch (JsonParametersException e) {
+            e.printStackTrace();
             throw new ParametersSyntaxException();
         }
     }
@@ -469,6 +470,7 @@ public class ParametersStorage {
                         ParametersStorage.this.importParameters(serverAnswer);
                         Logger.d(TAG, "Importing new parameters to storage");
                     } catch (ParametersSyntaxException e) {
+                        e.printStackTrace();
                         Logger.e(TAG, "Downloaded parameters were malformed -> " +
                                 "parameters not updated");
                         callback.onParametersStorageReady(false);

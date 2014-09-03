@@ -22,6 +22,13 @@ public abstract class TypedStatusModelStorage<M extends TypedStatusModel<M,S,F>,
     }
 
     @Override
+    protected synchronized ArrayList<String> getTableCreationElements() {
+        ArrayList<String> elements = super.getTableCreationElements();
+        Logger.v(TAG, "Adding type to table creation elements");
+        elements.add(COL_TYPE + " TEXT NOT NULL");
+        return elements;
+    }
+    @Override
     protected synchronized ContentValues getModelValues(M model) {
         ContentValues modelValues = super.getModelValues(model);
         Logger.d(TAG, "Adding type to model");

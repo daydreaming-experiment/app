@@ -18,7 +18,7 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
     @Expose private long notificationSystemTimestamp;
     @Expose private ArrayList<PageGroup> pageGroups;
 
-    public static String TYPE_PROBE = "typeProbe";
+    public static String TYPE_PROBE = "probe";
     public static String[] AVAILABLE_TYPES = new String[] {TYPE_PROBE};
 
     public static final String STATUS_PENDING = "pending"; // Notification has appeared

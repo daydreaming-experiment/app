@@ -54,6 +54,10 @@ public class SequencesStorage
 
     public synchronized void removeUploadableSequences(String type) {
         Logger.d(TAG, "Removing uploadable sequences of type {}", type);
-        remove(getUploadableSequences(type));
+        ArrayList<Sequence> uploadableSequences = getUploadableSequences(type);
+        if (uploadableSequences != null) {
+            Logger.d(TAG, "Removing {} uploadable sequences", uploadableSequences.size());
+            remove(getUploadableSequences(type));
+        }
     }
 }
