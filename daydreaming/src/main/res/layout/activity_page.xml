@@ -74,7 +74,7 @@
             android:gravity="right" >
 
             <ImageButton
-                android:id="@+id/question_nextButton"
+                android:id="@+id/page_nextButton"
                 android:layout_width="@dimen/button_next_width"
                 android:layout_height="@dimen/button_next_height"
                 android:background="@drawable/button_cloud_next_selector"
@@ -82,7 +82,7 @@
                 android:contentDescription="@string/page_button_next" />
 
             <ImageButton
-                android:id="@+id/question_finishButton"
+                android:id="@+id/page_finishButton"
                 android:layout_width="@dimen/button_next_width"
                 android:layout_height="@dimen/button_next_height"
                 android:background="@drawable/button_finish_selector"
