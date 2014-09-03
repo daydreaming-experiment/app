@@ -13,7 +13,6 @@ import com.brainydroid.daydreaming.sequence.PageGroup;
 import com.brainydroid.daydreaming.sequence.PageGroupInstanceCreator;
 import com.brainydroid.daydreaming.sequence.PageInstanceCreator;
 import com.brainydroid.daydreaming.sequence.Question;
-import com.brainydroid.daydreaming.sequence.QuestionDescriptionSerializer;
 import com.brainydroid.daydreaming.sequence.QuestionInstanceCreator;
 import com.brainydroid.daydreaming.sequence.Sequence;
 import com.brainydroid.daydreaming.sequence.SequenceInstanceCreator;
