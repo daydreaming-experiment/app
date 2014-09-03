@@ -26,7 +26,6 @@ public class LocationPointFactory
     public LocationPoint createFromJson(String jsonContent) {
         Logger.v(TAG, "Creating locationPoint from json");
         return json.fromJson(jsonContent, LocationPoint.class);
-
     }
 
 }
