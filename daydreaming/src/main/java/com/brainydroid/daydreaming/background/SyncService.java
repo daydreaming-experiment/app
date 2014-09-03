@@ -44,7 +44,7 @@ public class SyncService extends RoboService {
     protected static String TAG = "SyncService";
 
     public static String DEBUG_SYNC = "debugSync";
-    private boolean isDebugSync = false;
+    public static String URGENT_SYNC = "urgentSync";
     private String startSyncAppMode;
 
     @Inject StatusManager statusManager;
@@ -127,10 +127,12 @@ public class SyncService extends RoboService {
         startSyncAppMode = statusManager.getCurrentModeName();
 
         // Launch synchronization tasks if we haven't done so not long ago
-        isDebugSync = intent.getBooleanExtra(DEBUG_SYNC, false);
-        if (statusManager.isLastSyncLongAgo() || isDebugSync) {
-            Logger.d(TAG, "Last sync was long ago or this is a debug sync -> starting updates");
-            startUpdates();
+        boolean isDebugSync = intent.getBooleanExtra(DEBUG_SYNC, false);
+        boolean isUrgentSync = intent.getBooleanExtra(URGENT_SYNC, false);
+        if (statusManager.isLastSyncLongAgo() || isDebugSync || isUrgentSync) {
+            Logger.d(TAG, "Last sync was long ago or this is a debug or urgent sync " +
+                    "-> starting updates");
+            startUpdates(isDebugSync);
         } else {
             Logger.v(TAG, "Last sync was not long ago -> exiting");
             stopSelf();
@@ -145,7 +147,7 @@ public class SyncService extends RoboService {
         return null;
     }
 
-    private void startUpdates() {
+    private void startUpdates(boolean isDebugSync) {
         Logger.d(TAG, "Initializing crypto to launch sync tasks");
 
         if (statusManager.isDataEnabled()) {
