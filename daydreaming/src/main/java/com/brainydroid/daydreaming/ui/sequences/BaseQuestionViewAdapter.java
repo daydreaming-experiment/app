@@ -28,7 +28,7 @@ public abstract class BaseQuestionViewAdapter
     @Inject LayoutInflater layoutInflater;
     @InjectView(R.id.question_layout_base) LinearLayout layout;
 
-    public  BaseQuestionViewAdapter(Question question) {
+    public void setQuestion(Question question) {
         this.question = question;
     }
 

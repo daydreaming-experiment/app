@@ -19,7 +19,7 @@ import roboguice.service.RoboService;
  * <p/>
  * The lifecycle is as follows: a {@code Service} or an {@code Activity} (in
  * practice {@link LocationPointService} or {@link
- * com.brainydroid.daydreaming.ui.sequences.QuestionActivity} wants to obtain some
+ * com.brainydroid.daydreaming.ui.sequences.PageActivity} wants to obtain some
  * location data. To do so it needs to listen for a given period of time to
  * leave the time to the location backend to acquire a proper location. So
  * it will start {@link LocationService} (through the {@link
@@ -28,7 +28,7 @@ import roboguice.service.RoboService;
  * it will un-register its callback on the {@link LocationService} (again
  * through the {@link LocationServiceConnection}). The {@link
  * LocationService} will stop itself if no other callback is registered
- * (indeed, a {@link com.brainydroid.daydreaming.ui.QuestionActivity} and a
+ * (indeed, a {@link com.brainydroid.daydreaming.ui.sequences.PageActivity} and a
  * {@link LocationPointService} could be listening for location updates at
  * the same time ; when one of the finishes and un-registers,
  * the other one doesn't want {@link LocationService} to stop until it is
@@ -44,7 +44,7 @@ import roboguice.service.RoboService;
  * @see LocationCallback
  * @see ServiceConnectionCallback
  * @see com.brainydroid.daydreaming.db.LocationPoint
- * @see com.brainydroid.daydreaming.db.Question
+ * @see com.brainydroid.daydreaming.sequence.Sequence
  */
 public class LocationService extends RoboService {
 

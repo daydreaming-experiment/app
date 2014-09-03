@@ -15,7 +15,7 @@ import com.brainydroid.daydreaming.network.SntpClient;
 import com.brainydroid.daydreaming.network.SntpClientCallback;
 import com.brainydroid.daydreaming.sequence.Sequence;
 import com.brainydroid.daydreaming.sequence.SequenceBuilder;
-import com.brainydroid.daydreaming.ui.sequences.QuestionActivity;
+import com.brainydroid.daydreaming.ui.sequences.PageActivity;
 import com.google.inject.Inject;
 
 import java.util.ArrayList;
@@ -83,20 +83,17 @@ public class ProbeService extends RoboService {
     }
 
     /**
-     * Create the {@link QuestionActivity} {@link Intent}.
+     * Create the {@link PageActivity} {@link Intent}.
      *
      * @return An {@link Intent} to launch our {@link Sequence}
      */
     private synchronized Intent createProbeIntent() {
         Logger.d(TAG, "Creating probe Intent");
 
-        Intent intent = new Intent(this, QuestionActivity.class);
+        Intent intent = new Intent(this, PageActivity.class);
 
         // Set the id of the probe to start
-        intent.putExtra(QuestionActivity.EXTRA_POLL_ID, probe.getId());
-
-        // Set the index of the question to open
-        intent.putExtra(QuestionActivity.EXTRA_QUESTION_INDEX, 0);
+        intent.putExtra(PageActivity.EXTRA_SEQUENCE_ID, probe.getId());
 
         // Create a new task. The rest is defined in the App manifest.
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

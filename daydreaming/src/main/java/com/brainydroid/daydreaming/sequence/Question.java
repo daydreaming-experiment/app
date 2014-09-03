@@ -82,7 +82,7 @@ public class Question implements IQuestion {
         return answer;
     }
 
-    private synchronized void setAnswer(IAnswer answer) {
+    public synchronized void setAnswer(IAnswer answer) {
         Logger.v(TAG, "Setting answer");
         this.answer = answer;
         saveIfSync();

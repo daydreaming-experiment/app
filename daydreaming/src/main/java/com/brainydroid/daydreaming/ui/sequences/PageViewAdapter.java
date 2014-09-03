@@ -53,8 +53,21 @@ public class PageViewAdapter {
         }
     }
 
-    public boolean validate() {}
+    public boolean validate() {
+        Logger.d(TAG, "Validating page answers");
 
-    public void saveAnswers() {}
+        boolean ok = true;
+        for (IQuestionViewAdapter adapter : questionViewAdapters) {
+            ok &= adapter.validate();
+        }
+        return ok;
+    }
+
+    public void saveAnswers() {
+        Logger.d(TAG, "Saving page answers");
+        for (IQuestionViewAdapter adapter : questionViewAdapters) {
+            adapter.saveAnswer();
+        }
+    }
 
 }
