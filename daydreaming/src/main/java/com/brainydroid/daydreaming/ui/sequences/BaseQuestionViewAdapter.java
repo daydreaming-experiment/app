@@ -3,6 +3,7 @@ package com.brainydroid.daydreaming.ui.sequences;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.brainydroid.daydreaming.R;
@@ -26,20 +27,20 @@ public abstract class BaseQuestionViewAdapter
 
     @Inject Context context;
     @Inject LayoutInflater layoutInflater;
-    @InjectView(R.id.question_layout_base) LinearLayout layout;
 
     public void setQuestion(Question question) {
         this.question = question;
     }
 
-    public LinearLayout inflate() {
+    public LinearLayout inflate(ViewGroup.LayoutParams layoutParams) {
         Logger.d(TAG, "Inflating question view");
 
         int index = 0;
+        LinearLayout layout = (LinearLayout)layoutInflater.inflate(R.layout.question_layout, null);
         ArrayList<View> views = inflateViews();
 
         for (View view : views) {
-            layout.addView(view, index, layout.getLayoutParams());
+            layout.addView(view, index, layoutParams);
             index++;
         }
 
