@@ -6,6 +6,9 @@ import com.brainydroid.daydreaming.network.ProfileDataFactory;
 import com.brainydroid.daydreaming.network.ProfileFactory;
 import com.brainydroid.daydreaming.network.ProfileWrapperFactory;
 import com.brainydroid.daydreaming.network.ResultsWrapperFactory;
+import com.brainydroid.daydreaming.sequence.PageFactory;
+import com.brainydroid.daydreaming.sequence.PageGroupFactory;
+import com.brainydroid.daydreaming.sequence.QuestionFactory;
 import com.brainydroid.daydreaming.sequence.Sequence;
 import com.brainydroid.daydreaming.sequence.SequenceFactory;
 import com.google.inject.Binder;
@@ -27,6 +30,9 @@ public class AppModule implements Module {
         binder.install(new FactoryModuleBuilder().build(PageDescriptionFactory.class));
         binder.install(new FactoryModuleBuilder().build(QuestionDescriptionFactory.class));
         binder.install(new FactoryModuleBuilder().build(SequenceFactory.class));
+        binder.install(new FactoryModuleBuilder().build(PageGroupFactory.class));
+        binder.install(new FactoryModuleBuilder().build(PageFactory.class));
+        binder.install(new FactoryModuleBuilder().build(QuestionFactory.class));
         binder.install(new FactoryModuleBuilder()
                 .build(new TypeLiteral<ResultsWrapperFactory<Sequence>>() {}));
         binder.install(new FactoryModuleBuilder()

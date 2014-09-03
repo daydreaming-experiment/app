@@ -6,6 +6,12 @@ import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.network.JWSSignature;
 import com.brainydroid.daydreaming.network.JWSSignatureSerializer;
 import com.brainydroid.daydreaming.sequence.IAnswer;
+import com.brainydroid.daydreaming.sequence.Page;
+import com.brainydroid.daydreaming.sequence.PageGroup;
+import com.brainydroid.daydreaming.sequence.PageGroupInstanceCreator;
+import com.brainydroid.daydreaming.sequence.PageInstanceCreator;
+import com.brainydroid.daydreaming.sequence.Question;
+import com.brainydroid.daydreaming.sequence.QuestionInstanceCreator;
 import com.brainydroid.daydreaming.sequence.Sequence;
 import com.brainydroid.daydreaming.sequence.SequenceInstanceCreator;
 import com.google.gson.Gson;
@@ -64,6 +70,9 @@ public class Json {
                 PageDescriptionInstanceCreator pageDescriptionInstanceCreator,
                 QuestionDescriptionInstanceCreator questionDescriptionInstanceCreator,
                 SequenceInstanceCreator sequenceInstanceCreator,
+                PageGroupInstanceCreator pageGroupInstanceCreator,
+                PageInstanceCreator pageInstanceCreator,
+                QuestionInstanceCreator questionInstanceCreator,
                 LocationDeserializer locationDeserializer,
                 LocationSerializer locationSerializer,
                 JWSSignatureSerializer jwsSignatureSerializer) {
@@ -82,6 +91,9 @@ public class Json {
         gsonBuilder.registerTypeAdapter(QuestionDescription.class,
                 questionDescriptionInstanceCreator);
         gsonBuilder.registerTypeAdapter(Sequence.class, sequenceInstanceCreator);
+        gsonBuilder.registerTypeAdapter(PageGroup.class, pageGroupInstanceCreator);
+        gsonBuilder.registerTypeAdapter(Page.class, pageInstanceCreator);
+        gsonBuilder.registerTypeAdapter(Question.class, questionInstanceCreator);
         gsonBuilder.registerTypeAdapter(Location.class,
                 locationDeserializer);
         gsonBuilder.registerTypeAdapter(Location.class, locationSerializer);

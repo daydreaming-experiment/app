@@ -11,9 +11,9 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage> implem
 
     private static String TAG = "Sequence";
 
-    @Expose private long notificationNtpTimestamp;
-    @Expose private long notificationSystemTimestamp;
-    @Expose private ArrayList<PageGroup> pageGroups;
+    @Expose private long notificationNtpTimestamp = -1;
+    @Expose private long notificationSystemTimestamp = -1;
+    @Expose private ArrayList<PageGroup> pageGroups = null;
 
     public static String TYPE_PROBE = "probe";
     public static String[] AVAILABLE_TYPES = new String[] {TYPE_PROBE};
