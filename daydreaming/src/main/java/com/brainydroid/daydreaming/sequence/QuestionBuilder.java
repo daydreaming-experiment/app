@@ -5,9 +5,7 @@ import com.brainydroid.daydreaming.db.ParametersStorage;
 import com.brainydroid.daydreaming.db.QuestionDescription;
 import com.brainydroid.daydreaming.db.QuestionPositionDescription;
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
 
-@Singleton
 public class QuestionBuilder {
 
     @SuppressWarnings("FieldCanBeLocal")

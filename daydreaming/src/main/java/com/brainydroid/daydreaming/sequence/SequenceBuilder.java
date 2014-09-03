@@ -5,11 +5,9 @@ import com.brainydroid.daydreaming.db.PageGroupDescription;
 import com.brainydroid.daydreaming.db.ParametersStorage;
 import com.brainydroid.daydreaming.db.SequenceDescription;
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
 
 import java.util.ArrayList;
 
-@Singleton
 public class SequenceBuilder {
 
     @SuppressWarnings("FieldCanBeLocal")

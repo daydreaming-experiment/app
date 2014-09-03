@@ -4,11 +4,9 @@ import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.PageDescription;
 import com.brainydroid.daydreaming.db.PageGroupDescription;
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
 
 import java.util.ArrayList;
 
-@Singleton
 public class PageGroupBuilder {
 
     @SuppressWarnings("FieldCanBeLocal")
