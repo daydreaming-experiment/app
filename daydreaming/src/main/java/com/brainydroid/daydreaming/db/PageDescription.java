@@ -19,7 +19,7 @@ public class PageDescription extends BuildableOrderable<Page> implements IPage {
     private String name = null;
     private String position = null;
     private int nSlots = -1;
-    private ArrayList<QuestionPositionDescription> questions = new ArrayList<QuestionPositionDescription>();
+    private ArrayList<QuestionPositionDescription> questions;
     @Inject private transient PageBuilder pageBuilder;
 
     public String getName() {
@@ -50,6 +50,13 @@ public class PageDescription extends BuildableOrderable<Page> implements IPage {
         if (nSlots == -1) {
             throw new JsonParametersException("nSlots in page can't be it's default value");
         }
+
+        // Check questions
+        if (questions == null) {
+            throw new JsonParametersException("questions in page can't be null");
+        }
+
+        // Check slot consistency
         HashSet<String> positions = new HashSet<String>();
         HashSet<Integer> explicitPositions = new HashSet<Integer>();
         for (QuestionPositionDescription q : questions) {

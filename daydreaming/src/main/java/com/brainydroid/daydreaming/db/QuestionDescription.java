@@ -12,8 +12,7 @@ public class QuestionDescription implements IQuestion {
 
     private String name = null;
     private IQuestionDescriptionDetails details = null;
-    @Inject
-    private transient QuestionBuilder questionBuilder;
+    @Inject private transient QuestionBuilder questionBuilder;
 
     public String getName() {
         return name;

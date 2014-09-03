@@ -20,7 +20,7 @@ public class PageGroupDescription extends BuildableOrderable<PageGroup> implemen
     private String friendlyName = null;
     private String position = null;
     private int nSlots = -1;
-    private ArrayList<PageDescription> pages = new ArrayList<PageDescription>();
+    private ArrayList<PageDescription> pages;
     @Inject private transient PageGroupBuilder pageGroupBuilder;
 
     public String getName() {
@@ -65,6 +65,13 @@ public class PageGroupDescription extends BuildableOrderable<PageGroup> implemen
         if (nSlots == -1) {
             throw new JsonParametersException("nSlots in pageGroup can't be it's default value");
         }
+
+        // Check pages
+        if (pages == null) {
+            throw new JsonParametersException("pages in pageGroup can't be null");
+        }
+
+        // Check slot consistency
         HashSet<String> positions = new HashSet<String>();
         HashSet<Integer> explicitPositions = new HashSet<Integer>();
         for (PageDescription p : pages) {
@@ -93,7 +100,7 @@ public class PageGroupDescription extends BuildableOrderable<PageGroup> implemen
 
     @Override
     public PageGroup build(Sequence sequence) {
-        return pageGroupBuilder.build(this, sequence);
+         return pageGroupBuilder.build(this, sequence);
     }
 
 }

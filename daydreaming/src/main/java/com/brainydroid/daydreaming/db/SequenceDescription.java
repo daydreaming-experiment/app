@@ -13,7 +13,7 @@ public class SequenceDescription implements ISequence {
 
     private String name = null;
     private int nSlots = -1;
-    private ArrayList<PageGroupDescription> pageGroups = new ArrayList<PageGroupDescription>();
+    private ArrayList<PageGroupDescription> pageGroups;
 
     public String getName() {
         return name;
@@ -39,6 +39,13 @@ public class SequenceDescription implements ISequence {
         if (nSlots == -1) {
             throw new JsonParametersException("nSlots in sequence can't be it's default value");
         }
+
+        // Check pageGroups
+        if (pageGroups == null) {
+            throw new JsonParametersException("pageGroups in sequence can't be null");
+        }
+
+        // Check slot consistency
         HashSet<String> positions = new HashSet<String>();
         HashSet<Integer> explicitPositions = new HashSet<Integer>();
         for (PageGroupDescription pg : pageGroups) {
