@@ -13,8 +13,8 @@ import com.brainydroid.daydreaming.sequence.PageGroup;
 import com.brainydroid.daydreaming.sequence.PageGroupInstanceCreator;
 import com.brainydroid.daydreaming.sequence.PageInstanceCreator;
 import com.brainydroid.daydreaming.sequence.Question;
+import com.brainydroid.daydreaming.sequence.QuestionDescriptionSerializer;
 import com.brainydroid.daydreaming.sequence.QuestionInstanceCreator;
-import com.brainydroid.daydreaming.sequence.QuestionSerializer;
 import com.brainydroid.daydreaming.sequence.Sequence;
 import com.brainydroid.daydreaming.sequence.SequenceInstanceCreator;
 import com.brainydroid.daydreaming.sequence.SliderAnswer;
@@ -41,7 +41,7 @@ import java.lang.reflect.Type;
  * @author Sébastien Lerique
  * @author Vincent Adam
  * @see AnswerDeserializer
- * @see QuestionDetailsDeserializer
+ * @see QuestionDescriptionDetailsDeserializer
  * @see LocationDeserializer
  * @see LocationSerializer
  */
@@ -61,8 +61,8 @@ public class Json {
      *
      * @param gsonBuilder An instance of {@link GsonBuilder}
      * @param answerDeserializer An instance of {@link AnswerDeserializer}
-     * @param questionDetailsDeserializer An instance of {@link
-     *                                    QuestionDetailsDeserializer}
+     * @param questionDescriptionDetailsDeserializer An instance of {@link
+     *                                    QuestionDescriptionDetailsDeserializer}
      * @param locationDeserializer An instance of {@link
      *                             LocationDeserializer}
      * @param locationSerializer An instance of {@link LocationSerializer}
@@ -70,13 +70,13 @@ public class Json {
     @Inject
     public Json(GsonBuilder gsonBuilder,
                 AnswerDeserializer answerDeserializer,
-                QuestionDetailsDeserializer questionDetailsDeserializer,
+                QuestionDescriptionDetailsDeserializer questionDescriptionDetailsDeserializer,
+                QuestionDescriptionSerializer questionDescriptionSerializer,
                 SequenceDescriptionInstanceCreator sequenceDescriptionInstanceCreator,
                 PageGroupDescriptionInstanceCreator pageGroupDescriptionInstanceCreator,
                 PageDescriptionInstanceCreator pageDescriptionInstanceCreator,
                 QuestionDescriptionInstanceCreator questionDescriptionInstanceCreator,
                 QuestionPositionDescriptionInstanceCreator questionPositionDescriptionInstanceCreator,
-                QuestionSerializer questionSerializer,
                 SequenceInstanceCreator sequenceInstanceCreator,
                 PageGroupInstanceCreator pageGroupInstanceCreator,
                 PageInstanceCreator pageInstanceCreator,
@@ -93,7 +93,9 @@ public class Json {
         // Register all our type adapters
         gsonBuilder.registerTypeAdapter(IAnswer.class, answerDeserializer);
         gsonBuilder.registerTypeAdapter(IQuestionDescriptionDetails.class,
-                questionDetailsDeserializer);
+                questionDescriptionDetailsDeserializer);
+        gsonBuilder.registerTypeAdapter(QuestionDescription.class,
+                questionDescriptionSerializer);
         gsonBuilder.registerTypeAdapter(SequenceDescription.class,
                 sequenceDescriptionInstanceCreator);
         gsonBuilder.registerTypeAdapter(PageGroupDescription.class,
@@ -104,7 +106,6 @@ public class Json {
                 questionDescriptionInstanceCreator);
         gsonBuilder.registerTypeAdapter(QuestionPositionDescription.class,
                 questionPositionDescriptionInstanceCreator);
-        gsonBuilder.registerTypeAdapter(Question.class, questionSerializer);
         gsonBuilder.registerTypeAdapter(Sequence.class, sequenceInstanceCreator);
         gsonBuilder.registerTypeAdapter(PageGroup.class, pageGroupInstanceCreator);
         gsonBuilder.registerTypeAdapter(Page.class, pageInstanceCreator);

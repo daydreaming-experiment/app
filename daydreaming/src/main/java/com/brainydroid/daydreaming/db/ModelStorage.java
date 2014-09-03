@@ -53,8 +53,10 @@ public abstract class ModelStorage<M extends Model<M,S,F>,
         Logger.d(TAG, "Getting model values");
         ContentValues modelValues = new ContentValues();
 
+        String jsonModel = json.toJson(model);
         Logger.v(TAG, "Adding content to model");
-        modelValues.put(COL_CONTENT, json.toJson(model));
+        Logger.v(TAG, jsonModel.replace("{", "'{'").replace("}", "'}'"));
+        modelValues.put(COL_CONTENT, jsonModel);
 
         return modelValues;
     }
@@ -83,6 +85,10 @@ public abstract class ModelStorage<M extends Model<M,S,F>,
         int modelId = res.getInt(res.getColumnIndex(COL_ID));
         res.close();
 
+        // The new id doesn't get saved to db, but is reloaded when we 'get' the model.
+        // So this is transparent to the user, and on next save, the id is saved also inside
+        // the content of the model. The only other solution to this problem is double-saving
+        // each time.
         Logger.v(TAG, "New model id is {0}", modelId);
         model.setId(modelId);
 
@@ -119,6 +125,10 @@ public abstract class ModelStorage<M extends Model<M,S,F>,
 
         M model = modelFactory.createFromJson(res.getString(res.getColumnIndex(COL_CONTENT)));
         res.close();
+
+        // Make sure the model id is set inside the content
+        // (isn't the case if the model was saved only once)
+        model.setId(modelId);
 
         Logger.d(TAG, "Saving model {0} to cache", modelId);
         modelsCache.put(modelId, model);

@@ -7,7 +7,7 @@ import com.google.inject.Injector;
 
 import java.lang.reflect.Type;
 
-public class QuestionDetailsDeserializer
+public class QuestionDescriptionDetailsDeserializer
         implements JsonDeserializer<IQuestionDescriptionDetails> {
 
     @SuppressWarnings("FieldCanBeLocal")

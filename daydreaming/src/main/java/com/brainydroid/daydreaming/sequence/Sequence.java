@@ -89,7 +89,7 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
         Page current = null;
         int currentIndex = -1;
         for (Page p : allPagesCache) {
-            if (p.getStatus().equals(Page.STATUS_ANSWERED)) {
+            if (p.getStatus() != null && p.getStatus().equals(Page.STATUS_ANSWERED)) {
                 if (current != null) {
                     // Oops, we have a problem
                     String msg = "Found a page with status STATUS_ANSWERED after a page with "

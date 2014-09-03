@@ -2,6 +2,7 @@ package com.brainydroid.daydreaming.sequence;
 
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.IQuestionDescriptionDetails;
+import com.brainydroid.daydreaming.db.ParametersStorage;
 import com.brainydroid.daydreaming.db.QuestionDescription;
 import com.brainydroid.daydreaming.db.SequencesStorage;
 import com.brainydroid.daydreaming.ui.sequences.BaseQuestionViewAdapter;
@@ -20,27 +21,28 @@ public class Question implements IQuestion {
     @Expose protected String name = null;
     @Expose private IAnswer answer = null;
 
-    private IQuestionDescriptionDetails details = null;
     private int sequenceId = -1;
 
     private transient Sequence sequenceCache = null;
+    private transient IQuestionDescriptionDetails detailsCache = null;
     @Inject private transient Injector injector;
     @Inject private transient SequencesStorage sequencesStorage;
+    @Inject private transient ParametersStorage parametersStorage;
 
     public synchronized void importFromQuestionDescription(QuestionDescription description) {
         Logger.d(TAG, "Importing information from QuestionDescription");
         setName(description.getName());
-        setDetails(description.getDetails());
+        detailsCache = description.getDetails();
     }
 
     public synchronized IQuestionViewAdapter getAdapter() {
         Logger.d(TAG, "Getting adapter for question");
 
-        String logSuffix = "for question " + name + " of type " + details.getType();
+        String logSuffix = "for question " + name + " of type " + getDetails().getType();
         String packagePrefix = BaseQuestionViewAdapter.class.getPackage().getName() + ".";
         try {
             Class klass = Class.forName(packagePrefix +
-                    details.getType() + BaseQuestionViewAdapter.QUESTION_VIEW_ADAPTER_SUFFIX);
+                    getDetails().getType() + BaseQuestionViewAdapter.QUESTION_VIEW_ADAPTER_SUFFIX);
             IQuestionViewAdapter questionViewAdapter = (IQuestionViewAdapter)klass.newInstance();
             questionViewAdapter.setQuestion(this);
             injector.injectMembers(questionViewAdapter);
@@ -71,14 +73,18 @@ public class Question implements IQuestion {
     }
 
     public synchronized IQuestionDescriptionDetails getDetails() {
-        return details;
+
+        // We don't directly save the details here because for some obscure reason gson
+        // serializes them to {} when they're nested this deep. So we get them from the
+        // parametersStorage instead. The same problem is solved in the parametersStorage with
+        // a custom QuestionDescriptionDeserializer.
+
+        if (detailsCache == null) {
+            detailsCache = parametersStorage.getQuestionDescription(name).getDetails();
+        }
+        return detailsCache;
     }
 
-    private synchronized void setDetails(IQuestionDescriptionDetails details) {
-        Logger.v(TAG, "Setting details");
-        this.details = details;
-        saveIfSync();
-    }
 
     public synchronized IAnswer getAnswer() {
         return answer;
