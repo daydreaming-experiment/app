@@ -7,6 +7,7 @@ import org.json.JSONObject;
 
 import java.lang.String;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 
 public class ServerParametersJson {
@@ -24,7 +25,7 @@ public class ServerParametersJson {
     public static String DEFAULT_BACKEND_API_URL = "n/c";
     public static String DEFAULT_RESULTS_PAGE_URL = "n/c";
     public static String DEFAULT_GLOSSARY = "n/c";
-    public static JSONArray DEFAULT_GLOSSARY_JSON = null;
+    public static HashMap<String,String> DEFAULT_GLOSSARY_JSON = null;
 
     public String version = DEFAULT_PARAMETERS_VERSION;
     public String backendExpId = DEFAULT_BACKEND_EXP_ID;
@@ -37,7 +38,7 @@ public class ServerParametersJson {
     public int schedulingMeanDelay = DEFAULT_SCHEDULING_MEAN_DELAY;
     public int schedulingMinDelay = DEFAULT_SCHEDULING_MIN_DELAY;
     ArrayList<Question> questions = new ArrayList<Question>();
-    public JSONArray glossary = DEFAULT_GLOSSARY_JSON;
+    public HashMap<String,String> glossary = DEFAULT_GLOSSARY_JSON;
 
     public synchronized ArrayList<Question> getQuestionsArrayList() {
         return questions;
@@ -59,8 +60,8 @@ public class ServerParametersJson {
         return schedulingMinDelay;
     }
 
-    public synchronized String getGlossary() {
-        return glossary.toString();
+    public synchronized HashMap<String,String> getGlossary() {
+        return glossary;
     }
 
     public synchronized String getBackendExpId() {
@@ -147,7 +148,7 @@ public class ServerParametersJson {
             throw new JsonParametersException("resultsPageUrl can't be its unset value");
         }
 
-        if (glossary.equals(DEFAULT_GLOSSARY_JSON)) {
+        if (glossary == DEFAULT_GLOSSARY_JSON) {
             throw new JsonParametersException("glossary can't be its unset value");
         }
 
