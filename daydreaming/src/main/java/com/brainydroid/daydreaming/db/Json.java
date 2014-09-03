@@ -6,6 +6,8 @@ import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.network.JWSSignature;
 import com.brainydroid.daydreaming.network.JWSSignatureSerializer;
 import com.brainydroid.daydreaming.sequence.IAnswer;
+import com.brainydroid.daydreaming.sequence.Sequence;
+import com.brainydroid.daydreaming.sequence.SequenceInstanceCreator;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.inject.Singleton;
@@ -61,6 +63,7 @@ public class Json {
                 PageGroupDescriptionInstanceCreator pageGroupDescriptionInstanceCreator,
                 PageDescriptionInstanceCreator pageDescriptionInstanceCreator,
                 QuestionDescriptionInstanceCreator questionDescriptionInstanceCreator,
+                SequenceInstanceCreator sequenceInstanceCreator,
                 LocationDeserializer locationDeserializer,
                 LocationSerializer locationSerializer,
                 JWSSignatureSerializer jwsSignatureSerializer) {
@@ -78,6 +81,7 @@ public class Json {
                 pageDescriptionInstanceCreator);
         gsonBuilder.registerTypeAdapter(QuestionDescription.class,
                 questionDescriptionInstanceCreator);
+        gsonBuilder.registerTypeAdapter(Sequence.class, sequenceInstanceCreator);
         gsonBuilder.registerTypeAdapter(Location.class,
                 locationDeserializer);
         gsonBuilder.registerTypeAdapter(Location.class, locationSerializer);

@@ -7,6 +7,7 @@ import com.brainydroid.daydreaming.network.ProfileFactory;
 import com.brainydroid.daydreaming.network.ProfileWrapperFactory;
 import com.brainydroid.daydreaming.network.ResultsWrapperFactory;
 import com.brainydroid.daydreaming.sequence.Sequence;
+import com.brainydroid.daydreaming.sequence.SequenceFactory;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.TypeLiteral;
@@ -25,6 +26,7 @@ public class AppModule implements Module {
         binder.install(new FactoryModuleBuilder().build(PageGroupDescriptionFactory.class));
         binder.install(new FactoryModuleBuilder().build(PageDescriptionFactory.class));
         binder.install(new FactoryModuleBuilder().build(QuestionDescriptionFactory.class));
+        binder.install(new FactoryModuleBuilder().build(SequenceFactory.class));
         binder.install(new FactoryModuleBuilder()
                 .build(new TypeLiteral<ResultsWrapperFactory<Sequence>>() {}));
         binder.install(new FactoryModuleBuilder()
