@@ -21,12 +21,14 @@ import java.util.ArrayList;
  */
 @Singleton
 public final class LocationPointsStorage extends
-        StatusModelStorage<LocationPoint,LocationPointsStorage> {
+        StatusModelStorage<LocationPoint,LocationPointsStorage,LocationPointFactory> {
 
     private static String TAG = "LocationPointsStorage";
 
     // Table name for our location points
     private static final String TABLE_LOCATION_POINTS = "locationPoints";
+
+    @Inject LocationPointFactory locationPointFactory;
 
     @Inject
     public LocationPointsStorage(Storage storage) {
