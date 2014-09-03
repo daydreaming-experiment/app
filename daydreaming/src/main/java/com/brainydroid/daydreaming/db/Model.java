@@ -31,7 +31,7 @@ import com.brainydroid.daydreaming.background.Logger;
  * @see Poll
  */
 public abstract class Model<M extends Model<M,S,F>,
-        S extends ModelStorage<M,S,F>, F extends ModelFactory<M,S,F>> {
+        S extends ModelStorage<M,S,F>, F extends ModelJsonFactory<M,S,F>> {
 
     private static String TAG = "Model";
 

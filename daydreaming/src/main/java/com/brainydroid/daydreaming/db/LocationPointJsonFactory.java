@@ -15,11 +15,11 @@ import com.google.inject.Inject;
  * @author Vincent Adam
  * @see LocationPoint
  */
-public class LocationPointFactory
-        extends ModelFactory<LocationPoint,LocationPointsStorage,LocationPointFactory> {
+public class LocationPointJsonFactory
+        extends ModelJsonFactory<LocationPoint,LocationPointsStorage,LocationPointJsonFactory> {
 
     @SuppressWarnings("FieldCanBeLocal")
-    private static String TAG = "LocationPointFactory";
+    private static String TAG = "LocationPointJsonFactory";
 
     @Inject Json json;
 

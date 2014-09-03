@@ -8,7 +8,7 @@ import com.google.inject.Inject;
 import java.util.ArrayList;
 
 public abstract class StatusModelStorage<M extends StatusModel<M,S,F>,
-        S extends StatusModelStorage<M,S,F>, F extends ModelFactory<M,S,F>>
+        S extends StatusModelStorage<M,S,F>, F extends ModelJsonFactory<M,S,F>>
         extends ModelStorage<M,S,F> {
 
     private static String TAG = "StatusModelStorage";

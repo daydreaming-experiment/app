@@ -5,7 +5,7 @@ import com.google.gson.annotations.Expose;
 
 // FIXME: adapt doc imported from LocationPoint
 public abstract class StatusModel<M extends StatusModel<M,S,F>,
-        S extends StatusModelStorage<M,S,F>, F extends ModelFactory<M,S,F>>
+        S extends StatusModelStorage<M,S,F>, F extends ModelJsonFactory<M,S,F>>
         extends Model<M,S,F> {
 
     @SuppressWarnings("FieldCanBeLocal")

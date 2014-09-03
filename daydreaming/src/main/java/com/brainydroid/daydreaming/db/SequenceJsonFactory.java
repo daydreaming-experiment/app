@@ -4,10 +4,10 @@ import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.sequence.Sequence;
 import com.google.inject.Inject;
 
-public class SequenceFactory extends ModelFactory<Sequence, SequencesStorage, SequenceFactory> {
+public class SequenceJsonFactory extends ModelJsonFactory<Sequence, SequencesStorage, SequenceJsonFactory> {
 
     @SuppressWarnings("FieldCanBeLocal")
-    private static String TAG = "SequenceFactory";
+    private static String TAG = "SequenceJsonFactory";
 
     @Inject Json json;
 

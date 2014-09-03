@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 public abstract class ModelStorage<M extends Model<M,S,F>,
-        S extends ModelStorage<M,S,F>, F extends ModelFactory<M,S,F>> {
+        S extends ModelStorage<M,S,F>, F extends ModelJsonFactory<M,S,F>> {
 
     private static String TAG = "ModelStorage";
 
