@@ -113,6 +113,7 @@ public abstract class ModelStorage<M extends Model<M,S,F>,
                 new String[]{Integer.toString(modelId)}, null, null, null);
         if (!res.moveToFirst()) {
             res.close();
+            Logger.e(TAG, "Asked for model {} but could not be found", modelId);
             return null;
         }
 

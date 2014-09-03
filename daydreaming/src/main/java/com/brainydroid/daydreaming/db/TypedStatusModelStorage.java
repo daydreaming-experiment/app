@@ -54,7 +54,7 @@ public abstract class TypedStatusModelStorage<M extends TypedStatusModel<M,S,F>,
         return typeModelIds;
     }
 
-    public synchronized ArrayList<M> getModelsByType(String type) {
+    protected synchronized ArrayList<M> getModelsByType(String type) {
         Logger.d(TAG, "Getting models with type {0}", type);
 
         ArrayList<Integer> typeModelIds = getModelIdsByType(type);
@@ -108,7 +108,7 @@ public abstract class TypedStatusModelStorage<M extends TypedStatusModel<M,S,F>,
         return statusTypeModelIds;
     }
 
-    public synchronized ArrayList<M> getModelsByStatusesAndTypes(String[] statuses,
+    protected synchronized ArrayList<M> getModelsByStatusesAndTypes(String[] statuses,
                                                                  String[] types) {
         String logStatuses = Util.joinStrings(statuses, ", ");
         String logTypes = Util.joinStrings(types, ", ");

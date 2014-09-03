@@ -65,7 +65,7 @@ public abstract class StatusModelStorage<M extends StatusModel<M,S,F>,
         return statusModelIds;
     }
 
-    public synchronized ArrayList<M> getModelsByStatuses(
+    protected synchronized ArrayList<M> getModelsByStatuses(
             String[] statuses) {
         String logStatuses = Util.joinStrings(statuses, ", ");
         Logger.d(TAG, "Getting models with statuses {0}", logStatuses);
