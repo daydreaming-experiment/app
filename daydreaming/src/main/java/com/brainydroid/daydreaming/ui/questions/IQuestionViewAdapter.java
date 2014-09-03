@@ -1,13 +1,14 @@
 package com.brainydroid.daydreaming.ui.questions;
 
 import android.widget.LinearLayout;
-import com.brainydroid.daydreaming.db.Question;
+
+import com.brainydroid.daydreaming.sequence.Question;
 
 public interface IQuestionViewAdapter {
 
-    public void setAdapters(Question question, LinearLayout layout);
+    public void setQuestion(Question question);
 
-    public void inflate(boolean isFirstQuestion);
+    public LinearLayout inflate();
 
     public boolean validate();
 

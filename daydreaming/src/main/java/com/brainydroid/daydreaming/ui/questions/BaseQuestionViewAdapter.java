@@ -1,13 +1,18 @@
 package com.brainydroid.daydreaming.ui.questions;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
+
+import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
-import com.brainydroid.daydreaming.db.Question;
+import com.brainydroid.daydreaming.sequence.Question;
 import com.google.inject.Inject;
 
 import java.util.ArrayList;
+
+import roboguice.inject.InjectView;
 
 public abstract class BaseQuestionViewAdapter
         implements IQuestionViewAdapter {
@@ -15,26 +20,30 @@ public abstract class BaseQuestionViewAdapter
     @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "QuestionViewAdapter";
 
+    public static String QUESTION_VIEW_ADAPTER_SUFFIX = "QuestionViewAdapter";
+
     protected Question question;
-    protected LinearLayout layout;
 
+    @Inject Context context;
     @Inject LayoutInflater layoutInflater;
+    @InjectView(R.id.question_layout_base) LinearLayout layout;
 
-    public void setAdapters(Question question, LinearLayout layout) {
+    public  BaseQuestionViewAdapter(Question question) {
         this.question = question;
-        this.layout = layout;
     }
 
-    public void inflate(boolean isFirstQuestion) {
+    public LinearLayout inflate() {
         Logger.d(TAG, "Inflating question view");
 
-        int index = isFirstQuestion ? 1 : 0;
+        int index = 0;
         ArrayList<View> views = inflateViews();
 
         for (View view : views) {
             layout.addView(view, index, layout.getLayoutParams());
             index++;
         }
+
+        return layout;
     }
 
     protected abstract ArrayList<View> inflateViews();
