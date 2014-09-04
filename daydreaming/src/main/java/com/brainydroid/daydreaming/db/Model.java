@@ -138,11 +138,12 @@ public abstract class Model<M extends Model<M,S,F>,
         Logger.v(TAG, "Flushing saves now");
         // Save if we have retained saves, or we weren't retaining saves at all
         if (hasRetainedSaves || !retainSaves) {
+            retainSaves = false;
             save();
         } else {
             Logger.v(TAG, "No saves retained, no need to save");
+            retainSaves = false;
         }
-        retainSaves = false;
         hasRetainedSaves = false;
     }
 
