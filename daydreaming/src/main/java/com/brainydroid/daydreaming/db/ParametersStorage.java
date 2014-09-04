@@ -14,11 +14,10 @@ import com.brainydroid.daydreaming.network.HttpGetData;
 import com.brainydroid.daydreaming.network.HttpGetTask;
 import com.brainydroid.daydreaming.network.ParametersStorageCallback;
 import com.brainydroid.daydreaming.network.ServerConfig;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.inject.TypeLiteral;
 
-import java.lang.reflect.Type;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 
@@ -244,8 +243,8 @@ public class ParametersStorage {
         } else {
             Logger.v(TAG, "{} - Cache not present -> getting questions from sharedPreferences",
                     statusManager.getCurrentModeName());
-            Type questionDescriptionsArrayType =
-                    new TypeLiteral<ArrayList<QuestionDescription>>() {}.getType();
+            TypeReference<ArrayList<QuestionDescription>> questionDescriptionsArrayType =
+                    new TypeReference<ArrayList<QuestionDescription>>() {};
             questionsCache = json.fromJson(
                     sharedPreferences.getString(statusManager.getCurrentModeName() + QUESTIONS, null),
                     questionDescriptionsArrayType);
@@ -306,8 +305,8 @@ public class ParametersStorage {
         } else {
             Logger.v(TAG, "{} - Cache not present -> getting sequences from sharedPreferences",
                     statusManager.getCurrentModeName());
-            Type sequenceDescriptionsArrayType =
-                    new TypeLiteral<ArrayList<SequenceDescription>>() {}.getType();
+            TypeReference<ArrayList<SequenceDescription>> sequenceDescriptionsArrayType =
+                    new TypeReference<ArrayList<SequenceDescription>>() {};
             sequencesCache = json.fromJson(
                     sharedPreferences.getString(statusManager.getCurrentModeName() + SEQUENCES, null),
                     sequenceDescriptionsArrayType);

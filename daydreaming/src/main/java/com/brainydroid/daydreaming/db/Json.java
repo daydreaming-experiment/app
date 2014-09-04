@@ -5,6 +5,7 @@ import android.location.Location;
 import com.brainydroid.daydreaming.background.Logger;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.introspect.VisibilityChecker;
 import com.google.inject.Inject;
@@ -90,6 +91,18 @@ public class Json {
         Logger.v(TAG, "Deserializing from JSON");
         try {
             return jacksonLocal.readValue(json, classOfT);
+        } catch (IOException e) {
+            Logger.e(TAG, "Could not deserialize JSON");
+            Logger.e(TAG, json.replace("{", "'{'").replace("}", "'}'"));
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public <T> T fromJson(String json, TypeReference<T> typeRefOfT) {
+        Logger.v(TAG, "Deserializing from JSON");
+        try {
+            return jacksonLocal.readValue(json, typeRefOfT);
         } catch (IOException e) {
             Logger.e(TAG, "Could not deserialize JSON");
             Logger.e(TAG, json.replace("{", "'{'").replace("}", "'}'"));
