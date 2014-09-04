@@ -51,7 +51,6 @@ public class DashboardActivity extends RoboFragmentActivity {
     @InjectView(R.id.dashboard_ExperimentResultsIn2) TextView timeToGoTextView;
     @InjectView(R.id.button_test_poll) Button testProbeButton;
     @InjectView(R.id.button_reload_parameters) Button testReloadButton;
-    @InjectView(R.id.dashboard_about_layout) AlphaLinearLayout aboutLayout;
     @InjectView(R.id.dashboard_textExperimentStatus) TextView expStatus;
     @InjectView(R.id.dashboard_no_params_text) TextView textNetworkConnection;
 
@@ -90,8 +89,8 @@ public class DashboardActivity extends RoboFragmentActivity {
         // Lint erroneously catches this as a call that requires API >= 11
         // (which is exactly why AlphaLinearLayout exists),
         // hence the @TargetApi(11) above.
-        aboutLayout.setAlpha(0.3f);
-        aboutLayout.setClickable(false);
+        //aboutLayout.setAlpha(0.3f);
+        //aboutLayout.setClickable(false);
 
         checkExperimentModeActivatedDirty();
         updateRunningTime();

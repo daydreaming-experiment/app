@@ -275,179 +275,165 @@
     <!-- The 3 buttons -->
 
 
-
-
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_marginRight="16dp"
+        android:layout_marginLeft="16dp"
         android:layout_below="@id/dashboard_TimeBoxorOptions_layout"
-        android:paddingTop="@dimen/dashboard_calendar_buttons_spacing"
-        android:orientation="horizontal"
-        android:baselineAligned="false">
+        >
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content">
-            <RelativeLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content">
-
-
-                <ImageButton
-                    android:id="@+id/dashboard_terms_button"
-                    android:layout_width="@dimen/dashboard_icon_size"
-                    android:layout_height="@dimen/dashboard_icon_size"
-                    android:scaleType="centerInside"
-                    android:background="@drawable/icon_terms_selector"
-                    android:layout_margin="10dp"
-                    android:onClick="onClick_ReOpenTerms"
-                    android:layout_centerHorizontal="true"/>
-
-                <TextView
-                    android:text="@string/dashboard_button_text_terms"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="@style/ui_font_bodytext"
-                    android:textColor="@color/ui_white_text_color"
-                    android:layout_centerHorizontal="true"
-                    android:layout_below="@id/dashboard_terms_button"/>
-            </RelativeLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content">
-            <RelativeLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content">
-
-
-                <ImageButton
-                    android:id="@+id/dashboard_credits_button"
-                    android:layout_width="@dimen/dashboard_icon_size"
-                    android:layout_height="@dimen/dashboard_icon_size"
-                    android:scaleType="centerInside"
-                    android:background="@drawable/icon_terms_selector"
-                    android:layout_margin="10dp"
-                    android:onClick="onClick_OpenCredits"
-                    android:layout_centerHorizontal="true"/>
-
-                <TextView
-                    android:text="@string/dashboard_button_text_credits"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="@style/ui_font_bodytext"
-                    android:textColor="@color/ui_white_text_color"
-                    android:layout_centerHorizontal="true"
-                    android:layout_below="@id/dashboard_credits_button"/>
-            </RelativeLayout>
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_weight="1"
+        <TableLayout
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal">
-            <RelativeLayout
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp">
+
+            <TableRow
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content">
-                <ImageButton
-                    android:id="@+id/dashboard_description_button"
-                    android:layout_width="@dimen/dashboard_icon_size"
-                    android:layout_height="@dimen/dashboard_icon_size"
-                    android:scaleType="centerInside"
-                    android:background="@drawable/icon_description_selector"
-                    android:layout_margin="10dp"
-                    android:onClick="onClick_ReOpenDescription"
-                    android:layout_centerHorizontal="true"/>
-                <TextView
-                    android:text="@string/dashboard_button_text_description"
-                    android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:gravity="center_horizontal">
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:textAppearance="@style/ui_font_bodytext"
-                    android:textColor="@color/ui_white_text_color"
-                    android:layout_below="@id/dashboard_description_button"
-                    android:layout_centerHorizontal="true"/>
-            </RelativeLayout>
-        </LinearLayout>
+                    android:layout_gravity="center"
+                    android:paddingTop="@dimen/dashboard_calendar_buttons_spacing"
+                    android:gravity="center_horizontal"
+                    android:id="@+id/dashboard_button_row1"
+                    android:baselineAligned="false"
+                    >
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginRight="20dp">
+
+
+                            <ImageButton
+                                android:id="@+id/dashboard_terms_button"
+                                android:layout_width="@dimen/dashboard_icon_size"
+                                android:layout_height="@dimen/dashboard_icon_size"
+                                android:scaleType="centerInside"
+                                android:background="@drawable/icon_terms_selector"
+                                android:layout_margin="10dp"
+                                android:onClick="onClick_ReOpenTerms"
+                                android:layout_centerHorizontal="true"/>
+
+                            <TextView
+                                android:text="@string/dashboard_button_text_terms"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/ui_font_bodytext"
+                                android:textColor="@color/ui_white_text_color"
+                                android:layout_centerHorizontal="true"
+                                android:layout_below="@id/dashboard_terms_button"/>
+                        </RelativeLayout>
 
 
 
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginRight="20dp">
+                            <ImageButton
+                                android:id="@+id/dashboard_description_button"
+                                android:layout_width="@dimen/dashboard_icon_size"
+                                android:layout_height="@dimen/dashboard_icon_size"
+                                android:scaleType="centerInside"
+                                android:background="@drawable/icon_description_selector"
+                                android:layout_margin="10dp"
+                                android:onClick="onClick_ReOpenDescription"
+                                android:layout_centerHorizontal="true"/>
+                            <TextView
+                                android:text="@string/dashboard_button_text_description"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/ui_font_bodytext"
+                                android:textColor="@color/ui_white_text_color"
+                                android:layout_below="@id/dashboard_description_button"
+                                android:layout_centerHorizontal="true"/>
+                        </RelativeLayout>
 
 
-        <com.brainydroid.daydreaming.ui.AlphaLinearLayout
-            android:id="@+id/dashboard_about_layout"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal">
-            <RelativeLayout
-                android:id="@+id/btn_plus_container"
+
+                        <RelativeLayout
+                            android:id="@+id/btn_plus_container"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginRight="20dp">
+                            <ImageButton
+                                android:id="@+id/dashboard_about_button"
+                                android:layout_width="@dimen/dashboard_icon_size"
+                                android:layout_height="@dimen/dashboard_icon_size"
+                                android:scaleType="centerInside"
+                                android:background="@drawable/icon_about_selector"
+                                android:layout_margin="10dp"
+                                android:onClick="onClick_OpenAboutActivity"
+                                android:layout_centerHorizontal="true"/>
+                            <TextView
+                                android:text="@string/dashboard_button_text_about"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerHorizontal="true"
+                                android:textAppearance="@style/ui_font_bodytext"
+                                android:textColor="@color/ui_white_text_color"
+                                android:layout_below="@id/dashboard_about_button"
+                                />
+                        </RelativeLayout>
+
+
+                </LinearLayout>
+            </TableRow>
+
+            <TableRow
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content">
-                <ImageButton
-                    android:id="@+id/dashboard_about_button"
-                    android:layout_width="@dimen/dashboard_icon_size"
-                    android:layout_height="@dimen/dashboard_icon_size"
-                    android:scaleType="centerInside"
-                    android:background="@drawable/icon_about_selector"
-                    android:layout_margin="10dp"
-                    android:onClick="onClick_OpenAboutActivity"
-                    android:layout_centerHorizontal="true"/>
-                <TextView
-                    android:text="@string/dashboard_button_text_about"
-                    android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal">
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:textAppearance="@style/ui_font_bodytext"
-                    android:textColor="@color/ui_white_text_color"
-                    android:layout_below="@id/dashboard_about_button"
-                    />
-            </RelativeLayout>
-        </com.brainydroid.daydreaming.ui.AlphaLinearLayout>
-
-        <com.brainydroid.daydreaming.ui.AlphaLinearLayout
-            android:id="@+id/dashboard_glossary_layout"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal">
-            <RelativeLayout
-                android:id="@+id/btn_plus_container"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content">
-                <ImageButton
-                    android:id="@+id/dashboard_glossary_button"
-                    android:layout_width="@dimen/dashboard_icon_size"
-                    android:layout_height="@dimen/dashboard_icon_size"
-                    android:scaleType="centerInside"
-                    android:background="@drawable/icon_glossary_selector"
-                    android:layout_margin="10dp"
-                    android:onClick="onClick_OpenGlossaryActivity"
-                    android:layout_centerHorizontal="true"/>
-                <TextView
-                    android:text="@string/dashboard_button_text_glossary"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:textAppearance="@style/ui_font_bodytext"
-                    android:textColor="@color/ui_white_text_color"
-                    android:layout_below="@id/dashboard_glossary_button"
-                    />
-            </RelativeLayout>
-        </com.brainydroid.daydreaming.ui.AlphaLinearLayout>
+                    android:layout_gravity="center"
+                    android:paddingTop="4dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_horizontal">
 
 
+                    <RelativeLayout
+                        android:id="@+id/btn_plus_container"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content">
+                        <ImageButton
+                            android:id="@+id/dashboard_glossary_button"
+                            android:layout_width="@dimen/dashboard_icon_size"
+                            android:layout_height="@dimen/dashboard_icon_size"
+                            android:scaleType="centerInside"
+                            android:background="@drawable/icon_glossary_selector"
+                            android:layout_margin="10dp"
+                            android:onClick="onClick_OpenGlossaryActivity"
+                            android:layout_centerHorizontal="true"/>
+                        <TextView
+                            android:text="@string/dashboard_button_text_glossary"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:textAppearance="@style/ui_font_bodytext"
+                            android:textColor="@color/ui_white_text_color"
+                            android:layout_below="@id/dashboard_glossary_button"
+                            />
+                    </RelativeLayout>
 
-    </LinearLayout>
+                </LinearLayout>
 
+            </TableRow>
 
+        </TableLayout>
 
-
+    </RelativeLayout>
 
 
 
@@ -498,16 +484,26 @@
     android:text="@string/dashboard_text_results" />
 
 -->
-    <RelativeLayout
+
+    <!--
+    <Button
+        android:id="@+id/button2"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:onClick="startSyncService"
+        android:text="Sync" />
+    -->
+
+
+
 
         <LinearLayout
             android:id="@+id/dashboard_testing_linearlayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:layout_alignParentBottom="true"
             android:gravity="right">
 
             <Button
@@ -530,18 +526,8 @@
         </LinearLayout>
 
 
-    </RelativeLayout>
-
-    <!--
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:onClick="startSyncService"
-        android:text="Sync" />
-    -->
 
 
 </LinearLayout>
+
+
