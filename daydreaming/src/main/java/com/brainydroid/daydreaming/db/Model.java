@@ -36,6 +36,7 @@ public abstract class Model<M extends Model<M,S,F>,
     private static String TAG = "Model";
 
     private int id = -1;
+    private transient boolean retainSaves = false;
 
     /**
      * Set the {@link Model}'s id, used for database ordering and indexing.
@@ -113,6 +114,10 @@ public abstract class Model<M extends Model<M,S,F>,
      * {@link #id}.
      */
     public synchronized void save() {
+        if (retainSaves) {
+            Logger.d(TAG, "Saves are to be retained, not saving to storage");
+            return;
+        }
         if (id != -1) {
             Logger.d(TAG, "Updating model in db");
             getStorage().update(self());
@@ -120,6 +125,17 @@ public abstract class Model<M extends Model<M,S,F>,
             Logger.d(TAG, "Storing model in db");
             getStorage().store(self());
         }
+    }
+
+    public synchronized void retainSaves() {
+        Logger.v(TAG, "Retaining saves from now on");
+        retainSaves = true;
+    }
+
+    public synchronized void flushSaves() {
+        Logger.v(TAG, "Flushing saves now");
+        retainSaves = false;
+        save();
     }
 
 }
