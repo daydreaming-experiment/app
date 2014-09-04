@@ -99,15 +99,16 @@ public class Json {
         jacksonLocal = new ObjectMapper();
         jacksonServer = new ObjectMapper();
 
+        // Will serialize ALL members not annotated with @JsonIgnore
         checker = jacksonLocal.getSerializationConfig()
                 .getDefaultVisibilityChecker()
                 .withFieldVisibility(JsonAutoDetect.Visibility.ANY)
                 .withGetterVisibility(JsonAutoDetect.Visibility.NONE);
         jacksonLocal.setVisibilityChecker(checker);
 
+        // Will serialize ONLY members annotated with @JsonProperty
         checker = jacksonServer.getSerializationConfig()
                 .getDefaultVisibilityChecker()
-                .withFieldVisibility(JsonAutoDetect.Visibility.PROTECTED_AND_PUBLIC)
                 .withGetterVisibility(JsonAutoDetect.Visibility.NONE);
         jacksonServer.setVisibilityChecker(checker);
 
