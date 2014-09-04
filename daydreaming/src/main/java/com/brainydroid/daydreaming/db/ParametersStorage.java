@@ -1,18 +1,14 @@
 package com.brainydroid.daydreaming.db;
 
 import android.annotation.SuppressLint;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.widget.Toast;
 
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.background.SchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
-import com.brainydroid.daydreaming.network.CryptoStorageCallback;
 import com.brainydroid.daydreaming.network.HttpConversationCallback;
 import com.brainydroid.daydreaming.network.HttpGetData;
 import com.brainydroid.daydreaming.network.HttpGetTask;
@@ -21,74 +17,43 @@ import com.brainydroid.daydreaming.network.ServerConfig;
 import com.google.gson.JsonSyntaxException;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.google.inject.TypeLiteral;
 
+import java.lang.reflect.Type;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.HashSet;
 
 @Singleton
 public class ParametersStorage {
 
     private static String TAG = "ParametersStorage";
 
-    public static final String COL_NAME = "questionName";
-    public static final String COL_CATEGORY = "questionCategory";
-    public static final String COL_SUB_CATEGORY = "questionSubCategory";
-    public static final String COL_DETAILS = "questionDetails";
-    public static final String COL_SLOT = "questionSlot";
-
-    public static final String COL_STATUS = "questionStatus";
-    public static final String COL_ANSWER = "questionAnswer";
-    public static final String COL_LOCATION = "questionLocation";
-    public static final String COL_NTP_TIMESTAMP = "questionNtpTimestamp";
-    public static final String COL_SYSTEM_TIMESTAMP =
-            "questionSystemTimestamp";
-
-    private static String TABLE_QUESTIONS = "Questions";
-
-    private static final String SQL_CREATE_TABLE_QUESTIONS =
-            "CREATE TABLE IF NOT EXISTS {}" + TABLE_QUESTIONS + " (" +
-                    COL_NAME + " TEXT NOT NULL, " +
-                    COL_CATEGORY + " TEXT NOT NULL, " +
-                    COL_SUB_CATEGORY + " TEXT, " +
-                    COL_DETAILS + " TEXT NOT NULL, " +
-                    COL_SLOT + " TEXT NOT NULL" +
-                    ");";
-
     public static String QUESTIONS_SCHEDULING_MIN_DELAY = "schedulingMinDelay";
     public static String QUESTIONS_SCHEDULING_MEAN_DELAY = "schedulingMeanDelay";
-    public static String QUESTIONS_N_SLOTS_PER_PROBE = "questionsNSlotsPerProbe";
 
     public static String BACKEND_EXP_ID = "backendExpId";
     public static String BACKEND_DB_NAME = "backendDbName";
     public static String EXP_DURATION = "expDuration";
     public static String BACKEND_API_URL = "backendApiUrl";
     public static String RESULTS_PAGE_URL = "resultsPageUrl";
-    public static String FIRST_LAUNCH =  "firstLaunch";
+    public static String QUESTIONS = "questions";
+    public static String SEQUENCES = "sequences";
+
+    private ArrayList<QuestionDescription> questionsCache;
+    private ArrayList<SequenceDescription> sequencesCache;
 
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor eSharedPreferences;
 
     @Inject Json json;
-    @Inject QuestionFactory questionFactory;
     @Inject ProfileStorage profileStorage;
-    @Inject SlottedQuestionsFactory slottedQuestionsFactory;
     @Inject StatusManager statusManager;
     @Inject Context context;
 
-    private final SQLiteDatabase db;
-
     @SuppressLint("CommitPrefEdits")
     @Inject
-    public ParametersStorage(Storage storage, StatusManager statusManager,
-                             SharedPreferences sharedPreferences) {
-        Logger.d(TAG, "{} - Building ParametersStorage: creating table if it " +
-                "doesn't exist", statusManager.getCurrentModeName());
-
-        db = storage.getWritableDatabase();
-        for (String modeName : StatusManager.AVAILABLE_MODE_NAMES) {
-            db.execSQL(MessageFormat.format(SQL_CREATE_TABLE_QUESTIONS, modeName));
-        }
+    public ParametersStorage(SharedPreferences sharedPreferences, StatusManager statusManager) {
+        Logger.d(TAG, "{} - Building ParametersStorage", statusManager.getCurrentModeName());
 
         this.sharedPreferences = sharedPreferences;
         eSharedPreferences = sharedPreferences.edit();
@@ -263,149 +228,145 @@ public class ParametersStorage {
         eSharedPreferences.commit();
     }
 
-    private synchronized void setNSlotsPerProbe(int nSlotsPerProbe) {
-        Logger.d(TAG, "{0} - Setting nSlotsPerProbe to {1}", statusManager.getCurrentModeName(), nSlotsPerProbe);
-        eSharedPreferences.putInt(statusManager.getCurrentModeName() + QUESTIONS_N_SLOTS_PER_PROBE, nSlotsPerProbe);
+    public synchronized void setQuestions(ArrayList<QuestionDescription> questions) {
+        Logger.d(TAG, "{} - Setting questions array (and keeping in cache)",
+                statusManager.getCurrentModeName());
+        questionsCache = questions;
+        eSharedPreferences.putString(statusManager.getCurrentModeName() + QUESTIONS,
+                json.toJson(questions));
         eSharedPreferences.commit();
     }
 
-    public synchronized int getNSlotsPerProbe() {
-        int nSlotsPerProbe = sharedPreferences.getInt(
-                statusManager.getCurrentModeName() + QUESTIONS_N_SLOTS_PER_PROBE,
-                ServerParametersJson.DEFAULT_N_SLOTS_PER_PROBE);
-        Logger.v(TAG, "{0} - nSlotsPerProbe is {1}", statusManager.getCurrentModeName(), nSlotsPerProbe);
-        return nSlotsPerProbe;
+    public synchronized ArrayList<QuestionDescription> getQuestions() {
+        Logger.d(TAG, "{} - Getting questions", statusManager.getCurrentModeName());
+        if (questionsCache != null) {
+            Logger.v(TAG, "{} - Cache is present -> returning questions from cache",
+                    statusManager.getCurrentModeName());
+        } else {
+            Logger.v(TAG, "{} - Cache not present -> getting questions from sharedPreferences",
+                    statusManager.getCurrentModeName());
+            Type questionDescriptionsArrayType =
+                    new TypeLiteral<ArrayList<QuestionDescription>>() {}.getType();
+            questionsCache = json.fromJson(
+                    sharedPreferences.getString(statusManager.getCurrentModeName() + QUESTIONS, null),
+                    questionDescriptionsArrayType);
+        }
+
+        if (questionsCache == null) {
+            Logger.e(TAG, "{} - Questions asked for but not set",
+                    statusManager.getCurrentModeName());
+            throw new RuntimeException("Questions asked for but not set");
+        }
+
+        return questionsCache;
     }
 
-    public synchronized void clearNSlotsPerProbe() {
-        Logger.d(TAG, "{} - Clearing nSlotsPerProbe", statusManager.getCurrentModeName());
-        eSharedPreferences.remove(statusManager.getCurrentModeName() + QUESTIONS_N_SLOTS_PER_PROBE);
+    private synchronized void clearQuestions() {
+        Logger.d(TAG, "{} - Clearing questions (and clearing cache)",
+                statusManager.getCurrentModeName());
+        questionsCache = null;
+        eSharedPreferences.remove(statusManager.getCurrentModeName() + QUESTIONS);
         eSharedPreferences.commit();
     }
 
-    public synchronized void setFirstLaunch(FirstLaunch firstLaunch) {
-        // Save raw JSON
-        String jsonFirstLaunch = json.toJson(firstLaunch);
-        Logger.d(TAG, "{0} - Setting (json)firstLaunch to {1}",
-                statusManager.getCurrentModeName(), jsonFirstLaunch);
+    public synchronized QuestionDescription getQuestionDescription(String name) {
+        Logger.d(TAG, "{0} - Looking for questionDescription {1}",
+                statusManager.getCurrentModeName(), name);
 
-        eSharedPreferences.putString(statusManager.getCurrentModeName() + FIRST_LAUNCH, jsonFirstLaunch);
+        // Get list of all names
+        ArrayList<QuestionDescription> questions = getQuestions();
+        ArrayList<String> names = new ArrayList<String>(questions.size());
+        for (QuestionDescription s : questions) {
+            names.add(s.getName());
+        }
+
+        int questionIndex = names.indexOf(name);
+        if (questionIndex == -1) {
+            Logger.e(TAG, "{0} - Question {1} asked for but not found",
+                    statusManager.getCurrentModeName(), name);
+            throw new RuntimeException("Question asked for but not found (see logs)");
+        }
+
+        return questions.get(questionIndex);
+    }
+
+    public synchronized void setSequences(ArrayList<SequenceDescription> sequences) {
+        Logger.d(TAG, "{} - Setting sequences array (and keeping in cache)",
+                statusManager.getCurrentModeName());
+        sequencesCache = sequences;
+        eSharedPreferences.putString(statusManager.getCurrentModeName() + SEQUENCES,
+                json.toJson(sequences));
         eSharedPreferences.commit();
     }
 
-    public synchronized FirstLaunch getFirstLaunch() {
-        String jsonFirstLaunch = sharedPreferences.getString(
-                statusManager.getCurrentModeName() + FIRST_LAUNCH, null);
-        if (jsonFirstLaunch == null) {
-            Logger.e(TAG, "{} - (json)firstLaunch is asked for but not set",
-                    statusManager.getCurrentMode());
-            throw new RuntimeException("(json)firstLaunch is asked for but not set");
-        }
-        Logger.d(TAG, "{0} - (json)FirstLaunch is {1}", statusManager.getCurrentModeName(),
-                jsonFirstLaunch);
-
-        // Deserialize the JSON
-        return json.fromJson(jsonFirstLaunch, FirstLaunch.class);
-    }
-
-    private synchronized void clearFirstLaunch() {
-        Logger.d(TAG, "{} - Clearing firstLaunch", statusManager.getCurrentModeName());
-        eSharedPreferences.remove(statusManager.getCurrentModeName() + FIRST_LAUNCH);
-    }
-
-    // get question from id in db
-    public synchronized Question create(String questionName) {
-        Logger.d(TAG, "{0} - Retrieving question {1} from db", statusManager.getCurrentModeName(), questionName);
-
-        Cursor res = db.query(statusManager.getCurrentModeName() + TABLE_QUESTIONS, null,
-                COL_NAME + "=?", new String[]{questionName},
-                null, null, null);
-        if (!res.moveToFirst()) {
-            res.close();
-            return null;
+    public synchronized ArrayList<SequenceDescription> getSequences() {
+        Logger.d(TAG, "{} - Getting sequences", statusManager.getCurrentModeName());
+        if (sequencesCache != null) {
+            Logger.v(TAG, "{} - Cache is present -> returning sequences from cache",
+                    statusManager.getCurrentModeName());
+        } else {
+            Logger.v(TAG, "{} - Cache not present -> getting sequences from sharedPreferences",
+                    statusManager.getCurrentModeName());
+            Type sequenceDescriptionsArrayType =
+                    new TypeLiteral<ArrayList<SequenceDescription>>() {}.getType();
+            sequencesCache = json.fromJson(
+                    sharedPreferences.getString(statusManager.getCurrentModeName() + SEQUENCES, null),
+                    sequenceDescriptionsArrayType);
         }
 
-        Question q = questionFactory.create();
-        q.setName(res.getString(res.getColumnIndex(COL_NAME)));
-        q.setCategory(res.getString(res.getColumnIndex(COL_CATEGORY)));
-        q.setSubCategory(res.getString(
-                res.getColumnIndex(COL_SUB_CATEGORY)));
-        q.setDetailsFromJson(res.getString(
-                res.getColumnIndex(COL_DETAILS)));
-        q.setSlot(res.getString(res.getColumnIndex(COL_SLOT)));
-        res.close();
-
-        return q;
-    }
-
-    public synchronized SlottedQuestions getSlottedQuestions() {
-        Logger.d(TAG, "{} - Retrieving all questions from db", statusManager.getCurrentModeName());
-
-        Cursor res = db.query(statusManager.getCurrentModeName() + TABLE_QUESTIONS, null, null, null, null, null,
-                null);
-        if (!res.moveToFirst()) {
-            res.close();
-            return null;
+        if (sequencesCache == null) {
+            Logger.e(TAG, "{} - Sequences asked for but not set",
+                    statusManager.getCurrentModeName());
+            throw new RuntimeException("Sequences asked for but not set");
         }
 
-        SlottedQuestions slottedQuestions = slottedQuestionsFactory.create();
-        do {
-            Question q = questionFactory.create();
-            q.setName(res.getString(res.getColumnIndex(COL_NAME)));
-            q.setCategory(res.getString(res.getColumnIndex(COL_CATEGORY)));
-            q.setSubCategory(res.getString(
-                    res.getColumnIndex(COL_SUB_CATEGORY)));
-            q.setDetailsFromJson(res.getString(
-                    res.getColumnIndex(COL_DETAILS)));
-            q.setSlot(res.getString(res.getColumnIndex(COL_SLOT)));
+        return sequencesCache;
+    }
 
-            slottedQuestions.add(q);
-        } while (res.moveToNext());
-        res.close();
+    private synchronized void clearSequences() {
+        Logger.d(TAG, "{} - Clearing sequences (and clearing cache)",
+                statusManager.getCurrentModeName());
+        sequencesCache = null;
+        eSharedPreferences.remove(statusManager.getCurrentModeName() + SEQUENCES);
+        eSharedPreferences.commit();
+    }
 
-        return slottedQuestions;
+    public synchronized SequenceDescription getSequenceDescription(String name) {
+        Logger.d(TAG, "{0} - Looking for sequenceDescription {1}",
+                statusManager.getCurrentModeName(), name);
+
+        // Get list of all names
+        ArrayList<SequenceDescription> sequences = getSequences();
+        ArrayList<String> names = new ArrayList<String>(sequences.size());
+        for (SequenceDescription s : sequences) {
+            names.add(s.getName());
+        }
+
+        int sequenceIndex = names.indexOf(name);
+        if (sequenceIndex == -1) {
+            Logger.e(TAG, "{0} - Sequence {1} asked for but not found",
+                    statusManager.getCurrentModeName(), name);
+            throw new RuntimeException("Sequence asked for but not found (see logs)");
+        }
+
+        return sequences.get(sequenceIndex);
     }
 
     public synchronized void flush() {
         Logger.d(TAG, "{} - Flushing all parameters", statusManager.getCurrentModeName());
         statusManager.clearParametersUpdated();
         statusManager.setParametersFlushed();
-        flushQuestions();
+
         profileStorage.clearParametersVersion();
+        clearBackendExpId();
+        clearBackendDbName();
+        clearExpDuration();
+        clearBackendApiUrl();
+        clearResultsPageUrl();
         clearSchedulingMinDelay();
         clearSchedulingMeanDelay();
-        clearNSlotsPerProbe();
-    }
-
-    public synchronized void flushQuestions() {
-        Logger.d(TAG, "{} - Flushing questions from db", statusManager.getCurrentModeName());
-        db.delete(statusManager.getCurrentModeName() + TABLE_QUESTIONS, null, null);
-    }
-
-    private synchronized void add(ArrayList<Question> questions) {
-        Logger.d(TAG, "{} - Storing an array of questions to db", statusManager.getCurrentModeName());
-        for (Question q : questions) {
-            add(q);
-        }
-    }
-
-    // add question in database
-    private synchronized void add(Question question) {
-        Logger.d(TAG, "{0} - Storing question {1} to db", statusManager.getCurrentModeName(), question.getName());
-        db.insert(statusManager.getCurrentModeName() + TABLE_QUESTIONS, null, getQuestionValues(question));
-    }
-
-    private synchronized ContentValues getQuestionValues(Question question) {
-        Logger.d(TAG, "{} - Building question values", statusManager.getCurrentModeName());
-
-        ContentValues qValues = new ContentValues();
-        qValues.put(COL_NAME, question.getName());
-        qValues.put(COL_CATEGORY, question.getCategory());
-        qValues.put(COL_SUB_CATEGORY,
-                question.getSubCategory());
-        qValues.put(COL_DETAILS, question.getDetailsAsJson());
-        qValues.put(COL_SLOT, question.getSlot());
-        return qValues;
+        clearQuestions();
+        clearSequences();
     }
 
     // import parameters from json file into database
@@ -431,14 +392,12 @@ public class ParametersStorage {
             setExpDuration(serverParametersJson.getExpDuration());
             setBackendApiUrl(serverParametersJson.getBackendApiUrl());
             setResultsPageUrl(serverParametersJson.getResultsPageUrl());
-            setFirstLaunch(serverParametersJson.getFirstLaunch());
-            setNSlotsPerProbe(serverParametersJson.getNSlotsPerProbe());
             setSchedulingMinDelay(serverParametersJson.getSchedulingMinDelay());
             setSchedulingMeanDelay(serverParametersJson.getSchedulingMeanDelay());
-            // loading the questions
-            add(serverParametersJson.getQuestionsArrayList());
-
+            setQuestions(serverParametersJson.getQuestions());
+            setSequences(serverParametersJson.getSequences());
         } catch (JsonParametersException e) {
+            e.printStackTrace();
             throw new ParametersSyntaxException();
         }
     }
@@ -511,6 +470,7 @@ public class ParametersStorage {
                         ParametersStorage.this.importParameters(serverAnswer);
                         Logger.d(TAG, "Importing new parameters to storage");
                     } catch (ParametersSyntaxException e) {
+                        e.printStackTrace();
                         Logger.e(TAG, "Downloaded parameters were malformed -> " +
                                 "parameters not updated");
                         callback.onParametersStorageReady(false);

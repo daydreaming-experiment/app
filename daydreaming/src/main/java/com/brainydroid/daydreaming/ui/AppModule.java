@@ -6,6 +6,14 @@ import com.brainydroid.daydreaming.network.ProfileDataFactory;
 import com.brainydroid.daydreaming.network.ProfileFactory;
 import com.brainydroid.daydreaming.network.ProfileWrapperFactory;
 import com.brainydroid.daydreaming.network.ResultsWrapperFactory;
+import com.brainydroid.daydreaming.sequence.MultipleChoiceAnswerFactory;
+import com.brainydroid.daydreaming.sequence.PageFactory;
+import com.brainydroid.daydreaming.sequence.PageGroupFactory;
+import com.brainydroid.daydreaming.sequence.QuestionFactory;
+import com.brainydroid.daydreaming.sequence.Sequence;
+import com.brainydroid.daydreaming.sequence.SequenceFactory;
+import com.brainydroid.daydreaming.sequence.SliderAnswerFactory;
+import com.brainydroid.daydreaming.sequence.StarRatingAnswerFactory;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.TypeLiteral;
@@ -20,24 +28,29 @@ public class AppModule implements Module {
     public void configure(Binder binder) {
         Logger.d(TAG, "Configuring application module");
 
-        binder.install(new FactoryModuleBuilder().build(PollFactory.class));
+        binder.install(new FactoryModuleBuilder().build(SequenceDescriptionFactory.class));
+        binder.install(new FactoryModuleBuilder().build(PageGroupDescriptionFactory.class));
+        binder.install(new FactoryModuleBuilder().build(PageDescriptionFactory.class));
+        binder.install(new FactoryModuleBuilder().build(QuestionDescriptionFactory.class));
+        binder.install(new FactoryModuleBuilder().build(QuestionPositionDescriptionFactory.class));
+        binder.install(new FactoryModuleBuilder().build(SequenceFactory.class));
+        binder.install(new FactoryModuleBuilder().build(PageGroupFactory.class));
+        binder.install(new FactoryModuleBuilder().build(PageFactory.class));
+        binder.install(new FactoryModuleBuilder().build(QuestionFactory.class));
+        binder.install(new FactoryModuleBuilder().build(SliderAnswerFactory.class));
+        binder.install(new FactoryModuleBuilder().build(StarRatingAnswerFactory.class));
+        binder.install(new FactoryModuleBuilder().build(MultipleChoiceAnswerFactory.class));
+        binder.install(new FactoryModuleBuilder().build(LocationPointFactory.class));
         binder.install(new FactoryModuleBuilder()
-                .build(QuestionFactory.class));
+                .build(new TypeLiteral<ResultsWrapperFactory<Sequence>>() {}));
         binder.install(new FactoryModuleBuilder()
-                .build(LocationPointFactory.class));
+                .build(new TypeLiteral<ResultsWrapperFactory<LocationPoint>>() {}));
         binder.install(new FactoryModuleBuilder()
-                .build(new TypeLiteral<ResultsWrapperFactory<Poll>>() {}));
+                .build(ProfileWrapperFactory.class));
         binder.install(new FactoryModuleBuilder()
-                .build(new TypeLiteral<ResultsWrapperFactory<LocationPoint>>()
-                {}));
-        binder.install(new FactoryModuleBuilder().
-                build(ProfileWrapperFactory.class));
-        binder.install(new FactoryModuleBuilder().
-                build(ProfileFactory.class));
-        binder.install(new FactoryModuleBuilder().
-                build(ProfileDataFactory.class));
+                .build(ProfileFactory.class));
         binder.install(new FactoryModuleBuilder()
-                .build(SlottedQuestionsFactory.class));
+                .build(ProfileDataFactory.class));
     }
 
 }

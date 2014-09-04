@@ -2,9 +2,7 @@ package com.brainydroid.daydreaming.db;
 
 import com.brainydroid.daydreaming.background.Logger;
 
-import java.lang.String;
 import java.util.ArrayList;
-import java.util.HashSet;
 
 public class ServerParametersJson {
 
@@ -12,7 +10,6 @@ public class ServerParametersJson {
     private static String TAG = "ServerParametersJson";
 
     public static String DEFAULT_PARAMETERS_VERSION = "n/c";
-    public static int DEFAULT_N_SLOTS_PER_PROBE = -1;
     public static int DEFAULT_SCHEDULING_MEAN_DELAY = -1;
     public static int DEFAULT_SCHEDULING_MIN_DELAY = -1;
     public static String DEFAULT_BACKEND_EXP_ID = "n/c";
@@ -21,36 +18,19 @@ public class ServerParametersJson {
     public static String DEFAULT_BACKEND_API_URL = "n/c";
     public static String DEFAULT_RESULTS_PAGE_URL = "n/c";
 
-    public String version = DEFAULT_PARAMETERS_VERSION;
-    public String backendExpId = DEFAULT_BACKEND_EXP_ID;
-    public String backendDbName = DEFAULT_BACKEND_DB_NAME;
-    public int expDuration = DEFAULT_EXP_DURATION;
-    public String backendApiUrl = DEFAULT_BACKEND_API_URL;
-    public String resultsPageUrl = DEFAULT_RESULTS_PAGE_URL;
-    public FirstLaunch firstLaunch = null;
-    public int nSlotsPerProbe = DEFAULT_N_SLOTS_PER_PROBE;
-    public int schedulingMeanDelay = DEFAULT_SCHEDULING_MEAN_DELAY;
-    public int schedulingMinDelay = DEFAULT_SCHEDULING_MIN_DELAY;
-    ArrayList<Question> questions = new ArrayList<Question>();
-
-    public synchronized ArrayList<Question> getQuestionsArrayList() {
-        return questions;
-    }
+    private String version = DEFAULT_PARAMETERS_VERSION;
+    private String backendExpId = DEFAULT_BACKEND_EXP_ID;
+    private String backendDbName = DEFAULT_BACKEND_DB_NAME;
+    private int expDuration = DEFAULT_EXP_DURATION;
+    private String backendApiUrl = DEFAULT_BACKEND_API_URL;
+    private String resultsPageUrl = DEFAULT_RESULTS_PAGE_URL;
+    private int schedulingMeanDelay = DEFAULT_SCHEDULING_MEAN_DELAY;
+    private int schedulingMinDelay = DEFAULT_SCHEDULING_MIN_DELAY;
+    private ArrayList<QuestionDescription> questions = null;
+    private ArrayList<SequenceDescription> sequences = null;
 
     public synchronized String getVersion() {
         return version;
-    }
-
-    public synchronized int getNSlotsPerProbe() {
-        return nSlotsPerProbe;
-    }
-
-    public synchronized int getSchedulingMeanDelay() {
-        return schedulingMeanDelay;
-    }
-
-    public synchronized int getSchedulingMinDelay() {
-        return schedulingMinDelay;
     }
 
     public synchronized String getBackendExpId() {
@@ -73,8 +53,20 @@ public class ServerParametersJson {
         return resultsPageUrl;
     }
 
-    public synchronized FirstLaunch getFirstLaunch() {
-        return firstLaunch;
+    public synchronized int getSchedulingMeanDelay() {
+        return schedulingMeanDelay;
+    }
+
+    public synchronized int getSchedulingMinDelay() {
+        return schedulingMinDelay;
+    }
+
+    public synchronized ArrayList<QuestionDescription> getQuestions() {
+        return questions;
+    }
+
+    public synchronized ArrayList<SequenceDescription> getSequences() {
+        return sequences;
     }
 
     public synchronized void validateInitialization() throws JsonParametersException {
@@ -85,11 +77,6 @@ public class ServerParametersJson {
             throw new JsonParametersException("version can't be its unset value");
         }
 
-        // Check nSlotsPerProbe is set
-        if (nSlotsPerProbe == DEFAULT_N_SLOTS_PER_PROBE) {
-            throw new JsonParametersException("nSlotsPerProbe can't be its unset value");
-        }
-
         // Check schedulingMinDelay is set
         if (schedulingMinDelay == DEFAULT_SCHEDULING_MIN_DELAY) {
             throw new JsonParametersException("schedulingMinDelay can't be its unset value");
@@ -98,18 +85,6 @@ public class ServerParametersJson {
         // Check schedulingMeanDelay is set
         if (schedulingMeanDelay == DEFAULT_SCHEDULING_MEAN_DELAY) {
             throw new JsonParametersException("schedulingMeanDelay can't be its unset value");
-        }
-
-        // Get all question slots and check there are at least as many as
-        // nSlotsPerProbe
-        HashSet<String> slots = new HashSet<String>();
-        for (Question q : questions) {
-            slots.add(q.getSlot());
-            q.validateInitialization();
-        }
-        if (slots.size() < nSlotsPerProbe) {
-            throw new JsonParametersException("There must be at least as many" +
-                    " slots defined in the questions as nSlotsPerProbe");
         }
 
         // Check backendExpId is set
@@ -137,7 +112,21 @@ public class ServerParametersJson {
             throw new JsonParametersException("resultsPageUrl can't be its unset value");
         }
 
-        firstLaunch.validateInitialization();
+        // Validate questions
+        if (questions == null || questions.size() == 0) {
+            throw new JsonParametersException("questions can't be empty");
+        }
+        for (QuestionDescription q : questions) {
+            q.validateInitialization();
+        }
+
+        // Validate sequences
+        if (sequences == null || sequences.size() == 0) {
+            throw new JsonParametersException("sequences can't be empty");
+        }
+        for (SequenceDescription s : sequences) {
+            s.validateInitialization();
+        }
     }
 
 }
