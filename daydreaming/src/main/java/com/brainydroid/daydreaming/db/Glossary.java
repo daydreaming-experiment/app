@@ -5,9 +5,11 @@ package com.brainydroid.daydreaming.db;
 import android.content.SharedPreferences;
 
 import com.brainydroid.daydreaming.background.Logger;
+import com.brainydroid.daydreaming.background.StatusManager;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.google.inject.Inject;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
@@ -21,9 +23,9 @@ public class Glossary {
 
     private static String TAG = "Glossary";
 
-    private SharedPreferences sharedPreferences;
+    @Inject Json json;
 
-    private Map<String,String> dictionnary = new HashMap<String, String>();
+    private HashMap<String,String> dictionnary = new HashMap<String, String>();
 
     public String getDefinitionOfTerm(String term) {
         Logger.v(TAG, "Getting definition of " + term);
@@ -47,12 +49,7 @@ public class Glossary {
     }
 
 
-    public HashMap<String, String> hashmapFromJsonString(String jsonString) {
-        Logger.v(TAG, "building hashmap from Json");
-        Gson gson = new GsonBuilder().create();
-        Type hmType = new TypeToken<HashMap<String, String>>() {}.getType();
-        return gson.fromJson(jsonString, hmType);
-    }
+
 
     /**
      * Constructor from Json string
@@ -62,20 +59,19 @@ public class Glossary {
         dictionnary = hashmapFromJsonString(jsonString);
     }
 
-
-    /**
-     * Constructor from loaded parameters saved in shared preferences
-    */
-    public Glossary() {
-        Logger.v(TAG, "building hashmap from Parameters (loading from shared preferences)");
-
-        String glossaryString = sharedPreferences.getString(ParametersStorage.GLOSSARY, ServerParametersJson.DEFAULT_GLOSSARY);
-        Logger.v(TAG, "glossaryString: " + glossaryString );
-
-        dictionnary = hashmapFromJsonString(glossaryString);
+    public Glossary(HashMap<String,String> dict) {
+        dictionnary = dict;
     }
 
-    public Map<String,String> getDictionnary() {
+
+    public HashMap<String, String> hashmapFromJsonString(String jsonString) {
+        Logger.v(TAG, "building hashmap from Json");
+        Type hmType = new TypeToken<HashMap<String, String>>() {}.getType();
+        return json.fromJson(jsonString, hmType);
+    }
+
+
+    public HashMap<String,String> getDictionnary() {
         return dictionnary;
     }
 
