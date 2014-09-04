@@ -38,10 +38,6 @@ public class StatusManager {
     private static String EXP_STATUS_FL_COMPLETED =
             "expStatusFlCompleted";
 
-    /** Preference key storing the Tipi questionnaire completion status */
-    private static String EXP_STATUS_TIPI_COMPLETED =
-            "expStatusTipiCompleted";
-
     /** Preference key storing the status of initial questions update */
     private static String EXP_STATUS_PARAMETERS_UPDATED =
             "expStatusQuestionsUpdated";
@@ -137,11 +133,6 @@ public class StatusManager {
     public synchronized void setFirstLaunchCompleted() {
         Logger.d(TAG, "{} - Setting first launch to completed", getCurrentModeName());
 
-        if (!isTipiQuestionnaireCompleted()) {
-            throw new RuntimeException("Setting first launch to completed can" +
-                    " only be done if Tipi questionnaire is also completed");
-        }
-
         eSharedPreferences.putBoolean(getCurrentModeName() + EXP_STATUS_FL_COMPLETED, true);
         eSharedPreferences.commit();
     }
@@ -150,30 +141,6 @@ public class StatusManager {
         Logger.d(TAG, "{} - Clearing first launch completed", getCurrentModeName());
 
         eSharedPreferences.remove(getCurrentModeName() + EXP_STATUS_FL_COMPLETED);
-        eSharedPreferences.commit();
-    }
-
-    public synchronized boolean isTipiQuestionnaireCompleted() {
-        if (sharedPreferences.getBoolean(getCurrentModeName() + EXP_STATUS_TIPI_COMPLETED, false)) {
-            Logger.d(TAG, "{} - Tipi questionnaire is completed", getCurrentModeName());
-            return true;
-        } else {
-            Logger.d(TAG, "{} - Tipi questionnaire not completed yet", getCurrentModeName());
-            return false;
-        }
-    }
-
-    public synchronized void setTipiQuestionnaireCompleted() {
-        Logger.d(TAG, "{} - Setting Tipi questionnaire to completed", getCurrentModeName());
-
-        eSharedPreferences.putBoolean(getCurrentModeName() + EXP_STATUS_TIPI_COMPLETED, true);
-        eSharedPreferences.commit();
-    }
-
-    private synchronized void clearTipiQuestionnaireCompleted() {
-        Logger.d(TAG, "{} - Clearing Tipi questionnaire completed", getCurrentModeName());
-
-        eSharedPreferences.remove(getCurrentModeName() + EXP_STATUS_TIPI_COMPLETED);
         eSharedPreferences.commit();
     }
 
@@ -450,7 +417,6 @@ public class StatusManager {
 
         // Clear local flags (after switch)
         clearFirstLaunchCompleted();
-        clearTipiQuestionnaireCompleted();
         clearExperimentStartTimestamp();
 
         // Cancel any running location collection and pending notifications.

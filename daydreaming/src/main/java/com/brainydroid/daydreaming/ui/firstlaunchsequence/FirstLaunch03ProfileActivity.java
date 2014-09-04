@@ -69,13 +69,9 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
 
             Logger.d(TAG, "Launching next activity");
 
-            // FIXME: we skip the tipiQuestionnaire since it moves to generic questionnaires in grammar v3
             statusManager.setTipiQuestionnaireCompleted();
             finishFirstLaunch();
             launchDashBoardActivity();
-            //launchNextActivity(FirstLaunch05MeasuresActivity.class);
-//          launchNextActivity(
-//                  FirstLaunch04PersonalityQuestionnaireActivity.class);
         }
     }
 
@@ -292,12 +288,6 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
 
             return row;
         }
-    }
-
-    // Overriding parent method
-    @Override
-    public boolean shouldFinishIfTipiQuestionnaireCompleted() {
-        return true;
     }
 
 }
