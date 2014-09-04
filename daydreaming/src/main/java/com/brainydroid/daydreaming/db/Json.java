@@ -5,26 +5,16 @@ import android.location.Location;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.network.JWSSignature;
 import com.brainydroid.daydreaming.network.JWSSignatureSerializer;
-import com.brainydroid.daydreaming.sequence.IAnswer;
 import com.brainydroid.daydreaming.sequence.MultipleChoiceAnswer;
-import com.brainydroid.daydreaming.sequence.MultipleChoiceAnswerInstanceCreator;
 import com.brainydroid.daydreaming.sequence.Page;
 import com.brainydroid.daydreaming.sequence.PageGroup;
-import com.brainydroid.daydreaming.sequence.PageGroupInstanceCreator;
-import com.brainydroid.daydreaming.sequence.PageInstanceCreator;
 import com.brainydroid.daydreaming.sequence.Question;
-import com.brainydroid.daydreaming.sequence.QuestionInstanceCreator;
 import com.brainydroid.daydreaming.sequence.Sequence;
-import com.brainydroid.daydreaming.sequence.SequenceInstanceCreator;
 import com.brainydroid.daydreaming.sequence.SliderAnswer;
-import com.brainydroid.daydreaming.sequence.SliderAnswerInstanceCreator;
 import com.brainydroid.daydreaming.sequence.StarRatingAnswer;
-import com.brainydroid.daydreaming.sequence.StarRatingAnswerInstanceCreator;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.introspect.VisibilityChecker;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -32,7 +22,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 
 /**
  * Singleton JSON serializer and deserializer to centralize registration of
@@ -65,20 +54,7 @@ public class Json {
      * @param locationSerializer An instance of {@link LocationSerializer}
      */
     @Inject
-    public Json(SequenceDescriptionInstanceCreator sequenceDescriptionInstanceCreator,
-                PageGroupDescriptionInstanceCreator pageGroupDescriptionInstanceCreator,
-                PageDescriptionInstanceCreator pageDescriptionInstanceCreator,
-                QuestionDescriptionInstanceCreator questionDescriptionInstanceCreator,
-                QuestionPositionDescriptionInstanceCreator questionPositionDescriptionInstanceCreator,
-                SequenceInstanceCreator sequenceInstanceCreator,
-                PageGroupInstanceCreator pageGroupInstanceCreator,
-                PageInstanceCreator pageInstanceCreator,
-                QuestionInstanceCreator questionInstanceCreator,
-                StarRatingAnswerInstanceCreator starRatingAnswerInstanceCreator,
-                SliderAnswerInstanceCreator sliderAnswerInstanceCreator,
-                MultipleChoiceAnswerInstanceCreator multipleChoiceAnswerInstanceCreator,
-                LocationPointInstanceCreator locationPointInstanceCreator,
-                LocationDeserializer locationDeserializer,
+    public Json(LocationDeserializer locationDeserializer,
                 LocationSerializer locationSerializer,
                 JWSSignatureSerializer jwsSignatureSerializer) {
         Logger.v(TAG, "Building Jackson instances");
@@ -87,6 +63,7 @@ public class Json {
         // injection on object creation
         // ok - interfaces in and out
         // location and JWSSignature serializer/deserializer
+        // createFromJson factories
 
         VisibilityChecker checker;
         jacksonLocal = new ObjectMapper();
