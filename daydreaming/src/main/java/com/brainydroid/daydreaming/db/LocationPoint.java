@@ -3,6 +3,7 @@ package com.brainydroid.daydreaming.db;
 import android.location.Location;
 
 import com.brainydroid.daydreaming.background.Logger;
+import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.inject.Inject;
@@ -44,7 +45,7 @@ public final class LocationPoint extends
     public static final String STATUS_COMPLETED = "statusCompleted";
 
     // Our database for LocationPoints
-    @Inject @JsonIgnore LocationPointsStorage locationPointsStorage;
+    @Inject @JacksonInject @JsonIgnore LocationPointsStorage locationPointsStorage;
 
     @Override
     protected synchronized LocationPoint self() {

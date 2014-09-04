@@ -60,7 +60,7 @@ public class Json {
         Logger.v(TAG, "Building Jackson instances");
 
         // ok - the two serializers
-        // injection on object creation
+        // ok - injection on object creation
         // ok - interfaces in and out
         // location and JWSSignature serializer/deserializer
         // createFromJson factories

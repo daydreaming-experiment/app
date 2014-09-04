@@ -5,6 +5,7 @@ import com.brainydroid.daydreaming.db.SequenceDescription;
 import com.brainydroid.daydreaming.db.SequenceJsonFactory;
 import com.brainydroid.daydreaming.db.SequencesStorage;
 import com.brainydroid.daydreaming.db.TypedStatusModel;
+import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.inject.Inject;
@@ -29,7 +30,7 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
     @JsonProperty private long notificationSystemTimestamp = -1;
     @JsonProperty private ArrayList<PageGroup> pageGroups = null;
 
-    @Inject @JsonIgnore private SequencesStorage sequencesStorage;
+    @Inject @JacksonInject @JsonIgnore private SequencesStorage sequencesStorage;
     @JsonIgnore private ArrayList<Page> allPagesCache = null;
 
     public synchronized String getName() {

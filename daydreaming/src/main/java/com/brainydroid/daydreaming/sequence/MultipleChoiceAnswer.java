@@ -1,6 +1,7 @@
 package com.brainydroid.daydreaming.sequence;
 
 import com.brainydroid.daydreaming.background.Logger;
+import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.inject.Inject;
 
@@ -11,7 +12,7 @@ public class MultipleChoiceAnswer implements IAnswer {
     @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "MultipleChoiceAnswer";
 
-    @Inject @JsonProperty HashSet<String> choices;
+    @Inject @JacksonInject @JsonProperty HashSet<String> choices;
 
     public synchronized void addChoice(String choice) {
         Logger.v(TAG, "Adding choice {0}", choice);

@@ -5,6 +5,7 @@ import android.location.Location;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.PageDescription;
 import com.brainydroid.daydreaming.db.SequencesStorage;
+import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.inject.Inject;
@@ -30,7 +31,7 @@ public class Page implements IPage {
     @JsonIgnore private boolean isFirstOfSequence = false;
     @JsonIgnore private boolean isLastOfSequence = false;
     @JsonIgnore private Sequence sequenceCache = null;
-    @Inject @JsonIgnore private SequencesStorage sequencesStorage;
+    @Inject @JacksonInject @JsonIgnore private SequencesStorage sequencesStorage;
 
     public void importFromPageDescription(PageDescription description) {
         setName(description.getName());

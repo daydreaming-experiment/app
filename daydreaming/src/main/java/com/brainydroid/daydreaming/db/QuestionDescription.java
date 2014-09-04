@@ -3,6 +3,7 @@ package com.brainydroid.daydreaming.db;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.sequence.IQuestion;
 import com.brainydroid.daydreaming.sequence.QuestionBuilder;
+import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -19,7 +20,7 @@ public class QuestionDescription implements IQuestion {
                    @JsonSubTypes.Type(value=StarRatingQuestionDescriptionDetails.class, name="starRating"),
                    @JsonSubTypes.Type(value=MultipleChoiceQuestionDescriptionDetails.class, name="multipleChoiceAnswer")})
     private IQuestionDescriptionDetails details = null;
-    @Inject @JsonIgnore private QuestionBuilder questionBuilder;
+    @Inject @JacksonInject @JsonIgnore private QuestionBuilder questionBuilder;
 
     public String getName() {
         return name;
