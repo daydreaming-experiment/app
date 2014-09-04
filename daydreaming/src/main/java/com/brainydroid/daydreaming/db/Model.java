@@ -136,7 +136,8 @@ public abstract class Model<M extends Model<M,S,F>,
 
     public synchronized void flushSaves() {
         Logger.v(TAG, "Flushing saves now");
-        if (hasRetainedSaves) {
+        // Save if we have retained saves, or we weren't retaining saves at all
+        if (hasRetainedSaves || !retainSaves) {
             save();
         } else {
             Logger.v(TAG, "No saves retained, no need to save");
