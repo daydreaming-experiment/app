@@ -1,6 +1,5 @@
 package com.brainydroid.daydreaming.network;
 
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class JWSSignature {
