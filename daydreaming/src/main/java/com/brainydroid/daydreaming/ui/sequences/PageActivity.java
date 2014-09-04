@@ -167,6 +167,9 @@ public class PageActivity extends RoboFragmentActivity {
 
         Logger.i(TAG, "Starting sync service to sync answers");
         startSyncService();
+
+        Logger.i(TAG, "Finishing activity");
+        finish();
     }
 
     private void startSyncService() {
