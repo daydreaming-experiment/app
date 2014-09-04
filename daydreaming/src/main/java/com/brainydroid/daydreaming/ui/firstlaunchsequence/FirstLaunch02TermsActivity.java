@@ -155,10 +155,4 @@ public class FirstLaunch02TermsActivity extends FirstLaunchActivity implements S
         sv.setScrollViewListener(this);
     }
 
-    // Overriding parent method
-    @Override
-    public boolean shouldFinishIfTipiQuestionnaireCompleted() {
-        return true;
-    }
-
 }
