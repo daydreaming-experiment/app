@@ -349,7 +349,7 @@ public class CryptoStorage {
         jwsSignatures.add(jwsSignature);
         JWS jws = new JWS(b64Payload, jwsSignatures);
 
-        return json.toJsonExposed(jws);
+        return json.toJsonServer(jws);
     }
 
 }
