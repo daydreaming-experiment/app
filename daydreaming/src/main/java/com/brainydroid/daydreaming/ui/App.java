@@ -1,6 +1,7 @@
 package com.brainydroid.daydreaming.ui;
 
 import android.app.Application;
+
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.network.PRNGFixes;
@@ -10,6 +11,7 @@ import org.acra.ACRAConfiguration;
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
 import org.acra.sender.HttpSender;
+
 import roboguice.RoboGuice;
 
 @ReportsCrashes(

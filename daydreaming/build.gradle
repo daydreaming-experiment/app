@@ -60,8 +60,7 @@ dependencies {
     compile 'com.fasterxml.jackson.module:jackson-module-guice:2.4.1'
     compile 'org.apache.httpcomponents:httpmime:4.3.4'
     compile 'com.madgag:scprov-jdk15on:1.47.0.3'
-    // guice is replaced with roboguice in code, for later testing
-    // compile 'com.google.inject:guice:3.0'
+    // roboguice is guice for Android
     compile 'org.roboguice:roboguice:2.0'
     compile('com.google.inject.extensions:guice-assistedinject:3.0') {
         exclude group: 'com.google.inject', module: 'guice'
