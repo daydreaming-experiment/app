@@ -1,24 +1,17 @@
 package com.brainydroid.daydreaming.ui.dashboard;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
-import com.brainydroid.daydreaming.background.StatusManager;
-import com.brainydroid.daydreaming.db.Glossary;
-import com.brainydroid.daydreaming.db.Json;
 import com.brainydroid.daydreaming.db.ParametersStorage;
 import com.brainydroid.daydreaming.ui.FontUtils;
-import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
 
-import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;

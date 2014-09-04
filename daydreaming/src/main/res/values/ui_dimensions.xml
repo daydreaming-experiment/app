@@ -134,8 +134,6 @@
     <dimen  name="questionnaire_paddingBottom" >30dp</dimen>
     <dimen  name="questionnaire_lateralPadding" >0dp</dimen>
 
-
-
     <!-- QuestionsMultipleChoiceActivity -->
     <dimen  name="question_occupation_line_marginBottom" >20dp</dimen>
     <dimen  name="question_horizontal_margin" >25dp</dimen>

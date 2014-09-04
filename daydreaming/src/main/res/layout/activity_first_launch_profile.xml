@@ -39,6 +39,7 @@
                     android:id="@+id/firstLaunchProfile_ballon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:contentDescription="@null"
                     android:src="@drawable/airship"
                     />
 
@@ -46,6 +47,7 @@
                     android:id="@+id/firstLaunchProfile_helice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:contentDescription="@null"
                     android:background="@drawable/helice2"
                     android:layout_marginTop="3dp"/>
         </RelativeLayout>
@@ -185,6 +187,7 @@
                     android:layout_height="@dimen/button_next_height"
                     android:onClick="onClick_buttonNext"
                     android:text="@string/firstLaunchDescription_button_next"
+                    android:contentDescription="@null"
                     android:background="@drawable/button_cloud_next_selector"
                     />
 

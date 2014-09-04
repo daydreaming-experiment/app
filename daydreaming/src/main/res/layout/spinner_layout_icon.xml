@@ -11,7 +11,8 @@
             android:src="@drawable/ic_check"
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="@dimen/profile_spinner_icon_left_margin"
-            android:layout_centerVertical="true"/>
+            android:layout_centerVertical="true"
+            android:contentDescription="@null"/>
     <TextView
             android:id="@+id/spinnerTarget"
             android:gravity="left"

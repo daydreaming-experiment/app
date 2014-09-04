@@ -1,5 +1,4 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/dashboard_main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -59,7 +58,6 @@
                 android:id="@+id/dashboard_textExperimentStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="XXX"
                 android:singleLine="true"
                 android:textAppearance="@style/ui_font_title_bold"
                 android:paddingLeft="10dp"
@@ -107,7 +105,7 @@
                 android:id="@+id/dashboard_ExperimentTimeElapsed0"
                 android:layout_width="@dimen/dashboard_calendar_width"
                 android:layout_height="30dp"
-                android:text="Time elapsed"
+                android:text="@string/dashboard_text_days_elapsed"
                 android:textAppearance="@style/ui_font_bodytext"
                 android:textColor="@color/ui_white_text_color"
                 android:gravity="center_horizontal"
@@ -120,6 +118,7 @@
                 android:layout_width="@dimen/dashboard_calendar_width"
                 android:layout_height="@dimen/dashboard_calendar_holder_width"
                 android:src="@drawable/dark_blue_rect_button"
+                android:contentDescription="@null"
                 android:layout_marginBottom="@dimen/dashboard_calendar_inbetween"
 
                 />
@@ -129,7 +128,6 @@
                 android:layout_width="@dimen/dashboard_calendar_width"
                 android:layout_height="@dimen/dashboard_calendarblock_number_height"
                 android:layout_below="@id/dashboard_ExperimentTimeElapsed1"
-                android:text="XX"
                 android:textAppearance="@style/ui_font_days_font"
                 android:textColor="@color/ui_dark_blue_color"
                 android:gravity="center"
@@ -143,7 +141,7 @@
                 android:layout_height="@dimen/dashboard_calendarblock_days_height"
                 android:layout_below="@id/dashboard_ExperimentTimeElapsed2"
                 android:textColor="@color/ui_dark_blue_color"
-                android:text="days"
+                android:text="@string/dashboard_text_days"
                 android:gravity="center"
                 android:background="@drawable/white_rectangle"/>
 
@@ -170,7 +168,7 @@
                 android:id="@+id/dashboard_ExperimentResultsIn0"
                 android:layout_width="@dimen/dashboard_calendar_width"
                 android:layout_height="30dp"
-                android:text="Results in"
+                android:text="@string/dashboard_text_results_in"
                 android:textAppearance="@style/ui_font_bodytext"
                 android:textColor="@color/ui_white_text_color"
                 android:gravity="center_horizontal"
@@ -181,6 +179,7 @@
                 android:layout_width="@dimen/dashboard_calendar_width"
                 android:layout_height="@dimen/dashboard_calendar_holder_width"
                 android:src="@drawable/white_rectangle"
+                android:contentDescription="@null"
                 android:layout_marginBottom="@dimen/dashboard_calendar_inbetween"
                 />
 
@@ -192,7 +191,6 @@
                 android:layout_width="@dimen/dashboard_calendar_width"
                 android:layout_height="@dimen/dashboard_calendarblock_number_height"
                 android:layout_below="@id/dashboard_ExperimentResultsIn1"
-                android:text="YY"
                 android:textAppearance="@style/ui_font_days_font"
                 android:textColor="@color/ui_white_text_color"
                 android:gravity="center"
@@ -206,7 +204,7 @@
                 android:layout_height="@dimen/dashboard_calendarblock_days_height"
                 android:layout_below="@id/dashboard_ExperimentResultsIn2"
                 android:textColor="@color/white"
-                android:text="days"
+                android:text="@string/dashboard_text_days"
                 android:gravity="center"
                 android:background="@drawable/dark_blue_rectangle"
                 android:src="@drawable/settings_icon"
@@ -218,7 +216,7 @@
                 android:layout_below="@id/dashboard_ExperimentResultsIn2days"
                 android:textAppearance="@style/ui_font_button"
                 android:textColor="@color/ui_dark_blue_color"
-                android:text="See Results"
+                android:text="@string/dashboard_text_see_results"
                 android:paddingBottom="@dimen/block_button_vertical_padding"
                 android:paddingTop="@dimen/block_button_vertical_padding"
                 android:gravity="center"
@@ -258,7 +256,7 @@
 
             android:textAppearance="@style/ui_font_button"
             android:textColor="@color/ui_dark_blue_color"
-            android:text="Network settings"
+            android:text="@string/dashboard_button_change_data_settings"
             android:background="@drawable/white_rectangle"
             android:id="@+id/dashboard_network_settings_button"
             android:onClick="onClick_OpenNetworkSettings"/>
@@ -280,7 +278,6 @@
         android:layout_height="wrap_content"
         android:layout_marginRight="16dp"
         android:layout_marginLeft="16dp"
-        android:layout_below="@id/dashboard_TimeBoxorOptions_layout"
         >
 
         <TableLayout
@@ -319,6 +316,7 @@
                                 android:background="@drawable/icon_terms_selector"
                                 android:layout_margin="10dp"
                                 android:onClick="onClick_ReOpenTerms"
+                                android:contentDescription="@null"
                                 android:layout_centerHorizontal="true"/>
 
                             <TextView
@@ -345,6 +343,7 @@
                                 android:scaleType="centerInside"
                                 android:background="@drawable/icon_description_selector"
                                 android:layout_margin="10dp"
+                                android:contentDescription="@null"
                                 android:onClick="onClick_ReOpenDescription"
                                 android:layout_centerHorizontal="true"/>
                             <TextView
@@ -372,6 +371,7 @@
                                 android:scaleType="centerInside"
                                 android:background="@drawable/icon_about_selector"
                                 android:layout_margin="10dp"
+                                android:contentDescription="@null"
                                 android:onClick="onClick_OpenAboutActivity"
                                 android:layout_centerHorizontal="true"/>
                             <TextView
@@ -392,16 +392,9 @@
             <TableRow
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal">
-
-                <LinearLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:paddingTop="4dp"
-                    android:orientation="horizontal"
-                    android:gravity="center_horizontal">
-
+                android:gravity="center_horizontal"
+                android:paddingTop="4dp"
+                >
 
                     <RelativeLayout
                         android:id="@+id/btn_plus_container"
@@ -414,6 +407,7 @@
                             android:scaleType="centerInside"
                             android:background="@drawable/icon_glossary_selector"
                             android:layout_margin="10dp"
+                            android:contentDescription="@null"
                             android:onClick="onClick_OpenGlossaryActivity"
                             android:layout_centerHorizontal="true"/>
                         <TextView
@@ -427,7 +421,6 @@
                             />
                     </RelativeLayout>
 
-                </LinearLayout>
 
             </TableRow>
 
@@ -513,7 +506,7 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="8dp"
                 android:onClick="runPollNow"
-                android:text="Probe now"/>
+                android:text="@string/dashboard_test_text_probe_now"/>
 
             <Button
                 android:id="@+id/button_reload_parameters"
@@ -522,7 +515,7 @@
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="16dp"
                 android:onClick="reloadParametersKeepProfileAnswers"
-                android:text="Reload parameters" />
+                android:text="@string/dashboard_test_text_reload_parameters"/>
         </LinearLayout>
 
 

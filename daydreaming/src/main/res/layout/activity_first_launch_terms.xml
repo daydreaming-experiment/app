@@ -42,7 +42,6 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_toRightOf="@id/firstLaunchTerms_buttonDisagree"
                 android:text="@string/firstLaunchTerms_button_agree"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/ui_white_text_color"

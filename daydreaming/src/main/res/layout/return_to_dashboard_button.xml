@@ -14,5 +14,6 @@ android:layout_alignParentRight="true">
         android:scaleType="fitCenter"
         android:onClick="onClick_backToDashboard"
         android:src="@drawable/dashboard_arrow"
-        android:background="@null"/>
+        android:background="@null"
+        android:contentDescription="@null"/>
 </LinearLayout>

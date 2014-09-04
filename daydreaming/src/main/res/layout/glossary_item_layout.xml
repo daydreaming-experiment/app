@@ -21,7 +21,6 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="KEY"
             android:textColor="@color/ui_white_text_color"
             android:textAppearance="@style/ui_font_title_bold"
             android:id="@+id/glossary_item_key" />
@@ -30,7 +29,6 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="also British English: fairy cake; Australian English: fairy cake patty cake or cup cake) is a small cake designed to serve one person, which may be baked in a small thin paper or aluminium cup. As with larger cakes, icing and other cake decorations, such as sprinkles, may be applied."
         android:lineSpacingExtra="@dimen/text_linespacing"
         android:textColor="@color/ui_white_text_color"
         android:textAppearance="@style/ui_font_title"

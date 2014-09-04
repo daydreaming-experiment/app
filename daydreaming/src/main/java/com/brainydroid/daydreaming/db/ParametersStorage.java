@@ -14,7 +14,6 @@ import com.brainydroid.daydreaming.network.HttpGetData;
 import com.brainydroid.daydreaming.network.HttpGetTask;
 import com.brainydroid.daydreaming.network.ParametersStorageCallback;
 import com.brainydroid.daydreaming.network.ServerConfig;
-import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;

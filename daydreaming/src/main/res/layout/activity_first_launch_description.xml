@@ -1,5 +1,4 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
                 android:id="@+id/firstLaunchDescription_main_layout"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
@@ -67,7 +66,6 @@
                             android:id="@+id/firstLaunchDescription_textDescription"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="coucou"
                             android:padding="@dimen/description_text_padding"
                             android:lineSpacingExtra="@dimen/description_text_linespacing"
                             android:layout_gravity="left"
@@ -92,9 +90,10 @@
                 android:layout_width="@dimen/cloud_cone_person_width"
                 android:layout_height="@dimen/cloud_cone_person_heigth"
                 android:layout_alignParentBottom="true"
+                android:contentDescription="@null"
                 android:src = "@drawable/cloud_description"
                 android:scaleType="centerCrop"
-            android:id="@+id/imageView" />
+                android:id="@+id/imageView" />
 
         <RelativeLayout android:id="@+id/firstLaunchDescription_button_layout"
                       android:layout_width="fill_parent"
@@ -111,6 +110,7 @@
                     android:onClick="onClick_buttonNext"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentBottom="true"
+                    android:contentDescription="@null"
                     android:background="@drawable/button_cloud_next_selector"/>
 
         </RelativeLayout>

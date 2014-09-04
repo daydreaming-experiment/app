@@ -17,6 +17,7 @@
                 android:padding="@dimen/dashboard_settings_button_margin"
                 android:scaleType="fitCenter"
                 android:src="@drawable/icon_test"
+                android:contentDescription="@null"
                 android:background="@null"/>
     </LinearLayout>
 
@@ -83,14 +84,15 @@
                             android:layout_centerVertical="true"
                             android:src="@drawable/icon_notif_sound"
                             android:id ="@+id/appsettings_sound_icon"
-                               />
+                            android:contentDescription="@null"
+                           />
 
                     <TextView
                            android:layout_width="wrap_content"
                            android:layout_height="wrap_content"
                            android:text="@string/appsettings_allow_sound_text"
                            android:textAppearance="@style/ui_font_bodytext"
-                            android:textColor="@color/ui_white_text_color"
+                           android:textColor="@color/ui_white_text_color"
                            android:paddingLeft="@dimen/settings_textpadding_from_icons"
                            android:layout_toRightOf="@id/appsettings_sound_icon"
                            android:layout_centerVertical="true"
@@ -103,7 +105,6 @@
                            android:layout_height="wrap_content"
                            android:text=""
                            android:layout_centerVertical="true"
-
                            android:button="@drawable/custom_checkbox"
                            android:layout_alignParentRight="true"/>
                 </RelativeLayout>
@@ -119,6 +120,7 @@
                             android:layout_height="@dimen/settings_icon_size"
                             android:scaleType="fitCenter"
                             android:layout_centerVertical="true"
+                            android:contentDescription="@null"
                             android:src="@drawable/icon_notif_vibrate"/>
                     <TextView
                             android:layout_width="wrap_content"
@@ -157,7 +159,8 @@
                             android:scaleType="fitCenter"
                             android:src="@drawable/icon_notif_blink"
                             android:layout_centerVertical="true"
-                            />
+                            android:contentDescription="@null"
+                        />
                     <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -216,6 +219,7 @@
                         android:layout_width="@dimen/settings_time_arrow_size"
                         android:layout_height="@dimen/settings_time_arrow_size"
                         android:gravity="center_vertical"
+                        android:contentDescription="@null"
                         android:scaleType="fitStart"/>
 
 
@@ -251,6 +255,7 @@
                                 android:layout_height="@dimen/settings_time_arrow_size"
                                 android:scaleType="fitStart"
                                 android:gravity="center_vertical"
+                                android:contentDescription="@null"
                                 android:src="@drawable/icon_time_window_until"/>
                         <TextView
                                 android:layout_height="wrap_content"
@@ -294,7 +299,9 @@
                 android:scaleType="fitCenter"
                 android:onClick="onClick_backToDashboard"
                 android:src="@drawable/dashboard_arrow"
-                android:background="@null"/>
+                android:background="@null"
+                android:contentDescription="@null"
+            />
     </LinearLayout>
 
 

@@ -2,12 +2,8 @@ package com.brainydroid.daydreaming.db;
 
 
 
-import android.content.SharedPreferences;
 
 import com.brainydroid.daydreaming.background.Logger;
-import com.brainydroid.daydreaming.background.StatusManager;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
 

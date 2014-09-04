@@ -38,7 +38,7 @@
 
         <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:id="@+id/glossary_items_layout"
 >
@@ -63,6 +63,8 @@
             android:scaleType="fitCenter"
             android:onClick="onClick_backToDashboard"
             android:src="@drawable/dashboard_arrow"
-            android:background="@null"/>
+            android:background="@null"
+            android:contentDescription="@null"
+            />
     </LinearLayout>
 </RelativeLayout>
