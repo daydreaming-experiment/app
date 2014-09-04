@@ -42,12 +42,6 @@ public class Json {
     public Json(ObjectMapper jacksonLocal, ObjectMapper jacksonServer) {
         Logger.v(TAG, "Building Jackson instances");
 
-        // ok - the two serializers
-        // ok - injection on object creation
-        // ok - interfaces in and out
-        // ok - location and JWSSignature serializer/deserializer
-        // createFromJson factories
-
         VisibilityChecker checker;
         this.jacksonLocal = jacksonLocal;
         this.jacksonServer = jacksonServer;
