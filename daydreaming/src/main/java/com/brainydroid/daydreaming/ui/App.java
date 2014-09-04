@@ -49,10 +49,9 @@ public class App extends Application {
         ACRA.setConfig(acraConfig);
 
         // Initialize RoboGuice
-        AppModule appModule = new AppModule();
         RoboGuice.setBaseApplicationInjector(this, RoboGuice.DEFAULT_STAGE,
-                RoboGuice.newDefaultRoboModule(this), appModule,
-                new ObjectMapperModule().registerModule(appModule));
+                RoboGuice.newDefaultRoboModule(this), new ObjectMapperModule(),
+                new AppModule());
     }
 
 }
