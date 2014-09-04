@@ -11,13 +11,7 @@ public class StarRatingAnswer implements IAnswer {
     @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "StarRatingAnswer";
 
-    @SuppressWarnings("FieldCanBeLocal")
-    @JsonProperty private String type = "StarRating";
     @Inject @JsonProperty HashMap<String, Float> starRatings;
-
-    public synchronized String getType() {
-        return type;
-    }
 
     public synchronized void addAnswer(String text, float rating) {
         Logger.v(TAG, "Adding answer {0} at position {1}", text, rating);

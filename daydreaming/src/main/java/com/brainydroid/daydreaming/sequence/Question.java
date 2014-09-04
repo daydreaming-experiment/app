@@ -9,6 +9,8 @@ import com.brainydroid.daydreaming.ui.sequences.BaseQuestionViewAdapter;
 import com.brainydroid.daydreaming.ui.sequences.IQuestionViewAdapter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 
@@ -20,6 +22,10 @@ public class Question implements IQuestion {
     private static String TAG = "Question";
 
     @JsonProperty protected String name = null;
+    @JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.EXTERNAL_PROPERTY, property="type")
+    @JsonSubTypes({@JsonSubTypes.Type(value=SliderAnswer.class, name="slider"),
+                   @JsonSubTypes.Type(value=StarRatingAnswer.class, name="starRating"),
+                   @JsonSubTypes.Type(value=MultipleChoiceAnswer.class, name="multipleChoiceAnswer")})
     @JsonProperty private IAnswer answer = null;
 
     private int sequenceId = -1;

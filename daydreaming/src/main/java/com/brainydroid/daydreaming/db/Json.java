@@ -22,7 +22,9 @@ import com.brainydroid.daydreaming.sequence.StarRatingAnswer;
 import com.brainydroid.daydreaming.sequence.StarRatingAnswerInstanceCreator;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.introspect.VisibilityChecker;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -93,7 +95,7 @@ public class Json {
 
         // ok - the two serializers
         // injection on object creation
-        // interfaces in and out
+        // ok - interfaces in and out
         // location serializer/deserializer
 
         VisibilityChecker checker;
@@ -120,6 +122,8 @@ public class Json {
                 questionDescriptionDetailsDeserializer);
         gsonBuilder.registerTypeAdapter(QuestionDescription.class,
                 questionDescriptionSerializer);
+
+
         gsonBuilder.registerTypeAdapter(SequenceDescription.class,
                 sequenceDescriptionInstanceCreator);
         gsonBuilder.registerTypeAdapter(PageGroupDescription.class,
@@ -139,6 +143,8 @@ public class Json {
         gsonBuilder.registerTypeAdapter(MultipleChoiceAnswer.class,
                 multipleChoiceAnswerInstanceCreator);
         gsonBuilder.registerTypeAdapter(LocationPoint.class, locationPointInstanceCreator);
+
+
         gsonBuilder.registerTypeAdapter(Location.class,
                 locationDeserializer);
         gsonBuilder.registerTypeAdapter(Location.class, locationSerializer);
