@@ -1,20 +1,20 @@
 package com.brainydroid.daydreaming.sequence;
 
 import com.brainydroid.daydreaming.background.Logger;
-import com.google.inject.Inject;
 
 import java.util.ArrayList;
 
 public class BuildableOrder<D extends BuildableOrderable<C>,C> {
 
-    private static String TAG = "Order";
+    private static String TAG = "BuildableOrder";
 
-    @Inject private ArrayList<D> map;
+    private ArrayList<D> map;
     private boolean isConsumed = false;
 
     public void initialize(ArrayList<ArrayList<D>> deepMap) {
         Logger.d(TAG, "Initializing");
 
+        map = new ArrayList<D>();
         for (ArrayList<D> group : deepMap) {
             for (D item : group) {
                 map.add(item);
@@ -25,7 +25,7 @@ public class BuildableOrder<D extends BuildableOrderable<C>,C> {
     }
 
     public ArrayList<C> build(Sequence sequence) {
-        Logger.d(TAG, "Building order from sequence");
+        Logger.d(TAG, "Building order from map");
         if (isConsumed) {
             throw new RuntimeException("This BuildableOrder has already been used to build " +
                     "an order and not reinitialized. You should reinitialize it before using " +
