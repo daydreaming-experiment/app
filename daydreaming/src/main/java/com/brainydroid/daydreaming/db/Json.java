@@ -4,6 +4,7 @@ import android.location.Location;
 
 import com.brainydroid.daydreaming.background.Logger;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -38,7 +39,7 @@ public class Json {
      * Constructor used with dependency injection.
      */
     @Inject
-    public Json() {
+    public Json(ObjectMapper jacksonLocal, ObjectMapper jacksonServer) {
         Logger.v(TAG, "Building Jackson instances");
 
         // ok - the two serializers
@@ -48,21 +49,25 @@ public class Json {
         // createFromJson factories
 
         VisibilityChecker checker;
-        jacksonLocal = new ObjectMapper();
-        jacksonServer = new ObjectMapper();
+        this.jacksonLocal = jacksonLocal;
+        this.jacksonServer = jacksonServer;
 
         // Will serialize ALL members not annotated with @JsonIgnore
-        checker = jacksonLocal.getSerializationConfig()
+        checker = this.jacksonLocal.getSerializationConfig()
                 .getDefaultVisibilityChecker()
                 .withFieldVisibility(JsonAutoDetect.Visibility.ANY)
+                .withIsGetterVisibility(JsonAutoDetect.Visibility.NONE)
                 .withGetterVisibility(JsonAutoDetect.Visibility.NONE);
-        jacksonLocal.setVisibilityChecker(checker);
+        this.jacksonLocal.setVisibilityChecker(checker);
+        this.jacksonLocal.setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
         // Will serialize ONLY members annotated with @JsonProperty
-        checker = jacksonServer.getSerializationConfig()
+        checker = this.jacksonServer.getSerializationConfig()
                 .getDefaultVisibilityChecker()
+                .withIsGetterVisibility(JsonAutoDetect.Visibility.NONE)
                 .withGetterVisibility(JsonAutoDetect.Visibility.NONE);
-        jacksonServer.setVisibilityChecker(checker);
+        this.jacksonServer.setVisibilityChecker(checker);
+        this.jacksonServer.setSerializationInclusion(JsonInclude.Include.NON_NULL);
     }
 
     public String toJsonLocal(Object src) {
