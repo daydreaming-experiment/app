@@ -69,7 +69,6 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
 
             Logger.d(TAG, "Launching next activity");
 
-            statusManager.setTipiQuestionnaireCompleted();
             finishFirstLaunch();
             launchDashBoardActivity();
         }
