@@ -40,6 +40,7 @@ public class ServerTalker {
         Logger.i(TAG, "Going to send the following to server (signed) :\n"
                 + jsonPayload.replace("{", "'{'").replace("}", "'}'"));
         String signedJson = cryptoStorage.signJws(jsonPayload, keyPair.getPrivate());
+        Logger.i(TAG, "Signed form: {}", signedJson);
 
         String postUrl = parametersStorage.getBackendApiUrl() +
                 ServerConfig.YE_URL_PROFILES;
