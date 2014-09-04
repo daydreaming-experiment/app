@@ -5,19 +5,10 @@ import android.location.Location;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.network.JWSSignature;
 import com.brainydroid.daydreaming.network.JWSSignatureSerializer;
-import com.brainydroid.daydreaming.sequence.MultipleChoiceAnswer;
-import com.brainydroid.daydreaming.sequence.Page;
-import com.brainydroid.daydreaming.sequence.PageGroup;
-import com.brainydroid.daydreaming.sequence.Question;
-import com.brainydroid.daydreaming.sequence.Sequence;
-import com.brainydroid.daydreaming.sequence.SliderAnswer;
-import com.brainydroid.daydreaming.sequence.StarRatingAnswer;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.introspect.VisibilityChecker;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -35,8 +26,6 @@ import java.io.IOException;
  *
  * @author Sébastien Lerique
  * @author Vincent Adam
- * @see LocationDeserializer
- * @see LocationSerializer
  */
 @Singleton
 public class Json {
@@ -48,15 +37,9 @@ public class Json {
 
     /**
      * Constructor used with dependency injection.
-     *
-     * @param locationDeserializer An instance of {@link
-     *                             LocationDeserializer}
-     * @param locationSerializer An instance of {@link LocationSerializer}
      */
     @Inject
-    public Json(LocationDeserializer locationDeserializer,
-                LocationSerializer locationSerializer,
-                JWSSignatureSerializer jwsSignatureSerializer) {
+    public Json(JWSSignatureSerializer jwsSignatureSerializer) {
         Logger.v(TAG, "Building Jackson instances");
 
         // ok - the two serializers
@@ -85,30 +68,6 @@ public class Json {
 
         // Register all our type adapters
 
-        gsonBuilder.registerTypeAdapter(SequenceDescription.class,
-                sequenceDescriptionInstanceCreator);
-        gsonBuilder.registerTypeAdapter(PageGroupDescription.class,
-                pageGroupDescriptionInstanceCreator);
-        gsonBuilder.registerTypeAdapter(PageDescription.class,
-                pageDescriptionInstanceCreator);
-        gsonBuilder.registerTypeAdapter(QuestionDescription.class,
-                questionDescriptionInstanceCreator);
-        gsonBuilder.registerTypeAdapter(QuestionPositionDescription.class,
-                questionPositionDescriptionInstanceCreator);
-        gsonBuilder.registerTypeAdapter(Sequence.class, sequenceInstanceCreator);
-        gsonBuilder.registerTypeAdapter(PageGroup.class, pageGroupInstanceCreator);
-        gsonBuilder.registerTypeAdapter(Page.class, pageInstanceCreator);
-        gsonBuilder.registerTypeAdapter(Question.class, questionInstanceCreator);
-        gsonBuilder.registerTypeAdapter(StarRatingAnswer.class, starRatingAnswerInstanceCreator);
-        gsonBuilder.registerTypeAdapter(SliderAnswer.class, sliderAnswerInstanceCreator);
-        gsonBuilder.registerTypeAdapter(MultipleChoiceAnswer.class,
-                multipleChoiceAnswerInstanceCreator);
-        gsonBuilder.registerTypeAdapter(LocationPoint.class, locationPointInstanceCreator);
-
-
-        gsonBuilder.registerTypeAdapter(Location.class,
-                locationDeserializer);
-        gsonBuilder.registerTypeAdapter(Location.class, locationSerializer);
         gsonBuilder.registerTypeAdapter(JWSSignature.class,
                 jwsSignatureSerializer);
 

@@ -1,7 +1,5 @@
 package com.brainydroid.daydreaming.sequence;
 
-import android.location.Location;
-
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.PageDescription;
 import com.brainydroid.daydreaming.db.SequencesStorage;
@@ -56,13 +54,13 @@ public class Page implements IPage {
         saveIfSync();
     }
 
-    public synchronized Location getLocation() {
+    public synchronized android.location.Location getLocation() {
         return location;
     }
 
-    public synchronized void setLocation(Location location) {
+    public synchronized void setLocation(android.location.Location location) {
         Logger.v(TAG, "Setting location");
-        this.location = location;
+        this.location = (Location)location;
         saveIfSync();
     }
 
