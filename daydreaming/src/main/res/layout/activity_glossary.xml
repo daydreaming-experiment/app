@@ -12,30 +12,46 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:gravity="center_horizontal"
-        android:paddingTop="10dp"
+        android:paddingTop="@dimen/glossary_vertical_paddingTop_title"
         android:paddingBottom="10dp"
         android:id="@+id/linearLayout2">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Large Text"
+            android:textAppearance="@style/ui_font_big_title_bold"
+            android:text="@string/glossary_title"
+            android:textColor="@color/ui_white_text_color"
             android:id="@+id/textView" />
     </LinearLayout>
 
-
     <RelativeLayout
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:id="@+id/glossary_items_layout"
-
+        android:layout_height="match_parent"
         android:layout_below="@+id/linearLayout2"
-        android:layout_above="@+id/linearLayout3"></RelativeLayout>
+        >
+
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/scrollView" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:id="@+id/glossary_items_layout"
+>
+
+
+            </LinearLayout>
+    </ScrollView>
+    </RelativeLayout>
 
     <LinearLayout android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:paddingTop="5dp"
+        android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:id="@+id/linearLayout3">
 

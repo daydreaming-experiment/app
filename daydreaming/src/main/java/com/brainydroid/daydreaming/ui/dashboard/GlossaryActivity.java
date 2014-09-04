@@ -1,5 +1,6 @@
 package com.brainydroid.daydreaming.ui.dashboard;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,10 +10,15 @@ import android.widget.TextView;
 
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
+import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.db.Glossary;
+import com.brainydroid.daydreaming.db.Json;
+import com.brainydroid.daydreaming.db.ParametersStorage;
 import com.brainydroid.daydreaming.ui.FontUtils;
+import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
 
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -31,26 +37,29 @@ public class GlossaryActivity extends RoboFragmentActivity {
 
     private static String TAG = "GlossaryActivity";
     @Inject HashMap<String, View> glossaryPairsViews;
+    @Inject ParametersStorage parametersStorage;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Logger.v(TAG, "Creating");
+        super.onCreate(savedInstanceState);
+
         ViewGroup godfatherView = (ViewGroup) this.getWindow().getDecorView();
         populateGlossary();
         FontUtils.setRobotoFont(this, godfatherView);
-        super.onCreate(savedInstanceState);
     }
 
     public void populateGlossary(){
-        Glossary glossary = new Glossary();
-        HashMap<String,String> dictionnary = (HashMap<String, String>) glossary.getDictionnary();
 
+        HashMap<String,String> dictionnary = parametersStorage.getGlossary();
         Iterator it = dictionnary.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry glossaryPair = (Map.Entry) it.next();
-            glossaryPairsViews.put((String)glossaryPair.getKey(), inflateView(glossaryPair));
+            glossaryPairsViews.put(glossaryPair.getKey().toString(), inflateView(glossaryPair));
         }
     }
+
+
 
     @Override
     public void onBackPressed() {
@@ -64,24 +73,28 @@ public class GlossaryActivity extends RoboFragmentActivity {
         onBackPressed();
     }
 
-    private View inflateView(Map.Entry glossaryPair) {
+    private LinearLayout inflateView(Map.Entry glossaryPair) {
         Logger.v(TAG, "Inflating view for glossary");
 
-        RelativeLayout glossary_items_layout =
-                (RelativeLayout)findViewById(R.id.glossary_items_layout);
-        View view = getLayoutInflater().inflate(
-                R.layout.personality_question_layout, glossary_items_layout, false);
+        LinearLayout glossary_items_layout =
+                (LinearLayout)findViewById(R.id.glossary_items_layout);
+
+        LinearLayout linearLayout = (LinearLayout)getLayoutInflater().inflate(
+                R.layout.glossary_item_layout, glossary_items_layout, false);
 
         TextView glossary_key =
-                (TextView)view.findViewById(R.id.glossary_item_key);
+                (TextView)linearLayout.findViewById(R.id.glossary_item_key);
         TextView glossary_value =
-                (TextView)view.findViewById(R.id.glossary_item_value);
+                (TextView)linearLayout.findViewById(R.id.glossary_item_value);
 
-        glossary_key.setText((String) glossaryPair.getKey());
-        glossary_value.setText((String) glossaryPair.getValue());
+        Logger.d(TAG, "Glossary key: {}", glossaryPair.getKey().toString());
+        Logger.d(TAG, "Glossary value: {}", glossaryPair.getValue().toString());
 
-        glossary_items_layout.addView(view);
-        return view;
+        glossary_key.setText(glossaryPair.getKey().toString());
+        glossary_value.setText(glossaryPair.getValue().toString());
+
+        glossary_items_layout.addView(linearLayout);
+        return linearLayout;
     }
 
 }
