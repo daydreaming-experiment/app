@@ -20,11 +20,16 @@ import com.brainydroid.daydreaming.sequence.SliderAnswer;
 import com.brainydroid.daydreaming.sequence.SliderAnswerInstanceCreator;
 import com.brainydroid.daydreaming.sequence.StarRatingAnswer;
 import com.brainydroid.daydreaming.sequence.StarRatingAnswerInstanceCreator;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.introspect.VisibilityChecker;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 
 /**
@@ -49,11 +54,8 @@ public class Json {
 
     private static String TAG = "Json";
 
-    // Standard Gson instance
-    private Gson gson;
-
-    // Gson instance serializing only @Expose-annotated members
-    private Gson gsonExposed;
+    private ObjectMapper jacksonLocal;
+    private ObjectMapper jacksonServer;
 
     /**
      * Constructor used with dependency injection.
@@ -87,7 +89,28 @@ public class Json {
                 LocationDeserializer locationDeserializer,
                 LocationSerializer locationSerializer,
                 JWSSignatureSerializer jwsSignatureSerializer) {
-        Logger.v(TAG, "Building Gson instances");
+        Logger.v(TAG, "Building Jackson instances");
+
+        // ok - the two serializers
+        // injection on object creation
+        // interfaces in and out
+
+        VisibilityChecker checker;
+        jacksonLocal = new ObjectMapper();
+        jacksonServer = new ObjectMapper();
+
+        checker = jacksonLocal.getSerializationConfig()
+                .getDefaultVisibilityChecker()
+                .withFieldVisibility(JsonAutoDetect.Visibility.ANY)
+                .withGetterVisibility(JsonAutoDetect.Visibility.NONE);
+        jacksonLocal.setVisibilityChecker(checker);
+
+        checker = jacksonServer.getSerializationConfig()
+                .getDefaultVisibilityChecker()
+                .withFieldVisibility(JsonAutoDetect.Visibility.PROTECTED_AND_PUBLIC)
+                .withGetterVisibility(JsonAutoDetect.Visibility.NONE);
+        jacksonServer.setVisibilityChecker(checker);
+
 
         // Register all our type adapters
         gsonBuilder.registerTypeAdapter(IAnswer.class, answerDeserializer);
@@ -126,48 +149,38 @@ public class Json {
                 .create();
     }
 
-    /**
-     * Serialize an instance by including all its members (except {@code
-     * transient}s).
-     *
-     * @param src Instance to serialize
-     * @return JSON representation of {@code src}
-     */
-    public String toJson(Object src) {
-        Logger.v(TAG, "Serializing to JSON");
-        return gson.toJson(src);
+    public String toJsonLocal(Object src) {
+        Logger.v(TAG, "Serializing to JSON with local visibility");
+        try {
+            return jacksonLocal.writer().writeValueAsString(src);
+        } catch (JsonProcessingException e) {
+            Logger.e(TAG, "Could not serialize to JSON");
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
     }
 
-    /**
-     * Serialize an instance by including only its {@code @Expose}-annotated
-     * members.
-     *
-     * @param src Instance to serialize
-     * @return JSON representation of {@code src}, including only exposed
-     *         members
-     */
-    public String toJsonExposed(Object src) {
-        Logger.v(TAG, "Serializing to JSON with only exposed members");
-        return gsonExposed.toJson(src);
+    public String toJsonServer(Object src) {
+        Logger.v(TAG, "Serializing to JSON with server visibility");
+        try {
+            return jacksonServer.writer().writeValueAsString(src);
+        } catch (JsonProcessingException e) {
+            Logger.e(TAG, "Could not serialize to JSON");
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
     }
 
-    /**
-     * Deserialize a JSON representation of an instance.
-     *
-     * @param json JSON representation to deserialize
-     * @param classOfT Class to deserialize the JSON into
-     * @param <T> Again the Class to deserialize the JSON into,
-     *            if I understand well what {@code Class<T>} means
-     * @return New instance of
-     */
     public <T> T fromJson(String json, Class<T> classOfT) {
         Logger.v(TAG, "Deserializing from JSON");
-        return gson.fromJson(json, classOfT);
-    }
-
-    public <T> T fromJson(String json, Type typeOfT) {
-        Logger.v(TAG, "Deserializing from JSON");
-        return gson.fromJson(json, typeOfT);
+        try {
+            return jacksonLocal.readValue(json, classOfT);
+        } catch (IOException e) {
+            Logger.e(TAG, "Could not deserialize JSON");
+            Logger.e(TAG, json.replace("{", "'{'").replace("}", "'}'"));
+            e.printStackTrace();
+            return null;
+        }
     }
 
 }
