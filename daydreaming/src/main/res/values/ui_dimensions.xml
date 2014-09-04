@@ -141,6 +141,10 @@
     <dimen  name="question_horizontal_margin" >25dp</dimen>
     <dimen  name="question_vertical_margin" >25dp</dimen>
 
+    <!-- PageActivity -->
+    <dimen  name="page_horizontal_margin" >25dp</dimen>
+    <dimen  name="page_vertical_margin" >25dp</dimen>
+
 
 
     <dimen  name="glossary_vertical_paddingTop_title" >35dp</dimen>

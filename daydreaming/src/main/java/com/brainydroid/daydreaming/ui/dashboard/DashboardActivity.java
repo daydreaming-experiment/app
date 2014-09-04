@@ -105,6 +105,7 @@ public class DashboardActivity extends RoboFragmentActivity {
         checkExperimentModeActivatedDirty();
         if (!statusManager.areParametersUpdated()) {
             Logger.v(TAG, "Parameters not yet updated, registering broadcast receiver");
+            launchParametersUpdate();
             registerReceiver(receiver, parametersUpdateIntentFilter);
             registerReceiver(receiver, networkIntentFilter);
         }
@@ -310,6 +311,15 @@ public class DashboardActivity extends RoboFragmentActivity {
         } else {
             Logger.v(TAG, "First launch completed");
         }
+    }
+
+    private void launchParametersUpdate() {
+        Logger.d(TAG, "Launching full sync service to update parameters");
+
+        Logger.d(TAG, "Starting SyncService");
+        Intent syncIntent = new Intent(this, SyncService.class);
+        syncIntent.putExtra(SyncService.URGENT_SYNC, true);
+        startService(syncIntent);
     }
 
     /**

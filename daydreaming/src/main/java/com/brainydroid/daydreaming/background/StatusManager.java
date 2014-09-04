@@ -14,9 +14,10 @@ import android.preference.PreferenceManager;
 
 import com.brainydroid.daydreaming.db.LocationPointsStorage;
 import com.brainydroid.daydreaming.db.ParametersStorage;
-import com.brainydroid.daydreaming.db.PollsStorage;
 import com.brainydroid.daydreaming.db.ProfileStorage;
+import com.brainydroid.daydreaming.db.SequencesStorage;
 import com.brainydroid.daydreaming.network.CryptoStorage;
+import com.brainydroid.daydreaming.sequence.Sequence;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
@@ -87,7 +88,7 @@ public class StatusManager {
     @Inject Context context;
     // Use providers here to prevent circular dependencies
     @Inject Provider<ProfileStorage> profileStorageProvider;
-    @Inject Provider<PollsStorage> pollsStorageProvider;
+    @Inject Provider<SequencesStorage> sequencesStorageProvider;
     @Inject Provider<LocationPointsStorage> locationPointsStorageProvider;
     @Inject Provider<ParametersStorage> parametersStorageProvider;
     @Inject Provider<CryptoStorage> cryptoStorageProvider;
@@ -441,7 +442,7 @@ public class StatusManager {
         Logger.d(TAG, "Doing full switch to test mode");
 
         // Clear pending uploads (before switch)
-        pollsStorageProvider.get().removeUploadablePolls();
+        sequencesStorageProvider.get().removeAllSequences(Sequence.TYPE_PROBE);
         locationPointsStorageProvider.get().removeUploadableLocationPoints();
 
         // Do the switch
@@ -469,7 +470,7 @@ public class StatusManager {
         Logger.d(TAG, "Resetting parameters and profile_id, keeping the profile answers");
 
         // Clear pending uploads (before clearing)
-        pollsStorageProvider.get().removeUploadablePolls();
+        sequencesStorageProvider.get().removeAllSequences(Sequence.TYPE_PROBE);
         locationPointsStorageProvider.get().removeUploadableLocationPoints();
 
         // Clear local experiment started flag
@@ -493,7 +494,7 @@ public class StatusManager {
         Logger.d(TAG, "Doing full switch to production mode");
 
         // Clear pending uploads (before switch)
-        pollsStorageProvider.get().removeUploadablePolls();
+        sequencesStorageProvider.get().removeAllSequences(Sequence.TYPE_PROBE);
         locationPointsStorageProvider.get().removeUploadableLocationPoints();
 
         // Do the switch
@@ -521,8 +522,8 @@ public class StatusManager {
         context.startService(locationPointServiceIntent);
 
         Logger.d(TAG, "Cancelling notified polls");
-        Intent pollServiceIntent = new Intent(context, PollService.class);
-        pollServiceIntent.putExtra(PollService.CANCEL_PENDING_POLLS, true);
+        Intent pollServiceIntent = new Intent(context, ProbeService.class);
+        pollServiceIntent.putExtra(ProbeService.CANCEL_PENDING_POLLS, true);
         context.startService(pollServiceIntent);
     }
 

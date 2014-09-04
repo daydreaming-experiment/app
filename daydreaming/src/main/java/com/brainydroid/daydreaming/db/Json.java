@@ -5,22 +5,28 @@ import android.location.Location;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.network.JWSSignature;
 import com.brainydroid.daydreaming.network.JWSSignatureSerializer;
+import com.brainydroid.daydreaming.sequence.IAnswer;
+import com.brainydroid.daydreaming.sequence.MultipleChoiceAnswer;
+import com.brainydroid.daydreaming.sequence.MultipleChoiceAnswerInstanceCreator;
+import com.brainydroid.daydreaming.sequence.Page;
+import com.brainydroid.daydreaming.sequence.PageGroup;
+import com.brainydroid.daydreaming.sequence.PageGroupInstanceCreator;
+import com.brainydroid.daydreaming.sequence.PageInstanceCreator;
+import com.brainydroid.daydreaming.sequence.Question;
+import com.brainydroid.daydreaming.sequence.QuestionInstanceCreator;
+import com.brainydroid.daydreaming.sequence.Sequence;
+import com.brainydroid.daydreaming.sequence.SequenceInstanceCreator;
+import com.brainydroid.daydreaming.sequence.SliderAnswer;
+import com.brainydroid.daydreaming.sequence.SliderAnswerInstanceCreator;
+import com.brainydroid.daydreaming.sequence.StarRatingAnswer;
+import com.brainydroid.daydreaming.sequence.StarRatingAnswerInstanceCreator;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
-import com.google.gson.reflect.TypeToken;
+
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import java.lang.reflect.Type;
-import java.util.HashMap;
-
-import javax.inject.Inject;
 
 /**
  * Singleton JSON serializer and deserializer to centralize registration of
@@ -28,16 +34,14 @@ import javax.inject.Inject;
  * <p/>
  * Here is the place to register type adapters for custom serializing and
  * deserializing of classes. This is used for deserializing interfaces
- * (like {@link IAnswer}, {@link IQuestionDetails},
- * custom instance creation ({@link Question} instances),
+ * (like {@link com.brainydroid.daydreaming.sequence.IAnswer}, {@link IQuestionDescriptionDetails},
  * and useful serialization and deserialization of other classes (here
  * {@link Location} instances).
  *
  * @author Sébastien Lerique
  * @author Vincent Adam
  * @see AnswerDeserializer
- * @see QuestionDetailsDeserializer
- * @see QuestionInstanceCreator
+ * @see QuestionDescriptionDetailsDeserializer
  * @see LocationDeserializer
  * @see LocationSerializer
  */
@@ -57,10 +61,8 @@ public class Json {
      *
      * @param gsonBuilder An instance of {@link GsonBuilder}
      * @param answerDeserializer An instance of {@link AnswerDeserializer}
-     * @param questionDetailsDeserializer An instance of {@link
-     *                                    QuestionDetailsDeserializer}
-     * @param questionInstanceCreator An instance of {@link
-     *                                QuestionInstanceCreator}
+     * @param questionDescriptionDetailsDeserializer An instance of {@link
+     *                                    QuestionDescriptionDetailsDeserializer}
      * @param locationDeserializer An instance of {@link
      *                             LocationDeserializer}
      * @param locationSerializer An instance of {@link LocationSerializer}
@@ -68,26 +70,56 @@ public class Json {
     @Inject
     public Json(GsonBuilder gsonBuilder,
                 AnswerDeserializer answerDeserializer,
-                QuestionDetailsDeserializer questionDetailsDeserializer,
+                QuestionDescriptionDetailsDeserializer questionDescriptionDetailsDeserializer,
+                QuestionDescriptionSerializer questionDescriptionSerializer,
+                SequenceDescriptionInstanceCreator sequenceDescriptionInstanceCreator,
+                PageGroupDescriptionInstanceCreator pageGroupDescriptionInstanceCreator,
+                PageDescriptionInstanceCreator pageDescriptionInstanceCreator,
+                QuestionDescriptionInstanceCreator questionDescriptionInstanceCreator,
+                QuestionPositionDescriptionInstanceCreator questionPositionDescriptionInstanceCreator,
+                SequenceInstanceCreator sequenceInstanceCreator,
+                PageGroupInstanceCreator pageGroupInstanceCreator,
+                PageInstanceCreator pageInstanceCreator,
                 QuestionInstanceCreator questionInstanceCreator,
+                StarRatingAnswerInstanceCreator starRatingAnswerInstanceCreator,
+                SliderAnswerInstanceCreator sliderAnswerInstanceCreator,
+                MultipleChoiceAnswerInstanceCreator multipleChoiceAnswerInstanceCreator,
+                LocationPointInstanceCreator locationPointInstanceCreator,
                 LocationDeserializer locationDeserializer,
                 LocationSerializer locationSerializer,
-                JWSSignatureSerializer jwsSignatureSerializer,
-                QuestionSerializer questionSerializer) {
+                JWSSignatureSerializer jwsSignatureSerializer) {
         Logger.v(TAG, "Building Gson instances");
 
         // Register all our type adapters
         gsonBuilder.registerTypeAdapter(IAnswer.class, answerDeserializer);
-        gsonBuilder.registerTypeAdapter(IQuestionDetails.class,
-                questionDetailsDeserializer);
-        gsonBuilder.registerTypeAdapter(Question.class,
-                questionInstanceCreator);
+        gsonBuilder.registerTypeAdapter(IQuestionDescriptionDetails.class,
+                questionDescriptionDetailsDeserializer);
+        gsonBuilder.registerTypeAdapter(QuestionDescription.class,
+                questionDescriptionSerializer);
+        gsonBuilder.registerTypeAdapter(SequenceDescription.class,
+                sequenceDescriptionInstanceCreator);
+        gsonBuilder.registerTypeAdapter(PageGroupDescription.class,
+                pageGroupDescriptionInstanceCreator);
+        gsonBuilder.registerTypeAdapter(PageDescription.class,
+                pageDescriptionInstanceCreator);
+        gsonBuilder.registerTypeAdapter(QuestionDescription.class,
+                questionDescriptionInstanceCreator);
+        gsonBuilder.registerTypeAdapter(QuestionPositionDescription.class,
+                questionPositionDescriptionInstanceCreator);
+        gsonBuilder.registerTypeAdapter(Sequence.class, sequenceInstanceCreator);
+        gsonBuilder.registerTypeAdapter(PageGroup.class, pageGroupInstanceCreator);
+        gsonBuilder.registerTypeAdapter(Page.class, pageInstanceCreator);
+        gsonBuilder.registerTypeAdapter(Question.class, questionInstanceCreator);
+        gsonBuilder.registerTypeAdapter(StarRatingAnswer.class, starRatingAnswerInstanceCreator);
+        gsonBuilder.registerTypeAdapter(SliderAnswer.class, sliderAnswerInstanceCreator);
+        gsonBuilder.registerTypeAdapter(MultipleChoiceAnswer.class,
+                multipleChoiceAnswerInstanceCreator);
+        gsonBuilder.registerTypeAdapter(LocationPoint.class, locationPointInstanceCreator);
         gsonBuilder.registerTypeAdapter(Location.class,
                 locationDeserializer);
         gsonBuilder.registerTypeAdapter(Location.class, locationSerializer);
         gsonBuilder.registerTypeAdapter(JWSSignature.class,
                 jwsSignatureSerializer);
-        gsonBuilder.registerTypeAdapter(Question.class, questionSerializer);
 
         // Build the two Gson instances
         gson = gsonBuilder.create();
@@ -138,7 +170,4 @@ public class Json {
         Logger.v(TAG, "Deserializing from JSON");
         return gson.fromJson(json, typeOfT);
     }
-
-
-
 }

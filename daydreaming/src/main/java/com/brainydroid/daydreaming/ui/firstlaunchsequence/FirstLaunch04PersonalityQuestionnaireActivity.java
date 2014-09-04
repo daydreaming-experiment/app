@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.ProfileStorage;
@@ -16,13 +17,13 @@ import com.brainydroid.daydreaming.ui.AlphaSeekBar;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
-import roboguice.inject.ContentView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import roboguice.inject.ContentView;
 
 /**
  * Activity at first launch

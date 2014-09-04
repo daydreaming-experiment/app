@@ -7,9 +7,8 @@ import com.brainydroid.daydreaming.db.Json;
 import com.brainydroid.daydreaming.db.LocationPoint;
 import com.brainydroid.daydreaming.db.LocationPointsStorage;
 import com.brainydroid.daydreaming.db.ParametersStorage;
-import com.brainydroid.daydreaming.db.Poll;
-import com.brainydroid.daydreaming.db.PollsStorage;
 import com.brainydroid.daydreaming.db.ProfileStorage;
+import com.brainydroid.daydreaming.db.SequencesStorage;
 import com.brainydroid.daydreaming.network.CryptoStorage;
 import com.brainydroid.daydreaming.network.CryptoStorageCallback;
 import com.brainydroid.daydreaming.network.HttpConversationCallback;
@@ -18,6 +17,7 @@ import com.brainydroid.daydreaming.network.ProfileWrapper;
 import com.brainydroid.daydreaming.network.ResultsWrapper;
 import com.brainydroid.daydreaming.network.ResultsWrapperFactory;
 import com.brainydroid.daydreaming.network.ServerTalker;
+import com.brainydroid.daydreaming.sequence.Sequence;
 import com.google.inject.Inject;
 
 import java.util.ArrayList;
@@ -36,7 +36,7 @@ import roboguice.service.RoboService;
  *
  * @author Sébastien Lerique
  * @author Vincent Adam
- * @see PollService
+ * @see ProbeService
  * @see SchedulerService
  */
 public class SyncService extends RoboService {
@@ -44,18 +44,18 @@ public class SyncService extends RoboService {
     protected static String TAG = "SyncService";
 
     public static String DEBUG_SYNC = "debugSync";
-    private boolean isDebugSync = false;
+    public static String URGENT_SYNC = "urgentSync";
     private String startSyncAppMode;
 
     @Inject StatusManager statusManager;
-    @Inject PollsStorage pollsStorage;
+    @Inject SequencesStorage sequencesStorage;
     @Inject LocationPointsStorage locationPointsStorage;
     @Inject ParametersStorage parametersStorage;
     @Inject ProfileStorage profileStorage;
     @Inject CryptoStorage cryptoStorage;
     @Inject ServerTalker serverTalker;
     @Inject Json json;
-    @Inject ResultsWrapperFactory<Poll> pollsWrapperFactory;
+    @Inject ResultsWrapperFactory<Sequence> sequencesWrapperFactory;
     @Inject ResultsWrapperFactory<LocationPoint> locationPointsWrapperFactory;
 
     ParametersStorageCallback parametersStorageCallback =
@@ -107,8 +107,8 @@ public class SyncService extends RoboService {
                     Logger.v(TAG, "Profile has not changed since last update");
                 }
 
-                Logger.d(TAG, "Launching poll and locationPoints upload");
-                asyncUploadPolls();
+                Logger.d(TAG, "Launching sequence and locationPoints upload");
+                asyncUploadSequences();
                 asyncUploadLocationPoints();
             } else {
                 Logger.v(TAG, "Either no keypair or no id or no data " +
@@ -127,10 +127,12 @@ public class SyncService extends RoboService {
         startSyncAppMode = statusManager.getCurrentModeName();
 
         // Launch synchronization tasks if we haven't done so not long ago
-        isDebugSync = intent.getBooleanExtra(DEBUG_SYNC, false);
-        if (statusManager.isLastSyncLongAgo() || isDebugSync) {
-            Logger.d(TAG, "Last sync was long ago or this is a debug sync -> starting updates");
-            startUpdates();
+        boolean isDebugSync = intent.getBooleanExtra(DEBUG_SYNC, false);
+        boolean isUrgentSync = intent.getBooleanExtra(URGENT_SYNC, false);
+        if (statusManager.isLastSyncLongAgo() || isDebugSync || isUrgentSync) {
+            Logger.d(TAG, "Last sync was long ago or this is a debug or urgent sync " +
+                    "-> starting updates");
+            startUpdates(isDebugSync);
         } else {
             Logger.v(TAG, "Last sync was not long ago -> exiting");
             stopSelf();
@@ -145,7 +147,7 @@ public class SyncService extends RoboService {
         return null;
     }
 
-    private void startUpdates() {
+    private void startUpdates(boolean isDebugSync) {
         Logger.d(TAG, "Initializing crypto to launch sync tasks");
 
         if (statusManager.isDataEnabled()) {
@@ -168,61 +170,61 @@ public class SyncService extends RoboService {
     }
 
     /**
-     * Upload answered {@link Poll}s to the server and remove them from local
+     * Upload answered {@link Sequence}s to the server and remove them from local
      * storage, asynchronously.
      */
-    private void asyncUploadPolls() {
-        Logger.d(TAG, "Syncing polls");
+    private void asyncUploadSequences() {
+        Logger.d(TAG, "Syncing sequences");
 
-        // Do we have any polls to upload?
-        ArrayList<Poll> uploadablePolls = pollsStorage.getUploadablePolls();
-        if (uploadablePolls == null) {
-            Logger.i(TAG, "No polls to upload -> exiting");
-            Logger.td(this, TAG + ": no polls to upload");
+        // Do we have any sequences to upload?
+        ArrayList<Sequence> uploadableSequences = sequencesStorage.getUploadableSequences();
+        if (uploadableSequences == null) {
+            Logger.i(TAG, "No sequences to upload -> exiting");
+            Logger.td(this, TAG + ": no sequences to upload");
             return;
         }
 
-        // Wrap uploadable polls in a single structure to provide a root
+        // Wrap uploadable sequences in a single structure to provide a root
         // node when jsonifying
-        final ResultsWrapper<Poll> pollsWrap = pollsWrapperFactory.create(
-                uploadablePolls);
+        final ResultsWrapper<Sequence> sequencesWrap = sequencesWrapperFactory.create(
+                uploadableSequences);
 
         // Called once the HttpPostTask completes or times out
         HttpConversationCallback callback = new HttpConversationCallback() {
 
-            private String TAG = "Polls HttpConversationCallback";
+            private String TAG = "Sequences HttpConversationCallback";
 
             @Override
             public void onHttpConversationFinished(boolean success,
                                                    String serverAnswer) {
-                Logger.d(TAG, "Polls sync HttpConversation finished");
+                Logger.d(TAG, "Sequences sync HttpConversation finished");
 
                 // If at this point, the app has changed from one of test/prod modes
-                // to the other between the POST start and finish, the polls we're about
+                // to the other between the POST start and finish, the sequences we're about
                 // to remove from the database are probably already gone. The app shouldn't
                 // crash, but if it does, we should be able to see what happened in the
                 // ACRA logs.
 
                 if (success) {
                     // TODO: handle the case where returned JSON is in fact an error.
-                    Logger.i(TAG, "Successfully uploaded polls to server " +
+                    Logger.i(TAG, "Successfully uploaded sequences to server " +
                             "(serverAnswer: {0})", serverAnswer);
                     Logger.td(SyncService.this, SyncService.TAG + ": " +
-                            "uploaded polls (serverAnswer: {0})",
+                            "uploaded sequences (serverAnswer: {0})",
                             serverAnswer);
 
-                    Logger.d(TAG, "Removing uploaded polls from db");
-                    pollsStorage.remove(pollsWrap.getDatas());
+                    Logger.d(TAG, "Removing uploaded sequences from db");
+                    sequencesStorage.remove(sequencesWrap.getDatas());
                 } else {
-                    Logger.w(TAG, "Error while uploading polls to server");
+                    Logger.w(TAG, "Error while uploading sequences to server");
                 }
             }
 
         };
 
         // Sign our data to identify us, and upload
-        Logger.d(TAG, "Signing data and launching polls sync");
-        serverTalker.signAndPostResult(json.toJsonExposed(pollsWrap),
+        Logger.d(TAG, "Signing data and launching sequences sync");
+        serverTalker.signAndPostResult(json.toJsonExposed(sequencesWrap),
                 callback);
     }
 

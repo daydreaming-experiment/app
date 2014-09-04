@@ -45,19 +45,19 @@ import com.google.inject.Inject;
  *     After some time, the {@link LocationPointService} starts again
  *     and clears its listener, which will stop the {@link LocationService}
  *     if no other listeners are registered (i.e. if no {@link
- *     com.brainydroid.daydreaming.ui.questions.QuestionActivity} is listening for
+ *     com.brainydroid.daydreaming.ui.sequences.PageActivity} is listening for
  *     updates). This is done with the same procedure: record the message
  *     to pass ({@link #clearLocationPointCallback}),
  *     set a {@link ServiceConnectionCallback} to stop the {@link
  *     LocationPointService} and unbind, then bind to start the chain of
  *     callbacks.</li>
- *     <li>{@link com.brainydroid.daydreaming.ui.questions.QuestionActivity}: needs
+ *     <li>{@link com.brainydroid.daydreaming.ui.sequences.PageActivity}: needs
  *     to start the {@code LocationService}, bind to it,
  *     register a callback, and stay bound to be able to send messages at
  *     will (the difference with {@link LocationPointService} is that the
- *     {@link com.brainydroid.daydreaming.ui.questions.QuestionActivity} keeps running
+ *     {@link com.brainydroid.daydreaming.ui.sequences.PageActivity} keeps running
  *     all the time while it is listening for location updates. When {@link
- *     com.brainydroid.daydreaming.ui.questions.QuestionActivity} stops,
+ *     com.brainydroid.daydreaming.ui.sequences.PageActivity} stops,
  *     it clears its callback and unbinds. That will stop the {@link
  *     LocationService} if no other callback is registered (i.e. if no {@link
  *     com.brainydroid.daydreaming.db.LocationPoint} is listening for
@@ -71,7 +71,7 @@ import com.google.inject.Inject;
  * @see LocationCallback
  * @see ServiceConnectionCallback
  * @see com.brainydroid.daydreaming.db.LocationPoint
- * @see com.brainydroid.daydreaming.db.Question
+ * @see com.brainydroid.daydreaming.sequence.Sequence
  */
 public class LocationServiceConnection implements ServiceConnection {
 

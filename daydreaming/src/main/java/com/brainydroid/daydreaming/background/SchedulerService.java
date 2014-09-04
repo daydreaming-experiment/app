@@ -18,15 +18,15 @@ import java.util.Random;
 import roboguice.service.RoboService;
 
 /**
- * Schedule a {@link com.brainydroid.daydreaming.db.Poll} to be created and
+ * Schedule a {@link com.brainydroid.daydreaming.sequence.Sequence} to be created and
  * notified later on. The delay before creation-notification of the {@link
- * com.brainydroid.daydreaming.db.Poll} is both well randomized (a Poisson
+ * com.brainydroid.daydreaming.sequence.Sequence} is both well randomized (a Poisson
  * process) and respectful of the user's notification settings.
  *
  * @author Sébastien Lerique
  * @author Vincent Adam
  * @see SyncService
- * @see PollService
+ * @see ProbeService
  */
 public class SchedulerService extends RoboService {
 
@@ -69,8 +69,8 @@ public class SchedulerService extends RoboService {
             return START_REDELIVER_INTENT;
         }
 
-        // Schedule a poll and stop ourselves
-        schedulePoll(intent.getBooleanExtra(SCHEDULER_DEBUGGING, false));
+        // Schedule a probe and stop ourselves
+        scheduleProbe(intent.getBooleanExtra(SCHEDULER_DEBUGGING, false));
         stopSelf();
 
         return START_REDELIVER_INTENT;
@@ -83,20 +83,20 @@ public class SchedulerService extends RoboService {
     }
 
     /**
-     * Schedule a {@link com.brainydroid.daydreaming.db.Poll} to be created
-     * and notified by {@link PollService} later on.
+     * Schedule a {@link com.brainydroid.daydreaming.sequence.Sequence} to be created
+     * and notified by {@link ProbeService} later on.
      *
      * @param debugging Set to {@link true} for a fixed short delay before
      *                  notification
      */
-    private synchronized void schedulePoll(boolean debugging) {
-        Logger.d(TAG, "Scheduling new poll");
+    private synchronized void scheduleProbe(boolean debugging) {
+        Logger.d(TAG, "Scheduling new probe");
 
-        // Generate the time at which the poll will appear
+        // Generate the time at which the probe will appear
         long scheduledTime = generateTime(debugging);
 
-        // Create and schedule the PendingIntent for PollService
-        Intent intent = new Intent(this, PollService.class);
+        // Create and schedule the PendingIntent for ProbeService
+        Intent intent = new Intent(this, ProbeService.class);
         PendingIntent pendingIntent = PendingIntent.getService(this, 0,
                 intent, PendingIntent.FLAG_CANCEL_CURRENT);
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
@@ -150,7 +150,7 @@ public class SchedulerService extends RoboService {
 
     /**
      * Sample a moment at which the {@link
-     * com.brainydroid.daydreaming.db.Poll} should appear.
+     * com.brainydroid.daydreaming.sequence.Sequence} should appear.
      * <p/>
      * A delay is sampled from an exponential distribution with parameter
      * {@link 1 / meanDelay}, and is then prolonged to observe the user's
@@ -164,7 +164,7 @@ public class SchedulerService extends RoboService {
      *
      * @param debugging Set to {@link true} to get a fixed short delay for
      *                  the notification instead of a random delay
-     * @return Scheduled (and shifted) moment for the poll to appear,
+     * @return Scheduled (and shifted) moment for the probe to appear,
      *         in milliseconds from epoch
      */
     private synchronized long generateTime(boolean debugging) {
@@ -202,10 +202,10 @@ public class SchedulerService extends RoboService {
         long seconds = milliseconds / 1000;
 
         String scheduledString = Util.formatDate(scheduledCalendar.getTime());
-        Logger.i(TAG, "Poll scheduled in {0} hours, {1} minutes, " +
+        Logger.i(TAG, "Probe scheduled in {0} hours, {1} minutes, " +
                 "and {2} seconds (i.e. {3})",
                 hours, minutes, seconds, scheduledString);
-        Logger.td(this, "New poll scheduled at {0}", scheduledString);
+        Logger.td(this, "New probe scheduled at {0}", scheduledString);
 
         // The scheduled time is returned in milliseconds
         return nowUpTime + respectfulDelay;
@@ -231,9 +231,9 @@ public class SchedulerService extends RoboService {
      * preferences_appSettings in notification time window.
      * <p/>
      * If the suggested scheduled time falls in the user's forbidden time
-     * window, we need to adapt to make sure no poll will get notified in
+     * window, we need to adapt to make sure no probe will get notified in
      * that time window. We need to do so in a random-respectful way,
-     * i.e. so that we don't have half the polls appearing right at the
+     * i.e. so that we don't have half the probes appearing right at the
      * beginning of the allowed time window (which would be the result of a
      * simple policy here).
      * <p/>
