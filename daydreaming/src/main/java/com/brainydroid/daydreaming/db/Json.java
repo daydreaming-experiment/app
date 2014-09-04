@@ -3,8 +3,6 @@ package com.brainydroid.daydreaming.db;
 import android.location.Location;
 
 import com.brainydroid.daydreaming.background.Logger;
-import com.brainydroid.daydreaming.network.JWSSignature;
-import com.brainydroid.daydreaming.network.JWSSignatureSerializer;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -39,13 +37,13 @@ public class Json {
      * Constructor used with dependency injection.
      */
     @Inject
-    public Json(JWSSignatureSerializer jwsSignatureSerializer) {
+    public Json() {
         Logger.v(TAG, "Building Jackson instances");
 
         // ok - the two serializers
         // ok - injection on object creation
         // ok - interfaces in and out
-        // location and JWSSignature serializer/deserializer
+        // ok - location and JWSSignature serializer/deserializer
         // createFromJson factories
 
         VisibilityChecker checker;
@@ -64,17 +62,6 @@ public class Json {
                 .getDefaultVisibilityChecker()
                 .withGetterVisibility(JsonAutoDetect.Visibility.NONE);
         jacksonServer.setVisibilityChecker(checker);
-
-
-        // Register all our type adapters
-
-        gsonBuilder.registerTypeAdapter(JWSSignature.class,
-                jwsSignatureSerializer);
-
-        // Build the two Gson instances
-        gson = gsonBuilder.create();
-        gsonExposed = gsonBuilder.excludeFieldsWithoutExposeAnnotation()
-                .create();
     }
 
     public String toJsonLocal(Object src) {
