@@ -94,25 +94,26 @@
                 android:layout_alignParentBottom="true"
                 android:src = "@drawable/cloud_description"
                 android:scaleType="centerCrop"
-                />
+            android:id="@+id/imageView" />
 
-    </RelativeLayout>
+        <RelativeLayout android:id="@+id/firstLaunchDescription_button_layout"
+                      android:layout_width="fill_parent"
+                      android:layout_height="fill_parent"
+            android:layout_alignBottom="@+id/imageView"
+            android:layout_alignParentLeft="true">
 
+            <ImageButton
+                    android:id="@+id/firstLaunchDescription_buttonNext"
+                    android:layout_width="@dimen/button_next_width"
+                    android:layout_height="@dimen/button_next_height"
+                    android:layout_marginRight="@dimen/next_button_right_margin"
+                    android:layout_marginBottom="@dimen/next_button_right_margin"
+                    android:onClick="onClick_buttonNext"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentBottom="true"
+                    android:background="@drawable/button_cloud_next_selector"/>
 
-    <RelativeLayout android:id="@+id/firstLaunchDescription_button_layout"
-                  android:layout_width="fill_parent"
-                  android:layout_height="fill_parent">
-
-        <ImageButton
-                android:id="@+id/firstLaunchDescription_buttonNext"
-                android:layout_width="@dimen/button_next_width"
-                android:layout_height="@dimen/button_next_height"
-                android:layout_marginRight="@dimen/next_button_right_margin"
-                android:layout_marginBottom="@dimen/next_button_right_margin"
-                android:onClick="onClick_buttonNext"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentBottom="true"
-                android:background="@drawable/button_cloud_next_selector"/>
+        </RelativeLayout>
 
     </RelativeLayout>
 

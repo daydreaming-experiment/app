@@ -51,6 +51,7 @@ public class FirstLaunch02TermsActivity extends FirstLaunchActivity implements S
         addAgreementButtonListener();
         addInfoButtonListener();
         consent.setText(Html.fromHtml(getString(R.string.terms_html)));
+        setRobotoFont(this);
     }
 
     /**

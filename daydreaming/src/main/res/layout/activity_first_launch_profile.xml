@@ -93,7 +93,7 @@
                     android:paddingRight="10dp"
                     android:paddingLeft="10dp"
                     android:prompt="@string/firstLaunchProfile_Spinner_age_prompt"
-                    android:background="@drawable/profile_spinner_box_selector"/>
+                    android:background="@drawable/profile_spinner_box_selector" />
 
 
 
