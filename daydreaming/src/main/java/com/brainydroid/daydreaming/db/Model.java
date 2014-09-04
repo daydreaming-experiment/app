@@ -37,6 +37,7 @@ public abstract class Model<M extends Model<M,S,F>,
 
     private int id = -1;
     private transient boolean retainSaves = false;
+    private transient boolean hasRetainedSaves = false;
 
     /**
      * Set the {@link Model}'s id, used for database ordering and indexing.
@@ -116,6 +117,7 @@ public abstract class Model<M extends Model<M,S,F>,
     public synchronized void save() {
         if (retainSaves) {
             Logger.d(TAG, "Saves are to be retained, not saving to storage");
+            hasRetainedSaves = true;
             return;
         }
         if (id != -1) {
@@ -134,8 +136,13 @@ public abstract class Model<M extends Model<M,S,F>,
 
     public synchronized void flushSaves() {
         Logger.v(TAG, "Flushing saves now");
+        if (hasRetainedSaves) {
+            save();
+        } else {
+            Logger.v(TAG, "No saves retained, no need to save");
+        }
         retainSaves = false;
-        save();
+        hasRetainedSaves = false;
     }
 
 }
