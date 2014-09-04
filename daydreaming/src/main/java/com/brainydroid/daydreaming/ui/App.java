@@ -5,6 +5,7 @@ import android.app.Application;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.network.PRNGFixes;
+import com.fasterxml.jackson.module.guice.ObjectMapperModule;
 
 import org.acra.ACRA;
 import org.acra.ACRAConfiguration;
@@ -48,8 +49,10 @@ public class App extends Application {
         ACRA.setConfig(acraConfig);
 
         // Initialize RoboGuice
+        AppModule appModule = new AppModule();
         RoboGuice.setBaseApplicationInjector(this, RoboGuice.DEFAULT_STAGE,
-                RoboGuice.newDefaultRoboModule(this), new AppModule());
+                RoboGuice.newDefaultRoboModule(this), appModule,
+                new ObjectMapperModule().registerModule(appModule));
     }
 
 }

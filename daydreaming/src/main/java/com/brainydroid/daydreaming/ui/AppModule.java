@@ -11,12 +11,13 @@ import com.brainydroid.daydreaming.sequence.PageGroupFactory;
 import com.brainydroid.daydreaming.sequence.QuestionFactory;
 import com.brainydroid.daydreaming.sequence.Sequence;
 import com.brainydroid.daydreaming.sequence.SequenceFactory;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.TypeLiteral;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
 
-public class AppModule implements Module {
+public class AppModule extends SimpleModule implements Module {
 
     @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "AppModule";
