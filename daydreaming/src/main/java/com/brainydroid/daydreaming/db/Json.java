@@ -46,8 +46,6 @@ import java.lang.reflect.Type;
  *
  * @author Sébastien Lerique
  * @author Vincent Adam
- * @see AnswerDeserializer
- * @see QuestionDescriptionDetailsDeserializer
  * @see LocationDeserializer
  * @see LocationSerializer
  */
@@ -62,20 +60,12 @@ public class Json {
     /**
      * Constructor used with dependency injection.
      *
-     * @param gsonBuilder An instance of {@link GsonBuilder}
-     * @param answerDeserializer An instance of {@link AnswerDeserializer}
-     * @param questionDescriptionDetailsDeserializer An instance of {@link
-     *                                    QuestionDescriptionDetailsDeserializer}
      * @param locationDeserializer An instance of {@link
      *                             LocationDeserializer}
      * @param locationSerializer An instance of {@link LocationSerializer}
      */
     @Inject
-    public Json(GsonBuilder gsonBuilder,
-                AnswerDeserializer answerDeserializer,
-                QuestionDescriptionDetailsDeserializer questionDescriptionDetailsDeserializer,
-                QuestionDescriptionSerializer questionDescriptionSerializer,
-                SequenceDescriptionInstanceCreator sequenceDescriptionInstanceCreator,
+    public Json(SequenceDescriptionInstanceCreator sequenceDescriptionInstanceCreator,
                 PageGroupDescriptionInstanceCreator pageGroupDescriptionInstanceCreator,
                 PageDescriptionInstanceCreator pageDescriptionInstanceCreator,
                 QuestionDescriptionInstanceCreator questionDescriptionInstanceCreator,
@@ -117,12 +107,6 @@ public class Json {
 
 
         // Register all our type adapters
-        gsonBuilder.registerTypeAdapter(IAnswer.class, answerDeserializer);
-        gsonBuilder.registerTypeAdapter(IQuestionDescriptionDetails.class,
-                questionDescriptionDetailsDeserializer);
-        gsonBuilder.registerTypeAdapter(QuestionDescription.class,
-                questionDescriptionSerializer);
-
 
         gsonBuilder.registerTypeAdapter(SequenceDescription.class,
                 sequenceDescriptionInstanceCreator);
