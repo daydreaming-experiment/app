@@ -8,6 +8,8 @@ public class ProfileWrapper {
 
     @JsonProperty private Profile profile;
 
+    public ProfileWrapper() {}
+
     @Inject
     public ProfileWrapper(@Assisted Profile profile) {
         this.profile = profile;
