@@ -28,7 +28,7 @@ import com.brainydroid.daydreaming.background.Logger;
  * @see StatusModel
  * @see StatusModelStorage
  * @see LocationPoint
- * @see Poll
+ * @see com.brainydroid.daydreaming.sequence.Sequence
  */
 public abstract class Model<M extends Model<M,S,F>,
         S extends ModelStorage<M,S,F>, F extends ModelJsonFactory<M,S,F>> {
