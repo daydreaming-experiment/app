@@ -3,6 +3,7 @@ package com.brainydroid.daydreaming.db;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.sequence.IQuestion;
 import com.brainydroid.daydreaming.sequence.QuestionBuilder;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.inject.Inject;
 
 public class QuestionDescription implements IQuestion {
@@ -12,7 +13,7 @@ public class QuestionDescription implements IQuestion {
 
     private String name = null;
     private IQuestionDescriptionDetails details = null;
-    @Inject private transient QuestionBuilder questionBuilder;
+    @Inject @JsonIgnore private QuestionBuilder questionBuilder;
 
     public String getName() {
         return name;

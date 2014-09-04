@@ -1,7 +1,7 @@
 package com.brainydroid.daydreaming.sequence;
 
 import com.brainydroid.daydreaming.background.Logger;
-import com.google.gson.annotations.Expose;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.inject.Inject;
 
 import java.util.HashSet;
@@ -12,8 +12,8 @@ public class MultipleChoiceAnswer implements IAnswer {
     private static String TAG = "MultipleChoiceAnswer";
 
     @SuppressWarnings("FieldCanBeLocal")
-    @Expose private String type = "MultipleChoice";
-    @Inject @Expose HashSet<String> choices;
+    @JsonProperty private String type = "MultipleChoice";
+    @Inject @JsonProperty HashSet<String> choices;
 
     public synchronized String getType() {
         return type;

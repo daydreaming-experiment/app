@@ -5,7 +5,8 @@ import android.location.Location;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.PageDescription;
 import com.brainydroid.daydreaming.db.SequencesStorage;
-import com.google.gson.annotations.Expose;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.inject.Inject;
 
 import java.util.ArrayList;
@@ -17,19 +18,19 @@ public class Page implements IPage {
     public static final String STATUS_ASKED = "pageAsked";
     public static final String STATUS_ANSWERED = "pageAnswered";
 
-    @Expose private String name = null;
-    @Expose private String status = null;
-    @Expose private Location location = null;
-    @Expose private long ntpTimestamp = -1;
-    @Expose private long systemTimestamp = -1;
-    @Expose private ArrayList<Question> questions = null;
+    @JsonProperty private String name = null;
+    @JsonProperty private String status = null;
+    @JsonProperty private Location location = null;
+    @JsonProperty private long ntpTimestamp = -1;
+    @JsonProperty private long systemTimestamp = -1;
+    @JsonProperty private ArrayList<Question> questions = null;
 
     private int sequenceId = -1;
 
-    private transient boolean isFirstOfSequence = false;
-    private transient boolean isLastOfSequence = false;
-    private transient Sequence sequenceCache = null;
-    @Inject private transient SequencesStorage sequencesStorage;
+    @JsonIgnore private boolean isFirstOfSequence = false;
+    @JsonIgnore private boolean isLastOfSequence = false;
+    @JsonIgnore private Sequence sequenceCache = null;
+    @Inject @JsonIgnore private SequencesStorage sequencesStorage;
 
     public void importFromPageDescription(PageDescription description) {
         setName(description.getName());

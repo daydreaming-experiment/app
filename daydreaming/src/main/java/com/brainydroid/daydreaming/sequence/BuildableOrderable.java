@@ -1,10 +1,12 @@
 package com.brainydroid.daydreaming.sequence;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 abstract public class BuildableOrderable<T> {
 
     private static String TAG = "BuildableOrderable";
 
-    private transient Integer explicitPosition = null;
+    @JsonIgnore private Integer explicitPosition = null;
 
     abstract public String getPosition();
 

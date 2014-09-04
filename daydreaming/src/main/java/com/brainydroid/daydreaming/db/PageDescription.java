@@ -6,6 +6,7 @@ import com.brainydroid.daydreaming.sequence.IPage;
 import com.brainydroid.daydreaming.sequence.Page;
 import com.brainydroid.daydreaming.sequence.PageBuilder;
 import com.brainydroid.daydreaming.sequence.Sequence;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.inject.Inject;
 
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ public class PageDescription extends BuildableOrderable<Page> implements IPage {
     private String position = null;
     private int nSlots = -1;
     private ArrayList<QuestionPositionDescription> questions = null;
-    @Inject private transient PageBuilder pageBuilder;
+    @Inject @JsonIgnore private PageBuilder pageBuilder;
 
     public String getName() {
         return name;

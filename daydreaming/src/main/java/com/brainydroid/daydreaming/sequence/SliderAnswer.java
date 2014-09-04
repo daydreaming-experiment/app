@@ -1,7 +1,7 @@
 package com.brainydroid.daydreaming.sequence;
 
 import com.brainydroid.daydreaming.background.Logger;
-import com.google.gson.annotations.Expose;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.inject.Inject;
 
 import java.util.HashMap;
@@ -12,8 +12,8 @@ public class SliderAnswer implements IAnswer {
     private static String TAG = "SliderAnswer";
 
     @SuppressWarnings("FieldCanBeLocal")
-    @Expose private String type = "Slider";
-    @Inject @Expose HashMap<String, Integer> sliders;
+    @JsonProperty private String type = "Slider";
+    @Inject @JsonProperty HashMap<String, Integer> sliders;
 
     public synchronized String getType() {
         return type;

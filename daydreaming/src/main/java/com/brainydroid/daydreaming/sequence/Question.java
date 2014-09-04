@@ -7,7 +7,8 @@ import com.brainydroid.daydreaming.db.QuestionDescription;
 import com.brainydroid.daydreaming.db.SequencesStorage;
 import com.brainydroid.daydreaming.ui.sequences.BaseQuestionViewAdapter;
 import com.brainydroid.daydreaming.ui.sequences.IQuestionViewAdapter;
-import com.google.gson.annotations.Expose;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 
@@ -18,16 +19,16 @@ public class Question implements IQuestion {
 
     private static String TAG = "Question";
 
-    @Expose protected String name = null;
-    @Expose private IAnswer answer = null;
+    @JsonProperty protected String name = null;
+    @JsonProperty private IAnswer answer = null;
 
     private int sequenceId = -1;
 
-    private transient Sequence sequenceCache = null;
-    private transient IQuestionDescriptionDetails detailsCache = null;
-    @Inject private transient Injector injector;
-    @Inject private transient SequencesStorage sequencesStorage;
-    @Inject private transient ParametersStorage parametersStorage;
+    @JsonIgnore private Sequence sequenceCache = null;
+    @JsonIgnore private IQuestionDescriptionDetails detailsCache = null;
+    @Inject @JsonIgnore private Injector injector;
+    @Inject @JsonIgnore private SequencesStorage sequencesStorage;
+    @Inject @JsonIgnore private ParametersStorage parametersStorage;
 
     public synchronized void importFromQuestionDescription(QuestionDescription description) {
         Logger.d(TAG, "Importing information from QuestionDescription");

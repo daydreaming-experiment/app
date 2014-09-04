@@ -14,7 +14,6 @@ import com.brainydroid.daydreaming.network.HttpGetData;
 import com.brainydroid.daydreaming.network.HttpGetTask;
 import com.brainydroid.daydreaming.network.ParametersStorageCallback;
 import com.brainydroid.daydreaming.network.ServerConfig;
-import com.google.gson.JsonSyntaxException;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
@@ -233,7 +232,7 @@ public class ParametersStorage {
                 statusManager.getCurrentModeName());
         questionsCache = questions;
         eSharedPreferences.putString(statusManager.getCurrentModeName() + QUESTIONS,
-                json.toJson(questions));
+                json.toJsonLocal(questions));
         eSharedPreferences.commit();
     }
 
@@ -295,7 +294,7 @@ public class ParametersStorage {
                 statusManager.getCurrentModeName());
         sequencesCache = sequences;
         eSharedPreferences.putString(statusManager.getCurrentModeName() + SEQUENCES,
-                json.toJson(sequences));
+                json.toJsonLocal(sequences));
         eSharedPreferences.commit();
     }
 
@@ -379,7 +378,7 @@ public class ParametersStorage {
                     jsonParametersString, ServerParametersJson.class);
 
             if (serverParametersJson == null) {
-                throw new JsonSyntaxException("Server Json was malformed, could not be parsed");
+                throw new JsonParametersException("Server Json was malformed, could not be parsed");
             }
 
             serverParametersJson.validateInitialization();

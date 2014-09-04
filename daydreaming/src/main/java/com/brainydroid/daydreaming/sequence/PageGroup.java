@@ -2,7 +2,7 @@ package com.brainydroid.daydreaming.sequence;
 
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.PageGroupDescription;
-import com.google.gson.annotations.Expose;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
 
@@ -10,9 +10,9 @@ public class PageGroup implements IPageGroup {
 
     private static String TAG = "PageGroup";
 
-    @Expose private String name = null;
+    @JsonProperty private String name = null;
     private String friendlyName = null;
-    @Expose private ArrayList<Page> pages = null;
+    @JsonProperty private ArrayList<Page> pages = null;
 
     public synchronized void importFromPageGroupDescription(PageGroupDescription description) {
         setName(description.getName());
