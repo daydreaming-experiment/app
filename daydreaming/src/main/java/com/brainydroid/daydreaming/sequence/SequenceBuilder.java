@@ -28,7 +28,9 @@ public class SequenceBuilder {
         Sequence sequence = sequenceFactory.create();
         sequence.importFromSequenceDescription(sequenceDescription);
         sequence.save();
+        sequence.retainSaves();
         sequence.setPageGroups(buildableOrder.build(sequence));
+        sequence.flushSaves();
         return sequence;
     }
 

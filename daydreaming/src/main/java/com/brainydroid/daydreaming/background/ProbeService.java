@@ -170,10 +170,11 @@ public class ProbeService extends RoboService {
 
         // Update the probe's status
         Logger.d(TAG, "Setting probe status and timestamp, and saving");
+        probe.retainSaves();
         probe.setNotificationSystemTimestamp(
                 Calendar.getInstance().getTimeInMillis());
         probe.setStatus(Sequence.STATUS_PENDING);
-        probe.save();
+        probe.flushSaves();
 
         // Get a timestamp for the probe
         SntpClientCallback sntpCallback = new SntpClientCallback() {

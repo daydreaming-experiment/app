@@ -81,9 +81,14 @@ public class PageActivity extends RoboFragmentActivity {
         Logger.d(TAG, "Resuming");
         super.onResume();
 
+        sequence.retainSaves();
         sequence.setStatus(Sequence.STATUS_RUNNING);
         page.setStatus(Page.STATUS_ASKED);
         page.setSystemTimestamp(Calendar.getInstance().getTimeInMillis());
+        sequence.flushSaves();
+
+        // Retain everything until onPause()
+        sequence.retainSaves();
 
         if (statusManager.isDataAndLocationEnabled()) {
             Logger.i(TAG, "Data and location enabled -> starting listening " +
@@ -104,6 +109,9 @@ public class PageActivity extends RoboFragmentActivity {
                     "the sequence -> stopping the sequence");
             stopSequence();
         }
+
+        // Save everything to DB
+        sequence.flushSaves();
 
         Logger.d(TAG, "Clearing LocationService callback and unbinding");
         locationServiceConnection.clearQuestionLocationCallback();
@@ -239,6 +247,7 @@ public class PageActivity extends RoboFragmentActivity {
             pageViewAdapter.saveAnswers();
             page.setStatus(Page.STATUS_ANSWERED);
 
+            setIsContinuingOrFinishing();
             if (page.isLastOfSequence()) {
                 Logger.d(TAG, "Last page -> finishing sequence");
                 finishSequence();
@@ -252,8 +261,6 @@ public class PageActivity extends RoboFragmentActivity {
     private void launchNextPage() {
         Logger.d(TAG, "Launching next page");
 
-        setIsContinuingOrFinishing();
-
         Intent intent = new Intent(this, PageActivity.class);
         intent.putExtra(EXTRA_SEQUENCE_ID, sequenceId);
         startActivity(intent);
@@ -264,8 +271,6 @@ public class PageActivity extends RoboFragmentActivity {
 
     private void finishSequence() {
         Logger.i(TAG, "Finishing sequence");
-
-        setIsContinuingOrFinishing();
 
         Toast.makeText(this, getString(R.string.page_thank_you), Toast.LENGTH_SHORT).show();
         sequence.setStatus(Sequence.STATUS_COMPLETED);

@@ -25,9 +25,9 @@ public class Page implements IPage {
     @Expose private ArrayList<Question> questions = null;
 
     private int sequenceId = -1;
-    private boolean isFirstOfSequence = false;
-    private boolean isLastOfSequence = false;
 
+    private transient boolean isFirstOfSequence = false;
+    private transient boolean isLastOfSequence = false;
     private transient Sequence sequenceCache = null;
     @Inject private transient SequencesStorage sequencesStorage;
 
