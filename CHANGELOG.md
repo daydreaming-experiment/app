@@ -1,6 +1,17 @@
 Changelog
 =========
 
+0.16.0
+------
+
+* Enhancements
+  * [#124] Add a Credits screen on the Dashboard
+  * [#125] Use grammar v2.1
+  * [#155] Updated UI for when the parameters are loading in the Dashboard
+  * Part of [#116]: started reducing first launch (tipi questionnaire has disappeared for the moment)
+* Bug fixes
+  * [#145] No space between "Experiment is" and "Running" on Dashboard
+
 0.15.1
 ------
 

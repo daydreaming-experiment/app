@@ -16,7 +16,6 @@ import android.provider.Settings;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,7 +54,6 @@ public class DashboardActivity extends RoboFragmentActivity {
     @InjectView(R.id.dashboard_about_layout) AlphaLinearLayout aboutLayout;
     @InjectView(R.id.dashboard_textExperimentStatus) TextView expStatus;
     @InjectView(R.id.dashboard_no_params_text) TextView textNetworkConnection;
-    @InjectView(R.id.dashboard_main_layout) LinearLayout dashboardMainLayout;
 
     private boolean testModeThemeActivated = false;
 
@@ -399,23 +397,6 @@ public class DashboardActivity extends RoboFragmentActivity {
         } else {
             Logger.v(TAG, "No test mode theming discrepancy");
         }
-    }
-
-    private void asyncUpdateExperimentStatusViews() {
-        Logger.d(TAG, "Asynchronously updating view of experiment "
-                + "(network settings and experiment running)");
-
-        Runnable updateView = new Runnable() {
-
-            private String TAG = "Runnable updateView";
-
-            @Override
-            public void run() {
-                Logger.d(TAG, "Updating view of network settings and experiment text");
-                updateExperimentStatusViews();
-            }
-        };
-        dashboardMainLayout.post(updateView);
     }
 
     private void launchNetworkSettings() {
