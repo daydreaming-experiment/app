@@ -94,6 +94,7 @@ public class Json {
         // ok - the two serializers
         // injection on object creation
         // interfaces in and out
+        // location serializer/deserializer
 
         VisibilityChecker checker;
         jacksonLocal = new ObjectMapper();
