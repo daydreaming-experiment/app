@@ -156,14 +156,6 @@ public class DashboardActivity extends RoboFragmentActivity {
         overridePendingTransition(R.anim.push_top_in, R.anim.push_top_out);
     }
 
-    //TODO: Layout of an about activity
-    public void  onClick_OpenAboutActivity(
-            @SuppressWarnings("UnusedParameters") View view){
-//        Intent intent = new Intent(this, AboutActivity.class);
-//        startActivity(intent);
-//        overridePendingTransition(R.anim.push_top_in, R.anim.push_top_out);
-    }
-
     public void  onClick_OpenGlossaryActivity(
             @SuppressWarnings("UnusedParameters") View view){
         if (statusManager.areParametersUpdated()) {
@@ -173,10 +165,7 @@ public class DashboardActivity extends RoboFragmentActivity {
         }
     }
 
-    /**
-     * Launching a credit activity
-     */
-    public void onClick_OpenCredits(
+    public void onClick_OpenAboutActivity(
             @SuppressWarnings("UnusedParameters") View view){
         Intent intent = new Intent(this, CreditsActivity.class);
         startActivity(intent);
