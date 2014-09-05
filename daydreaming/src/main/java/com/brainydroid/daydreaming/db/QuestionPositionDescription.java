@@ -2,11 +2,12 @@ package com.brainydroid.daydreaming.db;
 
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.sequence.BuildableOrderable;
-import com.brainydroid.daydreaming.sequence.IPage;
 import com.brainydroid.daydreaming.sequence.IQuestion;
 import com.brainydroid.daydreaming.sequence.Question;
 import com.brainydroid.daydreaming.sequence.QuestionBuilder;
 import com.brainydroid.daydreaming.sequence.Sequence;
+import com.fasterxml.jackson.annotation.JacksonInject;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.inject.Inject;
 
 public class QuestionPositionDescription extends BuildableOrderable<Question>
@@ -17,7 +18,7 @@ public class QuestionPositionDescription extends BuildableOrderable<Question>
 
     private String name = null;
     private String position = null;
-    @Inject private transient QuestionBuilder questionBuilder;
+    @Inject @JacksonInject @JsonIgnore private QuestionBuilder questionBuilder;
 
     public String getName() {
         return name;

@@ -7,7 +7,11 @@ import com.brainydroid.daydreaming.db.QuestionDescription;
 import com.brainydroid.daydreaming.db.SequencesStorage;
 import com.brainydroid.daydreaming.ui.sequences.BaseQuestionViewAdapter;
 import com.brainydroid.daydreaming.ui.sequences.IQuestionViewAdapter;
-import com.google.gson.annotations.Expose;
+import com.fasterxml.jackson.annotation.JacksonInject;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 
@@ -18,16 +22,20 @@ public class Question implements IQuestion {
 
     private static String TAG = "Question";
 
-    @Expose protected String name = null;
-    @Expose private IAnswer answer = null;
+    @JsonProperty protected String name = null;
+    @JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.EXTERNAL_PROPERTY, property="type")
+    @JsonSubTypes({@JsonSubTypes.Type(value=SliderAnswer.class, name="slider"),
+                   @JsonSubTypes.Type(value=StarRatingAnswer.class, name="starRating"),
+                   @JsonSubTypes.Type(value=MultipleChoiceAnswer.class, name="multipleChoiceAnswer")})
+    @JsonProperty private IAnswer answer = null;
 
     private int sequenceId = -1;
 
-    private transient Sequence sequenceCache = null;
-    private transient IQuestionDescriptionDetails detailsCache = null;
-    @Inject private transient Injector injector;
-    @Inject private transient SequencesStorage sequencesStorage;
-    @Inject private transient ParametersStorage parametersStorage;
+    @JsonIgnore private Sequence sequenceCache = null;
+    @JsonIgnore private IQuestionDescriptionDetails detailsCache = null;
+    @Inject @JacksonInject @JsonIgnore private Injector injector;
+    @Inject @JacksonInject @JsonIgnore private SequencesStorage sequencesStorage;
+    @Inject @JacksonInject @JsonIgnore private ParametersStorage parametersStorage;
 
     public synchronized void importFromQuestionDescription(QuestionDescription description) {
         Logger.d(TAG, "Importing information from QuestionDescription");

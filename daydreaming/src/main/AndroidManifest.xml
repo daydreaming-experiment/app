@@ -121,12 +121,6 @@
             android:screenOrientation="portrait">
         </activity>
 
-        <activity android:name=".ui.firstlaunchsequence.FirstLaunch04PersonalityQuestionnaireActivity"
-            android:theme="@style/daydreamingTheme"
-            android:taskAffinity=".dashboard"
-            android:screenOrientation="portrait">
-        </activity>
-
         <!-- Background Services -->
 
         <service android:name=".background.LocationService"

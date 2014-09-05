@@ -1,7 +1,5 @@
 package com.brainydroid.daydreaming.network;
 
-import android.content.SharedPreferences;
-
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.Json;
 import com.brainydroid.daydreaming.db.ParametersStorage;
@@ -37,11 +35,12 @@ public class ServerTalker {
         String vkPem = cryptoStorage.createArmoredPublicKey(keyPair.getPublic());
         ProfileWrapper profileWrap = profileFactory.create(
                 parametersStorage.getBackendExpId(), vkPem).buildWrapper();
-        String jsonPayload = json.toJsonExposed(profileWrap);
+        String jsonPayload = json.toJsonServer(profileWrap);
 
         Logger.i(TAG, "Going to send the following to server (signed) :\n"
                 + jsonPayload.replace("{", "'{'").replace("}", "'}'"));
         String signedJson = cryptoStorage.signJws(jsonPayload, keyPair.getPrivate());
+        Logger.i(TAG, "Signed form: {}", signedJson);
 
         String postUrl = parametersStorage.getBackendApiUrl() +
                 ServerConfig.YE_URL_PROFILES;

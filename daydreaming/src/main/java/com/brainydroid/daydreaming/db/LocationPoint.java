@@ -1,8 +1,11 @@
 package com.brainydroid.daydreaming.db;
 
 import android.location.Location;
+
 import com.brainydroid.daydreaming.background.Logger;
-import com.google.gson.annotations.Expose;
+import com.fasterxml.jackson.annotation.JacksonInject;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.inject.Inject;
 
 /**
@@ -26,11 +29,11 @@ public final class LocationPoint extends
     private static String TAG = "LocationPoint";
 
     // These should always be serialized
-    @Expose private double locationLatitude = -1;
-    @Expose private double locationLongitude = -1;
-    @Expose private double locationAltitude = -1;
-    @Expose private double locationAccuracy = -1;
-    @Expose private long timestamp = -1;
+    @JsonProperty private double locationLatitude = -1;
+    @JsonProperty private double locationLongitude = -1;
+    @JsonProperty private double locationAltitude = -1;
+    @JsonProperty private double locationAccuracy = -1;
+    @JsonProperty private long timestamp = -1;
 
     /** Status string if the {@link LocationPoint} is collecting location
      * data
@@ -42,7 +45,7 @@ public final class LocationPoint extends
     public static final String STATUS_COMPLETED = "statusCompleted";
 
     // Our database for LocationPoints
-    @Inject transient LocationPointsStorage locationPointsStorage;
+    @Inject @JacksonInject @JsonIgnore LocationPointsStorage locationPointsStorage;
 
     @Override
     protected synchronized LocationPoint self() {

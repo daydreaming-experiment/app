@@ -3,6 +3,7 @@ package com.brainydroid.daydreaming.db;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+
 import com.brainydroid.daydreaming.background.Logger;
 import com.google.inject.Inject;
 
@@ -53,7 +54,7 @@ public abstract class ModelStorage<M extends Model<M,S,F>,
         Logger.d(TAG, "Getting model values");
         ContentValues modelValues = new ContentValues();
 
-        String jsonModel = json.toJson(model);
+        String jsonModel = json.toJsonLocal(model);
         Logger.v(TAG, "Adding content to model");
         Logger.v(TAG, jsonModel.replace("{", "'{'").replace("}", "'}'"));
         modelValues.put(COL_CONTENT, jsonModel);

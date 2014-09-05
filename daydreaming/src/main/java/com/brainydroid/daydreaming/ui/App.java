@@ -1,15 +1,18 @@
 package com.brainydroid.daydreaming.ui;
 
 import android.app.Application;
+
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.network.PRNGFixes;
+import com.fasterxml.jackson.module.guice.ObjectMapperModule;
 
 import org.acra.ACRA;
 import org.acra.ACRAConfiguration;
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
 import org.acra.sender.HttpSender;
+
 import roboguice.RoboGuice;
 
 @ReportsCrashes(
@@ -47,7 +50,8 @@ public class App extends Application {
 
         // Initialize RoboGuice
         RoboGuice.setBaseApplicationInjector(this, RoboGuice.DEFAULT_STAGE,
-                RoboGuice.newDefaultRoboModule(this), new AppModule());
+                RoboGuice.newDefaultRoboModule(this), new ObjectMapperModule(),
+                new AppModule());
     }
 
 }

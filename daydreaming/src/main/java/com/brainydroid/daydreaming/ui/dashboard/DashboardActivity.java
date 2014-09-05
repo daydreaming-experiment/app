@@ -48,6 +48,7 @@ public class DashboardActivity extends RoboFragmentActivity {
     @InjectView(R.id.dashboard_ExperimentTimeElapsed2)
     TextView timeElapsedTextView;
     @InjectView(R.id.dashboard_ExperimentResultsIn2) TextView timeToGoTextView;
+    @InjectView(R.id.button_test_sync) Button testSyncButton;
     @InjectView(R.id.button_test_poll) Button testProbeButton;
     @InjectView(R.id.button_reload_parameters) Button testReloadButton;
     @InjectView(R.id.dashboard_glossary_layout) RelativeLayout glossaryLayout;
@@ -327,7 +328,6 @@ public class DashboardActivity extends RoboFragmentActivity {
 
         Logger.d(TAG, "Starting SyncService");
         Intent syncIntent = new Intent(this, SyncService.class);
-        syncIntent.putExtra(SyncService.URGENT_SYNC, true);
         startService(syncIntent);
     }
 
@@ -399,12 +399,16 @@ public class DashboardActivity extends RoboFragmentActivity {
             testProbeButton.setClickable(false);
             testReloadButton.setVisibility(View.INVISIBLE);
             testReloadButton.setClickable(false);
+            testSyncButton.setVisibility(View.INVISIBLE);
+            testSyncButton.setClickable(false);
         } else {
             Logger.d(TAG, "Setting test chrome");
             testProbeButton.setVisibility(View.VISIBLE);
             testProbeButton.setClickable(true);
             testReloadButton.setVisibility(View.VISIBLE);
             testReloadButton.setClickable(true);
+            testSyncButton.setVisibility(View.VISIBLE);
+            testSyncButton.setClickable(true);
         }
     }
 

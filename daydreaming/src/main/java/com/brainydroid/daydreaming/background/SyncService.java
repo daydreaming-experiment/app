@@ -44,7 +44,6 @@ public class SyncService extends RoboService {
     protected static String TAG = "SyncService";
 
     public static String DEBUG_SYNC = "debugSync";
-    public static String URGENT_SYNC = "urgentSync";
     private String startSyncAppMode;
 
     @Inject StatusManager statusManager;
@@ -128,9 +127,8 @@ public class SyncService extends RoboService {
 
         // Launch synchronization tasks if we haven't done so not long ago
         boolean isDebugSync = intent.getBooleanExtra(DEBUG_SYNC, false);
-        boolean isUrgentSync = intent.getBooleanExtra(URGENT_SYNC, false);
-        if (statusManager.isLastSyncLongAgo() || isDebugSync || isUrgentSync) {
-            Logger.d(TAG, "Last sync was long ago or this is a debug or urgent sync " +
+        if (statusManager.isLastSyncLongAgo() || isDebugSync) {
+            Logger.d(TAG, "Last sync was long ago or this is a debug sync " +
                     "-> starting updates");
             startUpdates(isDebugSync);
         } else {
@@ -224,7 +222,7 @@ public class SyncService extends RoboService {
 
         // Sign our data to identify us, and upload
         Logger.d(TAG, "Signing data and launching sequences sync");
-        serverTalker.signAndPostResult(json.toJsonExposed(sequencesWrap),
+        serverTalker.signAndPostResult(json.toJsonServer(sequencesWrap),
                 callback);
     }
 
@@ -289,7 +287,7 @@ public class SyncService extends RoboService {
 
         // Sign our data to identify us, and upload
         Logger.d(TAG, "Signing data and launching locationPoints sync");
-        serverTalker.signAndPostResult(json.toJsonExposed(locationPointsWrap),
+        serverTalker.signAndPostResult(json.toJsonServer(locationPointsWrap),
                 callback);
     }
 
@@ -347,7 +345,7 @@ public class SyncService extends RoboService {
 
         // Sign our data to identify us, and upload
         Logger.d(TAG, "Signing data and launching profile update");
-        serverTalker.signAndPutProfile(json.toJsonExposed(profileWrap),
+        serverTalker.signAndPutProfile(json.toJsonServer(profileWrap),
                 callback);
     }
 

@@ -1,7 +1,7 @@
 package com.brainydroid.daydreaming.db;
 
 import com.brainydroid.daydreaming.background.Logger;
-import com.google.gson.annotations.Expose;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 // FIXME: adapt doc imported from LocationPoint
 public abstract class StatusModel<M extends StatusModel<M,S,F>,
@@ -11,7 +11,7 @@ public abstract class StatusModel<M extends StatusModel<M,S,F>,
     @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "StatusModel";
 
-    @Expose protected String status;
+    @JsonProperty protected String status;
 
     /**
      * Set the status of the {@code LocationPoint}, and persist to database

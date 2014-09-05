@@ -6,6 +6,8 @@ import com.brainydroid.daydreaming.sequence.IPageGroup;
 import com.brainydroid.daydreaming.sequence.PageGroup;
 import com.brainydroid.daydreaming.sequence.PageGroupBuilder;
 import com.brainydroid.daydreaming.sequence.Sequence;
+import com.fasterxml.jackson.annotation.JacksonInject;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.inject.Inject;
 
 import java.util.ArrayList;
@@ -21,7 +23,7 @@ public class PageGroupDescription extends BuildableOrderable<PageGroup> implemen
     private String position = null;
     private int nSlots = -1;
     private ArrayList<PageDescription> pages = null;
-    @Inject private transient PageGroupBuilder pageGroupBuilder;
+    @Inject @JacksonInject @JsonIgnore private PageGroupBuilder pageGroupBuilder;
 
     public String getName() {
         return name;

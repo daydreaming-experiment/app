@@ -14,14 +14,10 @@ import com.brainydroid.daydreaming.network.HttpGetData;
 import com.brainydroid.daydreaming.network.HttpGetTask;
 import com.brainydroid.daydreaming.network.ParametersStorageCallback;
 import com.brainydroid.daydreaming.network.ServerConfig;
-import com.google.gson.JsonSyntaxException;
-import com.google.gson.reflect.TypeToken;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.inject.TypeLiteral;
 
-
-import java.lang.reflect.Type;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -238,7 +234,7 @@ public class ParametersStorage {
                 statusManager.getCurrentModeName());
         questionsCache = questions;
         eSharedPreferences.putString(statusManager.getCurrentModeName() + QUESTIONS,
-                json.toJson(questions));
+                json.toJsonLocal(questions));
         eSharedPreferences.commit();
     }
 
@@ -250,8 +246,8 @@ public class ParametersStorage {
         } else {
             Logger.v(TAG, "{} - Cache not present -> getting questions from sharedPreferences",
                     statusManager.getCurrentModeName());
-            Type questionDescriptionsArrayType =
-                    new TypeLiteral<ArrayList<QuestionDescription>>() {}.getType();
+            TypeReference<ArrayList<QuestionDescription>> questionDescriptionsArrayType =
+                    new TypeReference<ArrayList<QuestionDescription>>() {};
             questionsCache = json.fromJson(
                     sharedPreferences.getString(statusManager.getCurrentModeName() + QUESTIONS, null),
                     questionDescriptionsArrayType);
@@ -275,7 +271,7 @@ public class ParametersStorage {
     }
 
     private synchronized void setGlossary(HashMap<String,String> glossary) {
-        String glossaryJson = json.toJson(glossary);
+        String glossaryJson = json.toJsonLocal(glossary);
         Logger.d(TAG, "{0} - Setting glossary to {1}", statusManager.getCurrentModeName(), glossaryJson);
         eSharedPreferences.putString(statusManager.getCurrentModeName() + GLOSSARY, glossaryJson);
         eSharedPreferences.commit();
@@ -289,8 +285,8 @@ public class ParametersStorage {
             Logger.e(TAG, msg);
             throw new RuntimeException(msg);
         }
-        Type hmType = new TypeToken<HashMap<String,String>>() {}.getType();
-        HashMap<String,String> glossary = json.fromJson(glossaryJson, hmType);
+        HashMap<String,String> glossary = json.fromJson(glossaryJson,
+                new TypeReference<HashMap<String,String>>() {});
         Logger.v(TAG, "{0} - Glossary is {1}", statusManager.getCurrentModeName(), glossaryJson);
         return glossary;
     }
@@ -327,7 +323,7 @@ public class ParametersStorage {
                 statusManager.getCurrentModeName());
         sequencesCache = sequences;
         eSharedPreferences.putString(statusManager.getCurrentModeName() + SEQUENCES,
-                json.toJson(sequences));
+                json.toJsonLocal(sequences));
         eSharedPreferences.commit();
     }
 
@@ -339,8 +335,8 @@ public class ParametersStorage {
         } else {
             Logger.v(TAG, "{} - Cache not present -> getting sequences from sharedPreferences",
                     statusManager.getCurrentModeName());
-            Type sequenceDescriptionsArrayType =
-                    new TypeLiteral<ArrayList<SequenceDescription>>() {}.getType();
+            TypeReference<ArrayList<SequenceDescription>> sequenceDescriptionsArrayType =
+                    new TypeReference<ArrayList<SequenceDescription>>() {};
             sequencesCache = json.fromJson(
                     sharedPreferences.getString(statusManager.getCurrentModeName() + SEQUENCES, null),
                     sequenceDescriptionsArrayType);
@@ -411,7 +407,7 @@ public class ParametersStorage {
                     jsonParametersString, ServerParametersJson.class);
 
             if (serverParametersJson == null) {
-                throw new JsonSyntaxException("Server Json was malformed, could not be parsed");
+                throw new JsonParametersException("Server Json was malformed, could not be parsed");
             }
 
             serverParametersJson.validateInitialization();
