@@ -12,7 +12,7 @@ import com.brainydroid.daydreaming.background.Logger;
 public class AlphaButton extends Button {
 
     @SuppressWarnings("FieldCanBeLocal")
-    private static String TAG = "AlphaButton";
+    private static final String TAG = "AlphaButton";
 
     @SuppressWarnings("UnusedDeclaration")
     public AlphaButton(Context context) {

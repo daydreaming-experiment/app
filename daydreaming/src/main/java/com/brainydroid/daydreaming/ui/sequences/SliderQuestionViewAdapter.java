@@ -66,6 +66,10 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
                 (TextView)view.findViewById(R.id.question_slider_mainText);
         qText.setText(subQuestion.getText());
 
+        final TextView qSecondaryText =
+                (TextView)view.findViewById(R.id.question_slider_secondaryText);
+        qText.setText(subQuestion.getGlossaryText());
+
         TextView leftHintText = (TextView)view.findViewById(R.id.question_slider_leftHint);
         leftHintText.setText(hints.get(0));
 
@@ -167,6 +171,16 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
         naCheckBox.setOnCheckedChangeListener(naListener);
 
         return view;
+    }
+
+    public void switchGlossaryVisibility(View view) {
+        final TextView glossaryText =
+                (TextView)view.findViewById(R.id.question_slider_secondaryText);
+        if (glossaryText.getVisibility() == View.VISIBLE){
+            glossaryText.setVisibility(View.INVISIBLE);
+        } else if (glossaryText.getVisibility() == View.INVISIBLE){
+            glossaryText.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
