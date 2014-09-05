@@ -320,7 +320,6 @@ public class DashboardActivity extends RoboFragmentActivity {
 
         Logger.d(TAG, "Starting SyncService");
         Intent syncIntent = new Intent(this, SyncService.class);
-        syncIntent.putExtra(SyncService.URGENT_SYNC, true);
         startService(syncIntent);
     }
 
