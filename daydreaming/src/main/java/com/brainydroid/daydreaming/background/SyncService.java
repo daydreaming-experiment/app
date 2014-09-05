@@ -397,6 +397,7 @@ public class SyncService extends RoboService {
         isSyncing = false;
         areLocationUploadsDone = false;
         areSequenceUploadsDone = false;
+        isProfileUploadDone = false;
     }
 
     private void setLocationUploadsDone() {
