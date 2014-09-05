@@ -13,22 +13,16 @@ import com.brainydroid.daydreaming.ui.FontUtils;
 import com.google.inject.Inject;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import roboguice.activity.RoboFragmentActivity;
 import roboguice.inject.ContentView;
 
-
-/**
- * Created by vincent on 02/09/14.
- */
-
 @ContentView(R.layout.activity_glossary)
-
 public class GlossaryActivity extends RoboFragmentActivity {
 
     private static String TAG = "GlossaryActivity";
+
     @Inject HashMap<String, View> glossaryPairsViews;
     @Inject ParametersStorage parametersStorage;
 
@@ -42,17 +36,13 @@ public class GlossaryActivity extends RoboFragmentActivity {
         FontUtils.setRobotoFont(this, godfatherView);
     }
 
-    public void populateGlossary(){
-
-        HashMap<String,String> dictionnary = parametersStorage.getGlossary();
-        Iterator it = dictionnary.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry glossaryPair = (Map.Entry) it.next();
-            glossaryPairsViews.put(glossaryPair.getKey().toString(), inflateView(glossaryPair));
+    public void populateGlossary() {
+        Logger.v(TAG, "Populating glossary");
+        HashMap<String,String> dictionary = parametersStorage.getGlossary();
+        for (Map.Entry<String,String> glossaryPair : dictionary.entrySet()) {
+            glossaryPairsViews.put(glossaryPair.getKey(), inflateView(glossaryPair));
         }
     }
-
-
 
     @Override
     public void onBackPressed() {
