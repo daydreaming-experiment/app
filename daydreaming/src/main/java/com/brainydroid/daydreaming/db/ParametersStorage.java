@@ -40,7 +40,6 @@ public class ParametersStorage {
     public static String BACKEND_API_URL = "backendApiUrl";
     public static String RESULTS_PAGE_URL = "resultsPageUrl";
 
-    public static String FIRST_LAUNCH =  "firstLaunch";
     public static String GLOSSARY = "glossary";
     public static String QUESTIONS = "questions";
     public static String SEQUENCES = "sequences";
@@ -267,28 +266,38 @@ public class ParametersStorage {
         return questionsCache;
     }
 
-    private synchronized void setGlossary(HashMap<String,String> glossary) {
-        String glossaryString = json.toJson(glossary);
-        Logger.d(TAG, "{0} - Setting glossary to {1}", statusManager.getCurrentModeName(), glossaryString);
-        eSharedPreferences.putString(statusManager.getCurrentModeName() + GLOSSARY, glossaryString);
-        eSharedPreferences.commit();
-    }
-
-    public synchronized HashMap<String,String> getGlossary() {
-        String glossaryString = sharedPreferences.getString(
-                statusManager.getCurrentModeName() + GLOSSARY,
-                ServerParametersJson.DEFAULT_GLOSSARY);
-        Type hmtype = new TypeToken<HashMap<String,String>>() {}.getType();
-        HashMap<String,String> glossary = json.fromJson(glossaryString,hmtype);
-        Logger.v(TAG, "{0} - glossary is {1}", statusManager.getCurrentModeName(), glossaryString);
-        return glossary;
-    }
-
     private synchronized void clearQuestions() {
         Logger.d(TAG, "{} - Clearing questions (and clearing cache)",
                 statusManager.getCurrentModeName());
         questionsCache = null;
         eSharedPreferences.remove(statusManager.getCurrentModeName() + QUESTIONS);
+        eSharedPreferences.commit();
+    }
+
+    private synchronized void setGlossary(HashMap<String,String> glossary) {
+        String glossaryJson = json.toJson(glossary);
+        Logger.d(TAG, "{0} - Setting glossary to {1}", statusManager.getCurrentModeName(), glossaryJson);
+        eSharedPreferences.putString(statusManager.getCurrentModeName() + GLOSSARY, glossaryJson);
+        eSharedPreferences.commit();
+    }
+
+    public synchronized HashMap<String,String> getGlossary() {
+        String glossaryJson = sharedPreferences.getString(
+                statusManager.getCurrentModeName() + GLOSSARY, null);
+        if (glossaryJson == null) {
+            String msg = "Glossary asked for but not found";
+            Logger.e(TAG, msg);
+            throw new RuntimeException(msg);
+        }
+        Type hmType = new TypeToken<HashMap<String,String>>() {}.getType();
+        HashMap<String,String> glossary = json.fromJson(glossaryJson, hmType);
+        Logger.v(TAG, "{0} - Glossary is {1}", statusManager.getCurrentModeName(), glossaryJson);
+        return glossary;
+    }
+
+    private synchronized void clearGlossary() {
+        Logger.d(TAG, "{} - Clearing glossary", statusManager.getCurrentModeName());
+        eSharedPreferences.remove(statusManager.getCurrentModeName() + GLOSSARY);
         eSharedPreferences.commit();
     }
 
@@ -390,6 +399,7 @@ public class ParametersStorage {
         clearSchedulingMeanDelay();
         clearQuestions();
         clearSequences();
+        clearGlossary();
     }
 
     // import parameters from json file into database

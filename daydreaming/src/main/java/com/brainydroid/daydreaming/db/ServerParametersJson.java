@@ -31,7 +31,7 @@ public class ServerParametersJson {
     private int schedulingMinDelay = DEFAULT_SCHEDULING_MIN_DELAY;
     private ArrayList<QuestionDescription> questions = null;
     private ArrayList<SequenceDescription> sequences = null;
-    public HashMap<String,String> glossary = DEFAULT_GLOSSARY_JSON;
+    private HashMap<String,String> glossary = DEFAULT_GLOSSARY_JSON;
 
     public synchronized String getVersion() {
         return version;
