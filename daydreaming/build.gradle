@@ -50,6 +50,11 @@ android {
         exclude 'META-INF/NOTICE'
         exclude 'META-INF/NOTICE.txt'
     }
+
+    lintOptions {
+        // Lint raises InvalidPackage errors for packages we don't use and can't fix
+        disable 'InvalidPackage'
+    }
 }
 
 dependencies {
