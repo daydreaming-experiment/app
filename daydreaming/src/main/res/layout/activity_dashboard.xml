@@ -377,6 +377,7 @@
                 >
 
                 <RelativeLayout
+                    android:id="@+id/dashboard_glossary_layout"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content">
                     <ImageButton
