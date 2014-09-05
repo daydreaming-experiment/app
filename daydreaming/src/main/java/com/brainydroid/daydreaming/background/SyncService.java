@@ -46,6 +46,10 @@ public class SyncService extends RoboService {
     public static String DEBUG_SYNC = "debugSync";
     public static String URGENT_SYNC = "urgentSync";
     private String startSyncAppMode;
+    private boolean isSyncing = false;
+    private boolean areLocationUploadsDone = false;
+    private boolean areSequenceUploadsDone = false;
+    private boolean isProfileUploadDone = false;
 
     @Inject StatusManager statusManager;
     @Inject SequencesStorage sequencesStorage;
@@ -75,6 +79,7 @@ public class SyncService extends RoboService {
             } else {
                 Logger.v(TAG, "Either parameters were not updated, or data is disabled "
                 + "-> doing nothing");
+                clearIsSyncing();
             }
 
         }
@@ -105,6 +110,9 @@ public class SyncService extends RoboService {
                     asyncPutProfile();
                 } else {
                     Logger.v(TAG, "Profile has not changed since last update");
+                    setProfileUploadDone();
+                    // This will never clear isSyncing, but just for consistency
+                    clearIsSyncingIfUploadsDone();
                 }
 
                 Logger.d(TAG, "Launching sequence and locationPoints upload");
@@ -113,15 +121,25 @@ public class SyncService extends RoboService {
             } else {
                 Logger.v(TAG, "Either no keypair or no id or no data " +
                         "connection -> doing nothing");
+                clearIsSyncing();
             }
         }
 
     };
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+    public synchronized int onStartCommand(Intent intent, int flags, int startId) {
         Logger.d(TAG, "SyncService started");
         super.onStartCommand(intent, flags, startId);
+
+        if (isSyncing()) {
+            Logger.i(TAG, "SyncService already syncing, aborting this sync");
+            stopSelf();
+            return START_REDELIVER_INTENT;
+        }
+
+        // We start a sync
+        startIsSyncing();
 
         // Record the current app mode for later comparison in the callbacks
         startSyncAppMode = statusManager.getCurrentModeName();
@@ -135,6 +153,7 @@ public class SyncService extends RoboService {
             startUpdates(isDebugSync);
         } else {
             Logger.v(TAG, "Last sync was not long ago -> exiting");
+            clearIsSyncing();
             stopSelf();
         }
 
@@ -161,6 +180,7 @@ public class SyncService extends RoboService {
         } else {
             Logger.i(TAG, "No data connection available -> exiting");
             Logger.td(this, TAG + ": no internet connection");
+            clearIsSyncing();
         }
 
         // We stop immediately, but the worker threads keep running until
@@ -181,6 +201,8 @@ public class SyncService extends RoboService {
         if (uploadableSequences == null) {
             Logger.i(TAG, "No sequences to upload -> exiting");
             Logger.td(this, TAG + ": no sequences to upload");
+            setSequenceUploadsDone();
+            clearIsSyncingIfUploadsDone();
             return;
         }
 
@@ -218,6 +240,8 @@ public class SyncService extends RoboService {
                 } else {
                     Logger.w(TAG, "Error while uploading sequences to server");
                 }
+                setSequenceUploadsDone();
+                clearIsSyncingIfUploadsDone();
             }
 
         };
@@ -241,6 +265,8 @@ public class SyncService extends RoboService {
         if (uploadableLocationPoints == null) {
             Logger.i(TAG, "No locationPoints to upload -> exiting");
             Logger.td(this, TAG + ": no locationItems to upload");
+            setLocationUploadsDone();
+            clearIsSyncingIfUploadsDone();
             return;
         }
 
@@ -283,6 +309,8 @@ public class SyncService extends RoboService {
                     Logger.w(TAG, "Error while uploading locationPoints to " +
                             "server");
                 }
+                setLocationUploadsDone();
+                clearIsSyncingIfUploadsDone();
             }
 
         };
@@ -316,6 +344,8 @@ public class SyncService extends RoboService {
                     Logger.i(TAG, "App mode has changed from {0} to {1} since sync started, "
                             + "aborting profile put.", startSyncAppMode,
                             statusManager.getCurrentModeName());
+                    setProfileUploadDone();
+                    clearIsSyncingIfUploadsDone();
                     return;
                 }
 
@@ -340,7 +370,8 @@ public class SyncService extends RoboService {
                     Logger.w(TAG, "Error while uploading profile to " +
                             "server");
                 }
-
+                setProfileUploadDone();
+                clearIsSyncingIfUploadsDone();
             }
 
         };
@@ -349,6 +380,41 @@ public class SyncService extends RoboService {
         Logger.d(TAG, "Signing data and launching profile update");
         serverTalker.signAndPutProfile(json.toJsonServer(profileWrap),
                 callback);
+    }
+
+    private void startIsSyncing() {
+        isSyncing = true;
+        areLocationUploadsDone = false;
+        areSequenceUploadsDone = false;
+        isProfileUploadDone = false;
+    }
+
+    private boolean isSyncing() {
+        return isSyncing;
+    }
+
+    private void clearIsSyncing() {
+        isSyncing = false;
+        areLocationUploadsDone = false;
+        areSequenceUploadsDone = false;
+    }
+
+    private void setLocationUploadsDone() {
+        areLocationUploadsDone = true;
+    }
+
+    private void setSequenceUploadsDone() {
+        areSequenceUploadsDone = true;
+    }
+
+    private void setProfileUploadDone() {
+        isProfileUploadDone = true;
+    }
+
+    private void clearIsSyncingIfUploadsDone() {
+        if (areLocationUploadsDone && areSequenceUploadsDone && isProfileUploadDone) {
+            clearIsSyncing();
+        }
     }
 
 }
