@@ -33,7 +33,11 @@
         <ScrollView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="@dimen/global_scrollview_padding">
+            android:id="@+id/firstLaunchTerms_Scrollview"
+            android:padding="@dimen/global_scrollview_padding"
+            android:scrollbarSize="@dimen/global_scrollbarSize"
+            android:scrollbarThumbVertical="@drawable/scrollbar_vertical_thumb"
+>
 
             <LinearLayout
                 android:layout_width="fill_parent"
