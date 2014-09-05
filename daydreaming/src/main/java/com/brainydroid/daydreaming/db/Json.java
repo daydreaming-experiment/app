@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.introspect.VisibilityChecker;
 import com.google.inject.Inject;
@@ -54,6 +55,7 @@ public class Json {
                 .withGetterVisibility(JsonAutoDetect.Visibility.NONE);
         this.jacksonLocal.setVisibilityChecker(checker);
         this.jacksonLocal.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        this.jacksonLocal.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
         // Will serialize ONLY members annotated with @JsonProperty
         checker = this.jacksonServer.getSerializationConfig()
@@ -62,6 +64,7 @@ public class Json {
                 .withGetterVisibility(JsonAutoDetect.Visibility.NONE);
         this.jacksonServer.setVisibilityChecker(checker);
         this.jacksonServer.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        this.jacksonServer.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
     }
 
     public String toJsonLocal(Object src) {
