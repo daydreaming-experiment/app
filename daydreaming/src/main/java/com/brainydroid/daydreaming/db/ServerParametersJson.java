@@ -18,7 +18,6 @@ public class ServerParametersJson {
     public static int DEFAULT_EXP_DURATION = -1;
     public static String DEFAULT_BACKEND_API_URL = "n/c";
     public static String DEFAULT_RESULTS_PAGE_URL = "n/c";
-    public static String DEFAULT_GLOSSARY = "n/c";
     public static HashMap<String,String> DEFAULT_GLOSSARY_JSON = null;
 
     private String version = DEFAULT_PARAMETERS_VERSION;
