@@ -341,7 +341,6 @@
 
 
                     <RelativeLayout
-                        android:id="@+id/btn_plus_container"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dashboard_intericon_spacing"
@@ -378,7 +377,6 @@
                 >
 
                 <RelativeLayout
-                    android:id="@+id/btn_plus_container"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content">
                     <ImageButton
