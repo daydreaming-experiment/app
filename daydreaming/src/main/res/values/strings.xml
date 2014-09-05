@@ -49,7 +49,7 @@
 
     <!-- Description Activity -->
     <string name="firstLaunchDescription_title_activity">Description</string>
-    <string name="firstLaunchDescription_text_title1">WELCOME TO\nTHE DAYDREAMING APP!</string>
+    <string name="firstLaunchDescription_text_title">WELCOME TO\nTHE DAYDREAMING APP!</string>
     <string name="firstLaunchDescription_button_next">Next</string>
 
     <!-- Terms Activity -->
