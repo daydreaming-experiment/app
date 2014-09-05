@@ -6,24 +6,54 @@
     android:orientation="vertical"
     android:tag="subQuestion" >
 
-    <TextView
-        android:id="@+id/question_multiple_choice_mainText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_marginBottom="8dp"
-        android:text=""
-        android:textAppearance="@style/ui_font_big_title_bold"
-        android:textColor="@color/ui_white_text_color"/>
 
-    <TextView
+    <LinearLayout
+        android:id="@+id/question_multiple_choice_questionTextLinearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
         android:layout_marginBottom="16dp"
-        android:text="@string/questionMultipleChoice_check_all_that_apply"
-        android:textAppearance="@style/ui_font_bodytext"
-        android:textColor="@color/ui_white_text_color"/>
+        android:orientation="vertical"
+        android:tag="subquestion" >
+
+        <LinearLayout
+            android:id="@+id/question_multiple_choice_mainQuestionTextLinearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:orientation="horizontal"
+            android:tag="subquestion" >
+
+            <TextView
+                android:id="@+id/question_multiple_choice_mainText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginBottom="16dp"
+                android:text=""
+                android:textAppearance="@style/ui_font_big_title_bold"
+                android:textColor="@color/ui_white_text_color"/>
+
+            <ImageButton
+                android:id="@+id/question_multiple_choice_glossarybutton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_questionmark"
+                android:onClick="switchGlossaryVisibility"
+                android:contentDescription="@null"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/question_multiple_choice_secondaryText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginBottom="16dp"
+            android:text=""
+            android:textAppearance="@style/ui_font_bodytext"
+            android:textColor="@color/ui_white_text_color"/>
+
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/question_multiple_choice_rootChoices"
@@ -35,8 +65,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-	    android:descendantFocusability="beforeDescendants"
-	    android:focusableInTouchMode="true"
+        android:descendantFocusability="beforeDescendants"
+        android:focusableInTouchMode="true"
         android:layout_marginBottom="16dp" >
 
         <CheckBox

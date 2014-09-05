@@ -22,6 +22,7 @@ import com.brainydroid.daydreaming.sequence.StarRatingAnswer;
 import com.brainydroid.daydreaming.sequence.StarRatingAnswerInstanceCreator;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -169,5 +170,4 @@ public class Json {
         Logger.v(TAG, "Deserializing from JSON");
         return gson.fromJson(json, typeOfT);
     }
-
 }

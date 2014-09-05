@@ -12,6 +12,7 @@ public class StarRatingSubQuestion {
     public static int DEFAULT_INITIAL_RATING = -1;
 
     private String text = null;
+    private String glossaryText = null;
     private ArrayList<String> hints = null;
     @SuppressWarnings("FieldCanBeLocal")
     private int numStars = -1;
@@ -23,6 +24,10 @@ public class StarRatingSubQuestion {
     private boolean notApplyAllowed = false;
     @SuppressWarnings("FieldCanBeLocal")
     private boolean showLiveIndication = false;
+
+    public synchronized String getGlossaryText() {
+        return glossaryText;
+    }
 
     public synchronized String getText() {
         return text;

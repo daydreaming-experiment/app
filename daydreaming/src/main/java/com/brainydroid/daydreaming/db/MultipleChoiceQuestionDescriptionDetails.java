@@ -13,6 +13,7 @@ public class MultipleChoiceQuestionDescriptionDetails implements IQuestionDescri
     private String type = "MultipleChoice";
     @SuppressWarnings("UnusedDeclaration")
     private String text = null;
+    private String glossaryText = null;
     @SuppressWarnings("UnusedDeclaration")
     private ArrayList<String> choices = null;
 
@@ -23,6 +24,10 @@ public class MultipleChoiceQuestionDescriptionDetails implements IQuestionDescri
 
     public synchronized String getText() {
         return text;
+    }
+
+    public synchronized String getGlossaryText() {
+        return glossaryText;
     }
 
     public synchronized ArrayList<String> getChoices() {

@@ -46,6 +46,10 @@ public class MultipleChoiceQuestionViewAdapter
                 R.id.question_multiple_choice_mainText);
         qText.setText(details.getText());
 
+        TextView qSecondaryText = (TextView)choicesView.findViewById(
+                R.id.question_multiple_choice_secondaryText);
+        qText.setText(details.getGlossaryText());
+
         final CheckBox otherCheck = (CheckBox)choicesView.findViewById(
                 R.id.question_multiple_choice_otherCheckBox);
         final EditText otherEdit = (EditText)choicesView.findViewById(
@@ -146,6 +150,17 @@ public class MultipleChoiceQuestionViewAdapter
 
         return views;
     }
+
+    public void switchGlossaryVisibility(View view) {
+        final TextView glossaryText =
+                (TextView)view.findViewById(R.id.question_multiple_choice_secondaryText);
+        if (glossaryText.getVisibility() == View.VISIBLE){
+            glossaryText.setVisibility(View.INVISIBLE);
+        } else if (glossaryText.getVisibility() == View.INVISIBLE){
+            glossaryText.setVisibility(View.VISIBLE);
+        }
+    }
+
 
     @Override
     public boolean validate() {

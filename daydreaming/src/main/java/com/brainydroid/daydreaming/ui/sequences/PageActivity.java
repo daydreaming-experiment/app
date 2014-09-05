@@ -173,9 +173,6 @@ public class PageActivity extends RoboFragmentActivity {
 
         sequence.setStatus(Sequence.STATUS_PARTIALLY_COMPLETED);
 
-        Logger.i(TAG, "Starting sync service to sync answers");
-        startSyncService();
-
         Logger.i(TAG, "Finishing activity");
         finish();
     }
@@ -275,8 +272,6 @@ public class PageActivity extends RoboFragmentActivity {
         Toast.makeText(this, getString(R.string.page_thank_you), Toast.LENGTH_SHORT).show();
         sequence.setStatus(Sequence.STATUS_COMPLETED);
 
-        Logger.i(TAG, "Starting sync service to sync answers, and finishing self");
-        startSyncService();
         finish();
     }
 

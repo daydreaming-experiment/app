@@ -15,13 +15,16 @@ import com.brainydroid.daydreaming.network.HttpGetTask;
 import com.brainydroid.daydreaming.network.ParametersStorageCallback;
 import com.brainydroid.daydreaming.network.ServerConfig;
 import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
 
+
 import java.lang.reflect.Type;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 @Singleton
 public class ParametersStorage {
@@ -36,6 +39,8 @@ public class ParametersStorage {
     public static String EXP_DURATION = "expDuration";
     public static String BACKEND_API_URL = "backendApiUrl";
     public static String RESULTS_PAGE_URL = "resultsPageUrl";
+
+    public static String GLOSSARY = "glossary";
     public static String QUESTIONS = "questions";
     public static String SEQUENCES = "sequences";
 
@@ -269,6 +274,33 @@ public class ParametersStorage {
         eSharedPreferences.commit();
     }
 
+    private synchronized void setGlossary(HashMap<String,String> glossary) {
+        String glossaryJson = json.toJson(glossary);
+        Logger.d(TAG, "{0} - Setting glossary to {1}", statusManager.getCurrentModeName(), glossaryJson);
+        eSharedPreferences.putString(statusManager.getCurrentModeName() + GLOSSARY, glossaryJson);
+        eSharedPreferences.commit();
+    }
+
+    public synchronized HashMap<String,String> getGlossary() {
+        String glossaryJson = sharedPreferences.getString(
+                statusManager.getCurrentModeName() + GLOSSARY, null);
+        if (glossaryJson == null) {
+            String msg = "Glossary asked for but not found";
+            Logger.e(TAG, msg);
+            throw new RuntimeException(msg);
+        }
+        Type hmType = new TypeToken<HashMap<String,String>>() {}.getType();
+        HashMap<String,String> glossary = json.fromJson(glossaryJson, hmType);
+        Logger.v(TAG, "{0} - Glossary is {1}", statusManager.getCurrentModeName(), glossaryJson);
+        return glossary;
+    }
+
+    private synchronized void clearGlossary() {
+        Logger.d(TAG, "{} - Clearing glossary", statusManager.getCurrentModeName());
+        eSharedPreferences.remove(statusManager.getCurrentModeName() + GLOSSARY);
+        eSharedPreferences.commit();
+    }
+
     public synchronized QuestionDescription getQuestionDescription(String name) {
         Logger.d(TAG, "{0} - Looking for questionDescription {1}",
                 statusManager.getCurrentModeName(), name);
@@ -367,13 +399,13 @@ public class ParametersStorage {
         clearSchedulingMeanDelay();
         clearQuestions();
         clearSequences();
+        clearGlossary();
     }
 
     // import parameters from json file into database
     public synchronized void importParameters(String jsonParametersString)
             throws ParametersSyntaxException {
         Logger.d(TAG, "{} - Importing parameters from JSON", statusManager.getCurrentModeName());
-
         try {
             ServerParametersJson serverParametersJson = json.fromJson(
                     jsonParametersString, ServerParametersJson.class);
@@ -394,6 +426,9 @@ public class ParametersStorage {
             setResultsPageUrl(serverParametersJson.getResultsPageUrl());
             setSchedulingMinDelay(serverParametersJson.getSchedulingMinDelay());
             setSchedulingMeanDelay(serverParametersJson.getSchedulingMeanDelay());
+            setGlossary(serverParametersJson.getGlossary());
+
+            // loading the questions
             setQuestions(serverParametersJson.getQuestions());
             setSequences(serverParametersJson.getSequences());
         } catch (JsonParametersException e) {
@@ -421,7 +456,6 @@ public class ParametersStorage {
         }
     }
 
-    // TODO[seb]: check this is still ok when switching back and forth from test mode, and resetting parameters while keeping profile answers (esp. when exp_id has changed server-side)
     private synchronized void asyncUpdateParameters(final ParametersStorageCallback callback,
                                                     final String startSyncAppMode,
                                                     final boolean isDebug) {

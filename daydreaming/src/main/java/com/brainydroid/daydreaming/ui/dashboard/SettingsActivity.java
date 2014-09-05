@@ -127,7 +127,7 @@ public class SettingsActivity extends RoboFragmentActivity {
                         // Update shared preference
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         editor.putString(TIME_FROM, pad(hourOfDay) + ":" + pad(minute));
-                        editor.commit();
+                        editor.apply();
 
                         // Listener can correct and update the view here
                         correctTimeWindow();
@@ -162,7 +162,7 @@ public class SettingsActivity extends RoboFragmentActivity {
                         // Update shared preference
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         editor.putString(TIME_UNTIL, pad(hourOfDay) + ":" + pad(minute));
-                        editor.commit();
+                        editor.apply();
 
                         // Listener can correct and update the view here
                         correctTimeWindow();
@@ -182,7 +182,7 @@ public class SettingsActivity extends RoboFragmentActivity {
             public void onClick(View v) {
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putBoolean(NOTIF_BLINK, blink_check.isChecked()); // value to store
-                editor.commit();
+                editor.apply();
             }
 
         });
@@ -193,7 +193,7 @@ public class SettingsActivity extends RoboFragmentActivity {
             public void onClick(View v) {
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putBoolean(NOTIF_VIBRATION, vibrations_check.isChecked()); // value to store
-                editor.commit();
+                editor.apply();
             }
 
         });
@@ -204,7 +204,7 @@ public class SettingsActivity extends RoboFragmentActivity {
             public void onClick(View v) {
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putBoolean(NOTIF_SOUND, sound_check.isChecked()); // value to store
-                editor.commit();
+                editor.apply();
             }
 
         });
@@ -234,7 +234,7 @@ public class SettingsActivity extends RoboFragmentActivity {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString(TIME_FROM, defaultTimePreferenceMin);
             editor.putString(TIME_UNTIL, defaultTimePreferenceMax);
-            editor.commit();
+            editor.apply();
         } else {
             Logger.v(TAG, "Time window set by user is OK");
         }

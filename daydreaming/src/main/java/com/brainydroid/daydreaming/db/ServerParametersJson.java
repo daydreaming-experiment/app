@@ -2,6 +2,7 @@ package com.brainydroid.daydreaming.db;
 
 import com.brainydroid.daydreaming.background.Logger;
 
+import java.util.HashMap;
 import java.util.ArrayList;
 
 public class ServerParametersJson {
@@ -17,6 +18,7 @@ public class ServerParametersJson {
     public static int DEFAULT_EXP_DURATION = -1;
     public static String DEFAULT_BACKEND_API_URL = "n/c";
     public static String DEFAULT_RESULTS_PAGE_URL = "n/c";
+    public static HashMap<String,String> DEFAULT_GLOSSARY_JSON = null;
 
     private String version = DEFAULT_PARAMETERS_VERSION;
     private String backendExpId = DEFAULT_BACKEND_EXP_ID;
@@ -28,9 +30,14 @@ public class ServerParametersJson {
     private int schedulingMinDelay = DEFAULT_SCHEDULING_MIN_DELAY;
     private ArrayList<QuestionDescription> questions = null;
     private ArrayList<SequenceDescription> sequences = null;
+    private HashMap<String,String> glossary = DEFAULT_GLOSSARY_JSON;
 
     public synchronized String getVersion() {
         return version;
+    }
+
+    public synchronized HashMap<String,String> getGlossary() {
+        return glossary;
     }
 
     public synchronized String getBackendExpId() {
@@ -110,6 +117,10 @@ public class ServerParametersJson {
         // Check expDuration is set
         if (resultsPageUrl.equals(DEFAULT_RESULTS_PAGE_URL)) {
             throw new JsonParametersException("resultsPageUrl can't be its unset value");
+        }
+
+        if (glossary == DEFAULT_GLOSSARY_JSON) {
+            throw new JsonParametersException("glossary can't be its unset value");
         }
 
         // Validate questions

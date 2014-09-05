@@ -12,6 +12,7 @@ public class SliderSubQuestion {
     public static int DEFAULT_INITIAL_POSITION = -1;
     public static int DEFAULT_INITIAL_RATING = -1;
     private String text = null;
+    private String glossaryText = null;
     private ArrayList<String> hints = null;
     @SuppressWarnings("FieldCanBeLocal")
     private int initialPosition = DEFAULT_INITIAL_POSITION;
@@ -22,6 +23,10 @@ public class SliderSubQuestion {
 
     public synchronized String getText() {
         return text;
+    }
+
+    public synchronized String getGlossaryText() {
+        return glossaryText;
     }
 
     public synchronized ArrayList<String> getHints() {
