@@ -87,6 +87,9 @@ public class LocationPointService extends RoboService {
         Logger.d(TAG, "LocationPointService started");
         super.onStartCommand(intent, flags, startId);
 
+        // Record last time we ran
+        statusManager.setLatestLocationPointServiceSystemTimestampToNow();
+
         // Were we started to start or to stop the listening?
         if (intent.getBooleanExtra(STOP_LOCATION_LISTENING, false)) {
             Logger.d(TAG, "Meant to stop location listening");

@@ -22,6 +22,8 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
+import java.util.Calendar;
+
 /**
  * Manage global application status (like first launch) and collect
  * information on the device's status.
@@ -56,6 +58,11 @@ public class StatusManager {
     @SuppressWarnings("FieldCanBeLocal")
     private static String LATEST_NTP_TIMESTAMP = "latestNtpTimestamp";
 
+    private static String LATEST_SCHEDULER_SERVICE_SYSTEM_TIMESTAMP =
+            "latestSchedulerServiceSystemTimestamp";
+    private static String LATEST_LOCATION_POINT_SERVICE_SYSTEM_TIMESTAMP =
+            "latestLocationPointServiceSystemTimestamp";
+
     /** Preference key storing the current mode */
     private static String EXP_CURRENT_MODE = "expCurrentMode";
 
@@ -67,6 +74,13 @@ public class StatusManager {
     public static String MODE_NAME_TEST = "test";
     public static String MODE_NAME_PROD = "production";
     public static String[] AVAILABLE_MODE_NAMES = {MODE_NAME_PROD, MODE_NAME_TEST};
+
+    /** Delay after which SchedulerService must be restarted if it hasn't run. 2 days. */
+    public static long RESTART_SCHEDULER_SERVICE_DELAY = 2 * 24 * 60 * 60 * 1000;
+
+    /** Delay after which LocationPointService must be restarted if it hasn't run. 1 hour. */
+    public static long RESTART_LOCATION_POINT_SERVICE_DELAY = 1 * 60 * 60 * 1000;
+
     private int cachedCurrentMode = MODE_DEFAULT;
 
     /**
@@ -348,6 +362,64 @@ public class StatusManager {
         Logger.d(TAG, "{} - Clearing experiment start timestamp", getCurrentModeName());
         eSharedPreferences.remove(getCurrentModeName() + EXP_START_TIMESTAMP);
         eSharedPreferences.commit();
+    }
+
+    public synchronized void setLatestSchedulerServiceSystemTimestampToNow() {
+        Logger.d(TAG, "Setting last time SchedulerService ran to now (system timestamp)");
+        eSharedPreferences.putLong(LATEST_SCHEDULER_SERVICE_SYSTEM_TIMESTAMP,
+                Calendar.getInstance().getTimeInMillis());
+        eSharedPreferences.commit();
+    }
+
+    public synchronized void checkLatestSchedulerWasAgesAgo() {
+        long latest = sharedPreferences.getLong(LATEST_SCHEDULER_SERVICE_SYSTEM_TIMESTAMP, -1);
+        if (latest == -1) {
+            // SchedulerService never ran, which means first launch wasn't finished
+            Logger.d(TAG, "SchedulerService never ran yet, no need to restart it");
+        }
+
+        if (Calendar.getInstance().getTimeInMillis() - latest > RESTART_SCHEDULER_SERVICE_DELAY) {
+            Logger.d(TAG, "SchedulerService hasn't run since long ago -> restarting it");
+
+            Intent schedulerIntent = new Intent(context, SchedulerService.class);
+            context.startService(schedulerIntent);
+        } else {
+            Logger.d(TAG, "SchedulerService ran not long ago, leaving it be");
+        }
+    }
+
+    public synchronized void setLatestLocationPointServiceSystemTimestampToNow() {
+        Logger.d(TAG, "Setting last time LocationPointService ran to now (system timestamp)");
+        eSharedPreferences.putLong(LATEST_LOCATION_POINT_SERVICE_SYSTEM_TIMESTAMP,
+                Calendar.getInstance().getTimeInMillis());
+        eSharedPreferences.commit();
+    }
+
+    public synchronized void checkLatestLocationPointServiceWasAgesAgo() {
+        long latest = sharedPreferences.getLong(LATEST_LOCATION_POINT_SERVICE_SYSTEM_TIMESTAMP, -1);
+        if (latest == -1) {
+            // LocationPointService never ran, which means first launch wasn't finished
+            Logger.d(TAG, "LocationPointService never ran yet, no need to restart it");
+        }
+
+        if (Calendar.getInstance().getTimeInMillis() - latest >
+                RESTART_LOCATION_POINT_SERVICE_DELAY) {
+            Logger.d(TAG, "LocationPointService hasn't run since long ago -> restarting it");
+
+            // Possible race condition here: if the user changes the system time, and a
+            // LocationPoint was collecting, but the time change is long enough to make
+            // us think the LocationPointService hasn't run for a long time. In that case,
+            // LocationPointService will start a new location collection, and the currently
+            // collection LocationPoint will lose its callback in LocationService (replaced by
+            // the new one). (The NTP callback could still fire, which is ok.) It'll then be
+            // removed from DB, or uploaded (if it was complete), next time the
+            // LocationPointService wants to stop collection. We'll get a warning in the logs
+            // saying there were two LocationPoints collecting, that's all.
+            Intent locationIntent = new Intent(context, LocationPointService.class);
+            context.startService(locationIntent);
+        } else {
+            Logger.d(TAG, "LocationPointService ran not long ago, leaving it be");
+        }
     }
 
     public synchronized void setLatestNtpTime(long timestamp) {
