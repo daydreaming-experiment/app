@@ -60,7 +60,7 @@ public class Page implements IPage {
 
     public synchronized void setLocation(android.location.Location location) {
         Logger.v(TAG, "Setting location");
-        this.location = (Location)location;
+        this.location = new Location(location);
         saveIfSync();
     }
 
