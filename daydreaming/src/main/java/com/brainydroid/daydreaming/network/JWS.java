@@ -9,6 +9,8 @@ public class JWS {
     @JsonProperty private String payload;
     @JsonProperty private ArrayList<JWSSignature> signatures;
 
+    public JWS() {}
+
     public JWS(String payload, ArrayList<JWSSignature> jwsSignatures) {
         this.payload = payload;
         this.signatures = jwsSignatures;

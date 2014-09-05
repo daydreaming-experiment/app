@@ -20,6 +20,8 @@ public class ProfileData {
     @JsonProperty private int appVersionCode;
     @JsonProperty private String mode;
 
+    public ProfileData() {}
+
     @Inject
     public ProfileData(@Assisted("age") String age,
                        @Assisted("gender") String gender,

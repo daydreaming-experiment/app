@@ -24,6 +24,8 @@ public class Profile {
 
     @Inject @JsonIgnore ProfileWrapperFactory profileWrapperFactory;
 
+    public Profile() {}
+
     @AssistedInject
     public Profile(@Assisted("expId") String expId,
                    @Assisted("vkPem") String vkPem) {

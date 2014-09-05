@@ -13,6 +13,8 @@ public class ResultsWrapper<T> {
 
     @JsonProperty private ArrayList<Result<T>> results;
 
+    public ResultsWrapper() {}
+
     @Inject
     public ResultsWrapper(CryptoStorage cryptoStorage,
                           @Assisted ArrayList<T> datas) {

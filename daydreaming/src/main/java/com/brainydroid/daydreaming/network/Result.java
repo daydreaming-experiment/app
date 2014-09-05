@@ -8,6 +8,8 @@ public class Result<T> {
     @JsonProperty private String profile_id;
     @JsonProperty private T result_data;
 
+    public Result() {}
+
     public Result(String profile_id, T result_data) {
         this.profile_id = profile_id;
         this.result_data = result_data;
