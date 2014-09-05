@@ -7,7 +7,7 @@ import roboguice.receiver.RoboBroadcastReceiver;
 
 /**
  * Start {@link SchedulerService} to reschedule the next {@link
- * com.brainydroid.daydreaming.db.Poll} when the user's time settings change.
+ * com.brainydroid.daydreaming.sequence.Sequence} when the user's time settings change.
  * <p/>
  * This service is only started if the first launch has been completed
  * (i.e. the user has registered and is participating in the experiment).
