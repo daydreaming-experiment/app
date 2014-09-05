@@ -344,6 +344,19 @@ public class DashboardActivity extends RoboFragmentActivity {
         Toast.makeText(this, "Now wait for 5 secs", Toast.LENGTH_SHORT).show();
     }
 
+    public void runSyncNow(View view) {
+        Logger.d(TAG, "Launching debug sync now");
+
+        if (!statusManager.isDataEnabled()) {
+            Toast.makeText(this, "You're not connected to the internet!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Intent syncIntent = new Intent(this, SyncService.class);
+        syncIntent.putExtra(SyncService.DEBUG_SYNC, true);
+        startService(syncIntent);
+    }
+
     public void reloadParametersKeepProfileAnswers(@SuppressWarnings("UnusedParameters") View view) {
         Logger.d(TAG, "Resetting parameters and profile_id, but keeping profile answers");
 

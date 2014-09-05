@@ -29,6 +29,7 @@
     <string name="dashboard_text_see_results">See results</string>
     <string name="dashboard_button_change_data_settings">Data Settings</string>
     <string name="dashboard_test_text_probe_now">Probe Now</string>
+    <string name="dashboard_test_text_sync_now">Sync Now</string>
     <string name="dashboard_test_text_reload_parameters">Reload parameters</string>
 
     <!-- Glossary Activity -->

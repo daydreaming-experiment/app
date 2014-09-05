@@ -409,33 +409,44 @@
 
 
 
-    <LinearLayout
-        android:id="@+id/dashboard_testing_linearlayout"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:id="@+id/dashboard_testing_relativeLayout"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:layout_marginBottom="16dp"
-        android:gravity="right"
+        android:gravity="bottom"
         android:layout_alignParentBottom="true">
 
         <Button
             android:id="@+id/button_test_poll"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="8dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
             android:onClick="runPollNow"
             android:text="@string/dashboard_test_text_probe_now"/>
+
+        <Button
+            android:id="@+id/button_test_sync"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_above="@id/button_test_poll"
+            android:onClick="runSyncNow"
+            android:text="@string/dashboard_test_text_sync_now" />
 
         <Button
             android:id="@+id/button_reload_parameters"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="16dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
             android:onClick="reloadParametersKeepProfileAnswers"
-            android:text="@string/dashboard_test_text_reload_parameters"/>
-    </LinearLayout>
+            android:text="@string/dashboard_test_text_reload_parameters" />
 
+    </RelativeLayout>
 
 </RelativeLayout>
 
