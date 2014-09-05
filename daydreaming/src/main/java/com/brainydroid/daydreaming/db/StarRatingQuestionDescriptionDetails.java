@@ -10,7 +10,7 @@ public class StarRatingQuestionDescriptionDetails implements IQuestionDescriptio
     private static String TAG = "StarRatingQuestionDetails";
 
     @SuppressWarnings("FieldCanBeLocal")
-    private final String type = "StarRating";
+    private String type = "StarRating";
     @SuppressWarnings("UnusedDeclaration")
     private ArrayList<StarRatingSubQuestion> subQuestions = null;
 
