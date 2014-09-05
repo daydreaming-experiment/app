@@ -13,53 +13,49 @@
         android:layout_centerHorizontal="true"
         android:gravity="center_horizontal"
         android:paddingTop="@dimen/glossary_vertical_paddingTop_title"
-        android:paddingBottom="10dp"
-        android:id="@+id/linearLayout2">
+        android:paddingBottom="@dimen/global_title_body_vertical_padding"
+        android:id="@+id/glossary_title_layout">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="@style/ui_font_big_title_bold"
             android:text="@string/glossary_title"
-            android:textColor="@color/ui_white_text_color"
-            android:id="@+id/textView" />
+            android:textColor="@color/ui_white_text_color"/>
     </LinearLayout>
 
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/linearLayout2"
+        android:layout_below="@+id/glossary_title_layout"
         >
 
-    <ScrollView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/scrollView" >
+        <ScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:id="@+id/glossary_items_layout"
->
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:id="@+id/glossary_items_layout"
+                >
 
 
             </LinearLayout>
-    </ScrollView>
+        </ScrollView>
     </RelativeLayout>
 
     <LinearLayout android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="5dp"
         android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:id="@+id/linearLayout3">
+        android:layout_alignParentRight="true">
 
         <ImageButton
-            android:id="@+id/glossary_backtodashboard_button"
-            android:layout_width="@dimen/dashboard_settings_button_size_withmargin"
-            android:layout_height="@dimen/dashboard_settings_button_size_withmargin"
-            android:padding="@dimen/dashboard_settings_button_margin"
+            android:layout_width="@dimen/return_to_dashboard_button_size_withmargin"
+            android:layout_height="@dimen/return_to_dashboard_button_size_withmargin"
+            android:padding="@dimen/return_to_dashboard_button_margin"
             android:scaleType="fitCenter"
             android:onClick="onClick_backToDashboard"
             android:src="@drawable/dashboard_arrow"

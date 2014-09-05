@@ -4,7 +4,6 @@
     android:layout_height="fill_parent" >
 
 
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -15,15 +14,14 @@
         >
 
 
-            <TextView
-                android:id="@+id/credits_textview_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/credits_text_title"
-                android:singleLine="true"
-                android:textAppearance="@style/ui_font_title_bold"
-                android:textColor="@color/ui_white_text_color"
-                />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/credits_text_title"
+            android:singleLine="true"
+            android:textAppearance="@style/ui_font_title_bold"
+            android:textColor="@color/ui_white_text_color"
+            />
 
     </RelativeLayout>
 
@@ -36,96 +34,95 @@
         android:id="@+id/credits_relativelayout_maintext"
         android:layout_below="@id/credits_relativelayout_title">
 
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:lines="2"
-                android:text="@string/credits_text_main"
-                android:id="@+id/textView2"
-                android:textAppearance="@style/ui_font_title"
-                android:textColor="@color/ui_white_text_color"/>
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:lines="2"
+            android:text="@string/credits_text_main"
+            android:textAppearance="@style/ui_font_title"
+            android:textColor="@color/ui_white_text_color"/>
     </RelativeLayout>
 
 
 
-        <TableLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"
+        android:layout_below="@id/credits_relativelayout_maintext">
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:gravity="center_horizontal"
-            android:layout_below="@id/credits_relativelayout_maintext">
+            android:clickable="false"
+            android:focusableInTouchMode="false"
+            android:focusable="false"
+            android:padding="10dp">
 
-            <TableRow
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
-                android:clickable="false"
-                android:focusableInTouchMode="false"
-                android:focusable="false"
-                android:padding="10dp">
-
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_horizontal"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="@string/credits_institution1"
-                        android:drawableTop="@drawable/icon_terms"
-                        android:padding="5dp"/>
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/credits_institution1"
+                android:drawableTop="@drawable/icon_terms"
+                android:padding="5dp"/>
 
 
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_horizontal"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="@string/credits_institution2"
-                        android:drawableTop="@drawable/icon_terms"
-                        android:padding="5dp"
-                        />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/credits_institution2"
+                android:drawableTop="@drawable/icon_terms"
+                android:padding="5dp"
+                />
 
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_horizontal"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="@string/credits_institution3"
-                        android:drawableTop="@drawable/icon_terms"
-                        android:padding="5dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/credits_institution3"
+                android:drawableTop="@drawable/icon_terms"
+                android:padding="5dp"/>
 
 
-            </TableRow>
+        </TableRow>
 
-            <TableRow
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:gravity="center_horizontal">
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:gravity="center_horizontal">
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_horizontal"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="@string/credits_institution4"
-                        android:drawableTop="@drawable/icon_terms"
-                        android:padding="5dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/credits_institution4"
+                android:drawableTop="@drawable/icon_terms"
+                android:padding="5dp"/>
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_horizontal"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="@string/credits_institution5"
-                        android:drawableTop="@drawable/icon_terms"
-                        android:padding="5dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/credits_institution5"
+                android:drawableTop="@drawable/icon_terms"
+                android:padding="5dp"/>
 
 
-            </TableRow>
-        </TableLayout>
+        </TableRow>
+    </TableLayout>
 
 
     <LinearLayout android:layout_width="wrap_content"
@@ -134,10 +131,9 @@
         android:layout_alignParentRight="true">
 
         <ImageButton
-            android:id="@+id/appsettings_backtodashboard_button"
-            android:layout_width="@dimen/dashboard_settings_button_size_withmargin"
-            android:layout_height="@dimen/dashboard_settings_button_size_withmargin"
-            android:padding="@dimen/dashboard_settings_button_margin"
+            android:layout_width="@dimen/return_to_dashboard_button_size_withmargin"
+            android:layout_height="@dimen/return_to_dashboard_button_size_withmargin"
+            android:padding="@dimen/return_to_dashboard_button_margin"
             android:scaleType="fitCenter"
             android:onClick="onClick_backToDashboard"
             android:src="@drawable/dashboard_arrow"

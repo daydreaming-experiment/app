@@ -4,20 +4,20 @@
     android:gravity="center_vertical" >
 
     <RelativeLayout
-            android:id="@+id/firstLaunchWelcome_ballonlayout"
+        android:id="@+id/firstLaunchWelcome_ballonlayout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_horizontal">
+        android:orientation="horizontal"
+        android:gravity="center_horizontal">
         <ImageView
-                android:id="@+id/firstLaunchWelcome_ballon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@null"
-                android:src="@drawable/airship"
-                />
+            android:id="@+id/firstLaunchWelcome_ballon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@null"
+            android:src="@drawable/airship"
+            />
 
-    <ImageView
+        <ImageView
             android:id="@+id/firstLaunchWelcome_helix"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -29,16 +29,15 @@
 
 
     <ImageView
-                    android:id="@+id/firstLaunchWelcome_daydreaming"
-                    android:layout_width="fill_parent"
-                    android:gravity="center_horizontal"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/daydreaming"
-                    android:contentDescription="@null"
-                    android:layout_centerHorizontal="true"
-                    android:layout_below="@+id/firstLaunchWelcome_ballonlayout"
-                    android:layout_alignParentLeft="true"/>
+        android:id="@+id/firstLaunchWelcome_daydreaming"
+        android:layout_width="fill_parent"
+        android:gravity="center_horizontal"
+        android:layout_height="wrap_content"
+        android:src="@drawable/daydreaming"
+        android:contentDescription="@null"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/firstLaunchWelcome_ballonlayout"/>
 
 
 
-      </RelativeLayout>
+</RelativeLayout>

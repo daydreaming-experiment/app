@@ -8,9 +8,9 @@ android:layout_alignParentRight="true">
 
 <ImageButton
         android:id="@+id/appsettings_backtodashboard_button"
-        android:layout_width="@dimen/dashboard_settings_button_size_withmargin"
-        android:layout_height="@dimen/dashboard_settings_button_size_withmargin"
-        android:padding="@dimen/dashboard_settings_button_margin"
+        android:layout_width="@dimen/return_to_dashboard_button_size_withmargin"
+        android:layout_height="@dimen/return_to_dashboard_button_size_withmargin"
+        android:padding="@dimen/return_to_dashboard_button_margin"
         android:scaleType="fitCenter"
         android:onClick="onClick_backToDashboard"
         android:src="@drawable/dashboard_arrow"
