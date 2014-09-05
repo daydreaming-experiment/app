@@ -456,7 +456,6 @@ public class ParametersStorage {
         }
     }
 
-    // TODO[seb]: check this is still ok when switching back and forth from test mode, and resetting parameters while keeping profile answers (esp. when exp_id has changed server-side)
     private synchronized void asyncUpdateParameters(final ParametersStorageCallback callback,
                                                     final String startSyncAppMode,
                                                     final boolean isDebug) {
