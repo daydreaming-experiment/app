@@ -7,6 +7,7 @@ import android.location.Location;
 import android.os.IBinder;
 import android.os.SystemClock;
 import com.brainydroid.daydreaming.db.LocationPoint;
+import com.brainydroid.daydreaming.db.LocationPointFactory;
 import com.brainydroid.daydreaming.db.LocationPointsStorage;
 import com.brainydroid.daydreaming.network.SntpClient;
 import com.brainydroid.daydreaming.network.SntpClientCallback;
@@ -52,7 +53,8 @@ public class LocationPointService extends RoboService {
     public static String CANCEL_COLLECTING_LOCATION_POINTS = "cancelCollectingLocationPoints";
 
     @Inject SntpClient sntpClient;
-    @Inject LocationPoint locationPoint;
+    @Inject LocationPointFactory locationPointFactory;
+    LocationPoint locationPoint;
     @Inject LocationPointsStorage locationPointsStorage;
     @Inject AlarmManager alarmManager;
     @Inject StatusManager statusManager;
@@ -216,6 +218,8 @@ public class LocationPointService extends RoboService {
      */
     private synchronized void startLocationListening() {
         Logger.d(TAG, "Starting location listening");
+
+        locationPoint = locationPointFactory.create();
 
         // Mark the location point as not yet uploadable
         Logger.v(TAG, "Setting LocationPoint's status to collecting");
