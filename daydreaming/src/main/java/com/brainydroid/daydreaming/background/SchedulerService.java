@@ -60,11 +60,17 @@ public class SchedulerService extends RoboService {
 
         super.onStartCommand(intent, flags, startId);
 
+        // Record last time we ran
+        statusManager.setLatestSchedulerServiceSystemTimestampToNow();
+
+        // Check LocationPointService hasn't died
+        statusManager.checkLatestLocationPointServiceWasAgesAgo();
+
         // Synchronise answers and get parameters if we don't have them. If parameters
         // happen to be updated, the SchedulerService will be run again.
         startSyncService();
 
-        if (! statusManager.areParametersUpdated()) {
+        if (!statusManager.areParametersUpdated()) {
             Logger.d(TAG, "Parameters not updated yet. aborting scheduling.");
             return START_REDELIVER_INTENT;
         }

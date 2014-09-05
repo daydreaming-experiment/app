@@ -96,6 +96,7 @@ public class DashboardActivity extends RoboFragmentActivity {
     @Override
     public void onResume() {
         Logger.v(TAG, "Resuming");
+        statusManager.checkLatestSchedulerWasAgesAgo();
         checkExperimentModeActivatedDirty();
         if (!statusManager.areParametersUpdated()) {
             Logger.v(TAG, "Parameters not yet updated, registering broadcast receiver");

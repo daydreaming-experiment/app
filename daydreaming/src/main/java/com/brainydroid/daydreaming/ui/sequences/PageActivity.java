@@ -16,7 +16,6 @@ import com.brainydroid.daydreaming.background.LocationServiceConnection;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.background.SchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
-import com.brainydroid.daydreaming.background.SyncService;
 import com.brainydroid.daydreaming.db.SequencesStorage;
 import com.brainydroid.daydreaming.network.SntpClient;
 import com.brainydroid.daydreaming.network.SntpClientCallback;
@@ -175,13 +174,6 @@ public class PageActivity extends RoboFragmentActivity {
 
         Logger.i(TAG, "Finishing activity");
         finish();
-    }
-
-    private void startSyncService() {
-        Logger.d(TAG, "Starting SyncService");
-
-        Intent syncIntent = new Intent(this, SyncService.class);
-        startService(syncIntent);
     }
 
     private void startSchedulerService() {
