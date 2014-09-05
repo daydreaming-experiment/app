@@ -376,15 +376,15 @@ public class StatusManager {
         if (latest == -1) {
             // SchedulerService never ran, which means first launch wasn't finished
             Logger.d(TAG, "SchedulerService never ran yet, no need to restart it");
-        }
-
-        if (Calendar.getInstance().getTimeInMillis() - latest > RESTART_SCHEDULER_SERVICE_DELAY) {
-            Logger.d(TAG, "SchedulerService hasn't run since long ago -> restarting it");
-
-            Intent schedulerIntent = new Intent(context, SchedulerService.class);
-            context.startService(schedulerIntent);
         } else {
-            Logger.d(TAG, "SchedulerService ran not long ago, leaving it be");
+            if (Calendar.getInstance().getTimeInMillis() - latest > RESTART_SCHEDULER_SERVICE_DELAY) {
+                Logger.d(TAG, "SchedulerService hasn't run since long ago -> restarting it");
+
+                Intent schedulerIntent = new Intent(context, SchedulerService.class);
+                context.startService(schedulerIntent);
+            } else {
+                Logger.d(TAG, "SchedulerService ran not long ago, leaving it be");
+            }
         }
     }
 
@@ -400,25 +400,25 @@ public class StatusManager {
         if (latest == -1) {
             // LocationPointService never ran, which means first launch wasn't finished
             Logger.d(TAG, "LocationPointService never ran yet, no need to restart it");
-        }
-
-        if (Calendar.getInstance().getTimeInMillis() - latest >
-                RESTART_LOCATION_POINT_SERVICE_DELAY) {
-            Logger.d(TAG, "LocationPointService hasn't run since long ago -> restarting it");
-
-            // Possible race condition here: if the user changes the system time, and a
-            // LocationPoint was collecting, but the time change is long enough to make
-            // us think the LocationPointService hasn't run for a long time. In that case,
-            // LocationPointService will start a new location collection, and the currently
-            // collection LocationPoint will lose its callback in LocationService (replaced by
-            // the new one). (The NTP callback could still fire, which is ok.) It'll then be
-            // removed from DB, or uploaded (if it was complete), next time the
-            // LocationPointService wants to stop collection. We'll get a warning in the logs
-            // saying there were two LocationPoints collecting, that's all.
-            Intent locationIntent = new Intent(context, LocationPointService.class);
-            context.startService(locationIntent);
         } else {
-            Logger.d(TAG, "LocationPointService ran not long ago, leaving it be");
+            if (Calendar.getInstance().getTimeInMillis() - latest >
+                    RESTART_LOCATION_POINT_SERVICE_DELAY) {
+                Logger.d(TAG, "LocationPointService hasn't run since long ago -> restarting it");
+
+                // Possible race condition here: if the user changes the system time, and a
+                // LocationPoint was collecting, but the time change is long enough to make
+                // us think the LocationPointService hasn't run for a long time. In that case,
+                // LocationPointService will start a new location collection, and the currently
+                // collection LocationPoint will lose its callback in LocationService (replaced by
+                // the new one). (The NTP callback could still fire, which is ok.) It'll then be
+                // removed from DB, or uploaded (if it was complete), next time the
+                // LocationPointService wants to stop collection. We'll get a warning in the logs
+                // saying there were two LocationPoints collecting, that's all.
+                Intent locationIntent = new Intent(context, LocationPointService.class);
+                context.startService(locationIntent);
+            } else {
+                Logger.d(TAG, "LocationPointService ran not long ago, leaving it be");
+            }
         }
     }
 
