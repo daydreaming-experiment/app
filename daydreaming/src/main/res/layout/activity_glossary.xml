@@ -32,7 +32,8 @@
 
         <ScrollView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:padding="@dimen/global_scrollview_padding">
 
             <LinearLayout
                 android:layout_width="fill_parent"
