@@ -24,7 +24,6 @@
                     android:orientation="vertical"
                     android:paddingLeft="@dimen/global_text_in_scrollview_side_padding"
                     android:paddingRight="@dimen/global_text_in_scrollview_side_padding"
-                    android:id="@+id/credits_relativelayout_maintext"
                     >
 
                     <TextView
@@ -49,7 +48,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:id="@+id/imageView"
                         android:layout_margin="20dp"
                         android:src="@drawable/icon_terms" />
 
@@ -87,8 +85,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:paddingLeft="@dimen/global_text_in_scrollview_side_padding"
-                    android:paddingRight="@dimen/global_text_in_scrollview_side_padding"
-                    android:id="@+id/credits_relativelayout_maintext">
+                    android:paddingRight="@dimen/global_text_in_scrollview_side_padding">
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -116,10 +113,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="left"
-                        android:id="@+id/imageView"
                         android:src="@drawable/icon_terms" />
-
-
 
                     <TextView
                         android:layout_width="fill_parent"
@@ -137,9 +131,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="left"
-                        android:id="@+id/imageView"
                         android:src="@drawable/icon_terms" />
-
 
                     <TextView
                         android:layout_width="fill_parent"
@@ -157,7 +149,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="left"
-                        android:id="@+id/imageView"
                         android:src="@drawable/icon_terms" />
 
                     <TextView
@@ -176,15 +167,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="left"
-                        android:id="@+id/imageView"
                         android:src="@drawable/icon_terms" />
-
 
                 </LinearLayout>
 
             </RelativeLayout>
-        </LinearLayout>
 
+        </LinearLayout>
+        
     </ScrollView>
 
     <LinearLayout android:layout_width="wrap_content"
