@@ -2,6 +2,7 @@ package com.brainydroid.daydreaming.ui;
 
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.LocationPoint;
+import com.brainydroid.daydreaming.db.LocationPointFactory;
 import com.brainydroid.daydreaming.network.ProfileDataFactory;
 import com.brainydroid.daydreaming.network.ProfileFactory;
 import com.brainydroid.daydreaming.network.ProfileWrapperFactory;
@@ -29,6 +30,7 @@ public class AppModule implements Module {
         binder.install(new FactoryModuleBuilder().build(PageGroupFactory.class));
         binder.install(new FactoryModuleBuilder().build(PageFactory.class));
         binder.install(new FactoryModuleBuilder().build(QuestionFactory.class));
+        binder.install(new FactoryModuleBuilder().build(LocationPointFactory.class));
 
         binder.install(new FactoryModuleBuilder()
                 .build(new TypeLiteral<ResultsWrapperFactory<Sequence>>() {}));
