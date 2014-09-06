@@ -51,27 +51,24 @@ public class SequenceDescription implements ISequence {
             throw new JsonParametersException("nSlots in sequence can't be it's default value");
         }
 
-        // Check pageGroups
-        if (pageGroups == null) {
-            throw new JsonParametersException("pageGroups in sequence can't be null");
-        }
-
         // Check slot consistency
-        // TODO: check floating positions
-        HashSet<Position> positions = new HashSet<Position>();
-        HashSet<Integer> explicitPositions = new HashSet<Integer>();
+        HashSet<Integer> fixedPositions = new HashSet<Integer>();
+        HashSet<String> floatingPositions = new HashSet<String>();
+        Position currentPosition;
         for (PageGroupDescription pg : pageGroups) {
-            positions.add(pg.getPosition());
-            if (pg.isPositionFixed()) {
-                explicitPositions.add(pg.getFixedPosition());
+            currentPosition = pg.getPosition();
+            if (currentPosition.isFixed()) {
+                fixedPositions.add(currentPosition.getFixedPosition());
+            } else if (currentPosition.isFloating()) {
+                floatingPositions.add(currentPosition.getFloatingPosition());
             }
         }
-        if (positions.size() < nSlots) {
-            throw new JsonParametersException("Too many slots and too few positions defined "
-                    + "(less than there are slots)");
+        if (fixedPositions.size() + floatingPositions.size() < nSlots) {
+            throw new JsonParametersException("Too many slots and too few fixed+floating " +
+                    "positions defined (less than there are slots)");
         }
-        if (explicitPositions.size() > nSlots) {
-            throw new JsonParametersException("Too many explicit positions defined "
+        if (fixedPositions.size() > nSlots) {
+            throw new JsonParametersException("Too many fixed positions defined "
                     + "(more than there are slots)");
         }
 

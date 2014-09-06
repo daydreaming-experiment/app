@@ -10,19 +10,6 @@ abstract public class BuildableOrderable<T> {
 
     abstract public Position getPosition();
 
-    public int getFixedPosition() {
-        if (isPositionFixed()) {
-            return getPosition().getFixedPosition();
-        } else {
-            throw new RuntimeException("Fixed position asked for, but this item's "
-                    + "position is floating");
-        }
-    }
-
-    public boolean isPositionFixed() {
-        return getPosition().isFixed();
-    }
-
     abstract public T build(Sequence sequence);
 
 }

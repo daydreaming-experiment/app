@@ -41,7 +41,17 @@ public class QuestionPositionDescription extends BuildableOrderable<Question>
         if (name == null) {
             throw new JsonParametersException("name in question can't be null");
         }
-        // TODO: check the name exists in the questionDescriptions
+        boolean nameExistsInQuestionDescriptions = false;
+        for (QuestionDescription qd : questionDescriptions) {
+            if (qd.getName().equals(name)) {
+                nameExistsInQuestionDescriptions = true;
+            }
+        }
+        if (!nameExistsInQuestionDescriptions) {
+            throw new JsonParametersException("QuestionPositionDescription references a name not " +
+                    "found in QuestionDescriptions");
+        }
+
         if (position == null) {
             throw new JsonParametersException("position in question can't be null");
         }

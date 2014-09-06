@@ -64,6 +64,22 @@ public class Position {
     }
 
     public Integer getFixedPosition() {
+        if (!isFixed()) {
+            throw new RuntimeException("Fixed position asked for, but this item's "
+                    + "position is not fixed");
+        }
         return fixed;
+    }
+
+    public boolean isFloating() {
+        return floating != null;
+    }
+
+    public String getFloatingPosition() {
+        if (!isFloating()) {
+            throw new RuntimeException("Floating position asked for, but this item's "
+                    + "position is not floating");
+        }
+        return floating;
     }
 }
