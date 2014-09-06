@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -41,7 +42,8 @@ public class PageActivity extends RoboFragmentActivity {
 
     private int sequenceId;
     private Sequence sequence;
-    private Page page;
+    private Page currentPage;
+    private Page nextPage;
     private long lastBackTime = 0;
     private boolean isContinuingOrFinishing = false;
     @Inject private PageViewAdapter pageViewAdapter;
@@ -70,7 +72,7 @@ public class PageActivity extends RoboFragmentActivity {
 
         // If this is a probe and we're at the first page, reschedule so as not
         // to have a new probe appear in the middle of this one
-        if (sequence.getType().equals(Sequence.TYPE_PROBE) && page.isFirstOfSequence()) {
+        if (sequence.getType().equals(Sequence.TYPE_PROBE) && currentPage.isFirstOfSequence()) {
             startSchedulerService();
         }
     }
@@ -82,8 +84,8 @@ public class PageActivity extends RoboFragmentActivity {
 
         sequence.retainSaves();
         sequence.setStatus(Sequence.STATUS_RUNNING);
-        page.setStatus(Page.STATUS_ASKED);
-        page.setSystemTimestamp(Calendar.getInstance().getTimeInMillis());
+        currentPage.setStatus(Page.STATUS_ASKED);
+        currentPage.setSystemTimestamp(Calendar.getInstance().getTimeInMillis());
         sequence.flushSaves();
 
         // Retain everything until onPause()
@@ -148,14 +150,17 @@ public class PageActivity extends RoboFragmentActivity {
             throw new RuntimeException(msg);
         }
         sequence = sequencesStorage.get(sequenceId);
-        page = sequence.getCurrentPage();
-        pageViewAdapter.setPage(page);
+        Pair<Page,Page> currentAndNextPage = sequence.getCurrentAndNextPage();
+        currentPage = currentAndNextPage.first;
+        nextPage = currentAndNextPage.second;
+        pageViewAdapter.setPage(currentPage);
     }
 
     private void setChrome() {
         Logger.d(TAG, "Setting chrome");
 
-        if (page.isLastOfSequence()) {
+        // TODO: set chrome depending on bonuses
+        if (currentPage.isLastOfSequence()) {
             Logger.d(TAG, "Last page -> setting finish button text");
             nextButton.setVisibility(View.GONE);
             finishButton.setVisibility(View.VISIBLE);
@@ -191,7 +196,7 @@ public class PageActivity extends RoboFragmentActivity {
             @Override
             public void onLocationReceived(Location location) {
                 Logger.i(TAG, "Received location for page, setting it");
-                page.setLocation(location);
+                currentPage.setLocation(location);
             }
 
         };
@@ -203,7 +208,7 @@ public class PageActivity extends RoboFragmentActivity {
             @Override
             public void onTimeReceived(SntpClient sntpClient) {
                 if (sntpClient != null) {
-                    page.setNtpTimestamp(sntpClient.getNow());
+                    currentPage.setNtpTimestamp(sntpClient.getNow());
                     Logger.i(TAG, "Received and saved NTP time for page");
                 } else {
                     Logger.e(TAG, "Received successful NTP request but sntpClient is null");
@@ -230,14 +235,15 @@ public class PageActivity extends RoboFragmentActivity {
     public void onClick_nextButton(@SuppressWarnings("UnusedParameters") View view) {
         Logger.d(TAG, "Next button clicked");
 
+        // TODO: act depending on bonus
         if (pageViewAdapter.validate()) {
             Logger.i(TAG, "Page validation succeeded, " +
                     "setting page status to answered");
             pageViewAdapter.saveAnswers();
-            page.setStatus(Page.STATUS_ANSWERED);
+            currentPage.setStatus(Page.STATUS_ANSWERED);
 
             setIsContinuingOrFinishing();
-            if (page.isLastOfSequence()) {
+            if (currentPage.isLastOfSequence()) {
                 Logger.d(TAG, "Last page -> finishing sequence");
                 finishSequence();
             } else {

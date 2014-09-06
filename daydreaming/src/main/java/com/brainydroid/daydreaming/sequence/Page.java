@@ -30,6 +30,7 @@ public class Page implements IPage {
 
     @JsonIgnore private boolean isFirstOfSequence = false;
     @JsonIgnore private boolean isLastOfSequence = false;
+    @JsonIgnore private boolean isLastOfPageGroup = false;
     @JsonIgnore private Sequence sequenceCache = null;
     @Inject @JacksonInject @JsonIgnore private SequencesStorage sequencesStorage;
 
@@ -133,6 +134,14 @@ public class Page implements IPage {
 
     public synchronized void setIsLastOfSequence() {
         isLastOfSequence = true;
+    }
+
+    public boolean isLastOfPageGroup() {
+        return isLastOfPageGroup;
+    }
+
+    public void setIsLastOfPageGroup() {
+        isLastOfPageGroup = true;
     }
 
     public synchronized void setQuestions(ArrayList<Question> questions) {
