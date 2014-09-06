@@ -2,11 +2,15 @@ package com.brainydroid.daydreaming.sequence;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import java.util.ArrayList;
+
 abstract public class BuildableOrderable<T> {
 
     private static String TAG = "BuildableOrderable";
 
     @JsonIgnore private Integer explicitPosition = null;
+
+    abstract public String getName();
 
     abstract public String getPosition();
 
@@ -37,5 +41,9 @@ abstract public class BuildableOrderable<T> {
     }
 
     abstract public T build(Sequence sequence);
+
+    public void validateInitialization(ArrayList<T> parentArray, Class<T> classOfT) {
+        // TODO: check all position.afters exist in parentArray
+    }
 
 }

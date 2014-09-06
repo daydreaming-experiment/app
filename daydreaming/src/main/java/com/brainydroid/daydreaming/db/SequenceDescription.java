@@ -32,14 +32,13 @@ public class SequenceDescription implements ISequence {
         return pageGroups;
     }
 
-    public void validateInitialization() {
+    public void validateInitialization(ArrayList<QuestionDescription> questions) {
         Logger.d(TAG, "Validating initialization");
 
         // Check name
         if (name == null) {
             throw new JsonParametersException("name in sequence can't be null");
         }
-
 
         // Check type
         if (type == null) {
@@ -79,7 +78,7 @@ public class SequenceDescription implements ISequence {
             throw new JsonParametersException("pageGroups can't be empty");
         }
         for (PageGroupDescription pg : pageGroups) {
-            pg.validateInitialization();
+            pg.validateInitialization(pageGroups, questions);
         }
     }
 

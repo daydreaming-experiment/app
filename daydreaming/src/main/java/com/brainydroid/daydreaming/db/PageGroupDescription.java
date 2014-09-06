@@ -45,7 +45,8 @@ public class PageGroupDescription extends BuildableOrderable<PageGroup> implemen
         return pages;
     }
 
-    public void validateInitialization() {
+    public void validateInitialization(ArrayList<PageGroupDescription> parentArray,
+                                       ArrayList<QuestionDescription> questionsDescriptions) {
         Logger.d(TAG, "Validating initialization");
 
         // Check name
@@ -62,6 +63,7 @@ public class PageGroupDescription extends BuildableOrderable<PageGroup> implemen
         if (position == null) {
             throw new JsonParametersException("position in pageGroup can't be null");
         }
+        // TODO: check all position.afters exist in parentArray
 
         // Check nSlots
         if (nSlots == -1) {
@@ -96,7 +98,7 @@ public class PageGroupDescription extends BuildableOrderable<PageGroup> implemen
             throw new JsonParametersException("pages can't be empty");
         }
         for (PageDescription p : pages) {
-            p.validateInitialization();
+            p.validateInitialization(pages, questionsDescriptions);
         }
     }
 

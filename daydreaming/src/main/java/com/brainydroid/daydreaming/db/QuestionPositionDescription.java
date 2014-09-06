@@ -10,6 +10,8 @@ import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.inject.Inject;
 
+import java.util.ArrayList;
+
 public class QuestionPositionDescription extends BuildableOrderable<Question>
         implements IQuestion {
 
@@ -28,16 +30,21 @@ public class QuestionPositionDescription extends BuildableOrderable<Question>
         return position;
     }
 
-    public synchronized void validateInitialization() throws JsonParametersException {
+    public synchronized void validateInitialization(
+            ArrayList<QuestionPositionDescription> parentArray,
+            ArrayList<QuestionDescription> questionDescriptions)
+            throws JsonParametersException {
         Logger.v(TAG, "Validating question");
 
         // Check root parameters
         if (name == null) {
             throw new JsonParametersException("name in question can't be null");
         }
+        // TODO: check the name exists in the questionDescriptions
         if (position == null) {
             throw new JsonParametersException("position in question can't be null");
         }
+        // TODO: check all position.afters exist in the parent array
     }
 
     @Override

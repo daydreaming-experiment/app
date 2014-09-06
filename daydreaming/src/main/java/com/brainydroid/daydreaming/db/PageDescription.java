@@ -40,7 +40,8 @@ public class PageDescription extends BuildableOrderable<Page> implements IPage {
         return questions;
     }
 
-    public void validateInitialization() {
+    public void validateInitialization(ArrayList<PageDescription> parentArray,
+                                       ArrayList<QuestionDescription> questionDescriptions) {
         Logger.d(TAG, "Validating initialization");
 
         // Check name
@@ -80,13 +81,14 @@ public class PageDescription extends BuildableOrderable<Page> implements IPage {
         if (position == null) {
             throw new JsonParametersException("position in page can't be null");
         }
+        // TODO: check all position.afters exist in parentArray
 
         // Check questions
         if (questions == null || questions.size() == 0) {
             throw new JsonParametersException("questions can't be empty");
         }
         for (QuestionPositionDescription q : questions) {
-            q.validateInitialization();
+            q.validateInitialization(questions, questionDescriptions);
         }
     }
 
