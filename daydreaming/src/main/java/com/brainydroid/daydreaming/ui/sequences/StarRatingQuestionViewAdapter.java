@@ -62,10 +62,8 @@ public class StarRatingQuestionViewAdapter extends BaseQuestionViewAdapter
         final int hintsNumber = hints.size();
 
         TextView qText = (TextView)view.findViewById(R.id.question_star_rating_mainText);
-        qText.setText(subQuestion.getText());
-
-        TextView qSecondaryText = (TextView)view.findViewById(R.id.question_star_rating_secondaryText);
-        qText.setText(subQuestion.getGlossaryText());
+        String initial_qText = subQuestion.getText();
+        qText.setText(getExtentedQuestionText(initial_qText));
 
         TextView leftHintText = (TextView)view.findViewById(R.id.question_star_rating_leftHint);
         leftHintText.setText(hints.get(0));
@@ -178,16 +176,6 @@ public class StarRatingQuestionViewAdapter extends BaseQuestionViewAdapter
         naCheckBox.setOnCheckedChangeListener(naListener);
 
         return view;
-    }
-
-    public void switchGlossaryVisibility(View view) {
-        final TextView glossaryText =
-                (TextView)view.findViewById(R.id.question_star_rating_secondaryText);
-        if (glossaryText.getVisibility() == View.VISIBLE){
-            glossaryText.setVisibility(View.INVISIBLE);
-        } else if (glossaryText.getVisibility() == View.INVISIBLE){
-            glossaryText.setVisibility(View.VISIBLE);
-        }
     }
 
     @Override
