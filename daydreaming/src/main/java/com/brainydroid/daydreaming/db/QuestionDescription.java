@@ -22,7 +22,7 @@ public class QuestionDescription implements IQuestion {
     private IQuestionDescriptionDetails details = null;
     @Inject @JacksonInject @JsonIgnore private QuestionBuilder questionBuilder;
 
-    public String getName() {
+    public String getQuestionName() {
         return name;
     }
 

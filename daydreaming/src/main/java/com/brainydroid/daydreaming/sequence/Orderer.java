@@ -8,6 +8,7 @@ import com.google.inject.Inject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 public class Orderer<D extends BuildableOrderable<C>,C> {
@@ -24,8 +25,8 @@ public class Orderer<D extends BuildableOrderable<C>,C> {
         @SuppressLint("UseSparseArrays")
         HashMap<Integer,ArrayList<D>> map = new HashMap<Integer,ArrayList<D>>();
 
-        // Place explicitly positioned groups
-        putExplicits(getExplicits(descriptions), map);
+        // Place fixed groups
+        putFixed(getFixed(descriptions), map);
 
         // Find which indices we still need to fill up
         ArrayList<Integer> remainingIndices = getRemainingIndices(map);
@@ -35,8 +36,9 @@ public class Orderer<D extends BuildableOrderable<C>,C> {
         // Get and place as many floating groups as there remain free slots
         putFloats(getRandomFloats(descriptions, nFloatingToFill), remainingIndices, map);
 
-        // Shuffle groups internally, and build the resulting order
-        buildableOrder.initialize(shuffleGroups(map));
+        // Shuffle groups internally, build the resulting order, and insert the afters
+        buildableOrder.initialize(shuffleGroups(map), buildShuffledAftersMap(descriptions));
+
         return buildableOrder;
     }
 
@@ -53,8 +55,8 @@ public class Orderer<D extends BuildableOrderable<C>,C> {
         return shuffledGroups;
     }
 
-    private void putExplicits(HashMap<Integer,ArrayList<D>> explicits,
-                              HashMap<Integer,ArrayList<D>> map) {
+    private void putFixed(HashMap<Integer, ArrayList<D>> explicits,
+                          HashMap<Integer, ArrayList<D>> map) {
         int originalIndex;
         int convertedIndex;
         for (Map.Entry<Integer, ArrayList<D>> explicitGroup : explicits.entrySet()) {
@@ -65,14 +67,14 @@ public class Orderer<D extends BuildableOrderable<C>,C> {
         }
     }
 
-    private HashMap<Integer,ArrayList<D>> getExplicits(ArrayList<D> orderables) {
+    private HashMap<Integer,ArrayList<D>> getFixed(ArrayList<D> orderables) {
         @SuppressLint("UseSparseArrays")
         HashMap<Integer, ArrayList<D>> explicits = new HashMap<Integer, ArrayList<D>>();
         Integer position;
 
         for (D item : orderables) {
-            if (item.isPositionFixed()) {
-                position = item.getFixedPosition();
+            if (item.getPosition().isFixed()) {
+                position = item.getPosition().getFixedPosition();
                 if (!explicits.containsKey(position)) {
                     explicits.put(position, new ArrayList<D>());
                 }
@@ -100,8 +102,8 @@ public class Orderer<D extends BuildableOrderable<C>,C> {
         String position;
 
         for (D item : orderables) {
-            if (!item.isPositionFixed()) {
-                position = item.getPosition();
+            if (item.getPosition().isFloating()) {
+                position = item.getPosition().getFloatingPosition();
                 if (!floats.containsKey(position)) {
                     floats.put(position, new ArrayList<D>());
                 }
@@ -122,5 +124,53 @@ public class Orderer<D extends BuildableOrderable<C>,C> {
         }
 
         return remainingIndices;
+    }
+
+    private void _buildAftersTree(Node<D> node, HashSet<D> insertables) {
+        Position position;
+        Node<D> itemNode;
+        for (D item : insertables) {
+            position = item.getPosition();
+            if (position.isAfter()) {
+                if (position.getAfterPosition().equals(node.getData().getName())) {
+                    itemNode = new Node<D>(item);
+                    _buildAftersTree(itemNode, insertables);
+                    node.add(itemNode);
+                }
+            }
+        }
+    }
+
+    private HashMap<String,Node<D>> buildShuffledAftersMap(ArrayList<D> orderables) {
+        Logger.v(TAG, "Recursively building afters map");
+
+        HashMap<String,Node<D>> aftersMap = new HashMap<String, Node<D>>();
+        HashSet<String> allAfterNames = new HashSet<String>();
+        HashSet<D> allAfters = new HashSet<D>();
+
+        // Build the list of all available afters and their names
+        Position position;
+        for (D item : orderables) {
+            position = item.getPosition();
+            if (position.isAfter()) {
+                allAfters.add(item);
+                allAfterNames.add(position.getAfterPosition());
+            }
+        }
+
+        // Find root afters, and build each of their trees
+        Node<D> nodeItem;
+        for (D item : allAfters) {
+            position = item.getPosition();
+            if (!allAfterNames.contains(position.getAfterPosition())) {
+                // This is a root after
+                nodeItem = new Node<D>(item);
+                _buildAftersTree(nodeItem, allAfters);
+                nodeItem.shuffle();
+                aftersMap.put(position.getAfterPosition(), nodeItem);
+            }
+        }
+
+        return aftersMap;
     }
 }

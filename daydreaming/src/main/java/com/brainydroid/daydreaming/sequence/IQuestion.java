@@ -2,6 +2,6 @@ package com.brainydroid.daydreaming.sequence;
 
 abstract public interface IQuestion {
 
-    public String getName();
+    public String getQuestionName();
 
 }

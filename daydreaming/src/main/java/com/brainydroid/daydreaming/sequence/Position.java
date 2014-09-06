@@ -82,4 +82,16 @@ public class Position {
         }
         return floating;
     }
+
+    public boolean isAfter() {
+        return after != null;
+    }
+
+    public String getAfterPosition() {
+        if (!isAfter()) {
+            throw new RuntimeException("After position asked for, but this item's "
+                    + "position is not after");
+        }
+        return after;
+    }
 }

@@ -20,11 +20,16 @@ public class QuestionPositionDescription extends BuildableOrderable<Question>
     private static String TAG = "QuestionPositionDescription";
 
     private String name = null;
+    private String questionName = null;
     private Position position = null;
     @Inject @JacksonInject @JsonIgnore private QuestionBuilder questionBuilder;
 
     public String getName() {
         return name;
+    }
+
+    public String getQuestionName() {
+        return questionName;
     }
 
     public Position getPosition() {
@@ -37,21 +42,24 @@ public class QuestionPositionDescription extends BuildableOrderable<Question>
             throws JsonParametersException {
         Logger.v(TAG, "Validating question");
 
-        // Check root parameters
+        // Check name parameters
         if (name == null) {
-            throw new JsonParametersException("name in question can't be null");
-        }
-        boolean nameExistsInQuestionDescriptions = false;
-        for (QuestionDescription qd : questionDescriptions) {
-            if (qd.getName().equals(name)) {
-                nameExistsInQuestionDescriptions = true;
-            }
-        }
-        if (!nameExistsInQuestionDescriptions) {
-            throw new JsonParametersException("QuestionPositionDescription references a name not " +
-                    "found in QuestionDescriptions");
+            throw new JsonParametersException("name in QuestionPositionDescription can't be null");
         }
 
+        // Check questionName
+        boolean questionNameExistsInQuestionDescriptions = false;
+        for (QuestionDescription qd : questionDescriptions) {
+            if (qd.getQuestionName().equals(questionName)) {
+                questionNameExistsInQuestionDescriptions = true;
+            }
+        }
+        if (!questionNameExistsInQuestionDescriptions) {
+            throw new JsonParametersException("QuestionPositionDescription references a " +
+                    "questionName not found in QuestionDescriptions");
+        }
+
+        // Check position
         if (position == null) {
             throw new JsonParametersException("position in question can't be null");
         }
