@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-public class Orderer<D extends BuildableOrderable<C>,C> {
+public class Orderer<D extends BuildableOrderable<D,C>,C> {
 
     private static String TAG = "Orderer";
 

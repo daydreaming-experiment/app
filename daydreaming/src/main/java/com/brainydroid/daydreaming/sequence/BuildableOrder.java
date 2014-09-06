@@ -5,7 +5,7 @@ import com.brainydroid.daydreaming.background.Logger;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class BuildableOrder<D extends BuildableOrderable<C>,C> {
+public class BuildableOrder<D extends BuildableOrderable<D,C>,C> {
 
     private static String TAG = "BuildableOrder";
 

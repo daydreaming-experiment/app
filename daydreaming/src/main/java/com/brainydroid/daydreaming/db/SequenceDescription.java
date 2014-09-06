@@ -2,12 +2,12 @@ package com.brainydroid.daydreaming.db;
 
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.sequence.ISequence;
-import com.brainydroid.daydreaming.sequence.Position;
+import com.brainydroid.daydreaming.sequence.PageGroup;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 
-public class SequenceDescription implements ISequence {
+public class SequenceDescription extends DescriptionArrayContainer<PageGroupDescription,PageGroup>
+        implements ISequence {
 
     @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "SequenceDescription";
@@ -33,7 +33,11 @@ public class SequenceDescription implements ISequence {
         return pageGroups;
     }
 
-    public void validateInitialization(ArrayList<QuestionDescription> questions) {
+    protected ArrayList<PageGroupDescription> getContainedArray() {
+        return getPageGroups();
+    }
+
+    public void validateInitialization(ArrayList<QuestionDescription> questionDescriptions) {
         Logger.d(TAG, "Validating initialization");
 
         // Check name
@@ -46,39 +50,7 @@ public class SequenceDescription implements ISequence {
             throw new JsonParametersException("type in sequence can't be null");
         }
 
-        // Check nSlots
-        if (nSlots == -1) {
-            throw new JsonParametersException("nSlots in sequence can't be it's default value");
-        }
-
-        // Check slot consistency
-        HashSet<Integer> fixedPositions = new HashSet<Integer>();
-        HashSet<String> floatingPositions = new HashSet<String>();
-        Position currentPosition;
-        for (PageGroupDescription pg : pageGroups) {
-            currentPosition = pg.getPosition();
-            if (currentPosition.isFixed()) {
-                fixedPositions.add(currentPosition.getFixedPosition());
-            } else if (currentPosition.isFloating()) {
-                floatingPositions.add(currentPosition.getFloatingPosition());
-            }
-        }
-        if (fixedPositions.size() + floatingPositions.size() < nSlots) {
-            throw new JsonParametersException("Too many slots and too few fixed+floating " +
-                    "positions defined (less than there are slots)");
-        }
-        if (fixedPositions.size() > nSlots) {
-            throw new JsonParametersException("Too many fixed positions defined "
-                    + "(more than there are slots)");
-        }
-
-        // Check pageGroups
-        if (pageGroups == null || pageGroups.size() == 0) {
-            throw new JsonParametersException("pageGroups can't be empty");
-        }
-        for (PageGroupDescription pg : pageGroups) {
-            pg.validateInitialization(pageGroups, questions);
-        }
+        validateContained(questionDescriptions);
     }
 
 }

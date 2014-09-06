@@ -3,6 +3,7 @@ package com.brainydroid.daydreaming.db;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.sequence.BuildableOrderable;
 import com.brainydroid.daydreaming.sequence.IPageGroup;
+import com.brainydroid.daydreaming.sequence.Page;
 import com.brainydroid.daydreaming.sequence.PageGroup;
 import com.brainydroid.daydreaming.sequence.PageGroupBuilder;
 import com.brainydroid.daydreaming.sequence.Position;
@@ -12,9 +13,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.inject.Inject;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 
-public class PageGroupDescription extends BuildableOrderable<PageGroup> implements IPageGroup {
+public class PageGroupDescription extends DescriptionArrayContainer<PageDescription,Page>
+        implements BuildableOrderable<PageGroupDescription,PageGroup>,
+        IPageGroup {
 
     @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "PageGroupDescription";
@@ -46,6 +48,10 @@ public class PageGroupDescription extends BuildableOrderable<PageGroup> implemen
         return pages;
     }
 
+    protected ArrayList<PageDescription> getContainedArray() {
+        return getPages();
+    }
+
     public void validateInitialization(ArrayList<PageGroupDescription> parentArray,
                                        ArrayList<QuestionDescription> questionsDescriptions) {
         Logger.d(TAG, "Validating initialization");
@@ -66,39 +72,7 @@ public class PageGroupDescription extends BuildableOrderable<PageGroup> implemen
         }
         position.validateInitialization(parentArray, this, PageGroupDescription.class);
 
-        // Check nSlots
-        if (nSlots == -1) {
-            throw new JsonParametersException("nSlots in pageGroup can't be it's default value");
-        }
-
-        // Check slot consistency
-        HashSet<Integer> fixedPositions = new HashSet<Integer>();
-        HashSet<String> floatingPositions = new HashSet<String>();
-        Position currentPosition;
-        for (PageDescription p : pages) {
-            currentPosition = p.getPosition();
-            if (currentPosition.isFixed()) {
-                fixedPositions.add(currentPosition.getFixedPosition());
-            } else if (currentPosition.isFloating()) {
-                floatingPositions.add(currentPosition.getFloatingPosition());
-            }
-        }
-        if (fixedPositions.size() + floatingPositions.size() < nSlots) {
-            throw new JsonParametersException("Too many slots and too few fixed+floating " +
-                    "positions defined (less than there are slots)");
-        }
-        if (fixedPositions.size() > nSlots) {
-            throw new JsonParametersException("Too many fixed positions defined "
-                    + "(more than there are slots)");
-        }
-
-        // Check pages
-        if (pages == null || pages.size() == 0) {
-            throw new JsonParametersException("pages can't be empty");
-        }
-        for (PageDescription p : pages) {
-            p.validateInitialization(pages, questionsDescriptions);
-        }
+        validateContained(questionsDescriptions);
     }
 
     @Override

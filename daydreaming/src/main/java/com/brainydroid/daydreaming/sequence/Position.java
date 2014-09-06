@@ -16,7 +16,7 @@ public class Position {
     private String after = null;
     private boolean bonus = false;
 
-    public <D extends BuildableOrderable<C>, C> void validateInitialization(
+    public <D extends BuildableOrderable<D,C>, C> void validateInitialization(
             ArrayList<D> parentArray, D parent, Class<D> classOfD)
             throws JsonParametersException {
         Logger.d(TAG, "Validating initialization");

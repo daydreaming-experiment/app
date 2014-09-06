@@ -1,15 +1,18 @@
 package com.brainydroid.daydreaming.sequence;
 
+import com.brainydroid.daydreaming.db.QuestionDescription;
+
 import java.util.ArrayList;
 
-abstract public class BuildableOrderable<T> {
+public interface BuildableOrderable<D extends BuildableOrderable<D,C>,C> {
 
-    private static String TAG = "BuildableOrderable";
+    public String getName();
 
-    abstract public String getName();
+    public Position getPosition();
 
-    abstract public Position getPosition();
+    public C build(Sequence sequence);
 
-    abstract public T build(Sequence sequence);
+    public void validateInitialization(ArrayList<D> parentArray,
+                                       ArrayList<QuestionDescription> questionDescriptions);
 
 }

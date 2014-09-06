@@ -13,8 +13,8 @@ import com.google.inject.Inject;
 
 import java.util.ArrayList;
 
-public class QuestionPositionDescription extends BuildableOrderable<Question>
-        implements IQuestion {
+public class QuestionPositionDescription
+        implements BuildableOrderable<QuestionPositionDescription,Question>, IQuestion {
 
     @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "QuestionPositionDescription";
