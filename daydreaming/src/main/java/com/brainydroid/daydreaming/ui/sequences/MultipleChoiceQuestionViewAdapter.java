@@ -2,6 +2,7 @@ package com.brainydroid.daydreaming.ui.sequences;
 
 import android.content.Context;
 import android.os.Build;
+import android.text.method.LinkMovementMethod;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -44,11 +45,9 @@ public class MultipleChoiceQuestionViewAdapter
 
         TextView qText = (TextView)choicesView.findViewById(
                 R.id.question_multiple_choice_mainText);
-        qText.setText(details.getText());
-
-        TextView qSecondaryText = (TextView)choicesView.findViewById(
-                R.id.question_multiple_choice_secondaryText);
-        qText.setText(details.getGlossaryText());
+        String initial_qText = details.getText();
+        qText.setText(getExtentedQuestionText(initial_qText));
+        qText.setMovementMethod(LinkMovementMethod.getInstance());
 
         final CheckBox otherCheck = (CheckBox)choicesView.findViewById(
                 R.id.question_multiple_choice_otherCheckBox);
@@ -150,17 +149,6 @@ public class MultipleChoiceQuestionViewAdapter
 
         return views;
     }
-
-    public void switchGlossaryVisibility(View view) {
-        final TextView glossaryText =
-                (TextView)view.findViewById(R.id.question_multiple_choice_secondaryText);
-        if (glossaryText.getVisibility() == View.VISIBLE){
-            glossaryText.setVisibility(View.INVISIBLE);
-        } else if (glossaryText.getVisibility() == View.INVISIBLE){
-            glossaryText.setVisibility(View.VISIBLE);
-        }
-    }
-
 
     @Override
     public boolean validate() {

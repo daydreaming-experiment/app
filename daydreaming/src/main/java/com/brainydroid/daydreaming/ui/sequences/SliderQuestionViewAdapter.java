@@ -2,10 +2,12 @@ package com.brainydroid.daydreaming.ui.sequences;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.text.method.LinkMovementMethod;
 import android.util.FloatMath;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,6 +20,7 @@ import com.brainydroid.daydreaming.ui.AlphaSeekBar;
 import com.google.inject.Inject;
 
 import java.util.ArrayList;
+
 
 import roboguice.inject.InjectResource;
 
@@ -64,11 +67,10 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
 
         final TextView qText =
                 (TextView)view.findViewById(R.id.question_slider_mainText);
-        qText.setText(subQuestion.getText());
+        String initial_qText = subQuestion.getText();
+        qText.setText(getExtentedQuestionText(initial_qText));
+        qText.setMovementMethod(LinkMovementMethod.getInstance());
 
-        final TextView qSecondaryText =
-                (TextView)view.findViewById(R.id.question_slider_secondaryText);
-        qText.setText(subQuestion.getGlossaryText());
 
         TextView leftHintText = (TextView)view.findViewById(R.id.question_slider_leftHint);
         leftHintText.setText(hints.get(0));
@@ -102,6 +104,7 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
         if (!subQuestion.getNotApplyAllowed()) {
             naCheckBox.setVisibility(View.GONE);
         }
+
 
         AlphaSeekBar.OnAlphaSeekBarChangeListener progressListener =
                 new AlphaSeekBar.OnAlphaSeekBarChangeListener() {
@@ -170,17 +173,21 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
 
         naCheckBox.setOnCheckedChangeListener(naListener);
 
-        return view;
-    }
+        /**
+        final ImageButton imageButtonglossary =
+                (ImageButton)view.findViewById(R.id.question_slider_glossarybutton);
 
-    public void switchGlossaryVisibility(View view) {
-        final TextView glossaryText =
-                (TextView)view.findViewById(R.id.question_slider_secondaryText);
-        if (glossaryText.getVisibility() == View.VISIBLE){
-            glossaryText.setVisibility(View.INVISIBLE);
-        } else if (glossaryText.getVisibility() == View.INVISIBLE){
-            glossaryText.setVisibility(View.VISIBLE);
-        }
+        ImageButton.OnClickListener glossaryListener = new ImageButton.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        };
+
+        imageButtonglossary.setOnClickListener(glossaryListener);
+        **/
+
+        return view;
     }
 
     @Override
@@ -224,5 +231,9 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
 
         question.setAnswer(answer);
     }
+
+
+
+
 
 }
