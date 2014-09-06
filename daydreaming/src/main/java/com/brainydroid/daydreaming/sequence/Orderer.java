@@ -71,8 +71,8 @@ public class Orderer<D extends BuildableOrderable<C>,C> {
         Integer position;
 
         for (D item : orderables) {
-            if (item.isPositionExplicit()) {
-                position = item.getExplicitPosition();
+            if (item.isPositionFixed()) {
+                position = item.getFixedPosition();
                 if (!explicits.containsKey(position)) {
                     explicits.put(position, new ArrayList<D>());
                 }
@@ -100,7 +100,7 @@ public class Orderer<D extends BuildableOrderable<C>,C> {
         String position;
 
         for (D item : orderables) {
-            if (!item.isPositionExplicit()) {
+            if (!item.isPositionFixed()) {
                 position = item.getPosition();
                 if (!floats.containsKey(position)) {
                     floats.put(position, new ArrayList<D>());

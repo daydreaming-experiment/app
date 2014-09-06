@@ -5,6 +5,7 @@ import com.brainydroid.daydreaming.sequence.BuildableOrderable;
 import com.brainydroid.daydreaming.sequence.IPage;
 import com.brainydroid.daydreaming.sequence.Page;
 import com.brainydroid.daydreaming.sequence.PageBuilder;
+import com.brainydroid.daydreaming.sequence.Position;
 import com.brainydroid.daydreaming.sequence.Sequence;
 import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -19,7 +20,7 @@ public class PageDescription extends BuildableOrderable<Page> implements IPage {
     private static String TAG = "PageDescription";
 
     private String name = null;
-    private String position = null;
+    private Position position = null;
     private int nSlots = -1;
     private ArrayList<QuestionPositionDescription> questions = null;
     @Inject @JacksonInject @JsonIgnore private PageBuilder pageBuilder;
@@ -28,7 +29,7 @@ public class PageDescription extends BuildableOrderable<Page> implements IPage {
         return name;
     }
 
-    public String getPosition() {
+    public Position getPosition() {
         return position;
     }
 
@@ -60,12 +61,13 @@ public class PageDescription extends BuildableOrderable<Page> implements IPage {
         }
 
         // Check slot consistency
-        HashSet<String> positions = new HashSet<String>();
+        // TODO: check floating positions
+        HashSet<Position> positions = new HashSet<Position>();
         HashSet<Integer> explicitPositions = new HashSet<Integer>();
         for (QuestionPositionDescription q : questions) {
             positions.add(q.getPosition());
-            if (q.isPositionExplicit()) {
-                explicitPositions.add(q.getExplicitPosition());
+            if (q.isPositionFixed()) {
+                explicitPositions.add(q.getFixedPosition());
             }
         }
         if (positions.size() < nSlots) {
@@ -81,7 +83,7 @@ public class PageDescription extends BuildableOrderable<Page> implements IPage {
         if (position == null) {
             throw new JsonParametersException("position in page can't be null");
         }
-        // TODO: check all position.afters exist in parentArray
+        position.validateInitialization(parentArray, this, PageDescription.class);
 
         // Check questions
         if (questions == null || questions.size() == 0) {

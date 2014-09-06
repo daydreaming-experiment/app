@@ -3,6 +3,7 @@ package com.brainydroid.daydreaming.db;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.sequence.BuildableOrderable;
 import com.brainydroid.daydreaming.sequence.IQuestion;
+import com.brainydroid.daydreaming.sequence.Position;
 import com.brainydroid.daydreaming.sequence.Question;
 import com.brainydroid.daydreaming.sequence.QuestionBuilder;
 import com.brainydroid.daydreaming.sequence.Sequence;
@@ -19,14 +20,14 @@ public class QuestionPositionDescription extends BuildableOrderable<Question>
     private static String TAG = "QuestionPositionDescription";
 
     private String name = null;
-    private String position = null;
+    private Position position = null;
     @Inject @JacksonInject @JsonIgnore private QuestionBuilder questionBuilder;
 
     public String getName() {
         return name;
     }
 
-    public String getPosition() {
+    public Position getPosition() {
         return position;
     }
 
@@ -44,7 +45,7 @@ public class QuestionPositionDescription extends BuildableOrderable<Question>
         if (position == null) {
             throw new JsonParametersException("position in question can't be null");
         }
-        // TODO: check all position.afters exist in the parent array
+        position.validateInitialization(parentArray, this, QuestionPositionDescription.class);
     }
 
     @Override

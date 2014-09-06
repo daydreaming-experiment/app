@@ -5,6 +5,7 @@ import com.brainydroid.daydreaming.sequence.BuildableOrderable;
 import com.brainydroid.daydreaming.sequence.IPageGroup;
 import com.brainydroid.daydreaming.sequence.PageGroup;
 import com.brainydroid.daydreaming.sequence.PageGroupBuilder;
+import com.brainydroid.daydreaming.sequence.Position;
 import com.brainydroid.daydreaming.sequence.Sequence;
 import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -20,7 +21,7 @@ public class PageGroupDescription extends BuildableOrderable<PageGroup> implemen
 
     private String name = null;
     private String friendlyName = null;
-    private String position = null;
+    private Position position = null;
     private int nSlots = -1;
     private ArrayList<PageDescription> pages = null;
     @Inject @JacksonInject @JsonIgnore private PageGroupBuilder pageGroupBuilder;
@@ -33,7 +34,7 @@ public class PageGroupDescription extends BuildableOrderable<PageGroup> implemen
         return friendlyName;
     }
 
-    public String getPosition() {
+    public Position getPosition() {
         return position;
     }
 
@@ -63,7 +64,7 @@ public class PageGroupDescription extends BuildableOrderable<PageGroup> implemen
         if (position == null) {
             throw new JsonParametersException("position in pageGroup can't be null");
         }
-        // TODO: check all position.afters exist in parentArray
+        position.validateInitialization(parentArray, this, PageGroupDescription.class);
 
         // Check nSlots
         if (nSlots == -1) {
@@ -76,12 +77,13 @@ public class PageGroupDescription extends BuildableOrderable<PageGroup> implemen
         }
 
         // Check slot consistency
-        HashSet<String> positions = new HashSet<String>();
+        // TODO: check floating positions
+        HashSet<Position> positions = new HashSet<Position>();
         HashSet<Integer> explicitPositions = new HashSet<Integer>();
         for (PageDescription p : pages) {
             positions.add(p.getPosition());
-            if (p.isPositionExplicit()) {
-                explicitPositions.add(p.getExplicitPosition());
+            if (p.isPositionFixed()) {
+                explicitPositions.add(p.getFixedPosition());
             }
         }
         if (positions.size() < nSlots) {

@@ -2,6 +2,7 @@ package com.brainydroid.daydreaming.db;
 
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.sequence.ISequence;
+import com.brainydroid.daydreaming.sequence.Position;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -56,12 +57,13 @@ public class SequenceDescription implements ISequence {
         }
 
         // Check slot consistency
-        HashSet<String> positions = new HashSet<String>();
+        // TODO: check floating positions
+        HashSet<Position> positions = new HashSet<Position>();
         HashSet<Integer> explicitPositions = new HashSet<Integer>();
         for (PageGroupDescription pg : pageGroups) {
             positions.add(pg.getPosition());
-            if (pg.isPositionExplicit()) {
-                explicitPositions.add(pg.getExplicitPosition());
+            if (pg.isPositionFixed()) {
+                explicitPositions.add(pg.getFixedPosition());
             }
         }
         if (positions.size() < nSlots) {

@@ -2,6 +2,8 @@ package com.brainydroid.daydreaming.sequence;
 
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.JsonParametersException;
+import com.brainydroid.daydreaming.db.PageDescription;
+import com.brainydroid.daydreaming.db.PageGroupDescription;
 
 import java.util.ArrayList;
 
@@ -14,8 +16,8 @@ public class Position {
     private String after = null;
     private boolean bonus = false;
 
-    public <T extends BuildableOrderable<T>> void validateInitialization(
-            ArrayList<T> parentArray, T parent, Class<T> classOfT)
+    public <D extends BuildableOrderable<C>, C> void validateInitialization(
+            ArrayList<D> parentArray, D parent, Class<D> classOfD)
             throws JsonParametersException {
         Logger.d(TAG, "Validating initialization");
 
@@ -34,7 +36,7 @@ public class Position {
             }
 
             boolean nameExistsInParentArray = false;
-            for (T item : parentArray) {
+            for (D item : parentArray) {
                 if (item.getName().equals(after)) {
                     nameExistsInParentArray = true;
                     break;
@@ -49,9 +51,19 @@ public class Position {
 
         // If bonus is true, parent is either a Page or a PageGroup
         if (bonus) {
-            if (!classOfT.equals(Page.class) && !classOfT.equals(PageGroup.class)) {
-                throw new JsonParametersException("Only a Page or a PageGroup can be bonus");
+            if (!classOfD.equals(PageDescription.class) &&
+                    !classOfD.equals(PageGroupDescription.class)) {
+                throw new JsonParametersException("Only a PageDescription or a " +
+                        "PageGroupDescription can be bonus");
             }
         }
+    }
+
+    public boolean isFixed() {
+        return fixed != null;
+    }
+
+    public Integer getFixedPosition() {
+        return fixed;
     }
 }
