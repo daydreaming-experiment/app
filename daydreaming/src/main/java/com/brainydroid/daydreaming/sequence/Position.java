@@ -94,4 +94,8 @@ public class Position {
         }
         return after;
     }
+
+    public boolean isBonus() {
+        return bonus;
+    }
 }

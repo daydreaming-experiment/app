@@ -12,11 +12,13 @@ public class PageGroup implements IPageGroup {
 
     @JsonProperty private String name = null;
     private String friendlyName = null;
+    @JsonProperty private boolean bonus = false;
     @JsonProperty private ArrayList<Page> pages = null;
 
     public synchronized void importFromPageGroupDescription(PageGroupDescription description) {
         setName(description.getName());
         setFriendlyName(description.getFriendlyName());
+        setBonus(description.getPosition().isBonus());
     }
 
     private synchronized void setName(String name) {
@@ -33,6 +35,14 @@ public class PageGroup implements IPageGroup {
 
     public synchronized String getFriendlyName() {
         return friendlyName;
+    }
+
+    public synchronized boolean isBonus() {
+        return bonus;
+    }
+
+    private synchronized void setBonus(boolean bonus) {
+        this.bonus = bonus;
     }
 
     public synchronized void setPages(ArrayList<Page> pages) {
