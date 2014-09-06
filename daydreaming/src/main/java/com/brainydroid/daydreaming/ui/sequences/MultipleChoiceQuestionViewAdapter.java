@@ -2,6 +2,7 @@ package com.brainydroid.daydreaming.ui.sequences;
 
 import android.content.Context;
 import android.os.Build;
+import android.text.method.LinkMovementMethod;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -46,6 +47,7 @@ public class MultipleChoiceQuestionViewAdapter
                 R.id.question_multiple_choice_mainText);
         String initial_qText = details.getText();
         qText.setText(getExtentedQuestionText(initial_qText));
+        qText.setMovementMethod(LinkMovementMethod.getInstance());
 
         final CheckBox otherCheck = (CheckBox)choicesView.findViewById(
                 R.id.question_multiple_choice_otherCheckBox);

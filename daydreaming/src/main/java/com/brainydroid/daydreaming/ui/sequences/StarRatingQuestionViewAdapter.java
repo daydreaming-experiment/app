@@ -2,6 +2,7 @@ package com.brainydroid.daydreaming.ui.sequences;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.text.method.LinkMovementMethod;
 import android.util.FloatMath;
 import android.view.View;
 import android.widget.CheckBox;
@@ -64,6 +65,7 @@ public class StarRatingQuestionViewAdapter extends BaseQuestionViewAdapter
         TextView qText = (TextView)view.findViewById(R.id.question_star_rating_mainText);
         String initial_qText = subQuestion.getText();
         qText.setText(getExtentedQuestionText(initial_qText));
+        qText.setMovementMethod(LinkMovementMethod.getInstance());
 
         TextView leftHintText = (TextView)view.findViewById(R.id.question_star_rating_leftHint);
         leftHintText.setText(hints.get(0));

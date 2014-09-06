@@ -1,11 +1,14 @@
 package com.brainydroid.daydreaming.ui.sequences;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.TextPaint;
 import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -72,8 +75,11 @@ public abstract class BaseQuestionViewAdapter
             // if term is in question text
             if (qText.contains(term)) {
                 final String definition = glossaryPair.getValue();
+                int i_start = qText.indexOf(term);
+                int i_end = i_start + term.length();
                 // set style bold
-                sbqText.setSpan(new StyleSpan(Typeface.BOLD_ITALIC), qText.indexOf(term), term.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                sbqText.setSpan(new StyleSpan(Typeface.BOLD_ITALIC), i_start, i_end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                sbqText.setSpan(new ForegroundColorSpan(Color.YELLOW), i_start, i_end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 // set clickable
                 ClickableSpan clickableSpan = new ClickableSpan() {
                     @Override
@@ -81,8 +87,11 @@ public abstract class BaseQuestionViewAdapter
                         Toast.makeText(context, definition,
                                 Toast.LENGTH_SHORT).show();
                     }
+                    public void updateDrawState(TextPaint ds) {
+                        ds.setUnderlineText(false);
+                    }
                 };
-                sbqText.setSpan(clickableSpan, qText.indexOf(term), term.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                sbqText.setSpan(clickableSpan, i_start, i_end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
             }
         }

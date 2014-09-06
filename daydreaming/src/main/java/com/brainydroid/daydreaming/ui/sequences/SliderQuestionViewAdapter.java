@@ -2,6 +2,7 @@ package com.brainydroid.daydreaming.ui.sequences;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.text.method.LinkMovementMethod;
 import android.util.FloatMath;
 import android.view.View;
 import android.widget.CheckBox;
@@ -68,6 +69,8 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
                 (TextView)view.findViewById(R.id.question_slider_mainText);
         String initial_qText = subQuestion.getText();
         qText.setText(getExtentedQuestionText(initial_qText));
+        qText.setMovementMethod(LinkMovementMethod.getInstance());
+
 
         TextView leftHintText = (TextView)view.findViewById(R.id.question_slider_leftHint);
         leftHintText.setText(hints.get(0));
