@@ -36,8 +36,27 @@
     <string name="glossary_title">GLOSSARY</string>
 
     <!-- About/credits Activity -->
-    <string name="credits_text_title">CREDITS</string>
-    <string name="credits_text_main">Here are our \n supporting institutions</string>
+    <string name="credits_text_title_about">ABOUT</string>
+    <string name="credits_text_main1">Here is an App done collaboratively by multiple people. \n This app is kindly supported by Science en Poche, whose logo you can see here.</string>
+    <string name="credits_text_main2">We do other apps to. If you want more information, feel free to visit our website</string>
+    <string name="credits_website">www.daydreaming-the-app.net</string>
+    <string name="credits_text_title_our_team">OUR TEAM</string>
+
+    <string name="vincent_name">Vincent Adam</string>
+    <string name="vincent_description">Phd Student at UCL \n Gatsby Unit</string>
+
+    <string name="sebastien_name">Sébastien Lerique</string>
+    <string name="sebastien_description">Phd Student à Berlin</string>
+
+    <string name="mikael_name">Mikael Bastian</string>
+    <string name="mikael_description">Phd Student à Paris</string>
+
+    <string name="gislain_name">Gislain Delaire</string>
+    <string name="gislain_description">Designer à Paris</string>
+
+    <string name="jerome_name">Jerome Sackur</string>
+    <string name="jerome_description">Prof de Psycho à Paris</string>
+
     <string name="credits_institution1">inst1</string>
     <string name="credits_institution2">inst2</string>
     <string name="credits_institution3">inst3</string>

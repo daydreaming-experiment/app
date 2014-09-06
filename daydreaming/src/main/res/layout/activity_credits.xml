@@ -3,127 +3,179 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
 
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="26dp"
-        android:orientation="horizontal"
-        android:gravity="center_horizontal"
-        android:id="@+id/credits_relativelayout_title"
-        >
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/credits_text_title"
-            android:singleLine="true"
-            android:textAppearance="@style/ui_font_title_bold"
-            android:textColor="@color/ui_white_text_color"
-            />
-
-    </RelativeLayout>
-
-
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:layout_alignParentBottom="false"
-        android:id="@+id/credits_relativelayout_maintext"
-        android:layout_below="@id/credits_relativelayout_title">
-
-        <TextView
+        <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:lines="2"
-            android:text="@string/credits_text_main"
-            android:textAppearance="@style/ui_font_title"
-            android:textColor="@color/ui_white_text_color"/>
-    </RelativeLayout>
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:padding="@dimen/global_scrollview_padding"
+                >
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingLeft="@dimen/global_text_in_scrollview_side_padding"
+                    android:paddingRight="@dimen/global_text_in_scrollview_side_padding"
+                    >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/credits_text_title_about"
+                        android:singleLine="true"
+                        android:layout_gravity="center_horizontal"
+                        android:textAppearance="@style/ui_font_title_bold"
+                        android:textColor="@color/ui_white_text_color"
+                        android:layout_marginTop="@dimen/global_text_titleTopMargin"
+                        android:layout_marginBottom="@dimen/global_title_body_vertical_padding"/>
+
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/credits_text_main1"
+                        android:textAppearance="@style/ui_font_title"
+                        android:textColor="@color/ui_white_text_color"/>
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_margin="20dp"
+                        android:src="@drawable/icon_terms" />
+
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/credits_text_main2"
+                        android:textAppearance="@style/ui_font_title"
+                        android:textColor="@color/ui_white_text_color"/>
+
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/credits_website_link"
+                        android:text="@string/credits_website"
+                        android:textAppearance="@style/ui_font_title"
+                        android:textColor="@color/ui_white_text_color"/>
+
+                </LinearLayout>
+
+            </RelativeLayout>
 
 
 
-    <TableLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:gravity="center_horizontal"
-        android:layout_below="@id/credits_relativelayout_maintext">
 
-        <TableRow
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center_horizontal"
-            android:clickable="false"
-            android:focusableInTouchMode="false"
-            android:focusable="false"
-            android:padding="10dp">
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:paddingLeft="@dimen/global_text_in_scrollview_side_padding"
+                android:paddingRight="@dimen/global_text_in_scrollview_side_padding"
+                android:background="@color/ui_white_text_color">
 
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingLeft="@dimen/global_text_in_scrollview_side_padding"
+                    android:paddingRight="@dimen/global_text_in_scrollview_side_padding">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/credits_text_title_our_team"
+                        android:singleLine="true"
+                        android:layout_gravity="center_horizontal"
+                        android:textAppearance="@style/ui_font_title_bold"
+                        android:textColor="@color/ui_blue_background_color"
+                        android:layout_marginTop="@dimen/global_text_titleTopMargin"
+                        android:layout_marginBottom="@dimen/global_title_body_vertical_padding"/>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/credits_institution1"
-                android:drawableTop="@drawable/icon_terms"
-                android:padding="5dp"/>
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/vincent_name"
+                        android:textAppearance="@style/ui_font_title_bold"
+                        android:textColor="@color/ui_blue_background_color"/>
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/vincent_description"
+                        android:textAppearance="@style/ui_font_title"
+                        android:textColor="@color/ui_blue_background_color"/>
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left"
+                        android:src="@drawable/icon_terms" />
 
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/sebastien_name"
+                        android:textAppearance="@style/ui_font_title_bold"
+                        android:textColor="@color/ui_blue_background_color"/>
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/sebastien_description"
+                        android:textAppearance="@style/ui_font_title"
+                        android:textColor="@color/ui_blue_background_color"/>
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left"
+                        android:src="@drawable/icon_terms" />
 
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/mikael_name"
+                        android:textAppearance="@style/ui_font_title_bold"
+                        android:textColor="@color/ui_blue_background_color"/>
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/mikael_description"
+                        android:textAppearance="@style/ui_font_title"
+                        android:textColor="@color/ui_blue_background_color"/>
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left"
+                        android:src="@drawable/icon_terms" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/credits_institution2"
-                android:drawableTop="@drawable/icon_terms"
-                android:padding="5dp"
-                />
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/gislain_name"
+                        android:textAppearance="@style/ui_font_title_bold"
+                        android:textColor="@color/ui_blue_background_color"/>
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/gislain_description"
+                        android:textAppearance="@style/ui_font_title"
+                        android:textColor="@color/ui_blue_background_color"/>
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left"
+                        android:src="@drawable/icon_terms" />
 
+                </LinearLayout>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/credits_institution3"
-                android:drawableTop="@drawable/icon_terms"
-                android:padding="5dp"/>
+            </RelativeLayout>
 
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:gravity="center_horizontal">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/credits_institution4"
-                android:drawableTop="@drawable/icon_terms"
-                android:padding="5dp"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/credits_institution5"
-                android:drawableTop="@drawable/icon_terms"
-                android:padding="5dp"/>
-
-
-        </TableRow>
-    </TableLayout>
-
+        </LinearLayout>
+        
+    </ScrollView>
 
     <LinearLayout android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -141,6 +193,5 @@
             android:contentDescription="@null"
             />
     </LinearLayout>
-
 
 </RelativeLayout>
