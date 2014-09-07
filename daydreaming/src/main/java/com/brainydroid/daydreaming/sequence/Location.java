@@ -1,7 +1,11 @@
 package com.brainydroid.daydreaming.sequence;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+// Override global Json settings
+@JsonAutoDetect(fieldVisibility= JsonAutoDetect.Visibility.NONE,
+        getterVisibility=JsonAutoDetect.Visibility.NONE)
 public class Location extends android.location.Location {
 
     private static String TAG = "Location";
