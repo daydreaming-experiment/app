@@ -48,8 +48,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:layout_margin="20dp"
-                        android:src="@drawable/icon_terms" />
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerInside"
+                        android:layout_margin="10dp"
+                        android:src="@drawable/logo_science_en_poche" />
 
                     <TextView
                         android:layout_width="fill_parent"
@@ -109,12 +111,16 @@
                         android:text="@string/vincent_description"
                         android:textAppearance="@style/ui_font_title"
                         android:textColor="@color/ui_blue_background_color"/>
-                    <ImageView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="left"
-                        android:src="@drawable/icon_terms" />
-
+                        android:orientation="horizontal">
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="left"
+                            android:src="@drawable/logo_ucl" />
+                    </LinearLayout>
                     <TextView
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
@@ -127,11 +133,21 @@
                         android:text="@string/sebastien_description"
                         android:textAppearance="@style/ui_font_title"
                         android:textColor="@color/ui_blue_background_color"/>
-                    <ImageView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="left"
-                        android:src="@drawable/icon_terms" />
+                        android:orientation="horizontal">
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="left"
+                            android:src="@drawable/logo_mb" />
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="left"
+                            android:src="@drawable/logo_ehess" />
+                    </LinearLayout>
 
                     <TextView
                         android:layout_width="fill_parent"
@@ -145,11 +161,16 @@
                         android:text="@string/mikael_description"
                         android:textAppearance="@style/ui_font_title"
                         android:textColor="@color/ui_blue_background_color"/>
-                    <ImageView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="left"
-                        android:src="@drawable/icon_terms" />
+                        android:orientation="horizontal">
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="left"
+                            android:src="@drawable/logo_ens" />
+                    </LinearLayout>
 
                     <TextView
                         android:layout_width="fill_parent"
@@ -163,18 +184,23 @@
                         android:text="@string/gislain_description"
                         android:textAppearance="@style/ui_font_title"
                         android:textColor="@color/ui_blue_background_color"/>
-                    <ImageView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="left"
-                        android:src="@drawable/icon_terms" />
+                        android:orientation="horizontal">
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="left"
+                            android:src="@drawable/logo_gis" />
+                    </LinearLayout>
 
                 </LinearLayout>
 
             </RelativeLayout>
 
         </LinearLayout>
-        
+
     </ScrollView>
 
     <LinearLayout android:layout_width="wrap_content"
