@@ -1,6 +1,7 @@
 package com.brainydroid.daydreaming.sequence;
 
 import com.brainydroid.daydreaming.db.Util;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.inject.Inject;
 
 import java.util.ArrayList;
@@ -9,11 +10,12 @@ public class Node<T> {
 
     private static String TAG = "Node";
 
-    @Inject Util util;
+    @Inject @JsonIgnore Util util;
 
     private T data;
-    @Inject private ArrayList<Node<T>> children;
+    private ArrayList<Node<T>> children = new ArrayList<Node<T>>();
 
+    @Inject
     public Node(T data) {
         this.data = data;
     }

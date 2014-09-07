@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.Util;
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,6 +17,7 @@ public class Orderer<D extends BuildableOrderable<D,C>,C> {
     private static String TAG = "Orderer";
 
     @Inject Util util;
+    @Inject Injector injector;
     @Inject BuildableOrder<D,C> buildableOrder;
     private int nSlots;
 
@@ -134,6 +136,7 @@ public class Orderer<D extends BuildableOrderable<D,C>,C> {
             if (position.isAfter()) {
                 if (position.getAfterPosition().equals(node.getData().getName())) {
                     itemNode = new Node<D>(item);
+                    injector.injectMembers(itemNode);
                     _buildAftersTree(itemNode, insertables);
                     node.add(itemNode);
                 }
@@ -141,10 +144,10 @@ public class Orderer<D extends BuildableOrderable<D,C>,C> {
         }
     }
 
-    private HashMap<String,Node<D>> buildShuffledAftersMap(ArrayList<D> orderables) {
+    private HashMap<String,ArrayList<Node<D>>> buildShuffledAftersMap(ArrayList<D> orderables) {
         Logger.v(TAG, "Recursively building afters map");
 
-        HashMap<String,Node<D>> aftersMap = new HashMap<String, Node<D>>();
+        HashMap<String,ArrayList<Node<D>>> aftersMap = new HashMap<String, ArrayList<Node<D>>>();
         HashSet<String> allAfterNames = new HashSet<String>();
         HashSet<D> allAfters = new HashSet<D>();
 
@@ -154,20 +157,34 @@ public class Orderer<D extends BuildableOrderable<D,C>,C> {
             position = item.getPosition();
             if (position.isAfter()) {
                 allAfters.add(item);
-                allAfterNames.add(position.getAfterPosition());
+                allAfterNames.add(item.getName());
             }
         }
 
         // Find root afters, and build each of their trees
-        Node<D> nodeItem;
         for (D item : allAfters) {
             position = item.getPosition();
             if (!allAfterNames.contains(position.getAfterPosition())) {
                 // This is a root after
-                nodeItem = new Node<D>(item);
+                Node<D> nodeItem = new Node<D>(item);
+                injector.injectMembers(nodeItem);
                 _buildAftersTree(nodeItem, allAfters);
+                if (aftersMap.containsKey(position.getAfterPosition())) {
+                    aftersMap.get(position.getAfterPosition()).add(nodeItem);
+                } else {
+                    ArrayList<Node<D>> listItem = new ArrayList<Node<D>>();
+                    listItem.add(nodeItem);
+                    aftersMap.put(position.getAfterPosition(), listItem);
+                }
+
+            }
+        }
+
+        // Shuffle everything
+        for (ArrayList<Node<D>> listItem : aftersMap.values()) {
+            util.shuffle(listItem);
+            for (Node<D> nodeItem : listItem) {
                 nodeItem.shuffle();
-                aftersMap.put(position.getAfterPosition(), nodeItem);
             }
         }
 

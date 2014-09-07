@@ -12,7 +12,8 @@ public class BuildableOrder<D extends BuildableOrderable<D,C>,C> {
     private ArrayList<D> map;
     private boolean isConsumed = false;
 
-    public void initialize(ArrayList<ArrayList<D>> deepMap, HashMap<String,Node<D>> afters) {
+    public void initialize(ArrayList<ArrayList<D>> deepMap,
+                           HashMap<String,ArrayList<Node<D>>> afters) {
         Logger.d(TAG, "Initializing");
 
         map = new ArrayList<D>();
@@ -28,13 +29,12 @@ public class BuildableOrder<D extends BuildableOrderable<D,C>,C> {
         isConsumed = false;
     }
 
-    public void appendAfters(Node<D> afters) {
-        // First add the root item
-        map.add(afters.getData());
-
-        // Then its children with their children
-        for (Node<D> child : afters.getChildren()) {
-            appendAfters(child);
+    public void appendAfters(ArrayList<Node<D>> afters) {
+        for (Node<D> nodeItem : afters) {
+            // First add this root after
+            map.add(nodeItem.getData());
+            // Then its children with their children
+            appendAfters(nodeItem.getChildren());
         }
     }
 
