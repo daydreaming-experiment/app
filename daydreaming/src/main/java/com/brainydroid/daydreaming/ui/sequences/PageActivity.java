@@ -266,7 +266,7 @@ public class PageActivity extends RoboFragmentActivity {
                         .setPositiveButton("Go for bonus", new DialogInterface.OnClickListener() {
 
                             public void onClick(DialogInterface dialog, int id) {
-                                transitionToNext();
+                                transitionToNext(false);
                             }
 
                         })
@@ -285,7 +285,8 @@ public class PageActivity extends RoboFragmentActivity {
                                             "bonus, or the next group should be bonus and this " +
                                             "page should be the last of its group.");
                                 }
-                                transitionToNext();
+                                transitionToNext((nextPage.isBonus() && nextPage.isLastOfSequence()) ||
+                                        (nextGroup.isBonus() && nextGroup.isLastOfSequence()));
                             }
 
                         });
@@ -293,14 +294,14 @@ public class PageActivity extends RoboFragmentActivity {
                 AlertDialog bonusAlert = builder.create();
                 bonusAlert.show();
             } else {
-                transitionToNext();
+                transitionToNext(currentPage.isLastOfSequence());
             }
         }
     }
 
-    private void transitionToNext() {
+    private void transitionToNext(boolean finish) {
         setIsContinuingOrFinishing();
-        if (currentPage.isLastOfSequence()) {
+        if (finish) {
             Logger.d(TAG, "Last page -> finishing sequence");
             finishSequence();
         } else {
