@@ -11,10 +11,14 @@ public class Position {
 
     private static String TAG = "Position";
 
-    private Integer fixed = null;
+    private static int DEFAULT_FIXED = -999;
+
+    private int fixed = DEFAULT_FIXED;
     private String floating = null;
     private String after = null;
     private boolean bonus = false;
+
+    public Position() {}
 
     public <D extends BuildableOrderable<D,C>, C> void validateInitialization(
             ArrayList<D> parentArray, D parent, Class<D> classOfD)
@@ -22,7 +26,7 @@ public class Position {
         Logger.d(TAG, "Validating initialization");
 
         // Only one of fixed, floating, after is defined
-        int nNotNull = (fixed != null ? 1 : 0) +
+        int nNotNull = (fixed != DEFAULT_FIXED ? 1 : 0) +
                 (floating != null ? 1 : 0) + (after != null ? 1 : 0);
         if (nNotNull != 1) {
             throw new JsonParametersException("Only one (and exactly one) of fixed, floating, " +
@@ -60,7 +64,7 @@ public class Position {
     }
 
     public boolean isFixed() {
-        return fixed != null;
+        return fixed != DEFAULT_FIXED;
     }
 
     public Integer getFixedPosition() {
