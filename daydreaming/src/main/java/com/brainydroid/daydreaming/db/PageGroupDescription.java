@@ -73,6 +73,16 @@ public class PageGroupDescription extends DescriptionArrayContainer<PageDescript
         position.validateInitialization(parentArray, this, PageGroupDescription.class);
 
         validateContained(questionsDescriptions);
+
+        // If we're bonus, no question inside can be bonus
+        if (position.isBonus()) {
+            for (PageDescription p : pages) {
+                if (p.getPosition().isBonus()) {
+                    throw new JsonParametersException("A page can't be bonus inside " +
+                            "a bonus pageGroup");
+                }
+            }
+        }
     }
 
     @Override

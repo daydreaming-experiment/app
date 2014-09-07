@@ -1,5 +1,7 @@
 package com.brainydroid.daydreaming.ui.sequences;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
@@ -21,6 +23,7 @@ import com.brainydroid.daydreaming.db.SequencesStorage;
 import com.brainydroid.daydreaming.network.SntpClient;
 import com.brainydroid.daydreaming.network.SntpClientCallback;
 import com.brainydroid.daydreaming.sequence.Page;
+import com.brainydroid.daydreaming.sequence.PageGroup;
 import com.brainydroid.daydreaming.sequence.Sequence;
 import com.brainydroid.daydreaming.ui.FontUtils;
 import com.google.inject.Inject;
@@ -44,6 +47,7 @@ public class PageActivity extends RoboFragmentActivity {
     private Sequence sequence;
     private Page currentPage;
     private Page nextPage;
+    private PageGroup nextGroup;
     private long lastBackTime = 0;
     private boolean isContinuingOrFinishing = false;
     @Inject private PageViewAdapter pageViewAdapter;
@@ -150,18 +154,22 @@ public class PageActivity extends RoboFragmentActivity {
             throw new RuntimeException(msg);
         }
         sequence = sequencesStorage.get(sequenceId);
-        Pair<Page,Page> currentAndNextPage = sequence.getCurrentAndNextPage();
-        currentPage = currentAndNextPage.first;
-        nextPage = currentAndNextPage.second;
+        Pair<Pair<Page,Page>,PageGroup> relevantPagesAndGroup = sequence.getRelevantPagesAndGroup();
+        currentPage = relevantPagesAndGroup.first.first;
+        nextPage = relevantPagesAndGroup.first.second;
+        nextGroup = relevantPagesAndGroup.second;
         pageViewAdapter.setPage(currentPage);
     }
 
     private void setChrome() {
         Logger.d(TAG, "Setting chrome");
 
-        // TODO: set chrome depending on bonuses
-        if (currentPage.isLastOfSequence()) {
-            Logger.d(TAG, "Last page -> setting finish button text");
+        if (currentPage.isLastOfSequence() ||
+                (nextPage.isLastOfSequence() && nextPage.isBonus()) ||
+                (nextGroup.isLastOfSequence() && nextGroup.isBonus() &&
+                        currentPage.isLastOfPageGroup())) {
+            Logger.d(TAG, "Last page, or next page is last and bonus, or last page of group and " +
+                    "next group is last and bonus -> setting finish button text");
             nextButton.setVisibility(View.GONE);
             finishButton.setVisibility(View.VISIBLE);
             finishButton.setClickable(true);
@@ -242,14 +250,57 @@ public class PageActivity extends RoboFragmentActivity {
             pageViewAdapter.saveAnswers();
             currentPage.setStatus(Page.STATUS_ANSWERED);
 
-            setIsContinuingOrFinishing();
-            if (currentPage.isLastOfSequence()) {
-                Logger.d(TAG, "Last page -> finishing sequence");
-                finishSequence();
+            if (nextPage.isBonus() ||
+                    (nextGroup.isBonus() && currentPage.isLastOfPageGroup())) {
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+                builder.setTitle("Bonus")
+                        .setMessage("Do you want to go for bonus questions?")
+                        .setCancelable(false)
+                        .setPositiveButton("Go for bonus", new DialogInterface.OnClickListener() {
+
+                            public void onClick(DialogInterface dialog, int id) {
+                                transitionToNext();
+                            }
+
+                        })
+                        .setNegativeButton("Skip those", new DialogInterface.OnClickListener() {
+
+                            public void onClick(DialogInterface dialog, int id) {
+                                if (nextPage.isBonus()) {
+                                    nextPage.setStatus(Page.STATUS_BONUS_SKIPPED);
+                                } else if (nextGroup.isBonus() && currentPage.isLastOfPageGroup()) {
+                                    for (Page p : nextGroup.getPages()) {
+                                        p.setStatus(Page.STATUS_BONUS_SKIPPED);
+                                    }
+                                } else {
+                                    throw new RuntimeException("We should never get to here. " +
+                                            "At this point either the next page should be " +
+                                            "bonus, or the next group should be bonus and this " +
+                                            "page should be the last of its group.");
+                                }
+                                transitionToNext();
+                            }
+
+                        });
+
+                AlertDialog bonusAlert = builder.create();
+                bonusAlert.show();
             } else {
-                Logger.d(TAG, "Launching next page");
-                launchNextPage();
+                transitionToNext();
             }
+        }
+    }
+
+    private void transitionToNext() {
+        setIsContinuingOrFinishing();
+        if (currentPage.isLastOfSequence()) {
+            Logger.d(TAG, "Last page -> finishing sequence");
+            finishSequence();
+        } else {
+            Logger.d(TAG, "Launching next page");
+            launchNextPage();
         }
     }
 

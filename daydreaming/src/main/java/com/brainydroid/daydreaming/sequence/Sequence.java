@@ -72,7 +72,7 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
         saveIfSync();
     }
 
-    public synchronized Pair<Page,Page> getCurrentAndNextPage() {
+    public synchronized Pair<Pair<Page,Page>,PageGroup> getRelevantPagesAndGroup() {
         Logger.d(TAG, "Getting current page");
 
         // Get last not answered page
@@ -80,9 +80,11 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
         Page nextPage = null;
         PageGroup currentGroup = null;
         int globalIndex = 0;
+        int groupIndex = 0;
         int indexInGroup;
         int currentGlobalIndex = -1;
         int currentIndexInGroup = -1;
+        int currentGroupIndex = -1;
         String status;
         for (PageGroup pg : pageGroups) {
 
@@ -107,6 +109,7 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
                         currentGroup = pg;
                         currentGlobalIndex = globalIndex;
                         currentIndexInGroup = indexInGroup;
+                        currentGroupIndex = groupIndex;
                     } else if (nextPage == null) {
                         // It's the next page
                         nextPage = p;
@@ -116,6 +119,8 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
                 globalIndex++;
                 indexInGroup++;
             }
+
+            groupIndex++;
         }
 
         if (currentPage == null) {
@@ -137,9 +142,21 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
             currentPage.setIsLastOfPageGroup();
         }
 
+        PageGroup nextGroup = null;
+        if (currentGroupIndex <= pageGroups.size() - 2) {
+            nextGroup = pageGroups.get(currentGroupIndex + 1);
+        }
+        if (currentGroupIndex == pageGroups.size() - 2) {
+            // Will not NullPointerException since we're at end-2 (in groups)
+            // so we found a next group
+            //noinspection ConstantConditions
+            nextGroup.setIsLastOfSequence();
+        }
+
         // TODO: also record if the next group is bonus and/or last
 
-        return new Pair<Page,Page>(currentPage, nextPage);
+        return new Pair<Pair<Page,Page>,PageGroup>(
+                new Pair<Page,Page>(currentPage, nextPage), nextGroup);
     }
 
     @Override

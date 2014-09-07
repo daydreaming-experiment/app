@@ -2,6 +2,7 @@ package com.brainydroid.daydreaming.sequence;
 
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.PageGroupDescription;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
@@ -14,6 +15,8 @@ public class PageGroup implements IPageGroup {
     private String friendlyName = null;
     @JsonProperty private boolean bonus = false;
     @JsonProperty private ArrayList<Page> pages = null;
+
+    @JsonIgnore private boolean isLastOfSequence = false;
 
     public synchronized void importFromPageGroupDescription(PageGroupDescription description) {
         setName(description.getName());
@@ -52,5 +55,13 @@ public class PageGroup implements IPageGroup {
 
     public synchronized ArrayList<Page> getPages() {
         return pages;
+    }
+
+    public synchronized boolean isLastOfSequence() {
+        return isLastOfSequence;
+    }
+
+    public synchronized void setIsLastOfSequence() {
+        isLastOfSequence = true;
     }
 }
