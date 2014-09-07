@@ -254,6 +254,12 @@ public class PageActivity extends RoboFragmentActivity {
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
+                String skipText = "Skip those";
+                if ((nextPage != null && nextPage.isBonus() && nextPage.isLastOfSequence()) ||
+                        (nextGroup != null && nextGroup.isBonus() &&
+                                currentPage.isLastOfPageGroup() && nextGroup.isLastOfSequence())) {
+                    skipText = "Nope, had enough";
+                }
                 builder.setTitle("Bonus")
                         .setMessage("Do you want to go for bonus questions?")
                         .setCancelable(false)
