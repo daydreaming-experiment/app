@@ -165,8 +165,8 @@ public class PageActivity extends RoboFragmentActivity {
         Logger.d(TAG, "Setting chrome");
 
         if (currentPage.isLastOfSequence() ||
-                (nextPage.isLastOfSequence() && nextPage.isBonus()) ||
-                (nextGroup.isLastOfSequence() && nextGroup.isBonus() &&
+                (nextPage != null && nextPage.isLastOfSequence() && nextPage.isBonus()) ||
+                (nextGroup != null && nextGroup.isLastOfSequence() && nextGroup.isBonus() &&
                         currentPage.isLastOfPageGroup())) {
             Logger.d(TAG, "Last page, or next page is last and bonus, or last page of group and " +
                     "next group is last and bonus -> setting finish button text");
@@ -243,15 +243,14 @@ public class PageActivity extends RoboFragmentActivity {
     public void onClick_nextButton(@SuppressWarnings("UnusedParameters") View view) {
         Logger.d(TAG, "Next button clicked");
 
-        // TODO: act depending on bonus
         if (pageViewAdapter.validate()) {
             Logger.i(TAG, "Page validation succeeded, " +
                     "setting page status to answered");
             pageViewAdapter.saveAnswers();
             currentPage.setStatus(Page.STATUS_ANSWERED);
 
-            if (nextPage.isBonus() ||
-                    (nextGroup.isBonus() && currentPage.isLastOfPageGroup())) {
+            if ((nextPage != null && nextPage.isBonus()) ||
+                    (nextGroup != null && nextGroup.isBonus() && currentPage.isLastOfPageGroup())) {
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
