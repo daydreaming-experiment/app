@@ -270,7 +270,7 @@ public class PageActivity extends RoboFragmentActivity {
                             }
 
                         })
-                        .setNegativeButton("Skip those", new DialogInterface.OnClickListener() {
+                        .setNegativeButton(skipText, new DialogInterface.OnClickListener() {
 
                             public void onClick(DialogInterface dialog, int id) {
                                 if (nextPage.isBonus()) {
