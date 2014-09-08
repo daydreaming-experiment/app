@@ -1,6 +1,21 @@
 Changelog
 =========
 
+0.17.0
+------
+
+* Enhancements
+  * [#164] Use storage efficiently
+  * [#117] Generalized sequences builder with corresponding grammar v3 basis
+  * [#163] Switch to Jackson for JSON handling (answers weren't serialized)
+  * [#121] Add glossary in dashboard, link it to questions
+  * [#114] Implement bonus slots and relative positioning of items
+  * Redesign About page
+* Bug fixes
+  * [#162] Questions gone beserk
+  * [#159] Restart lost background services when reopening dashboard
+  * [#179] Deserialization failing, switch to JSON Views in Jackson
+
 0.16.0
 ------
 
