@@ -67,14 +67,16 @@
         android:layout_height="wrap_content"
         android:descendantFocusability="beforeDescendants"
         android:focusableInTouchMode="true"
-        android:layout_marginBottom="16dp" >
+        android:layout_marginBottom="16dp"
+        android:gravity="center_vertical">
 
         <CheckBox
             android:id="@+id/question_multiple_choice_otherCheckBox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:button="@drawable/custom_checkbox"
-            android:text="" />
+            android:text=""
+            android:layout_marginRight="@dimen/global_text_drawable_padding"/>
 
         <EditText
             android:id="@+id/question_multiple_choice_otherEditText"

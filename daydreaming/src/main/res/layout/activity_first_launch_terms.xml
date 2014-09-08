@@ -68,7 +68,10 @@
         android:id="@+id/firstLaunchTerms_Scrollview"
         android:layout_below="@id/ll1"
         android:layout_above="@id/firstLaunchTerms_agreement_buttons"
-        android:padding="@dimen/global_scrollview_padding"
+        android:paddingTop="@dimen/global_scrollview_padding"
+        android:paddingRight="@dimen/global_scrollview_padding"
+        android:paddingLeft="@dimen/global_scrollview_padding"
+        android:layout_marginBottom="@dimen/global_scrollview_padding"
         android:scrollbarSize="@dimen/global_scrollbarSize"
         android:scrollbarThumbVertical="@drawable/scrollbar_vertical_thumb"
         >

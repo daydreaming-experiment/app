@@ -82,6 +82,7 @@
     <dimen  name="page_horizontal_margin" >25dp</dimen>
 
     <!-- OTHER PADDING/MARGIN -->
+    <dimen  name="global_text_drawable_padding" >10dp</dimen>
 
     <dimen  name="description_text_padding" >15dp</dimen>
     <dimen  name="settings_textpadding_from_icons" >20dp</dimen>

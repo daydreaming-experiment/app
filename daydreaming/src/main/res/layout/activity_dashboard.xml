@@ -236,6 +236,7 @@
                     android:textAppearance="@style/ui_font_title_bold"
                     android:text="@string/dashboard_text_enable_internet"
                     android:id="@+id/dashboard_no_params_text"
+                    android:drawablePadding="@dimen/global_text_drawable_padding"
                     android:layout_marginBottom="8dp" />
 
                 <Button
@@ -249,7 +250,6 @@
                     android:background="@drawable/white_rectangle"
                     android:id="@+id/dashboard_network_settings_button"
                     android:onClick="onClick_OpenNetworkSettings"/>
-
 
             </LinearLayout>
 
@@ -267,6 +267,7 @@
         <TableLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
             android:paddingLeft="20dp"
             android:paddingRight="20dp">
 
@@ -373,7 +374,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
-                android:padding="5dp"
+                android:padding="15dp"
                 >
 
                 <RelativeLayout

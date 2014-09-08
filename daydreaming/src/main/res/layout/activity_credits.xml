@@ -14,7 +14,9 @@
 
             <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
+                android:layout_height="fill_parent"
+                android:paddingLeft="@dimen/global_text_in_scrollview_side_padding"
+                android:paddingRight="@dimen/global_text_in_scrollview_side_padding">
 
                 <LinearLayout
                     android:layout_width="fill_parent"
@@ -129,13 +131,16 @@
                     <LinearLayout
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:padding="5dp"
+                        android:layout_marginBottom="10dp">
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="left"
+                            android:layout_gravity="top|left"
                             android:src="@drawable/logo_ucl" />
                     </LinearLayout>
+
                     <TextView
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
@@ -151,13 +156,16 @@
                     <LinearLayout
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:padding="5dp"
+                        android:layout_marginBottom="10dp">
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="left"
                             android:src="@drawable/logo_mb" />
                         <ImageView
+                            android:paddingLeft="6dp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="left"
@@ -179,7 +187,9 @@
                     <LinearLayout
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:padding="5dp"
+                        android:layout_marginBottom="10dp">
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -202,7 +212,9 @@
                     <LinearLayout
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:padding="5dp"
+                        android:layout_marginBottom="10dp">
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -220,8 +232,8 @@
 
     <LinearLayout android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true">
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true">
 
         <ImageButton
             android:layout_width="@dimen/return_to_dashboard_button_size_withmargin"
