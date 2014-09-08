@@ -1,0 +1,4 @@
+<ImageButton xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/button_next_width"
+    android:layout_height="@dimen/button_next_height"
+    android:background="@drawable/button_cloud_next_selector"/>

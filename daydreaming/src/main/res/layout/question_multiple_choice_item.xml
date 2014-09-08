@@ -2,7 +2,7 @@
     android:id="@+id/question_multiple_choice_checkBox"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:text=""
+    android:text="rrdfgsdg"
     android:button="@drawable/custom_checkbox"
     android:paddingBottom="@dimen/question_occupation_line_marginBottom"
     android:gravity="center_vertical"
