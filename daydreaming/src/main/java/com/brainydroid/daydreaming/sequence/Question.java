@@ -22,7 +22,7 @@ public class Question implements IQuestion {
 
     private static String TAG = "Question";
 
-    @JsonProperty protected String name = null;
+    @JsonProperty protected String questionName = null;
     @JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.EXTERNAL_PROPERTY, property="type")
     @JsonSubTypes({@JsonSubTypes.Type(value=SliderAnswer.class, name="slider"),
                    @JsonSubTypes.Type(value=StarRatingAnswer.class, name="starRating"),
@@ -39,14 +39,14 @@ public class Question implements IQuestion {
 
     public synchronized void importFromQuestionDescription(QuestionDescription description) {
         Logger.d(TAG, "Importing information from QuestionDescription");
-        setName(description.getName());
+        setQuestionName(description.getQuestionName());
         detailsCache = description.getDetails();
     }
 
     public synchronized IQuestionViewAdapter getAdapter() {
         Logger.d(TAG, "Getting adapter for question");
 
-        String logSuffix = "for question " + name + " of type " + getDetails().getType();
+        String logSuffix = "for question " + questionName + " of type " + getDetails().getType();
         String packagePrefix = BaseQuestionViewAdapter.class.getPackage().getName() + ".";
         try {
             Class klass = Class.forName(packagePrefix +
@@ -70,13 +70,13 @@ public class Question implements IQuestion {
         }
     }
 
-    public synchronized String getName() {
-        return name;
+    public synchronized String getQuestionName() {
+        return questionName;
     }
 
-    private synchronized void setName(String name) {
-        Logger.v(TAG, "Setting name");
-        this.name = name;
+    private synchronized void setQuestionName(String questionName) {
+        Logger.v(TAG, "Setting questionName");
+        this.questionName = questionName;
         saveIfSync();
     }
 
@@ -88,7 +88,7 @@ public class Question implements IQuestion {
         // a custom QuestionDescriptionDeserializer.
 
         if (detailsCache == null) {
-            detailsCache = parametersStorage.getQuestionDescription(name).getDetails();
+            detailsCache = parametersStorage.getQuestionDescription(questionName).getDetails();
         }
         return detailsCache;
     }

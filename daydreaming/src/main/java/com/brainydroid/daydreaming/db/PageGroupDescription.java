@@ -3,24 +3,27 @@ package com.brainydroid.daydreaming.db;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.sequence.BuildableOrderable;
 import com.brainydroid.daydreaming.sequence.IPageGroup;
+import com.brainydroid.daydreaming.sequence.Page;
 import com.brainydroid.daydreaming.sequence.PageGroup;
 import com.brainydroid.daydreaming.sequence.PageGroupBuilder;
+import com.brainydroid.daydreaming.sequence.Position;
 import com.brainydroid.daydreaming.sequence.Sequence;
 import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.inject.Inject;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 
-public class PageGroupDescription extends BuildableOrderable<PageGroup> implements IPageGroup {
+public class PageGroupDescription extends DescriptionArrayContainer<PageDescription,Page>
+        implements BuildableOrderable<PageGroupDescription,PageGroup>,
+        IPageGroup {
 
     @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "PageGroupDescription";
 
     private String name = null;
     private String friendlyName = null;
-    private String position = null;
+    private Position position = null;
     private int nSlots = -1;
     private ArrayList<PageDescription> pages = null;
     @Inject @JacksonInject @JsonIgnore private PageGroupBuilder pageGroupBuilder;
@@ -33,7 +36,7 @@ public class PageGroupDescription extends BuildableOrderable<PageGroup> implemen
         return friendlyName;
     }
 
-    public String getPosition() {
+    public Position getPosition() {
         return position;
     }
 
@@ -45,7 +48,12 @@ public class PageGroupDescription extends BuildableOrderable<PageGroup> implemen
         return pages;
     }
 
-    public void validateInitialization() {
+    protected ArrayList<PageDescription> getContainedArray() {
+        return getPages();
+    }
+
+    public void validateInitialization(ArrayList<PageGroupDescription> parentArray,
+                                       ArrayList<QuestionDescription> questionsDescriptions) {
         Logger.d(TAG, "Validating initialization");
 
         // Check name
@@ -62,41 +70,18 @@ public class PageGroupDescription extends BuildableOrderable<PageGroup> implemen
         if (position == null) {
             throw new JsonParametersException("position in pageGroup can't be null");
         }
+        position.validateInitialization(parentArray, this, PageGroupDescription.class);
 
-        // Check nSlots
-        if (nSlots == -1) {
-            throw new JsonParametersException("nSlots in pageGroup can't be it's default value");
-        }
+        validateContained(questionsDescriptions);
 
-        // Check pages
-        if (pages == null) {
-            throw new JsonParametersException("pages in pageGroup can't be null");
-        }
-
-        // Check slot consistency
-        HashSet<String> positions = new HashSet<String>();
-        HashSet<Integer> explicitPositions = new HashSet<Integer>();
-        for (PageDescription p : pages) {
-            positions.add(p.getPosition());
-            if (p.isPositionExplicit()) {
-                explicitPositions.add(p.getExplicitPosition());
+        // If we're bonus, no question inside can be bonus
+        if (position.isBonus()) {
+            for (PageDescription p : pages) {
+                if (p.getPosition().isBonus()) {
+                    throw new JsonParametersException("A page can't be bonus inside " +
+                            "a bonus pageGroup");
+                }
             }
-        }
-        if (positions.size() < nSlots) {
-            throw new JsonParametersException("Too many slots and too few positions defined "
-                    + "(less than there are slots)");
-        }
-        if (explicitPositions.size() > nSlots) {
-            throw new JsonParametersException("Too many explicit positions defined "
-                    + "(more than there are slots)");
-        }
-
-        // Check pages
-        if (pages == null || pages.size() == 0) {
-            throw new JsonParametersException("pages can't be empty");
-        }
-        for (PageDescription p : pages) {
-            p.validateInitialization();
         }
     }
 

@@ -16,8 +16,10 @@ public class Page implements IPage {
 
     public static final String STATUS_ASKED = "pageAsked";
     public static final String STATUS_ANSWERED = "pageAnswered";
+    public static final String STATUS_BONUS_SKIPPED = "pageBonusSkipped";
 
     @JsonProperty private String name = null;
+    @JsonProperty private boolean bonus = false;
     @JsonProperty private String status = null;
     @JsonProperty private Location location = null;
     @JsonProperty private long ntpTimestamp = -1;
@@ -28,11 +30,13 @@ public class Page implements IPage {
 
     @JsonIgnore private boolean isFirstOfSequence = false;
     @JsonIgnore private boolean isLastOfSequence = false;
+    @JsonIgnore private boolean isLastOfPageGroup = false;
     @JsonIgnore private Sequence sequenceCache = null;
     @Inject @JacksonInject @JsonIgnore private SequencesStorage sequencesStorage;
 
     public void importFromPageDescription(PageDescription description) {
         setName(description.getName());
+        setBonus(description.getPosition().isBonus());
     }
 
     public synchronized String getName() {
@@ -41,6 +45,15 @@ public class Page implements IPage {
 
     private synchronized void setName(String name) {
         this.name = name;
+        saveIfSync();
+    }
+
+    public synchronized boolean isBonus() {
+        return bonus;
+    }
+
+    private synchronized void setBonus(boolean bonus) {
+        this.bonus = bonus;
         saveIfSync();
     }
 
@@ -121,6 +134,14 @@ public class Page implements IPage {
 
     public synchronized void setIsLastOfSequence() {
         isLastOfSequence = true;
+    }
+
+    public boolean isLastOfPageGroup() {
+        return isLastOfPageGroup;
+    }
+
+    public void setIsLastOfPageGroup() {
+        isLastOfPageGroup = true;
     }
 
     public synchronized void setQuestions(ArrayList<Question> questions) {
