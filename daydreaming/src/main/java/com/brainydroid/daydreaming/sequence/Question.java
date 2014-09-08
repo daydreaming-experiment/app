@@ -48,13 +48,13 @@ public class Question implements IQuestion {
     }
 
     public synchronized IQuestionViewAdapter getAdapter() {
-        Logger.d(TAG, "Getting adapter for question");
-
         String logSuffix = "for question " + questionName + " of type " + getDetails().getType();
+        Logger.d(TAG, "Getting adapter {}", logSuffix);
+
         String packagePrefix = BaseQuestionViewAdapter.class.getPackage().getName() + ".";
         try {
-            Class klass = Class.forName(packagePrefix +
-                    getDetails().getType() + BaseQuestionViewAdapter.QUESTION_VIEW_ADAPTER_SUFFIX);
+            Class klass = Class.forName(packagePrefix + getDetails().getType() +
+                    BaseQuestionViewAdapter.QUESTION_VIEW_ADAPTER_SUFFIX);
             IQuestionViewAdapter questionViewAdapter = (IQuestionViewAdapter)klass.newInstance();
             questionViewAdapter.setQuestion(this);
             injector.injectMembers(questionViewAdapter);

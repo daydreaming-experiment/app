@@ -12,7 +12,7 @@ public class MultipleChoiceQuestionDescriptionDetails implements IQuestionDescri
 
     @SuppressWarnings("FieldCanBeLocal")
     @JsonView(Views.Internal.class)
-    private String type = null;
+    private String type = "MultipleChoice";
     @SuppressWarnings("UnusedDeclaration")
     @JsonView(Views.Internal.class)
     private String text = null;
