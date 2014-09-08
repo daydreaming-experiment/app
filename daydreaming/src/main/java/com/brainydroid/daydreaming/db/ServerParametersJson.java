@@ -148,7 +148,7 @@ public class ServerParametersJson {
             throw new JsonParametersException("sequences can't be empty");
         }
         for (SequenceDescription s : sequences) {
-            s.validateInitialization();
+            s.validateInitialization(questions);
         }
     }
 

@@ -14,10 +14,13 @@ public class QuestionBuilder {
     @Inject QuestionFactory questionFactory;
     @Inject ParametersStorage parametersStorage;
 
-    public Question build(QuestionPositionDescription questionPositionDescription, Sequence sequence) {
-        Logger.v(TAG, "Building question from description {}", questionPositionDescription.getName());
-        QuestionDescription questionDescription =
-                parametersStorage.getQuestionDescription(questionPositionDescription.getName());
+    public Question build(QuestionPositionDescription questionPositionDescription,
+                          Sequence sequence) {
+        Logger.v(TAG, "Building question from description {0} (referencing questionName {1}",
+                questionPositionDescription.getName(),
+                questionPositionDescription.getQuestionName());
+        QuestionDescription questionDescription = parametersStorage.getQuestionDescription(
+                questionPositionDescription.getQuestionName());
 
         Question question = questionFactory.create();
         question.importFromQuestionDescription(questionDescription);

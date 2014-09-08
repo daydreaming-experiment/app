@@ -304,8 +304,8 @@ public class ParametersStorage {
         // Get list of all names
         ArrayList<QuestionDescription> questions = getQuestions();
         ArrayList<String> names = new ArrayList<String>(questions.size());
-        for (QuestionDescription s : questions) {
-            names.add(s.getName());
+        for (QuestionDescription qd : questions) {
+            names.add(qd.getQuestionName());
         }
 
         int questionIndex = names.indexOf(name);

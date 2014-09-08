@@ -25,7 +25,7 @@ public class QuestionDescription implements IQuestion {
 
     @Inject @JacksonInject private QuestionBuilder questionBuilder;
 
-    public String getName() {
+    public String getQuestionName() {
         return name;
     }
 

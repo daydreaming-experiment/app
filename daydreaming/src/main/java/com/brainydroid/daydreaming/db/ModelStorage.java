@@ -132,6 +132,7 @@ public abstract class ModelStorage<M extends Model<M,S,F>,
         // Make sure the model id is set inside the content
         // (isn't the case if the model was saved only once)
         model.setId(modelId);
+        // TODO: if model is null (i.e. couldn't be deserialized from json because of a previous crash), delete it.
 
         Logger.d(TAG, "Saving model {0} to cache", modelId);
         modelsCache.put(modelId, model);
