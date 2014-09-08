@@ -9,8 +9,6 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"/>
 
-
-
     <RelativeLayout
         android:id="@+id/firstLaunchTerms_agreement_buttons"
         android:layout_width="fill_parent"
@@ -18,7 +16,10 @@
         android:gravity="center_horizontal"
         android:background="@drawable/white_background"
         android:layout_alignParentBottom="true"
-        android:padding="50dp"
+        android:paddingBottom="50dp"
+        android:paddingLeft="50dp"
+        android:paddingRight="50dp"
+        android:paddingTop="10dp"
         >
 
         <LinearLayout android:orientation="horizontal"
@@ -59,10 +60,7 @@
             android:layout_alignParentRight="true"
             android:layout_below="@id/firstLaunchTerms_buttons"/>
 
-
-
     </RelativeLayout>
-
 
     <com.brainydroid.daydreaming.ui.firstlaunchsequence.ScrollViewExt
         android:layout_width="fill_parent"
@@ -82,7 +80,6 @@
             android:paddingRight="@dimen/global_text_in_scrollview_side_padding"
             >
 
-
             <TextView
                 android:id="@+id/firstLaunchTerms_titleConsent"
                 android:layout_width="match_parent"
@@ -93,7 +90,6 @@
                 android:paddingTop="@dimen/global_text_titleTopMargin"
                 android:textAppearance="@style/ui_font_big_title_bold"
                 android:textColor="@color/ui_white_text_color"/>
-
 
             <TextView
                 android:id="@+id/firstLaunchTerms_textConsent"
@@ -118,7 +114,6 @@
                 android:textColor="@color/ui_yellow"
                 />
 
-
             <TextView
                 android:id="@+id/firstLaunchTerms_moreConsent_text"
                 android:layout_width="match_parent"
@@ -130,18 +125,28 @@
                 android:textAppearance="@style/ui_font_title"
                 android:textColor="@color/ui_white_text_color"/>
 
-
-
         </RelativeLayout>
-
 
     </com.brainydroid.daydreaming.ui.firstlaunchsequence.ScrollViewExt>
 
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/firstLaunchTerms_agreement_buttons"
+        >
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/cloud_bottom"
+                android:adjustViewBounds="true"
+                android:rotation="180"/>
 
+        </LinearLayout>
 
-
-
-
-
+    </RelativeLayout>
 
 </RelativeLayout>
