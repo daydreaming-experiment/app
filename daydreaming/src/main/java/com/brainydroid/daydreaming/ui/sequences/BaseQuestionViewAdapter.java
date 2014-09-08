@@ -78,8 +78,7 @@ public abstract class BaseQuestionViewAdapter
                 int i_start = qText.indexOf(term);
                 int i_end = i_start + term.length();
                 // set style bold
-                sbqText.setSpan(new StyleSpan(Typeface.BOLD_ITALIC), i_start, i_end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                sbqText.setSpan(new ForegroundColorSpan(Color.YELLOW), i_start, i_end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                sbqText.setSpan(new ForegroundColorSpan(context.getResources().getColor(R.color.ui_dark_blue_color)), i_start, i_end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 // set clickable
                 ClickableSpan clickableSpan = new ClickableSpan() {
                     @Override

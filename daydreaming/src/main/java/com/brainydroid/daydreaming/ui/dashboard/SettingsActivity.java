@@ -306,7 +306,8 @@ public class SettingsActivity extends RoboFragmentActivity {
     public void testToProdDialog(){
         Logger.v(TAG, "Proposing to switch back to prod mode");
 
-        new AlertDialog.Builder(this)
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder
         .setTitle("Production mode")
         .setMessage("Switch back to production mode?")
         .setCancelable(false)
@@ -331,8 +332,19 @@ public class SettingsActivity extends RoboFragmentActivity {
                 dialog.cancel();
             }
 
-        })
-        .show();
+        });
+
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+
+        TextView dialogTextView = (TextView) alertDialog.findViewById(android.R.id.message);
+        FontUtils.setRobotoFont(this, dialogTextView);
+        dialogTextView = (TextView) alertDialog.findViewById(android.R.id.title);
+        FontUtils.setRobotoFont(this, dialogTextView);
+        dialogTextView = (TextView) alertDialog.findViewById(android.R.id.button1);
+        FontUtils.setRobotoFont(this, dialogTextView);
+        dialogTextView = (TextView) alertDialog.findViewById(android.R.id.button2);
+        FontUtils.setRobotoFont(this, dialogTextView);
     }
 
     public void prodToTestDialog(){
