@@ -132,7 +132,7 @@
 
     </com.brainydroid.daydreaming.ui.firstlaunchsequence.ScrollViewExt>
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@id/firstLaunchTerms_agreement_buttons"
