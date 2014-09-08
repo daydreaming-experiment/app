@@ -1,41 +1,19 @@
 package com.brainydroid.daydreaming.sequence;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
-abstract public class BuildableOrderable<T> {
+import com.brainydroid.daydreaming.db.QuestionDescription;
 
-    private static String TAG = "BuildableOrderable";
+import java.util.ArrayList;
 
-    @JsonIgnore private Integer explicitPosition = null;
+public interface BuildableOrderable<D extends BuildableOrderable<D,C>,C> {
 
-    abstract public String getPosition();
+    public String getName();
 
-    public int getExplicitPosition() {
-        if (isPositionExplicit()) {
-            return explicitPosition;
-        } else {
-            throw new RuntimeException("Explicit position asked for, but this item's "
-                    + "position is implicit");
-        }
-    }
+    public Position getPosition();
 
-    public boolean isPositionExplicit() {
-        // Was our position already parsed?
-        if (explicitPosition != null) {
-            return true;
-        }
+    public C build(Sequence sequence);
 
-        // If not, do it
-        try {
-            //noinspection ResultOfMethodCallIgnored
-            explicitPosition = Integer.parseInt(getPosition());
-            return true;
-        } catch (Exception e) {
-            // Our position did not represent an integer
-            return false;
-        }
-    }
-
-    abstract public T build(Sequence sequence);
+    public void validateInitialization(ArrayList<D> parentArray,
+                                       ArrayList<QuestionDescription> questionDescriptions);
 
 }

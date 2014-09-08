@@ -1,6 +1,7 @@
 package com.brainydroid.daydreaming.db;
 
 import com.brainydroid.daydreaming.background.Logger;
+import com.fasterxml.jackson.annotation.JsonView;
 
 import java.util.ArrayList;
 
@@ -10,8 +11,10 @@ public class StarRatingQuestionDescriptionDetails implements IQuestionDescriptio
     private static String TAG = "StarRatingQuestionDetails";
 
     @SuppressWarnings("FieldCanBeLocal")
+    @JsonView(Views.Internal.class)
     private String type = "StarRating";
     @SuppressWarnings("UnusedDeclaration")
+    @JsonView(Views.Internal.class)
     private ArrayList<StarRatingSubQuestion> subQuestions = null;
 
     @Override

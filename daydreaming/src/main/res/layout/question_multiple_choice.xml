@@ -33,14 +33,6 @@
                 android:textAppearance="@style/ui_font_big_title_bold"
                 android:textColor="@color/ui_white_text_color"/>
 
-            <ImageButton
-                android:id="@+id/question_multiple_choice_glossarybutton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/icon_questionmark"
-                android:onClick="switchGlossaryVisibility"
-                android:contentDescription="@null"/>
-
         </LinearLayout>
 
         <TextView

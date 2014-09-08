@@ -1,8 +1,8 @@
 package com.brainydroid.daydreaming.network;
 
 import com.brainydroid.daydreaming.background.Logger;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.brainydroid.daydreaming.db.Views;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
@@ -13,16 +13,20 @@ public class Profile {
 
     private static String TAG = "Profile";
 
-    @JsonProperty private String id;
+    @JsonView(Views.Public.class)
+    private String id;
     @SuppressWarnings({"FieldCanBeLocal", "UnusedDeclaration"})
-    @JsonProperty private String vk_pem;
+    @JsonView(Views.Public.class)
+    private String vk_pem;
     @SuppressWarnings({"FieldCanBeLocal", "UnusedDeclaration"})
-    @JsonProperty private String exp_id;
+    @JsonView(Views.Public.class)
+    private String exp_id;
 
     @SuppressWarnings("FieldCanBeLocal")
-    @JsonProperty private ProfileData profile_data;
+    @JsonView(Views.Public.class)
+    private ProfileData profile_data;
 
-    @Inject @JsonIgnore ProfileWrapperFactory profileWrapperFactory;
+    @Inject ProfileWrapperFactory profileWrapperFactory;
 
     public Profile() {}
 

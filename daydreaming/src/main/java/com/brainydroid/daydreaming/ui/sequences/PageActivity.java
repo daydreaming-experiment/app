@@ -1,9 +1,12 @@
 package com.brainydroid.daydreaming.ui.sequences;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -20,6 +23,7 @@ import com.brainydroid.daydreaming.db.SequencesStorage;
 import com.brainydroid.daydreaming.network.SntpClient;
 import com.brainydroid.daydreaming.network.SntpClientCallback;
 import com.brainydroid.daydreaming.sequence.Page;
+import com.brainydroid.daydreaming.sequence.PageGroup;
 import com.brainydroid.daydreaming.sequence.Sequence;
 import com.brainydroid.daydreaming.ui.FontUtils;
 import com.google.inject.Inject;
@@ -41,7 +45,9 @@ public class PageActivity extends RoboFragmentActivity {
 
     private int sequenceId;
     private Sequence sequence;
-    private Page page;
+    private Page currentPage;
+    private Page nextPage;
+    private PageGroup nextGroup;
     private long lastBackTime = 0;
     private boolean isContinuingOrFinishing = false;
     @Inject private PageViewAdapter pageViewAdapter;
@@ -70,7 +76,7 @@ public class PageActivity extends RoboFragmentActivity {
 
         // If this is a probe and we're at the first page, reschedule so as not
         // to have a new probe appear in the middle of this one
-        if (sequence.getType().equals(Sequence.TYPE_PROBE) && page.isFirstOfSequence()) {
+        if (sequence.getType().equals(Sequence.TYPE_PROBE) && currentPage.isFirstOfSequence()) {
             startSchedulerService();
         }
     }
@@ -82,8 +88,8 @@ public class PageActivity extends RoboFragmentActivity {
 
         sequence.retainSaves();
         sequence.setStatus(Sequence.STATUS_RUNNING);
-        page.setStatus(Page.STATUS_ASKED);
-        page.setSystemTimestamp(Calendar.getInstance().getTimeInMillis());
+        currentPage.setStatus(Page.STATUS_ASKED);
+        currentPage.setSystemTimestamp(Calendar.getInstance().getTimeInMillis());
         sequence.flushSaves();
 
         // Retain everything until onPause()
@@ -148,15 +154,22 @@ public class PageActivity extends RoboFragmentActivity {
             throw new RuntimeException(msg);
         }
         sequence = sequencesStorage.get(sequenceId);
-        page = sequence.getCurrentPage();
-        pageViewAdapter.setPage(page);
+        Pair<Pair<Page,Page>,PageGroup> relevantPagesAndGroup = sequence.getRelevantPagesAndGroup();
+        currentPage = relevantPagesAndGroup.first.first;
+        nextPage = relevantPagesAndGroup.first.second;
+        nextGroup = relevantPagesAndGroup.second;
+        pageViewAdapter.setPage(currentPage);
     }
 
     private void setChrome() {
         Logger.d(TAG, "Setting chrome");
 
-        if (page.isLastOfSequence()) {
-            Logger.d(TAG, "Last page -> setting finish button text");
+        if (currentPage.isLastOfSequence() ||
+                (nextPage != null && nextPage.isLastOfSequence() && nextPage.isBonus()) ||
+                (nextGroup != null && nextGroup.isLastOfSequence() && nextGroup.isBonus() &&
+                        currentPage.isLastOfPageGroup())) {
+            Logger.d(TAG, "Last page, or next page is last and bonus, or last page of group and " +
+                    "next group is last and bonus -> setting finish button text");
             nextButton.setVisibility(View.GONE);
             finishButton.setVisibility(View.VISIBLE);
             finishButton.setClickable(true);
@@ -191,7 +204,7 @@ public class PageActivity extends RoboFragmentActivity {
             @Override
             public void onLocationReceived(Location location) {
                 Logger.i(TAG, "Received location for page, setting it");
-                page.setLocation(location);
+                currentPage.setLocation(location);
             }
 
         };
@@ -203,7 +216,7 @@ public class PageActivity extends RoboFragmentActivity {
             @Override
             public void onTimeReceived(SntpClient sntpClient) {
                 if (sntpClient != null) {
-                    page.setNtpTimestamp(sntpClient.getNow());
+                    currentPage.setNtpTimestamp(sntpClient.getNow());
                     Logger.i(TAG, "Received and saved NTP time for page");
                 } else {
                     Logger.e(TAG, "Received successful NTP request but sntpClient is null");
@@ -234,16 +247,66 @@ public class PageActivity extends RoboFragmentActivity {
             Logger.i(TAG, "Page validation succeeded, " +
                     "setting page status to answered");
             pageViewAdapter.saveAnswers();
-            page.setStatus(Page.STATUS_ANSWERED);
+            currentPage.setStatus(Page.STATUS_ANSWERED);
 
-            setIsContinuingOrFinishing();
-            if (page.isLastOfSequence()) {
-                Logger.d(TAG, "Last page -> finishing sequence");
-                finishSequence();
+            if ((nextPage != null && nextPage.isBonus()) ||
+                    (nextGroup != null && nextGroup.isBonus() && currentPage.isLastOfPageGroup())) {
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+                String skipText = "Skip those";
+                if ((nextPage != null && nextPage.isBonus() && nextPage.isLastOfSequence()) ||
+                        (nextGroup != null && nextGroup.isBonus() &&
+                                currentPage.isLastOfPageGroup() && nextGroup.isLastOfSequence())) {
+                    skipText = "Nope, had enough";
+                }
+                builder.setTitle("Bonus")
+                        .setMessage("Do you want to go for bonus questions?")
+                        .setCancelable(false)
+                        .setPositiveButton("Go for bonus", new DialogInterface.OnClickListener() {
+
+                            public void onClick(DialogInterface dialog, int id) {
+                                transitionToNext(false);
+                            }
+
+                        })
+                        .setNegativeButton(skipText, new DialogInterface.OnClickListener() {
+
+                            public void onClick(DialogInterface dialog, int id) {
+                                if (nextPage.isBonus()) {
+                                    nextPage.setStatus(Page.STATUS_BONUS_SKIPPED);
+                                } else if (nextGroup.isBonus() && currentPage.isLastOfPageGroup()) {
+                                    for (Page p : nextGroup.getPages()) {
+                                        p.setStatus(Page.STATUS_BONUS_SKIPPED);
+                                    }
+                                } else {
+                                    throw new RuntimeException("We should never get to here. " +
+                                            "At this point either the next page should be " +
+                                            "bonus, or the next group should be bonus and this " +
+                                            "page should be the last of its group.");
+                                }
+                                transitionToNext((nextPage.isBonus() && nextPage.isLastOfSequence()) ||
+                                        (nextGroup.isBonus() && nextGroup.isLastOfSequence()));
+                            }
+
+                        });
+
+                AlertDialog bonusAlert = builder.create();
+                bonusAlert.show();
             } else {
-                Logger.d(TAG, "Launching next page");
-                launchNextPage();
+                transitionToNext(currentPage.isLastOfSequence());
             }
+        }
+    }
+
+    private void transitionToNext(boolean finish) {
+        setIsContinuingOrFinishing();
+        if (finish) {
+            Logger.d(TAG, "Last page -> finishing sequence");
+            finishSequence();
+        } else {
+            Logger.d(TAG, "Launching next page");
+            launchNextPage();
         }
     }
 

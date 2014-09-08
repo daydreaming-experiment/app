@@ -1,13 +1,16 @@
 package com.brainydroid.daydreaming.network;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.brainydroid.daydreaming.db.Views;
+import com.fasterxml.jackson.annotation.JsonView;
 
 import java.util.ArrayList;
 
 public class JWS {
 
-    @JsonProperty private String payload;
-    @JsonProperty private ArrayList<JWSSignature> signatures;
+    @JsonView(Views.Public.class)
+    private String payload;
+    @JsonView(Views.Public.class)
+    private ArrayList<JWSSignature> signatures;
 
     public JWS() {}
 

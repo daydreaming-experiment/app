@@ -35,7 +35,7 @@ public class ServerTalker {
         String vkPem = cryptoStorage.createArmoredPublicKey(keyPair.getPublic());
         ProfileWrapper profileWrap = profileFactory.create(
                 parametersStorage.getBackendExpId(), vkPem).buildWrapper();
-        String jsonPayload = json.toJsonServer(profileWrap);
+        String jsonPayload = json.toJsonPublic(profileWrap);
 
         Logger.i(TAG, "Going to send the following to server (signed) :\n"
                 + jsonPayload.replace("{", "'{'").replace("}", "'}'"));

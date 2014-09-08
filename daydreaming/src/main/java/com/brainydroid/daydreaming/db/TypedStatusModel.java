@@ -1,7 +1,7 @@
 package com.brainydroid.daydreaming.db;
 
 import com.brainydroid.daydreaming.background.Logger;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
 
 public abstract class TypedStatusModel<M extends TypedStatusModel<M,S,F>,
         S extends TypedStatusModelStorage<M,S,F>, F extends ModelJsonFactory<M,S,F>>
@@ -9,7 +9,8 @@ public abstract class TypedStatusModel<M extends TypedStatusModel<M,S,F>,
 
     private static String TAG = "TypedStatusModel";
 
-    @JsonProperty protected String type;
+    @JsonView(Views.Public.class)
+    protected String type;
 
     protected synchronized void setType(String type) {
         Logger.v(TAG, "Setting type");

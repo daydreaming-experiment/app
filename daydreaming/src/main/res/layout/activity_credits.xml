@@ -12,7 +12,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            <RelativeLayout
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:paddingLeft="@dimen/global_text_in_scrollview_side_padding"
@@ -93,7 +93,7 @@
 
             </RelativeLayout>
 
-            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            <RelativeLayout
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:paddingLeft="@dimen/global_text_in_scrollview_side_padding"

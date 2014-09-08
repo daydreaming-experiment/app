@@ -1,7 +1,7 @@
 package com.brainydroid.daydreaming.db;
 
 import com.brainydroid.daydreaming.background.Logger;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
 
 /**
  * Abstract base class for objects that are stored in an SQLite database.
@@ -36,9 +36,11 @@ public abstract class Model<M extends Model<M,S,F>,
 
     private static String TAG = "Model";
 
+    @JsonView(Views.Internal.class)
     private int id = -1;
-    @JsonIgnore private boolean retainSaves = false;
-    @JsonIgnore private boolean hasRetainedSaves = false;
+
+    private boolean retainSaves = false;
+    private boolean hasRetainedSaves = false;
 
     /**
      * Set the {@link Model}'s id, used for database ordering and indexing.
