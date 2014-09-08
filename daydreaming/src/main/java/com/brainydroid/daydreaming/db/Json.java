@@ -3,6 +3,7 @@ package com.brainydroid.daydreaming.db;
 import android.location.Location;
 
 import com.brainydroid.daydreaming.background.Logger;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -45,6 +46,7 @@ public class Json {
 
         mapper.disable(MapperFeature.DEFAULT_VIEW_INCLUSION);
         mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
         writerInternal = mapper.writerWithView(Views.Internal.class);
         writerPublic = mapper.writerWithView(Views.Public.class);
