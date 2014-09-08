@@ -1,12 +1,14 @@
 package com.brainydroid.daydreaming.network;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.brainydroid.daydreaming.db.Views;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 
 public class ProfileWrapper {
 
-    @JsonProperty private Profile profile;
+    @JsonView(Views.Public.class)
+    private Profile profile;
 
     public ProfileWrapper() {}
 

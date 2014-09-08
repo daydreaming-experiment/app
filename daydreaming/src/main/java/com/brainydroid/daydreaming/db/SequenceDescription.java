@@ -2,6 +2,7 @@ package com.brainydroid.daydreaming.db;
 
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.sequence.ISequence;
+import com.fasterxml.jackson.annotation.JsonView;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -11,9 +12,13 @@ public class SequenceDescription implements ISequence {
     @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "SequenceDescription";
 
+    @JsonView(Views.Internal.class)
     private String name = null;
+    @JsonView(Views.Internal.class)
     private String type = null;
+    @JsonView(Views.Internal.class)
     private int nSlots = -1;
+    @JsonView(Views.Internal.class)
     private ArrayList<PageGroupDescription> pageGroups = null;
 
     public String getName() {

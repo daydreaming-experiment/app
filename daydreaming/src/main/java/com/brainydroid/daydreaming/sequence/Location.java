@@ -1,6 +1,7 @@
 package com.brainydroid.daydreaming.sequence;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.brainydroid.daydreaming.db.Views;
+import com.fasterxml.jackson.annotation.JsonView;
 
 public class Location extends android.location.Location {
 
@@ -14,25 +15,25 @@ public class Location extends android.location.Location {
         super(location);
     }
 
-    @JsonProperty
+    @JsonView(Views.Public.class)
     @Override
     public double getLatitude() {
         return super.getLatitude();
     }
 
-    @JsonProperty
+    @JsonView(Views.Public.class)
     @Override
     public double getLongitude() {
         return super.getLongitude();
     }
 
-    @JsonProperty
+    @JsonView(Views.Public.class)
     @Override
     public double getAltitude() {
         return super.getAltitude();
     }
 
-    @JsonProperty
+    @JsonView(Views.Public.class)
     @Override
     public float getAccuracy() {
         return super.getAccuracy();

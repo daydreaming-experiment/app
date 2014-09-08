@@ -2,7 +2,8 @@ package com.brainydroid.daydreaming.sequence;
 
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.PageGroupDescription;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.brainydroid.daydreaming.db.Views;
+import com.fasterxml.jackson.annotation.JsonView;
 
 import java.util.ArrayList;
 
@@ -10,9 +11,12 @@ public class PageGroup implements IPageGroup {
 
     private static String TAG = "PageGroup";
 
-    @JsonProperty private String name = null;
+    @JsonView(Views.Public.class)
+    private String name = null;
+    @JsonView(Views.Internal.class)
     private String friendlyName = null;
-    @JsonProperty private ArrayList<Page> pages = null;
+    @JsonView(Views.Public.class)
+    private ArrayList<Page> pages = null;
 
     public synchronized void importFromPageGroupDescription(PageGroupDescription description) {
         setName(description.getName());

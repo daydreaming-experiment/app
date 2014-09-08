@@ -1,12 +1,15 @@
 package com.brainydroid.daydreaming.network;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.brainydroid.daydreaming.db.Views;
+import com.fasterxml.jackson.annotation.JsonView;
 
 public class Result<T> {
 
     @SuppressWarnings({"FieldCanBeLocal", "UnusedDeclaration"})
-    @JsonProperty private String profile_id;
-    @JsonProperty private T result_data;
+    @JsonView(Views.Public.class)
+    private String profile_id;
+    @JsonView(Views.Public.class)
+    private T result_data;
 
     public Result() {}
 

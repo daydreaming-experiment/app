@@ -54,7 +54,7 @@ public abstract class ModelStorage<M extends Model<M,S,F>,
         Logger.d(TAG, "Getting model values");
         ContentValues modelValues = new ContentValues();
 
-        String jsonModel = json.toJsonLocal(model);
+        String jsonModel = json.toJsonInternal(model);
         Logger.v(TAG, "Adding content to model");
         Logger.v(TAG, jsonModel.replace("{", "'{'").replace("}", "'}'"));
         modelValues.put(COL_CONTENT, jsonModel);

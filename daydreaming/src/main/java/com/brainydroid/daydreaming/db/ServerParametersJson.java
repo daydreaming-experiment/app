@@ -1,6 +1,7 @@
 package com.brainydroid.daydreaming.db;
 
 import com.brainydroid.daydreaming.background.Logger;
+import com.fasterxml.jackson.annotation.JsonView;
 
 import java.util.HashMap;
 import java.util.ArrayList;
@@ -20,16 +21,27 @@ public class ServerParametersJson {
     public static String DEFAULT_RESULTS_PAGE_URL = "n/c";
     public static HashMap<String,String> DEFAULT_GLOSSARY_JSON = null;
 
+    @JsonView(Views.Internal.class)
     private String version = DEFAULT_PARAMETERS_VERSION;
+    @JsonView(Views.Internal.class)
     private String backendExpId = DEFAULT_BACKEND_EXP_ID;
+    @JsonView(Views.Internal.class)
     private String backendDbName = DEFAULT_BACKEND_DB_NAME;
+    @JsonView(Views.Internal.class)
     private int expDuration = DEFAULT_EXP_DURATION;
+    @JsonView(Views.Internal.class)
     private String backendApiUrl = DEFAULT_BACKEND_API_URL;
+    @JsonView(Views.Internal.class)
     private String resultsPageUrl = DEFAULT_RESULTS_PAGE_URL;
+    @JsonView(Views.Internal.class)
     private int schedulingMeanDelay = DEFAULT_SCHEDULING_MEAN_DELAY;
+    @JsonView(Views.Internal.class)
     private int schedulingMinDelay = DEFAULT_SCHEDULING_MIN_DELAY;
+    @JsonView(Views.Internal.class)
     private ArrayList<QuestionDescription> questions = null;
+    @JsonView(Views.Internal.class)
     private ArrayList<SequenceDescription> sequences = null;
+    @JsonView(Views.Internal.class)
     private HashMap<String,String> glossary = DEFAULT_GLOSSARY_JSON;
 
     public synchronized String getVersion() {

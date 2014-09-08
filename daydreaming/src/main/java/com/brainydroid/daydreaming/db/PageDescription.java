@@ -7,7 +7,7 @@ import com.brainydroid.daydreaming.sequence.Page;
 import com.brainydroid.daydreaming.sequence.PageBuilder;
 import com.brainydroid.daydreaming.sequence.Sequence;
 import com.fasterxml.jackson.annotation.JacksonInject;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.google.inject.Inject;
 
 import java.util.ArrayList;
@@ -18,11 +18,16 @@ public class PageDescription extends BuildableOrderable<Page> implements IPage {
     @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "PageDescription";
 
+    @JsonView(Views.Internal.class)
     private String name = null;
+    @JsonView(Views.Internal.class)
     private String position = null;
+    @JsonView(Views.Internal.class)
     private int nSlots = -1;
+    @JsonView(Views.Internal.class)
     private ArrayList<QuestionPositionDescription> questions = null;
-    @Inject @JacksonInject @JsonIgnore private PageBuilder pageBuilder;
+
+    @Inject @JacksonInject private PageBuilder pageBuilder;
 
     public String getName() {
         return name;

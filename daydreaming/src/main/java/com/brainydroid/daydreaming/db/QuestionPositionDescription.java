@@ -7,7 +7,7 @@ import com.brainydroid.daydreaming.sequence.Question;
 import com.brainydroid.daydreaming.sequence.QuestionBuilder;
 import com.brainydroid.daydreaming.sequence.Sequence;
 import com.fasterxml.jackson.annotation.JacksonInject;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.google.inject.Inject;
 
 public class QuestionPositionDescription extends BuildableOrderable<Question>
@@ -16,9 +16,12 @@ public class QuestionPositionDescription extends BuildableOrderable<Question>
     @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "QuestionPositionDescription";
 
+    @JsonView(Views.Internal.class)
     private String name = null;
+    @JsonView(Views.Internal.class)
     private String position = null;
-    @Inject @JacksonInject @JsonIgnore private QuestionBuilder questionBuilder;
+
+    @Inject @JacksonInject private QuestionBuilder questionBuilder;
 
     public String getName() {
         return name;

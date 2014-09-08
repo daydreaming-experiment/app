@@ -3,9 +3,9 @@ package com.brainydroid.daydreaming.sequence;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.PageDescription;
 import com.brainydroid.daydreaming.db.SequencesStorage;
+import com.brainydroid.daydreaming.db.Views;
 import com.fasterxml.jackson.annotation.JacksonInject;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.google.inject.Inject;
 
 import java.util.ArrayList;
@@ -17,19 +17,27 @@ public class Page implements IPage {
     public static final String STATUS_ASKED = "pageAsked";
     public static final String STATUS_ANSWERED = "pageAnswered";
 
-    @JsonProperty private String name = null;
-    @JsonProperty private String status = null;
-    @JsonProperty private Location location = null;
-    @JsonProperty private long ntpTimestamp = -1;
-    @JsonProperty private long systemTimestamp = -1;
-    @JsonProperty private ArrayList<Question> questions = null;
+    @JsonView(Views.Public.class)
+    private String name = null;
+    @JsonView(Views.Public.class)
+    private String status = null;
+    @JsonView(Views.Public.class)
+    private Location location = null;
+    @JsonView(Views.Public.class)
+    private long ntpTimestamp = -1;
+    @JsonView(Views.Public.class)
+    private long systemTimestamp = -1;
+    @JsonView(Views.Public.class)
+    private ArrayList<Question> questions = null;
 
+    @JsonView(Views.Internal.class)
     private int sequenceId = -1;
 
-    @JsonIgnore private boolean isFirstOfSequence = false;
-    @JsonIgnore private boolean isLastOfSequence = false;
-    @JsonIgnore private Sequence sequenceCache = null;
-    @Inject @JacksonInject @JsonIgnore private SequencesStorage sequencesStorage;
+    private boolean isFirstOfSequence = false;
+    private boolean isLastOfSequence = false;
+    private Sequence sequenceCache = null;
+
+    @Inject @JacksonInject private SequencesStorage sequencesStorage;
 
     public void importFromPageDescription(PageDescription description) {
         setName(description.getName());
