@@ -7,9 +7,9 @@ import com.brainydroid.daydreaming.db.SequenceDescription;
 import com.brainydroid.daydreaming.db.SequenceJsonFactory;
 import com.brainydroid.daydreaming.db.SequencesStorage;
 import com.brainydroid.daydreaming.db.TypedStatusModel;
+import com.brainydroid.daydreaming.db.Views;
 import com.fasterxml.jackson.annotation.JacksonInject;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.google.inject.Inject;
 
 import java.util.ArrayList;
@@ -27,12 +27,16 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
     public static final String STATUS_PARTIALLY_COMPLETED = "partiallyCompleted"; // Activity was stopped (if a probe, it expired, if a questionnaire, can be resumed)
     public static final String STATUS_COMPLETED = "completed"; // Activity completed
 
-    @JsonProperty private String name = null;
-    @JsonProperty private long notificationNtpTimestamp = -1;
-    @JsonProperty private long notificationSystemTimestamp = -1;
-    @JsonProperty private ArrayList<PageGroup> pageGroups = null;
+    @JsonView(Views.Public.class)
+    private String name = null;
+    @JsonView(Views.Public.class)
+    private long notificationNtpTimestamp = -1;
+    @JsonView(Views.Public.class)
+    private long notificationSystemTimestamp = -1;
+    @JsonView(Views.Public.class)
+    private ArrayList<PageGroup> pageGroups = null;
 
-    @Inject @JacksonInject @JsonIgnore private SequencesStorage sequencesStorage;
+    @Inject @JacksonInject private SequencesStorage sequencesStorage;
 
     public synchronized String getName() {
         return name;

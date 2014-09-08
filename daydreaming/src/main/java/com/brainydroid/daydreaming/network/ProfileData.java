@@ -1,7 +1,8 @@
 package com.brainydroid.daydreaming.network;
 
 import com.brainydroid.daydreaming.background.Logger;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.brainydroid.daydreaming.db.Views;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 
@@ -11,14 +12,22 @@ public class ProfileData {
 
     private static String TAG = "ProfileData";
 
-    @JsonProperty private String age;
-    @JsonProperty private String gender;
-    @JsonProperty private String education;
-    @JsonProperty private HashMap<String, Integer> tipi_answers;
-    @JsonProperty private String parametersVersion;
-    @JsonProperty private String appVersionName;
-    @JsonProperty private int appVersionCode;
-    @JsonProperty private String mode;
+    @JsonView(Views.Public.class)
+    private String age;
+    @JsonView(Views.Public.class)
+    private String gender;
+    @JsonView(Views.Public.class)
+    private String education;
+    @JsonView(Views.Public.class)
+    private HashMap<String, Integer> tipi_answers;
+    @JsonView(Views.Public.class)
+    private String parametersVersion;
+    @JsonView(Views.Public.class)
+    private String appVersionName;
+    @JsonView(Views.Public.class)
+    private int appVersionCode;
+    @JsonView(Views.Public.class)
+    private String mode;
 
     public ProfileData() {}
 

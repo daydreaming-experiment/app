@@ -234,7 +234,7 @@ public class ParametersStorage {
                 statusManager.getCurrentModeName());
         questionsCache = questions;
         eSharedPreferences.putString(statusManager.getCurrentModeName() + QUESTIONS,
-                json.toJsonLocal(questions));
+                json.toJsonInternal(questions));
         eSharedPreferences.commit();
     }
 
@@ -271,7 +271,7 @@ public class ParametersStorage {
     }
 
     private synchronized void setGlossary(HashMap<String,String> glossary) {
-        String glossaryJson = json.toJsonLocal(glossary);
+        String glossaryJson = json.toJsonInternal(glossary);
         Logger.d(TAG, "{0} - Setting glossary to {1}", statusManager.getCurrentModeName(), glossaryJson);
         eSharedPreferences.putString(statusManager.getCurrentModeName() + GLOSSARY, glossaryJson);
         eSharedPreferences.commit();
@@ -323,7 +323,7 @@ public class ParametersStorage {
                 statusManager.getCurrentModeName());
         sequencesCache = sequences;
         eSharedPreferences.putString(statusManager.getCurrentModeName() + SEQUENCES,
-                json.toJsonLocal(sequences));
+                json.toJsonInternal(sequences));
         eSharedPreferences.commit();
     }
 

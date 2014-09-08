@@ -9,7 +9,7 @@ import com.brainydroid.daydreaming.sequence.PageGroupBuilder;
 import com.brainydroid.daydreaming.sequence.Position;
 import com.brainydroid.daydreaming.sequence.Sequence;
 import com.fasterxml.jackson.annotation.JacksonInject;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.google.inject.Inject;
 
 import java.util.ArrayList;
@@ -21,12 +21,18 @@ public class PageGroupDescription extends DescriptionArrayContainer<PageDescript
     @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "PageGroupDescription";
 
+    @JsonView(Views.Internal.class)
     private String name = null;
+    @JsonView(Views.Internal.class)
     private String friendlyName = null;
+    @JsonView(Views.Internal.class)
     private Position position = null;
+    @JsonView(Views.Internal.class)
     private int nSlots = -1;
+    @JsonView(Views.Internal.class)
     private ArrayList<PageDescription> pages = null;
-    @Inject @JacksonInject @JsonIgnore private PageGroupBuilder pageGroupBuilder;
+
+    @Inject @JacksonInject private PageGroupBuilder pageGroupBuilder;
 
     public String getName() {
         return name;

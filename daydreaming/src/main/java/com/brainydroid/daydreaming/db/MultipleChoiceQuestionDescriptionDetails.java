@@ -1,6 +1,7 @@
 package com.brainydroid.daydreaming.db;
 
 import com.brainydroid.daydreaming.background.Logger;
+import com.fasterxml.jackson.annotation.JsonView;
 
 import java.util.ArrayList;
 
@@ -10,11 +11,15 @@ public class MultipleChoiceQuestionDescriptionDetails implements IQuestionDescri
     private static String TAG = "MultipleChoiceQuestionDetails";
 
     @SuppressWarnings("FieldCanBeLocal")
+    @JsonView(Views.Internal.class)
     private String type = "MultipleChoice";
     @SuppressWarnings("UnusedDeclaration")
+    @JsonView(Views.Internal.class)
     private String text = null;
+    @JsonView(Views.Internal.class)
     private String glossaryText = null;
     @SuppressWarnings("UnusedDeclaration")
+    @JsonView(Views.Internal.class)
     private ArrayList<String> choices = null;
 
     @Override

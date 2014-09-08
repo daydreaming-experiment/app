@@ -4,6 +4,8 @@ import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.JsonParametersException;
 import com.brainydroid.daydreaming.db.PageDescription;
 import com.brainydroid.daydreaming.db.PageGroupDescription;
+import com.brainydroid.daydreaming.db.Views;
+import com.fasterxml.jackson.annotation.JsonView;
 
 import java.util.ArrayList;
 
@@ -13,9 +15,13 @@ public class Position {
 
     private static int DEFAULT_FIXED = -999;
 
+    @JsonView(Views.Internal.class)
     private int fixed = DEFAULT_FIXED;
+    @JsonView(Views.Internal.class)
     private String floating = null;
+    @JsonView(Views.Internal.class)
     private String after = null;
+    @JsonView(Views.Internal.class)
     private boolean bonus = false;
 
     public Position() {}

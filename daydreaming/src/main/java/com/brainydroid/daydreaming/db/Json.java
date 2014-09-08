@@ -8,7 +8,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.introspect.VisibilityChecker;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -33,44 +35,37 @@ public class Json {
 
     private static String TAG = "Json";
 
-    private ObjectMapper jacksonLocal;
-    private ObjectMapper jacksonServer;
+    private ObjectWriter writerInternal;
+    private ObjectWriter writerPublic;
+    private ObjectMapper mapper;
 
     /**
      * Constructor used with dependency injection.
      */
     @Inject
-    public Json(ObjectMapper jacksonLocal, ObjectMapper jacksonServer) {
-        Logger.v(TAG, "Building Jackson instances");
+    public Json(ObjectMapper mapper) {
+        Logger.v(TAG, "Building Jackson reader/writer instances");
 
-        VisibilityChecker checker;
-        this.jacksonLocal = jacksonLocal;
-        this.jacksonServer = jacksonServer;
-
-        // Will serialize ALL members not annotated with @JsonIgnore
-        checker = this.jacksonLocal.getSerializationConfig()
-                .getDefaultVisibilityChecker()
-                .withFieldVisibility(JsonAutoDetect.Visibility.ANY)
+        VisibilityChecker checker = mapper.getVisibilityChecker()
+                .withGetterVisibility(JsonAutoDetect.Visibility.NONE)
                 .withIsGetterVisibility(JsonAutoDetect.Visibility.NONE)
-                .withGetterVisibility(JsonAutoDetect.Visibility.NONE);
-        this.jacksonLocal.setVisibilityChecker(checker);
-        this.jacksonLocal.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        this.jacksonLocal.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+                .withSetterVisibility(JsonAutoDetect.Visibility.NONE);
 
-        // Will serialize ONLY members annotated with @JsonProperty
-        checker = this.jacksonServer.getSerializationConfig()
-                .getDefaultVisibilityChecker()
-                .withIsGetterVisibility(JsonAutoDetect.Visibility.NONE)
-                .withGetterVisibility(JsonAutoDetect.Visibility.NONE);
-        this.jacksonServer.setVisibilityChecker(checker);
-        this.jacksonServer.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        this.jacksonServer.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        mapper.setVisibilityChecker(checker);
+        mapper.disable(MapperFeature.DEFAULT_VIEW_INCLUSION);
+        mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+
+        writerInternal = mapper.writerWithView(Views.Internal.class);
+        writerPublic = mapper.writerWithView(Views.Public.class);
+        this.mapper = mapper;
+
     }
 
-    public String toJsonLocal(Object src) {
-        Logger.v(TAG, "Serializing to JSON with local visibility");
+    public String toJsonInternal(Object src) {
+        Logger.v(TAG, "Serializing to JSON with internal view");
         try {
-            return jacksonLocal.writer().writeValueAsString(src);
+            return writerInternal.writeValueAsString(src);
         } catch (JsonProcessingException e) {
             Logger.e(TAG, "Could not serialize to JSON");
             e.printStackTrace();
@@ -78,10 +73,10 @@ public class Json {
         }
     }
 
-    public String toJsonServer(Object src) {
-        Logger.v(TAG, "Serializing to JSON with server visibility");
+    public String toJsonPublic(Object src) {
+        Logger.v(TAG, "Serializing to JSON with public view");
         try {
-            return jacksonServer.writer().writeValueAsString(src);
+            return writerPublic.writeValueAsString(src);
         } catch (JsonProcessingException e) {
             Logger.e(TAG, "Could not serialize to JSON");
             e.printStackTrace();
@@ -92,7 +87,7 @@ public class Json {
     public <T> T fromJson(String json, Class<T> classOfT) {
         Logger.v(TAG, "Deserializing from JSON");
         try {
-            return jacksonLocal.readValue(json, classOfT);
+            return mapper.readValue(json, classOfT);
         } catch (IOException e) {
             Logger.e(TAG, "Could not deserialize JSON");
             Logger.e(TAG, json.replace("{", "'{'").replace("}", "'}'"));
@@ -104,7 +99,7 @@ public class Json {
     public <T> T fromJson(String json, TypeReference<T> typeRefOfT) {
         Logger.v(TAG, "Deserializing from JSON");
         try {
-            return jacksonLocal.readValue(json, typeRefOfT);
+            return mapper.readValue(json, typeRefOfT);
         } catch (IOException e) {
             Logger.e(TAG, "Could not deserialize JSON");
             Logger.e(TAG, json.replace("{", "'{'").replace("}", "'}'"));

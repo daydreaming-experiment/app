@@ -222,7 +222,7 @@ public class SyncService extends RoboService {
 
         // Sign our data to identify us, and upload
         Logger.d(TAG, "Signing data and launching sequences sync");
-        serverTalker.signAndPostResult(json.toJsonServer(sequencesWrap),
+        serverTalker.signAndPostResult(json.toJsonPublic(sequencesWrap),
                 callback);
     }
 
@@ -287,7 +287,7 @@ public class SyncService extends RoboService {
 
         // Sign our data to identify us, and upload
         Logger.d(TAG, "Signing data and launching locationPoints sync");
-        serverTalker.signAndPostResult(json.toJsonServer(locationPointsWrap),
+        serverTalker.signAndPostResult(json.toJsonPublic(locationPointsWrap),
                 callback);
     }
 
@@ -345,7 +345,7 @@ public class SyncService extends RoboService {
 
         // Sign our data to identify us, and upload
         Logger.d(TAG, "Signing data and launching profile update");
-        serverTalker.signAndPutProfile(json.toJsonServer(profileWrap),
+        serverTalker.signAndPutProfile(json.toJsonPublic(profileWrap),
                 callback);
     }
 
