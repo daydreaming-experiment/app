@@ -3,6 +3,7 @@ package com.brainydroid.daydreaming.db;
 import android.location.Location;
 
 import com.brainydroid.daydreaming.background.Logger;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -10,6 +11,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.introspect.VisibilityChecker;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -44,6 +46,12 @@ public class Json {
     public Json(ObjectMapper mapper) {
         Logger.v(TAG, "Building Jackson reader/writer instances");
 
+        VisibilityChecker checker = mapper.getVisibilityChecker()
+                .withGetterVisibility(JsonAutoDetect.Visibility.NONE)
+                .withIsGetterVisibility(JsonAutoDetect.Visibility.NONE)
+                .withSetterVisibility(JsonAutoDetect.Visibility.NONE);
+
+        mapper.setVisibilityChecker(checker);
         mapper.disable(MapperFeature.DEFAULT_VIEW_INCLUSION);
         mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
