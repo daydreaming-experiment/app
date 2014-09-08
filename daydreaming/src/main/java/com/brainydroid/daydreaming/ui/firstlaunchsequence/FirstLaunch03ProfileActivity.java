@@ -2,6 +2,7 @@ package com.brainydroid.daydreaming.ui.firstlaunchsequence;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Typeface;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.widget.*;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.ProfileStorage;
+import com.brainydroid.daydreaming.ui.FontUtils;
 import com.google.inject.Inject;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
@@ -35,7 +37,6 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
     public boolean genderSpinnerTouched = false;
     public boolean ageSpinnerTouched = false;
     public boolean educationSpinnerTouched = false;
-
 
     @Inject ProfileStorage profileStorage;
 
@@ -69,13 +70,8 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
 
             Logger.d(TAG, "Launching next activity");
 
-            // FIXME: we skip the tipiQuestionnaire since it moves to generic questionnaires in grammar v3
-            statusManager.setTipiQuestionnaireCompleted();
             finishFirstLaunch();
             launchDashBoardActivity();
-            //launchNextActivity(FirstLaunch05MeasuresActivity.class);
-//          launchNextActivity(
-//                  FirstLaunch04PersonalityQuestionnaireActivity.class);
         }
     }
 
@@ -232,6 +228,7 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
 
             label.setText(s);
             icon.setImageDrawable(gender_icon);
+            FontUtils.setRobotoFont(this.getContext(),label);
 
             //label.setText(strings[position]);
             //icon.setImageResource(arr_images[position]);
@@ -263,8 +260,8 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
         @Override
         public View getDropDownView(int position, View convertView,
                                     ViewGroup parent) {
-            View v =  getView(position, convertView, parent);
-            if (position == 0){
+            View v = getView(position, convertView, parent);
+            if (position == 0) {
                 v.setVisibility(View.INVISIBLE);
             }
             return v;
@@ -286,18 +283,13 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
             TextView label = (TextView)row.findViewById(R.id.spinnerTarget);
             String s = getItem(position);
             label.setText(s);
+            FontUtils.setRobotoFont(this.getContext(),label);
 
             //label.setText(strings[position]);
             //icon.setImageResource(arr_images[position]);
 
             return row;
         }
-    }
-
-    // Overriding parent method
-    @Override
-    public boolean shouldFinishIfTipiQuestionnaireCompleted() {
-        return true;
     }
 
 }

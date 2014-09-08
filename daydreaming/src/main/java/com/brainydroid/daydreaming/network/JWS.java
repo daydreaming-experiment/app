@@ -1,13 +1,18 @@
 package com.brainydroid.daydreaming.network;
 
-import com.google.gson.annotations.Expose;
+import com.brainydroid.daydreaming.db.Views;
+import com.fasterxml.jackson.annotation.JsonView;
 
 import java.util.ArrayList;
 
 public class JWS {
 
-    @Expose private String payload;
-    @Expose private ArrayList<JWSSignature> signatures;
+    @JsonView(Views.Public.class)
+    private String payload;
+    @JsonView(Views.Public.class)
+    private ArrayList<JWSSignature> signatures;
+
+    public JWS() {}
 
     public JWS(String payload, ArrayList<JWSSignature> jwsSignatures) {
         this.payload = payload;

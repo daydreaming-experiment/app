@@ -112,12 +112,6 @@ public class FirstLaunch01DescriptionActivity extends FirstLaunchActivity {
         nextButton.setClickable(true);
     }
 
-    // Overriding parent method
-    @Override
-    public boolean shouldFinishIfTipiQuestionnaireCompleted() {
-        return true;
-    }
-
     @Override
     public void backHook() {
         Logger.v(TAG, "Leaving default transition");

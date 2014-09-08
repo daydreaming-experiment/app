@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.ui.AlphaButton;
+import com.brainydroid.daydreaming.ui.FontUtils;
 
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
@@ -51,6 +52,7 @@ public class FirstLaunch02TermsActivity extends FirstLaunchActivity implements S
         addAgreementButtonListener();
         addInfoButtonListener();
         consent.setText(Html.fromHtml(getString(R.string.terms_html)));
+        setRobotoFont(this);
     }
 
     /**
@@ -105,9 +107,18 @@ public class FirstLaunch02TermsActivity extends FirstLaunchActivity implements S
 
             // create alert dialog
             AlertDialog alertDialog = alertDialogBuilder.create();
-
             // show it
             alertDialog.show();
+
+            TextView dialogTextView = (TextView) alertDialog.findViewById(android.R.id.message);
+            FontUtils.setRobotoFont(this, dialogTextView);
+            dialogTextView = (TextView) alertDialog.findViewById(android.R.id.title);
+            FontUtils.setRobotoFont(this, dialogTextView);
+            dialogTextView = (TextView) alertDialog.findViewById(android.R.id.button1);
+            FontUtils.setRobotoFont(this, dialogTextView);
+            dialogTextView = (TextView) alertDialog.findViewById(android.R.id.button2);
+            FontUtils.setRobotoFont(this, dialogTextView);
+
         } else {
             launchNextActivity(FirstLaunch03ProfileActivity.class);
         }
@@ -153,12 +164,6 @@ public class FirstLaunch02TermsActivity extends FirstLaunchActivity implements S
     public  void setButtonAndScrollViewListener() {
         disagreeButton.setEnabled(true);
         sv.setScrollViewListener(this);
-    }
-
-    // Overriding parent method
-    @Override
-    public boolean shouldFinishIfTipiQuestionnaireCompleted() {
-        return true;
     }
 
 }

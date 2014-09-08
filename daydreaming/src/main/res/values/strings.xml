@@ -11,54 +11,74 @@
     <string name="app_name">Daydreaming</string>
     <string name="menu_settings">Settings</string>
 
-
-
-
     <!-- Dashboard -->
     <string name="dashboard_title_activity">Dashboard</string>
     <string name="dashboard_text_experiment_is">EXPERIMENT IS</string>
     <string name="dashboard_text_exp_running">RUNNING</string>
     <string name="dashboard_text_exp_paused">PAUSED</string>
     <string name="dashboard_text_exp_stopped">STOPPED</string>
-
-    <string name="dashboard_quit_experiment">Quit</string>
     <string name="dashboard_text_days_elapsed">Days elapsed</string>
-    <string name="dashboard_title_results">Results:</string>
-    <string name="dashboard_text_results">Results will appear once the first X days are completed (that\'s in Z days).</string>
-
     <string name="dashboard_button_text_about">About</string>
     <string name="dashboard_button_text_terms">Terms</string>
     <string name="dashboard_button_text_description">Description</string>
-
     <string name="dashboard_text_enable_internet">Please enable internet</string>
     <string name="dashboard_text_parameters_updating">Parameters are updating…</string>
+    <string name="dashboard_button_text_glossary">Glossary</string>
+    <string name="dashboard_text_days">days</string>
+    <string name="dashboard_text_results_in">Results in</string>
+    <string name="dashboard_text_see_results">See results</string>
+    <string name="dashboard_button_change_data_settings">Data Settings</string>
+    <string name="dashboard_test_text_probe_now">Probe Now</string>
+    <string name="dashboard_test_text_sync_now">Sync Now</string>
+    <string name="dashboard_test_text_reload_parameters">Reload parameters</string>
 
+    <!-- Glossary Activity -->
+    <string name="glossary_title">GLOSSARY</string>
 
+    <!-- About/credits Activity -->
+    <string name="credits_text_title_about">ABOUT</string>
+    <string name="credits_text_main1">Here is an App done collaboratively by multiple people. \n This app is kindly supported by Science en Poche, whose logo you can see here.</string>
+    <string name="credits_text_main2">We do other apps to. If you want more information, feel free to visit our website</string>
+    <string name="credits_website">www.daydreaming-the-app.net</string>
+    <string name="credits_text_title_our_team">OUR TEAM</string>
 
+    <string name="vincent_name">Vincent Adam</string>
+    <string name="vincent_description">Phd Student at UCL \n Gatsby Unit</string>
 
+    <string name="sebastien_name">Sébastien Lerique</string>
+    <string name="sebastien_description">Phd Student à Berlin</string>
+
+    <string name="mikael_name">Mikael Bastian</string>
+    <string name="mikael_description">Phd Student à Paris</string>
+
+    <string name="gislain_name">Gislain Delaire</string>
+    <string name="gislain_description">Designer à Paris</string>
+
+    <string name="jerome_name">Jerome Sackur</string>
+    <string name="jerome_description">Prof de Psycho à Paris</string>
+
+    <string name="credits_institution1">inst1</string>
+    <string name="credits_institution2">inst2</string>
+    <string name="credits_institution3">inst3</string>
+    <string name="credits_institution4">inst4</string>
+    <string name="credits_institution5">inst5</string>
 
     <!-- Welcome Activity -->
     <string name="firstLaunchWelcome_title_activity">Daydreaming</string>
     <string name="firstLaunchWelcome_text_welcome">Daydreaming Experiment</string>
-    <string name="firstLaunchWelcome_button_start">Start</string>
-
 
     <!-- Description Activity -->
     <string name="firstLaunchDescription_title_activity">Description</string>
-    <string name="firstLaunchDescription_text_title1">WELCOME TO</string>
-    <string name="firstLaunchDescription_text_title2">THE DAYDREAMING APP!</string>
-
+    <string name="firstLaunchDescription_text_title">WELCOME TO\nTHE DAYDREAMING APP!</string>
     <string name="firstLaunchDescription_button_next">Next</string>
 
     <!-- Terms Activity -->
     <string name="firstLaunchTerms_title_activity">Consent</string>
     <string name="firstLaunchTerms_text_title">CONSENT</string>
-    <string name="firstLaunchTerms_text_consent">Consent</string>
     <string name="firstLaunchTerms_button_agree">Agree</string>
     <string name="firstLaunchTerms_button_disagree">Disagree</string>
     <string name="firstLaunchTerms_text_please_scroll">Scroll down terms</string>
     <string name="firstLaunchTerms_text_more_consent">More information</string>
-
 
     <!-- App Settings Activity -->
     <string name="time_window_lb">From</string>
@@ -67,17 +87,22 @@
     <string name="notifications_settings">Notifications</string>
     <string name="settings_picker_positive">Set</string>
     <string name="settings_picker_negative">Cancel</string>
-    <string name="firstLaunchSettings_title_activity">Settings</string>
     <string name="settings_title_activity">Settings</string>
     <string name="settings_time_corrected_1">Please allow polls for at least</string>
     <string name="settings_time_corrected_2">hours in the day! The time settings have been reset to default.</string>
-
+    <string name="appsettings_title">SETTINGS</string>
+    <string name="appsettings_notification_title">Notifications</string>
+    <string name="appsettings_time_title">Only ask questions</string>
+    <string name="appsettings_time_from">From </string>
+    <string name="appsettings_time_until">Until </string>
+    <string name="appsettings_allow_blink_text">Blinks at questions</string>
+    <string name="appsettings_allow_vibrations_text">Vibrates at questions</string>
+    <string name="appsettings_allow_sound_text">Beeps at questions</string>
 
     <!-- Profile Activity -->
     <string name="firstLaunchProfile_title_activity">Profile</string>
     <string name="firstLaunchProfile_title_about_you">A LITTLE ABOUT YOU</string>
     <string name="firstLaunchProfile_hint_age">Age</string>
-    <string name="firstLaunchProfile_button_next">Next</string>
     <string name="firstLaunchProfile_fix_age">Please enter an age between 5 and 100</string>
     <string name="firstLaunchProfile_text_gender">Gender</string>
     <string name="firstLaunchProfile_text_education">Education</string>
@@ -86,38 +111,9 @@
     <string name="firstLaunchProfile_Spinner_education_prompt">Select your education</string>
     <string name="firstLaunchProfile_Spinner_age_prompt">Select your age</string>
 
-
-    <!-- Measure Activity -->
-    <string name="firstLaunchMeasures_text_measures">The app will measure:</string>
-    <string name="firstLaunchMeasures_text_network_location">Coarse location (network-based)</string>
-    <string name="firstLaunchMeasures_text_answers">Answers to the questions</string>
-    <string name="firstLaunchMeasures_text_times">Time at which the questions are asked</string>
-    <string name="firstLaunchMeasures_text_anonymous">Please notice that all the data collected is ANONYMOUS: as researchers we have no means of identifying who the data collected comes from.</string>
-    <string name="firstLaunchMeasures_button_next">Finish</string>
-    <string name="firstLaunchMeasures_text_settings_necessary">Change your settings to get location:</string>
-    <string name="firstLaunchMeasures_button_settings">Settings&#8230;</string>
-    <string name="firstLaunchMeasures_title_activity">Measures &amp; Privacy</string>
-
-    <!-- Measure Activity 2 -->
-    <string name="firstLaunchMeasures2_text_intro">Now check that internet and geolocation are activated</string>
-    <string name="firstLaunchMeasures2_text_network_connection"> Internet</string>
-    <string name="firstLaunchMeasures2_explanation_network_connection_ok"><![CDATA[ Internet is used to send us your answers ]]></string>
-    <string name="firstLaunchMeasures2_explanation_network_connection_bad"><![CDATA[ <b>Enable internet</b> to send us your answers ]]></string>
-    <string name="firstLaunchMeasures2_button_change_data_settings">Change your internet settings</string>
-    <string name="firstLaunchMeasures2_text_coarse_location"> Coarse location</string>
-    <string name="firstLaunchMeasures2_explanation_coarse_location_ok"><![CDATA[ Coarse location (not GPS) is used for anonymous geolocation ]]></string>
-    <string name="firstLaunchMeasures2_explanation_coarse_location_bad"><![CDATA[ <b>Enable coarse location</b> (not GPS) for anonymous geolocation ]]></string>
-    <string name="firstLaunchMeasures2_button_change_location_settings">Change your location settings</string>
-    <string name="firstLaunchMeasures2_title_activity">Measures</string>
-    <string name="firstLaunchMeasures2_good_to_go_ok">Your settings are good, click next!</string>
-
-    <string name="firstLaunchMeasures2_text_warning">You do realize that you allow us to get your coarse location and upload your answers?</string>
-
-
     <!-- Questionnaire Activity -->
     <string name="Questionnaire_intro">Here are a number of personality traits that may or may not apply to you.  Please select the statement to indicate the extent to which you agree or disagree with each statement. You should rate the extent to which the pair of traits applies to you, even if one characteristic applies more strongly than the other. </string>
     <string name="Questionnaire_title">PERSONALITY\nQUESTIONNAIRE</string>
-
 
     <!-- Pulling question Activity -->
     <string name="firstLaunchPull_title_activity">Pull Questions</string>
@@ -126,8 +122,13 @@
     <string name="firstLaunchPull_text_data_enabled">Network connection</string>
     <string name="firstLaunchPull_text_settings_necessary">You are not connected to the internet, please change your settings.</string>
     <string name="firstLaunchPull_button_settings">Settings</string>
-    <string name="firstLaunchPull_button_next">Continue</string>
 
+    <!-- PageActivity -->
+    <string name="page_welcome_text">HERE ARE A FEW QUICK QUESTIONS:</string>
+    <string name="page_button_next">Next</string>
+    <string name="page_button_finish">Finish</string>
+    <string name="page_thank_you">Thank you for answering these questions!</string>
+    <string name="page_intro_text">Right before the app interrupted you…</string>
 
     <!-- Display question Activity -->
     <string name="question_welcome_text">HERE ARE A FEW QUICK QUESTIONS:</string>
@@ -158,23 +159,10 @@
     <string name="questionActivity_catch_key">Press again to exit.\nYou\'ll lose these questions!</string>
     <string name="question_common_question_intro_text">Right before the app interrupted you...</string>
 
-    <!-- Poll Notivifcation -->
-    <string name="pollNotification_ticker">Daydreaming poll</string>
-    <string name="pollNotification_title">Daydreaming</string>
-    <string name="pollNotification_text">A few quick questions</string>
-
-
-    <!-- AppSettings -->
-    <string name="appsettings_title">SETTINGS</string>
-    <string name="appsettings_notification_title">Notifications</string>
-    <string name="appsettings_time_title">Only ask questions</string>
-    <string name="appsettings_time_from">From </string>
-    <string name="appsettings_time_until">Until </string>
-
-    <string name="appsettings_allow_blink_text">Blinks at questions</string>
-    <string name="appsettings_allow_vibrations_text">Vibrates at questions</string>
-    <string name="appsettings_allow_sound_text">Beeps at questions</string>
-
+    <!-- Probe Notivifcation -->
+    <string name="probeNotification_ticker">Daydreaming poll</string>
+    <string name="probeNotification_title">Daydreaming</string>
+    <string name="probeNotification_text">A few quick questions</string>
 
     <!-- Crash Reports -->
     <string name="crash_toast_text">Oops Daydreaming just crashed! Building a crash report...</string>
@@ -238,8 +226,5 @@
 
 ]]>
     </string>
-    <string name="credits_text_title">CREDITS</string>
-    <string name="credits_text_main">Here are our \n supporting institutions</string>
-    <string name="dashboard_button_text_credits">Credits</string>
 
 </resources>

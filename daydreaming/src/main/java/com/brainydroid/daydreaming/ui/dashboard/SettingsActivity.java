@@ -127,7 +127,7 @@ public class SettingsActivity extends RoboFragmentActivity {
                         // Update shared preference
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         editor.putString(TIME_FROM, pad(hourOfDay) + ":" + pad(minute));
-                        editor.commit();
+                        editor.apply();
 
                         // Listener can correct and update the view here
                         correctTimeWindow();
@@ -162,7 +162,7 @@ public class SettingsActivity extends RoboFragmentActivity {
                         // Update shared preference
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         editor.putString(TIME_UNTIL, pad(hourOfDay) + ":" + pad(minute));
-                        editor.commit();
+                        editor.apply();
 
                         // Listener can correct and update the view here
                         correctTimeWindow();
@@ -182,7 +182,7 @@ public class SettingsActivity extends RoboFragmentActivity {
             public void onClick(View v) {
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putBoolean(NOTIF_BLINK, blink_check.isChecked()); // value to store
-                editor.commit();
+                editor.apply();
             }
 
         });
@@ -193,7 +193,7 @@ public class SettingsActivity extends RoboFragmentActivity {
             public void onClick(View v) {
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putBoolean(NOTIF_VIBRATION, vibrations_check.isChecked()); // value to store
-                editor.commit();
+                editor.apply();
             }
 
         });
@@ -204,7 +204,7 @@ public class SettingsActivity extends RoboFragmentActivity {
             public void onClick(View v) {
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putBoolean(NOTIF_SOUND, sound_check.isChecked()); // value to store
-                editor.commit();
+                editor.apply();
             }
 
         });
@@ -234,7 +234,7 @@ public class SettingsActivity extends RoboFragmentActivity {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString(TIME_FROM, defaultTimePreferenceMin);
             editor.putString(TIME_UNTIL, defaultTimePreferenceMax);
-            editor.commit();
+            editor.apply();
         } else {
             Logger.v(TAG, "Time window set by user is OK");
         }
@@ -306,7 +306,8 @@ public class SettingsActivity extends RoboFragmentActivity {
     public void testToProdDialog(){
         Logger.v(TAG, "Proposing to switch back to prod mode");
 
-        new AlertDialog.Builder(this)
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder
         .setTitle("Production mode")
         .setMessage("Switch back to production mode?")
         .setCancelable(false)
@@ -331,8 +332,19 @@ public class SettingsActivity extends RoboFragmentActivity {
                 dialog.cancel();
             }
 
-        })
-        .show();
+        });
+
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+
+        TextView dialogTextView = (TextView) alertDialog.findViewById(android.R.id.message);
+        FontUtils.setRobotoFont(this, dialogTextView);
+        dialogTextView = (TextView) alertDialog.findViewById(android.R.id.title);
+        FontUtils.setRobotoFont(this, dialogTextView);
+        dialogTextView = (TextView) alertDialog.findViewById(android.R.id.button1);
+        FontUtils.setRobotoFont(this, dialogTextView);
+        dialogTextView = (TextView) alertDialog.findViewById(android.R.id.button2);
+        FontUtils.setRobotoFont(this, dialogTextView);
     }
 
     public void prodToTestDialog(){

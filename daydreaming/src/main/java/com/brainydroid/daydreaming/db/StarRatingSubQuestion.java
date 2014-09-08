@@ -1,28 +1,42 @@
 package com.brainydroid.daydreaming.db;
 
 import com.brainydroid.daydreaming.background.Logger;
+import com.fasterxml.jackson.annotation.JsonView;
 
 import java.util.ArrayList;
 
 public class StarRatingSubQuestion {
 
-    @SuppressWarnings("UnusedDeclaration")
+    @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "StarRatingSubQuestion";
 
     public static int DEFAULT_INITIAL_RATING = -1;
 
+    @JsonView(Views.Internal.class)
     private String text = null;
-    private ArrayList<String> hints = new ArrayList<String>();
+    @JsonView(Views.Internal.class)
+    private String glossaryText = null;
+    @JsonView(Views.Internal.class)
+    private ArrayList<String> hints = null;
     @SuppressWarnings("FieldCanBeLocal")
+    @JsonView(Views.Internal.class)
     private int numStars = -1;
     @SuppressWarnings("FieldCanBeLocal")
+    @JsonView(Views.Internal.class)
     private float stepSize = -1f;
     @SuppressWarnings("FieldCanBeLocal")
+    @JsonView(Views.Internal.class)
     private float initialRating = DEFAULT_INITIAL_RATING;
     @SuppressWarnings("FieldCanBeLocal")
+    @JsonView(Views.Internal.class)
     private boolean notApplyAllowed = false;
     @SuppressWarnings("FieldCanBeLocal")
+    @JsonView(Views.Internal.class)
     private boolean showLiveIndication = false;
+
+    public synchronized String getGlossaryText() {
+        return glossaryText;
+    }
 
     public synchronized String getText() {
         return text;

@@ -1,8 +1,10 @@
 package com.brainydroid.daydreaming.db;
 
 import android.location.Location;
+
 import com.brainydroid.daydreaming.background.Logger;
-import com.google.gson.annotations.Expose;
+import com.fasterxml.jackson.annotation.JacksonInject;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.google.inject.Inject;
 
 /**
@@ -20,17 +22,10 @@ import com.google.inject.Inject;
  * @see com.brainydroid.daydreaming.background.LocationPointService
  */
 public final class LocationPoint extends
-        StatusModel<LocationPoint,LocationPointsStorage> {
+        StatusModel<LocationPoint,LocationPointsStorage,LocationPointJsonFactory> {
 
     @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "LocationPoint";
-
-    // These should always be serialized
-    @Expose private double locationLatitude = -1;
-    @Expose private double locationLongitude = -1;
-    @Expose private double locationAltitude = -1;
-    @Expose private double locationAccuracy = -1;
-    @Expose private long timestamp = -1;
 
     /** Status string if the {@link LocationPoint} is collecting location
      * data
@@ -41,8 +36,20 @@ public final class LocationPoint extends
      */
     public static final String STATUS_COMPLETED = "statusCompleted";
 
+    // These should always be serialized
+    @JsonView(Views.Public.class)
+    private double locationLatitude = -1;
+    @JsonView(Views.Public.class)
+    private double locationLongitude = -1;
+    @JsonView(Views.Public.class)
+    private double locationAltitude = -1;
+    @JsonView(Views.Public.class)
+    private double locationAccuracy = -1;
+    @JsonView(Views.Public.class)
+    private long timestamp = -1;
+
     // Our database for LocationPoints
-    @Inject transient LocationPointsStorage locationPointsStorage;
+    @Inject @JacksonInject LocationPointsStorage locationPointsStorage;
 
     @Override
     protected synchronized LocationPoint self() {
@@ -52,86 +59,6 @@ public final class LocationPoint extends
     @Override
     protected synchronized LocationPointsStorage getStorage() {
         return locationPointsStorage;
-    }
-
-    /**
-     * Get the latitude of the {@link LocationPoint}.
-     *
-     * @return Latitude of the {@link LocationPoint}
-     */
-    public synchronized double getLocationLatitude() {
-        return locationLatitude;
-    }
-
-    /**
-     * Get the longitude of the {@link LocationPoint}.
-     *
-     * @return Longitude of the {@link LocationPoint}
-     */
-    public synchronized double getLocationLongitude() {
-        return locationLongitude;
-    }
-
-    /**
-     * Get the altitude of the {@link LocationPoint}.
-     *
-     * @return Altitude of the {@link LocationPoint} in meters
-     */
-    public synchronized double getLocationAltitude() {
-        return locationAltitude;
-    }
-
-    /**
-     * Get the accuracy of the {@link LocationPoint}.
-     *
-     * @return Accuracy of the {@link LocationPoint} in meters
-     */
-    public synchronized double getLocationAccuracy() {
-        return locationAccuracy;
-    }
-
-    /**
-     * Set the latitude of the {@link LocationPoint}, and persist to database
-     * if necessary.
-     *
-     * @param locationLatitude Latitude to set
-     */
-    public synchronized void setLocationLatitude(double locationLatitude) {
-        this.locationLatitude = locationLatitude;
-        saveIfSync();
-    }
-
-    /**
-     * Set the longitude of the {@link LocationPoint},
-     * and persist to database if necessary.
-     *
-     * @param locationLongitude Longitude to set
-     */
-    public synchronized void setLocationLongitude(double locationLongitude) {
-        this.locationLongitude = locationLongitude;
-        saveIfSync();
-    }
-
-    /**
-     * Set the altitude of the {@link LocationPoint}, and persist to database
-     * if necessary.
-     *
-     * @param locationAltitude Altitude to set, in meters
-     */
-    public synchronized void setLocationAltitude(double locationAltitude) {
-        this.locationAltitude = locationAltitude;
-        saveIfSync();
-    }
-
-    /**
-     * Set the accuracy of the {@link LocationPoint}, and persist to database
-     * if necessary.
-     *
-     * @param locationAccuracy Accuracy to set, in meters
-     */
-    public synchronized void setLocationAccuracy(double locationAccuracy) {
-        this.locationAccuracy = locationAccuracy;
-        saveIfSync();
     }
 
     /**
@@ -149,15 +76,6 @@ public final class LocationPoint extends
             locationAccuracy = location.getAccuracy();
         }
         saveIfSync();
-    }
-
-    /**
-     * Get the {@link LocationPoint}'s timestamp.
-     *
-     * @return Timestamp, usually in milliseconds since epoch
-     */
-    public synchronized long getTimestamp() {
-        return timestamp;
     }
 
     /**

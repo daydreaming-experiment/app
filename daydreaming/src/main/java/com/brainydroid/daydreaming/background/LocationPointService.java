@@ -7,6 +7,7 @@ import android.location.Location;
 import android.os.IBinder;
 import android.os.SystemClock;
 import com.brainydroid.daydreaming.db.LocationPoint;
+import com.brainydroid.daydreaming.db.LocationPointFactory;
 import com.brainydroid.daydreaming.db.LocationPointsStorage;
 import com.brainydroid.daydreaming.network.SntpClient;
 import com.brainydroid.daydreaming.network.SntpClientCallback;
@@ -52,7 +53,8 @@ public class LocationPointService extends RoboService {
     public static String CANCEL_COLLECTING_LOCATION_POINTS = "cancelCollectingLocationPoints";
 
     @Inject SntpClient sntpClient;
-    @Inject LocationPoint locationPoint;
+    @Inject LocationPointFactory locationPointFactory;
+    LocationPoint locationPoint;
     @Inject LocationPointsStorage locationPointsStorage;
     @Inject AlarmManager alarmManager;
     @Inject StatusManager statusManager;
@@ -84,6 +86,9 @@ public class LocationPointService extends RoboService {
     public synchronized int onStartCommand(Intent intent, int flags, int startId) {
         Logger.d(TAG, "LocationPointService started");
         super.onStartCommand(intent, flags, startId);
+
+        // Record last time we ran
+        statusManager.setLatestLocationPointServiceSystemTimestampToNow();
 
         // Were we started to start or to stop the listening?
         if (intent.getBooleanExtra(STOP_LOCATION_LISTENING, false)) {
@@ -147,14 +152,22 @@ public class LocationPointService extends RoboService {
         if (collectingLocationPoints != null) {
             if (cancelCollectingLocationPoints) {
                 Logger.d(TAG, "Cancelling collecting LocationPoints");
-                locationPointsStorage.removeLocationPoints(collectingLocationPoints);
+                locationPointsStorage.remove(collectingLocationPoints);
             } else {
-                Logger.d(TAG, "Setting collecting LocationPoints to completed");
+                Logger.d(TAG, "Setting complete collecting LocationPoints to completed, " +
+                        "deleting the other ones");
 
                 for (LocationPoint collectingLocationPoint :
                         collectingLocationPoints) {
-                    collectingLocationPoint.setStatus(
-                            LocationPoint.STATUS_COMPLETED);
+                    // If complete (i.e. has location and timestamp), save, else remove.
+                    // This prevents unusable data from being uploaded.
+                    if (collectingLocationPoint.isComplete()) {
+                        collectingLocationPoint.setStatus(
+                                LocationPoint.STATUS_COMPLETED);
+                        collectingLocationPoint.flushSaves();
+                    } else {
+                        locationPointsStorage.remove(collectingLocationPoint.getId());
+                    }
                 }
             }
 
@@ -209,9 +222,16 @@ public class LocationPointService extends RoboService {
     private synchronized void startLocationListening() {
         Logger.d(TAG, "Starting location listening");
 
+        locationPoint = locationPointFactory.create();
+
         // Mark the location point as not yet uploadable
         Logger.v(TAG, "Setting LocationPoint's status to collecting");
         locationPoint.setStatus(LocationPoint.STATUS_COLLECTING);
+
+        Logger.v(TAG, "Saving locationPoint, and retaining further saves until " +
+                "collection has finished");
+        locationPoint.save();
+        locationPoint.retainSaves();
 
         // This will be called by LocationService when it receives location
         // data. It gets registered on the LocationService when the
@@ -225,13 +245,6 @@ public class LocationPointService extends RoboService {
                 Logger.i(TAG, "New location received, " +
                         "setting on the locationPoint");
                 locationPoint.setLocation(location);
-
-                // Only save if both timestamp and location have been
-                // found. Otherwise it would create unusable data.
-                if (locationPoint.isComplete()) {
-                    Logger.i(TAG, "LocationPoint complete, saving to DB");
-                    locationPoint.save();
-                }
             }
 
         };
@@ -252,14 +265,6 @@ public class LocationPointService extends RoboService {
                     Logger.i(TAG, "NTP request successful, " +
                             "setting new time on the locationPoint");
                     locationPoint.setTimestamp(sntpClient.getNow());
-
-                    // Only save if both timestamp and location have been
-                    // found. Otherwise it would create unusable data.
-                    if (locationPoint.isComplete()) {
-                        Logger.i(TAG, "LocationPoint is complete, " +
-                                "saving to DB");
-                        locationPoint.save();
-                    }
                 } else {
                     Logger.i(TAG, "NTP request failed, sntpClient is null");
                 }

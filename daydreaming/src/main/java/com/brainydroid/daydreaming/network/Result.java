@@ -1,12 +1,17 @@
 package com.brainydroid.daydreaming.network;
 
-import com.google.gson.annotations.Expose;
+import com.brainydroid.daydreaming.db.Views;
+import com.fasterxml.jackson.annotation.JsonView;
 
 public class Result<T> {
 
     @SuppressWarnings({"FieldCanBeLocal", "UnusedDeclaration"})
-    @Expose private String profile_id;
-    @Expose private T result_data;
+    @JsonView(Views.Public.class)
+    private String profile_id;
+    @JsonView(Views.Public.class)
+    private T result_data;
+
+    public Result() {}
 
     public Result(String profile_id, T result_data) {
         this.profile_id = profile_id;

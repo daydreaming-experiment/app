@@ -4,31 +4,6 @@
 
     <!-- Used for Tipi questionnaire -->
 
-
-    <string-array name="tipi_answers">
-        <item>Disagree strongly</item>
-        <item>Disagree moderately</item>
-        <item>Disagree a little</item>
-        <item>Neither agree nor disagree</item>
-        <item>Agree a little</item>
-        <item>Agree moderately</item>
-        <item>Agree strongly</item>
-    </string-array>
-
-    <string-array name="tipi_questions">
-        <item>Extroverted, enthusiastic</item>
-        <item>Critical, quarrelsome</item>
-        <item>Dependable, self-disciplined</item>
-        <item>Anxious, easily upset</item>
-        <item>Open to new experiences, complex</item>
-        <item>Reserved, quiet</item>
-        <item>Sympathetic, warm</item>
-        <item>Disorganized, careless</item>
-        <item>Calm, emotionally stable</item>
-        <item>Conventional, uncreative</item>
-    </string-array>
-
-
     <!-- Possible answers for Profile activity Spinners -->
     <string-array name="genders">
         <item>select</item>

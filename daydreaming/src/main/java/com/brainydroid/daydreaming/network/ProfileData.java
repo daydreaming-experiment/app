@@ -1,10 +1,10 @@
 package com.brainydroid.daydreaming.network;
 
 import com.brainydroid.daydreaming.background.Logger;
-import com.google.gson.annotations.Expose;
+import com.brainydroid.daydreaming.db.Views;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
-import com.google.inject.assistedinject.AssistedInject;
 
 import java.util.HashMap;
 
@@ -12,14 +12,24 @@ public class ProfileData {
 
     private static String TAG = "ProfileData";
 
-    @Expose private String age;
-    @Expose private String gender;
-    @Expose private String education;
-    @Expose private HashMap<String, Integer> tipi_answers;
-    @Expose private String parametersVersion;
-    @Expose private String appVersionName;
-    @Expose private int appVersionCode;
-    @Expose private String mode;
+    @JsonView(Views.Public.class)
+    private String age;
+    @JsonView(Views.Public.class)
+    private String gender;
+    @JsonView(Views.Public.class)
+    private String education;
+    @JsonView(Views.Public.class)
+    private HashMap<String, Integer> tipi_answers;
+    @JsonView(Views.Public.class)
+    private String parametersVersion;
+    @JsonView(Views.Public.class)
+    private String appVersionName;
+    @JsonView(Views.Public.class)
+    private int appVersionCode;
+    @JsonView(Views.Public.class)
+    private String mode;
+
+    public ProfileData() {}
 
     @Inject
     public ProfileData(@Assisted("age") String age,

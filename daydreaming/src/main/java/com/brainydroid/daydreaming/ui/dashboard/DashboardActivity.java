@@ -16,7 +16,7 @@ import android.provider.Settings;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,7 +28,6 @@ import com.brainydroid.daydreaming.background.SyncService;
 import com.brainydroid.daydreaming.db.ParametersStorage;
 import com.brainydroid.daydreaming.network.SntpClient;
 import com.brainydroid.daydreaming.network.SntpClientCallback;
-import com.brainydroid.daydreaming.ui.AlphaLinearLayout;
 import com.brainydroid.daydreaming.ui.FontUtils;
 import com.brainydroid.daydreaming.ui.firstlaunchsequence.FirstLaunch00WelcomeActivity;
 import com.google.inject.Inject;
@@ -49,12 +48,12 @@ public class DashboardActivity extends RoboFragmentActivity {
     @InjectView(R.id.dashboard_ExperimentTimeElapsed2)
     TextView timeElapsedTextView;
     @InjectView(R.id.dashboard_ExperimentResultsIn2) TextView timeToGoTextView;
+    @InjectView(R.id.button_test_sync) Button testSyncButton;
     @InjectView(R.id.button_test_poll) Button testProbeButton;
     @InjectView(R.id.button_reload_parameters) Button testReloadButton;
-    @InjectView(R.id.dashboard_about_layout) AlphaLinearLayout aboutLayout;
+    @InjectView(R.id.dashboard_glossary_layout) RelativeLayout glossaryLayout;
     @InjectView(R.id.dashboard_textExperimentStatus) TextView expStatus;
     @InjectView(R.id.dashboard_no_params_text) TextView textNetworkConnection;
-    @InjectView(R.id.dashboard_main_layout) LinearLayout dashboardMainLayout;
 
     private boolean testModeThemeActivated = false;
 
@@ -83,16 +82,9 @@ public class DashboardActivity extends RoboFragmentActivity {
         setRobotoFont(this);
     }
 
-    @TargetApi(11)
     @Override
     public void onStart() {
         Logger.v(TAG, "Starting");
-
-        // Lint erroneously catches this as a call that requires API >= 11
-        // (which is exactly why AlphaLinearLayout exists),
-        // hence the @TargetApi(11) above.
-        aboutLayout.setAlpha(0.3f);
-        aboutLayout.setClickable(false);
 
         checkExperimentModeActivatedDirty();
         updateRunningTime();
@@ -104,9 +96,14 @@ public class DashboardActivity extends RoboFragmentActivity {
     @Override
     public void onResume() {
         Logger.v(TAG, "Resuming");
+        statusManager.checkLatestSchedulerWasAgesAgo();
         checkExperimentModeActivatedDirty();
         if (!statusManager.areParametersUpdated()) {
             Logger.v(TAG, "Parameters not yet updated, registering broadcast receiver");
+            if (statusManager.isDataEnabled()) {
+                Logger.v(TAG, "Internet enabled, so also launching parameters update");
+                launchParametersUpdate();
+            }
             registerReceiver(receiver, parametersUpdateIntentFilter);
             registerReceiver(receiver, networkIntentFilter);
         }
@@ -158,18 +155,16 @@ public class DashboardActivity extends RoboFragmentActivity {
         overridePendingTransition(R.anim.push_top_in, R.anim.push_top_out);
     }
 
-    //TODO: Layout of an about activity
-    public void  onClick_OpenAboutActivity(
+    public void  onClick_OpenGlossaryActivity(
             @SuppressWarnings("UnusedParameters") View view){
-//        Intent intent = new Intent(this, AboutActivity.class);
-//        startActivity(intent);
-//        overridePendingTransition(R.anim.push_top_in, R.anim.push_top_out);
+        if (statusManager.areParametersUpdated()) {
+            Intent intent = new Intent(this, GlossaryActivity.class);
+            startActivity(intent);
+            overridePendingTransition(R.anim.push_top_in, R.anim.push_top_out);
+        }
     }
 
-    /**
-     * Launching a credit activity
-     */
-    public void onClick_OpenCredits(
+    public void onClick_OpenAboutActivity(
             @SuppressWarnings("UnusedParameters") View view){
         Intent intent = new Intent(this, CreditsActivity.class);
         startActivity(intent);
@@ -188,7 +183,6 @@ public class DashboardActivity extends RoboFragmentActivity {
     }
 
     private void updateRunningTime() {
-        // TODO: this should update automatically once parameters are updated (through an observer)
         if (!statusManager.areParametersUpdated()) {
             Logger.i(TAG, "Parameters not downloaded yet, not updating timestamp");
             return;
@@ -273,22 +267,36 @@ public class DashboardActivity extends RoboFragmentActivity {
      */
 
     //TODO[Vincent] Think of a way to deal with experiment being paused (status : running paused stopped)
+    @TargetApi(11)
     protected void updateExperimentStatusViews() {
         View dashboard_TimeBox_layout = findViewById(R.id.dashboard_TimeBox_layout);
         View dashboard_TimeBox_no_param = findViewById(R.id.dashboard_TimeBox_layout_no_params);
         View dashboardNetworkSettingsButton = findViewById(R.id.dashboard_network_settings_button);
 
         if (statusManager.isExpRunning()) {
-            Logger.v(TAG, "Experiment is running, setting text accordingly");
+            Logger.v(TAG, "Experiment is running, setting views accordingly");
             expStatus.setText(R.string.dashboard_text_exp_running);
             dashboard_TimeBox_layout.setVisibility(View.VISIBLE);
             dashboard_TimeBox_no_param.setVisibility(View.INVISIBLE);
+
+            // Lint erroneously catches this as a call that requires API >= 11
+            // (which is exactly why AlphaLinearLayout exists),
+            // hence the @TargetApi(11) above.
+            glossaryLayout.setAlpha(1f);
+            glossaryLayout.setClickable(true);
+
             updateRunningTime();
         } else {
-            Logger.v(TAG, "Experiment is NOT running, setting text accordingly");
+            Logger.v(TAG, "Experiment is NOT running, setting views accordingly");
             expStatus.setText(R.string.dashboard_text_exp_stopped);
             dashboard_TimeBox_layout.setVisibility(View.INVISIBLE);
             dashboard_TimeBox_no_param.setVisibility(View.VISIBLE);
+
+            // Lint erroneously catches this as a call that requires API >= 11
+            // (which is exactly why AlphaLinearLayout exists),
+            // hence the @TargetApi(11) above.
+            glossaryLayout.setAlpha(0.3f);
+            glossaryLayout.setClickable(false);
         }
 
         boolean isDataEnabled = statusManager.isDataEnabled();
@@ -316,6 +324,14 @@ public class DashboardActivity extends RoboFragmentActivity {
         }
     }
 
+    private void launchParametersUpdate() {
+        Logger.d(TAG, "Launching full sync service to update parameters");
+
+        Logger.d(TAG, "Starting SyncService");
+        Intent syncIntent = new Intent(this, SyncService.class);
+        startService(syncIntent);
+    }
+
     /**
      * Launching poll from dashboard (debug)
      */
@@ -327,6 +343,19 @@ public class DashboardActivity extends RoboFragmentActivity {
         startService(pollIntent);
 
         Toast.makeText(this, "Now wait for 5 secs", Toast.LENGTH_SHORT).show();
+    }
+
+    public void runSyncNow(View view) {
+        Logger.d(TAG, "Launching debug sync now");
+
+        if (!statusManager.isDataEnabled()) {
+            Toast.makeText(this, "You're not connected to the internet!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Intent syncIntent = new Intent(this, SyncService.class);
+        syncIntent.putExtra(SyncService.DEBUG_SYNC, true);
+        startService(syncIntent);
     }
 
     public void reloadParametersKeepProfileAnswers(@SuppressWarnings("UnusedParameters") View view) {
@@ -371,12 +400,16 @@ public class DashboardActivity extends RoboFragmentActivity {
             testProbeButton.setClickable(false);
             testReloadButton.setVisibility(View.INVISIBLE);
             testReloadButton.setClickable(false);
+            testSyncButton.setVisibility(View.INVISIBLE);
+            testSyncButton.setClickable(false);
         } else {
             Logger.d(TAG, "Setting test chrome");
             testProbeButton.setVisibility(View.VISIBLE);
             testProbeButton.setClickable(true);
             testReloadButton.setVisibility(View.VISIBLE);
             testReloadButton.setClickable(true);
+            testSyncButton.setVisibility(View.VISIBLE);
+            testSyncButton.setClickable(true);
         }
     }
 
@@ -389,23 +422,6 @@ public class DashboardActivity extends RoboFragmentActivity {
         } else {
             Logger.v(TAG, "No test mode theming discrepancy");
         }
-    }
-
-    private void asyncUpdateExperimentStatusViews() {
-        Logger.d(TAG, "Asynchronously updating view of experiment "
-                + "(network settings and experiment running)");
-
-        Runnable updateView = new Runnable() {
-
-            private String TAG = "Runnable updateView";
-
-            @Override
-            public void run() {
-                Logger.d(TAG, "Updating view of network settings and experiment text");
-                updateExperimentStatusViews();
-            }
-        };
-        dashboardMainLayout.post(updateView);
     }
 
     private void launchNetworkSettings() {

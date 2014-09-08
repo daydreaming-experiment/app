@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"
+        android:paddingTop="@dimen/glossary_vertical_paddingTop_title"
+        android:paddingBottom="@dimen/global_title_body_vertical_padding"
+        android:id="@+id/glossary_title_layout">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/ui_font_big_title_bold"
+            android:text="@string/glossary_title"
+            android:textColor="@color/ui_white_text_color"/>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/glossary_title_layout"
+        >
+
+        <ScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/firstLaunchTerms_Scrollview"
+            android:padding="@dimen/global_scrollview_padding"
+            android:scrollbarSize="@dimen/global_scrollbarSize"
+            android:scrollbarThumbVertical="@drawable/scrollbar_vertical_thumb"
+>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:id="@+id/glossary_items_layout"
+                >
+
+
+            </LinearLayout>
+        </ScrollView>
+    </RelativeLayout>
+
+    <LinearLayout android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="5dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true">
+
+        <ImageButton
+            android:layout_width="@dimen/return_to_dashboard_button_size_withmargin"
+            android:layout_height="@dimen/return_to_dashboard_button_size_withmargin"
+            android:padding="@dimen/return_to_dashboard_button_margin"
+            android:scaleType="fitCenter"
+            android:onClick="onClick_backToDashboard"
+            android:src="@drawable/dashboard_arrow"
+            android:background="@null"
+            android:contentDescription="@null"
+            />
+    </LinearLayout>
+</RelativeLayout>

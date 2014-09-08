@@ -92,25 +92,7 @@ public abstract class FirstLaunchActivity extends RoboFragmentActivity {
             finish();
         } else {
             Logger.v(TAG, "First launch not completed, and no test mode theming discrepancy");
-
-            if(shouldFinishIfTipiQuestionnaireCompleted() &&
-                    statusManager.isTipiQuestionnaireCompleted()) {
-                Logger.i(TAG, "Tipi questionnaire completed, " +
-                        "and we should finish because of that -> finishing");
-                finish();
-            } else {
-                Logger.v(TAG, "Tipi questionnaire either not relevant for " +
-                        "finishing or not completed");
-            }
         }
-    }
-
-    /**
-     * To be overridden by classes who want a different behaviour in
-     * checkFirstLaunch().
-     */
-    public boolean shouldFinishIfTipiQuestionnaireCompleted() {
-        return false;
     }
 
     /**
@@ -141,33 +123,9 @@ public abstract class FirstLaunchActivity extends RoboFragmentActivity {
 
         statusManager.setFirstLaunchCompleted();
 
-        SntpClientCallback callback = new SntpClientCallback() {
-
-            private String TAG = "FirstLaunch SntpClientCallback";
-
-            @Override
-            public void onTimeReceived(SntpClient sntpClient) {
-                Logger.d(TAG, "NTP request completed");
-
-                if (sntpClient != null) {
-                    Logger.i(TAG, "NTP request successful, " +
-                            "setting timestamp for start of experiment");
-                    statusManager.setExperimentStartTimestamp(
-                            sntpClient.getNow());
-                } else {
-                    Logger.i(TAG, "NTP request failed, sntpClient is null");
-                }
-            }
-
-        };
-
-        sntpClient.asyncRequestTime(callback);
-
-        Intent syncServiceIntent = new Intent(this, SyncService.class);
-        Logger.d(TAG, "Starting SyncService");
-        startService(syncServiceIntent);
-
-        // SchedulerService will be started when the SyncService successfully updates parameters
+        // The SyncService (and following SchedulerService) and first parameter
+        // update are launched by the dashboard. Here we only need to start the
+        // LocationPointService for the first time.
 
         Intent locationPointServiceIntent = new Intent(this,
                 LocationPointService.class);

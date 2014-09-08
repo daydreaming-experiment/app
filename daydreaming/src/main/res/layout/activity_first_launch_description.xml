@@ -1,80 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:id="@+id/firstLaunchDescription_main_layout"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:gravity="center_horizontal"
-        >
+    android:id="@+id/firstLaunchDescription_main_layout"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="center_horizontal"
+    >
 
     <LinearLayout
-            android:id="@+id/firstLaunchDescription_scrollview_layout"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:background="@drawable/white_background"    >
+        android:id="@+id/firstLaunchDescription_scrollview_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/white_background"    >
 
         <ScrollView
-                android:layout_width="fill_parent"
-                android:layout_height="300dp"
-                android:padding="15dp"
-                android:scrollbarSize="5dp"
-                android:gravity="center_horizontal"
-                android:scrollbarThumbVertical="@drawable/scrollbar_vertical_thumb_blue">
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/description_scrollview_heigth"
+            android:padding="@dimen/global_scrollview_padding"
+            android:scrollbarSize="5dp"
+            android:gravity="center_horizontal"
+            android:scrollbarThumbVertical="@drawable/scrollbar_vertical_thumb_blue">
 
             <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/firstLaunchDescription_scrollviewtext"   >
+
+                <LinearLayout
+                    android:id="@+id/firstLaunchDescription_textTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/firstLaunchDescription_scrollviewtext"   >
+                    android:orientation="vertical"
+                    android:layout_marginTop="@dimen/global_text_titleTopMargin"
+                    android:layout_centerHorizontal="true">
 
-                <LinearLayout
-                        android:id="@+id/firstLaunchDescription_textTitle"
+                    <TextView
+                        android:id="@+id/firstLaunchDescription_textTitle1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/description_text_titleTopMargin"
-                        android:orientation="vertical"
-                        android:layout_centerHorizontal="true">
-
-                    <TextView
-                            android:id="@+id/firstLaunchDescription_textTitle1"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/firstLaunchDescription_text_title1"
-                            android:textAppearance="@style/ui_font_big_title_bold"
-                            android:textColor="@color/ui_dark_blue_color"
-                            android:gravity="center_horizontal"
-                            android:singleLine="true"
-                            />
-                    <TextView
-                            android:id="@+id/firstLaunchDescription_textTitle2"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/firstLaunchDescription_text_title2"
-                            android:textAppearance="@style/ui_font_big_title_bold"
-                            android:textColor="@color/ui_dark_blue_color"
-                            android:gravity="center_horizontal"
-                            android:singleLine="true"
-                            />
+                        android:text="@string/firstLaunchDescription_text_title"
+                        android:lines="2"
+                        android:textAppearance="@style/ui_font_big_title_bold"
+                        android:textColor="@color/ui_dark_blue_color"
+                        android:gravity="center_horizontal"/>
                 </LinearLayout>
 
 
                 <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/firstLaunchDescription_textTitle"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/global_title_body_vertical_padding"
+                    >
+                    <TextView
+                        android:id="@+id/firstLaunchDescription_textDescription"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/firstLaunchDescription_textTitle"
-                        android:layout_centerHorizontal="true"
-                        >
-                    <TextView
-                            android:id="@+id/firstLaunchDescription_textDescription"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="coucou"
-                            android:padding="@dimen/description_text_padding"
-                            android:lineSpacingExtra="@dimen/description_text_linespacing"
-                            android:layout_gravity="left"
-                            android:textAppearance="@style/ui_font_title"
-                            android:textColor="@color/ui_dark_blue_color"/>
+                        android:paddingLeft="@dimen/global_text_in_scrollview_side_padding"
+                        android:paddingRight="@dimen/global_text_in_scrollview_side_padding"
+                        android:lineSpacingExtra="@dimen/text_linespacing"
+                        android:layout_gravity="left"
+                        android:textAppearance="@style/ui_font_title"
+                        android:textColor="@color/ui_dark_blue_color"/>
                 </LinearLayout>
-
 
             </RelativeLayout>
             <!--         android:background="@drawable/text_box"
@@ -83,38 +72,25 @@
 
     </LinearLayout>
 
-    <RelativeLayout android:id="@+id/firstLaunchDescription_cloud_layout"
-                  android:layout_width="fill_parent"
-                  android:layout_height="fill_parent">
+    <ImageView
+        android:layout_width="@dimen/cloud_cone_person_width"
+        android:layout_height="@dimen/cloud_cone_person_heigth"
+        android:layout_alignParentBottom="true"
+        android:contentDescription="@null"
+        android:src = "@drawable/cloud_description"
+        android:scaleType="centerCrop"
+        android:id="@+id/imageView" />
 
-
-        <ImageView
-                android:layout_width="@dimen/cloud_cone_person_width"
-                android:layout_height="@dimen/cloud_cone_person_heigth"
-                android:layout_alignParentBottom="true"
-                android:src = "@drawable/cloud_description"
-                android:scaleType="centerCrop"
-                />
-
-    </RelativeLayout>
-
-
-    <RelativeLayout android:id="@+id/firstLaunchDescription_button_layout"
-                  android:layout_width="fill_parent"
-                  android:layout_height="fill_parent">
-
-        <ImageButton
-                android:id="@+id/firstLaunchDescription_buttonNext"
-                android:layout_width="@dimen/button_next_width"
-                android:layout_height="@dimen/button_next_height"
-                android:layout_marginRight="@dimen/next_button_right_margin"
-                android:layout_marginBottom="@dimen/next_button_right_margin"
-                android:onClick="onClick_buttonNext"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentBottom="true"
-                android:background="@drawable/button_cloud_next_selector"/>
-
-    </RelativeLayout>
-
+    <ImageButton
+        android:id="@+id/firstLaunchDescription_buttonNext"
+        android:layout_width="@dimen/button_next_width"
+        android:layout_height="@dimen/button_next_height"
+        android:layout_marginRight="@dimen/next_button_right_margin"
+        android:layout_marginBottom="@dimen/next_button_bottom_margin"
+        android:onClick="onClick_buttonNext"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:contentDescription="@null"
+        android:background="@drawable/button_cloud_next_selector"/>
 
 </RelativeLayout>

@@ -36,7 +36,7 @@ public class FirstLaunch00WelcomeActivity extends FirstLaunchActivity {
     public void onCreate(Bundle savedInstanceState) {
         Logger.v(TAG, "Creating");
         super.onCreate(savedInstanceState);
-
+        setRobotoFont(this);
         launchAnimation();
     }
 
@@ -47,7 +47,9 @@ public class FirstLaunch00WelcomeActivity extends FirstLaunchActivity {
         animationFrame.start();
 
         int duration = getResources().getInteger(R.integer.welcome_animation_duration);
-        animationTimer = new CountDownTimer(duration, 1000) {
+        int cycle_duration = getResources().getInteger(R.integer.welcome_animation_cycle_duration);
+
+        animationTimer = new CountDownTimer(duration, cycle_duration) {
             public void onTick(long millisUntilFinished) {}
             public void onFinish() {
                 launchNextActivity(FirstLaunch01DescriptionActivity.class);

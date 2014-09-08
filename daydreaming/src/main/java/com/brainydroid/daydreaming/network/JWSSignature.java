@@ -1,12 +1,18 @@
 package com.brainydroid.daydreaming.network;
 
-
-import com.google.gson.annotations.Expose;
+import com.brainydroid.daydreaming.db.Views;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
 
 public class JWSSignature {
 
-    @Expose private String protected_;
-    @Expose private String signature;
+    @JsonProperty("protected")
+    @JsonView(Views.Public.class)
+    private String protected_;
+    @JsonView(Views.Public.class)
+    private String signature;
+
+    public JWSSignature() {}
 
     public JWSSignature(String protected_, String signature) {
         this.protected_ = protected_;

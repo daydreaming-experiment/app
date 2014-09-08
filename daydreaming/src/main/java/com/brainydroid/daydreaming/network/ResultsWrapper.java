@@ -1,6 +1,7 @@
 package com.brainydroid.daydreaming.network;
 
-import com.google.gson.annotations.Expose;
+import com.brainydroid.daydreaming.db.Views;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 
@@ -11,7 +12,10 @@ public class ResultsWrapper<T> {
     @SuppressWarnings("UnusedDeclaration")
     private static String TAG = "ResultsWrapper";
 
-    @Expose private ArrayList<Result<T>> results;
+    @JsonView(Views.Public.class)
+    private ArrayList<Result<T>> results;
+
+    public ResultsWrapper() {}
 
     @Inject
     public ResultsWrapper(CryptoStorage cryptoStorage,
