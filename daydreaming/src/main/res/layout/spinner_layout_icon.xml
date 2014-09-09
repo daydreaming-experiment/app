@@ -8,7 +8,6 @@
             android:id="@+id/image"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:src="@drawable/ic_check"
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="@dimen/profile_spinner_icon_left_margin"
             android:layout_centerVertical="true"
