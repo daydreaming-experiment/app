@@ -42,7 +42,9 @@
     <dimen  name="seekbar_big_circle_offset" >10dp</dimen>
     <dimen  name="seekbar_small_circle_diameter" >10dp</dimen>
     <dimen  name="seekbar_small_circle_offset" >15dp</dimen>
-
+    <dimen name="seekbar_big_circle_offset_big">5dp</dimen>
+    <dimen name="seekbar_big_circle_diameter_big">30dp</dimen>
+    <dimen name="seekbar_small_circle_diameter_big">20dp</dimen>
 
     <dimen  name="return_to_dashboard_button_size_withmargin" >60dp</dimen>
     <dimen  name="return_to_dashboard_button_margin" >15dp</dimen>
