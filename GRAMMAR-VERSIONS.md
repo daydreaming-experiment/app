@@ -3,6 +3,8 @@ Grammar versions of releases
 
 Each release of the app can use a different parameter grammar version. Here is the correspondance table:
 
+* release `0.17.1`: grammar `v3-alpha`
+* release `0.17.0`: grammar `v3-alpha`
 * release `0.16.0`: grammar `v2.1`
 * release `0.15.1`: grammar `v2`
 * release `0.15.0`: grammar `v2`, but `schedulingMinDelay` and `schedulingMeanDelay` are ignored

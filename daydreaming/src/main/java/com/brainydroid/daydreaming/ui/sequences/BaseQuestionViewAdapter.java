@@ -84,7 +84,7 @@ public abstract class BaseQuestionViewAdapter
                     @Override
                     public void onClick(View widget) {
                         Toast.makeText(context, definition,
-                                Toast.LENGTH_SHORT).show();
+                                Toast.LENGTH_LONG).show();
                     }
                     public void updateDrawState(TextPaint ds) {
                         ds.setUnderlineText(false);
