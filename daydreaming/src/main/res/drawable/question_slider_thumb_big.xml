@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item>
+        <shape   android:shape="oval"    >
+            <size android:width="@dimen/seekbar_touchzone_diameter"
+                  android:height="@dimen/seekbar_touchzone_diameter"
+                    />
+            <solid android:color="@color/transparent"/>
+        </shape>
+    </item>
+
+    <item  android:left="@dimen/seekbar_big_circle_offset_big"
+           android:top = "@dimen/seekbar_big_circle_offset_big"
+           android:right="@dimen/seekbar_big_circle_offset_big"
+           android:bottom = "@dimen/seekbar_big_circle_offset_big">
+    <shape   android:shape="oval"    >
+        <solid android:color="@color/ui_background_border_color"/>
+        <size android:width="@dimen/seekbar_big_circle_diameter_big"
+              android:height="@dimen/seekbar_big_circle_diameter_big"
+              />
+    </shape>
+    </item>
+    <item android:left="@dimen/seekbar_small_circle_offset"
+          android:top = "@dimen/seekbar_small_circle_offset"
+          android:right="@dimen/seekbar_small_circle_offset"
+          android:bottom = "@dimen/seekbar_small_circle_offset">
+        <shape android:shape="oval" >
+            <solid android:color="@color/ui_blue_background_color"/>
+        </shape>
+        <size android:width="@dimen/seekbar_small_circle_diameter_big"
+              android:height="@dimen/seekbar_small_circle_diameter_big"
+                />
+    </item>
+</layer-list>
