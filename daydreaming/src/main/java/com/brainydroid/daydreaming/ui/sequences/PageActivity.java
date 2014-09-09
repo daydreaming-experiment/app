@@ -164,10 +164,7 @@ public class PageActivity extends RoboFragmentActivity {
     private void setChrome() {
         Logger.d(TAG, "Setting chrome");
 
-        if (currentPage.isLastOfSequence() ||
-                (nextPage != null && nextPage.isLastOfSequence() && nextPage.isBonus()) ||
-                (nextGroup != null && nextGroup.isLastOfSequence() && nextGroup.isBonus() &&
-                        currentPage.isLastOfPageGroup())) {
+        if (currentPage.isLastOfSequence() || isNextBonusAndLast()) {
             Logger.d(TAG, "Last page, or next page is last and bonus, or last page of group and " +
                     "next group is last and bonus -> setting finish button text");
             nextButton.setVisibility(View.GONE);
@@ -240,6 +237,25 @@ public class PageActivity extends RoboFragmentActivity {
         }
     }
 
+    private boolean isNextBonus() {
+        return (nextPage != null && nextPage.isBonus()) ||
+                (nextGroup != null && nextGroup.isBonus() && currentPage.isLastOfPageGroup());
+    }
+
+    private boolean isNextBonusAndLast() {
+        return (nextPage != null && nextPage.isBonus() && nextPage.isLastOfSequence()) ||
+                (nextGroup != null && nextGroup.isBonus() &&
+                        currentPage.isLastOfPageGroup() && nextGroup.isLastOfSequence());
+    }
+
+    private boolean isNextPageBonus() {
+        return nextPage != null && nextPage.isBonus();
+    }
+
+    private boolean isNextGroupBonus() {
+        return nextGroup != null && nextGroup.isBonus() && currentPage.isLastOfPageGroup();
+    }
+
     public void onClick_nextButton(@SuppressWarnings("UnusedParameters") View view) {
         Logger.d(TAG, "Next button clicked");
 
@@ -249,15 +265,12 @@ public class PageActivity extends RoboFragmentActivity {
             pageViewAdapter.saveAnswers();
             currentPage.setStatus(Page.STATUS_ANSWERED);
 
-            if ((nextPage != null && nextPage.isBonus()) ||
-                    (nextGroup != null && nextGroup.isBonus() && currentPage.isLastOfPageGroup())) {
+            if (isNextBonus()) {
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
                 String skipText = "Skip those";
-                if ((nextPage != null && nextPage.isBonus() && nextPage.isLastOfSequence()) ||
-                        (nextGroup != null && nextGroup.isBonus() &&
-                                currentPage.isLastOfPageGroup() && nextGroup.isLastOfSequence())) {
+                if (isNextBonusAndLast()) {
                     skipText = "Nope, had enough";
                 }
                 builder.setTitle("Bonus")
@@ -273,9 +286,9 @@ public class PageActivity extends RoboFragmentActivity {
                         .setNegativeButton(skipText, new DialogInterface.OnClickListener() {
 
                             public void onClick(DialogInterface dialog, int id) {
-                                if (nextPage.isBonus()) {
+                                if (isNextPageBonus()) {
                                     nextPage.setStatus(Page.STATUS_BONUS_SKIPPED);
-                                } else if (nextGroup.isBonus() && currentPage.isLastOfPageGroup()) {
+                                } else if (isNextGroupBonus()) {
                                     for (Page p : nextGroup.getPages()) {
                                         p.setStatus(Page.STATUS_BONUS_SKIPPED);
                                     }
@@ -285,8 +298,7 @@ public class PageActivity extends RoboFragmentActivity {
                                             "bonus, or the next group should be bonus and this " +
                                             "page should be the last of its group.");
                                 }
-                                transitionToNext((nextPage.isBonus() && nextPage.isLastOfSequence()) ||
-                                        (nextGroup.isBonus() && nextGroup.isLastOfSequence()));
+                                transitionToNext(isNextBonusAndLast());
                             }
 
                         });

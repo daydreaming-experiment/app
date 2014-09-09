@@ -1,6 +1,12 @@
 Changelog
 =========
 
+0.17.1
+------
+
+* Bug fixes
+  * Fix NullPointerException in PageActivity if nextPage is bonus with no following pageGroup
+
 0.17.0
 ------
 
