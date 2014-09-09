@@ -25,6 +25,7 @@
     <string name="dashboard_text_parameters_updating">Parameters are updating…</string>
     <string name="dashboard_button_text_glossary">Glossary</string>
     <string name="dashboard_text_days">days</string>
+    <string name="dashboard_text_day">day</string>
     <string name="dashboard_text_results_in">Results in</string>
     <string name="dashboard_text_see_results">See results</string>
     <string name="dashboard_button_change_data_settings">Data Settings</string>

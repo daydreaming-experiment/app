@@ -34,6 +34,7 @@ import com.google.inject.Inject;
 
 import roboguice.activity.RoboFragmentActivity;
 import roboguice.inject.ContentView;
+import roboguice.inject.InjectResource;
 import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_dashboard)
@@ -54,6 +55,11 @@ public class DashboardActivity extends RoboFragmentActivity {
     @InjectView(R.id.dashboard_glossary_layout) RelativeLayout glossaryLayout;
     @InjectView(R.id.dashboard_textExperimentStatus) TextView expStatus;
     @InjectView(R.id.dashboard_no_params_text) TextView textNetworkConnection;
+    @InjectView(R.id.dashboard_ExperimentTimeElapsed2days) TextView elapsedTextDays;
+    @InjectView(R.id.dashboard_ExperimentResultsIn2days) TextView toGoTextDays;
+
+    @InjectResource(R.string.dashboard_text_days) String textDays;
+    @InjectResource(R.string.dashboard_text_day) String textDay;
 
     private boolean testModeThemeActivated = false;
     private int daysToGo = -1;
@@ -188,10 +194,14 @@ public class DashboardActivity extends RoboFragmentActivity {
                 Logger.i(TAG, "Test mode activated => allowing results");
                 Toast.makeText(this, "Test mode => allowing results", Toast.LENGTH_SHORT).show();
             } else {
-                Logger.v(TAG, "Still {} days to go and test mode not activated => aborting",
+                Logger.v(TAG, "Still {} day(s) to go and test mode not activated => aborting",
                         daysToGo);
-                Toast.makeText(this, "Still " + daysToGo + " days to go before access to the results!",
-                        Toast.LENGTH_LONG).show();
+                String msg = "Still " + daysToGo + " day";
+                if (daysToGo > 1) {
+                    msg += "s";
+                }
+                msg += " to wait before the results";
+                Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
                 return;
             }
         }
@@ -260,8 +270,7 @@ public class DashboardActivity extends RoboFragmentActivity {
                 (24 * 60 * 60 * 1000));
         Logger.i(TAG, "Days elapsed: {}", daysElapsed);
 
-        final int daysToGo = parametersStorage.getExpDuration() - daysElapsed;
-        this.daysToGo = daysToGo;
+        daysToGo = parametersStorage.getExpDuration() - daysElapsed;
         Logger.i(TAG, "Days to go: {}", daysToGo);
 
         Runnable timeElapsedUpdater = new Runnable() {
@@ -272,6 +281,7 @@ public class DashboardActivity extends RoboFragmentActivity {
             public void run() {
                 Logger.d(TAG, "Updating time elapsed view");
                 timeElapsedTextView.setText(String.valueOf(daysElapsed));
+                elapsedTextDays.setText(daysElapsed != 1 ? textDays : textDay);
             }
 
         };
@@ -284,6 +294,7 @@ public class DashboardActivity extends RoboFragmentActivity {
             public void run() {
                 Logger.d(TAG, "Updating time to go view");
                 timeToGoTextView.setText(String.valueOf(daysToGo));
+                toGoTextDays.setText(daysToGo != 1 ? textDays : textDay);
             }
 
         };
