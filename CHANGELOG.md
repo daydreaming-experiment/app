@@ -1,6 +1,12 @@
 Changelog
 =========
 
+0.17.2
+------
+
+* Bug fixes
+  * Use non-dev grammar repository
+
 0.17.1
 ------
 
