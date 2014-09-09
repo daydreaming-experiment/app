@@ -3,6 +3,7 @@ package com.brainydroid.daydreaming.ui.sequences;
 import android.content.Context;
 import android.os.Build;
 import android.text.method.LinkMovementMethod;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -138,10 +139,11 @@ public class MultipleChoiceQuestionViewAdapter
 
         for (String choice : choices) {
             Logger.v(TAG, "Inflating choice {0}", choice);
-            CheckBox checkBox = (CheckBox)layoutInflater.inflate(
+            LinearLayout checkBoxLayout = (LinearLayout)layoutInflater.inflate(
                     R.layout.question_multiple_choice_item, null);
-            checkBox.setText(choice);
-            checksLayout.addView(checkBox);
+            TextView tv = (TextView)checkBoxLayout.findViewById(R.id.question_multiple_choice_checkBox_text);
+            tv.setText(choice);
+            checksLayout.addView(checkBoxLayout);
         }
 
         ArrayList<View> views = new ArrayList<View>();
@@ -161,7 +163,7 @@ public class MultipleChoiceQuestionViewAdapter
         boolean hasCheck = false;
 
         for (int i = 0; i < childCount; i++) {
-            CheckBox child = (CheckBox)rootChoices.getChildAt(i);
+            CheckBox child = (CheckBox)rootChoices.getChildAt(i).findViewById(R.id.question_multiple_choice_checkBox);
 
             if (child.isChecked()) {
                 Logger.v(TAG, "At least one option is checked");
@@ -210,7 +212,7 @@ public class MultipleChoiceQuestionViewAdapter
 
         // Get choices in a list
         for (int i = 0; i < childCount; i++) {
-            CheckBox child = (CheckBox)rootChoices.getChildAt(i);
+            CheckBox child = (CheckBox)rootChoices.getChildAt(i).findViewById(R.id.question_multiple_choice_checkBox);
             if (child.isChecked()) {
                 answer.addChoice(child.getText().toString());
             }

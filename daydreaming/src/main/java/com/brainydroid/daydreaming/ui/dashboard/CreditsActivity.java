@@ -26,8 +26,9 @@ public class CreditsActivity extends RoboFragmentActivity {
         Logger.v(TAG, "Creating");
         checkTestMode();
         ViewGroup godfatherView = (ViewGroup) this.getWindow().getDecorView();
-        FontUtils.setRobotoFont(this, godfatherView);
+
         super.onCreate(savedInstanceState);
+        FontUtils.setRobotoFont(this, godfatherView);
 
         TextView credits_website_link = (TextView)findViewById(R.id.credits_website_link);
         Linkify.addLinks(credits_website_link, Linkify.WEB_URLS | Linkify.EMAIL_ADDRESSES);

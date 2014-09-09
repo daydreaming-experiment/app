@@ -1,9 +1,0 @@
-<animation-list
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        >
-    <item android:drawable="@drawable/helice1" android:duration="100" />
-    <item android:drawable="@drawable/helice2" android:duration="100" />
-    <item android:drawable="@drawable/helice3" android:duration="100" />
-    <item android:drawable="@drawable/helice4" android:duration="100" />
-    <item android:drawable="@drawable/helice5" android:duration="100" />
-</animation-list>

@@ -65,7 +65,6 @@
                         android:textColor="@color/ui_dark_blue_color"/>
                 </LinearLayout>
 
-
             </RelativeLayout>
             <!--         android:background="@drawable/text_box"
                                                                     -->
@@ -82,7 +81,6 @@
         android:scaleType="centerCrop"
         android:id="@+id/imageView" />
 
-
     <ImageButton
         android:id="@+id/firstLaunchDescription_buttonNext"
         android:layout_width="@dimen/button_next_width"
@@ -94,6 +92,5 @@
         android:layout_alignParentBottom="true"
         android:contentDescription="@null"
         android:background="@drawable/button_cloud_next_selector"/>
-
 
 </RelativeLayout>
