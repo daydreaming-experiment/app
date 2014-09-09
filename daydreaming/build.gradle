@@ -19,8 +19,8 @@ android {
     buildToolsVersion "20.0.0"
 
     defaultConfig {
-        versionCode 34
-        versionName "0.17.1"
+        versionCode 35
+        versionName "0.17.2"
     }
 
     buildTypes {
