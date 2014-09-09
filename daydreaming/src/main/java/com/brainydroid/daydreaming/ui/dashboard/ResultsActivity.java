@@ -12,6 +12,9 @@ import android.widget.Toast;
 
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
+import com.brainydroid.daydreaming.background.StatusManager;
+import com.brainydroid.daydreaming.db.ParametersStorage;
+import com.google.inject.Inject;
 
 import roboguice.activity.RoboFragmentActivity;
 import roboguice.inject.ContentView;
@@ -22,6 +25,7 @@ public class ResultsActivity extends RoboFragmentActivity {
 
     private static String TAG = "ResultsActivity";
 
+    @Inject ParametersStorage parametersStorage;
     @InjectView(R.id.activity_results_webView) private WebView webView;
 
     @Override
@@ -55,7 +59,7 @@ public class ResultsActivity extends RoboFragmentActivity {
             }
         });
 
-        webView.loadUrl("http://daydreaming-the-app.net/");
+        webView.loadUrl(parametersStorage.getResultsPageUrl());
 
     }
 
