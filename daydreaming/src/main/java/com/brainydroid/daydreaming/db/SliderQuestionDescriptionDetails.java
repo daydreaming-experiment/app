@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class SliderQuestionDescriptionDetails implements IQuestionDescriptionDetails {
 
     @SuppressWarnings("FieldCanBeLocal")
-    private static String TAG = "SliderQuestionDetails";
+    private static String TAG = "SliderQuestionDescriptionDetails";
 
     @SuppressWarnings("FieldCanBeLocal")
     @JsonView(Views.Internal.class)
@@ -30,13 +30,13 @@ public class SliderQuestionDescriptionDetails implements IQuestionDescriptionDet
         Logger.v(TAG, "Validating question details");
 
         if (subQuestions == null) {
-            throw new JsonParametersException("subQuestions in SliderQuestionDetails " +
-                    "can't be null");
+            throw new JsonParametersException("subQuestions in " +
+                    "SliderQuestionDescriptionDetails can't be null");
         }
 
         if (subQuestions.size() == 0) {
-            throw new JsonParametersException("subQuestions in SliderQuestionDetails must "
-                    + "have at least one subQuestion");
+            throw new JsonParametersException("subQuestions in " +
+                    "SliderQuestionDescriptionDetails must have at least one subQuestion");
         }
 
         for (SliderSubQuestion q : subQuestions) {
