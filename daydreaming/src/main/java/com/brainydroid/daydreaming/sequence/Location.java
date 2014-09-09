@@ -1,43 +1,30 @@
 package com.brainydroid.daydreaming.sequence;
 
 import com.brainydroid.daydreaming.db.Views;
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.google.inject.Inject;
 
-public class Location extends android.location.Location {
+public class Location {
 
     private static String TAG = "Location";
 
-    public Location(String provider) {
-        super(provider);
-    }
+    @JsonView(Views.Public.class)
+    private double latitude;
+    @JsonView(Views.Public.class)
+    private double longitude;
+    @JsonView(Views.Public.class)
+    private double altitude;
+    @JsonView(Views.Public.class)
+    private float accuracy;
+
+    public Location() {}
 
     public Location(android.location.Location location) {
-        super(location);
-    }
-
-    @JsonView(Views.Public.class)
-    @Override
-    public double getLatitude() {
-        return super.getLatitude();
-    }
-
-    @JsonView(Views.Public.class)
-    @Override
-    public double getLongitude() {
-        return super.getLongitude();
-    }
-
-    @JsonView(Views.Public.class)
-    @Override
-    public double getAltitude() {
-        return super.getAltitude();
-    }
-
-    @JsonView(Views.Public.class)
-    @Override
-    public float getAccuracy() {
-        return super.getAccuracy();
+        latitude = location.getLatitude();
+        longitude = location.getLongitude();
+        altitude = location.getAltitude();
+        accuracy = location.getAccuracy();
     }
 
 }
