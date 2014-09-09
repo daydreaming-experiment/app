@@ -139,10 +139,14 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
             }
 
             @Override
-            public void onStartTrackingTouch(AlphaSeekBar seekBar) { }
+            public void onStartTrackingTouch(AlphaSeekBar seekBar) {
+                seekBar.setThumb(context.getResources().getDrawable(R.drawable.question_slider_thumb_big));
+            }
 
             @Override
-            public void onStopTrackingTouch(AlphaSeekBar seekBar) { }
+            public void onStopTrackingTouch(AlphaSeekBar seekBar) {
+                seekBar.setThumb(context.getResources().getDrawable(R.drawable.question_slider_thumb));
+            }
         };
 
         seekBar.setOnSeekBarChangeListener(progressListener);

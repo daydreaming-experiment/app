@@ -150,6 +150,16 @@ public class MultipleChoiceQuestionViewAdapter
                     R.layout.question_multiple_choice_item, checksLayout, false);
             TextView tv = (TextView)checkBoxLayout.findViewById(R.id.question_multiple_choice_checkBox_text);
             tv.setText(choice);
+
+            LinearLayout.OnClickListener checkboxClickListener = new LinearLayout.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    CheckBox checkBox = (CheckBox)v.findViewById(R.id.question_multiple_choice_checkBox);
+                        checkBox.setChecked(!checkBox.isChecked());
+                }
+            };
+            checkBoxLayout.setOnClickListener(checkboxClickListener);
+            checkBoxLayout.setClickable(true);
             checksLayout.addView(checkBoxLayout);
             regularChoiceLayouts.add(checkBoxLayout);
         }
