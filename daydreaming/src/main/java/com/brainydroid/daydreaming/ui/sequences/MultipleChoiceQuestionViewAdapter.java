@@ -42,19 +42,19 @@ public class MultipleChoiceQuestionViewAdapter
     @Inject Injector injector;
 
     @Override
-    protected ArrayList<View> inflateViews() {
+    protected ArrayList<View> inflateViews(LinearLayout questionLayout) {
         Logger.d(TAG, "Inflating question views");
 
         MultipleChoiceQuestionDescriptionDetails details =
                 (MultipleChoiceQuestionDescriptionDetails)question.getDetails();
         ArrayList<String> choices = details.getChoices();
         LinearLayout choicesView = (LinearLayout)layoutInflater.inflate(
-                R.layout.question_multiple_choice, null);
+                R.layout.question_multiple_choice, questionLayout, false);
 
         TextView qText = (TextView)choicesView.findViewById(
                 R.id.question_multiple_choice_mainText);
         String initial_qText = details.getText();
-        qText.setText(getExtentedQuestionText(initial_qText));
+        qText.setText(getExtendedQuestionText(initial_qText));
         qText.setMovementMethod(LinkMovementMethod.getInstance());
 
         final CheckBox otherCheck = (CheckBox)choicesView.findViewById(
@@ -147,7 +147,7 @@ public class MultipleChoiceQuestionViewAdapter
         for (String choice : choices) {
             Logger.v(TAG, "Inflating choice {0}", choice);
             LinearLayout checkBoxLayout = (LinearLayout)layoutInflater.inflate(
-                    R.layout.question_multiple_choice_item, null);
+                    R.layout.question_multiple_choice_item, checksLayout, false);
             TextView tv = (TextView)checkBoxLayout.findViewById(R.id.question_multiple_choice_checkBox_text);
             tv.setText(choice);
             checksLayout.addView(checkBoxLayout);

@@ -77,36 +77,44 @@ public class MatrixChoiceQuestionViewAdapter extends BaseQuestionViewAdapter
     }
 
     @Override
-    protected ArrayList<View> inflateViews() {
+    protected ArrayList<View> inflateViews(LinearLayout questionLayout) {
         Logger.d(TAG, "Inflating question views");
 
         MatrixChoiceQuestionDescriptionDetails details =
                 (MatrixChoiceQuestionDescriptionDetails)question.getDetails();
         ArrayList<String> choices = details.getChoices();
         View questionView = layoutInflater.inflate(
-                R.layout.question_matrix_choice, null);
+                R.layout.question_matrix_choice, questionLayout, false);
 
         LinearLayout rowContainer = (LinearLayout) questionView.findViewById(
                 R.id.question_matrix_choice_rowContainer);
         TextView qText = (TextView) questionView.findViewById(
                 R.id.question_matrix_choice_mainText);
         String initial_qText = details.getText();
-        qText.setText(getExtentedQuestionText(initial_qText));
+        qText.setText(getExtendedQuestionText(initial_qText));
         qText.setMovementMethod(LinkMovementMethod.getInstance());
 
         ArrayList<ArrayList<String>> choiceRows = flowChoices(choices);
 
         for (ArrayList<String> choiceRow : choiceRows) {
             LinearLayout rowLayout = (LinearLayout)layoutInflater.inflate(
-                    R.layout.question_matrix_choice_row, null);
+                    R.layout.question_matrix_choice_row, rowContainer, false);
+            rowLayout.addView(layoutInflater.inflate(
+                    R.layout.question_matrix_choice_inter_view, rowLayout, false));
+
             rowContainer.addView(rowLayout);
+
             for (String choiceItem : choiceRow) {
                 Logger.v(TAG, "Inflating choice {0}", choiceItem);
+
                 ChoiceButton choiceButton = (ChoiceButton)layoutInflater.inflate(
-                        R.layout.question_matrix_choice_button, null);
+                        R.layout.question_matrix_choice_button, rowLayout, false);
                 rowLayout.addView(choiceButton);
-                choiceButtons.add(choiceButton);
+                rowLayout.addView(layoutInflater.inflate(
+                        R.layout.question_matrix_choice_inter_view, rowLayout, false));
+
                 choiceButton.setOnClickListener(new ChoiceClickListener(choiceButton));
+                choiceButtons.add(choiceButton);
             }
         }
 
