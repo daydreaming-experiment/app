@@ -5,14 +5,14 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 import java.util.ArrayList;
 
-public class MultipleChoiceQuestionDescriptionDetails implements IQuestionDescriptionDetails {
+public class MatrixChoiceQuestionDescriptionDetails implements IQuestionDescriptionDetails {
 
     @SuppressWarnings({"FieldCanBeLocal"})
-    private static String TAG = "MultipleChoiceQuestionDescriptionDetails";
+    private static String TAG = "MatrixChoiceQuestionDescriptionDetails";
 
     @SuppressWarnings("FieldCanBeLocal")
     @JsonView(Views.Internal.class)
-    private String type = "MultipleChoice";
+    private String type = "MatrixChoice";
     @SuppressWarnings("UnusedDeclaration")
     @JsonView(Views.Internal.class)
     private String text = null;
@@ -43,18 +43,17 @@ public class MultipleChoiceQuestionDescriptionDetails implements IQuestionDescri
         Logger.v(TAG, "Validating question details");
 
         if (text == null) {
-            throw new JsonParametersException("text in " +
-                    "MultipleChoiceQuestionDescriptionDetails can't be null");
+            throw new JsonParametersException("text in MatrixChoiceQuestionDescriptionDetails "
+                    + "can't be null");
         }
 
         if (choices == null) {
-            throw new JsonParametersException("choices in " +
-                    "MultipleChoiceQuestionDescriptionDetails can't by null");
+            throw new JsonParametersException("choices in MatrixChoiceQuestionDescriptionDetails " +
+                    "can't by null");
         }
         if (choices.size() < 2) {
             throw new JsonParametersException("There must be at least two choices in "
-                    + "a MultipleChoiceQuestionsDescriptionDetails");
+                    + "a MatrixChoiceQuestionsDescriptionDetails");
         }
     }
-
 }

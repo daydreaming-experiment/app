@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class StarRatingQuestionDescriptionDetails implements IQuestionDescriptionDetails {
 
     @SuppressWarnings("FieldCanBeLocal")
-    private static String TAG = "StarRatingQuestionDetails";
+    private static String TAG = "StarRatingQuestionDescriptionDetails";
 
     @SuppressWarnings("FieldCanBeLocal")
     @JsonView(Views.Internal.class)
@@ -30,13 +30,13 @@ public class StarRatingQuestionDescriptionDetails implements IQuestionDescriptio
         Logger.v(TAG, "Validating question details");
 
         if (subQuestions == null) {
-            throw new JsonParametersException("subQuestions in StarRatingQuestionDetails " +
-                    "can't be null");
+            throw new JsonParametersException("subQuestions in " +
+                    "StarRatingQuestionDescriptionDetails can't be null");
         }
 
         if (subQuestions.size() == 0) {
-            throw new JsonParametersException("subQuestions in StarRatingQuestionDetails must "
-                    + "have at least one subQuestion");
+            throw new JsonParametersException("subQuestions in " +
+                    "StarRatingQuestionDescriptionDetails must have at least one subQuestion");
         }
 
         for (StarRatingSubQuestion q : subQuestions) {

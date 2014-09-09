@@ -76,7 +76,7 @@ public class Page implements IPage {
         saveIfSync();
     }
 
-    public synchronized android.location.Location getLocation() {
+    public synchronized Location getLocation() {
         return location;
     }
 
