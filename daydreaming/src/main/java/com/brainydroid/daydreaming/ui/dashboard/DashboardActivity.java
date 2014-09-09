@@ -56,6 +56,7 @@ public class DashboardActivity extends RoboFragmentActivity {
     @InjectView(R.id.dashboard_no_params_text) TextView textNetworkConnection;
 
     private boolean testModeThemeActivated = false;
+    private int daysToGo = -1;
 
     IntentFilter parametersUpdateIntentFilter = new IntentFilter(StatusManager.ACTION_PARAMETERS_UPDATED);
     IntentFilter networkIntentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
@@ -173,11 +174,38 @@ public class DashboardActivity extends RoboFragmentActivity {
 
     public void  onClick_SeeResults(
             @SuppressWarnings("UnusedParameters") View view){
-        // TODO: do this only if experiment has been running for X days
-        // TODO: check we have internet here
-        Intent resultsIntent = new Intent(this, ResultsActivity.class);
-        startActivity(resultsIntent);
-        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+        Logger.v(TAG, "Results button clicked");
+
+        if (!statusManager.isExpRunning()) {
+            Logger.v(TAG, "Experiment not yet running => aborting");
+            Toast.makeText(this, "Experiment hasn't started yet!",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (daysToGo > 0) {
+            if (statusManager.getCurrentMode() == StatusManager.MODE_TEST) {
+                Logger.i(TAG, "Test mode activated => allowing results");
+                Toast.makeText(this, "Test mode => allowing results", Toast.LENGTH_SHORT).show();
+            } else {
+                Logger.v(TAG, "Still {} days to go and test mode not activated => aborting",
+                        daysToGo);
+                Toast.makeText(this, "Still " + daysToGo + " days to go before access to the results!",
+                        Toast.LENGTH_LONG).show();
+                return;
+            }
+        }
+
+        if (statusManager.isDataEnabled()) {
+            Logger.d(TAG, "Data enabled, transitioning to results");
+            Intent resultsIntent = new Intent(this, ResultsActivity.class);
+            startActivity(resultsIntent);
+            overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+        } else {
+            Logger.v(TAG, "No data connection => aborting");
+            Toast.makeText(this, "You're not connected to the internet!",
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void  onClick_OpenNetworkSettings(
@@ -233,6 +261,7 @@ public class DashboardActivity extends RoboFragmentActivity {
         Logger.i(TAG, "Days elapsed: {}", daysElapsed);
 
         final int daysToGo = parametersStorage.getExpDuration() - daysElapsed;
+        this.daysToGo = daysToGo;
         Logger.i(TAG, "Days to go: {}", daysToGo);
 
         Runnable timeElapsedUpdater = new Runnable() {
