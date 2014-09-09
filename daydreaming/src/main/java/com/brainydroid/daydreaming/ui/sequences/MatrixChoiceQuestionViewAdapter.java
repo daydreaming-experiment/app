@@ -11,7 +11,7 @@ import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.MatrixChoiceQuestionDescriptionDetails;
 import com.brainydroid.daydreaming.sequence.MatrixChoiceAnswer;
-import com.brainydroid.daydreaming.ui.ChoiceButton;
+import com.brainydroid.daydreaming.ui.ChoiceItem;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 
@@ -28,7 +28,7 @@ public class MatrixChoiceQuestionViewAdapter extends BaseQuestionViewAdapter
     @SuppressWarnings("FieldCanBeLocal")
     private static int MAX_BUTTONS_PER_ROW = 3;
 
-    @Inject private ArrayList<ChoiceButton> choiceButtons;
+    @Inject private ArrayList<ChoiceItem> choiceItems;
 
     @InjectResource(R.string.questionMatrixChoice_please_select_one)
     String errorCheckOne;
@@ -40,16 +40,16 @@ public class MatrixChoiceQuestionViewAdapter extends BaseQuestionViewAdapter
 
         private static String TAG = "ChoiceClickListener";
 
-        private ChoiceButton button;
+        private ChoiceItem choiceItem;
 
-        public ChoiceClickListener(ChoiceButton button) {
+        public ChoiceClickListener(ChoiceItem choiceItem) {
             Logger.v(TAG, "Initializing");
-            this.button = button;
+            this.choiceItem = choiceItem;
         }
 
         @Override
         public void onClick(View view) {
-            button.toggleChecked();
+            choiceItem.toggleChecked();
         }
     }
 
@@ -94,9 +94,9 @@ public class MatrixChoiceQuestionViewAdapter extends BaseQuestionViewAdapter
         qText.setText(getExtendedQuestionText(initial_qText));
         qText.setMovementMethod(LinkMovementMethod.getInstance());
 
-        ArrayList<ArrayList<String>> choiceRows = flowChoices(choices);
+        ArrayList<ArrayList<String>> textRows = flowChoices(choices);
 
-        for (ArrayList<String> choiceRow : choiceRows) {
+        for (ArrayList<String> textRow : textRows) {
             LinearLayout rowLayout = (LinearLayout)layoutInflater.inflate(
                     R.layout.question_matrix_choice_row, rowContainer, false);
             rowLayout.addView(layoutInflater.inflate(
@@ -104,17 +104,19 @@ public class MatrixChoiceQuestionViewAdapter extends BaseQuestionViewAdapter
 
             rowContainer.addView(rowLayout);
 
-            for (String choiceItem : choiceRow) {
-                Logger.v(TAG, "Inflating choice {0}", choiceItem);
+            for (String itemText : textRow) {
+                Logger.v(TAG, "Inflating choice {0}", itemText);
 
-                ChoiceButton choiceButton = (ChoiceButton)layoutInflater.inflate(
-                        R.layout.question_matrix_choice_button, rowLayout, false);
-                rowLayout.addView(choiceButton);
+                ChoiceItem choiceItem = (ChoiceItem)layoutInflater.inflate(
+                        R.layout.question_matrix_choice_item, rowLayout, false);
+
+                choiceItem.initialize(itemText);
+                choiceItem.setOnClickListener(new ChoiceClickListener(choiceItem));
+
+                rowLayout.addView(choiceItem);
                 rowLayout.addView(layoutInflater.inflate(
                         R.layout.question_matrix_choice_inter_view, rowLayout, false));
-
-                choiceButton.setOnClickListener(new ChoiceClickListener(choiceButton));
-                choiceButtons.add(choiceButton);
+                choiceItems.add(choiceItem);
             }
         }
 
@@ -129,8 +131,8 @@ public class MatrixChoiceQuestionViewAdapter extends BaseQuestionViewAdapter
         Logger.i(TAG, "Validating choices");
 
         boolean hasCheck = false;
-        for (ChoiceButton button : choiceButtons) {
-            if (button.isChecked()) {
+        for (ChoiceItem choiceItem : choiceItems) {
+            if (choiceItem.isChecked()) {
                 Logger.v(TAG, "At least one option is checked");
                 hasCheck = true;
                 break;
@@ -149,12 +151,10 @@ public class MatrixChoiceQuestionViewAdapter extends BaseQuestionViewAdapter
     public void saveAnswer() {
         Logger.i(TAG, "Saving question answer");
 
-        int index = 0;
-        for (ChoiceButton button : choiceButtons) {
-            if (button.isChecked()) {
-                answer.addChoice(String.valueOf(index));
+        for (ChoiceItem choiceItem : choiceItems) {
+            if (choiceItem.isChecked()) {
+                answer.addChoice(choiceItem.getText());
             }
-            index++;
         }
 
         question.setAnswer(answer);

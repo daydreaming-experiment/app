@@ -1,0 +1,28 @@
+<com.brainydroid.daydreaming.ui.ChoiceItem xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:padding="5dp"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true">
+
+    <ImageButton
+        android:id="@+id/question_matrix_choice_item_image"
+        android:layout_width="66dp"
+        android:layout_height="40dp"
+        android:duplicateParentState="true"
+        android:focusableInTouchMode="true"
+        android:background="@drawable/choice_item_image_selector"/>
+
+    <TextView
+        android:id="@+id/question_matrix_choice_item_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:duplicateParentState="true"
+        android:layout_marginTop="8dp"
+        android:text="XXX"
+        android:textColor="@color/choice_item_text_selector"/>
+
+</com.brainydroid.daydreaming.ui.ChoiceItem>
