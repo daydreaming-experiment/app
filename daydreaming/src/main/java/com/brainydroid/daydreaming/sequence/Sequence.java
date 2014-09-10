@@ -1,7 +1,5 @@
 package com.brainydroid.daydreaming.sequence;
 
-import android.util.Pair;
-
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.SequenceDescription;
 import com.brainydroid.daydreaming.db.SequenceJsonFactory;

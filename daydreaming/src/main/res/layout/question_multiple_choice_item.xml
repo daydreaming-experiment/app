@@ -18,7 +18,7 @@
         android:id="@+id/question_multiple_choice_checkBox_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/ui_font_bodytext"
+        android:textAppearance="@style/ui_font_bodyText"
         android:paddingBottom="16dp"
         android:textColor="@color/ui_white_text_color"
         >
