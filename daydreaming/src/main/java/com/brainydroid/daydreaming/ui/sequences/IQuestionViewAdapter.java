@@ -9,7 +9,7 @@ public interface IQuestionViewAdapter {
 
     public void setQuestion(Question question);
 
-    public LinearLayout inflate(ViewGroup.LayoutParams layoutParams);
+    public LinearLayout inflate(LinearLayout parentLayout);
 
     public boolean validate();
 

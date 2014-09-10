@@ -3,20 +3,26 @@ package com.brainydroid.daydreaming.ui.sequences;
 import android.content.Context;
 import android.os.Build;
 import android.text.method.LinkMovementMethod;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.*;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.MultipleChoiceQuestionDescriptionDetails;
 import com.brainydroid.daydreaming.sequence.MultipleChoiceAnswer;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
-import roboguice.inject.InjectResource;
 
 import java.util.ArrayList;
+
+import roboguice.inject.InjectResource;
 
 @SuppressWarnings("UnusedDeclaration")
 public class MultipleChoiceQuestionViewAdapter
@@ -24,7 +30,8 @@ public class MultipleChoiceQuestionViewAdapter
 
     private static String TAG = "MultipleChoiceQuestionViewAdapter";
 
-    private View choicesView;
+    @Inject private ArrayList<LinearLayout> regularChoiceLayouts;
+    private LinearLayout otherChoiceLayout;
 
     @InjectResource(R.string.questionMultipleChoice_other_please_fill)
     String errorFillOther;
@@ -35,19 +42,19 @@ public class MultipleChoiceQuestionViewAdapter
     @Inject Injector injector;
 
     @Override
-    protected ArrayList<View> inflateViews() {
+    protected ArrayList<View> inflateViews(LinearLayout questionLayout) {
         Logger.d(TAG, "Inflating question views");
 
         MultipleChoiceQuestionDescriptionDetails details =
                 (MultipleChoiceQuestionDescriptionDetails)question.getDetails();
         ArrayList<String> choices = details.getChoices();
-        choicesView = layoutInflater.inflate(
-                R.layout.question_multiple_choice, null);
+        LinearLayout choicesView = (LinearLayout)layoutInflater.inflate(
+                R.layout.question_multiple_choice, questionLayout, false);
 
         TextView qText = (TextView)choicesView.findViewById(
                 R.id.question_multiple_choice_mainText);
         String initial_qText = details.getText();
-        qText.setText(getExtentedQuestionText(initial_qText));
+        qText.setText(getExtendedQuestionText(initial_qText));
         qText.setMovementMethod(LinkMovementMethod.getInstance());
 
         final CheckBox otherCheck = (CheckBox)choicesView.findViewById(
@@ -140,7 +147,7 @@ public class MultipleChoiceQuestionViewAdapter
         for (String choice : choices) {
             Logger.v(TAG, "Inflating choice {0}", choice);
             LinearLayout checkBoxLayout = (LinearLayout)layoutInflater.inflate(
-                    R.layout.question_multiple_choice_item, null);
+                    R.layout.question_multiple_choice_item, checksLayout, false);
             TextView tv = (TextView)checkBoxLayout.findViewById(R.id.question_multiple_choice_checkBox_text);
             tv.setText(choice);
 
@@ -154,7 +161,10 @@ public class MultipleChoiceQuestionViewAdapter
             checkBoxLayout.setOnClickListener(checkboxClickListener);
             checkBoxLayout.setClickable(true);
             checksLayout.addView(checkBoxLayout);
+            regularChoiceLayouts.add(checkBoxLayout);
         }
+        otherChoiceLayout = (LinearLayout)choicesView.findViewById(
+                R.id.question_multiple_choice_other);
 
         ArrayList<View> views = new ArrayList<View>();
         views.add(choicesView);
@@ -166,30 +176,24 @@ public class MultipleChoiceQuestionViewAdapter
     public boolean validate() {
         Logger.i(TAG, "Validating choices");
 
-        LinearLayout rootChoices = (LinearLayout)choicesView.findViewById(
-                R.id.question_multiple_choice_rootChoices);
-
-        int childCount = rootChoices.getChildCount();
         boolean hasCheck = false;
+        for (LinearLayout regularChoiceLayout : regularChoiceLayouts) {
+            CheckBox checkbox = (CheckBox)regularChoiceLayout.findViewById(
+                    R.id.question_multiple_choice_checkBox);
 
-        for (int i = 0; i < childCount; i++) {
-            CheckBox child = (CheckBox)rootChoices.getChildAt(i).findViewById(R.id.question_multiple_choice_checkBox);
-
-            if (child.isChecked()) {
-                Logger.v(TAG, "At least one option is checked");
+            if (checkbox.isChecked()) {
+                Logger.v(TAG, "At least one regular option is checked");
                 hasCheck = true;
                 break;
-            } else {
-                Logger.v(TAG, "No regular option checked");
             }
         }
 
-        CheckBox otherCheck = (CheckBox)choicesView.findViewById(
+        CheckBox otherCheck = (CheckBox)otherChoiceLayout.findViewById(
                 R.id.question_multiple_choice_otherCheckBox);
         boolean hasOtherCheck = otherCheck.isChecked();
 
         if (hasOtherCheck) {
-            EditText otherEditText = (EditText)choicesView.findViewById(
+            EditText otherEditText = (EditText)otherChoiceLayout.findViewById(
                     R.id.question_multiple_choice_otherEditText);
 
             if (otherEditText.getText().length() == 0) {
@@ -216,23 +220,21 @@ public class MultipleChoiceQuestionViewAdapter
     public void saveAnswer() {
         Logger.i(TAG, "Saving question answer");
 
-        LinearLayout rootChoices = (LinearLayout)choicesView.findViewById(
-                R.id.question_multiple_choice_rootChoices);
-        int childCount = rootChoices.getChildCount();
-
-        // Get choices in a list
-        for (int i = 0; i < childCount; i++) {
-            CheckBox child = (CheckBox)rootChoices.getChildAt(i).findViewById(R.id.question_multiple_choice_checkBox);
-            if (child.isChecked()) {
-                answer.addChoice(child.getText().toString());
+        for (LinearLayout regularChoiceLayout : regularChoiceLayouts) {
+            CheckBox checkBox = (CheckBox)regularChoiceLayout.findViewById(
+                    R.id.question_multiple_choice_checkBox);
+            TextView textView = (TextView)regularChoiceLayout.findViewById(
+                    R.id.question_multiple_choice_checkBox_text);
+            if (checkBox.isChecked()) {
+                answer.addChoice(textView.getText().toString());
             }
         }
 
         // Get the "Other" field
-        CheckBox otherCheck = (CheckBox)choicesView.findViewById(
+        CheckBox otherCheck = (CheckBox)otherChoiceLayout.findViewById(
                 R.id.question_multiple_choice_otherCheckBox);
         if (otherCheck.isChecked()) {
-            EditText otherEditText = (EditText)choicesView.findViewById(
+            EditText otherEditText = (EditText)otherChoiceLayout.findViewById(
                     R.id.question_multiple_choice_otherEditText);
             answer.addChoice("Other: " + otherEditText.getText().toString());
         }

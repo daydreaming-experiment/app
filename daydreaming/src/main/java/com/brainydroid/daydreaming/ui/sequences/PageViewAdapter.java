@@ -29,19 +29,19 @@ public class PageViewAdapter {
         this.page = page;
     }
 
-    public void inflate(LinearLayout layout) {
+    public void inflate(LinearLayout pageLayout) {
         Logger.d(TAG, "Inflating page view");
 
-        inflateViews(layout.getLayoutParams());
+        inflateViews(pageLayout);
 
         int index = 0;
         for (View view : questionViews) {
-            layout.addView(view, index, layout.getLayoutParams());
+            pageLayout.addView(view, index);
             index++;
         }
     }
 
-    private void inflateViews(ViewGroup.LayoutParams layoutParams) {
+    private void inflateViews(LinearLayout pageLayout) {
         Logger.d(TAG, "Inflating question views inside page");
 
         ArrayList<Question> questions = page.getQuestions();
@@ -49,7 +49,7 @@ public class PageViewAdapter {
         View view;
         for (Question question : questions) {
             questionViewAdapter = question.getAdapter();
-            view = questionViewAdapter.inflate(layoutParams);
+            view = questionViewAdapter.inflate(pageLayout);
             questionViews.add(view);
             questionViewAdapters.add(questionViewAdapter);
         }

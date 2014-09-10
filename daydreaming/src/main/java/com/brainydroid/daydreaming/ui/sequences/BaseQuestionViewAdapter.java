@@ -1,18 +1,14 @@
 package com.brainydroid.daydreaming.ui.sequences;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.Typeface;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
-import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -25,8 +21,6 @@ import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
-import roboguice.inject.InjectView;
 
 public abstract class BaseQuestionViewAdapter
         implements IQuestionViewAdapter {
@@ -47,24 +41,26 @@ public abstract class BaseQuestionViewAdapter
         this.question = question;
     }
 
-    public LinearLayout inflate(ViewGroup.LayoutParams layoutParams) {
+    @Override
+    public LinearLayout inflate(LinearLayout pageLayout) {
         Logger.d(TAG, "Inflating question view");
 
         int index = 0;
-        LinearLayout layout = (LinearLayout)layoutInflater.inflate(R.layout.question_layout, null);
-        ArrayList<View> views = inflateViews();
+        LinearLayout questionLayout = (LinearLayout)layoutInflater.inflate(
+                R.layout.question_layout, pageLayout, false);
+        ArrayList<View> views = inflateViews(questionLayout);
 
         for (View view : views) {
-            layout.addView(view, index, layoutParams);
+            questionLayout.addView(view, index);
             index++;
         }
 
-        return layout;
+        return questionLayout;
     }
 
-    protected abstract ArrayList<View> inflateViews();
+    protected abstract ArrayList<View> inflateViews(LinearLayout questionLayout);
 
-    public SpannableString getExtentedQuestionText(String qText) {
+    public SpannableString getExtendedQuestionText(String qText) {
         HashMap<String,String> dictionary = parametersStorage.getGlossary();
         final SpannableString sbqText = new SpannableString( qText );
 
