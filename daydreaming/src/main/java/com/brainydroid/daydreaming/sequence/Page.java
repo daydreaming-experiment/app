@@ -61,7 +61,7 @@ public class Page implements IPage {
         return bonus;
     }
 
-    private synchronized void setBonus(boolean bonus) {
+    public synchronized void setBonus(boolean bonus) {
         this.bonus = bonus;
         saveIfSync();
     }
