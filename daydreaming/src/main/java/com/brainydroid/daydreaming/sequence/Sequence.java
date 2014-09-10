@@ -122,7 +122,7 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
                 if (status != null && (status.equals(Page.STATUS_ANSWERED) ||
                         status.equals(Page.STATUS_BONUS_SKIPPED))) {
 
-                    // We're at page with status answered or skipped
+                    // We're at a page with status answered or skipped
 
                     if (currentPage != null) {
 
@@ -164,7 +164,31 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
     }
 
     public synchronized void skipRemainingBonuses() {
-        // TODO[now]: set all remaining bonus questions to skipped. Exception if non-bonus questions.
+        Logger.v(TAG, "Skipping all remaining bonus pages");
+
+        for (PageGroup pg : pageGroups) {
+
+            for (Page p : pg.getPages()) {
+
+                if (status == null || !(status.equals(Page.STATUS_ANSWERED) ||
+                        status.equals(Page.STATUS_BONUS_SKIPPED))) {
+
+                    // This page has either null status, or something else than answered or skipped
+
+                    if (p.isBonus()) {
+                        // This is one of the remaining bonus pages
+                        p.setStatus(Page.STATUS_BONUS_SKIPPED);
+                    } else {
+                        // We have a problem: there should be only bonus pages here
+                        // (otherwise we wouldn't be skipping them all in one go)
+                        String msg = "Found a non-bonus non-answered (and non-skipped) page " +
+                                "while skipping remaining bonus pages. Something is wrong.";
+                        Logger.e(TAG, msg);
+                        throw new RuntimeException(msg);
+                    }
+                }
+            }
+        }
     }
 
     @Override
