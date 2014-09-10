@@ -49,6 +49,7 @@ public class SequenceBuilder {
                     // This page is non bonus, maybe it's the first we meet going back
                     p.setIsLastBeforeBonuses(onlyBonusPagesSeen);
                     onlyBonusPagesSeen = false;
+                    isLastSeenPageBonus = false;
                 }
             }
         }

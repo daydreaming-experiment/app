@@ -170,6 +170,7 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
 
             for (Page p : pg.getPages()) {
 
+                String status = p.getStatus();
                 if (status == null || !(status.equals(Page.STATUS_ANSWERED) ||
                         status.equals(Page.STATUS_BONUS_SKIPPED))) {
 
