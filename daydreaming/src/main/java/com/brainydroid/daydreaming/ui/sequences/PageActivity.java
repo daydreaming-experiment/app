@@ -160,9 +160,8 @@ public class PageActivity extends RoboFragmentActivity {
     private void setChrome() {
         Logger.d(TAG, "Setting chrome");
 
-        if (isEndPage()) {
-            Logger.d(TAG, "Last page, or next page is last and bonus, or last page of group and " +
-                    "next group is last and bonus -> setting finish button text");
+        if (isPotentialEndPage()) {
+            Logger.d(TAG, "This is potentially the end page -> setting finish button text");
             nextButton.setVisibility(View.GONE);
             finishButton.setVisibility(View.VISIBLE);
             finishButton.setClickable(true);
@@ -173,7 +172,16 @@ public class PageActivity extends RoboFragmentActivity {
         isFinishing = true;
     }
 
+    public boolean isPotentialEndPage() {
+        // If we're the last question, or the last before bonus
+        // and we don't yet know if we're going to skip them or not
+        return currentPage.isLastOfSequence() ||
+                (currentPage.isLastBeforeBonuses() && !sequence.isSkipBonusesAsked());
+    }
+
     private boolean isEndPage() {
+        // If we're the last question, or the last before bonus
+        // and we know we're going to skip them
         return currentPage.isLastOfSequence() ||
                 (currentPage.isLastBeforeBonuses() && sequence.isSkipBonusesAsked()
                         && sequence.isSkipBonuses());
