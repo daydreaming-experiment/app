@@ -42,6 +42,11 @@ public class SequencesStorage
         return getModelsByStatusesAndTypes(uploadableStatuses, new String[]{type});
     }
 
+    public synchronized ArrayList<Sequence> getSequencesByType(String type) {
+        Logger.v(TAG, "Getting sequences by Type");
+        return getModelsByStatusesAndTypes(Sequence.AVAILABLE_STATUSES, new String[]{type});
+    }
+
     public synchronized ArrayList<Sequence> getUploadableSequences() {
         Logger.v(TAG, "Getting uploadable sequences");
         return getModelsByStatusesAndTypes(new String[]{Sequence.STATUS_COMPLETED},

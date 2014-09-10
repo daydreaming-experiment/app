@@ -380,6 +380,18 @@ public class ParametersStorage {
         return sequences.get(sequenceIndex);
     }
 
+    public synchronized ArrayList<SequenceDescription> getSequencesByType(String type) {
+        Logger.d(TAG, "{} - Getting sequences by type", statusManager.getCurrentModeName());
+        ArrayList<SequenceDescription> sequences = getSequences();
+        ArrayList<SequenceDescription> sequencesByType = new ArrayList<SequenceDescription>();
+        for (SequenceDescription s : sequences) {
+            if (s.getType().equals(type)){
+                sequencesByType.add(s);
+            }
+        }
+        return sequencesByType;
+    }
+
     public synchronized void flush() {
         Logger.d(TAG, "{} - Flushing all parameters", statusManager.getCurrentModeName());
         statusManager.clearParametersUpdated();
