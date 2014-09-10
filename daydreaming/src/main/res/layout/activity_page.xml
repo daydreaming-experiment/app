@@ -30,6 +30,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Intro"
+                android:textAppearance="@style/ui_font_big_title_bold"
+                android:textColor="@color/ui_white_text_color"
                 android:gravity="center_horizontal" >
             </TextView>
 

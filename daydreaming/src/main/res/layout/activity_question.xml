@@ -36,15 +36,6 @@
                     android:textAppearance="@style/ui_font_title_bold"
                     android:textColor="@color/ui_white_text_color"/>
 
-            <TextView
-                    android:id="@+id/question_commonQuestionIntroText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:text="@string/question_common_question_intro_text"
-                    android:textAppearance="@style/ui_font_big_title_bold"
-                    android:textColor="@color/ui_white_text_color"/>
-
         </LinearLayout>
 
         <LinearLayout
