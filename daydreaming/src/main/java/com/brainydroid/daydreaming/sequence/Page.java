@@ -35,12 +35,15 @@ public class Page implements IPage {
 
     @JsonView(Views.Internal.class)
     private int sequenceId = -1;
+    @JsonView(Views.Internal.class)
     private boolean isNextBonus = false;
+    @JsonView(Views.Internal.class)
     private boolean isLastBeforeBonuses = false;
-
+    @JsonView(Views.Internal.class)
     private boolean isFirstOfSequence = false;
+    @JsonView(Views.Internal.class)
     private boolean isLastOfSequence = false;
-    private boolean isLastOfPageGroup = false;
+
     private Sequence sequenceCache = null;
 
     @Inject @JacksonInject private SequencesStorage sequencesStorage;
@@ -147,16 +150,8 @@ public class Page implements IPage {
         isLastOfSequence = true;
     }
 
-    public boolean isLastOfPageGroup() {
-        return isLastOfPageGroup;
-    }
-
-    public void setIsLastOfPageGroup() {
-        isLastOfPageGroup = true;
-    }
-
-    public void setIsNextBonus() {
-        isNextBonus = true;
+    public void setIsNextBonus(boolean isNextBonus) {
+        this.isNextBonus = isNextBonus;
         saveIfSync();
     }
 
@@ -164,8 +159,8 @@ public class Page implements IPage {
         return isNextBonus;
     }
 
-    public void setIsLastBeforeBonuses() {
-        isLastBeforeBonuses = true;
+    public void setIsLastBeforeBonuses(boolean isLastBeforeBonuses) {
+        this.isLastBeforeBonuses = isLastBeforeBonuses;
         saveIfSync();
     }
 
