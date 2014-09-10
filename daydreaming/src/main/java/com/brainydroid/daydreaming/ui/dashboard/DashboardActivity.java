@@ -34,6 +34,7 @@ import com.google.inject.Inject;
 
 import roboguice.activity.RoboFragmentActivity;
 import roboguice.inject.ContentView;
+import roboguice.inject.InjectResource;
 import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_dashboard)
@@ -54,8 +55,14 @@ public class DashboardActivity extends RoboFragmentActivity {
     @InjectView(R.id.dashboard_glossary_layout) RelativeLayout glossaryLayout;
     @InjectView(R.id.dashboard_textExperimentStatus) TextView expStatus;
     @InjectView(R.id.dashboard_no_params_text) TextView textNetworkConnection;
+    @InjectView(R.id.dashboard_ExperimentTimeElapsed2days) TextView elapsedTextDays;
+    @InjectView(R.id.dashboard_ExperimentResultsIn2days) TextView toGoTextDays;
+
+    @InjectResource(R.string.dashboard_text_days) String textDays;
+    @InjectResource(R.string.dashboard_text_day) String textDay;
 
     private boolean testModeThemeActivated = false;
+    private int daysToGo = -1;
 
     IntentFilter parametersUpdateIntentFilter = new IntentFilter(StatusManager.ACTION_PARAMETERS_UPDATED);
     IntentFilter networkIntentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
@@ -171,10 +178,44 @@ public class DashboardActivity extends RoboFragmentActivity {
         overridePendingTransition(R.anim.push_top_in, R.anim.push_top_out);
     }
 
-    //TODO: Decide what should happen when results button is clicked.
     public void  onClick_SeeResults(
             @SuppressWarnings("UnusedParameters") View view){
-        Toast.makeText(this, "Not yet!", Toast.LENGTH_SHORT).show();
+        Logger.v(TAG, "Results button clicked");
+
+        if (!statusManager.isExpRunning()) {
+            Logger.v(TAG, "Experiment not yet running => aborting");
+            Toast.makeText(this, "Experiment hasn't started yet!",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (daysToGo > 0) {
+            if (statusManager.getCurrentMode() == StatusManager.MODE_TEST) {
+                Logger.i(TAG, "Test mode activated => allowing results");
+                Toast.makeText(this, "Test mode => allowing results", Toast.LENGTH_SHORT).show();
+            } else {
+                Logger.v(TAG, "Still {} day(s) to go and test mode not activated => aborting",
+                        daysToGo);
+                String msg = "Still " + daysToGo + " day";
+                if (daysToGo > 1) {
+                    msg += "s";
+                }
+                msg += " to wait before the results";
+                Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+                return;
+            }
+        }
+
+        if (statusManager.isDataEnabled()) {
+            Logger.d(TAG, "Data enabled, transitioning to results");
+            Intent resultsIntent = new Intent(this, ResultsActivity.class);
+            startActivity(resultsIntent);
+            overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+        } else {
+            Logger.v(TAG, "No data connection => aborting");
+            Toast.makeText(this, "You're not connected to the internet!",
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void  onClick_OpenNetworkSettings(
@@ -214,7 +255,7 @@ public class DashboardActivity extends RoboFragmentActivity {
     }
 
     // TODO: disable "see results" button before the results are available
-    // TODO: something should happen once the results are available
+    // TODO: user should be notified once the results are available
     private void updateRunningTimeFromTimestamp(long timestampNow) {
         Logger.d(TAG, "Updating running time with timestamp {}", timestampNow);
         long expStartTimestamp = statusManager.getExperimentStartTimestamp();
@@ -229,7 +270,7 @@ public class DashboardActivity extends RoboFragmentActivity {
                 (24 * 60 * 60 * 1000));
         Logger.i(TAG, "Days elapsed: {}", daysElapsed);
 
-        final int daysToGo = parametersStorage.getExpDuration() - daysElapsed;
+        daysToGo = parametersStorage.getExpDuration() - daysElapsed;
         Logger.i(TAG, "Days to go: {}", daysToGo);
 
         Runnable timeElapsedUpdater = new Runnable() {
@@ -240,6 +281,7 @@ public class DashboardActivity extends RoboFragmentActivity {
             public void run() {
                 Logger.d(TAG, "Updating time elapsed view");
                 timeElapsedTextView.setText(String.valueOf(daysElapsed));
+                elapsedTextDays.setText(daysElapsed != 1 ? textDays : textDay);
             }
 
         };
@@ -252,6 +294,7 @@ public class DashboardActivity extends RoboFragmentActivity {
             public void run() {
                 Logger.d(TAG, "Updating time to go view");
                 timeToGoTextView.setText(String.valueOf(daysToGo));
+                toGoTextDays.setText(daysToGo != 1 ? textDays : textDay);
             }
 
         };

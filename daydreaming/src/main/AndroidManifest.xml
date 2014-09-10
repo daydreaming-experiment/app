@@ -80,6 +80,12 @@
             android:screenOrientation="portrait">
         </activity>
 
+        <activity android:name=".ui.dashboard.ResultsActivity"
+            android:theme="@style/daydreamingTheme"
+            android:taskAffinity=".dashboard"
+            android:screenOrientation="portrait">
+        </activity>
+
         <!-- Page Activity -->
 
         <activity android:name=".ui.sequences.PageActivity"
