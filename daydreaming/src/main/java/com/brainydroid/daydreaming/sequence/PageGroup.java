@@ -18,6 +18,7 @@ public class PageGroup implements IPageGroup {
     private String friendlyName = null;
     @JsonView(Views.Internal.class)
     private boolean bonus = false;
+    // TODO[now]: remove non-used bonus member
     @JsonView(Views.Public.class)
     private ArrayList<Page> pages = null;
 

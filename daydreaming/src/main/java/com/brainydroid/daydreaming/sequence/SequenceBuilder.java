@@ -30,6 +30,7 @@ public class SequenceBuilder {
         sequence.save();
         sequence.retainSaves();
         sequence.setPageGroups(buildableOrder.build(sequence));
+        // TODO[now]: work in reverse order through all pages. Set "isNextBonus" and "isLastBeforeBonuses"
         sequence.flushSaves();
         return sequence;
     }

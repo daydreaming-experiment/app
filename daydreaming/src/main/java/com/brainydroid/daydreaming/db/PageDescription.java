@@ -67,6 +67,8 @@ public class PageDescription extends DescriptionArrayContainer<QuestionPositionD
         position.validateInitialization(parentArray, this, PageDescription.class);
 
         validateContained(questionDescriptions);
+
+        // TODO[now]: if we're bonus, check not all siblings in parentArray are bonus (set pageGroup to bonus)
     }
 
     public Page build(Sequence sequence) {

@@ -26,6 +26,7 @@ public class PageGroupBuilder {
         PageGroup pageGroup = pageGroupFactory.create();
         pageGroup.importFromPageGroupDescription(pageGroupDescription);
         pageGroup.setPages(buildableOrder.build(sequence));
+        // TODO[now]: if bonus, set all children pages to bonus
         return pageGroup;
     }
 

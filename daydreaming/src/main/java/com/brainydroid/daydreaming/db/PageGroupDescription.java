@@ -80,7 +80,7 @@ public class PageGroupDescription extends DescriptionArrayContainer<PageDescript
 
         validateContained(questionsDescriptions);
 
-        // If we're bonus, no question inside can be bonus
+        // If we're bonus, no page inside can be bonus
         if (position.isBonus()) {
             for (PageDescription p : pages) {
                 if (p.getPosition().isBonus()) {
@@ -89,6 +89,8 @@ public class PageGroupDescription extends DescriptionArrayContainer<PageDescript
                 }
             }
         }
+
+        // TODO[now]: if we're bonus, check not all siblings in parentArray are bonus (sequence only bonuses, forbidden)
     }
 
     @Override
