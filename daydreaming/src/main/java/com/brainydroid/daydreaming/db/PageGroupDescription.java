@@ -90,7 +90,19 @@ public class PageGroupDescription extends DescriptionArrayContainer<PageDescript
             }
         }
 
-        // TODO[now]: if we're bonus, check not all siblings in parentArray are bonus (sequence only bonuses, forbidden)
+        if (position.isBonus()) {
+            boolean foundNonBonusSibling= false;
+            for (PageGroupDescription pg : parentArray) {
+                if (!pg.getPosition().isBonus()) {
+                    foundNonBonusSibling = true;
+                    break;
+                }
+            }
+
+            if (!foundNonBonusSibling) {
+                throw new JsonParametersException("All PageGroups in the sequence are bonus!");
+            }
+        }
     }
 
     @Override
