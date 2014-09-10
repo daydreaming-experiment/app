@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        >
+
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="QUESTIONNAIRES"
+            android:textAppearance="@style/ui_font_big_title_bold"
+            android:textColor="@color/ui_white_text_color"
+            android:layout_marginBottom="@dimen/global_text_titleTopMargin"
+            android:gravity="center_horizontal"
+            />
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:id="@+id/beginquestionnaires_questionnaires_layout"        />
+
+
+    </LinearLayout>
+
+    <LinearLayout android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true">
+
+        <ImageButton
+            android:layout_width="@dimen/return_to_dashboard_button_size_withmargin"
+            android:layout_height="@dimen/return_to_dashboard_button_size_withmargin"
+            android:padding="@dimen/return_to_dashboard_button_margin"
+            android:scaleType="fitCenter"
+            android:onClick="onClick_backToDashboard"
+            android:src="@drawable/dashboard_arrow"
+            android:background="@null"
+            android:contentDescription="@null"
+            />
+    </LinearLayout>
+
+</RelativeLayout>

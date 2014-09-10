@@ -15,6 +15,9 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -87,6 +90,20 @@ public class DashboardActivity extends RoboFragmentActivity {
         super.onCreate(savedInstanceState);
         checkFirstLaunch();
         setRobotoFont(this);
+
+        final Animation animation = new AlphaAnimation(1, 0); // Change alpha from fully visible to invisible
+        animation.setDuration(500); // duration - half a second
+        animation.setInterpolator(new LinearInterpolator()); // do not alter animation rate
+        animation.setRepeatCount(Animation.INFINITE); // Repeat animation infinitely
+        animation.setRepeatMode(Animation.REVERSE); // Reverse animation at the end so the button will fade back in
+        final Button btn = (Button) findViewById(R.id.dashboard_begin_questionnaires_button);
+        btn.startAnimation(animation);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View view) {
+                openBeginQuestionnaires();
+            }
+        });
     }
 
     @Override
@@ -138,6 +155,15 @@ public class DashboardActivity extends RoboFragmentActivity {
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
         overridePendingTransition(R.anim.push_top_in, R.anim.push_top_out);
+    }
+
+    /**
+     * Launching beginning questionnaires activity
+     */
+    public void openBeginQuestionnaires(){
+        Intent intent = new Intent(this, BeginQuestionnairesActivity.class);
+        startActivity(intent);
+        overridePendingTransition(R.anim.mainfadein, R.anim.splashfadeout);
     }
 
     /**

@@ -569,4 +569,15 @@ public class StatusManager {
         return areParametersUpdated();
     }
 
+
+    /**
+     * Check if beginning questionnaires are completed
+     *
+     * @return {@code true} if beginning questionnaires are completed
+     *         {@code false} otherwise
+     */
+    public synchronized boolean areBeginningQuestionnairesCompleted() {
+        return false;
+    }
+
 }

@@ -136,6 +136,21 @@
                         android:gravity="center"
                         android:background="@drawable/white_rectangle"/>
 
+                    <Button
+                        android:id="@+id/dashboard_begin_questionnaires_button"
+                        android:layout_width="@dimen/dashboard_calendar_width"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/dashboard_ExperimentTimeElapsed2days"
+                        android:textAppearance="@style/ui_font_button"
+                        android:textColor="@color/ui_dark_blue_color"
+                        android:text="@string/dashboard_text_begin_questionnaires"
+                        android:paddingBottom="@dimen/block_button_vertical_padding"
+                        android:paddingTop="@dimen/block_button_vertical_padding"
+                        android:gravity="center"
+                        android:background="@drawable/white_rectangle"
+                        android:layout_marginTop="10dp"
+                        android:onClick="onClick_SeeResults"
+                        />
 
                 </RelativeLayout>
 
