@@ -100,7 +100,8 @@ public class PageGroupDescription extends DescriptionArrayContainer<PageDescript
             }
 
             if (!foundNonBonusSibling) {
-                throw new JsonParametersException("All PageGroups in the sequence are bonus!");
+                throw new JsonParametersException("All PageGroups in the sequence are bonus! " +
+                        "Can't have a bonus-only sequence");
             }
         }
     }
