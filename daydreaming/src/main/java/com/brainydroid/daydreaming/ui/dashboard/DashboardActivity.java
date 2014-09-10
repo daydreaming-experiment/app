@@ -60,6 +60,7 @@ public class DashboardActivity extends RoboFragmentActivity {
     @InjectView(R.id.dashboard_no_params_text) TextView textNetworkConnection;
     @InjectView(R.id.dashboard_ExperimentTimeElapsed2days) TextView elapsedTextDays;
     @InjectView(R.id.dashboard_ExperimentResultsIn2days) TextView toGoTextDays;
+    @InjectView(R.id.dashboard_ExperimentResultsButton) Button resultsButton;
 
     @InjectResource(R.string.dashboard_text_days) String textDays;
     @InjectResource(R.string.dashboard_text_day) String textDay;
@@ -365,7 +366,15 @@ public class DashboardActivity extends RoboFragmentActivity {
             // (which is exactly why AlphaLinearLayout exists),
             // hence the @TargetApi(11) above.
             glossaryLayout.setAlpha(0.3f);
-            glossaryLayout.setClickable(false);
+            glossaryLayout.setClickable(true);
+        }
+
+        if (statusManager.areResultsAvailable()){
+            resultsButton.setAlpha(1f);
+            resultsButton.setClickable(true);
+        } else {
+            resultsButton.setAlpha(0.3f);
+            resultsButton.setClickable(false);
         }
 
         boolean isDataEnabled = statusManager.isDataEnabled();

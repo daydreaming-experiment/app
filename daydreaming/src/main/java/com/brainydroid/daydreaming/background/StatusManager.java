@@ -580,4 +580,8 @@ public class StatusManager {
         return false;
     }
 
+    public synchronized boolean areResultsAvailable(){
+        return false;
+    }
+
 }
