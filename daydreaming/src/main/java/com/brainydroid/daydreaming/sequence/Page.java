@@ -35,6 +35,8 @@ public class Page implements IPage {
 
     @JsonView(Views.Internal.class)
     private int sequenceId = -1;
+    private boolean isNextBonus = false;
+    private boolean isLastBeforeBonuses = false;
 
     private boolean isFirstOfSequence = false;
     private boolean isLastOfSequence = false;
@@ -151,6 +153,24 @@ public class Page implements IPage {
 
     public void setIsLastOfPageGroup() {
         isLastOfPageGroup = true;
+    }
+
+    public void setIsNextBonus() {
+        isNextBonus = true;
+        saveIfSync();
+    }
+
+    public boolean isNextBonus() {
+        return isNextBonus;
+    }
+
+    public void setIsLastBeforeBonuses() {
+        isLastBeforeBonuses = true;
+        saveIfSync();
+    }
+
+    public boolean isLastBeforeBonuses() {
+        return isLastBeforeBonuses;
     }
 
     public synchronized void setQuestions(ArrayList<Question> questions) {
