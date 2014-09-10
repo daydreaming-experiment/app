@@ -30,14 +30,14 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
     @JsonView(Views.Public.class)
     private String name = null;
     @JsonView(Views.Public.class)
-    private String intro = null;
-    @JsonView(Views.Public.class)
     private long notificationNtpTimestamp = -1;
     @JsonView(Views.Public.class)
     private long notificationSystemTimestamp = -1;
     @JsonView(Views.Public.class)
     private ArrayList<PageGroup> pageGroups = null;
 
+    @JsonView(Views.Internal.class)
+    private String intro = null;
     @JsonView(Views.Internal.class)
     private boolean skipBonuses = true;
     @JsonView(Views.Internal.class)
