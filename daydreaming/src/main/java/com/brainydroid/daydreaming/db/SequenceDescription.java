@@ -63,8 +63,7 @@ public class SequenceDescription extends DescriptionArrayContainer<PageGroupDesc
 
         // Check intro
         if (intro == null) {
-            throw new JsonParametersException("type in sequence can't be null");
-
+            throw new JsonParametersException("intro in sequence can't be null");
         }
 
         validateContained(questionDescriptions);
