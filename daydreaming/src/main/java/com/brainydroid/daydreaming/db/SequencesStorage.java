@@ -43,7 +43,7 @@ public class SequencesStorage
     }
 
     public synchronized ArrayList<Sequence> getSequencesByType(String type) {
-        Logger.v(TAG, "Getting sequences by type");
+        Logger.v(TAG, "Getting sequences of type {}", type);
         return getModelsByType(type);
     }
 
