@@ -1,7 +1,5 @@
 package com.brainydroid.daydreaming.sequence;
 
-import android.util.Pair;
-
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.SequenceDescription;
 import com.brainydroid.daydreaming.db.SequenceJsonFactory;
@@ -30,13 +28,18 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
     @JsonView(Views.Public.class)
     private String name = null;
     @JsonView(Views.Public.class)
-    private String intro = null;
-    @JsonView(Views.Public.class)
     private long notificationNtpTimestamp = -1;
     @JsonView(Views.Public.class)
     private long notificationSystemTimestamp = -1;
     @JsonView(Views.Public.class)
     private ArrayList<PageGroup> pageGroups = null;
+
+    @JsonView(Views.Internal.class)
+    private String intro = null;
+    @JsonView(Views.Internal.class)
+    private boolean skipBonuses = true;
+    @JsonView(Views.Internal.class)
+    private boolean skipBonusesAsked = false;
 
     @Inject @JacksonInject private SequencesStorage sequencesStorage;
 
@@ -88,91 +91,103 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
         saveIfSync();
     }
 
-    public synchronized Pair<Pair<Page,Page>,PageGroup> getRelevantPagesAndGroup() {
+    public synchronized void setSkipBonuses(boolean skip) {
+        Logger.v(TAG, "Setting skipBonuses to {}", skip);
+        skipBonuses = skip;
+        skipBonusesAsked = true;
+        saveIfSync();
+    }
+
+    public synchronized boolean isSkipBonuses() {
+        return skipBonuses;
+    }
+
+    public synchronized boolean isSkipBonusesAsked() {
+        return skipBonusesAsked;
+    }
+
+    public synchronized Page getCurrentPage() {
         Logger.d(TAG, "Getting current page");
 
         // Get last not answered page
         Page currentPage = null;
-        Page nextPage = null;
-        PageGroup currentGroup = null;
-        int globalIndex = 0;
-        int groupIndex = 0;
-        int indexInGroup;
-        int currentGlobalIndex = -1;
-        int currentIndexInGroup = -1;
-        int currentGroupIndex = -1;
         String status;
         for (PageGroup pg : pageGroups) {
 
-            indexInGroup = 0;
             for (Page p : pg.getPages()) {
 
                 status = p.getStatus();
                 if (status != null && (status.equals(Page.STATUS_ANSWERED) ||
                         status.equals(Page.STATUS_BONUS_SKIPPED))) {
+
+                    // We're at a page with status answered or skipped
+
                     if (currentPage != null) {
-                        // Oops, we have a problem
+
+                        // We already found a current page before this page! Something is wrong
+
                         String msg = "Found a page with status STATUS_ANSWERED or" +
-                                " STATUS_BONUS_SKIPPED after a page with different status " +
+                                " STATUS_BONUS_SKIPPED after the current page " +
                                 "(i.e. an answered page after the current one)";
                         Logger.e(TAG, msg);
                         throw new RuntimeException(msg);
                     }
+
                 } else {
+
                     if (currentPage == null) {
-                        // It's the first non-answered page, ergo the current page
-                        currentPage = p;
-                        currentGroup = pg;
-                        currentGlobalIndex = globalIndex;
-                        currentIndexInGroup = indexInGroup;
-                        currentGroupIndex = groupIndex;
-                    } else if (nextPage == null) {
-                        // It's the next page
-                        nextPage = p;
+
+                        // This could be our current page
+
+                        if (p.isBonus() && skipBonusesAsked && skipBonuses) {
+                            // No it's not, this page is bonus and we're asked to skip it
+                            p.setStatus(Page.STATUS_BONUS_SKIPPED);
+                        } else {
+                            // It's the first non-answered and non-skipped page,
+                            // ergo the current page
+                            currentPage = p;
+                        }
                     }
                 }
-
-                globalIndex++;
-                indexInGroup++;
             }
-
-            groupIndex++;
         }
 
         if (currentPage == null) {
-            String msg = "Asked for a current page, but none found (all pages answered)";
+            String msg = "Asked for a current page, but none found (all pages answered or skipped)";
             Logger.e(TAG, msg);
             throw new RuntimeException(msg);
         }
-        if (currentGlobalIndex == globalIndex - 1) {
-            currentPage.setIsLastOfSequence();
-        } else if (currentGlobalIndex == globalIndex - 2) {
-            // Will not NullPointerException since we're at end-2 so we found a next page
-            //noinspection ConstantConditions
-            nextPage.setIsLastOfSequence();
-        }
-        if (currentGlobalIndex == 0) {
-            currentPage.setIsFirstOfSequence();
-        }
-        if (currentIndexInGroup == currentGroup.getPages().size() - 1) {
-            currentPage.setIsLastOfPageGroup();
-        }
 
-        PageGroup nextGroup = null;
-        if (currentGroupIndex <= pageGroups.size() - 2) {
-            nextGroup = pageGroups.get(currentGroupIndex + 1);
-        }
-        if (currentGroupIndex == pageGroups.size() - 2) {
-            // Will not NullPointerException since we're at end-2 (in groups)
-            // so we found a next group
-            //noinspection ConstantConditions
-            nextGroup.setIsLastOfSequence();
-        }
+        return currentPage;
+    }
 
-        // TODO: also record if the next group is bonus and/or last
+    public synchronized void skipRemainingBonuses() {
+        Logger.v(TAG, "Skipping all remaining bonus pages");
 
-        return new Pair<Pair<Page,Page>,PageGroup>(
-                new Pair<Page,Page>(currentPage, nextPage), nextGroup);
+        for (PageGroup pg : pageGroups) {
+
+            for (Page p : pg.getPages()) {
+
+                String status = p.getStatus();
+                if (status == null || !(status.equals(Page.STATUS_ANSWERED) ||
+                        status.equals(Page.STATUS_BONUS_SKIPPED))) {
+
+                    // This page has either null status, or something else than answered or skipped
+
+                    if (p.isBonus()) {
+                        // This is one of the remaining bonus pages
+                        p.setStatus(Page.STATUS_BONUS_SKIPPED);
+                    } else {
+                        // We have a problem: there should be only bonus pages here
+                        // (otherwise we wouldn't be skipping them all in one go)
+                        String msg = "Found a non-bonus non-answered (and non-skipped) page " +
+                                "while skipping remaining bonus pages. Something is wrong.";
+                        Logger.e(TAG, msg);
+                        throw new RuntimeException(msg);
+                    }
+                }
+            }
+        }
     }
 
     @Override

@@ -26,6 +26,14 @@ public class PageGroupBuilder {
         PageGroup pageGroup = pageGroupFactory.create();
         pageGroup.importFromPageGroupDescription(pageGroupDescription);
         pageGroup.setPages(buildableOrder.build(sequence));
+
+        // If we're bonus, all contained pages are bonus
+        if (pageGroupDescription.getPosition().isBonus()) {
+            for (Page p : pageGroup.getPages()) {
+                p.setBonus(true);
+            }
+        }
+
         return pageGroup;
     }
 

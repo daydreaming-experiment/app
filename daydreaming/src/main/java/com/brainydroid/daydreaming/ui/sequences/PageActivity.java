@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.SystemClock;
-import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -24,7 +23,6 @@ import com.brainydroid.daydreaming.db.SequencesStorage;
 import com.brainydroid.daydreaming.network.SntpClient;
 import com.brainydroid.daydreaming.network.SntpClientCallback;
 import com.brainydroid.daydreaming.sequence.Page;
-import com.brainydroid.daydreaming.sequence.PageGroup;
 import com.brainydroid.daydreaming.sequence.Sequence;
 import com.brainydroid.daydreaming.ui.FontUtils;
 import com.google.inject.Inject;
@@ -47,10 +45,8 @@ public class PageActivity extends RoboFragmentActivity {
     private int sequenceId;
     private Sequence sequence;
     private Page currentPage;
-    private Page nextPage;
-    private PageGroup nextGroup;
     private long lastBackTime = 0;
-    private boolean isContinuingOrFinishing = false;
+    private boolean isFinishing = false;
     @Inject private PageViewAdapter pageViewAdapter;
 
     @InjectView(R.id.page_linearLayout) LinearLayout pageLinearLayout;
@@ -113,10 +109,9 @@ public class PageActivity extends RoboFragmentActivity {
     public void onPause() {
         Logger.d(TAG, "Pausing");
         super.onPause();
-        if (!isContinuingOrFinishing) {
-            Logger.d(TAG, "We're not moving to next question or finishing " +
-                    "the sequence -> stopping the sequence");
-            stopSequence();
+        if (!isFinishing) {
+            Logger.d(TAG, "We're not finishing the sequence -> pausing it");
+            sequence.setStatus(Sequence.STATUS_PARTIALLY_COMPLETED);
         }
 
         // Save everything to DB
@@ -158,36 +153,38 @@ public class PageActivity extends RoboFragmentActivity {
             throw new RuntimeException(msg);
         }
         sequence = sequencesStorage.get(sequenceId);
-        Pair<Pair<Page,Page>,PageGroup> relevantPagesAndGroup = sequence.getRelevantPagesAndGroup();
-        currentPage = relevantPagesAndGroup.first.first;
-        nextPage = relevantPagesAndGroup.first.second;
-        nextGroup = relevantPagesAndGroup.second;
+        currentPage = sequence.getCurrentPage();
         pageViewAdapter.setPage(currentPage);
     }
 
     private void setChrome() {
         Logger.d(TAG, "Setting chrome");
 
-        if (currentPage.isLastOfSequence() || isNextBonusAndLast()) {
-            Logger.d(TAG, "Last page, or next page is last and bonus, or last page of group and " +
-                    "next group is last and bonus -> setting finish button text");
+        if (isPotentialEndPage()) {
+            Logger.d(TAG, "This is potentially the end page -> setting finish button text");
             nextButton.setVisibility(View.GONE);
             finishButton.setVisibility(View.VISIBLE);
             finishButton.setClickable(true);
         }
     }
 
-    private void setIsContinuingOrFinishing() {
-        isContinuingOrFinishing = true;
+    private void setIsFinishing() {
+        isFinishing = true;
     }
 
-    private void stopSequence() {
-        Logger.i(TAG, "Stopping sequence");
+    public boolean isPotentialEndPage() {
+        // If we're the last question, or the last before bonus
+        // and we don't yet know if we're going to skip them or not
+        return currentPage.isLastOfSequence() ||
+                (currentPage.isLastBeforeBonuses() && !sequence.isSkipBonusesAsked());
+    }
 
-        sequence.setStatus(Sequence.STATUS_PARTIALLY_COMPLETED);
-
-        Logger.i(TAG, "Finishing activity");
-        finish();
+    private boolean isEndPage() {
+        // If we're the last question, or the last before bonus
+        // and we know we're going to skip them
+        return currentPage.isLastOfSequence() ||
+                (currentPage.isLastBeforeBonuses() && sequence.isSkipBonusesAsked()
+                        && sequence.isSkipBonuses());
     }
 
     private void startSchedulerService() {
@@ -241,25 +238,6 @@ public class PageActivity extends RoboFragmentActivity {
         }
     }
 
-    private boolean isNextBonus() {
-        return (nextPage != null && nextPage.isBonus()) ||
-                (nextGroup != null && nextGroup.isBonus() && currentPage.isLastOfPageGroup());
-    }
-
-    private boolean isNextBonusAndLast() {
-        return (nextPage != null && nextPage.isBonus() && nextPage.isLastOfSequence()) ||
-                (nextGroup != null && nextGroup.isBonus() &&
-                        currentPage.isLastOfPageGroup() && nextGroup.isLastOfSequence());
-    }
-
-    private boolean isNextPageBonus() {
-        return nextPage != null && nextPage.isBonus();
-    }
-
-    private boolean isNextGroupBonus() {
-        return nextGroup != null && nextGroup.isBonus() && currentPage.isLastOfPageGroup();
-    }
-
     public void onClick_nextButton(@SuppressWarnings("UnusedParameters") View view) {
         Logger.d(TAG, "Next button clicked");
 
@@ -269,12 +247,12 @@ public class PageActivity extends RoboFragmentActivity {
             pageViewAdapter.saveAnswers();
             currentPage.setStatus(Page.STATUS_ANSWERED);
 
-            if (isNextBonus()) {
+            if (currentPage.isNextBonus() && !sequence.isSkipBonusesAsked()) {
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
                 String skipText = "Skip those";
-                if (isNextBonusAndLast()) {
+                if (currentPage.isLastBeforeBonuses()) {
                     skipText = "Nope, had enough";
                 }
                 builder.setTitle("Bonus")
@@ -283,26 +261,16 @@ public class PageActivity extends RoboFragmentActivity {
                         .setPositiveButton("Go for bonus", new DialogInterface.OnClickListener() {
 
                             public void onClick(DialogInterface dialog, int id) {
-                                transitionToNext(false);
+                                sequence.setSkipBonuses(false);
+                                transitionToNext();
                             }
 
                         })
                         .setNegativeButton(skipText, new DialogInterface.OnClickListener() {
 
                             public void onClick(DialogInterface dialog, int id) {
-                                if (isNextPageBonus()) {
-                                    nextPage.setStatus(Page.STATUS_BONUS_SKIPPED);
-                                } else if (isNextGroupBonus()) {
-                                    for (Page p : nextGroup.getPages()) {
-                                        p.setStatus(Page.STATUS_BONUS_SKIPPED);
-                                    }
-                                } else {
-                                    throw new RuntimeException("We should never get to here. " +
-                                            "At this point either the next page should be " +
-                                            "bonus, or the next group should be bonus and this " +
-                                            "page should be the last of its group.");
-                                }
-                                transitionToNext(isNextBonusAndLast());
+                                sequence.setSkipBonuses(true);
+                                transitionToNext();
                             }
 
                         });
@@ -310,15 +278,14 @@ public class PageActivity extends RoboFragmentActivity {
                 AlertDialog bonusAlert = builder.create();
                 bonusAlert.show();
             } else {
-                transitionToNext(currentPage.isLastOfSequence());
+                transitionToNext();
             }
         }
     }
 
-    private void transitionToNext(boolean finish) {
-        setIsContinuingOrFinishing();
-        if (finish) {
-            Logger.d(TAG, "Last page -> finishing sequence");
+    private void transitionToNext() {
+        if (isEndPage()) {
+            Logger.d(TAG, "End page -> finishing sequence");
             finishSequence();
         } else {
             Logger.d(TAG, "Launching next page");
@@ -340,7 +307,10 @@ public class PageActivity extends RoboFragmentActivity {
     private void finishSequence() {
         Logger.i(TAG, "Finishing sequence");
 
+        setIsFinishing();
+
         Toast.makeText(this, getString(R.string.page_thank_you), Toast.LENGTH_SHORT).show();
+        sequence.skipRemainingBonuses();
         sequence.setStatus(Sequence.STATUS_COMPLETED);
 
         finish();

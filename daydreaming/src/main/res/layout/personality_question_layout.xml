@@ -22,7 +22,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text=""
-        android:textAppearance="@style/ui_font_bodytext"
+        android:textAppearance="@style/ui_font_bodyText"
         android:textColor="@color/ui_white_text_color"
         android:gravity="center_horizontal"
         android:paddingTop="20dp"
@@ -34,17 +34,17 @@
             android:layout_height="wrap_content"
             android:minHeight="6dip"
             android:maxHeight="6dip"
-            android:paddingLeft="@dimen/seekbar_touchzone_radius"
-            android:paddingRight="@dimen/seekbar_touchzone_radius"
+            android:paddingLeft="@dimen/seekBar_touchZone_radius"
+            android:paddingRight="@dimen/seekBar_touchZone_radius"
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
-            android:thumbOffset="@dimen/seekbar_touchzone_radius"/>
+            android:thumbOffset="@dimen/seekBar_touchZone_radius"/>
     <TextView
             android:id="@+id/Questionnaire_answer"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text=""
-            android:textAppearance="@style/ui_font_bodytext"
+            android:textAppearance="@style/ui_font_bodyText"
             android:textColor="@color/ui_dark_blue_color"
             android:gravity="center_horizontal"/>
 

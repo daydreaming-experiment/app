@@ -80,13 +80,28 @@ public class PageGroupDescription extends DescriptionArrayContainer<PageDescript
 
         validateContained(questionsDescriptions);
 
-        // If we're bonus, no question inside can be bonus
+        // If we're bonus, no page inside can be bonus
         if (position.isBonus()) {
             for (PageDescription p : pages) {
                 if (p.getPosition().isBonus()) {
                     throw new JsonParametersException("A page can't be bonus inside " +
                             "a bonus pageGroup");
                 }
+            }
+        }
+
+        if (position.isBonus()) {
+            boolean foundNonBonusSibling= false;
+            for (PageGroupDescription pg : parentArray) {
+                if (!pg.getPosition().isBonus()) {
+                    foundNonBonusSibling = true;
+                    break;
+                }
+            }
+
+            if (!foundNonBonusSibling) {
+                throw new JsonParametersException("All PageGroups in the sequence are bonus! " +
+                        "Can't have a bonus-only sequence");
             }
         }
     }
