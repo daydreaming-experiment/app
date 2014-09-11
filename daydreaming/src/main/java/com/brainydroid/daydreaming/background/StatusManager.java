@@ -577,11 +577,8 @@ public class StatusManager {
      *         {@code false} otherwise
      */
     public synchronized boolean areBeginningQuestionnairesCompleted() {
-        if (sequencesStorageProvider.get().getUploadableSequences(Sequence.TYPE_BEGIN_QUESTIONNAIRE).isEmpty())  {
-            return true;
-        } else {
-            return false;
-        }
+        return !sequencesStorageProvider.get().getUploadableSequences(
+                Sequence.TYPE_BEGIN_QUESTIONNAIRE).isEmpty();
     }
 
     public synchronized boolean areResultsAvailable(){
