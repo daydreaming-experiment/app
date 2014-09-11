@@ -32,8 +32,7 @@ public class CreditsActivity extends RoboFragmentActivity {
 
         TextView credits_website_link = (TextView)findViewById(R.id.credits_website_link);
         Linkify.addLinks(credits_website_link, Linkify.WEB_URLS | Linkify.EMAIL_ADDRESSES);
-
-
+        credits_website_link.setLinkTextColor(R.color.ui_dark_blue_color);
     }
 
     @Override
