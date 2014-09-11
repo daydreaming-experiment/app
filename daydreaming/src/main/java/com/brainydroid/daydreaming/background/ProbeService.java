@@ -126,6 +126,12 @@ public class ProbeService extends RoboService {
             flags |= Notification.DEFAULT_VIBRATE;
         }
 
+        // Should we beep?
+        if (sharedPreferences.getBoolean("notification_sound_key", true)) {
+            Logger.v(TAG, "Activating sound");
+            flags |= Notification.DEFAULT_SOUND;
+        }
+
         // Create our notification
         Notification notification = new NotificationCompat.Builder(this)
         .setTicker(getString(R.string.probeNotification_ticker))
@@ -138,9 +144,9 @@ public class ProbeService extends RoboService {
         .setDefaults(flags)
         .build();
 
-        // Should we beep?
+        // How to beep?
         if (sharedPreferences.getBoolean("notification_sound_key", true)) {
-            Logger.v(TAG, "Activating sound");
+            Logger.v(TAG, "Adding custom sound");
             notification.sound = Uri.parse("android.resource://" + "com.brainydroid.daydreaming" + "/" + R.raw.notification);
         }
 

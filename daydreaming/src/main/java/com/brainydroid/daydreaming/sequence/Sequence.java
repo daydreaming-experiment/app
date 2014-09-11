@@ -34,6 +34,8 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
     @JsonView(Views.Public.class)
     private String name = null;
     @JsonView(Views.Public.class)
+    private String intro = null;
+    @JsonView(Views.Public.class)
     private long notificationNtpTimestamp = -1;
     @JsonView(Views.Public.class)
     private long notificationSystemTimestamp = -1;
@@ -41,6 +43,10 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
     private ArrayList<PageGroup> pageGroups = null;
 
     @Inject @JacksonInject private SequencesStorage sequencesStorage;
+
+    public synchronized String getIntro() {
+        return intro;
+    }
 
     public synchronized String getName() {
         return name;
@@ -51,9 +57,15 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
         saveIfSync();
     }
 
+    private synchronized void setIntro(String intro) {
+        this.intro = intro;
+        saveIfSync();
+    }
+
     public synchronized void importFromSequenceDescription(SequenceDescription description) {
         setName(description.getName());
         setType(description.getType());
+        setIntro(description.getIntro());
     }
 
     public synchronized void setPageGroups(ArrayList<PageGroup> pageGroups) {

@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.brainydroid.daydreaming.R;
@@ -53,6 +54,8 @@ public class PageActivity extends RoboFragmentActivity {
     @Inject private PageViewAdapter pageViewAdapter;
 
     @InjectView(R.id.page_linearLayout) LinearLayout pageLinearLayout;
+    @InjectView(R.id.page_intro_text) TextView pageIntroText;
+
 
     @InjectView(R.id.page_nextButton) ImageButton nextButton;
     @InjectView(R.id.page_finishButton) ImageButton finishButton;
@@ -72,6 +75,7 @@ public class PageActivity extends RoboFragmentActivity {
         initVars();
         setChrome();
         pageViewAdapter.inflate(pageLinearLayout);
+        pageIntroText.setText(sequence.getIntro());
         setRobotoFont();
 
         // If this is a probe and we're at the first page, reschedule so as not
