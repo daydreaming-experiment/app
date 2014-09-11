@@ -585,7 +585,13 @@ public class StatusManager {
     }
 
     public synchronized boolean areResultsAvailable(){
-        return false;
+        if (!isExpRunning()) return false;
+
+        int daysElapsed = (int)((getLatestNtpTime() - getExperimentStartTimestamp()) /
+                (24 * 60 * 60 * 1000));
+        int daysToGo = parametersStorageProvider.get().getExpDuration() - daysElapsed;
+
+        return daysToGo <= 0;
     }
 
 }
