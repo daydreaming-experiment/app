@@ -20,9 +20,9 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
     private static String TAG = "Sequence";
 
     public static String TYPE_PROBE = "probe";
-    public static String TYPE_BEGIN_QUESTIONNAIRE = "begin_questionnaire";
+    public static String TYPE_BEGIN_QUESTIONNAIRE = "beginQuestionnaire";
 
-    public static String[] AVAILABLE_TYPES = new String[] {TYPE_PROBE,TYPE_BEGIN_QUESTIONNAIRE};
+    public static String[] AVAILABLE_TYPES = new String[] {TYPE_PROBE, TYPE_BEGIN_QUESTIONNAIRE};
 
     public static final String STATUS_PENDING = "pending"; // Notification has appeared
     public static final String STATUS_RUNNING = "running"; // Activity is running

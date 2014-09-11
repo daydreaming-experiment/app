@@ -13,15 +13,13 @@ import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.db.ParametersStorage;
 import com.brainydroid.daydreaming.db.SequenceDescription;
 import com.brainydroid.daydreaming.db.SequencesStorage;
+import com.brainydroid.daydreaming.sequence.ISequence;
 import com.brainydroid.daydreaming.sequence.Sequence;
 import com.brainydroid.daydreaming.sequence.SequenceBuilder;
 import com.brainydroid.daydreaming.ui.FontUtils;
 import com.brainydroid.daydreaming.ui.firstlaunchsequence.FirstLaunch00WelcomeActivity;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-
-import org.spongycastle.crypto.modes.AEADBlockCipher;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,9 +28,6 @@ import roboguice.activity.RoboFragmentActivity;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
-/**
- * Created by vincent on 10/09/14.
- */
 @ContentView(R.layout.activity_beginquestionnaires_layout)
 
 public class BeginQuestionnairesActivity extends RoboFragmentActivity {
@@ -42,25 +37,24 @@ public class BeginQuestionnairesActivity extends RoboFragmentActivity {
     @Inject  ParametersStorage parametersStorage;
     @Inject  Provider<SequencesStorage> sequencesStorageProvider;
     @Inject  SequenceBuilder sequenceBuilder;
-    @Inject
-    HashMap<String,TextView> questionnairesTextViews;
+    @Inject HashMap<String,TextView> questionnairesTextViews;
 
     @InjectView(R.id.beginquestionnaires_questionnaires_layout)
     LinearLayout beginQuestionnairesLinearLayout;
 
-
-    private static ArrayList<Sequence> questionnaires;
+    private ArrayList<SequenceDescription> allBeginQuestionnaires;
+    private ArrayList<Sequence> completedBeginQuestionnaires;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Logger.v(TAG, "Creating");
         super.onCreate(savedInstanceState);
+        checkFirstLaunch();
         createQuestionnaires();
         populateQuestionnairesView();
         ViewGroup godfatherView = (ViewGroup)getWindow().getDecorView();
         FontUtils.setRobotoFont(this, godfatherView);
         updateQuestionnairesStatusView();
-
     }
 
     @Override
@@ -71,49 +65,40 @@ public class BeginQuestionnairesActivity extends RoboFragmentActivity {
     }
 
     /**
-     * Check if Begin Questionnaries were instantiated. If not instantiates them
-     *
+     * Check if Begin Questionnaires were instantiated. If not instantiate them
      */
-    protected void createQuestionnaires(){
+    protected void createQuestionnaires() {
         Logger.v(TAG, "Instantiating Begin Questionnaires");
 
-        ArrayList<SequenceDescription> allBeginQuestionnaires = parametersStorage.getSequencesByType(Sequence.TYPE_BEGIN_QUESTIONNAIRE);
-        ArrayList<Sequence> loadedBeginQuestionnaires = sequencesStorageProvider.get().getSequencesByType(Sequence.TYPE_BEGIN_QUESTIONNAIRE);
+        allBeginQuestionnaires = parametersStorage.getSequencesByType(
+                Sequence.TYPE_BEGIN_QUESTIONNAIRE);
+        completedBeginQuestionnaires = sequencesStorageProvider.get()
+                .getUploadableSequences(Sequence.TYPE_BEGIN_QUESTIONNAIRE);
+        ArrayList<Sequence> loadedBeginQuestionnaires = sequencesStorageProvider.get()
+                .getSequencesByType(Sequence.TYPE_BEGIN_QUESTIONNAIRE);
 
-        if (allBeginQuestionnaires == null | allBeginQuestionnaires.isEmpty() ) {
+        if (allBeginQuestionnaires == null || allBeginQuestionnaires.isEmpty()) {
             // if empty do nothing
             Logger.v(TAG, "No Begin Questionnaires in parameters");
         } else {
             Logger.v(TAG, "Begin Questionnaires found in parameters");
-            if (loadedBeginQuestionnaires == null | loadedBeginQuestionnaires.isEmpty() ) {
-                Logger.v(TAG, "Begin Questionnaires already instantiated");
-            } else {
+            if (loadedBeginQuestionnaires == null || loadedBeginQuestionnaires.isEmpty()) {
                 Logger.v(TAG, "Instantiating Begin Questionnaires...");
                 for (SequenceDescription sd : allBeginQuestionnaires) {
-                    Sequence bqSequence = sequenceBuilder.buildSave(sd.getName());
+                    sequenceBuilder.buildSave(sd.getName());
                 }
+            } else {
+                Logger.v(TAG, "Begin Questionnaires already instantiated");
             }
         }
     }
 
-    protected ArrayList<String> getSequenceNames(ArrayList<Sequence> sequences){
+    protected ArrayList<String> getSequenceNames(ArrayList<? extends ISequence> sequences) {
         ArrayList<String> names = new ArrayList<String>();
-        if (sequences != null){
-            if (!sequences.isEmpty() ) {
-                for (Sequence s : sequences) {
+        if (sequences != null) {
+            if (!sequences.isEmpty()) {
+                for (ISequence s : sequences) {
                     names.add(s.getName());
-                }
-            }
-        }
-        return names;
-    }
-
-    protected ArrayList<String> getSequenceDescriptionNames(ArrayList<SequenceDescription> sequenceDescriptions){
-        ArrayList<String> names = new ArrayList<String>();
-        if (sequenceDescriptions != null){
-            if (!sequenceDescriptions.isEmpty() ) {
-                for (SequenceDescription sd : sequenceDescriptions) {
-                    names.add(sd.getName());
                 }
             }
         }
@@ -123,19 +108,12 @@ public class BeginQuestionnairesActivity extends RoboFragmentActivity {
     protected void populateQuestionnairesView() {
         Logger.v(TAG, "Populating questionnaire list");
 
-        // Get list of questionnaires (sequences) to be displayed
-        ArrayList<SequenceDescription> allBeginQuestionnaires = parametersStorage.getSequencesByType(Sequence.TYPE_BEGIN_QUESTIONNAIRE);
-        ArrayList<Sequence> loadedBeginQuestionnaires = sequencesStorageProvider.get().getSequencesByType(Sequence.TYPE_BEGIN_QUESTIONNAIRE);
-
-
-        int index = 0;
-        if (allBeginQuestionnaires == null | allBeginQuestionnaires.isEmpty() ) {
+        if (allBeginQuestionnaires == null || allBeginQuestionnaires.isEmpty() ) {
             Logger.v(TAG, "No Begin Questionnaires in parameters");
         } else {
             Logger.v(TAG, "Begin Questionnaires found in parameters");
 
-            for (SequenceDescription sd : allBeginQuestionnaires) {
-                index += 1;
+            for (int index = 0; index < allBeginQuestionnaires.size(); index++) {
                 LinearLayout bq_linearLayout = (LinearLayout) getLayoutInflater().inflate(
                         R.layout.begin_questionnaire_layout, beginQuestionnairesLinearLayout, false);
                 TextView questionnaireName = (TextView) bq_linearLayout.findViewById(R.id.begin_questionnaire_name);
@@ -156,9 +134,7 @@ public class BeginQuestionnairesActivity extends RoboFragmentActivity {
     protected void updateQuestionnairesStatusView() {
         Logger.v(TAG, "Updating questionnaires list view");
 
-        ArrayList<SequenceDescription> allBeginQuestionnaires = parametersStorage.getSequencesByType(Sequence.TYPE_BEGIN_QUESTIONNAIRE);
-        ArrayList<Sequence> completedBeginQuestionnaires = sequencesStorageProvider.get().getUploadableSequences(Sequence.TYPE_BEGIN_QUESTIONNAIRE);
-        ArrayList<String> allBeginQuestionnairesNames = getSequenceDescriptionNames(allBeginQuestionnaires);
+        ArrayList<String> allBeginQuestionnairesNames = getSequenceNames(allBeginQuestionnaires);
         ArrayList<String> completedBeginQuestionnairesNames = getSequenceNames(completedBeginQuestionnaires);
 
         for (int i = 0; i < beginQuestionnairesLinearLayout.getChildCount(); i++) {
@@ -166,7 +142,7 @@ public class BeginQuestionnairesActivity extends RoboFragmentActivity {
             String bq_name = allBeginQuestionnairesNames.get(i);
             boolean isComplete = completedBeginQuestionnairesNames.contains(bq_name);
             tv.setCompoundDrawablesWithIntrinsicBounds(isComplete ? R.drawable.status_ok : R.drawable.status_wrong, 0, 0, 0);
-            Logger.v(TAG, "Questionnaire textview text: {} - completion is", tv.getText());
+            Logger.v(TAG, "Questionnaire TextView text: {} - completion is", tv.getText());
         }
     }
 
