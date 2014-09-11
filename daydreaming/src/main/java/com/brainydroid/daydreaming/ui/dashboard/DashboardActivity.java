@@ -365,7 +365,7 @@ public class DashboardActivity extends RoboFragmentActivity {
             // (which is exactly why AlphaLinearLayout exists),
             // hence the @TargetApi(11) above.
             glossaryLayout.setAlpha(0.3f);
-            glossaryLayout.setClickable(true);
+            glossaryLayout.setClickable(false);
         }
 
         if (statusManager.areResultsAvailable()){
