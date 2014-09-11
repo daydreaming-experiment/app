@@ -118,6 +118,10 @@
     <string name="Questionnaire_intro">Here are a number of personality traits that may or may not apply to you.  Please select the statement to indicate the extent to which you agree or disagree with each statement. You should rate the extent to which the pair of traits applies to you, even if one characteristic applies more strongly than the other. </string>
     <string name="Questionnaire_title">PERSONALITY\nQUESTIONNAIRE</string>
 
+    <!-- Begin Questionnaire Activity -->
+    <string name="begin_questionnaires_title_activity">Begin Questionnaires</string>
+
+
     <!-- Pulling question Activity -->
     <string name="firstLaunchPull_title_activity">Pull Questions</string>
     <string name="firstLaunchPull_text_intro">We will now fetch content from our servers.\nThis should take no more than a few seconds</string>
@@ -230,5 +234,6 @@
 
 ]]>
     </string>
+    <string name="dashboard_text_begin_questionnaires">Questions</string>
 
 </resources>

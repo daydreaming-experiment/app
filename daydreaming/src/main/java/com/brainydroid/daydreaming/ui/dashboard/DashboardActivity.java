@@ -15,6 +15,9 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -57,6 +60,7 @@ public class DashboardActivity extends RoboFragmentActivity {
     @InjectView(R.id.dashboard_no_params_text) TextView textNetworkConnection;
     @InjectView(R.id.dashboard_ExperimentTimeElapsed2days) TextView elapsedTextDays;
     @InjectView(R.id.dashboard_ExperimentResultsIn2days) TextView toGoTextDays;
+    @InjectView(R.id.dashboard_ExperimentResultsButton) Button resultsButton;
 
     @InjectResource(R.string.dashboard_text_days) String textDays;
     @InjectResource(R.string.dashboard_text_day) String textDay;
@@ -87,6 +91,20 @@ public class DashboardActivity extends RoboFragmentActivity {
         super.onCreate(savedInstanceState);
         checkFirstLaunch();
         setRobotoFont(this);
+
+        final Animation animation = new AlphaAnimation(1, 0); // Change alpha from fully visible to invisible
+        animation.setDuration(1000); // duration - half a second
+        animation.setInterpolator(new AccelerateDecelerateInterpolator()); // do not alter animation rate
+        animation.setRepeatCount(Animation.INFINITE); // Repeat animation infinitely
+        animation.setRepeatMode(Animation.REVERSE); // Reverse animation at the end so the button will fade back in
+        final Button btn = (Button) findViewById(R.id.dashboard_begin_questionnaires_button);
+        btn.startAnimation(animation);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View view) {
+                openBeginQuestionnaires();
+            }
+        });
     }
 
     @Override
@@ -138,6 +156,15 @@ public class DashboardActivity extends RoboFragmentActivity {
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
         overridePendingTransition(R.anim.push_top_in, R.anim.push_top_out);
+    }
+
+    /**
+     * Launching beginning questionnaires activity
+     */
+    public void openBeginQuestionnaires(){
+        Intent intent = new Intent(this, BeginQuestionnairesActivity.class);
+        startActivity(intent);
+        overridePendingTransition(R.anim.mainfadein, R.anim.splashfadeout);
     }
 
     /**
@@ -309,7 +336,6 @@ public class DashboardActivity extends RoboFragmentActivity {
      * dashboard layout.
      */
 
-    //TODO[Vincent] Think of a way to deal with experiment being paused (status : running paused stopped)
     @TargetApi(11)
     protected void updateExperimentStatusViews() {
         View dashboard_TimeBox_layout = findViewById(R.id.dashboard_TimeBox_layout);
@@ -340,6 +366,14 @@ public class DashboardActivity extends RoboFragmentActivity {
             // hence the @TargetApi(11) above.
             glossaryLayout.setAlpha(0.3f);
             glossaryLayout.setClickable(false);
+        }
+
+        if (statusManager.areResultsAvailable()){
+            resultsButton.setAlpha(1f);
+            resultsButton.setClickable(true);
+        } else {
+            resultsButton.setAlpha(0.3f);
+            resultsButton.setClickable(false);
         }
 
         boolean isDataEnabled = statusManager.isDataEnabled();

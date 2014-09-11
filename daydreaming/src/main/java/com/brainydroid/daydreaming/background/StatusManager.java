@@ -569,4 +569,26 @@ public class StatusManager {
         return areParametersUpdated();
     }
 
+
+    /**
+     * Check if beginning questionnaires are completed
+     *
+     * @return {@code true} if beginning questionnaires are completed
+     *         {@code false} otherwise
+     */
+    public synchronized boolean areBeginningQuestionnairesCompleted() {
+        return !sequencesStorageProvider.get().getUploadableSequences(
+                Sequence.TYPE_BEGIN_QUESTIONNAIRE).isEmpty();
+    }
+
+    public synchronized boolean areResultsAvailable(){
+        if (!isExpRunning()) return false;
+
+        int daysElapsed = (int)((getLatestNtpTime() - getExperimentStartTimestamp()) /
+                (24 * 60 * 60 * 1000));
+        int daysToGo = parametersStorageProvider.get().getExpDuration() - daysElapsed;
+
+        return daysToGo <= 0;
+    }
+
 }

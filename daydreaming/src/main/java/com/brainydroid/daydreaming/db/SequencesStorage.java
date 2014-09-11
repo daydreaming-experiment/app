@@ -26,7 +26,7 @@ public class SequencesStorage
     }
 
     public synchronized ArrayList<Sequence> getUploadableSequences(String type) {
-        Logger.v(TAG, "Getting uploadable sequences");
+        Logger.v(TAG, "Getting uploadable sequences of type {}", type);
 
         String[] uploadableStatuses;
         if (type.equals(Sequence.TYPE_PROBE)) {
@@ -42,6 +42,11 @@ public class SequencesStorage
         return getModelsByStatusesAndTypes(uploadableStatuses, new String[]{type});
     }
 
+    public synchronized ArrayList<Sequence> getSequencesByType(String type) {
+        Logger.v(TAG, "Getting sequences of type {}", type);
+        return getModelsByType(type);
+    }
+
     public synchronized ArrayList<Sequence> getUploadableSequences() {
         Logger.v(TAG, "Getting uploadable sequences");
         return getModelsByStatusesAndTypes(new String[]{Sequence.STATUS_COMPLETED},
@@ -52,15 +57,6 @@ public class SequencesStorage
         Logger.d(TAG, "Getting pending sequences");
         return getModelsByStatusesAndTypes(new String[]{Sequence.STATUS_PENDING},
                 new String[]{type});
-    }
-
-    public synchronized void removeUploadableSequences(String type) {
-        Logger.d(TAG, "Removing uploadable sequences of type {}", type);
-        ArrayList<Sequence> uploadableSequences = getUploadableSequences(type);
-        if (uploadableSequences != null) {
-            Logger.d(TAG, "Removing {} uploadable sequences", uploadableSequences.size());
-            remove(uploadableSequences);
-        }
     }
 
     public synchronized void removeAllSequences(String type) {

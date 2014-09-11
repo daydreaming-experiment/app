@@ -18,12 +18,16 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
     private static String TAG = "Sequence";
 
     public static String TYPE_PROBE = "probe";
-    public static String[] AVAILABLE_TYPES = new String[] {TYPE_PROBE};
+    public static String TYPE_BEGIN_QUESTIONNAIRE = "beginQuestionnaire";
+
+    public static String[] AVAILABLE_TYPES = new String[] {TYPE_PROBE, TYPE_BEGIN_QUESTIONNAIRE};
 
     public static final String STATUS_PENDING = "pending"; // Notification has appeared
     public static final String STATUS_RUNNING = "running"; // Activity is running
     public static final String STATUS_PARTIALLY_COMPLETED = "partiallyCompleted"; // Activity was stopped (if a probe, it expired, if a questionnaire, can be resumed)
     public static final String STATUS_COMPLETED = "completed"; // Activity completed
+
+    public static String[] AVAILABLE_STATUSES = new String[] {STATUS_PENDING,STATUS_RUNNING,STATUS_PARTIALLY_COMPLETED,STATUS_COMPLETED};
 
     @JsonView(Views.Public.class)
     private String name = null;
