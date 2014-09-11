@@ -14,11 +14,16 @@ import com.brainydroid.daydreaming.db.ParametersStorage;
 import com.brainydroid.daydreaming.db.SequenceDescription;
 import com.brainydroid.daydreaming.db.SequencesStorage;
 import com.brainydroid.daydreaming.sequence.Sequence;
+import com.brainydroid.daydreaming.sequence.SequenceBuilder;
 import com.brainydroid.daydreaming.ui.FontUtils;
 import com.brainydroid.daydreaming.ui.firstlaunchsequence.FirstLaunch00WelcomeActivity;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import roboguice.activity.RoboFragmentActivity;
 import roboguice.inject.ContentView;
@@ -34,8 +39,10 @@ public class BeginQuestionnairesActivity extends RoboFragmentActivity {
     private static String TAG = "BeginQuestionnairesActivity";
     @Inject  StatusManager statusManager;
     @Inject  ParametersStorage parametersStorage;
-    @Inject  SequencesStorage sequencesStorage;
-
+    @Inject  Provider<SequencesStorage> sequencesStorageProvider;
+    @Inject  SequenceBuilder sequenceBuilder;
+    @Inject
+    HashMap<String,TextView> questionnairesTextViews;
 
     @InjectView(R.id.beginquestionnaires_questionnaires_layout)
     LinearLayout beginQuestionnairesLinearLayout;
@@ -62,19 +69,41 @@ public class BeginQuestionnairesActivity extends RoboFragmentActivity {
     }
 
     protected void populateQuestionnaires() {
+        Logger.v(TAG, "Populating questionnaire list");
+
         // Get list of questionnaires (sequences) to be displayed
-        ArrayList<SequenceDescription> sequenceDescriptionArrayList = parametersStorage.getSequencesByType(Sequence.TYPE_BEGIN_QUESTIONNAIRE);
-        // load them
+        ArrayList<Sequence> sequencesLoaded = sequencesStorageProvider.get().getSequencesByType(Sequence.TYPE_BEGIN_QUESTIONNAIRE);
+        ArrayList<SequenceDescription> sequenceDescriptionAll = parametersStorage.getSequencesByType(Sequence.TYPE_BEGIN_QUESTIONNAIRE);
+
+        // make string list of names
+        ArrayList<String> sequencesLoadedNames = new ArrayList<String>();
+        if (sequencesLoaded!=null){
+            for (Sequence s : sequencesLoaded) { sequencesLoadedNames.add(s.getName()); }
+        }
+        ArrayList<String> sequenceDescriptionAllNames = new ArrayList<String>();
+        if (sequenceDescriptionAll!=null){
+            for (SequenceDescription sd : sequenceDescriptionAll) { sequenceDescriptionAllNames.add(sd.getName()); }
+        }
+
+        // load from parameters, save and display
         int index = 0;
-        if (sequenceDescriptionArrayList != null){
-            for (SequenceDescription sd : sequenceDescriptionArrayList) {
+        if (sequenceDescriptionAll != null) {
+            for (SequenceDescription sd : sequenceDescriptionAll) {
+
+                // build and save questionnaire
+                if (!sequencesLoadedNames.contains(sd.getName())){
+                    Sequence bqSequence = sequenceBuilder.buildSave(sd.getName());
+                }
+
+                // inflate sequence
                 index += 1;
                 LinearLayout bq_linearLayout = (LinearLayout) getLayoutInflater().inflate(
                         R.layout.begin_questionnaire_layout, beginQuestionnairesLinearLayout, false);
                 TextView questionnaireName = (TextView) bq_linearLayout.findViewById(R.id.begin_questionnaire_name);
                 questionnaireName.setText("Questionnaire " + Integer.toString(index));
+                questionnairesTextViews.put(sd.getName(), questionnaireName);
                 final int finalIndex = index;
-                LinearLayout.OnClickListener bqClickListener = new LinearLayout.OnClickListener(){
+                LinearLayout.OnClickListener bqClickListener = new LinearLayout.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         openBeginQuestionnaireByIndex(finalIndex);
@@ -82,28 +111,18 @@ public class BeginQuestionnairesActivity extends RoboFragmentActivity {
                 };
                 bq_linearLayout.setOnClickListener(bqClickListener);
                 beginQuestionnairesLinearLayout.addView(bq_linearLayout);
+
             }
         }
     }
 
     protected void updateQuestionnairesStatusView() {
-        /**
-         *
+        Logger.v(TAG, "Updating questionnaires list view");
 
-// updates the drawable of the view of each questionnaire depending on completion
-        ArrayList<Sequence> sequenceAllArrayList = sequencesStorage.getSequencesByType(Sequence.TYPE_BEGIN_QUESTIONNAIRE);
-        ArrayList<Sequence> sequenceCompletedArrayList = sequencesStorage.getUploadableSequences(Sequence.TYPE_BEGIN_QUESTIONNAIRE);
-        int index = 0;
-        for (Sequence s : sequenceAllArrayList) {
-            index += 1;
-            TextView tv = (TextView)beginQuestionnairesLinearLayout.getChildAt(index).findViewById(R.id.begin_questionnaire_name);
-            // is completed
-            tv.setCompoundDrawablesWithIntrinsicBounds(sequenceCompletedArrayList.contains(s) ?
-                        R.drawable.status_ok :
-                        R.drawable.status_wrong, 0, 0, 0);
-
+        for (int i = 0; i < beginQuestionnairesLinearLayout.getChildCount(); i++) {
+            TextView tv = (TextView)beginQuestionnairesLinearLayout.getChildAt(i).findViewById(R.id.begin_questionnaire_name);
+            //do something
         }
-         */
     }
 
     protected void openBeginQuestionnaireByIndex(int index){
