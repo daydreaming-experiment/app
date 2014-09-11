@@ -336,7 +336,6 @@ public class DashboardActivity extends RoboFragmentActivity {
      * dashboard layout.
      */
 
-    //TODO[Vincent] Think of a way to deal with experiment being paused (status : running paused stopped)
     @TargetApi(11)
     protected void updateExperimentStatusViews() {
         View dashboard_TimeBox_layout = findViewById(R.id.dashboard_TimeBox_layout);
