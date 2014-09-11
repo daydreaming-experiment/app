@@ -66,7 +66,8 @@ public class BeginQuestionnairesActivity extends RoboFragmentActivity {
         ArrayList<SequenceDescription> sequenceDescriptionArrayList = parametersStorage.getSequencesByType(Sequence.TYPE_BEGIN_QUESTIONNAIRE);
         // load them
         int index = 0;
-        for (SequenceDescription sd : sequenceDescriptionArrayList) {
+        if (sequenceDescriptionArrayList != null){
+            for (SequenceDescription sd : sequenceDescriptionArrayList) {
                 index += 1;
                 LinearLayout bq_linearLayout = (LinearLayout) getLayoutInflater().inflate(
                         R.layout.begin_questionnaire_layout, beginQuestionnairesLinearLayout, false);
@@ -81,6 +82,7 @@ public class BeginQuestionnairesActivity extends RoboFragmentActivity {
                 };
                 bq_linearLayout.setOnClickListener(bqClickListener);
                 beginQuestionnairesLinearLayout.addView(bq_linearLayout);
+            }
         }
     }
 
