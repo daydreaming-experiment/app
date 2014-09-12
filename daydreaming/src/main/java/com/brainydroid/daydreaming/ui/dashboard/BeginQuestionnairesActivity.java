@@ -97,7 +97,6 @@ public class BeginQuestionnairesActivity extends RoboFragmentActivity {
                 Logger.v(TAG, "Begin Questionnaires already instantiated");
             }
         }
-
     }
 
     protected ArrayList<String> getSequenceNames(ArrayList<? extends ISequence> sequences) {
@@ -202,7 +201,6 @@ public class BeginQuestionnairesActivity extends RoboFragmentActivity {
         onBackPressed();
     }
 
-
     /**
      * Create the {@link com.brainydroid.daydreaming.ui.sequences.PageActivity} {@link Intent}.
      *
@@ -243,7 +241,5 @@ public class BeginQuestionnairesActivity extends RoboFragmentActivity {
         questionnaire.flushSaves();
         return questionnaire;
     }
-
-
 
 }

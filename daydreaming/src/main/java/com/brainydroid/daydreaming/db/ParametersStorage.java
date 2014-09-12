@@ -50,7 +50,6 @@ public class ParametersStorage {
     @Inject Json json;
     @Inject SequencesStorage sequencesStorage;
     @Inject ProfileStorage profileStorage;
-
     @Inject StatusManager statusManager;
     @Inject Context context;
 
@@ -564,11 +563,9 @@ public class ParametersStorage {
         ArrayList<Sequence> allLoadedQuestionnaires = sequencesStorage.getSequencesByType(Sequence.TYPE_BEGIN_QUESTIONNAIRE);
         ArrayList<Sequence> completedQuestionnaires = sequencesStorage.getUploadableSequences(Sequence.TYPE_BEGIN_QUESTIONNAIRE);
 
-
         int nCompleted = completedQuestionnaires != null ? completedQuestionnaires.size() : -1;
         int nTotal = allQuestionnairesDescriptions != null ? allQuestionnairesDescriptions.size() : -1;
         int nLoaded = allLoadedQuestionnaires != null ? allLoadedQuestionnaires.size() : -1;
-
 
         Logger.d(TAG, "Checking Begin Questionnaire status");
         Logger.d(TAG, "Total : {0} - Loaded : {1} - Completed {2}",
@@ -578,9 +575,9 @@ public class ParametersStorage {
 
         if (nTotal > 0) {
             // if any questionnaire at all
-            if (nLoaded > 0){
+            if (nLoaded > 0) {
                 // if loaded
-                if (nCompleted == nLoaded){
+                if (nCompleted == nLoaded) {
                     // some pending remaining
                     return true;
                 } else {
@@ -596,6 +593,5 @@ public class ParametersStorage {
             return true;
         }
     }
-
 
 }

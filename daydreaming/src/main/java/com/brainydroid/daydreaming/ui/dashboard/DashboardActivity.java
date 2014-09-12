@@ -86,14 +86,10 @@ public class DashboardActivity extends RoboFragmentActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Logger.v(TAG, "Creating");
-
         checkTestMode();
         super.onCreate(savedInstanceState);
         checkFirstLaunch();
         setRobotoFont(this);
-
-
-
     }
 
     @Override
@@ -562,7 +558,6 @@ public class DashboardActivity extends RoboFragmentActivity {
                     }
                 });
                 btn.setClickable(true);
-
             } else {
                 btn.setClickable(false);
                 btn.setVisibility(View.GONE);
