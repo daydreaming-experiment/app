@@ -92,19 +92,8 @@ public class DashboardActivity extends RoboFragmentActivity {
         checkFirstLaunch();
         setRobotoFont(this);
 
-        final Animation animation = new AlphaAnimation(1, 0); // Change alpha from fully visible to invisible
-        animation.setDuration(1000); // duration - half a second
-        animation.setInterpolator(new AccelerateDecelerateInterpolator()); // do not alter animation rate
-        animation.setRepeatCount(Animation.INFINITE); // Repeat animation infinitely
-        animation.setRepeatMode(Animation.REVERSE); // Reverse animation at the end so the button will fade back in
-        final Button btn = (Button) findViewById(R.id.dashboard_begin_questionnaires_button);
-        btn.startAnimation(animation);
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View view) {
-                openBeginQuestionnaires();
-            }
-        });
+
+
     }
 
     @Override
@@ -337,7 +326,7 @@ public class DashboardActivity extends RoboFragmentActivity {
      */
 
     @TargetApi(11)
-    protected void updateExperimentStatusViews() {
+    protected synchronized void updateExperimentStatusViews() {
         View dashboard_TimeBox_layout = findViewById(R.id.dashboard_TimeBox_layout);
         View dashboard_TimeBox_no_param = findViewById(R.id.dashboard_TimeBox_layout_no_params);
         View dashboardNetworkSettingsButton = findViewById(R.id.dashboard_network_settings_button);
@@ -384,6 +373,8 @@ public class DashboardActivity extends RoboFragmentActivity {
                 getString(R.string.dashboard_text_parameters_updating) :
                 getString(R.string.dashboard_text_enable_internet));
         dashboardNetworkSettingsButton.setVisibility(isDataEnabled ? View.INVISIBLE : View.VISIBLE);
+
+        updateBeginQuestionnairesButton();
     }
 
     protected void checkFirstLaunch() {
@@ -551,6 +542,32 @@ public class DashboardActivity extends RoboFragmentActivity {
         }
         settingsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
         startActivity(settingsIntent);
+    }
+
+    private synchronized void updateBeginQuestionnairesButton() {
+
+        if (statusManager.areParametersUpdated()) {
+            final Button btn = (Button) findViewById(R.id.dashboard_begin_questionnaires_button);
+            if (!parametersStorage.areBeginQuestionnairesCompleted()) {
+                final Animation animation = new AlphaAnimation(1, 0); // Change alpha from fully visible to invisible
+                animation.setDuration(1000); // duration - half a second
+                animation.setInterpolator(new AccelerateDecelerateInterpolator()); // do not alter animation rate
+                animation.setRepeatCount(Animation.INFINITE); // Repeat animation infinitely
+                animation.setRepeatMode(Animation.REVERSE); // Reverse animation at the end so the button will fade back in
+                btn.startAnimation(animation);
+                btn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(final View view) {
+                        openBeginQuestionnaires();
+                    }
+                });
+                btn.setClickable(true);
+
+            } else {
+                btn.setClickable(false);
+                btn.setVisibility(View.GONE);
+            }
+        }
     }
 
 }
