@@ -170,6 +170,7 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
 
         });
 
+
     }
 
     /**
@@ -197,7 +198,11 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
                                     ViewGroup parent) {
             View v =  getCustomView(position, convertView, parent);
             if (position == 0) {
-                v.setVisibility(View.INVISIBLE);
+                //v.setVisibility(View.INVISIBLE);
+                TextView tv = (TextView)v.findViewById(R.id.spinnerTarget);
+                //setVisibility(View.INVISIBLE);
+                tv.setText("");
+                v.setClickable(false);
             }
             return v;
         }
@@ -262,7 +267,10 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
                                     ViewGroup parent) {
             View v = getView(position, convertView, parent);
             if (position == 0) {
-                v.setVisibility(View.INVISIBLE);
+                //setVisibility(View.INVISIBLE);
+                ((TextView) v).setText("");
+                v.setClickable(false);
+
             }
             return v;
         }

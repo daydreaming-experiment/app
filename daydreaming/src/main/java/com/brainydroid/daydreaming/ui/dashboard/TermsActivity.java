@@ -1,6 +1,7 @@
 package com.brainydroid.daydreaming.ui.dashboard;
 
 import android.text.Html;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,7 @@ public class TermsActivity extends FirstLaunch02TermsActivity {
                 "uninstall the app to quit the experiment.");
         valueTV.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         valueTV.setTextColor(getResources().getColor(R.color.ui_dark_blue_color));
+        valueTV.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL);
         ((LinearLayout) buttons_layout).addView(valueTV);
 
         TextView text = (TextView) findViewById(R.id.firstLaunchTerms_please_scroll);

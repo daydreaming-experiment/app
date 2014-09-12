@@ -14,12 +14,12 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:background="@drawable/white_background"
+        android:background="@color/ui_white_text_color"
         android:layout_alignParentBottom="true"
-        android:paddingBottom="50dp"
-        android:paddingLeft="50dp"
-        android:paddingRight="50dp"
-        android:paddingTop="10dp"
+        android:paddingBottom="30dp"
+        android:paddingLeft="40dp"
+        android:paddingRight="40dp"
+        android:paddingTop="30dp"
         >
 
         <LinearLayout android:orientation="horizontal"
@@ -71,7 +71,7 @@
         android:paddingTop="@dimen/global_scrollview_padding"
         android:paddingRight="@dimen/global_scrollview_padding"
         android:paddingLeft="@dimen/global_scrollview_padding"
-        android:layout_marginBottom="@dimen/global_scrollview_padding"
+        android:layout_marginBottom="70dp"
         android:scrollbarSize="@dimen/global_scrollbarSize"
         android:scrollbarThumbVertical="@drawable/scrollbar_vertical_thumb"
         >
@@ -81,6 +81,7 @@
             android:layout_height="wrap_content"
             android:paddingLeft="@dimen/global_text_in_scrollview_side_padding"
             android:paddingRight="@dimen/global_text_in_scrollview_side_padding"
+            android:paddingBottom="@dimen/global_text_titleTopMargin"
             >
 
             <TextView
@@ -111,10 +112,10 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/firstLaunchTerms_textConsent"
                 android:gravity="left"
-                android:paddingBottom="@dimen/global_title_body_vertical_padding"
                 android:text="@string/firstLaunchTerms_text_more_consent"
                 android:textAppearance="@style/ui_font_title_bold"
                 android:textColor="@color/ui_yellow"
+                android:paddingBottom="@dimen/global_title_body_vertical_padding"
                 />
 
             <TextView

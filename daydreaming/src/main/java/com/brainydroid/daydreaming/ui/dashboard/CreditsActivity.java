@@ -1,7 +1,6 @@
 package com.brainydroid.daydreaming.ui.dashboard;
 
 import android.os.Bundle;
-import android.text.Html;
 import android.text.util.Linkify;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +13,6 @@ import com.brainydroid.daydreaming.ui.FontUtils;
 
 import roboguice.activity.RoboFragmentActivity;
 import roboguice.inject.ContentView;
-import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_credits)
 public class CreditsActivity extends RoboFragmentActivity {
@@ -32,8 +30,7 @@ public class CreditsActivity extends RoboFragmentActivity {
 
         TextView credits_website_link = (TextView)findViewById(R.id.credits_website_link);
         Linkify.addLinks(credits_website_link, Linkify.WEB_URLS | Linkify.EMAIL_ADDRESSES);
-
-
+        credits_website_link.setLinkTextColor(getResources().getColor(R.color.ui_dark_blue_color));
     }
 
     @Override
