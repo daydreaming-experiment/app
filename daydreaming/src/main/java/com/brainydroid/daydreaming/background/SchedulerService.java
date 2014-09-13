@@ -38,6 +38,8 @@ public class SchedulerService extends RoboService {
     /** Scheduling delay when debugging is activated */
     public static long DEBUG_DELAY = 5 * 1000; // 5 seconds
 
+    public static long QUESTIONNAIRE_DELAY_AFTER_WINDOW_START = 30 * 60 * 1000; // 30 minutes
+
     // Handy object that will be holding the 'now' time
     private Calendar now;
     private long nowUpTime;
@@ -79,7 +81,7 @@ public class SchedulerService extends RoboService {
 
         // Schedule begin questionnaire
         if (!statusManager.areBeginQuestionnairesCompleted()) {
-            scheduleBeginQuestionnaire(intent.getBooleanExtra(SCHEDULER_DEBUGGING, true));
+            scheduleBeginQuestionnaire(intent.getBooleanExtra(SCHEDULER_DEBUGGING, false));
         } else {
             Logger.d(TAG, "BeginQuestionnaire all answered . no need to schedule notif.");
         }
@@ -138,35 +140,27 @@ public class SchedulerService extends RoboService {
     }
 
     private synchronized long generateBeginQuestionnaireTime(boolean debugging) {
+        fixNowAndGetAllowedWindow();
         Logger.d(TAG, "Calculating time for new BeginQuestionnaire notification");
 
-        String startAllowedString = sharedPreferences.getString(
-                "time_window_lb_key",
-                getString(R.string.settings_time_window_lb_default));
-
-        now = Calendar.getInstance();
-        nowUpTime = SystemClock.elapsedRealtime();
-
         Calendar start = (Calendar)now.clone();
-        startAllowedHour = Util.getHour(startAllowedString);
-        startAllowedMinute = Util.getMinute(startAllowedString);
         start.set(Calendar.HOUR_OF_DAY, startAllowedHour);
         start.set(Calendar.MINUTE, startAllowedMinute);
-
-        // BeginQuestionnaires are notified 30 min after begin of bother window everyday
-        Calendar notifTime = (Calendar)start.clone();
-        notifTime.add(Calendar.MINUTE,30);
-        if (now.getTimeInMillis() > notifTime.getTimeInMillis()) {
-            notifTime.add(Calendar.DAY_OF_YEAR, 1);
+        Calendar nextStart = (Calendar)start.clone();
+        if (now.after(nextStart)) {
+            nextStart.add(Calendar.DAY_OF_YEAR, 1);
         }
 
-        long notifTimeMS;
+        long delay;
         if (debugging) {
-            notifTimeMS=  now.getTimeInMillis() + 5000; // + 5 seconds
+            delay = DEBUG_DELAY;
         } else {
-            notifTimeMS =  notifTime.getTimeInMillis();
+            // BeginQuestionnaires are notified 30 min after begin of bother window everyday
+            delay = now.getTimeInMillis() - nextStart.getTimeInMillis()
+                    + QUESTIONNAIRE_DELAY_AFTER_WINDOW_START;
         }
-        long delay = notifTimeMS - now.getTimeInMillis();
+
+        // Log the delay
         long milliseconds = delay;
         long hours = milliseconds / (60 * 60 * 1000);
         milliseconds %= 60 * 60 * 1000;
@@ -174,7 +168,7 @@ public class SchedulerService extends RoboService {
         milliseconds %= 60 * 1000;
         long seconds = milliseconds / 1000;
 
-        Logger.i(TAG, "BeginQuestionnaire notifcation scheduled in {0} hours, {1} minutes, " +
+        Logger.i(TAG, "BeginQuestionnaireService scheduled in {0} hours, {1} minutes, " +
                         "and {2} seconds",
                 hours, minutes, seconds);
 
