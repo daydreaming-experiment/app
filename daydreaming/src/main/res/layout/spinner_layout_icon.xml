@@ -19,7 +19,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="@style/ui_font_spinner"
-        android:background="@color/ui_white_text_color"
         android:textColor="@color/ui_blue_background_color"
         android:paddingBottom="@dimen/profile_spinner_text_vertical_padding"
         android:paddingTop="@dimen/profile_spinner_text_vertical_padding"
