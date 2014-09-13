@@ -61,7 +61,7 @@ public class DashboardActivity extends RoboFragmentActivity {
     @InjectView(R.id.dashboard_no_params_text) TextView textNetworkConnection;
     @InjectView(R.id.dashboard_ExperimentTimeElapsed2days) TextView elapsedTextDays;
     @InjectView(R.id.dashboard_ExperimentResultsIn2days) TextView toGoTextDays;
-    @InjectView(R.id.dashboard_ExperimentResultsButton) Button resultsButton;
+    @InjectView(R.id.dashboard_ExperimentResultsButton) AlphaButton resultsButton;
 
     @InjectResource(R.string.dashboard_text_days) String textDays;
     @InjectResource(R.string.dashboard_text_day) String textDay;
