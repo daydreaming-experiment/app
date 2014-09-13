@@ -69,7 +69,7 @@ public class PageActivity extends RoboFragmentActivity {
 
         initVars();
         setChrome();
-        pageViewAdapter.inflate(pageLinearLayout);
+        pageViewAdapter.inflate(this, pageLinearLayout);
         pageIntroText.setText(sequence.getIntro());
         setRobotoFont();
 

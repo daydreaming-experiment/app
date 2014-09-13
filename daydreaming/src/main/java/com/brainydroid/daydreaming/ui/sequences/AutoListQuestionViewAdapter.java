@@ -2,7 +2,10 @@ package com.brainydroid.daydreaming.ui.sequences;
 
 import android.animation.LayoutTransition;
 import android.annotation.TargetApi;
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
@@ -44,12 +47,12 @@ public class AutoListQuestionViewAdapter
 
     @TargetApi(11)
     @Override
-    protected ArrayList<View> inflateViews(LinearLayout questionLayout) {
+    protected ArrayList<View> inflateViews(Activity activity, LinearLayout questionLayout) {
         Logger.d(TAG, "Inflating question views");
 
         AutoListQuestionDescriptionDetails details =
                 (AutoListQuestionDescriptionDetails)question.getDetails();
-        ArrayList<String> possibilities = details.getPossibilities();
+        final ArrayList<String> possibilities = details.getPossibilities();
         LinearLayout questionView = (LinearLayout)layoutInflater.inflate(
                 R.layout.question_auto_list, questionLayout, false);
 
@@ -68,8 +71,23 @@ public class AutoListQuestionViewAdapter
         autoTextView.setHint(details.getHint());
         // TODO: move this initialization to background, because it takes around 5 seconds
         final AutoCompleteAdapter adapter = autoCompleteAdapterFactory.create();
-        adapter.initialize(possibilities);
         autoTextView.setAdapter(adapter);
+
+        final ProgressDialog progressDialog = ProgressDialog.show(activity,
+                "Loading", "Loading question...");
+
+        (new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                adapter.initialize(possibilities);
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void result) {
+                progressDialog.dismiss();
+            }
+        }).execute();
 
         autoTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

@@ -1,5 +1,6 @@
 package com.brainydroid.daydreaming.ui.sequences;
 
+import android.app.Activity;
 import android.content.Context;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -41,13 +42,13 @@ public abstract class BaseQuestionViewAdapter
     }
 
     @Override
-    public LinearLayout inflate(LinearLayout pageLayout) {
+    public LinearLayout inflate(Activity activity, LinearLayout pageLayout) {
         Logger.d(TAG, "Inflating question view");
 
         int index = 0;
         LinearLayout questionLayout = (LinearLayout)layoutInflater.inflate(
                 R.layout.question_layout, pageLayout, false);
-        ArrayList<View> views = inflateViews(questionLayout);
+        ArrayList<View> views = inflateViews(activity, questionLayout);
 
         for (View view : views) {
             questionLayout.addView(view, index);
@@ -57,7 +58,7 @@ public abstract class BaseQuestionViewAdapter
         return questionLayout;
     }
 
-    protected abstract ArrayList<View> inflateViews(LinearLayout questionLayout);
+    protected abstract ArrayList<View> inflateViews(Activity activity, LinearLayout questionLayout);
 
     public SpannableString getExtendedQuestionText(String qText) {
         HashMap<String,String> dictionary = parametersStorage.getGlossary();

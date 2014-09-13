@@ -1,5 +1,6 @@
 package com.brainydroid.daydreaming.ui.sequences;
 
+import android.app.Activity;
 import android.content.Context;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
@@ -77,7 +78,7 @@ public class MatrixChoiceQuestionViewAdapter extends BaseQuestionViewAdapter
     }
 
     @Override
-    protected ArrayList<View> inflateViews(LinearLayout questionLayout) {
+    protected ArrayList<View> inflateViews(Activity activity, LinearLayout questionLayout) {
         Logger.d(TAG, "Inflating question views");
 
         MatrixChoiceQuestionDescriptionDetails details =
