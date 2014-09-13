@@ -23,7 +23,6 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 
 import roboguice.activity.RoboFragmentActivity;
@@ -169,7 +168,6 @@ public class BeginQuestionnairesActivity extends RoboFragmentActivity {
         Logger.i(TAG, "There are {} loaded questionnaires" , Integer.toString(loadedBeginQuestionnaires.size()));
 
         Sequence questionnaire = loadedBeginQuestionnaires.get(index);
-        questionnaire = populateQuestionnaire(questionnaire);
         Intent intent = createQuestionnaireIntent(questionnaire);
         launchQuestionnaireIntent(intent);
     }
@@ -224,21 +222,6 @@ public class BeginQuestionnairesActivity extends RoboFragmentActivity {
         Logger.d(TAG, "Launching Questionnaire");
         startActivity(questionnaireIntent);
         overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
-    }
-
-    /**
-     * Fill our {@link Sequence} with questions.
-     */
-    private synchronized Sequence populateQuestionnaire(Sequence questionnaire) {
-        Logger.d(TAG, "Populating Questionnaire with sequence");
-
-        // Update the questionnaire's status
-        Logger.d(TAG, "Setting Questionnaire status and timestamp, and saving");
-        questionnaire.retainSaves();
-        questionnaire.setNotificationSystemTimestamp(
-                Calendar.getInstance().getTimeInMillis());
-        questionnaire.flushSaves();
-        return questionnaire;
     }
 
 }
