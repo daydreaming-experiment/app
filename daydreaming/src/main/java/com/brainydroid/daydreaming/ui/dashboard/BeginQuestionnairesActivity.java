@@ -75,7 +75,7 @@ public class BeginQuestionnairesActivity extends RoboFragmentActivity {
         allBeginQuestionnairesDescriptions = parametersStorage.getSequencesByType(
                 Sequence.TYPE_BEGIN_QUESTIONNAIRE);
         completedBeginQuestionnaires = sequencesStorageProvider.get()
-                .getUploadableSequences(Sequence.TYPE_BEGIN_QUESTIONNAIRE);
+                .getCompletedSequences(Sequence.TYPE_BEGIN_QUESTIONNAIRE);
         loadedBeginQuestionnaires = sequencesStorageProvider.get()
                 .getSequencesByType(Sequence.TYPE_BEGIN_QUESTIONNAIRE);
 
@@ -113,11 +113,6 @@ public class BeginQuestionnairesActivity extends RoboFragmentActivity {
     protected synchronized void populateQuestionnairesView() {
         Logger.v(TAG, "Populating questionnaire list");
 
-        loadedBeginQuestionnaires = sequencesStorageProvider.get()
-                .getSequencesByType(Sequence.TYPE_BEGIN_QUESTIONNAIRE);
-        completedBeginQuestionnaires = sequencesStorageProvider.get()
-                .getUploadableSequences(Sequence.TYPE_BEGIN_QUESTIONNAIRE);
-
         if (loadedBeginQuestionnaires == null || loadedBeginQuestionnaires.isEmpty() ) {
             Logger.v(TAG, "No Begin Questionnaires in parameters");
         } else {
@@ -147,7 +142,7 @@ public class BeginQuestionnairesActivity extends RoboFragmentActivity {
         loadedBeginQuestionnaires = sequencesStorageProvider.get()
                 .getSequencesByType(Sequence.TYPE_BEGIN_QUESTIONNAIRE);
         completedBeginQuestionnaires = sequencesStorageProvider.get()
-                .getUploadableSequences(Sequence.TYPE_BEGIN_QUESTIONNAIRE);
+                .getCompletedSequences(Sequence.TYPE_BEGIN_QUESTIONNAIRE);
 
         ArrayList<String> allBeginQuestionnairesNames = getSequenceNames(allBeginQuestionnairesDescriptions);
         ArrayList<String> completedBeginQuestionnairesNames = getSequenceNames(completedBeginQuestionnaires);

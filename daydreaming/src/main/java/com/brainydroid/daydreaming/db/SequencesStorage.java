@@ -30,6 +30,7 @@ public class SequencesStorage
 
         String[] uploadableStatuses;
         if (type.equals(Sequence.TYPE_PROBE)) {
+            // TODO[seb]: once #214 is fixed, remove STATUS_PARTIALLY_COMPLETED here
             Logger.v(TAG, "Type is probe, so uploadable means either STATUS_COMPLETED " +
                     "or STATUS_PARTIALLY_COMPLETED");
             uploadableStatuses = new String[] {Sequence.STATUS_COMPLETED,
@@ -40,6 +41,13 @@ public class SequencesStorage
         }
 
         return getModelsByStatusesAndTypes(uploadableStatuses, new String[]{type});
+    }
+
+    public synchronized ArrayList<Sequence> getCompletedSequences(String type) {
+        Logger.v(TAG, "Getting completed sequences of type {}", type);
+        return getModelsByStatusesAndTypes(
+                new String[] {Sequence.STATUS_COMPLETED, Sequence.STATUS_UPLOADED_AND_KEEP},
+                new String[] {type});
     }
 
     public synchronized ArrayList<Sequence> getSequencesByType(String type) {
