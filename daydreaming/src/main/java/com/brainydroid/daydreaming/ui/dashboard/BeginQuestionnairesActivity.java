@@ -237,7 +237,6 @@ public class BeginQuestionnairesActivity extends RoboFragmentActivity {
         questionnaire.retainSaves();
         questionnaire.setNotificationSystemTimestamp(
                 Calendar.getInstance().getTimeInMillis());
-        questionnaire.setStatus(Sequence.STATUS_PENDING);
         questionnaire.flushSaves();
         return questionnaire;
     }
