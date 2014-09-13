@@ -60,15 +60,15 @@ public class AutoListQuestionViewAdapter
         qText.setText(getExtendedQuestionText(initialQText));
         qText.setMovementMethod(LinkMovementMethod.getInstance());
 
-        selectionLayout = (LinearLayout)questionLayout.findViewById(
+        selectionLayout = (LinearLayout)questionView.findViewById(
                 R.id.question_auto_list_selectionList);
         final AutoCompleteTextView autoTextView = (AutoCompleteTextView)questionView.findViewById(
                 R.id.question_auto_list_autoCompleteTextView);
-        Button addButton = (Button)questionLayout.findViewById(R.id.question_auto_list_addButton);
+        Button addButton = (Button)questionView.findViewById(R.id.question_auto_list_addButton);
 
         autoTextView.setHint(details.getHint());
         // TODO: move this initialization to background, because it takes around 5 seconds
-        final AutoCompleteAdapter adapter = new AutoCompleteAdapter(possibilities);
+        final AutoCompleteAdapter adapter = new AutoCompleteAdapter(context, possibilities);
         autoTextView.setAdapter(adapter);
 
         autoTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
