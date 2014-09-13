@@ -145,6 +145,9 @@
         <service android:name=".background.ProbeService"
             android:exported="false" />
 
+        <service android:name=".background.BeginQuestionnaireService"
+            android:exported="false" />
+
         <service android:name=".background.SchedulerService"
             android:exported="false" />
 
