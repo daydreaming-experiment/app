@@ -590,6 +590,7 @@ public class StatusManager {
                 Integer.toString(nLoaded),
                 Integer.toString(nCompleted));
 
+        boolean completion;
         if (nTotal > 0) {
             // if any questionnaire at all. (suppressing inspection here for readability)
             //noinspection SimplifiableIfStatement
@@ -597,15 +598,22 @@ public class StatusManager {
                 // if loaded:
 
                 // are all of them completed?
-                return nCompleted == nTotal;
+                completion =  nCompleted == nTotal;
             } else {
                 // if not loaded
-                return false;
+                completion = false;
             }
         } else {
             // no questionnaires -> return completed
-            return true;
+            completion = true;
         }
+
+        Logger.d(TAG, "Total : {0} - Loaded : {1} - Completed {2} -> Completion: {3}",
+                Integer.toString(nTotal),
+                Integer.toString(nLoaded),
+                Integer.toString(nCompleted),
+                Boolean.toString(completion));
+        return completion;
     }
 
     public synchronized boolean areResultsAvailable(){

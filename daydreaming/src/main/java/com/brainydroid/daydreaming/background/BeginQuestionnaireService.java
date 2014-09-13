@@ -10,17 +10,8 @@ import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 
 import com.brainydroid.daydreaming.R;
-import com.brainydroid.daydreaming.db.SequencesStorage;
-import com.brainydroid.daydreaming.network.SntpClient;
-import com.brainydroid.daydreaming.network.SntpClientCallback;
-import com.brainydroid.daydreaming.sequence.Sequence;
-import com.brainydroid.daydreaming.sequence.SequenceBuilder;
 import com.brainydroid.daydreaming.ui.dashboard.BeginQuestionnairesActivity;
-import com.brainydroid.daydreaming.ui.sequences.PageActivity;
 import com.google.inject.Inject;
-
-import java.util.ArrayList;
-import java.util.Calendar;
 
 import roboguice.service.RoboService;
 
@@ -30,7 +21,7 @@ import roboguice.service.RoboService;
  * @author Sébastien Lerique
  * @author Vincent Adam
  * @see com.brainydroid.daydreaming.sequence.Sequence
- * @see com.brainydroid.daydreaming.background.SchedulerService
+ * @see SchedulerService
  * @see com.brainydroid.daydreaming.background.SyncService
  */
 public class BeginQuestionnaireService extends RoboService {

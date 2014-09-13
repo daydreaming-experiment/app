@@ -30,7 +30,7 @@ import roboguice.service.RoboService;
  */
 public class SchedulerService extends RoboService {
 
-    private static String TAG = "SchedulerService";
+    private static String TAG = "ProbeSchedulerService";
 
     /** Extra to set to {@code true} for debugging */
     public static String SCHEDULER_DEBUGGING = "schedulerDebugging";
@@ -70,13 +70,20 @@ public class SchedulerService extends RoboService {
         // happen to be updated, the SchedulerService will be run again.
         startSyncService();
 
+        // Schedule a probe
         if (!statusManager.areParametersUpdated()) {
             Logger.d(TAG, "Parameters not updated yet. aborting scheduling.");
-            return START_REDELIVER_INTENT;
+        } else {
+            scheduleProbe(intent.getBooleanExtra(SCHEDULER_DEBUGGING, false));
         }
 
-        // Schedule a probe and stop ourselves
-        scheduleProbe(intent.getBooleanExtra(SCHEDULER_DEBUGGING, false));
+        // Schedule begin questionnaire
+        if (!statusManager.areBeginQuestionnairesCompleted()) {
+            scheduleBeginQuestionnaire(intent.getBooleanExtra(SCHEDULER_DEBUGGING, true));
+        } else {
+            Logger.d(TAG, "BeginQuestionnaire all answered . no need to schedule notif.");
+        }
+
         stopSelf();
 
         return START_REDELIVER_INTENT;
@@ -107,6 +114,71 @@ public class SchedulerService extends RoboService {
                 intent, PendingIntent.FLAG_CANCEL_CURRENT);
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
                 scheduledTime, pendingIntent);
+    }
+
+    /**
+     * Schedule a {@link com.brainydroid.daydreaming.ui.dashboard.BeginQuestionnairesActivity} to be created
+     * and notified by {@link com.brainydroid.daydreaming.background.BeginQuestionnaireService} later on.
+     *
+     * @param debugging Set to {@link true} for a fixed short delay before
+     *                  notification
+     */
+    private synchronized void scheduleBeginQuestionnaire(boolean debugging) {
+        Logger.d(TAG, "Scheduling new BeginQuestionnaire");
+
+        // Generate the time at which the probe will appear
+        long scheduledTime = generateBeginQuestionnaireTime(debugging);
+
+        // Create and schedule the PendingIntent for ProbeService
+        Intent intent = new Intent(this, BeginQuestionnaireService.class);
+        PendingIntent pendingIntent = PendingIntent.getService(this, 0,
+                intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        alarmManager.set(AlarmManager.ELAPSED_REALTIME,
+                scheduledTime, pendingIntent);
+    }
+
+    private synchronized long generateBeginQuestionnaireTime(boolean debugging) {
+        Logger.d(TAG, "Calculating time for new BeginQuestionnaire notification");
+
+        String startAllowedString = sharedPreferences.getString(
+                "time_window_lb_key",
+                getString(R.string.settings_time_window_lb_default));
+
+        now = Calendar.getInstance();
+        nowUpTime = SystemClock.elapsedRealtime();
+
+        Calendar start = (Calendar)now.clone();
+        startAllowedHour = Util.getHour(startAllowedString);
+        startAllowedMinute = Util.getMinute(startAllowedString);
+        start.set(Calendar.HOUR_OF_DAY, startAllowedHour);
+        start.set(Calendar.MINUTE, startAllowedMinute);
+
+        // BeginQuestionnaires are notified 30 min after begin of bother window everyday
+        Calendar notifTime = (Calendar)start.clone();
+        notifTime.add(Calendar.MINUTE,30);
+        if (now.getTimeInMillis() > notifTime.getTimeInMillis()) {
+            notifTime.add(Calendar.DAY_OF_YEAR, 1);
+        }
+
+        long notifTimeMS;
+        if (debugging) {
+            notifTimeMS=  now.getTimeInMillis() + 5000; // + 5 seconds
+        } else {
+            notifTimeMS =  notifTime.getTimeInMillis();
+        }
+        long delay = notifTimeMS - now.getTimeInMillis();
+        long milliseconds = delay;
+        long hours = milliseconds / (60 * 60 * 1000);
+        milliseconds %= 60 * 60 * 1000;
+        long minutes = milliseconds / (60 * 1000);
+        milliseconds %= 60 * 1000;
+        long seconds = milliseconds / 1000;
+
+        Logger.i(TAG, "BeginQuestionnaire notifcation scheduled in {0} hours, {1} minutes, " +
+                        "and {2} seconds",
+                hours, minutes, seconds);
+
+        return nowUpTime + delay;
     }
 
     private synchronized void fixNowAndGetAllowedWindow() {
