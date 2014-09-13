@@ -560,7 +560,8 @@ public class DashboardActivity extends RoboFragmentActivity {
                 btn.setClickable(true);
             } else {
                 btn.setClickable(false);
-                btn.setVisibility(View.GONE);
+                btn.clearAnimation();
+                btn.setAlpha(0.3f);
             }
         }
     }
