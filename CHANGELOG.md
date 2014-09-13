@@ -1,6 +1,24 @@
 Changelog
 =========
 
+0.18.0
+------
+
+* Enhancements
+  * [#174] Add a MatrixChoiceQuestion type (not yet themed properly)
+  * [#94] Start the results page (next is #173)
+  * [#106] Set up APK signing for future release
+  * [#182] Show an introduction text in all questions
+  * Add a questionnaire management screen and button to dashboard
+  * [#191] Add an auto-complete list type question (not yet themed properly)
+* Bug fixes
+  * [#149, #188, #208] Design issues in MultipleChoiceQuestion
+  * [#148] Design issue in SliderQuestion
+  * [#185] Too much vertical space in questions
+  * [#195] Only ask about bonus questions once in sequence, and skip all or take all
+  * [#206] Design issues in Consent activity
+  * [#204, #207, #209] Design issues in Terms, About, Profile activities
+
 0.17.2
 ------
 
