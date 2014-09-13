@@ -73,7 +73,7 @@ public class Filterer extends Filter {
 
     public void addPossibility(String possibility) {
         if (!possibilities.contains(possibility)) {
-            Logger.d(TAG, "Adding possibility '{}'", possibility);
+            Logger.d(TAG, "Adding possibility {}", possibility);
             possibilities.add(possibility);
             HashMap<String, HashSet<String>> newMatches = addToMatchMap(possibility);
             updateBKTree(newMatches);
@@ -180,7 +180,7 @@ public class Filterer extends Filter {
     private HashMap<String, HashSet<String>> addToMatchMap(String newString) {
         HashMap<String, HashSet<MetaString>> newTokens = addToTokenMap(newString);
 
-        Logger.d(TAG, "Adding '{}' to matchMap", newString);
+        Logger.d(TAG, "Adding {} to matchMap", newString);
         HashMap<String, HashSet<String>> newMatches = new HashMap<String, HashSet<String>>();
 
         for (String token : newTokens.keySet()) {
@@ -232,7 +232,7 @@ public class Filterer extends Filter {
     }
 
     private HashMap<String, HashSet<MetaString>> addToTokenMap(String newString) {
-        Logger.d(TAG, "Adding '{}' to tokenMap", newString);
+        Logger.d(TAG, "Adding {} to tokenMap", newString);
 
         MetaString ms = MetaString.getInstance(newString);
         HashMap<String, HashSet<MetaString>> newTokens = new HashMap<String, HashSet<MetaString>>();
@@ -312,7 +312,7 @@ public class Filterer extends Filter {
 
     @Override
     protected FilterResults performFiltering(CharSequence constraint) {
-        Logger.d(TAG, "Performing filter operation for '{}'", constraint);
+        Logger.d(TAG, "Performing filter operation for {}", constraint);
         timer.start("filter");
 
         FilterResults filterResults = new FilterResults();
@@ -330,7 +330,7 @@ public class Filterer extends Filter {
             filterResults.values = null;
         }
 
-        Logger.i(TAG, "Filtered for '{0}' in {1}ms", constraint, timer.finish("filter"));
+        Logger.i(TAG, "Filtered for {0} in {1}ms", constraint, timer.finish("filter"));
         return filterResults;
     }
 

@@ -207,7 +207,7 @@ public class AutoListQuestionViewAdapter
         for (MetaString ms : selectionViews.keySet()) {
             String s = ms.getDefinition();
             if (!initialPossibilities.contains(s)) {
-                Logger.v(TAG, "Persisting possibility '{}' as a user possibility", s);
+                Logger.v(TAG, "Persisting possibility {} as a user possibility", s);
                 parametersStorage.addUserPossibility(question.getQuestionName(), s);
             }
             answer.addChoice(s);

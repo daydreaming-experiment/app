@@ -425,7 +425,7 @@ public class ParametersStorage {
         ArrayList<String> questionPossibilities = allPossibilities.get(questionName);
 
         if (!questionPossibilities.contains(possibility)) {
-            Logger.v(TAG, "{0} - Adding possibility '{1}' to user possibilities for question {2}",
+            Logger.v(TAG, "{0} - Adding possibility {1} to user possibilities for question {2}",
                     statusManager.getCurrentModeName(), possibility, questionName);
 
             questionPossibilities.add(possibility);
