@@ -213,8 +213,8 @@ public class SyncService extends RoboService {
                     Logger.d(TAG, "Removing uploaded sequences (except begin questionnaires) from db");
                     // filter what to be deleted based on status : i.e. don't delete begin and end questionnaires
                     ArrayList<Sequence> uploadedSequences = sequencesWrap.getDatas();
-                    ArrayList<Sequence> deletableSequences = getDeletableFromArrayList(uploadableSequences);
-                    ArrayList<Sequence> toBeKeptSequences = getToBeKeptFromArrayList(uploadableSequences);
+                    ArrayList<Sequence> deletableSequences = getDeletableFromArrayList(uploadedSequences);
+                    ArrayList<Sequence> toBeKeptSequences = getToBeKeptFromArrayList(uploadedSequences);
                     sequencesStorage.remove(deletableSequences);
                     setToBeKeptToArrayList(toBeKeptSequences);
                 } else {
@@ -241,18 +241,18 @@ public class SyncService extends RoboService {
     }
 
     public ArrayList<Sequence> getToBeKeptFromArrayList(ArrayList<Sequence> sequences) {
-        ArrayList<Sequence> deletableSequences = new ArrayList<Sequence>();
+        ArrayList<Sequence> toBeKeptQuestionnaires = new ArrayList<Sequence>();
         for (Sequence s : sequences) {
             if (s.getType().equals(Sequence.TYPE_BEGIN_QUESTIONNAIRE) ) {
-                deletableSequences.add(s);
+                toBeKeptQuestionnaires.add(s);
             }
         }
-        return deletableSequences;
+        return toBeKeptQuestionnaires;
     }
 
     public synchronized void setToBeKeptToArrayList(ArrayList<Sequence> sequences) {
         for (Sequence s : sequences) {
-            sequencesStorage.get(s.getId()).setStatus("uploadedAndKeep");
+            sequencesStorage.get(s.getId()).setStatus(Sequence.STATUS_UPLOADED_AND_KEEP);
         }
     }
     /**

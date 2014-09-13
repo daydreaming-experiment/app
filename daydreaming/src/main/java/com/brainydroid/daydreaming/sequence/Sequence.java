@@ -22,6 +22,7 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
 
     public static String[] AVAILABLE_TYPES = new String[] {TYPE_PROBE, TYPE_BEGIN_QUESTIONNAIRE};
 
+    public static final String STATUS_UPLOADED_AND_KEEP = "uploadedAndKeep";
     public static final String STATUS_PENDING = "pending"; // Notification has appeared
     public static final String STATUS_RUNNING = "running"; // Activity is running
     public static final String STATUS_PARTIALLY_COMPLETED = "partiallyCompleted"; // Activity was stopped (if a probe, it expired, if a questionnaire, can be resumed)
