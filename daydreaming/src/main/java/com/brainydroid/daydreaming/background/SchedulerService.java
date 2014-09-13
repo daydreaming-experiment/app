@@ -30,7 +30,7 @@ import roboguice.service.RoboService;
  */
 public class SchedulerService extends RoboService {
 
-    private static String TAG = "ProbeSchedulerService";
+    private static String TAG = "SchedulerService";
 
     /** Extra to set to {@code true} for debugging */
     public static String SCHEDULER_DEBUGGING = "schedulerDebugging";
@@ -75,9 +75,11 @@ public class SchedulerService extends RoboService {
         // Schedule a probe
         if (!statusManager.areParametersUpdated()) {
             Logger.d(TAG, "Parameters not updated yet. aborting scheduling.");
-        } else {
-            scheduleProbe(intent.getBooleanExtra(SCHEDULER_DEBUGGING, false));
+            return START_REDELIVER_INTENT;
         }
+
+        // Schedule a probe
+        scheduleProbe(intent.getBooleanExtra(SCHEDULER_DEBUGGING, false));
 
         // Schedule begin questionnaire
         if (!statusManager.areBeginQuestionnairesCompleted()) {
