@@ -85,6 +85,10 @@ public class MetaString {
         return original;
     }
 
+    public String getDefinition() {
+        return definition;
+    }
+
     public String getOriginal() {
         return original;
     }

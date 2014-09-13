@@ -20,7 +20,9 @@ import android.widget.Toast;
 
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
+import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.db.AutoListQuestionDescriptionDetails;
+import com.brainydroid.daydreaming.db.ParametersStorage;
 import com.brainydroid.daydreaming.sequence.AutoListAnswer;
 import com.brainydroid.daydreaming.ui.filtering.AutoCompleteAdapter;
 import com.brainydroid.daydreaming.ui.filtering.AutoCompleteAdapterFactory;
@@ -40,12 +42,13 @@ public class AutoListQuestionViewAdapter
 
     @Inject Context context;
     @Inject AutoListAnswer answer;
-    @Inject
-    AutoCompleteAdapterFactory autoCompleteAdapterFactory;
+    @Inject AutoCompleteAdapterFactory autoCompleteAdapterFactory;
+    @Inject ParametersStorage parametersStorage;
 
     @InjectResource(R.string.questionAutoList_please_select) String errorPleaseSelect;
 
     private LinearLayout selectionLayout;
+    private ArrayList<String> initialPossibilities;
     @Inject private HashMap<MetaString, LinearLayout> selectionViews;
 
     @TargetApi(11)
@@ -55,7 +58,9 @@ public class AutoListQuestionViewAdapter
 
         AutoListQuestionDescriptionDetails details =
                 (AutoListQuestionDescriptionDetails)question.getDetails();
-        final ArrayList<String> possibilities = details.getPossibilities();
+        initialPossibilities = details.getPossibilities();
+        initialPossibilities.addAll(parametersStorage.getUserPossibilities(question.getQuestionName()));
+
         LinearLayout questionView = (LinearLayout)layoutInflater.inflate(
                 R.layout.question_auto_list, questionLayout, false);
 
@@ -82,7 +87,7 @@ public class AutoListQuestionViewAdapter
         (new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... voids) {
-                adapter.initialize(possibilities);
+                adapter.initialize(initialPossibilities);
                 return null;
             }
 
@@ -200,7 +205,12 @@ public class AutoListQuestionViewAdapter
         Logger.i(TAG, "Saving question answer");
 
         for (MetaString ms : selectionViews.keySet()) {
-            answer.addChoice(ms.getOriginal());
+            String s = ms.getDefinition();
+            if (!initialPossibilities.contains(s)) {
+                Logger.v(TAG, "Persisting possibility '{}' as a user possibility", s);
+                parametersStorage.addUserPossibility(question.getQuestionName(), s);
+            }
+            answer.addChoice(s);
         }
 
         question.setAnswer(answer);
