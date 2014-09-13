@@ -1,6 +1,7 @@
 package com.brainydroid.daydreaming.ui.sequences;
 
 import android.animation.LayoutTransition;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.text.method.LinkMovementMethod;
@@ -42,6 +43,7 @@ public class AutoListQuestionViewAdapter
     private LinearLayout selectionLayout;
     @Inject private HashMap<MetaString, LinearLayout> selectionViews;
 
+    @TargetApi(11)
     @Override
     protected ArrayList<View> inflateViews(LinearLayout questionLayout) {
         Logger.d(TAG, "Inflating question views");
