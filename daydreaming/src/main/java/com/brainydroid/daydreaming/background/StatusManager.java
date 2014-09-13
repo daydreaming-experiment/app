@@ -582,7 +582,7 @@ public class StatusManager {
         ArrayList<Sequence> allLoadedQuestionnaires = sequencesStorageProvider.get()
                 .getSequencesByType(Sequence.TYPE_BEGIN_QUESTIONNAIRE);
         ArrayList<Sequence> completedQuestionnaires = sequencesStorageProvider.get()
-                .getUploadableSequences(Sequence.TYPE_BEGIN_QUESTIONNAIRE);
+                .getCompletedSequences(Sequence.TYPE_BEGIN_QUESTIONNAIRE);
 
         int nCompleted = completedQuestionnaires != null ? completedQuestionnaires.size() : -1;
         int nTotal = allQuestionnairesDescriptions != null ? allQuestionnairesDescriptions.size() : -1;
