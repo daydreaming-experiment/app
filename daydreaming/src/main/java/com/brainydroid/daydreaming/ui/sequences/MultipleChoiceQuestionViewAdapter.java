@@ -1,5 +1,6 @@
 package com.brainydroid.daydreaming.ui.sequences;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.text.method.LinkMovementMethod;
@@ -42,7 +43,7 @@ public class MultipleChoiceQuestionViewAdapter
     @Inject Injector injector;
 
     @Override
-    protected ArrayList<View> inflateViews(LinearLayout questionLayout) {
+    protected ArrayList<View> inflateViews(Activity activity, LinearLayout questionLayout) {
         Logger.d(TAG, "Inflating question views");
 
         MultipleChoiceQuestionDescriptionDetails details =

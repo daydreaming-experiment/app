@@ -52,7 +52,6 @@ public class PageActivity extends RoboFragmentActivity {
     @InjectView(R.id.page_linearLayout) LinearLayout pageLinearLayout;
     @InjectView(R.id.page_intro_text) TextView pageIntroText;
 
-
     @InjectView(R.id.page_nextButton) ImageButton nextButton;
     @InjectView(R.id.page_finishButton) ImageButton finishButton;
 
@@ -70,7 +69,7 @@ public class PageActivity extends RoboFragmentActivity {
 
         initVars();
         setChrome();
-        pageViewAdapter.inflate(pageLinearLayout);
+        pageViewAdapter.inflate(this, pageLinearLayout);
         pageIntroText.setText(sequence.getIntro());
         setRobotoFont();
 

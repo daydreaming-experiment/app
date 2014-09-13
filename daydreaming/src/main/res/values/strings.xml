@@ -157,6 +157,9 @@
     <string name="questionMultipleChoice_other_please_fill">Please tell us more in the \"Other\" box</string>
     <string name="questionMultipleChoice_please_check_one">Please check at least one option</string>
     <string name="questionMatrixChoice_please_select_one">Please check at least one option</string>
+    <string name="questionAutoList_add_item">Add</string>
+    <string name="questionAutoList_delete_item">Delete item</string>
+    <string name="questionAutoList_please_select">Please select at least one item</string>
     <string name="locationAlert_title_location">Enable location</string>
     <string name="locationAlert_title_data">Enable data connection</string>
     <string name="locationAlert_title_location_and_data">Enable location and data</string>

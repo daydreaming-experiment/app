@@ -1,6 +1,7 @@
 package com.brainydroid.daydreaming.ui.sequences;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.text.method.LinkMovementMethod;
 import android.util.FloatMath;
@@ -40,7 +41,7 @@ public class StarRatingQuestionViewAdapter extends BaseQuestionViewAdapter
     @Inject StarRatingAnswer answer;
 
     @Override
-    protected ArrayList<View> inflateViews(LinearLayout questionLayout) {
+    protected ArrayList<View> inflateViews(Activity activity, LinearLayout questionLayout) {
         Logger.d(TAG, "Inflating question views");
 
         ArrayList<StarRatingSubQuestion> subQuestions =
