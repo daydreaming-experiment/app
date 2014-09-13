@@ -99,7 +99,11 @@ public class AutoListQuestionViewAdapter
             public void onClick(View view) {
                 Logger.d(TAG, "Add button clicked");
                 String userString = autoTextView.getText().toString();
-                if (userString.length() >= 2 && addSelection(MetaString.getInstance(userString))) {
+                if (userString.length() < 2) {
+                    Toast.makeText(context, "Please type in an activity", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (addSelection(MetaString.getInstance(userString))) {
                     autoTextView.setText("");
                     // Update adapter
                     adapter.addPossibility(userString);
