@@ -36,6 +36,8 @@ import com.brainydroid.daydreaming.ui.FontUtils;
 import com.brainydroid.daydreaming.ui.firstlaunchsequence.FirstLaunch00WelcomeActivity;
 import com.google.inject.Inject;
 
+import java.util.zip.InflaterInputStream;
+
 import roboguice.activity.RoboFragmentActivity;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectResource;
@@ -62,6 +64,7 @@ public class DashboardActivity extends RoboFragmentActivity {
     @InjectView(R.id.dashboard_ExperimentTimeElapsed2days) TextView elapsedTextDays;
     @InjectView(R.id.dashboard_ExperimentResultsIn2days) TextView toGoTextDays;
     @InjectView(R.id.dashboard_ExperimentResultsButton) AlphaButton resultsButton;
+    @InjectView(R.id.dashboard_debug_information) TextView debugInfoText;
 
     @InjectResource(R.string.dashboard_text_days) String textDays;
     @InjectResource(R.string.dashboard_text_day) String textDay;
@@ -371,6 +374,7 @@ public class DashboardActivity extends RoboFragmentActivity {
                 getString(R.string.dashboard_text_enable_internet));
         dashboardNetworkSettingsButton.setVisibility(isDataEnabled ? View.INVISIBLE : View.VISIBLE);
 
+        debugInfoText.setText(statusManager.getDebugInfoString());
         updateBeginQuestionnairesButton();
     }
 
@@ -475,6 +479,7 @@ public class DashboardActivity extends RoboFragmentActivity {
             testReloadButton.setClickable(false);
             testSyncButton.setVisibility(View.INVISIBLE);
             testSyncButton.setClickable(false);
+            debugInfoText.setVisibility(View.INVISIBLE);
         } else {
             Logger.d(TAG, "Setting test chrome");
             testProbeButton.setVisibility(View.VISIBLE);
@@ -483,6 +488,8 @@ public class DashboardActivity extends RoboFragmentActivity {
             testReloadButton.setClickable(true);
             testSyncButton.setVisibility(View.VISIBLE);
             testSyncButton.setClickable(true);
+            debugInfoText.setVisibility(View.VISIBLE);
+            debugInfoText.setText(statusManager.getDebugInfoString());
         }
     }
 

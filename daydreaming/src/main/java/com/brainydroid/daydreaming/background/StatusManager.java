@@ -132,6 +132,11 @@ public class StatusManager {
         updateCachedCurrentMode();
     }
 
+    public String getDebugInfoString() {
+        return "app version: " + profileStorageProvider.get().getAppVersionName()
+                + "\nparameters version: " + profileStorageProvider.get().getParametersVersion();
+    }
+
     /**
      * Check if first launch is completed.
      *
