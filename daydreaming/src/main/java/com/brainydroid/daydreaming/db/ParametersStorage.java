@@ -574,16 +574,13 @@ public class ParametersStorage {
                 Integer.toString(nCompleted));
 
         if (nTotal > 0) {
-            // if any questionnaire at all
+            // if any questionnaire at all. (suppressing inspection here for readability)
+            //noinspection SimplifiableIfStatement
             if (nLoaded > 0) {
-                // if loaded
-                if (nCompleted == nLoaded) {
-                    // some pending remaining
-                    return true;
-                } else {
-                    // if no pending -> completed
-                    return false;
-                }
+                // if loaded:
+
+                // are all of them completed?
+                return nCompleted == nTotal;
             } else {
                 // if not loaded
                 return false;
