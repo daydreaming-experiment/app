@@ -172,6 +172,10 @@
     <string name="probeNotification_title">Daydreaming</string>
     <string name="probeNotification_text">A few quick questions</string>
 
+    <string name="bqNotification_ticker">Daydreaming questionnaire</string>
+    <string name="bqNotification_title">Daydreaming</string>
+    <string name="bqNotification_text">A few questions about you</string>
+
     <!-- Crash Reports -->
     <string name="crash_toast_text">Oops Daydreaming just crashed! Building a crash report…</string>
     <string name="crash_dialog_text">Daydreaming just crashed, sorry! Please

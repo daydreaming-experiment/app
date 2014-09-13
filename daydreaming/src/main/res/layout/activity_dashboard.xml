@@ -136,7 +136,7 @@
                         android:gravity="center"
                         android:background="@drawable/white_rectangle"/>
 
-                    <Button
+                    <com.brainydroid.daydreaming.ui.AlphaButton
                         android:id="@+id/dashboard_begin_questionnaires_button"
                         android:layout_width="@dimen/dashboard_calendar_width"
                         android:layout_height="wrap_content"
@@ -214,7 +214,7 @@
                         android:src="@drawable/settings_icon"
                         />
 
-                    <Button
+                    <com.brainydroid.daydreaming.ui.AlphaButton
                         android:layout_width="@dimen/dashboard_calendar_width"
                         android:layout_height="wrap_content"
                         android:id="@+id/dashboard_ExperimentResultsButton"

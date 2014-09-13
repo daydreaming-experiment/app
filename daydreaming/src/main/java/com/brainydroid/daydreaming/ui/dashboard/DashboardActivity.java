@@ -31,6 +31,7 @@ import com.brainydroid.daydreaming.background.SyncService;
 import com.brainydroid.daydreaming.db.ParametersStorage;
 import com.brainydroid.daydreaming.network.SntpClient;
 import com.brainydroid.daydreaming.network.SntpClientCallback;
+import com.brainydroid.daydreaming.ui.AlphaButton;
 import com.brainydroid.daydreaming.ui.FontUtils;
 import com.brainydroid.daydreaming.ui.firstlaunchsequence.FirstLaunch00WelcomeActivity;
 import com.google.inject.Inject;
@@ -540,11 +541,12 @@ public class DashboardActivity extends RoboFragmentActivity {
         startActivity(settingsIntent);
     }
 
+    @TargetApi(11)
     private synchronized void updateBeginQuestionnairesButton() {
 
         if (statusManager.areParametersUpdated()) {
-            final Button btn = (Button) findViewById(R.id.dashboard_begin_questionnaires_button);
-            if (!parametersStorage.areBeginQuestionnairesCompleted()) {
+            final AlphaButton btn = (AlphaButton)findViewById(R.id.dashboard_begin_questionnaires_button);
+            if (!statusManager.areBeginQuestionnairesCompleted()) {
                 final Animation animation = new AlphaAnimation(1, 0); // Change alpha from fully visible to invisible
                 animation.setDuration(1000); // duration - half a second
                 animation.setInterpolator(new AccelerateDecelerateInterpolator()); // do not alter animation rate
@@ -560,7 +562,11 @@ public class DashboardActivity extends RoboFragmentActivity {
                 btn.setClickable(true);
             } else {
                 btn.setClickable(false);
-                btn.setVisibility(View.GONE);
+                btn.clearAnimation();
+                // Lint erroneously catches this as a call that requires API >= 11
+                // (which is exactly why AlphaButton exists),
+                // hence the @TargetApi(11) above.
+                btn.setAlpha(0.3f);
             }
         }
     }

@@ -14,7 +14,6 @@ import com.brainydroid.daydreaming.network.HttpGetData;
 import com.brainydroid.daydreaming.network.HttpGetTask;
 import com.brainydroid.daydreaming.network.ParametersStorageCallback;
 import com.brainydroid.daydreaming.network.ServerConfig;
-import com.brainydroid.daydreaming.sequence.Sequence;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -555,40 +554,6 @@ public class ParametersStorage {
         HttpGetData updateParametersData = new HttpGetData(getUrl, updateParametersCallback);
         HttpGetTask updateParametersTask = new HttpGetTask();
         updateParametersTask.execute(updateParametersData);
-    }
-
-    public synchronized boolean areBeginQuestionnairesCompleted() {
-        ArrayList<SequenceDescription> allQuestionnairesDescriptions = getSequencesByType(
-                Sequence.TYPE_BEGIN_QUESTIONNAIRE);
-        ArrayList<Sequence> allLoadedQuestionnaires = sequencesStorage.getSequencesByType(Sequence.TYPE_BEGIN_QUESTIONNAIRE);
-        ArrayList<Sequence> completedQuestionnaires = sequencesStorage.getUploadableSequences(Sequence.TYPE_BEGIN_QUESTIONNAIRE);
-
-        int nCompleted = completedQuestionnaires != null ? completedQuestionnaires.size() : -1;
-        int nTotal = allQuestionnairesDescriptions != null ? allQuestionnairesDescriptions.size() : -1;
-        int nLoaded = allLoadedQuestionnaires != null ? allLoadedQuestionnaires.size() : -1;
-
-        Logger.d(TAG, "Checking Begin Questionnaire status");
-        Logger.d(TAG, "Total : {0} - Loaded : {1} - Completed {2}",
-                Integer.toString(nTotal),
-                Integer.toString(nLoaded),
-                Integer.toString(nCompleted));
-
-        if (nTotal > 0) {
-            // if any questionnaire at all. (suppressing inspection here for readability)
-            //noinspection SimplifiableIfStatement
-            if (nLoaded > 0) {
-                // if loaded:
-
-                // are all of them completed?
-                return nCompleted == nTotal;
-            } else {
-                // if not loaded
-                return false;
-            }
-        } else {
-            // no questionnaires -> return completed
-            return true;
-        }
     }
 
 }
