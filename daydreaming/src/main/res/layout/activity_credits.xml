@@ -67,7 +67,8 @@
                         android:id="@+id/credits_website_link"
                         android:text="@string/credits_website"
                         android:textAppearance="@style/ui_font_title"
-                        android:textColor="@color/ui_white_text_color"/>
+                        android:textColor="@color/ui_white_text_color"
+                        android:paddingBottom="@dimen/global_title_body_vertical_padding"/>
 
 
                 </LinearLayout>
@@ -133,7 +134,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:padding="5dp"
-                        android:layout_marginBottom="10dp">
+                        android:layout_marginBottom="20dp">
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -158,7 +159,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:padding="5dp"
-                        android:layout_marginBottom="10dp">
+                        android:layout_marginBottom="20dp">
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -189,7 +190,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:padding="5dp"
-                        android:layout_marginBottom="10dp">
+                        android:layout_marginBottom="20dp">
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -214,7 +215,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:padding="5dp"
-                        android:layout_marginBottom="10dp">
+                        android:layout_marginBottom="20dp">
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"

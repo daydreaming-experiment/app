@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class MultipleChoiceQuestionDescriptionDetails implements IQuestionDescriptionDetails {
 
     @SuppressWarnings({"FieldCanBeLocal"})
-    private static String TAG = "MultipleChoiceQuestionDetails";
+    private static String TAG = "MultipleChoiceQuestionDescriptionDetails";
 
     @SuppressWarnings("FieldCanBeLocal")
     @JsonView(Views.Internal.class)
@@ -43,17 +43,17 @@ public class MultipleChoiceQuestionDescriptionDetails implements IQuestionDescri
         Logger.v(TAG, "Validating question details");
 
         if (text == null) {
-            throw new JsonParametersException("text in MultipleChoiceQuestionDetails "
-                    + "can't be null");
+            throw new JsonParametersException("text in " +
+                    "MultipleChoiceQuestionDescriptionDetails can't be null");
         }
 
         if (choices == null) {
-            throw new JsonParametersException("choices in MultipleChoiceQuestionDetails " +
-                    "can't by null");
+            throw new JsonParametersException("choices in " +
+                    "MultipleChoiceQuestionDescriptionDetails can't by null");
         }
         if (choices.size() < 2) {
             throw new JsonParametersException("There must be at least two choices in "
-                    + "a MultipleChoiceQuestionsDetails");
+                    + "a MultipleChoiceQuestionsDescriptionDetails");
         }
     }
 

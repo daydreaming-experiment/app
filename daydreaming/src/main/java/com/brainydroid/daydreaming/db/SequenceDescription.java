@@ -18,6 +18,8 @@ public class SequenceDescription extends DescriptionArrayContainer<PageGroupDesc
     @JsonView(Views.Internal.class)
     private String type = null;
     @JsonView(Views.Internal.class)
+    private String intro = null;
+    @JsonView(Views.Internal.class)
     private int nSlots = -1;
     @JsonView(Views.Internal.class)
     private ArrayList<PageGroupDescription> pageGroups = null;
@@ -28,6 +30,10 @@ public class SequenceDescription extends DescriptionArrayContainer<PageGroupDesc
 
     public String getType() {
         return type;
+    }
+
+    public String getIntro() {
+        return intro;
     }
 
     public int getNSlots() {
@@ -53,6 +59,11 @@ public class SequenceDescription extends DescriptionArrayContainer<PageGroupDesc
         // Check type
         if (type == null) {
             throw new JsonParametersException("type in sequence can't be null");
+        }
+
+        // Check intro
+        if (intro == null) {
+            throw new JsonParametersException("intro in sequence can't be null");
         }
 
         validateContained(questionDescriptions);

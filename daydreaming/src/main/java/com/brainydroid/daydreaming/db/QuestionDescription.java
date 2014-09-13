@@ -17,9 +17,12 @@ public class QuestionDescription implements IQuestion {
     @JsonView(Views.Internal.class)
     private String name = null;
     @JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.EXTERNAL_PROPERTY, property="type")
-    @JsonSubTypes({@JsonSubTypes.Type(value=SliderQuestionDescriptionDetails.class, name="slider"),
-                   @JsonSubTypes.Type(value=StarRatingQuestionDescriptionDetails.class, name="starRating"),
-                   @JsonSubTypes.Type(value=MultipleChoiceQuestionDescriptionDetails.class, name="multipleChoice")})
+    @JsonSubTypes({
+            @JsonSubTypes.Type(value=SliderQuestionDescriptionDetails.class, name="slider"),
+            @JsonSubTypes.Type(value=StarRatingQuestionDescriptionDetails.class, name="starRating"),
+            @JsonSubTypes.Type(value=MultipleChoiceQuestionDescriptionDetails.class, name="multipleChoice"),
+            @JsonSubTypes.Type(value=MatrixChoiceQuestionDescriptionDetails.class, name="matrixChoice"),
+            @JsonSubTypes.Type(value=AutoListQuestionDescriptionDetails.class, name="autoList")})
     @JsonView(Views.Internal.class)
     private IQuestionDescriptionDetails details = null;
 

@@ -15,6 +15,9 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -28,12 +31,14 @@ import com.brainydroid.daydreaming.background.SyncService;
 import com.brainydroid.daydreaming.db.ParametersStorage;
 import com.brainydroid.daydreaming.network.SntpClient;
 import com.brainydroid.daydreaming.network.SntpClientCallback;
+import com.brainydroid.daydreaming.ui.AlphaButton;
 import com.brainydroid.daydreaming.ui.FontUtils;
 import com.brainydroid.daydreaming.ui.firstlaunchsequence.FirstLaunch00WelcomeActivity;
 import com.google.inject.Inject;
 
 import roboguice.activity.RoboFragmentActivity;
 import roboguice.inject.ContentView;
+import roboguice.inject.InjectResource;
 import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_dashboard)
@@ -54,8 +59,15 @@ public class DashboardActivity extends RoboFragmentActivity {
     @InjectView(R.id.dashboard_glossary_layout) RelativeLayout glossaryLayout;
     @InjectView(R.id.dashboard_textExperimentStatus) TextView expStatus;
     @InjectView(R.id.dashboard_no_params_text) TextView textNetworkConnection;
+    @InjectView(R.id.dashboard_ExperimentTimeElapsed2days) TextView elapsedTextDays;
+    @InjectView(R.id.dashboard_ExperimentResultsIn2days) TextView toGoTextDays;
+    @InjectView(R.id.dashboard_ExperimentResultsButton) Button resultsButton;
+
+    @InjectResource(R.string.dashboard_text_days) String textDays;
+    @InjectResource(R.string.dashboard_text_day) String textDay;
 
     private boolean testModeThemeActivated = false;
+    private int daysToGo = -1;
 
     IntentFilter parametersUpdateIntentFilter = new IntentFilter(StatusManager.ACTION_PARAMETERS_UPDATED);
     IntentFilter networkIntentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
@@ -75,7 +87,6 @@ public class DashboardActivity extends RoboFragmentActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Logger.v(TAG, "Creating");
-
         checkTestMode();
         super.onCreate(savedInstanceState);
         checkFirstLaunch();
@@ -134,6 +145,15 @@ public class DashboardActivity extends RoboFragmentActivity {
     }
 
     /**
+     * Launching beginning questionnaires activity
+     */
+    public void openBeginQuestionnaires(){
+        Intent intent = new Intent(this, BeginQuestionnairesActivity.class);
+        startActivity(intent);
+        overridePendingTransition(R.anim.mainfadein, R.anim.splashfadeout);
+    }
+
+    /**
      * Launching term activity without enabling buttons
      * Only exit is pressing back button
      */
@@ -171,10 +191,44 @@ public class DashboardActivity extends RoboFragmentActivity {
         overridePendingTransition(R.anim.push_top_in, R.anim.push_top_out);
     }
 
-    //TODO: Decide what should happen when results button is clicked.
     public void  onClick_SeeResults(
             @SuppressWarnings("UnusedParameters") View view){
-        Toast.makeText(this, "Not yet!", Toast.LENGTH_SHORT).show();
+        Logger.v(TAG, "Results button clicked");
+
+        if (!statusManager.isExpRunning()) {
+            Logger.v(TAG, "Experiment not yet running => aborting");
+            Toast.makeText(this, "Experiment hasn't started yet!",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (daysToGo > 0) {
+            if (statusManager.getCurrentMode() == StatusManager.MODE_TEST) {
+                Logger.i(TAG, "Test mode activated => allowing results");
+                Toast.makeText(this, "Test mode => allowing results", Toast.LENGTH_SHORT).show();
+            } else {
+                Logger.v(TAG, "Still {} day(s) to go and test mode not activated => aborting",
+                        daysToGo);
+                String msg = "Still " + daysToGo + " day";
+                if (daysToGo > 1) {
+                    msg += "s";
+                }
+                msg += " to wait before the results";
+                Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+                return;
+            }
+        }
+
+        if (statusManager.isDataEnabled()) {
+            Logger.d(TAG, "Data enabled, transitioning to results");
+            Intent resultsIntent = new Intent(this, ResultsActivity.class);
+            startActivity(resultsIntent);
+            overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+        } else {
+            Logger.v(TAG, "No data connection => aborting");
+            Toast.makeText(this, "You're not connected to the internet!",
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void  onClick_OpenNetworkSettings(
@@ -214,7 +268,7 @@ public class DashboardActivity extends RoboFragmentActivity {
     }
 
     // TODO: disable "see results" button before the results are available
-    // TODO: something should happen once the results are available
+    // TODO: user should be notified once the results are available
     private void updateRunningTimeFromTimestamp(long timestampNow) {
         Logger.d(TAG, "Updating running time with timestamp {}", timestampNow);
         long expStartTimestamp = statusManager.getExperimentStartTimestamp();
@@ -229,7 +283,7 @@ public class DashboardActivity extends RoboFragmentActivity {
                 (24 * 60 * 60 * 1000));
         Logger.i(TAG, "Days elapsed: {}", daysElapsed);
 
-        final int daysToGo = parametersStorage.getExpDuration() - daysElapsed;
+        daysToGo = parametersStorage.getExpDuration() - daysElapsed;
         Logger.i(TAG, "Days to go: {}", daysToGo);
 
         Runnable timeElapsedUpdater = new Runnable() {
@@ -240,6 +294,7 @@ public class DashboardActivity extends RoboFragmentActivity {
             public void run() {
                 Logger.d(TAG, "Updating time elapsed view");
                 timeElapsedTextView.setText(String.valueOf(daysElapsed));
+                elapsedTextDays.setText(daysElapsed != 1 ? textDays : textDay);
             }
 
         };
@@ -252,6 +307,7 @@ public class DashboardActivity extends RoboFragmentActivity {
             public void run() {
                 Logger.d(TAG, "Updating time to go view");
                 timeToGoTextView.setText(String.valueOf(daysToGo));
+                toGoTextDays.setText(daysToGo != 1 ? textDays : textDay);
             }
 
         };
@@ -266,9 +322,8 @@ public class DashboardActivity extends RoboFragmentActivity {
      * dashboard layout.
      */
 
-    //TODO[Vincent] Think of a way to deal with experiment being paused (status : running paused stopped)
     @TargetApi(11)
-    protected void updateExperimentStatusViews() {
+    protected synchronized void updateExperimentStatusViews() {
         View dashboard_TimeBox_layout = findViewById(R.id.dashboard_TimeBox_layout);
         View dashboard_TimeBox_no_param = findViewById(R.id.dashboard_TimeBox_layout_no_params);
         View dashboardNetworkSettingsButton = findViewById(R.id.dashboard_network_settings_button);
@@ -299,6 +354,14 @@ public class DashboardActivity extends RoboFragmentActivity {
             glossaryLayout.setClickable(false);
         }
 
+        if (statusManager.areResultsAvailable()){
+            resultsButton.setAlpha(1f);
+            resultsButton.setClickable(true);
+        } else {
+            resultsButton.setAlpha(0.3f);
+            resultsButton.setClickable(false);
+        }
+
         boolean isDataEnabled = statusManager.isDataEnabled();
         textNetworkConnection.setCompoundDrawablesWithIntrinsicBounds(isDataEnabled ?
                 R.drawable.status_loading :
@@ -307,6 +370,8 @@ public class DashboardActivity extends RoboFragmentActivity {
                 getString(R.string.dashboard_text_parameters_updating) :
                 getString(R.string.dashboard_text_enable_internet));
         dashboardNetworkSettingsButton.setVisibility(isDataEnabled ? View.INVISIBLE : View.VISIBLE);
+
+        updateBeginQuestionnairesButton();
     }
 
     protected void checkFirstLaunch() {
@@ -474,6 +539,40 @@ public class DashboardActivity extends RoboFragmentActivity {
         }
         settingsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
         startActivity(settingsIntent);
+    }
+
+    @TargetApi(11)
+    private synchronized void updateBeginQuestionnairesButton() {
+
+        if (statusManager.areParametersUpdated()) {
+            final AlphaButton btn = (AlphaButton)findViewById(R.id.dashboard_begin_questionnaires_button);
+            if (!statusManager.areBeginQuestionnairesCompleted()) {
+                final Animation animation = new AlphaAnimation(1, 0); // Change alpha from fully visible to invisible
+                animation.setDuration(1000); // duration - half a second
+                animation.setInterpolator(new AccelerateDecelerateInterpolator()); // do not alter animation rate
+                animation.setRepeatCount(Animation.INFINITE); // Repeat animation infinitely
+                animation.setRepeatMode(Animation.REVERSE); // Reverse animation at the end so the button will fade back in
+                btn.startAnimation(animation);
+                btn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(final View view) {
+                        openBeginQuestionnaires();
+                    }
+                });
+                btn.setClickable(true);
+                // Lint erroneously catches this as a call that requires API >= 11
+                // (which is exactly why AlphaButton exists),
+                // hence the @TargetApi(11) above.
+                btn.setAlpha(1f);
+            } else {
+                btn.setClickable(false);
+                btn.clearAnimation();
+                // Lint erroneously catches this as a call that requires API >= 11
+                // (which is exactly why AlphaButton exists),
+                // hence the @TargetApi(11) above.
+                btn.setAlpha(0.3f);
+            }
+        }
     }
 
 }

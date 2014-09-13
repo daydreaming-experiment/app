@@ -40,6 +40,8 @@ public class ParametersStorage {
     public static String QUESTIONS = "questions";
     public static String SEQUENCES = "sequences";
 
+    public static String USER_POSSIBILITIES = "userPossibilities";
+
     private ArrayList<QuestionDescription> questionsCache;
     private ArrayList<SequenceDescription> sequencesCache;
 
@@ -47,6 +49,7 @@ public class ParametersStorage {
     private SharedPreferences.Editor eSharedPreferences;
 
     @Inject Json json;
+    @Inject SequencesStorage sequencesStorage;
     @Inject ProfileStorage profileStorage;
     @Inject StatusManager statusManager;
     @Inject Context context;
@@ -380,6 +383,63 @@ public class ParametersStorage {
         return sequences.get(sequenceIndex);
     }
 
+    public synchronized ArrayList<SequenceDescription> getSequencesByType(String type) {
+        Logger.d(TAG, "{} - Getting sequences by type", statusManager.getCurrentModeName());
+        ArrayList<SequenceDescription> sequences = getSequences();
+        ArrayList<SequenceDescription> sequencesByType = new ArrayList<SequenceDescription>();
+        for (SequenceDescription s : sequences) {
+            if (s.getType().equals(type)){
+                sequencesByType.add(s);
+            }
+        }
+        return sequencesByType;
+    }
+
+    private HashMap<String, ArrayList<String>> getAllUserPossibilities() {
+        String allPossibilitiesJson = sharedPreferences.getString(
+                statusManager.getCurrentModeName() + USER_POSSIBILITIES, null);
+        if (allPossibilitiesJson == null) {
+            return new HashMap<String,ArrayList<String>>();
+        } else {
+            return json.fromJson(allPossibilitiesJson,
+                    new TypeReference<HashMap<String, ArrayList<String>>>() {});
+        }
+    }
+
+    public ArrayList<String> getUserPossibilities(String questionName) {
+        HashMap<String, ArrayList<String>> allPossibilities = getAllUserPossibilities();
+        if (!allPossibilities.containsKey(questionName)) {
+            return new ArrayList<String>();
+        } else {
+            return allPossibilities.get(questionName);
+        }
+    }
+
+    public void addUserPossibility(String questionName, String possibility) {
+        HashMap<String, ArrayList<String>> allPossibilities = getAllUserPossibilities();
+        if (!allPossibilities.containsKey(questionName)) {
+            allPossibilities.put(questionName, new ArrayList<String>());
+        }
+
+        ArrayList<String> questionPossibilities = allPossibilities.get(questionName);
+
+        if (!questionPossibilities.contains(possibility)) {
+            Logger.v(TAG, "{0} - Adding possibility {1} to user possibilities for question {2}",
+                    statusManager.getCurrentModeName(), possibility, questionName);
+
+            questionPossibilities.add(possibility);
+            eSharedPreferences.putString(
+                    statusManager.getCurrentModeName() + USER_POSSIBILITIES,
+                    json.toJsonInternal(allPossibilities));
+            eSharedPreferences.commit();
+        }
+    }
+
+    private void clearAllUserPossibilities() {
+        Logger.v(TAG, "{} - Clearing user possibilities", statusManager.getCurrentModeName());
+        eSharedPreferences.remove(statusManager.getCurrentModeName() + USER_POSSIBILITIES);
+    }
+
     public synchronized void flush() {
         Logger.d(TAG, "{} - Flushing all parameters", statusManager.getCurrentModeName());
         statusManager.clearParametersUpdated();
@@ -396,6 +456,7 @@ public class ParametersStorage {
         clearQuestions();
         clearSequences();
         clearGlossary();
+        clearAllUserPossibilities();
     }
 
     // import parameters from json file into database

@@ -1,9 +1,9 @@
 package com.brainydroid.daydreaming.ui.sequences;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.brainydroid.daydreaming.background.Logger;
@@ -28,19 +28,19 @@ public class PageViewAdapter {
         this.page = page;
     }
 
-    public void inflate(LinearLayout layout) {
+    public void inflate(Activity activity, LinearLayout pageLayout) {
         Logger.d(TAG, "Inflating page view");
 
-        inflateViews(layout.getLayoutParams());
+        inflateViews(activity, pageLayout);
 
         int index = 0;
         for (View view : questionViews) {
-            layout.addView(view, index, layout.getLayoutParams());
+            pageLayout.addView(view, index);
             index++;
         }
     }
 
-    private void inflateViews(ViewGroup.LayoutParams layoutParams) {
+    private void inflateViews(Activity activity, LinearLayout pageLayout) {
         Logger.d(TAG, "Inflating question views inside page");
 
         ArrayList<Question> questions = page.getQuestions();
@@ -48,7 +48,7 @@ public class PageViewAdapter {
         View view;
         for (Question question : questions) {
             questionViewAdapter = question.getAdapter();
-            view = questionViewAdapter.inflate(layoutParams);
+            view = questionViewAdapter.inflate(activity, pageLayout);
             questionViews.add(view);
             questionViewAdapters.add(questionViewAdapter);
         }

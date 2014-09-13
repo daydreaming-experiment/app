@@ -35,10 +35,15 @@ public class Page implements IPage {
 
     @JsonView(Views.Internal.class)
     private int sequenceId = -1;
-
+    @JsonView(Views.Internal.class)
+    private boolean isNextBonus = false;
+    @JsonView(Views.Internal.class)
+    private boolean isLastBeforeBonuses = false;
+    @JsonView(Views.Internal.class)
     private boolean isFirstOfSequence = false;
+    @JsonView(Views.Internal.class)
     private boolean isLastOfSequence = false;
-    private boolean isLastOfPageGroup = false;
+
     private Sequence sequenceCache = null;
 
     @Inject @JacksonInject private SequencesStorage sequencesStorage;
@@ -61,7 +66,7 @@ public class Page implements IPage {
         return bonus;
     }
 
-    private synchronized void setBonus(boolean bonus) {
+    public synchronized void setBonus(boolean bonus) {
         this.bonus = bonus;
         saveIfSync();
     }
@@ -76,7 +81,7 @@ public class Page implements IPage {
         saveIfSync();
     }
 
-    public synchronized android.location.Location getLocation() {
+    public synchronized Location getLocation() {
         return location;
     }
 
@@ -145,12 +150,22 @@ public class Page implements IPage {
         isLastOfSequence = true;
     }
 
-    public boolean isLastOfPageGroup() {
-        return isLastOfPageGroup;
+    public void setIsNextBonus(boolean isNextBonus) {
+        this.isNextBonus = isNextBonus;
+        saveIfSync();
     }
 
-    public void setIsLastOfPageGroup() {
-        isLastOfPageGroup = true;
+    public boolean isNextBonus() {
+        return isNextBonus;
+    }
+
+    public void setIsLastBeforeBonuses(boolean isLastBeforeBonuses) {
+        this.isLastBeforeBonuses = isLastBeforeBonuses;
+        saveIfSync();
+    }
+
+    public boolean isLastBeforeBonuses() {
+        return isLastBeforeBonuses;
     }
 
     public synchronized void setQuestions(ArrayList<Question> questions) {

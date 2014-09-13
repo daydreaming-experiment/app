@@ -3,48 +3,16 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="16dp"
-    android:orientation="vertical"
-    android:tag="subquestion" >
+    android:orientation="vertical" >
 
-
-    <LinearLayout
-        android:id="@+id/question_slider_questionTextLinearLayout"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/question_slider_mainText"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         android:layout_marginBottom="16dp"
-        android:orientation="vertical"
-        android:tag="subquestion" >
-
-        <LinearLayout
-            android:id="@+id/question_slider_mainQuestionTextLinearLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:orientation="horizontal"
-            android:tag="subquestion" >
-
-            <TextView
-                android:id="@+id/question_slider_mainText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginBottom="16dp"
-                android:textAppearance="@style/ui_font_big_title_bold"
-                android:textColor="@color/ui_white_text_color"/>
-
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/question_slider_secondaryText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginBottom="16dp"
-            android:textAppearance="@style/ui_font_bodytext"
-            android:textColor="@color/ui_white_text_color"/>
-
-    </LinearLayout>
-
+        android:textAppearance="@style/ui_font_big_title_bold"
+        android:textColor="@color/ui_white_text_color"/>
 
     <TextView
         android:id="@+id/question_slider_selectedSeek"
@@ -53,7 +21,7 @@
         android:layout_marginBottom="8dp"
         android:gravity="center"
         android:text="@string/questionSlider_please_slide"
-        android:textAppearance="@style/ui_font_bodytext"
+        android:textAppearance="@style/ui_font_bodyText"
         android:textColor="@color/ui_white_text_color"/>
     
     <com.brainydroid.daydreaming.ui.AlphaSeekBar
@@ -62,8 +30,8 @@
         android:layout_height="wrap_content"
         android:minHeight="6dip"
         android:maxHeight="6dip"
-        android:paddingLeft="@dimen/seekbar_touchzone_radius"
-        android:paddingRight="@dimen/seekbar_touchzone_radius"
+        android:paddingLeft="@dimen/seekBar_touchZone_radius"
+        android:paddingRight="@dimen/seekBar_touchZone_radius"
         android:thumbOffset="0dp"
         android:layout_gravity="center" />
 
@@ -80,7 +48,7 @@
             android:layout_weight="1"
             android:gravity="left"
             android:text=""
-            android:textAppearance="@style/ui_font_bodytext"
+            android:textAppearance="@style/ui_font_bodyText"
             android:textColor="@color/ui_dark_blue_color"/>
 
         <TextView
@@ -91,7 +59,7 @@
             android:layout_weight="1"
             android:gravity="right"
             android:text=""
-            android:textAppearance="@style/ui_font_bodytext"
+            android:textAppearance="@style/ui_font_bodyText"
             android:textColor="@color/ui_dark_blue_color"/>
     </LinearLayout>
 
@@ -103,7 +71,7 @@
         android:text="@string/questionSlider_skip"
         android:button="@drawable/custom_checkbox"
         android:gravity="center_vertical"
-        android:textAppearance="@style/ui_font_bodytext"
+        android:textAppearance="@style/ui_font_bodyText"
         android:textColor="@color/ui_white_text_color"/>
 
 </LinearLayout>

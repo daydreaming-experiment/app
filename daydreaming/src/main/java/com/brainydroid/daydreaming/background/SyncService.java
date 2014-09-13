@@ -175,7 +175,7 @@ public class SyncService extends RoboService {
         Logger.d(TAG, "Syncing sequences");
 
         // Do we have any sequences to upload?
-        ArrayList<Sequence> uploadableSequences = sequencesStorage.getUploadableSequences();
+        final ArrayList<Sequence> uploadableSequences = sequencesStorage.getUploadableSequences();
         if (uploadableSequences == null) {
             Logger.i(TAG, "No sequences to upload -> exiting");
             Logger.td(this, TAG + ": no sequences to upload");
@@ -210,9 +210,13 @@ public class SyncService extends RoboService {
                     Logger.td(SyncService.this, SyncService.TAG + ": " +
                             "uploaded sequences (serverAnswer: {0})",
                             serverAnswer);
-
-                    Logger.d(TAG, "Removing uploaded sequences from db");
-                    sequencesStorage.remove(sequencesWrap.getDatas());
+                    Logger.d(TAG, "Removing uploaded sequences (except begin questionnaires) from db");
+                    // filter what to be deleted based on status : i.e. don't delete begin and end questionnaires
+                    ArrayList<Sequence> uploadedSequences = sequencesWrap.getDatas();
+                    ArrayList<Sequence> deletableSequences = getDeletableFromArrayList(uploadedSequences);
+                    ArrayList<Sequence> toBeKeptSequences = getToBeKeptFromArrayList(uploadedSequences);
+                    sequencesStorage.remove(deletableSequences);
+                    setToBeKeptToArrayList(toBeKeptSequences);
                 } else {
                     Logger.w(TAG, "Error while uploading sequences to server");
                 }
@@ -226,6 +230,31 @@ public class SyncService extends RoboService {
                 callback);
     }
 
+    public ArrayList<Sequence> getDeletableFromArrayList(ArrayList<Sequence> sequences) {
+        ArrayList<Sequence> deletableSequences = new ArrayList<Sequence>();
+        for (Sequence s : sequences) {
+            if (!s.getType().equals(Sequence.TYPE_BEGIN_QUESTIONNAIRE) ) {
+                deletableSequences.add(s);
+            }
+        }
+        return deletableSequences;
+    }
+
+    public ArrayList<Sequence> getToBeKeptFromArrayList(ArrayList<Sequence> sequences) {
+        ArrayList<Sequence> toBeKeptQuestionnaires = new ArrayList<Sequence>();
+        for (Sequence s : sequences) {
+            if (s.getType().equals(Sequence.TYPE_BEGIN_QUESTIONNAIRE) ) {
+                toBeKeptQuestionnaires.add(s);
+            }
+        }
+        return toBeKeptQuestionnaires;
+    }
+
+    public synchronized void setToBeKeptToArrayList(ArrayList<Sequence> sequences) {
+        for (Sequence s : sequences) {
+            sequencesStorage.get(s.getId()).setStatus(Sequence.STATUS_UPLOADED_AND_KEEP);
+        }
+    }
     /**
      * Upload collected {@link LocationPoint}s to the server and remove
      * them from local storage, asynchronously.

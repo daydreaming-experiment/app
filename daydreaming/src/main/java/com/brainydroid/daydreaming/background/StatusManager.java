@@ -15,6 +15,7 @@ import android.preference.PreferenceManager;
 import com.brainydroid.daydreaming.db.LocationPointsStorage;
 import com.brainydroid.daydreaming.db.ParametersStorage;
 import com.brainydroid.daydreaming.db.ProfileStorage;
+import com.brainydroid.daydreaming.db.SequenceDescription;
 import com.brainydroid.daydreaming.db.SequencesStorage;
 import com.brainydroid.daydreaming.network.CryptoStorage;
 import com.brainydroid.daydreaming.sequence.Sequence;
@@ -22,6 +23,7 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 /**
@@ -567,6 +569,65 @@ public class StatusManager {
 
     public synchronized Boolean isExpRunning() {
         return areParametersUpdated();
+    }
+
+    public synchronized boolean areBeginQuestionnairesCompleted() {
+        if (!areParametersUpdated()) {
+            return false;
+        }
+
+        ArrayList<SequenceDescription> allQuestionnairesDescriptions =
+                parametersStorageProvider.get()
+                        .getSequencesByType(Sequence.TYPE_BEGIN_QUESTIONNAIRE);
+        ArrayList<Sequence> allLoadedQuestionnaires = sequencesStorageProvider.get()
+                .getSequencesByType(Sequence.TYPE_BEGIN_QUESTIONNAIRE);
+        ArrayList<Sequence> completedQuestionnaires = sequencesStorageProvider.get()
+                .getCompletedSequences(Sequence.TYPE_BEGIN_QUESTIONNAIRE);
+
+        int nCompleted = completedQuestionnaires != null ? completedQuestionnaires.size() : -1;
+        int nTotal = allQuestionnairesDescriptions != null ? allQuestionnairesDescriptions.size() : -1;
+        int nLoaded = allLoadedQuestionnaires != null ? allLoadedQuestionnaires.size() : -1;
+
+        Logger.d(TAG, "Checking Begin Questionnaire status");
+        Logger.d(TAG, "Total : {0} - Loaded : {1} - Completed {2}",
+                Integer.toString(nTotal),
+                Integer.toString(nLoaded),
+                Integer.toString(nCompleted));
+
+        boolean completion;
+        if (nTotal > 0) {
+            // if any questionnaire at all. (suppressing inspection here for readability)
+            //noinspection SimplifiableIfStatement
+            if (nLoaded > 0) {
+                // if loaded:
+
+                // are all of them completed?
+                completion =  nCompleted == nTotal;
+            } else {
+                // if not loaded
+                completion = false;
+            }
+        } else {
+            // no questionnaires -> return completed
+            completion = true;
+        }
+
+        Logger.d(TAG, "Total : {0} - Loaded : {1} - Completed {2} -> Completion: {3}",
+                Integer.toString(nTotal),
+                Integer.toString(nLoaded),
+                Integer.toString(nCompleted),
+                Boolean.toString(completion));
+        return completion;
+    }
+
+    public synchronized boolean areResultsAvailable(){
+        if (!isExpRunning()) return false;
+
+        int daysElapsed = (int)((getLatestNtpTime() - getExperimentStartTimestamp()) /
+                (24 * 60 * 60 * 1000));
+        int daysToGo = parametersStorageProvider.get().getExpDuration() - daysElapsed;
+
+        return daysToGo <= 0;
     }
 
 }

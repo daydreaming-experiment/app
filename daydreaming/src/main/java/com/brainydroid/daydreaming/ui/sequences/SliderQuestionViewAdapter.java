@@ -1,13 +1,14 @@
 package com.brainydroid.daydreaming.ui.sequences;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.text.method.LinkMovementMethod;
 import android.util.FloatMath;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,9 +22,9 @@ import com.google.inject.Inject;
 
 import java.util.ArrayList;
 
-
 import roboguice.inject.InjectResource;
 
+@SuppressWarnings("UnusedDeclaration")
 public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
         implements IQuestionViewAdapter {
 
@@ -42,7 +43,7 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
     @Inject SliderAnswer answer;
 
     @Override
-    protected ArrayList<View> inflateViews() {
+    protected ArrayList<View> inflateViews(Activity activity, LinearLayout questionLayout) {
         Logger.d(TAG, "Inflating question views");
 
         ArrayList<SliderSubQuestion> subQuestions =
@@ -50,7 +51,7 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
                         .getSubQuestions();
 
         for (SliderSubQuestion subQuestion : subQuestions) {
-            View view = inflateView(subQuestion);
+            View view = inflateView(questionLayout, subQuestion);
             subQuestionsViews.add(view);
         }
         return subQuestionsViews;
@@ -58,17 +59,17 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
     }
 
     @TargetApi(11)
-    private View inflateView(SliderSubQuestion subQuestion) {
+    private View inflateView(LinearLayout questionLayout, SliderSubQuestion subQuestion) {
         Logger.v(TAG, "Inflating view for subQuestion");
 
-        View view = layoutInflater.inflate(R.layout.question_slider, null);
+        View view = layoutInflater.inflate(R.layout.question_slider, questionLayout, false);
         final ArrayList<String> hints = subQuestion.getHints();
         final int hintsNumber = hints.size();
 
         final TextView qText =
                 (TextView)view.findViewById(R.id.question_slider_mainText);
         String initial_qText = subQuestion.getText();
-        qText.setText(getExtentedQuestionText(initial_qText));
+        qText.setText(getExtendedQuestionText(initial_qText));
         qText.setMovementMethod(LinkMovementMethod.getInstance());
 
 
@@ -139,10 +140,14 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
             }
 
             @Override
-            public void onStartTrackingTouch(AlphaSeekBar seekBar) { }
+            public void onStartTrackingTouch(AlphaSeekBar seekBar) {
+                seekBar.setThumb(context.getResources().getDrawable(R.drawable.question_slider_thumb_big));
+            }
 
             @Override
-            public void onStopTrackingTouch(AlphaSeekBar seekBar) { }
+            public void onStopTrackingTouch(AlphaSeekBar seekBar) {
+                seekBar.setThumb(context.getResources().getDrawable(R.drawable.question_slider_thumb));
+            }
         };
 
         seekBar.setOnSeekBarChangeListener(progressListener);
@@ -172,20 +177,6 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
         };
 
         naCheckBox.setOnCheckedChangeListener(naListener);
-
-        /**
-        final ImageButton imageButtonglossary =
-                (ImageButton)view.findViewById(R.id.question_slider_glossarybutton);
-
-        ImageButton.OnClickListener glossaryListener = new ImageButton.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        };
-
-        imageButtonglossary.setOnClickListener(glossaryListener);
-        **/
 
         return view;
     }

@@ -8,6 +8,8 @@ abstract public interface ISequence {
 
     public String getType();
 
+    public String getIntro();
+
     public ArrayList<? extends IPageGroup> getPageGroups();
 
 }

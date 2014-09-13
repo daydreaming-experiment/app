@@ -19,13 +19,32 @@
         android:paddingTop="@dimen/page_vertical_margin" >
 
         <LinearLayout
-            android:id="@+id/page_linearLayout"
+            android:id="@+id/page_intro_linearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingBottom="@dimen/page_vertical_margin"
             android:paddingTop="@dimen/page_vertical_margin" >
+            <TextView
+                android:id="@+id/page_intro_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Intro"
+                android:textAppearance="@style/ui_font_big_title_bold"
+                android:textColor="@color/ui_white_text_color"
+                android:gravity="center_horizontal" >
+            </TextView>
 
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/page_linearLayout"
+            android:layout_below="@id/page_intro_linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/page_vertical_margin"
+            android:paddingTop="@dimen/page_vertical_margin" >
         </LinearLayout>
 
         <LinearLayout

@@ -17,7 +17,7 @@
         <item name="android:textSize">18sp</item>
     </style>
 
-    <style name="ui_font_bodytext">
+    <style name="ui_font_bodyText">
         <item name="android:textSize">16sp</item>
     </style>
 
@@ -39,7 +39,7 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="ui_font_bodytext_bold" parent="@style/ui_font_bodytext">
+    <style name="ui_font_bodytext_bold" parent="@ui_font_bodyText">
         <item name="android:textStyle">bold</item>
     </style>
 

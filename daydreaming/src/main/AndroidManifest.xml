@@ -56,6 +56,13 @@
             android:screenOrientation="portrait">
         </activity>
 
+        <activity android:name=".ui.dashboard.BeginQuestionnairesActivity"
+            android:label="@string/begin_questionnaires_title_activity"
+            android:theme="@style/daydreamingTheme"
+            android:taskAffinity=".dashboard"
+            android:screenOrientation="portrait">
+        </activity>
+
         <activity android:name=".ui.dashboard.DescriptionActivity"
             android:theme="@style/daydreamingTheme"
             android:taskAffinity=".dashboard"
@@ -75,6 +82,12 @@
         </activity>
 
         <activity android:name=".ui.dashboard.CreditsActivity"
+            android:theme="@style/daydreamingTheme"
+            android:taskAffinity=".dashboard"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity android:name=".ui.dashboard.ResultsActivity"
             android:theme="@style/daydreamingTheme"
             android:taskAffinity=".dashboard"
             android:screenOrientation="portrait">
@@ -130,6 +143,9 @@
             android:exported="false" />
 
         <service android:name=".background.ProbeService"
+            android:exported="false" />
+
+        <service android:name=".background.BeginQuestionnaireService"
             android:exported="false" />
 
         <service android:name=".background.SchedulerService"

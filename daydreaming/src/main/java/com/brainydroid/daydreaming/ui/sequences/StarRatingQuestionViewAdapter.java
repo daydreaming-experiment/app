@@ -1,12 +1,14 @@
 package com.brainydroid.daydreaming.ui.sequences;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.text.method.LinkMovementMethod;
 import android.util.FloatMath;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.brainydroid.daydreaming.R;
@@ -39,7 +41,7 @@ public class StarRatingQuestionViewAdapter extends BaseQuestionViewAdapter
     @Inject StarRatingAnswer answer;
 
     @Override
-    protected ArrayList<View> inflateViews() {
+    protected ArrayList<View> inflateViews(Activity activity, LinearLayout questionLayout) {
         Logger.d(TAG, "Inflating question views");
 
         ArrayList<StarRatingSubQuestion> subQuestions =
@@ -47,7 +49,7 @@ public class StarRatingQuestionViewAdapter extends BaseQuestionViewAdapter
                         .getSubQuestions();
 
         for (StarRatingSubQuestion subQuestion : subQuestions) {
-            View view = inflateView(subQuestion);
+            View view = inflateView(questionLayout, subQuestion);
             subQuestionsViews.add(view);
         }
         return subQuestionsViews;
@@ -55,16 +57,16 @@ public class StarRatingQuestionViewAdapter extends BaseQuestionViewAdapter
     }
 
     @TargetApi(11)
-    private View inflateView(StarRatingSubQuestion subQuestion) {
+    private View inflateView(LinearLayout questionLayout, StarRatingSubQuestion subQuestion) {
         Logger.v(TAG, "Inflating view for subQuestion");
 
-        View view = layoutInflater.inflate(R.layout.question_star_rating, null);
+        View view = layoutInflater.inflate(R.layout.question_star_rating, questionLayout, false);
         final ArrayList<String> hints = subQuestion.getHints();
         final int hintsNumber = hints.size();
 
         TextView qText = (TextView)view.findViewById(R.id.question_star_rating_mainText);
         String initial_qText = subQuestion.getText();
-        qText.setText(getExtentedQuestionText(initial_qText));
+        qText.setText(getExtendedQuestionText(initial_qText));
         qText.setMovementMethod(LinkMovementMethod.getInstance());
 
         TextView leftHintText = (TextView)view.findViewById(R.id.question_star_rating_leftHint);

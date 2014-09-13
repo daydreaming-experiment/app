@@ -1,5 +1,6 @@
 package com.brainydroid.daydreaming.ui.sequences;
 
+import android.app.Activity;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
@@ -9,7 +10,7 @@ public interface IQuestionViewAdapter {
 
     public void setQuestion(Question question);
 
-    public LinearLayout inflate(ViewGroup.LayoutParams layoutParams);
+    public LinearLayout inflate(Activity activity, LinearLayout parentLayout);
 
     public boolean validate();
 

@@ -25,6 +25,7 @@
     <string name="dashboard_text_parameters_updating">Parameters are updating…</string>
     <string name="dashboard_button_text_glossary">Glossary</string>
     <string name="dashboard_text_days">days</string>
+    <string name="dashboard_text_day">day</string>
     <string name="dashboard_text_results_in">Results in</string>
     <string name="dashboard_text_see_results">See results</string>
     <string name="dashboard_button_change_data_settings">Data Settings</string>
@@ -98,6 +99,8 @@
     <string name="appsettings_allow_blink_text">Blinks at questions</string>
     <string name="appsettings_allow_vibrations_text">Vibrates at questions</string>
     <string name="appsettings_allow_sound_text">Beeps at questions</string>
+    <string name="settings_time_window_lb_default">10:00</string>
+    <string name="settings_time_window_ub_default">19:00</string>
 
     <!-- Profile Activity -->
     <string name="firstLaunchProfile_title_activity">Profile</string>
@@ -114,6 +117,10 @@
     <!-- Questionnaire Activity -->
     <string name="Questionnaire_intro">Here are a number of personality traits that may or may not apply to you.  Please select the statement to indicate the extent to which you agree or disagree with each statement. You should rate the extent to which the pair of traits applies to you, even if one characteristic applies more strongly than the other. </string>
     <string name="Questionnaire_title">PERSONALITY\nQUESTIONNAIRE</string>
+
+    <!-- Begin Questionnaire Activity -->
+    <string name="begin_questionnaires_title_activity">Begin Questionnaires</string>
+
 
     <!-- Pulling question Activity -->
     <string name="firstLaunchPull_title_activity">Pull Questions</string>
@@ -149,6 +156,10 @@
     <string name="questionMultipleChoice_other_hint">Other</string>
     <string name="questionMultipleChoice_other_please_fill">Please tell us more in the \"Other\" box</string>
     <string name="questionMultipleChoice_please_check_one">Please check at least one option</string>
+    <string name="questionMatrixChoice_please_select_one">Please check at least one option</string>
+    <string name="questionAutoList_add_item">Add</string>
+    <string name="questionAutoList_delete_item">Delete item</string>
+    <string name="questionAutoList_please_select">Please select at least one item</string>
     <string name="locationAlert_title_location">Enable location</string>
     <string name="locationAlert_title_data">Enable data connection</string>
     <string name="locationAlert_title_location_and_data">Enable location and data</string>
@@ -157,15 +168,19 @@
     <string name="locationAlert_text_location_and_data">You should enable network-based (coarse) location AND data connection to continue. Please adjust your settings.</string>
     <string name="locationAlert_button_settings">Go to settings&#8230;</string>
     <string name="questionActivity_catch_key">Press again to exit.\nYou\'ll lose these questions!</string>
-    <string name="question_common_question_intro_text">Right before the app interrupted you...</string>
+    <string name="question_common_question_intro_text">Right before the app interrupted you…</string>
 
-    <!-- Probe Notivifcation -->
+    <!-- Probe Notification -->
     <string name="probeNotification_ticker">Daydreaming poll</string>
     <string name="probeNotification_title">Daydreaming</string>
     <string name="probeNotification_text">A few quick questions</string>
 
+    <string name="bqNotification_ticker">Daydreaming questionnaire</string>
+    <string name="bqNotification_title">Daydreaming</string>
+    <string name="bqNotification_text">A few questions about you</string>
+
     <!-- Crash Reports -->
-    <string name="crash_toast_text">Oops Daydreaming just crashed! Building a crash report...</string>
+    <string name="crash_toast_text">Oops Daydreaming just crashed! Building a crash report…</string>
     <string name="crash_dialog_text">Daydreaming just crashed, sorry! Please
         help us by sending this crash report so we can fix the problem. You
         can also add your name or email if you agree to be contacted
@@ -178,15 +193,13 @@
 
 
     <string name="terms_html">
-        <![CDATA[
-         <p>Welcome to the Daydreaming app! </p>
+        <![CDATA[<p>Welcome to the Daydreaming app! </p>
 <p>This application is part of a <i>research project</i> that seeks to better understand the experience of daydreaming. Our goal is to better understand what conditions cause people to daydream, how daydreaming people’s <i>impacts day-to-day life</i>, and how we can all learn to control our <i>daydreaming tendencies</i>  so as to maximize our health and well-being.</p>
 <p>The Daydreaming app requires very little effort to use. Several times a day, the app will notify you that new questions are available. When you click on the notification, you’ll be asked a few brief questions about your current activities, thoughts, and/or feelings. Each notification will take just a minute or so to fill out.</p>
 <p>Your responses, along with your current location, will be sent back to our server <b>in anonymous form</b>. After a few weeks of using the app, <i>you will unlock a “My Daydreams” sections</i> that  shows you some information about your responses and describes the type of mind-wanderer you are.</p>
 <p>Before starting, you will be asked to answer a few questions about yourself and to define the settings of the app. This should only take a few minutes, and only needs to be done once.</p>
 <p>If you’d like to know more about our research, and how we use your data, please click on “more information“ below. You can also find this information again at any time in the ‘Options’ section of the app. </p>
-<p>If you’re ready to begin, click “Agree” below.</p>
-]]>
+<p>If you’re ready to begin, click “Agree” below.</p>]]>
     </string>
 
     <string name="more_terms_html">
@@ -226,5 +239,6 @@
 
 ]]>
     </string>
+    <string name="dashboard_text_begin_questionnaires">Questions</string>
 
 </resources>

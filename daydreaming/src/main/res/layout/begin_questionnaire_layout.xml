@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/ui_font_big_title_bold"
+        android:textColor="@color/ui_white_text_color"
+        android:layout_gravity="center_horizontal"
+        android:drawableLeft="@drawable/status_wrong"
+        android:drawablePadding="@dimen/global_text_drawable_padding"
+        android:layout_marginBottom="@dimen/text_linespacing"
+        android:id="@+id/begin_questionnaire_name"
+        />
+</LinearLayout>

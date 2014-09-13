@@ -1,10 +1,28 @@
-<CheckBox xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/question_multiple_choice_checkBox"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/question_multiple_choice_item_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:text=""
-    android:button="@drawable/custom_checkbox"
-    android:paddingBottom="@dimen/question_occupation_line_marginBottom"
-    android:layout_gravity="center_vertical"
-    android:textAppearance="@style/ui_font_bodytext"
-    android:textColor="@color/ui_white_text_color"/>
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
+    android:layout_gravity="center_vertical">
+
+    <CheckBox
+        android:id="@+id/question_multiple_choice_checkBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:button="@drawable/custom_checkbox"
+        android:text=""
+        android:layout_marginRight="@dimen/global_text_drawable_padding"/>
+
+    <TextView
+        android:id="@+id/question_multiple_choice_checkBox_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/ui_font_bodyText"
+        android:paddingBottom="16dp"
+        android:textColor="@color/ui_white_text_color"
+        >
+
+    </TextView>
+
+</LinearLayout>

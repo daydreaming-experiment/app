@@ -81,7 +81,6 @@ public abstract class TypedStatusModelStorage<M extends TypedStatusModel<M,S,F>,
         return typeModels;
     }
 
-
     private synchronized ArrayList<Integer> getModelIdsByStatusesAndTypes(String[] statuses,
                                                                        String[] types) {
         Logger.d(TAG, "Getting models ids by statuses and types");

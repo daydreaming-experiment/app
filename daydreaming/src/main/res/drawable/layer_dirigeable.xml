@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<layer-list xmlns:android="http://schemas.android/apk/res/android">
-    <item android:drawable="@drawable/airship" />
-    <item android:drawable="@drawable/animated_helix" />
-</layer-list>

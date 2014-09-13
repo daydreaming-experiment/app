@@ -67,6 +67,21 @@ public class PageDescription extends DescriptionArrayContainer<QuestionPositionD
         position.validateInitialization(parentArray, this, PageDescription.class);
 
         validateContained(questionDescriptions);
+
+        if (position.isBonus()) {
+            boolean foundNonBonusSibling= false;
+            for (PageDescription p : parentArray) {
+                if (!p.getPosition().isBonus()) {
+                    foundNonBonusSibling = true;
+                    break;
+                }
+            }
+
+            if (!foundNonBonusSibling) {
+                throw new JsonParametersException("All pages in this PageGroup are bonuses! " +
+                        "If you want a bonus-only PageGroup, set it at the PageGroup level");
+            }
+        }
     }
 
     public Page build(Sequence sequence) {
