@@ -12,6 +12,7 @@ import com.brainydroid.daydreaming.sequence.PageGroupFactory;
 import com.brainydroid.daydreaming.sequence.QuestionFactory;
 import com.brainydroid.daydreaming.sequence.Sequence;
 import com.brainydroid.daydreaming.sequence.SequenceFactory;
+import com.brainydroid.daydreaming.ui.filtering.FiltererFactory;
 import com.brainydroid.daydreaming.ui.sequences.AutoCompleteAdapterFactory;
 import com.google.inject.Binder;
 import com.google.inject.Module;
@@ -34,6 +35,7 @@ public class AppModule implements Module {
         binder.install(new FactoryModuleBuilder().build(LocationPointFactory.class));
 
         binder.install(new FactoryModuleBuilder().build(AutoCompleteAdapterFactory.class));
+        binder.install(new FactoryModuleBuilder().build(FiltererFactory.class));
 
         binder.install(new FactoryModuleBuilder()
                 .build(new TypeLiteral<ResultsWrapperFactory<Sequence>>() {}));

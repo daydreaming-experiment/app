@@ -4,6 +4,7 @@ import android.widget.Filter;
 
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.ui.sequences.AutoCompleteAdapter;
+import com.google.inject.Inject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -62,14 +63,14 @@ public class Filterer extends Filter {
                     "against", "all", "almost", "alone", "along", "a", "above", "according",
                     "across", "actually", "adj", "after'"}));
 
-    private Timer timer = new Timer();
     private AutoCompleteAdapter adapter;
 
-    private HashSet<String> possibilities = new HashSet<String>();
-    private HashMap<String, HashSet<MetaString>> tokenMap = new HashMap<String, HashSet<MetaString>>();
-    private HashMap<String, HashSet<String>> matchMap = new HashMap<String, HashSet<String>>();
-    private Tree<String> bkTree = new Tree<String>();
-    private IDistance distance = new LevenshteinDistance();
+    @Inject private Timer timer;
+    @Inject private HashSet<String> possibilities;
+    @Inject private HashMap<String, HashSet<MetaString>> tokenMap;
+    @Inject private HashMap<String, HashSet<String>> matchMap;
+    @Inject private Tree<String> bkTree;
+    @Inject private LevenshteinDistance distance;
 
     public void addPossibility(String possibility) {
         if (!possibilities.contains(possibility)) {
@@ -82,7 +83,7 @@ public class Filterer extends Filter {
         }
     }
 
-    public Filterer(AutoCompleteAdapter adapter, ArrayList<String> possibilitiesArray) {
+    public void initialize(AutoCompleteAdapter adapter, ArrayList<String> possibilitiesArray) {
         Logger.d(TAG, "Initializing");
         timer.start("Filterer initialization");
 

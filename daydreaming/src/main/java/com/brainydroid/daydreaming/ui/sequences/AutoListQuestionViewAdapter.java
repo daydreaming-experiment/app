@@ -67,7 +67,8 @@ public class AutoListQuestionViewAdapter
 
         autoTextView.setHint(details.getHint());
         // TODO: move this initialization to background, because it takes around 5 seconds
-        final AutoCompleteAdapter adapter = autoCompleteAdapterFactory.create(possibilities);
+        final AutoCompleteAdapter adapter = autoCompleteAdapterFactory.create();
+        adapter.initialize(possibilities);
         autoTextView.setAdapter(adapter);
 
         autoTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -98,7 +99,7 @@ public class AutoListQuestionViewAdapter
             public void onClick(View view) {
                 Logger.d(TAG, "Add button clicked");
                 String userString = autoTextView.getText().toString();
-                if (addSelection(MetaString.getInstance(userString))) {
+                if (userString.length() >= 2 && addSelection(MetaString.getInstance(userString))) {
                     autoTextView.setText("");
                     // Update adapter
                     adapter.addPossibility(userString);

@@ -14,9 +14,9 @@ import android.widget.TextView;
 
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.ui.filtering.Filterer;
+import com.brainydroid.daydreaming.ui.filtering.FiltererFactory;
 import com.brainydroid.daydreaming.ui.filtering.MetaString;
 import com.google.inject.Inject;
-import com.google.inject.assistedinject.Assisted;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,6 +28,7 @@ public class AutoCompleteAdapter implements Filterable, ListAdapter {
 
     @Inject private LayoutInflater inflater;
     @Inject private Context context;
+    @Inject private FiltererFactory filtererFactory;
 
     private Filterer filter;
     private ArrayList<MetaString> results = null;
@@ -35,10 +36,10 @@ public class AutoCompleteAdapter implements Filterable, ListAdapter {
     @Inject private HashSet<DataSetObserver> observers;
     @Inject private HashMap<Long,MetaString> idCache;
 
-    @Inject
-    public AutoCompleteAdapter(@Assisted("possibilities") ArrayList<String> possibilities) {
+    public void initialize(ArrayList<String> possibilities) {
         Log.d(TAG, "Initializing");
-        filter = new Filterer(this, possibilities);
+        filter = filtererFactory.create();
+        filter.initialize(this, possibilities);
     }
 
     public boolean areFilterResultsEmpty() {
