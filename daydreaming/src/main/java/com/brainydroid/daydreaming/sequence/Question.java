@@ -29,7 +29,8 @@ public class Question implements IQuestion {
             @JsonSubTypes.Type(value=SliderAnswer.class, name="slider"),
             @JsonSubTypes.Type(value=StarRatingAnswer.class, name="starRating"),
             @JsonSubTypes.Type(value=MultipleChoiceAnswer.class, name="multipleChoiceAnswer"),
-            @JsonSubTypes.Type(value=MatrixChoiceAnswer.class, name="matrixChoiceAnswer")})
+            @JsonSubTypes.Type(value=MatrixChoiceAnswer.class, name="matrixChoiceAnswer"),
+            @JsonSubTypes.Type(value=AutoListAnswer.class, name="autoListAnswer")})
     @JsonView(Views.Public.class)
     private IAnswer answer = null;
 
