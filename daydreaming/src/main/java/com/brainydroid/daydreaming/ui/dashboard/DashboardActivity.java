@@ -507,10 +507,10 @@ public class DashboardActivity extends RoboFragmentActivity {
         }
 
 
-
         statusManager.resetParametersKeepProfileAnswers();
 
-        lastParametersUpdateAttempt = Calendar.getInstance().getTimeInMillis();
+        lastParametersUpdateAttempt = -1;
+        updateExperimentStatusViews();
         Intent syncIntent = new Intent(this, SyncService.class);
         syncIntent.putExtra(SyncService.DEBUG_SYNC, true);
         startService(syncIntent);
