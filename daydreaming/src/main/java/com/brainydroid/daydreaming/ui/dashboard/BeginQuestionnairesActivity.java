@@ -18,6 +18,7 @@ import com.brainydroid.daydreaming.sequence.Sequence;
 import com.brainydroid.daydreaming.sequence.SequenceBuilder;
 import com.brainydroid.daydreaming.ui.FontUtils;
 import com.brainydroid.daydreaming.ui.firstlaunchsequence.FirstLaunch00WelcomeActivity;
+import com.brainydroid.daydreaming.ui.sequences.PageActivity;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 
@@ -42,7 +43,8 @@ public class BeginQuestionnairesActivity extends RoboFragmentActivity {
     @InjectView(R.id.beginquestionnaires_questionnaires_layout)
     LinearLayout beginQuestionnairesLinearLayout;
 
-    private ArrayList<SequenceDescription> allBeginQuestionnaires;
+    private ArrayList<SequenceDescription> allBeginQuestionnairesDescriptions;
+    private ArrayList<Sequence> loadedBeginQuestionnaires;
     private ArrayList<Sequence> completedBeginQuestionnaires;
 
     @Override
@@ -58,34 +60,37 @@ public class BeginQuestionnairesActivity extends RoboFragmentActivity {
     }
 
     @Override
-    public void onResume() {
+    public synchronized void onResume() {
         Logger.v(TAG, "Resuming");
-        updateQuestionnairesStatusView();
         super.onResume();
+        updateQuestionnairesStatusView();
     }
 
     /**
      * Check if Begin Questionnaires were instantiated. If not instantiate them
      */
-    protected void createQuestionnaires() {
+    protected synchronized void createQuestionnaires() {
         Logger.v(TAG, "Instantiating Begin Questionnaires");
 
-        allBeginQuestionnaires = parametersStorage.getSequencesByType(
+        allBeginQuestionnairesDescriptions = parametersStorage.getSequencesByType(
                 Sequence.TYPE_BEGIN_QUESTIONNAIRE);
         completedBeginQuestionnaires = sequencesStorageProvider.get()
                 .getUploadableSequences(Sequence.TYPE_BEGIN_QUESTIONNAIRE);
-        ArrayList<Sequence> loadedBeginQuestionnaires = sequencesStorageProvider.get()
+        loadedBeginQuestionnaires = sequencesStorageProvider.get()
                 .getSequencesByType(Sequence.TYPE_BEGIN_QUESTIONNAIRE);
 
-        if (allBeginQuestionnaires == null || allBeginQuestionnaires.isEmpty()) {
+        if (allBeginQuestionnairesDescriptions == null || allBeginQuestionnairesDescriptions.isEmpty()) {
             // if empty do nothing
             Logger.v(TAG, "No Begin Questionnaires in parameters");
         } else {
             Logger.v(TAG, "Begin Questionnaires found in parameters");
             if (loadedBeginQuestionnaires == null || loadedBeginQuestionnaires.isEmpty()) {
                 Logger.v(TAG, "Instantiating Begin Questionnaires...");
-                for (SequenceDescription sd : allBeginQuestionnaires) {
-                    sequenceBuilder.buildSave(sd.getName());
+                for (SequenceDescription sd : allBeginQuestionnairesDescriptions) {
+                    if (!getSequenceNames(loadedBeginQuestionnaires).contains(sd.getName())){
+                        Logger.v(TAG, "Instanciating questionnaire {}",sd.getName());
+                        sequenceBuilder.buildSave(sd.getName());
+                    }
                 }
             } else {
                 Logger.v(TAG, "Begin Questionnaires already instantiated");
@@ -105,15 +110,20 @@ public class BeginQuestionnairesActivity extends RoboFragmentActivity {
         return names;
     }
 
-    protected void populateQuestionnairesView() {
+    protected synchronized void populateQuestionnairesView() {
         Logger.v(TAG, "Populating questionnaire list");
 
-        if (allBeginQuestionnaires == null || allBeginQuestionnaires.isEmpty() ) {
+        loadedBeginQuestionnaires = sequencesStorageProvider.get()
+                .getSequencesByType(Sequence.TYPE_BEGIN_QUESTIONNAIRE);
+        completedBeginQuestionnaires = sequencesStorageProvider.get()
+                .getUploadableSequences(Sequence.TYPE_BEGIN_QUESTIONNAIRE);
+
+        if (loadedBeginQuestionnaires == null || loadedBeginQuestionnaires.isEmpty() ) {
             Logger.v(TAG, "No Begin Questionnaires in parameters");
         } else {
             Logger.v(TAG, "Begin Questionnaires found in parameters");
 
-            for (int index = 0; index < allBeginQuestionnaires.size(); index++) {
+            for (int index = 0; index < loadedBeginQuestionnaires.size(); index++) {
                 LinearLayout bq_linearLayout = (LinearLayout) getLayoutInflater().inflate(
                         R.layout.begin_questionnaire_layout, beginQuestionnairesLinearLayout, false);
                 TextView questionnaireName = (TextView) bq_linearLayout.findViewById(R.id.begin_questionnaire_name);
@@ -131,23 +141,35 @@ public class BeginQuestionnairesActivity extends RoboFragmentActivity {
         }
     }
 
-    protected void updateQuestionnairesStatusView() {
+    protected synchronized void updateQuestionnairesStatusView() {
         Logger.v(TAG, "Updating questionnaires list view");
 
-        ArrayList<String> allBeginQuestionnairesNames = getSequenceNames(allBeginQuestionnaires);
+        loadedBeginQuestionnaires = sequencesStorageProvider.get()
+                .getSequencesByType(Sequence.TYPE_BEGIN_QUESTIONNAIRE);
+        completedBeginQuestionnaires = sequencesStorageProvider.get()
+                .getUploadableSequences(Sequence.TYPE_BEGIN_QUESTIONNAIRE);
+
+        ArrayList<String> allBeginQuestionnairesNames = getSequenceNames(allBeginQuestionnairesDescriptions);
         ArrayList<String> completedBeginQuestionnairesNames = getSequenceNames(completedBeginQuestionnaires);
 
         for (int i = 0; i < beginQuestionnairesLinearLayout.getChildCount(); i++) {
-            TextView tv = (TextView)beginQuestionnairesLinearLayout.getChildAt(i).findViewById(R.id.begin_questionnaire_name);
+            LinearLayout bq_linearLayout = (LinearLayout)beginQuestionnairesLinearLayout.getChildAt(i);
+            TextView tv = (TextView)bq_linearLayout.findViewById(R.id.begin_questionnaire_name);
             String bq_name = allBeginQuestionnairesNames.get(i);
             boolean isComplete = completedBeginQuestionnairesNames.contains(bq_name);
             tv.setCompoundDrawablesWithIntrinsicBounds(isComplete ? R.drawable.status_ok : R.drawable.status_wrong, 0, 0, 0);
-            Logger.v(TAG, "Questionnaire TextView text: {} - completion is", tv.getText());
+            Logger.v(TAG, "Questionnaire TextView text: {0} - completion is {1}" , tv.getText(), isComplete ? "true":"false");
+            bq_linearLayout.setClickable(!isComplete);
         }
     }
 
     protected void openBeginQuestionnaireByIndex(int index) {
-        // open a questionnaire
+        Logger.i(TAG, "Launching questionnaire with index {}" , Integer.toString(index));
+        Logger.i(TAG, "There are {} loaded questionnaires" , Integer.toString(loadedBeginQuestionnaires.size()));
+
+        Sequence questionnaire = loadedBeginQuestionnaires.get(index);
+        Intent intent = createQuestionnaireIntent(questionnaire);
+        launchQuestionnaireIntent(intent);
     }
 
     protected void checkFirstLaunch() {
@@ -175,6 +197,31 @@ public class BeginQuestionnairesActivity extends RoboFragmentActivity {
     public void onClick_backToDashboard(@SuppressWarnings("UnusedParameters") View v) {
         Logger.v(TAG, "Back to dashboard button clicked");
         onBackPressed();
+    }
+
+    /**
+     * Create the {@link com.brainydroid.daydreaming.ui.sequences.PageActivity} {@link Intent}.
+     *
+     * @return An {@link Intent} to launch our {@link Sequence}
+     */
+    private synchronized Intent createQuestionnaireIntent(Sequence questionnaire) {
+        Logger.d(TAG, "Creating Questionnaire Intent");
+
+        Intent intent = new Intent(this, PageActivity.class);
+        // Set the id of the probe to start
+        intent.putExtra(PageActivity.EXTRA_SEQUENCE_ID, questionnaire.getId());
+        // Create a new task. The rest is defined in the App manifest.
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        return intent;
+    }
+
+    /**
+     * Launch Questionnaire
+     */
+    private synchronized void launchQuestionnaireIntent(Intent questionnaireIntent) {
+        Logger.d(TAG, "Launching Questionnaire");
+        startActivity(questionnaireIntent);
+        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
     }
 
 }
