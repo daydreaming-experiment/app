@@ -544,7 +544,7 @@ public class DashboardActivity extends RoboFragmentActivity {
 
         if (statusManager.areParametersUpdated()) {
             final Button btn = (Button) findViewById(R.id.dashboard_begin_questionnaires_button);
-            if (!parametersStorage.areBeginQuestionnairesCompleted()) {
+            if (!statusManager.areBeginQuestionnairesCompleted()) {
                 final Animation animation = new AlphaAnimation(1, 0); // Change alpha from fully visible to invisible
                 animation.setDuration(1000); // duration - half a second
                 animation.setInterpolator(new AccelerateDecelerateInterpolator()); // do not alter animation rate
