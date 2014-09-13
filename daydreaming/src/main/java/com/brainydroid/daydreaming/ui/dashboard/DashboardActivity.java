@@ -120,6 +120,7 @@ public class DashboardActivity extends RoboFragmentActivity {
             Logger.v(TAG, "Parameters not yet updated, registering broadcast receiver");
             if (statusManager.isDataEnabled()) {
                 Logger.v(TAG, "Internet enabled, so also launching parameters update");
+                lastParametersUpdateAttempt = -1;
                 launchParametersUpdate();
             }
             registerReceiver(receiver, parametersUpdateIntentFilter);
@@ -398,6 +399,8 @@ public class DashboardActivity extends RoboFragmentActivity {
                     textNetworkConnection.setText(
                             getString(R.string.dashboard_text_parameters_updating));
                     dashboardNetworkSettingsButton.setVisibility(View.INVISIBLE);
+
+                    lastParametersUpdateAttempt = now;
                     launchParametersUpdate();
 
                     if (updateTimer != null) {
@@ -456,8 +459,6 @@ public class DashboardActivity extends RoboFragmentActivity {
 
     private void launchParametersUpdate() {
         Logger.d(TAG, "Launching full sync service to update parameters");
-
-        lastParametersUpdateAttempt = Calendar.getInstance().getTimeInMillis();
 
         Logger.d(TAG, "Starting SyncService");
         Intent syncIntent = new Intent(this, SyncService.class);
