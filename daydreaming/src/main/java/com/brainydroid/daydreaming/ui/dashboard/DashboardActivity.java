@@ -36,7 +36,9 @@ import com.brainydroid.daydreaming.ui.FontUtils;
 import com.brainydroid.daydreaming.ui.firstlaunchsequence.FirstLaunch00WelcomeActivity;
 import com.google.inject.Inject;
 
-import java.util.zip.InflaterInputStream;
+import java.util.Calendar;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import roboguice.activity.RoboFragmentActivity;
 import roboguice.inject.ContentView;
@@ -71,17 +73,19 @@ public class DashboardActivity extends RoboFragmentActivity {
 
     private boolean testModeThemeActivated = false;
     private int daysToGo = -1;
+    private long lastParametersUpdateAttempt = -1;
+    private Timer updateTimer = null;
 
-    IntentFilter parametersUpdateIntentFilter = new IntentFilter(StatusManager.ACTION_PARAMETERS_UPDATED);
+    IntentFilter parametersUpdateIntentFilter = new IntentFilter(StatusManager.ACTION_PARAMETERS_STATUS_CHANGE);
     IntentFilter networkIntentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            if (action.equals(StatusManager.ACTION_PARAMETERS_UPDATED) ||
+            if (action.equals(StatusManager.ACTION_PARAMETERS_STATUS_CHANGE) ||
                     action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
-                Logger.d(TAG, "receiver started for ACTION_PARAMETERS_UPDATED or CONNECTIVITY_ACTION");
+                Logger.d(TAG, "receiver started for ACTION_PARAMETERS_STATUS_CHANGE or CONNECTIVITY_ACTION");
                 updateExperimentStatusViews();
             }
         }
@@ -133,6 +137,10 @@ public class DashboardActivity extends RoboFragmentActivity {
             unregisterReceiver(receiver);
         } catch(IllegalArgumentException e) {
             Logger.v(TAG, "Receiver is not registered, so not unregistering");
+        }
+        if (updateTimer != null) {
+            updateTimer.cancel();
+            updateTimer = null;
         }
         super.onPause();
     }
@@ -344,6 +352,11 @@ public class DashboardActivity extends RoboFragmentActivity {
             glossaryLayout.setClickable(true);
 
             updateRunningTime();
+
+            if (updateTimer != null) {
+                updateTimer.cancel();
+                updateTimer = null;
+            }
         } else {
             Logger.v(TAG, "Experiment is NOT running, setting views accordingly");
             expStatus.setText(R.string.dashboard_text_exp_stopped);
@@ -355,9 +368,57 @@ public class DashboardActivity extends RoboFragmentActivity {
             // hence the @TargetApi(11) above.
             glossaryLayout.setAlpha(0.3f);
             glossaryLayout.setClickable(false);
+
+            if (statusManager.isDataEnabled()) {
+                long now = Calendar.getInstance().getTimeInMillis();
+                if (now - lastParametersUpdateAttempt < 2 * 60 * 1000) {
+                    // Last update short time ago: "will retry in X seconds" + reset timer
+                    long secondsLeft = (2 * 60 * 1000 - (now - lastParametersUpdateAttempt)) / 1000;
+                    textNetworkConnection.setCompoundDrawablesWithIntrinsicBounds(
+                            R.drawable.status_wrong, 0, 0, 0);
+                    textNetworkConnection.setText(
+                            getString(R.string.dashboard_text_error_will_retry1)
+                                    + " " + secondsLeft + " "
+                                    + getString(R.string.dashboard_text_error_will_retry2));
+                    dashboardNetworkSettingsButton.setVisibility(View.INVISIBLE);
+
+                    if (updateTimer == null) {
+                        updateTimer = new Timer("updateTimer");
+                        updateTimer.schedule(new TimerTask() {
+                            @Override
+                            public void run() {
+                                updateExperimentStatusViewsForceUIThread();
+                            }
+                        }, 1000, 1000);
+                    }
+                } else {
+                    // Last update long ago: relaunch, and say "updating"
+                    textNetworkConnection.setCompoundDrawablesWithIntrinsicBounds(
+                            R.drawable.status_loading, 0, 0, 0);
+                    textNetworkConnection.setText(
+                            getString(R.string.dashboard_text_parameters_updating));
+                    dashboardNetworkSettingsButton.setVisibility(View.INVISIBLE);
+                    launchParametersUpdate();
+
+                    if (updateTimer != null) {
+                        updateTimer.cancel();
+                        updateTimer = null;
+                    }
+                }
+            } else {
+                textNetworkConnection.setCompoundDrawablesWithIntrinsicBounds(
+                        R.drawable.status_wrong, 0, 0, 0);
+                textNetworkConnection.setText(getString(R.string.dashboard_text_enable_internet));
+                dashboardNetworkSettingsButton.setVisibility(View.VISIBLE);
+
+                if (updateTimer != null) {
+                    updateTimer.cancel();
+                    updateTimer = null;
+                }
+            }
         }
 
-        if (statusManager.areResultsAvailable()){
+        if (statusManager.areResultsAvailable()) {
             resultsButton.setAlpha(1f);
             resultsButton.setClickable(true);
         } else {
@@ -365,17 +426,17 @@ public class DashboardActivity extends RoboFragmentActivity {
             resultsButton.setClickable(false);
         }
 
-        boolean isDataEnabled = statusManager.isDataEnabled();
-        textNetworkConnection.setCompoundDrawablesWithIntrinsicBounds(isDataEnabled ?
-                R.drawable.status_loading :
-                R.drawable.status_wrong, 0, 0, 0);
-        textNetworkConnection.setText(isDataEnabled ?
-                getString(R.string.dashboard_text_parameters_updating) :
-                getString(R.string.dashboard_text_enable_internet));
-        dashboardNetworkSettingsButton.setVisibility(isDataEnabled ? View.INVISIBLE : View.VISIBLE);
-
         debugInfoText.setText(statusManager.getDebugInfoString());
         updateBeginQuestionnairesButton();
+    }
+
+    public void updateExperimentStatusViewsForceUIThread() {
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                updateExperimentStatusViews();
+            }
+        });
     }
 
     protected void checkFirstLaunch() {
@@ -395,6 +456,8 @@ public class DashboardActivity extends RoboFragmentActivity {
 
     private void launchParametersUpdate() {
         Logger.d(TAG, "Launching full sync service to update parameters");
+
+        lastParametersUpdateAttempt = Calendar.getInstance().getTimeInMillis();
 
         Logger.d(TAG, "Starting SyncService");
         Intent syncIntent = new Intent(this, SyncService.class);
@@ -443,8 +506,11 @@ public class DashboardActivity extends RoboFragmentActivity {
             return;
         }
 
+
+
         statusManager.resetParametersKeepProfileAnswers();
 
+        lastParametersUpdateAttempt = Calendar.getInstance().getTimeInMillis();
         Intent syncIntent = new Intent(this, SyncService.class);
         syncIntent.putExtra(SyncService.DEBUG_SYNC, true);
         startService(syncIntent);

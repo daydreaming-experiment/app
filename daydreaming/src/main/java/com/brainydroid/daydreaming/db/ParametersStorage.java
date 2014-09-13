@@ -14,6 +14,7 @@ import com.brainydroid.daydreaming.network.HttpGetData;
 import com.brainydroid.daydreaming.network.HttpGetTask;
 import com.brainydroid.daydreaming.network.ParametersStorageCallback;
 import com.brainydroid.daydreaming.network.ServerConfig;
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -488,7 +489,7 @@ public class ParametersStorage {
             // loading the questions
             setQuestions(serverParametersJson.getQuestions());
             setSequences(serverParametersJson.getSequences());
-        } catch (JsonParametersException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             throw new ParametersSyntaxException();
         }
@@ -565,6 +566,7 @@ public class ParametersStorage {
                         Logger.e(TAG, "Downloaded parameters were malformed -> " +
                                 "parameters not updated");
                         callback.onParametersStorageReady(false);
+                        statusManager.setParametersUpdated(false);
                         if (statusManager.getCurrentMode() == StatusManager.MODE_TEST) {
                             Toast.makeText(context, "Test parameters from server were malformed! " +
                                     "Correct them and try again", Toast.LENGTH_LONG).show();
@@ -573,7 +575,7 @@ public class ParametersStorage {
                     }
 
                     Logger.i(TAG, "Parameters successfully imported");
-                    statusManager.setParametersUpdated();
+                    statusManager.setParametersUpdated(true);
                     callback.onParametersStorageReady(true);
 
                     if (isDebug && statusManager.getCurrentMode() == StatusManager.MODE_TEST) {
@@ -588,6 +590,7 @@ public class ParametersStorage {
                     Logger.w(TAG, "Error while retrieving new parameters from " +
                             "server");
                     callback.onParametersStorageReady(false);
+                    statusManager.setParametersUpdated(false);
                     if (isDebug && statusManager.getCurrentMode() == StatusManager.MODE_TEST) {
                         Toast.makeText(context, "Error retrieving parameters from server. " +
                                 "Are you connected to internet?", Toast.LENGTH_LONG).show();

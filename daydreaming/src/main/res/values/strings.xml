@@ -22,6 +22,8 @@
     <string name="dashboard_button_text_terms">Terms</string>
     <string name="dashboard_button_text_description">Description</string>
     <string name="dashboard_text_enable_internet">Please enable internet</string>
+    <string name="dashboard_text_error_will_retry1">Error updating parameters\nTrying again in</string>
+    <string name="dashboard_text_error_will_retry2">seconds</string>
     <string name="dashboard_text_parameters_updating">Parameters are updating…</string>
     <string name="dashboard_button_text_glossary">Glossary</string>
     <string name="dashboard_text_days">days</string>

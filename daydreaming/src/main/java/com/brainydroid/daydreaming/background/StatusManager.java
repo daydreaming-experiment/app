@@ -68,7 +68,7 @@ public class StatusManager {
     /** Preference key storing the current mode */
     private static String EXP_CURRENT_MODE = "expCurrentMode";
 
-    public static final String ACTION_PARAMETERS_UPDATED = "actionParametersUpdated";
+    public static final String ACTION_PARAMETERS_STATUS_CHANGE = "actionParametersStatusChange";
 
     public static int MODE_PROD = 0;
     public static int MODE_TEST = 1;
@@ -113,10 +113,10 @@ public class StatusManager {
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor eSharedPreferences;
 
-    private void sendParametersUpdatedBroadcast() {
-        Logger.v(TAG, "Sending ACTION_PARAMETERS_UPDATED broadcast");
+    private void sendParametersStatusChangeBroadcast() {
+        Logger.v(TAG, "Sending ACTION_PARAMETERS_STATUS_CHANGE broadcast");
         Intent broadcastIntent = new Intent();
-        broadcastIntent.setAction(ACTION_PARAMETERS_UPDATED);
+        broadcastIntent.setAction(ACTION_PARAMETERS_STATUS_CHANGE);
         context.sendBroadcast(broadcastIntent);
     }
 
@@ -190,14 +190,14 @@ public class StatusManager {
     /**
      * Set the updated parameters flag to completed.
      */
-    public synchronized void setParametersUpdated() {
+    public synchronized void setParametersUpdated(boolean updated) {
         Logger.d(TAG, "{} - Setting parameters to updated", getCurrentModeName());
 
-        eSharedPreferences.putBoolean(getCurrentModeName() + EXP_STATUS_PARAMETERS_UPDATED, true);
+        eSharedPreferences.putBoolean(getCurrentModeName() + EXP_STATUS_PARAMETERS_UPDATED, updated);
         eSharedPreferences.commit();
 
         // Broadcast the info so that the dashboard can update its view
-        sendParametersUpdatedBroadcast();
+        sendParametersStatusChangeBroadcast();
     }
 
     public synchronized void clearParametersUpdated() {
