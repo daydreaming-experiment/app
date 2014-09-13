@@ -435,6 +435,15 @@
         android:gravity="bottom"
         android:layout_alignParentBottom="true">
 
+
+        <TextView
+            android:id="@+id/dashboard_debug_information"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:textColor="@color/dark_red"
+            android:text="xxxxx"/>
+
         <Button
             android:id="@+id/button_test_poll"
             android:layout_width="wrap_content"
