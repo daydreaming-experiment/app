@@ -67,9 +67,6 @@ public class ProbeService extends RoboService {
                 populateProbe();
                 notifyProbe();
             }
-
-            // Schedule the next probe
-            startSchedulerService();
         }
 
         stopSelf();
@@ -203,16 +200,6 @@ public class ProbeService extends RoboService {
 
         Logger.i(TAG, "Launching NTP request");
         sntpClient.asyncRequestTime(sntpCallback);
-    }
-
-    /**
-     * Start {@link SchedulerService} for the next {@link Sequence}.
-     */
-    private synchronized void startSchedulerService() {
-        Logger.d(TAG, "Starting SchedulerService");
-
-        Intent schedulerIntent = new Intent(this, SchedulerService.class);
-        startService(schedulerIntent);
     }
 
     /**
