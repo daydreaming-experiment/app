@@ -34,8 +34,7 @@ public abstract class BaseQuestionViewAdapter
 
     @Inject Context context;
     @Inject LayoutInflater layoutInflater;
-    @Inject
-    ParametersStorage parametersStorage;
+    @Inject ParametersStorage parametersStorage;
 
     public void setQuestion(Question question) {
         this.question = question;
