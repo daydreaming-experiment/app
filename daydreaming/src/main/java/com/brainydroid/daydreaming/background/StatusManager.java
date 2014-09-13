@@ -572,6 +572,10 @@ public class StatusManager {
     }
 
     public synchronized boolean areBeginQuestionnairesCompleted() {
+        if (!areParametersUpdated()) {
+            return false;
+        }
+
         ArrayList<SequenceDescription> allQuestionnairesDescriptions =
                 parametersStorageProvider.get()
                         .getSequencesByType(Sequence.TYPE_BEGIN_QUESTIONNAIRE);

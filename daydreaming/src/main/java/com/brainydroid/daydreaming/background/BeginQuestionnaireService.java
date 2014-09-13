@@ -37,7 +37,8 @@ public class BeginQuestionnaireService extends RoboService {
     public synchronized int onStartCommand(Intent intent, int flags, int startId) {
         Logger.d(TAG, "BeginQuestionnaireService started");
         super.onStartCommand(intent, flags, startId);
-        if (statusManager.areParametersUpdated()) {
+        if (statusManager.areParametersUpdated() &&
+                !statusManager.areBeginQuestionnairesCompleted()) {
             notifyQuestionnaire();
         }
         //TODO[Vincent] Schedule the next Questionnaire reminder
