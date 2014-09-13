@@ -87,8 +87,8 @@ public class BeginQuestionnairesActivity extends RoboFragmentActivity {
             if (loadedBeginQuestionnaires == null || loadedBeginQuestionnaires.isEmpty()) {
                 Logger.v(TAG, "Instantiating Begin Questionnaires...");
                 for (SequenceDescription sd : allBeginQuestionnairesDescriptions) {
-                    if (!getSequenceNames(loadedBeginQuestionnaires).contains(sd.getName())){
-                        Logger.v(TAG, "Instanciating questionnaire {}",sd.getName());
+                    if (!getSequenceNames(loadedBeginQuestionnaires).contains(sd.getName())) {
+                        Logger.v(TAG, "Instantiating questionnaire {}", sd.getName());
                         sequenceBuilder.buildSave(sd.getName());
                     }
                 }
