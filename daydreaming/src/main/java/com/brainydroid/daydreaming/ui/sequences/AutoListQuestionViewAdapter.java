@@ -21,7 +21,6 @@ import com.brainydroid.daydreaming.db.AutoListQuestionDescriptionDetails;
 import com.brainydroid.daydreaming.sequence.AutoListAnswer;
 import com.brainydroid.daydreaming.ui.filtering.MetaString;
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,7 +35,7 @@ public class AutoListQuestionViewAdapter
 
     @Inject Context context;
     @Inject AutoListAnswer answer;
-    @Inject Injector injector;
+    @Inject AutoCompleteAdapterFactory autoCompleteAdapterFactory;
 
     @InjectResource(R.string.questionAutoList_please_select) String errorPleaseSelect;
 
@@ -68,7 +67,7 @@ public class AutoListQuestionViewAdapter
 
         autoTextView.setHint(details.getHint());
         // TODO: move this initialization to background, because it takes around 5 seconds
-        final AutoCompleteAdapter adapter = new AutoCompleteAdapter(context, possibilities);
+        final AutoCompleteAdapter adapter = autoCompleteAdapterFactory.create(possibilities);
         autoTextView.setAdapter(adapter);
 
         autoTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
