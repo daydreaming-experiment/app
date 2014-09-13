@@ -1,4 +1,4 @@
-package com.brainydroid.daydreaming.ui.sequences;
+package com.brainydroid.daydreaming.ui.filtering;
 
 import android.content.Context;
 import android.database.DataSetObserver;

@@ -3,7 +3,6 @@ package com.brainydroid.daydreaming.ui.filtering;
 import android.widget.Filter;
 
 import com.brainydroid.daydreaming.background.Logger;
-import com.brainydroid.daydreaming.ui.sequences.AutoCompleteAdapter;
 import com.google.inject.Inject;
 
 import java.util.ArrayList;

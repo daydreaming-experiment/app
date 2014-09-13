@@ -13,7 +13,7 @@ import com.brainydroid.daydreaming.sequence.QuestionFactory;
 import com.brainydroid.daydreaming.sequence.Sequence;
 import com.brainydroid.daydreaming.sequence.SequenceFactory;
 import com.brainydroid.daydreaming.ui.filtering.FiltererFactory;
-import com.brainydroid.daydreaming.ui.sequences.AutoCompleteAdapterFactory;
+import com.brainydroid.daydreaming.ui.filtering.AutoCompleteAdapterFactory;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.TypeLiteral;

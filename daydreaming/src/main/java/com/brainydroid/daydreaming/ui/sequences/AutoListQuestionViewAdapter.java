@@ -22,6 +22,8 @@ import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.AutoListQuestionDescriptionDetails;
 import com.brainydroid.daydreaming.sequence.AutoListAnswer;
+import com.brainydroid.daydreaming.ui.filtering.AutoCompleteAdapter;
+import com.brainydroid.daydreaming.ui.filtering.AutoCompleteAdapterFactory;
 import com.brainydroid.daydreaming.ui.filtering.MetaString;
 import com.google.inject.Inject;
 
@@ -38,7 +40,8 @@ public class AutoListQuestionViewAdapter
 
     @Inject Context context;
     @Inject AutoListAnswer answer;
-    @Inject AutoCompleteAdapterFactory autoCompleteAdapterFactory;
+    @Inject
+    AutoCompleteAdapterFactory autoCompleteAdapterFactory;
 
     @InjectResource(R.string.questionAutoList_please_select) String errorPleaseSelect;
 
