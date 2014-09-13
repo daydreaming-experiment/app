@@ -401,26 +401,34 @@ public class DashboardActivity extends RoboFragmentActivity {
      * Launching poll from dashboard (debug)
      */
     public void runPollNow(@SuppressWarnings("UnusedParameters") View view) {
-        Logger.d(TAG, "Launching a debug poll");
+        if (statusManager.isExpRunning()) {
+            Logger.d(TAG, "Launching a debug poll");
 
-        Intent pollIntent = new Intent(this, SchedulerService.class);
-        pollIntent.putExtra(SchedulerService.SCHEDULER_DEBUGGING, true);
-        startService(pollIntent);
+            Intent pollIntent = new Intent(this, SchedulerService.class);
+            pollIntent.putExtra(SchedulerService.SCHEDULER_DEBUGGING, true);
+            startService(pollIntent);
 
-        Toast.makeText(this, "Now wait for 5 secs", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Now wait for 5 secs", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Parameters aren't loaded yet", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void runSyncNow(View view) {
-        Logger.d(TAG, "Launching debug sync now");
+        if (statusManager.isExpRunning()) {
+            Logger.d(TAG, "Launching debug sync now");
 
-        if (!statusManager.isDataEnabled()) {
-            Toast.makeText(this, "You're not connected to the internet!", Toast.LENGTH_SHORT).show();
-            return;
+            if (!statusManager.isDataEnabled()) {
+                Toast.makeText(this, "You're not connected to the internet!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            Intent syncIntent = new Intent(this, SyncService.class);
+            syncIntent.putExtra(SyncService.DEBUG_SYNC, true);
+            startService(syncIntent);
+        } else {
+            Toast.makeText(this, "Parameters aren't loaded yet", Toast.LENGTH_SHORT).show();
         }
-
-        Intent syncIntent = new Intent(this, SyncService.class);
-        syncIntent.putExtra(SyncService.DEBUG_SYNC, true);
-        startService(syncIntent);
     }
 
     public void reloadParametersKeepProfileAnswers(@SuppressWarnings("UnusedParameters") View view) {

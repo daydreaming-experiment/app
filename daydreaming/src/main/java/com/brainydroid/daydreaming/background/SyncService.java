@@ -2,6 +2,7 @@ package com.brainydroid.daydreaming.background;
 
 import android.content.Intent;
 import android.os.IBinder;
+import android.widget.Toast;
 
 import com.brainydroid.daydreaming.db.Json;
 import com.brainydroid.daydreaming.db.LocationPoint;
@@ -72,6 +73,8 @@ public class SyncService extends RoboService {
                 Logger.d(TAG, "Parameters have been update, and data is enabled");
                 cryptoStorage.onReady(cryptoStorageCallback);
             } else {
+                // We quit the preSync phase
+                statusManager.setPreSyncRunning(false);
                 Logger.v(TAG, "Either parameters were not updated, or data is disabled "
                 + "-> doing nothing");
             }
@@ -113,6 +116,9 @@ public class SyncService extends RoboService {
                 Logger.v(TAG, "Either no keypair or no id or no data " +
                         "connection -> doing nothing");
             }
+
+            // In all cases, this finishes the preSync phase
+            statusManager.setPreSyncRunning(false);
         }
 
     };
@@ -122,11 +128,21 @@ public class SyncService extends RoboService {
         Logger.d(TAG, "SyncService started");
         super.onStartCommand(intent, flags, startId);
 
+        // Launch synchronization tasks if we haven't done so not long ago
+        boolean isDebugSync = intent.getBooleanExtra(DEBUG_SYNC, false);
+
+        if (statusManager.isSyncRunning()) {
+            Logger.i(TAG, "A sync operation is already running -> exiting");
+            if (isDebugSync) {
+                Toast.makeText(this, "A sync operation is already running",
+                        Toast.LENGTH_SHORT).show();
+            }
+            return START_REDELIVER_INTENT;
+        }
+
         // Record the current app mode for later comparison in the callbacks
         startSyncAppMode = statusManager.getCurrentModeName();
 
-        // Launch synchronization tasks if we haven't done so not long ago
-        boolean isDebugSync = intent.getBooleanExtra(DEBUG_SYNC, false);
         if (statusManager.isLastSyncLongAgo() || isDebugSync) {
             Logger.d(TAG, "Last sync was long ago or this is a debug sync " +
                     "-> starting updates");
@@ -152,6 +168,8 @@ public class SyncService extends RoboService {
             Logger.i(TAG, "Data connection enabled -> starting sync tasks");
             Logger.td(this, TAG + ": starting sync...");
 
+            // We enter the preSync phase
+            statusManager.setPreSyncRunning(true);
             statusManager.setLastSyncToNow();
 
             // This will launch all the calls through the callback
@@ -220,9 +238,15 @@ public class SyncService extends RoboService {
                 } else {
                     Logger.w(TAG, "Error while uploading sequences to server");
                 }
+
+                // We finish sequences sync
+                statusManager.setSequencesSyncRunning(false);
             }
 
         };
+
+        // We start sequences sync
+        statusManager.setSequencesSyncRunning(true);
 
         // Sign our data to identify us, and upload
         Logger.d(TAG, "Signing data and launching sequences sync");
@@ -310,9 +334,15 @@ public class SyncService extends RoboService {
                     Logger.w(TAG, "Error while uploading locationPoints to " +
                             "server");
                 }
+
+                // We finish locationPointsSync
+                statusManager.setLocationPointsSyncRunning(false);
             }
 
         };
+
+        // We start locationPointsSync
+        statusManager.setLocationPointsSyncRunning(true);
 
         // Sign our data to identify us, and upload
         Logger.d(TAG, "Signing data and launching locationPoints sync");
@@ -343,6 +373,8 @@ public class SyncService extends RoboService {
                     Logger.i(TAG, "App mode has changed from {0} to {1} since sync started, "
                             + "aborting profile put.", startSyncAppMode,
                             statusManager.getCurrentModeName());
+                    // We finish profileSync
+                    statusManager.setProfileSyncRunning(false);
                     return;
                 }
 
@@ -368,9 +400,14 @@ public class SyncService extends RoboService {
                             "server");
                 }
 
+                // We finish profileSync
+                statusManager.setProfileSyncRunning(false);
             }
 
         };
+
+        // We start profileSync
+        statusManager.setProfileSyncRunning(true);
 
         // Sign our data to identify us, and upload
         Logger.d(TAG, "Signing data and launching profile update");

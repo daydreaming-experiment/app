@@ -84,6 +84,11 @@ public class StatusManager {
     public static long RESTART_LOCATION_POINT_SERVICE_DELAY = 1 * 60 * 60 * 1000;
 
     private int cachedCurrentMode = MODE_DEFAULT;
+    private boolean isPreSyncRunning = false;
+    private boolean isSequencesSyncRunning = false;
+    private boolean isLocationPointsSyncRunning = false;
+    private boolean isProfileSyncRunning = false;
+    private long isSyncRunningTimestamp = -1;
 
     /**
      * Delay below which we don't need to re-sync data to servers (in
@@ -628,6 +633,54 @@ public class StatusManager {
         int daysToGo = parametersStorageProvider.get().getExpDuration() - daysElapsed;
 
         return daysToGo <= 0;
+    }
+
+    public void setPreSyncRunning(boolean running) {
+        Logger.v(TAG, "Setting isPreSyncRunning to {}", running);
+        isPreSyncRunning = running;
+        isSyncRunningTimestamp = Calendar.getInstance().getTimeInMillis();
+        clearSyncRunningIfAllDone();
+    }
+
+    public void setSequencesSyncRunning(boolean running) {
+        Logger.v(TAG, "Setting isSequencesSyncRunning to {}", running);
+        isSequencesSyncRunning = running;
+        isSyncRunningTimestamp = Calendar.getInstance().getTimeInMillis();
+        clearSyncRunningIfAllDone();
+    }
+
+    public void setLocationPointsSyncRunning(boolean running) {
+        Logger.v(TAG, "Setting isLocationPointsSyncRunning to {}", running);
+        isLocationPointsSyncRunning = running;
+        isSyncRunningTimestamp = Calendar.getInstance().getTimeInMillis();
+        clearSyncRunningIfAllDone();
+    }
+
+    public void setProfileSyncRunning(boolean running) {
+        Logger.v(TAG, "Setting isProfileSyncRunning to {}", running);
+        isProfileSyncRunning = running;
+        isSyncRunningTimestamp = Calendar.getInstance().getTimeInMillis();
+        clearSyncRunningIfAllDone();
+    }
+
+    private void clearSyncRunningIfAllDone() {
+        Logger.v(TAG, "Clearing sync running flags if all done");
+        if (!isPreSyncRunning && !isSequencesSyncRunning &&
+                !isLocationPointsSyncRunning && !isProfileSyncRunning) {
+            isPreSyncRunning = false;
+            isSequencesSyncRunning = false;
+            isLocationPointsSyncRunning = false;
+            isProfileSyncRunning = false;
+            isSyncRunningTimestamp = -1;
+        }
+    }
+
+    public boolean isSyncRunning() {
+        long now = Calendar.getInstance().getTimeInMillis();
+        // Sync is running and we know this from less than a minute ago
+        return (isPreSyncRunning || isSequencesSyncRunning ||
+                isLocationPointsSyncRunning || isProfileSyncRunning)
+                && (now - isSyncRunningTimestamp) < 60 * 1000;
     }
 
 }
