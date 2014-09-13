@@ -560,6 +560,10 @@ public class DashboardActivity extends RoboFragmentActivity {
                     }
                 });
                 btn.setClickable(true);
+                // Lint erroneously catches this as a call that requires API >= 11
+                // (which is exactly why AlphaButton exists),
+                // hence the @TargetApi(11) above.
+                btn.setAlpha(1f);
             } else {
                 btn.setClickable(false);
                 btn.clearAnimation();
