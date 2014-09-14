@@ -7,12 +7,19 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.BeanDescription;
+import com.fasterxml.jackson.databind.DeserializationConfig;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.deser.AbstractDeserializer;
+import com.fasterxml.jackson.databind.deser.BeanDeserializerModifier;
 import com.fasterxml.jackson.databind.introspect.VisibilityChecker;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 import com.google.inject.Singleton;
 
 import java.io.IOException;
@@ -43,8 +50,26 @@ public class Json {
      * Constructor used with dependency injection.
      */
     @Inject
-    public Json(ObjectMapper mapper) {
+    public Json(ObjectMapper mapper, final Injector injector) {
         Logger.v(TAG, "Building Jackson reader/writer instances");
+
+        SimpleModule module = new SimpleModule();
+        module.setDeserializerModifier(new BeanDeserializerModifier()
+        {
+            @Override
+            public JsonDeserializer<?> modifyDeserializer(
+                    DeserializationConfig config, BeanDescription beanDesc,
+                    JsonDeserializer<?> deserializer) {
+                if (deserializer instanceof AbstractDeserializer) {
+                    return deserializer;
+                }
+                InjectingDeserializer<Object> injectingDeserializer =
+                        new InjectingDeserializer<Object>(deserializer);
+                injector.injectMembers(injectingDeserializer);
+                return injectingDeserializer;
+            }
+        });
+        mapper.registerModule(module);
 
         VisibilityChecker checker = mapper.getVisibilityChecker()
                 .withGetterVisibility(JsonAutoDetect.Visibility.NONE)
