@@ -136,7 +136,6 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
                 .setContentText("Result button")
                 .hideOnTouchOutside()
                 .build();
-        sv.setShouldCentreText();
     }
 
     @Override
