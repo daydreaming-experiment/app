@@ -138,6 +138,8 @@
     <string name="page_button_finish">Finish</string>
     <string name="page_thank_you">Thank you for answering these questions!</string>
     <string name="page_intro_text">Right before the app interrupted you…</string>
+    <string name="page_edit_mode_edit">Edit mode</string>
+    <string name="page_edit_mode_done">Edit mode</string>
 
     <!-- Display question Activity -->
     <string name="question_welcome_text">HERE ARE A FEW QUICK QUESTIONS:</string>
@@ -162,6 +164,8 @@
     <string name="questionAutoList_add_item">Add</string>
     <string name="questionAutoList_delete_item">Delete item</string>
     <string name="questionAutoList_please_select">Please select at least one item</string>
+    <string name="questionManySliders_delete_item">Delete slider</string>
+    <string name="questionManySliders_add_item">Add</string>
     <string name="locationAlert_title_location">Enable location</string>
     <string name="locationAlert_title_data">Enable data connection</string>
     <string name="locationAlert_title_location_and_data">Enable location and data</string>

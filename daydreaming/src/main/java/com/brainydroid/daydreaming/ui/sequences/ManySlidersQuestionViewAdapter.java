@@ -5,7 +5,10 @@ import android.app.Activity;
 import android.text.method.LinkMovementMethod;
 import android.util.FloatMath;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,13 +31,17 @@ public class ManySlidersQuestionViewAdapter
     @InjectResource(R.string.questionSlider_sliders_untouched_multiple)
     String errorUntouched;
     @InjectResource(R.string.questionSlider_please_slide) String textPleaseSlide;
+    @InjectResource(R.string.page_edit_mode_done) String editTextDone;
+    @InjectResource(R.string.page_edit_mode_edit) String editTextEdit;
 
-    private LinearLayout rowContainer;
     @Inject private ArrayList<LinearLayout> sliderLayouts;
     @Inject ManySlidersAnswer answer;
 
+    private LinearLayout rowContainer;
+    private boolean isEditMode = false;
+
     @Override
-    protected ArrayList<View> inflateViews(Activity activity, LinearLayout questionLayout) {
+    protected ArrayList<View> inflateViews(Activity activity, final LinearLayout questionLayout) {
         Logger.d(TAG, "Inflating question views");
 
         ManySlidersQuestionDescriptionDetails details =
@@ -62,11 +69,40 @@ public class ManySlidersQuestionViewAdapter
             rowContainer.addView(sliderLayout);
         }
 
-        // TODO: add edit mode button listener (in parent view)
-        // Shows and loads dropdown list from which to add
-        // Shows '-' buttons
-        // Adds Done button.
-        // Saves to userPossibilities
+        // TODO: Set auto-complete button listener
+
+
+
+        // Add edit button
+        final Button editButton = (Button)((RelativeLayout)questionLayout
+                .getParent().getParent()).findViewById(R.id.page_editModeButton);
+        editButton.setVisibility(View.VISIBLE);
+
+        Button.OnClickListener clickListener = new Button.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                Logger.v(TAG, "Edit mode button clicked, toggling mode");
+                isEditMode = !isEditMode;
+
+                // Toggle delete buttons visibility
+                for (LinearLayout sliderLayout : sliderLayouts) {
+                    ((ImageButton)sliderLayout.findViewById(
+                            R.id.question_many_sliders_sliderDelete))
+                            .setVisibility(isEditMode ? View.VISIBLE : View.GONE);
+                }
+
+                // Toggle and, if necessary, load dropdown list to add/remove
+                RelativeLayout addLayout = (RelativeLayout)questionLayout.findViewById(
+                        R.id.question_many_sliders_addLayout);
+                addLayout.setVisibility(isEditMode ? View.VISIBLE : View.GONE);
+                // TODO: load autoview
+
+                // Toggle add button text
+                editButton.setText(isEditMode ? editTextDone : editTextEdit);
+            }
+
+        };
 
         ArrayList<View> views = new ArrayList<View>();
         views.add(questionView);
