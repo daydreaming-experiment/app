@@ -279,7 +279,6 @@ public class DashboardActivity extends RoboFragmentActivity {
         sntpClient.asyncRequestTime(callback);
     }
 
-    // TODO: disable "see results" button before the results are available
     // TODO: user should be notified once the results are available
     private void updateRunningTimeFromTimestamp(long timestampNow) {
         Logger.d(TAG, "Updating running time with timestamp {}", timestampNow);
