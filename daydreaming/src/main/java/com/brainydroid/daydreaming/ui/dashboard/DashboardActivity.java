@@ -281,7 +281,7 @@ public class DashboardActivity extends RoboFragmentActivity {
 
     // TODO: user should be notified once the results are available
     private void updateRunningTimeFromTimestamp(long timestampNow) {
-        if (statusManager.areParametersUpdated()) {
+        if (!statusManager.areParametersUpdated()) {
             Logger.v(TAG, "Parameters not updated, not setting running time views");
             return;
         }
