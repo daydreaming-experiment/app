@@ -86,7 +86,7 @@ public class DashboardActivity extends RoboFragmentActivity {
             if (action.equals(StatusManager.ACTION_PARAMETERS_STATUS_CHANGE) ||
                     action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
                 Logger.d(TAG, "receiver started for ACTION_PARAMETERS_STATUS_CHANGE or CONNECTIVITY_ACTION");
-                updateExperimentStatusViews();
+                updateExperimentStatus();
             }
         }
     };
@@ -107,7 +107,7 @@ public class DashboardActivity extends RoboFragmentActivity {
         checkExperimentModeActivatedDirty();
         updateRunningTime();
         updateChromeMode();
-        updateExperimentStatusViews();
+        updateExperimentStatus();
         super.onStart();
     }
 
@@ -126,7 +126,7 @@ public class DashboardActivity extends RoboFragmentActivity {
             registerReceiver(receiver, parametersUpdateIntentFilter);
             registerReceiver(receiver, networkIntentFilter);
         }
-        updateExperimentStatusViews();
+        updateExperimentStatus();
         super.onResume();
     }
 
@@ -339,7 +339,7 @@ public class DashboardActivity extends RoboFragmentActivity {
      */
 
     @TargetApi(11)
-    protected synchronized void updateExperimentStatusViews() {
+    protected synchronized void updateExperimentStatus() {
         View dashboard_TimeBox_layout = findViewById(R.id.dashboard_TimeBox_layout);
         View dashboard_TimeBox_no_param = findViewById(R.id.dashboard_TimeBox_layout_no_params);
         View dashboardNetworkSettingsButton = findViewById(R.id.dashboard_network_settings_button);
@@ -441,7 +441,7 @@ public class DashboardActivity extends RoboFragmentActivity {
         this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                updateExperimentStatusViews();
+                updateExperimentStatus();
             }
         });
     }
@@ -516,10 +516,8 @@ public class DashboardActivity extends RoboFragmentActivity {
         statusManager.resetParametersKeepProfileAnswers();
 
         lastParametersUpdateAttempt = -1;
-        updateExperimentStatusViews();
-        Intent syncIntent = new Intent(this, SyncService.class);
-        syncIntent.putExtra(SyncService.DEBUG_SYNC, true);
-        startService(syncIntent);
+        updateExperimentStatus();
+        // SyncService is started from inside updateExperimentStatus
     }
 
     public void setRobotoFont(Activity activity){
