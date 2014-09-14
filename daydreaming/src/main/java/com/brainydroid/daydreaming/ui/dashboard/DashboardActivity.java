@@ -41,6 +41,8 @@ import com.brainydroid.daydreaming.ui.FontUtils;
 import com.brainydroid.daydreaming.ui.firstlaunchsequence.FirstLaunch00WelcomeActivity;
 import com.brainydroid.daydreaming.ui.firstlaunchsequence.FirstLaunch03ProfileActivity;
 import com.brainydroid.daydreaming.ui.sequences.PageActivity;
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.google.inject.Inject;
 
 import java.util.ArrayList;
@@ -85,6 +87,8 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
     private boolean testModeThemeActivated = false;
     private int daysToGo = -1;
 
+    ShowcaseView sv;
+
     IntentFilter parametersUpdateIntentFilter = new IntentFilter(StatusManager.ACTION_PARAMETERS_UPDATED);
     IntentFilter networkIntentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
 
@@ -112,6 +116,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
         checkFirstLaunch();
         setSideSwipeListener();
         setRobotoFont(this);
+
     }
 
     @Override
@@ -123,6 +128,15 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
         updateChromeMode();
         updateExperimentStatusViews();
         super.onStart();
+
+        ViewTarget target = new ViewTarget(R.id.dashboard_ExperimentResultsButton, this);
+        sv = new ShowcaseView.Builder(this)
+                .setTarget(target)
+                .setContentTitle("ShowcaseView")
+                .setContentText("Result button")
+                .hideOnTouchOutside()
+                .build();
+        sv.setShouldCentreText();
     }
 
     @Override
