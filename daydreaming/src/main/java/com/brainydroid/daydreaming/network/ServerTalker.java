@@ -47,7 +47,7 @@ public class ServerTalker {
         Logger.iRaw(TAG, signedJson);
 
         String postUrl = parametersStorage.getBackendApiUrl() +
-                ServerConfig.YE_URL_PROFILES + "---";
+                ServerConfig.YE_URL_PROFILES;
 
         HttpPostData postData = new HttpPostData(postUrl, callback);
         postData.setPostString(signedJson);
