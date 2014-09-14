@@ -285,7 +285,7 @@ public class DashboardActivity extends RoboFragmentActivity {
             Logger.v(TAG, "Parameters not updated, not setting running time views");
             return;
         }
-        
+
         Logger.d(TAG, "Updating running time with timestamp {}", timestampNow);
         long expStartTimestamp = statusManager.getExperimentStartTimestamp();
 
