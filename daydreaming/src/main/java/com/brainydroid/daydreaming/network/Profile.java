@@ -23,9 +23,9 @@ public class Profile {
     private String exp_id;
 
     // These are defined so that deserialization doesn't fail, but are never used
-    @JsonView(Views.Internal.class)
+    @JsonView(Views.Ignored.class)
     private String device_id = null;
-    @JsonView(Views.Internal.class)
+    @JsonView(Views.Ignored.class)
     private int n_results = -1;
 
     @SuppressWarnings("FieldCanBeLocal")
