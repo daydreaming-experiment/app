@@ -45,6 +45,8 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
     private boolean skipBonuses = true;
     @JsonView(Views.Internal.class)
     private boolean skipBonusesAsked = false;
+    @JsonView(Views.Public.class)
+    public boolean selfInitiated = false;
 
     @Inject private SequencesStorage sequencesStorage;
 
@@ -105,6 +107,14 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
 
     public synchronized boolean isSkipBonuses() {
         return skipBonuses;
+    }
+
+    public synchronized boolean isSelfInitiated() {
+        return selfInitiated;
+    }
+
+    public synchronized void setSelfInitiated(boolean selfInitiated) {
+        this.selfInitiated = selfInitiated;
     }
 
     public synchronized boolean isSkipBonusesAsked() {

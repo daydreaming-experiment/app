@@ -13,6 +13,8 @@ import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -31,9 +33,12 @@ import com.brainydroid.daydreaming.background.SyncService;
 import com.brainydroid.daydreaming.db.ParametersStorage;
 import com.brainydroid.daydreaming.network.SntpClient;
 import com.brainydroid.daydreaming.network.SntpClientCallback;
+import com.brainydroid.daydreaming.sequence.Sequence;
+import com.brainydroid.daydreaming.sequence.SequenceBuilder;
 import com.brainydroid.daydreaming.ui.AlphaButton;
 import com.brainydroid.daydreaming.ui.FontUtils;
 import com.brainydroid.daydreaming.ui.firstlaunchsequence.FirstLaunch00WelcomeActivity;
+import com.brainydroid.daydreaming.ui.sequences.PageActivity;
 import com.google.inject.Inject;
 
 import java.util.Calendar;
@@ -46,14 +51,17 @@ import roboguice.inject.InjectResource;
 import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_dashboard)
-public class DashboardActivity extends RoboFragmentActivity {
+public class DashboardActivity extends RoboFragmentActivity implements View.OnClickListener {
 
     private static String TAG = "DashboardActivity";
 
     @Inject ParametersStorage parametersStorage;
     @Inject StatusManager statusManager;
     @Inject SntpClient sntpClient;
+    @Inject SequenceBuilder sequenceBuilder;
+    @Inject Sequence probe;
 
+    @InjectView(R.id.dashboard_main_layout) RelativeLayout dashboardMainLayout;
     @InjectView(R.id.dashboard_ExperimentTimeElapsed2)
     TextView timeElapsedTextView;
     @InjectView(R.id.dashboard_ExperimentResultsIn2) TextView timeToGoTextView;
@@ -70,6 +78,7 @@ public class DashboardActivity extends RoboFragmentActivity {
 
     @InjectResource(R.string.dashboard_text_days) String textDays;
     @InjectResource(R.string.dashboard_text_day) String textDay;
+    @InjectResource(R.integer.dashboard_swipe_velocity_threshold) int SWIPE_VELOCITY_THRESHOLD;
 
     private boolean testModeThemeActivated = false;
     private int daysToGo = -1;
@@ -78,6 +87,10 @@ public class DashboardActivity extends RoboFragmentActivity {
 
     IntentFilter parametersUpdateIntentFilter = new IntentFilter(StatusManager.ACTION_PARAMETERS_STATUS_CHANGE);
     IntentFilter networkIntentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+
+    public GestureDetector gestureDetector;
+    public View.OnTouchListener gestureListener;
+    public GestureDetector.SimpleOnGestureListener simpleOnGestureListener;
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
@@ -97,6 +110,7 @@ public class DashboardActivity extends RoboFragmentActivity {
         checkTestMode();
         super.onCreate(savedInstanceState);
         checkFirstLaunch();
+        setSideSwipeListener();
         setRobotoFont(this);
     }
 
@@ -660,4 +674,77 @@ public class DashboardActivity extends RoboFragmentActivity {
         }
     }
 
+    public synchronized void setSideSwipeListener() {
+        Logger.d(TAG, "Setting Swipe Listener");
+
+        simpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
+            @Override
+            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+                Logger.d(TAG, "Swipe Event detected");
+                if (statusManager.areParametersUpdated()){
+                    Logger.d(TAG, "Swipe Event used");
+                    if ( Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(DashboardActivity.this);
+                        // set title
+                        alertDialogBuilder.setTitle("Self Report");
+                        // set dialog message
+                        alertDialogBuilder
+                                .setMessage("Do you want to report a daydreaming experience?")
+                                .setCancelable(false)
+                                .setPositiveButton("Yes!",new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,int id) {
+                                        createProbe();
+                                        launchProbeIntent();
+                                    }
+                                })
+                                .setNegativeButton("Nope",new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,int id) {
+                                        dialog.cancel();
+                                    }
+                                });
+                        // create alert dialog
+                        AlertDialog alertDialog = alertDialogBuilder.create();
+                        // show it
+                        alertDialog.show();
+                        return true;
+                    }
+                    return false;
+                } else {
+                    return false;
+                }
+
+            }
+        };
+
+        gestureDetector = new GestureDetector(DashboardActivity.this, simpleOnGestureListener);
+        gestureListener = new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                Logger.d(TAG, "Dashboard Touch event");
+                return gestureDetector.onTouchEvent(event);
+            }
+        };
+
+        dashboardMainLayout.setOnClickListener(DashboardActivity.this);
+        dashboardMainLayout.setOnTouchListener(gestureListener);
+    }
+
+    public Sequence createProbe() {
+        probe = sequenceBuilder.buildSave(Sequence.TYPE_PROBE);
+        probe.setSelfInitiated(true);
+        return probe;
+    }
+
+    private void launchProbeIntent() {
+        Logger.d(TAG, "Creating probe Intent");
+        Intent probeIntent = new Intent(this, PageActivity.class);
+        // Set the id of the probe to start
+        probeIntent.putExtra(PageActivity.EXTRA_SEQUENCE_ID, probe.getId());
+        // Create a new task. The rest is defined in the App manifest.
+        probeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(probeIntent);
+    }
+
+    @Override
+    public void onClick(View v) {}
 }
