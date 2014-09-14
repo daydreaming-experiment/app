@@ -21,6 +21,8 @@ public class Profile {
     @SuppressWarnings({"FieldCanBeLocal", "UnusedDeclaration"})
     @JsonView(Views.Public.class)
     private String exp_id;
+    @JsonView(Views.Public.class)
+    private String device_id = null;
 
     @SuppressWarnings("FieldCanBeLocal")
     @JsonView(Views.Public.class)

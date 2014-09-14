@@ -14,11 +14,11 @@ public class ServerError {
 
     @Inject Context context;
 
-    @JsonView(Views.Internal.class)
+    @JsonView(Views.Public.class)
     private int status_code = -1;
-    @JsonView(Views.Internal.class)
+    @JsonView(Views.Public.class)
     private String type = null;
-    @JsonView(Views.Internal.class)
+    @JsonView(Views.Public.class)
     private String message = null;
 
     public void debugToastError() {
