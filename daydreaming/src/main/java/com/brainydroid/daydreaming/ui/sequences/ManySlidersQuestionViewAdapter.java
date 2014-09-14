@@ -160,7 +160,7 @@ public class ManySlidersQuestionViewAdapter
                     alertDialogBuilder
                     .setMessage(details.getDialogText())
                     .setCancelable(false)
-                    .setPositiveButton("Yes!", new DialogInterface.OnClickListener() {
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             toggleEditMode(questionLayout);
                         }
