@@ -8,7 +8,6 @@ import com.brainydroid.daydreaming.db.SequencesStorage;
 import com.brainydroid.daydreaming.db.Views;
 import com.brainydroid.daydreaming.ui.sequences.BaseQuestionViewAdapter;
 import com.brainydroid.daydreaming.ui.sequences.IQuestionViewAdapter;
-import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -30,7 +29,8 @@ public class Question implements IQuestion {
             @JsonSubTypes.Type(value=StarRatingAnswer.class, name="starRating"),
             @JsonSubTypes.Type(value=MultipleChoiceAnswer.class, name="multipleChoiceAnswer"),
             @JsonSubTypes.Type(value=MatrixChoiceAnswer.class, name="matrixChoiceAnswer"),
-            @JsonSubTypes.Type(value=AutoListAnswer.class, name="autoListAnswer")})
+            @JsonSubTypes.Type(value=AutoListAnswer.class, name="autoListAnswer"),
+            @JsonSubTypes.Type(value=ManySlidersAnswer.class, name="manySlidersAnswer")})
     @JsonView(Views.Public.class)
     private IAnswer answer = null;
 
