@@ -12,7 +12,7 @@ import android.widget.Toast;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.ManySlidersQuestionDescriptionDetails;
-import com.brainydroid.daydreaming.sequence.SliderAnswer;
+import com.brainydroid.daydreaming.sequence.ManySlidersAnswer;
 import com.brainydroid.daydreaming.ui.AlphaSeekBar;
 import com.google.inject.Inject;
 
@@ -31,7 +31,7 @@ public class ManySlidersQuestionViewAdapter
 
     private LinearLayout rowContainer;
     @Inject private ArrayList<LinearLayout> sliderLayouts;
-    @Inject SliderAnswer answer;
+    @Inject ManySlidersAnswer answer;
 
     @Override
     protected ArrayList<View> inflateViews(Activity activity, LinearLayout questionLayout) {
@@ -184,7 +184,7 @@ public class ManySlidersQuestionViewAdapter
                     R.id.question_many_sliders_slider_mainText);
             String sliderText = mainText.getText().toString();
             int progress = seekBar.getProgress();
-            answer.addAnswer(sliderText, progress);
+            answer.addSlider(sliderText, progress);
         }
 
         question.setAnswer(answer);
