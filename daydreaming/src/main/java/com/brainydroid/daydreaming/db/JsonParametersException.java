@@ -1,6 +1,7 @@
 package com.brainydroid.daydreaming.db;
 
-public class JsonParametersException extends RuntimeException {
+public class JsonParametersException extends Exception {
+
     public JsonParametersException(String msg) {
         super(msg);
     }

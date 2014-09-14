@@ -52,7 +52,8 @@ public class PageDescription extends DescriptionArrayContainer<QuestionPositionD
     }
 
     public void validateInitialization(ArrayList<PageDescription> parentArray,
-                                       ArrayList<QuestionDescription> questionDescriptions) {
+                                       ArrayList<QuestionDescription> questionDescriptions)
+            throws JsonParametersException {
         Logger.d(TAG, "Validating initialization");
 
         // Check name
