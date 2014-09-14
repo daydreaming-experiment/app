@@ -40,10 +40,11 @@ public class ServerTalker {
                 parametersStorage.getBackendExpId(), vkPem).buildWrapper();
         String jsonPayload = json.toJsonPublic(profileWrap);
 
-        Logger.i(TAG, "Going to send the following to server (signed) :\n"
-                + jsonPayload.replace("{", "'{'").replace("}", "'}'"));
+        Logger.i(TAG, "Going to send the following to server (signed):");
+        Logger.iRaw(TAG, jsonPayload);
         String signedJson = cryptoStorage.signJws(jsonPayload, keyPair.getPrivate());
-        Logger.i(TAG, "Signed form: {}", signedJson);
+        Logger.i(TAG, "Signed form:");
+        Logger.iRaw(TAG, signedJson);
 
         String postUrl = parametersStorage.getBackendApiUrl() +
                 ServerConfig.YE_URL_PROFILES + "---";

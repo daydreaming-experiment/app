@@ -118,8 +118,8 @@ public class Json {
         try {
             return mapper.readValue(json, classOfT);
         } catch (IOException e) {
-            Logger.e(TAG, "Could not deserialize JSON");
-            Logger.e(TAG, json.replace("{", "'{'").replace("}", "'}'"));
+            Logger.e(TAG, "Could not deserialize JSON. Offending JSON:");
+            Logger.eRaw(TAG, json);
             e.printStackTrace();
             throw new JSONException(e.getMessage());
         }
@@ -130,8 +130,8 @@ public class Json {
         try {
             return mapper.readValue(json, typeRefOfT);
         } catch (IOException e) {
-            Logger.e(TAG, "Could not deserialize JSON");
-            Logger.e(TAG, json.replace("{", "'{'").replace("}", "'}'"));
+            Logger.e(TAG, "Could not deserialize JSON. Offending JSON:");
+            Logger.eRaw(TAG, json);
             e.printStackTrace();
             throw new JSONException(e.getMessage());
         }
