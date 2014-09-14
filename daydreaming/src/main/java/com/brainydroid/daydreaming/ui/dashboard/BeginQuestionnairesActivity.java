@@ -56,7 +56,6 @@ public class BeginQuestionnairesActivity extends RoboFragmentActivity {
         populateQuestionnairesView();
         ViewGroup godfatherView = (ViewGroup)getWindow().getDecorView();
         FontUtils.setRobotoFont(this, godfatherView);
-        updateQuestionnairesStatusView();
     }
 
     @Override
@@ -96,6 +95,7 @@ public class BeginQuestionnairesActivity extends RoboFragmentActivity {
                 Logger.v(TAG, "Begin Questionnaires already instantiated");
             }
         }
+        updateQuestionnairesStatusView();
     }
 
     protected ArrayList<String> getSequenceNames(ArrayList<? extends ISequence> sequences) {
