@@ -29,7 +29,7 @@ public class PageDescription extends DescriptionArrayContainer<QuestionPositionD
     @JsonView(Views.Internal.class)
     private ArrayList<QuestionPositionDescription> questions = null;
 
-    @Inject @JacksonInject private PageBuilder pageBuilder;
+    @Inject private PageBuilder pageBuilder;
 
     public String getName() {
         return name;

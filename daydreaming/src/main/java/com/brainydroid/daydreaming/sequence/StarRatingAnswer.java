@@ -14,7 +14,7 @@ public class StarRatingAnswer implements IAnswer {
     private static String TAG = "StarRatingAnswer";
 
     @JsonView(Views.Public.class)
-    @Inject @JacksonInject HashMap<String, Float> starRatings;
+    @Inject HashMap<String, Float> starRatings;
 
     public synchronized void addAnswer(String text, float rating) {
         Logger.v(TAG, "Adding answer {0} at position {1}", text, rating);

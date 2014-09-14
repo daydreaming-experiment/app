@@ -26,7 +26,7 @@ public class QuestionDescription implements IQuestion {
     @JsonView(Views.Internal.class)
     private IQuestionDescriptionDetails details = null;
 
-    @Inject @JacksonInject private QuestionBuilder questionBuilder;
+    @Inject private QuestionBuilder questionBuilder;
 
     public String getQuestionName() {
         return name;

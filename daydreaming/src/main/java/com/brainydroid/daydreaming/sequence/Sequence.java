@@ -46,7 +46,7 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
     @JsonView(Views.Internal.class)
     private boolean skipBonusesAsked = false;
 
-    @Inject @JacksonInject private SequencesStorage sequencesStorage;
+    @Inject private SequencesStorage sequencesStorage;
 
     public synchronized String getIntro() {
         return intro;

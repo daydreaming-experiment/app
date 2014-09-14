@@ -14,7 +14,7 @@ public class AutoListAnswer implements IAnswer  {
     private static String TAG = "AutoListAnswer";
 
     @JsonView(Views.Public.class)
-    @Inject @JacksonInject HashSet<String> choices;
+    @Inject HashSet<String> choices;
 
     public synchronized void addChoice(String choice) {
         Logger.v(TAG, "Adding choice {0}", choice);

@@ -32,7 +32,7 @@ public class PageGroupDescription extends DescriptionArrayContainer<PageDescript
     @JsonView(Views.Internal.class)
     private ArrayList<PageDescription> pages = null;
 
-    @Inject @JacksonInject private PageGroupBuilder pageGroupBuilder;
+    @Inject private PageGroupBuilder pageGroupBuilder;
 
     public String getName() {
         return name;
