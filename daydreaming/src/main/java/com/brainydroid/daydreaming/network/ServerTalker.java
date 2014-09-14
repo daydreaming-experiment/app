@@ -1,5 +1,7 @@
 package com.brainydroid.daydreaming.network;
 
+import android.content.Context;
+
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.Json;
 import com.brainydroid.daydreaming.db.ParametersStorage;
@@ -13,6 +15,7 @@ public class ServerTalker {
 
     private static String TAG = "ServerTalker";
 
+    @Inject Context context;
     @Inject ParametersStorage parametersStorage;
     @Inject ProfileFactory profileFactory;
     @Inject CryptoStorage cryptoStorage;
@@ -43,7 +46,7 @@ public class ServerTalker {
         Logger.i(TAG, "Signed form: {}", signedJson);
 
         String postUrl = parametersStorage.getBackendApiUrl() +
-                ServerConfig.YE_URL_PROFILES;
+                ServerConfig.YE_URL_PROFILES + "---";
 
         HttpPostData postData = new HttpPostData(postUrl, callback);
         postData.setPostString(signedJson);

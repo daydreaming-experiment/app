@@ -75,6 +75,8 @@ public abstract class ModelStorage<M extends Model<M,S,F>,
     protected abstract String getTableName();
 
     public synchronized void store(M model) {
+        // TODO: if storage fails (e.g. constraint not fulfilled, log it, and suggest to re-initialize DB)
+
         Logger.d(TAG, "Storing model to db (obtaining an id)");
 
         ContentValues modelValues = getModelValues(model);
@@ -98,6 +100,8 @@ public abstract class ModelStorage<M extends Model<M,S,F>,
     }
 
     public synchronized void update(M model) {
+        // TODO: if storage fails (e.g. constraint not fulfilled, log it, and suggest to re-initialize DB)
+
         int modelId = model.getId();
         Logger.d(TAG, "Updating model {0} in db", modelId);
         ContentValues modelValues = getModelValuesWithId(model);
@@ -126,13 +130,13 @@ public abstract class ModelStorage<M extends Model<M,S,F>,
             return null;
         }
 
+        // This will crash if deserialization fails
         M model = modelFactory.createFromJson(res.getString(res.getColumnIndex(COL_CONTENT)));
         res.close();
 
         // Make sure the model id is set inside the content
         // (isn't the case if the model was saved only once)
         model.setId(modelId);
-        // TODO: if model is null (i.e. couldn't be deserialized from json because of a previous crash), delete it.
 
         Logger.d(TAG, "Saving model {0} to cache", modelId);
         modelsCache.put(modelId, model);

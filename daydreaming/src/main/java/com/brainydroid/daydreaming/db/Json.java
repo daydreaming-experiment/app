@@ -22,6 +22,8 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
 
+import org.json.JSONException;
+
 import java.io.IOException;
 
 /**
@@ -94,6 +96,7 @@ public class Json {
         } catch (JsonProcessingException e) {
             Logger.e(TAG, "Could not serialize to JSON");
             e.printStackTrace();
+            // TODO: throw real exception here
             throw new RuntimeException(e);
         }
     }
@@ -105,11 +108,12 @@ public class Json {
         } catch (JsonProcessingException e) {
             Logger.e(TAG, "Could not serialize to JSON");
             e.printStackTrace();
+            // TODO: throw real exception here
             throw new RuntimeException(e);
         }
     }
 
-    public <T> T fromJson(String json, Class<T> classOfT) {
+    public <T> T fromJson(String json, Class<T> classOfT) throws JSONException {
         Logger.v(TAG, "Deserializing from JSON");
         try {
             return mapper.readValue(json, classOfT);
@@ -117,11 +121,11 @@ public class Json {
             Logger.e(TAG, "Could not deserialize JSON");
             Logger.e(TAG, json.replace("{", "'{'").replace("}", "'}'"));
             e.printStackTrace();
-            return null;
+            throw new JSONException(e.getMessage());
         }
     }
 
-    public <T> T fromJson(String json, TypeReference<T> typeRefOfT) {
+    public <T> T fromJson(String json, TypeReference<T> typeRefOfT) throws JSONException {
         Logger.v(TAG, "Deserializing from JSON");
         try {
             return mapper.readValue(json, typeRefOfT);
@@ -129,7 +133,7 @@ public class Json {
             Logger.e(TAG, "Could not deserialize JSON");
             Logger.e(TAG, json.replace("{", "'{'").replace("}", "'}'"));
             e.printStackTrace();
-            return null;
+            throw new JSONException(e.getMessage());
         }
     }
 }
