@@ -16,7 +16,7 @@
     <integer name="welcome_animation_duration">2000</integer> <!-- given in milliseconds-->
     <integer name="welcome_animation_cycle_duration">500</integer> <!-- given in milliseconds-->
 
-    <integer name="dashboard_swipe_velocity_threshold">500</integer> <!-- given pix per second -->
+    <integer name="dashboard_swipe_velocity_threshold">500</integer> <!-- given in pix per second -->
 
 <!-- GENERAL GRAPHICS -->
 
