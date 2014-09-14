@@ -14,7 +14,7 @@ public class SliderAnswer implements IAnswer {
     private static String TAG = "SliderAnswer";
 
     @JsonView(Views.Public.class)
-    @Inject @JacksonInject HashMap<String, Integer> sliders;
+    @Inject HashMap<String, Integer> sliders;
 
     public synchronized void addAnswer(String text, int position) {
         Logger.v(TAG, "Adding answer {0} at position {1}", text, position);

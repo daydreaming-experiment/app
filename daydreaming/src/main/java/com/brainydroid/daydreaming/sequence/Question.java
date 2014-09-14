@@ -40,9 +40,9 @@ public class Question implements IQuestion {
     private Sequence sequenceCache = null;
     private IQuestionDescriptionDetails detailsCache = null;
 
-    @Inject @JacksonInject private Injector injector;
-    @Inject @JacksonInject private SequencesStorage sequencesStorage;
-    @Inject @JacksonInject private ParametersStorage parametersStorage;
+    @Inject private Injector injector;
+    @Inject private SequencesStorage sequencesStorage;
+    @Inject private ParametersStorage parametersStorage;
 
     public synchronized void importFromQuestionDescription(QuestionDescription description) {
         Logger.d(TAG, "Importing information from QuestionDescription");

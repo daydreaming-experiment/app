@@ -48,7 +48,7 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
     @JsonView(Views.Public.class)
     public boolean selfInitiated = false;
 
-    @Inject @JacksonInject private SequencesStorage sequencesStorage;
+    @Inject private SequencesStorage sequencesStorage;
 
     public synchronized String getIntro() {
         return intro;

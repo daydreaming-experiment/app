@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.widget.Toast;
 
+import com.brainydroid.daydreaming.background.ErrorHandler;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.background.SchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
@@ -17,6 +18,8 @@ import com.brainydroid.daydreaming.network.ServerConfig;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+
+import org.json.JSONException;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -52,6 +55,7 @@ public class ParametersStorage {
     @Inject SequencesStorage sequencesStorage;
     @Inject ProfileStorage profileStorage;
     @Inject StatusManager statusManager;
+    @Inject ErrorHandler errorHandler;
     @Inject Context context;
 
     @SuppressLint("CommitPrefEdits")
@@ -246,23 +250,29 @@ public class ParametersStorage {
         if (questionsCache != null) {
             Logger.v(TAG, "{} - Cache is present -> returning questions from cache",
                     statusManager.getCurrentModeName());
+            return questionsCache;
         } else {
             Logger.v(TAG, "{} - Cache not present -> getting questions from sharedPreferences",
                     statusManager.getCurrentModeName());
             TypeReference<ArrayList<QuestionDescription>> questionDescriptionsArrayType =
                     new TypeReference<ArrayList<QuestionDescription>>() {};
-            questionsCache = json.fromJson(
-                    sharedPreferences.getString(statusManager.getCurrentModeName() + QUESTIONS, null),
-                    questionDescriptionsArrayType);
-        }
+            String questionsJson = sharedPreferences.getString(
+                    statusManager.getCurrentModeName() + QUESTIONS, null);
 
-        if (questionsCache == null) {
-            Logger.e(TAG, "{} - Questions asked for but not set",
-                    statusManager.getCurrentModeName());
-            throw new RuntimeException("Questions asked for but not set");
-        }
+            if (questionsJson == null) {
+                Logger.e(TAG, "{} - Questions asked for but not set",
+                        statusManager.getCurrentModeName());
+                throw new RuntimeException("Questions asked for but not set");
+            }
 
-        return questionsCache;
+            try {
+                questionsCache = json.fromJson(questionsJson, questionDescriptionsArrayType);
+                return questionsCache;
+            } catch (JSONException e) {
+                errorHandler.handleBaseJsonError(questionsJson, e);
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     private synchronized void clearQuestions() {
@@ -288,10 +298,17 @@ public class ParametersStorage {
             Logger.e(TAG, msg);
             throw new RuntimeException(msg);
         }
-        HashMap<String,String> glossary = json.fromJson(glossaryJson,
-                new TypeReference<HashMap<String,String>>() {});
-        Logger.v(TAG, "{0} - Glossary is {1}", statusManager.getCurrentModeName(), glossaryJson);
-        return glossary;
+
+        try {
+            HashMap<String, String> glossary = json.fromJson(glossaryJson,
+                    new TypeReference<HashMap<String, String>>() {
+                    });
+            Logger.v(TAG, "{0} - Glossary is {1}", statusManager.getCurrentModeName(), glossaryJson);
+            return glossary;
+        } catch (JSONException e) {
+            errorHandler.handleBaseJsonError(glossaryJson, e);
+            throw new RuntimeException(e);
+        }
     }
 
     private synchronized void clearGlossary() {
@@ -340,16 +357,24 @@ public class ParametersStorage {
                     statusManager.getCurrentModeName());
             TypeReference<ArrayList<SequenceDescription>> sequenceDescriptionsArrayType =
                     new TypeReference<ArrayList<SequenceDescription>>() {};
-            sequencesCache = json.fromJson(
-                    sharedPreferences.getString(statusManager.getCurrentModeName() + SEQUENCES, null),
-                    sequenceDescriptionsArrayType);
+
+            String sequencesJson = sharedPreferences.getString(
+                    statusManager.getCurrentModeName() + SEQUENCES, null);
+            if (sequencesJson == null) {
+                Logger.e(TAG, "{} - Sequences asked for but not set",
+                        statusManager.getCurrentModeName());
+                throw new RuntimeException("Sequences asked for but not set");
+            }
+
+            try {
+                sequencesCache = json.fromJson(sequencesJson, sequenceDescriptionsArrayType);
+                return sequencesCache;
+            } catch (JSONException e) {
+                errorHandler.handleBaseJsonError(sequencesJson, e);
+                throw new RuntimeException(e);
+            }
         }
 
-        if (sequencesCache == null) {
-            Logger.e(TAG, "{} - Sequences asked for but not set",
-                    statusManager.getCurrentModeName());
-            throw new RuntimeException("Sequences asked for but not set");
-        }
 
         return sequencesCache;
     }
@@ -401,8 +426,13 @@ public class ParametersStorage {
         if (allPossibilitiesJson == null) {
             return new HashMap<String,ArrayList<String>>();
         } else {
-            return json.fromJson(allPossibilitiesJson,
-                    new TypeReference<HashMap<String, ArrayList<String>>>() {});
+            try {
+                return json.fromJson(allPossibilitiesJson,
+                        new TypeReference<HashMap<String, ArrayList<String>>>() {});
+            } catch (JSONException e) {
+                errorHandler.handleBaseJsonError(allPossibilitiesJson, e);
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -464,10 +494,11 @@ public class ParametersStorage {
             throws ParametersSyntaxException {
         Logger.d(TAG, "{} - Importing parameters from JSON", statusManager.getCurrentModeName());
         try {
-            ServerParametersJson serverParametersJson = json.fromJson(
-                    jsonParametersString, ServerParametersJson.class);
-
-            if (serverParametersJson == null) {
+            ServerParametersJson serverParametersJson;
+            try {
+                serverParametersJson = json.fromJson(jsonParametersString, ServerParametersJson.class);
+            } catch (JSONException e) {
+                errorHandler.handleBaseJsonError(jsonParametersString, e);
                 throw new JsonParametersException("Server Json was malformed, could not be parsed");
             }
 
@@ -489,8 +520,10 @@ public class ParametersStorage {
             setQuestions(serverParametersJson.getQuestions());
             setSequences(serverParametersJson.getSequences());
         } catch (JsonParametersException e) {
+            Logger.e(TAG, "Parameters validation failed:");
+            Logger.eRaw(TAG, e.getMessage());
             e.printStackTrace();
-            throw new ParametersSyntaxException();
+            throw new ParametersSyntaxException(e);
         }
     }
 
@@ -538,6 +571,7 @@ public class ParametersStorage {
                                     + "aborting parameters update.", startSyncAppMode,
                             statusManager.getCurrentModeName());
                     callback.onParametersStorageReady(false);
+                    statusManager.setParametersUpdated(false);
                     return;
                 }
 
@@ -546,14 +580,13 @@ public class ParametersStorage {
                     Logger.i(TAG, "Parameters have been flushed since sync started, "
                             + "aborting parameters update.");
                     callback.onParametersStorageReady(false);
+                    statusManager.setParametersUpdated(false);
                     return;
                 }
 
                 if (success) {
-                    Logger.i(TAG, "Successfully retrieved parameters from " +
-                            "server");
-                    Logger.td(context, TAG + ": new " +
-                            "parameters downloaded from server");
+                    Logger.i(TAG, "Successfully retrieved parameters from server");
+                    Logger.td(context, TAG + ": new parameters downloaded from server");
 
                     // Import the parameters, and remember not to update
                     // parameters again.
@@ -565,6 +598,7 @@ public class ParametersStorage {
                         Logger.e(TAG, "Downloaded parameters were malformed -> " +
                                 "parameters not updated");
                         callback.onParametersStorageReady(false);
+                        statusManager.setParametersUpdated(false);
                         if (statusManager.getCurrentMode() == StatusManager.MODE_TEST) {
                             Toast.makeText(context, "Test parameters from server were malformed! " +
                                     "Correct them and try again", Toast.LENGTH_LONG).show();
@@ -573,7 +607,7 @@ public class ParametersStorage {
                     }
 
                     Logger.i(TAG, "Parameters successfully imported");
-                    statusManager.setParametersUpdated();
+                    statusManager.setParametersUpdated(true);
                     callback.onParametersStorageReady(true);
 
                     if (isDebug && statusManager.getCurrentMode() == StatusManager.MODE_TEST) {
@@ -588,6 +622,7 @@ public class ParametersStorage {
                     Logger.w(TAG, "Error while retrieving new parameters from " +
                             "server");
                     callback.onParametersStorageReady(false);
+                    statusManager.setParametersUpdated(false);
                     if (isDebug && statusManager.getCurrentMode() == StatusManager.MODE_TEST) {
                         Toast.makeText(context, "Error retrieving parameters from server. " +
                                 "Are you connected to internet?", Toast.LENGTH_LONG).show();

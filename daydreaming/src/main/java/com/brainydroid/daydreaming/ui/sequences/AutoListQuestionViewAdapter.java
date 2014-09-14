@@ -77,7 +77,6 @@ public class AutoListQuestionViewAdapter
         Button addButton = (Button)questionView.findViewById(R.id.question_auto_list_addButton);
 
         autoTextView.setHint(details.getHint());
-        // TODO: move this initialization to background, because it takes around 5 seconds
         final AutoCompleteAdapter adapter = autoCompleteAdapterFactory.create();
         autoTextView.setAdapter(adapter);
 
@@ -106,8 +105,6 @@ public class AutoListQuestionViewAdapter
             }
         });
 
-        // TODO: request keyboard focus
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             // If we can, animate layout changes
             selectionLayout.setLayoutTransition(new LayoutTransition());
@@ -115,7 +112,6 @@ public class AutoListQuestionViewAdapter
             // Adapt colors for API <= 10
             autoTextView.setTextColor(context.getResources().getColor(
                     R.color.ui_dark_blue_color));
-            // TODO: fix hint color if build < 11 ?
         }
 
         Button.OnClickListener addItemClickListener =
@@ -133,7 +129,6 @@ public class AutoListQuestionViewAdapter
                     autoTextView.setText("");
                     // Update adapter
                     adapter.addPossibility(userString);
-                    // TODO: save this new item at the persistence layer if kept at "Next moment"
                 }
             }
 

@@ -249,6 +249,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/ui_white_text_color"
                     android:textAppearance="@style/ui_font_title_bold"
+                    android:gravity="center_horizontal"
                     android:text="@string/dashboard_text_enable_internet"
                     android:id="@+id/dashboard_no_params_text"
                     android:drawablePadding="@dimen/global_text_drawable_padding"
