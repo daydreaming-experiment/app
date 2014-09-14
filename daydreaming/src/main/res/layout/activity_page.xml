@@ -68,7 +68,7 @@
                 android:layout_height="1dp"
                 android:layout_weight="1" />
 
-            <ImageButton
+            <com.brainydroid.daydreaming.ui.AlphaImageButton
                 android:id="@+id/page_nextButton"
                 android:layout_width="@dimen/button_next_width"
                 android:layout_height="@dimen/button_next_height"
@@ -76,7 +76,7 @@
                 android:onClick="onClick_nextButton"
                 android:contentDescription="@string/page_button_next" />
 
-            <ImageButton
+            <com.brainydroid.daydreaming.ui.AlphaImageButton
                 android:id="@+id/page_finishButton"
                 android:layout_width="@dimen/button_next_width"
                 android:layout_height="@dimen/button_next_height"

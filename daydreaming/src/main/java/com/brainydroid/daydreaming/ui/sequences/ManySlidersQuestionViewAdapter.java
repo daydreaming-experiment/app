@@ -1,10 +1,17 @@
 package com.brainydroid.daydreaming.ui.sequences;
 
+import android.animation.LayoutTransition;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.text.method.LinkMovementMethod;
 import android.util.FloatMath;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -16,10 +23,16 @@ import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.ManySlidersQuestionDescriptionDetails;
 import com.brainydroid.daydreaming.sequence.ManySlidersAnswer;
+import com.brainydroid.daydreaming.ui.AlphaImageButton;
 import com.brainydroid.daydreaming.ui.AlphaSeekBar;
+import com.brainydroid.daydreaming.ui.filtering.AutoCompleteAdapter;
+import com.brainydroid.daydreaming.ui.filtering.AutoCompleteAdapterFactory;
+import com.brainydroid.daydreaming.ui.filtering.MetaString;
 import com.google.inject.Inject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import roboguice.inject.InjectResource;
 
@@ -34,8 +47,9 @@ public class ManySlidersQuestionViewAdapter
     @InjectResource(R.string.page_edit_mode_done) String editTextDone;
     @InjectResource(R.string.page_edit_mode_edit) String editTextEdit;
 
-    @Inject private ArrayList<LinearLayout> sliderLayouts;
-    @Inject ManySlidersAnswer answer;
+    @Inject private AutoCompleteAdapterFactory autoCompleteAdapterFactory;
+    @Inject private HashMap<MetaString, LinearLayout> sliderLayouts;
+    @Inject private ManySlidersAnswer answer;
 
     private LinearLayout rowContainer;
     private boolean isEditMode = false;
@@ -44,7 +58,7 @@ public class ManySlidersQuestionViewAdapter
     protected ArrayList<View> inflateViews(Activity activity, final LinearLayout questionLayout) {
         Logger.d(TAG, "Inflating question views");
 
-        ManySlidersQuestionDescriptionDetails details =
+        final ManySlidersQuestionDescriptionDetails details =
                 (ManySlidersQuestionDescriptionDetails)question.getDetails();
         ArrayList<String> userSliders = parametersStorage.getUserPossibilities(
                 question.getQuestionName());
@@ -64,45 +78,101 @@ public class ManySlidersQuestionViewAdapter
         qText.setMovementMethod(LinkMovementMethod.getInstance());
 
         for (String sliderText : userSliders) {
-            LinearLayout sliderLayout = inflateSlider(sliderText);
-            sliderLayouts.add(sliderLayout);
+            MetaString sliderMetaString = MetaString.getInstance(sliderText);
+            LinearLayout sliderLayout = inflateSlider(sliderMetaString);
+            sliderLayouts.put(sliderMetaString, sliderLayout);
             rowContainer.addView(sliderLayout);
         }
 
-        // TODO: Set auto-complete button listener
+        // Set auto-complete hint and adapter
+        final AutoCompleteTextView autoTextView = (AutoCompleteTextView)questionLayout
+                .findViewById(R.id.question_many_sliders_autoCompleteTextView);
+        autoTextView.setHint(details.getAddItemHint());
+        final AutoCompleteAdapter autoCompleteAdapter = autoCompleteAdapterFactory.create();
+        autoTextView.setAdapter(autoCompleteAdapter);
 
+        // Load auto-complete adapter
+        // TODO: show a progress dialog when opening the edit mode if this isn't finished
+        final ArrayList<String> allPossibleSliders = new ArrayList<String>();
+        allPossibleSliders.addAll(details.getAvailableSliders());
+        allPossibleSliders.addAll(userSliders);
+        (new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                autoCompleteAdapter.initialize(allPossibleSliders);
+                return null;
+            }
+        }).execute();
 
+        // Set auto-complete item click listener
+        autoTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Logger.d(TAG, "Item " + position + " clicked (id " + id + ")");
+                addSelection(autoCompleteAdapter.getItemById(id));
+                autoTextView.setText("");
+            }
+        });
 
-        // Add edit button
-        final Button editButton = (Button)((RelativeLayout)questionLayout
-                .getParent().getParent()).findViewById(R.id.page_editModeButton);
-        editButton.setVisibility(View.VISIBLE);
+        // Do layout transitions if possible
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            // If we can, animate layout changes
+            rowContainer.setLayoutTransition(new LayoutTransition());
+        } else {
+            // Adapt colors for API <= 10
+            autoTextView.setTextColor(context.getResources().getColor(
+                    R.color.ui_dark_blue_color));
+        }
 
-        Button.OnClickListener clickListener = new Button.OnClickListener() {
+        // Set auto-complete button listener
+        Button addButton = (Button)questionLayout.findViewById(R.id.question_many_sliders_addItem);
+        addButton.setOnClickListener(new Button.OnClickListener() {
 
             @Override
             public void onClick(View view) {
-                Logger.v(TAG, "Edit mode button clicked, toggling mode");
-                isEditMode = !isEditMode;
-
-                // Toggle delete buttons visibility
-                for (LinearLayout sliderLayout : sliderLayouts) {
-                    ((ImageButton)sliderLayout.findViewById(
-                            R.id.question_many_sliders_sliderDelete))
-                            .setVisibility(isEditMode ? View.VISIBLE : View.GONE);
+                Logger.v(TAG, "Add button clicked");
+                String userString = autoTextView.getText().toString();
+                if (userString.length() < 2) {
+                    Toast.makeText(context, "No text entered", Toast.LENGTH_SHORT).show();
+                    return;
                 }
-
-                // Toggle and, if necessary, load dropdown list to add/remove
-                RelativeLayout addLayout = (RelativeLayout)questionLayout.findViewById(
-                        R.id.question_many_sliders_addLayout);
-                addLayout.setVisibility(isEditMode ? View.VISIBLE : View.GONE);
-                // TODO: load autoview
-
-                // Toggle add button text
-                editButton.setText(isEditMode ? editTextDone : editTextEdit);
+                if (addSelection(MetaString.getInstance(userString))) {
+                    autoTextView.setText("");
+                    // Update adapter
+                    autoCompleteAdapter.addPossibility(userString);
+                }
             }
 
-        };
+        });
+
+        // Add edit button
+        Button editButton = (Button)((RelativeLayout)questionLayout
+                .getParent().getParent()).findViewById(R.id.page_editModeButton);
+        editButton.setVisibility(View.VISIBLE);
+        editButton.setOnClickListener(new Button.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                if (!isEditMode) {
+                    // Show explanation dialog
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+                    alertDialogBuilder.setTitle("Edit mode");
+                    alertDialogBuilder
+                    .setMessage(details.getDialogText())
+                    .setCancelable(false)
+                    .setPositiveButton("Yes!", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            toggleEditMode(questionLayout);
+                        }
+                    });
+                    alertDialogBuilder.create().show();
+                } else {
+                    // If we're already in edit mode, just get out
+                    toggleEditMode(questionLayout);
+                }
+            }
+
+        });
 
         ArrayList<View> views = new ArrayList<View>();
         views.add(questionView);
@@ -110,10 +180,67 @@ public class ManySlidersQuestionViewAdapter
         return views;
     }
 
-    @TargetApi(11)
-    private LinearLayout inflateSlider(String sliderText) {
+    protected boolean addSelection(MetaString ms) {
+        Logger.d(TAG, "Adding selection");
 
-        Logger.v(TAG, "Inflating slider {}", sliderText);
+        if (sliderLayouts.containsKey(ms)) {
+            Toast.makeText(context, "You already selected this item", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        LinearLayout sliderLayout = inflateSlider(ms);
+        sliderLayouts.put(ms, sliderLayout);
+        rowContainer.addView(sliderLayout);
+
+        // Save the item to parametersStorage
+        parametersStorage.addUserPossibility(question.getQuestionName(), ms.getDefinition());
+
+        return true;
+    }
+
+    protected void removeSelection(MetaString ms) {
+        Logger.d(TAG, "Removing selection");
+
+        LinearLayout sliderLayout = sliderLayouts.remove(ms);
+        rowContainer.removeView(sliderLayout);
+        parametersStorage.removeUserPossibility(question.getQuestionName(), ms.getDefinition());
+    }
+
+    protected void toggleEditMode(LinearLayout questionLayout) {
+        Logger.v(TAG, "Toggling edit mode");
+        isEditMode = !isEditMode;
+
+        // Toggle delete buttons visibility
+        for (LinearLayout sliderLayout : sliderLayouts.values()) {
+            ((ImageButton)sliderLayout.findViewById(
+                    R.id.question_many_sliders_sliderDelete))
+                    .setVisibility(isEditMode ? View.VISIBLE : View.GONE);
+        }
+
+        // Toggle auto-complete dropdown list to add items
+        RelativeLayout addLayout = (RelativeLayout)questionLayout.findViewById(
+                R.id.question_many_sliders_addLayout);
+        addLayout.setVisibility(isEditMode ? View.VISIBLE : View.GONE);
+
+        // Toggle add button text
+        Button editButton = (Button)((RelativeLayout)questionLayout
+                .getParent().getParent()).findViewById(R.id.page_editModeButton);
+        editButton.setText(isEditMode ? editTextDone : editTextEdit);
+
+        // Toggle next and finish buttons (visibility stays the same)
+        AlphaImageButton nextButton = (AlphaImageButton)((RelativeLayout)questionLayout
+                .getParent().getParent()).findViewById(R.id.page_nextButton);
+        nextButton.setClickable(!isEditMode);
+        nextButton.setAlpha(isEditMode ? 0.3f : 1f);
+        AlphaImageButton finishButton = (AlphaImageButton)((RelativeLayout)questionLayout
+                .getParent().getParent()).findViewById(R.id.page_finishButton);
+        finishButton.setClickable(!isEditMode);
+        finishButton.setAlpha(isEditMode ? 0.3f : 1f);
+    }
+
+    @TargetApi(11)
+    private LinearLayout inflateSlider(final MetaString sliderMetaString) {
+        Logger.v(TAG, "Inflating slider {}", sliderMetaString.getDefinition());
 
         ManySlidersQuestionDescriptionDetails details =
                 (ManySlidersQuestionDescriptionDetails)question.getDetails();
@@ -122,7 +249,7 @@ public class ManySlidersQuestionViewAdapter
 
         // Set text
         ((TextView)sliderLayout.findViewById(
-                R.id.question_many_sliders_slider_mainText)).setText(sliderText);
+                R.id.question_many_sliders_slider_mainText)).setText(sliderMetaString.getOriginal());
 
         // Set extremity hints
         final ArrayList<String> hints = details.getHints();
@@ -187,8 +314,17 @@ public class ManySlidersQuestionViewAdapter
 
         sliderSeek.setOnSeekBarChangeListener(progressListener);
 
-        // TODO: add deletion listener
-        // removes from user possibilities
+        // Add deletion listener
+        ImageButton deleteButton = (ImageButton)sliderLayout.findViewById(
+                R.id.question_many_sliders_sliderDelete);
+        deleteButton.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Logger.v(TAG, "Remove button clicked for item {}, removing slider",
+                        sliderLayout.getOrientation());
+                removeSelection(sliderMetaString);
+            }
+        });
 
         return sliderLayout;
     }
@@ -197,7 +333,7 @@ public class ManySlidersQuestionViewAdapter
     public boolean validate() {
         Logger.i(TAG, "Validating answer");
 
-        for (LinearLayout sliderLayout : sliderLayouts) {
+        for (LinearLayout sliderLayout : sliderLayouts.values()) {
             TextView selectedSeek = (TextView)sliderLayout.findViewById(
                     R.id.question_many_sliders_slider_selectedSeek);
             if (selectedSeek.getText().equals(textPleaseSlide)) {
@@ -214,12 +350,10 @@ public class ManySlidersQuestionViewAdapter
     public void saveAnswer() {
         Logger.i(TAG, "Saving question answer");
 
-        for (LinearLayout sliderLayout : sliderLayouts) {
-            AlphaSeekBar seekBar = (AlphaSeekBar)sliderLayout.findViewById(
+        for (Map.Entry<MetaString, LinearLayout> sliderLayoutMetaString : sliderLayouts.entrySet()) {
+            AlphaSeekBar seekBar = (AlphaSeekBar)sliderLayoutMetaString.getValue().findViewById(
                     R.id.question_many_sliders_slider_seekBar);
-            TextView mainText = (TextView)sliderLayout.findViewById(
-                    R.id.question_many_sliders_slider_mainText);
-            String sliderText = mainText.getText().toString();
+            String sliderText = sliderLayoutMetaString.getKey().getOriginal();
             int progress = seekBar.getProgress();
             answer.addSlider(sliderText, progress);
         }
