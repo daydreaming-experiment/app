@@ -71,7 +71,7 @@ public class SequencesStorage
         Logger.d(TAG, "Removing all sequences of type {}", type);
         ArrayList<Sequence> sequences = getModelsByType(type);
         if (sequences != null) {
-            Logger.d(TAG, "Removing {}  sequences", sequences.size());
+            Logger.d(TAG, "Removing {} sequences", sequences.size());
             remove(sequences);
         }
     }
