@@ -501,20 +501,21 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
     }
 
     public void runSyncNow(View view) {
-        if (statusManager.isExpRunning()) {
-            Logger.d(TAG, "Launching debug sync now");
-
-            if (!statusManager.isDataEnabled()) {
-                Toast.makeText(this, "You're not connected to the internet!", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            Intent syncIntent = new Intent(this, SyncService.class);
-            syncIntent.putExtra(SyncService.DEBUG_SYNC, true);
-            startService(syncIntent);
-        } else {
-            Toast.makeText(this, "Parameters aren't loaded yet", Toast.LENGTH_SHORT).show();
-        }
+        throw new RuntimeException("hello there acra!");
+//        if (statusManager.isExpRunning()) {
+//            Logger.d(TAG, "Launching debug sync now");
+//
+//            if (!statusManager.isDataEnabled()) {
+//                Toast.makeText(this, "You're not connected to the internet!", Toast.LENGTH_SHORT).show();
+//                return;
+//            }
+//
+//            Intent syncIntent = new Intent(this, SyncService.class);
+//            syncIntent.putExtra(SyncService.DEBUG_SYNC, true);
+//            startService(syncIntent);
+//        } else {
+//            Toast.makeText(this, "Parameters aren't loaded yet", Toast.LENGTH_SHORT).show();
+//        }
     }
 
     public void reloadParametersKeepProfileAnswers(@SuppressWarnings("UnusedParameters") View view) {
