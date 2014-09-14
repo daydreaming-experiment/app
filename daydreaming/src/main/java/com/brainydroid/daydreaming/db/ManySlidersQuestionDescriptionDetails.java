@@ -47,6 +47,14 @@ public class ManySlidersQuestionDescriptionDetails implements IQuestionDescripti
         return hints;
     }
 
+    public int getInitialPosition() {
+        return initialPosition;
+    }
+
+    public boolean isShowLiveIndication() {
+        return showLiveIndication;
+    }
+
     public synchronized void validateInitialization() throws JsonParametersException {
         Logger.v(TAG, "Validating question details");
 
