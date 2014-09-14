@@ -1,7 +1,6 @@
 package com.brainydroid.daydreaming.ui.sequences;
 
 import android.app.Activity;
-import android.content.Context;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -33,7 +32,6 @@ public class MatrixChoiceQuestionViewAdapter extends BaseQuestionViewAdapter
 
     @InjectResource(R.string.questionMatrixChoice_please_select_one)
     String errorCheckOne;
-    @Inject Context context;
     @Inject MatrixChoiceAnswer answer;
     @Inject Injector injector;
 

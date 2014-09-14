@@ -2,7 +2,6 @@ package com.brainydroid.daydreaming.ui.sequences;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.content.Context;
 import android.text.method.LinkMovementMethod;
 import android.util.FloatMath;
 import android.view.View;
@@ -38,7 +37,6 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
     String errorUntouchedSingle;
     @InjectResource(R.string.questionSlider_skipped) String textSkipped;
 
-    @Inject Context context;
     @Inject ArrayList<View> subQuestionsViews;
     @Inject SliderAnswer answer;
 

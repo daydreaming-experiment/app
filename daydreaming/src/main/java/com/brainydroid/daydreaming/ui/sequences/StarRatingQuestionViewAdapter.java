@@ -2,7 +2,6 @@ package com.brainydroid.daydreaming.ui.sequences;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.content.Context;
 import android.text.method.LinkMovementMethod;
 import android.util.FloatMath;
 import android.view.View;
@@ -11,16 +10,18 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.StarRatingQuestionDescriptionDetails;
-import com.brainydroid.daydreaming.sequence.StarRatingAnswer;
 import com.brainydroid.daydreaming.db.StarRatingSubQuestion;
+import com.brainydroid.daydreaming.sequence.StarRatingAnswer;
 import com.brainydroid.daydreaming.ui.AlphaRatingBar;
 import com.google.inject.Inject;
-import roboguice.inject.InjectResource;
 
 import java.util.ArrayList;
+
+import roboguice.inject.InjectResource;
 
 @SuppressWarnings("UnusedDeclaration")
 public class StarRatingQuestionViewAdapter extends BaseQuestionViewAdapter
@@ -36,7 +37,6 @@ public class StarRatingQuestionViewAdapter extends BaseQuestionViewAdapter
     String errorUntouchedSingle;
     @InjectResource(R.string.questionStarRating_skipped) String textSkipped;
 
-    @Inject Context context;
     @Inject ArrayList<View> subQuestionsViews;
     @Inject StarRatingAnswer answer;
 

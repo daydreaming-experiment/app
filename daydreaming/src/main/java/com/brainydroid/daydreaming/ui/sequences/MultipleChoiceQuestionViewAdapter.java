@@ -1,7 +1,6 @@
 package com.brainydroid.daydreaming.ui.sequences;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Build;
 import android.text.method.LinkMovementMethod;
 import android.view.KeyEvent;
@@ -38,7 +37,6 @@ public class MultipleChoiceQuestionViewAdapter
     String errorFillOther;
     @InjectResource(R.string.questionMultipleChoice_please_check_one)
     String errorCheckOne;
-    @Inject Context context;
     @Inject MultipleChoiceAnswer answer;
     @Inject Injector injector;
 
