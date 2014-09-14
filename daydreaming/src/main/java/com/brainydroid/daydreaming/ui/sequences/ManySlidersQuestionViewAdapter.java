@@ -74,6 +74,7 @@ public class ManySlidersQuestionViewAdapter
         return views;
     }
 
+    @TargetApi(11)
     private LinearLayout inflateSlider(String sliderText) {
 
         Logger.v(TAG, "Inflating slider {}", sliderText);
