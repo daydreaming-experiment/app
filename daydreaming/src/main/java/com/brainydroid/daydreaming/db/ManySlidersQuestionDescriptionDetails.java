@@ -14,7 +14,9 @@ public class ManySlidersQuestionDescriptionDetails implements IQuestionDescripti
     @JsonView(Views.Internal.class)
     private String text = null;
     @JsonView(Views.Internal.class)
-    private ArrayList<String> sliderTexts = null;
+    private ArrayList<String> availableSliders = null;
+    @JsonView(Views.Internal.class)
+    private ArrayList<String> defaultSliders = null;
     @JsonView(Views.Internal.class)
     private ArrayList<String> hints = null;
 
@@ -27,8 +29,12 @@ public class ManySlidersQuestionDescriptionDetails implements IQuestionDescripti
         return text;
     }
 
-    public synchronized ArrayList<String> getSliderTexts() {
-        return sliderTexts;
+    public synchronized ArrayList<String> getAvailableSliders() {
+        return availableSliders;
+    }
+
+    public synchronized ArrayList<String> getDefaultSliders() {
+        return defaultSliders;
     }
 
     public synchronized ArrayList<String> getHints() {
@@ -43,9 +49,21 @@ public class ManySlidersQuestionDescriptionDetails implements IQuestionDescripti
                     "ManySlidersQuestionDescriptionDetails can't be null");
         }
 
-        if (sliderTexts == null || sliderTexts.size() == 0) {
-            throw new JsonParametersException("sliderTexts in " +
+        if (availableSliders == null || availableSliders.size() == 0) {
+            throw new JsonParametersException("availableSliders in " +
                     "ManySlidersQuestionDescriptionDetails can't by null or empty");
+        }
+
+        if (defaultSliders == null || defaultSliders.size() == 0) {
+            throw new JsonParametersException("defaultSliders in " +
+                    "ManySlidersQuestionDescriptionDetails can't by null or empty");
+        }
+
+        for (String slider : defaultSliders) {
+            if (!availableSliders.contains(slider)) {
+                throw new JsonParametersException("All sliders in defaultSliders must be defined " +
+                        "in availableSliders too");
+            }
         }
 
         if (hints == null || hints.size() < 2) {
