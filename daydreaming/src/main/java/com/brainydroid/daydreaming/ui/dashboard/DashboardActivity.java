@@ -511,7 +511,8 @@ public class DashboardActivity extends RoboFragmentActivity {
             return;
         }
 
-
+        // Register receiver to get the update
+        registerReceiver(receiver, parametersUpdateIntentFilter);
         statusManager.resetParametersKeepProfileAnswers();
 
         lastParametersUpdateAttempt = -1;

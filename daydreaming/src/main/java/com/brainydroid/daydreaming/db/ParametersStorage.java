@@ -571,6 +571,7 @@ public class ParametersStorage {
                                     + "aborting parameters update.", startSyncAppMode,
                             statusManager.getCurrentModeName());
                     callback.onParametersStorageReady(false);
+                    statusManager.setParametersUpdated(false);
                     return;
                 }
 
@@ -579,14 +580,13 @@ public class ParametersStorage {
                     Logger.i(TAG, "Parameters have been flushed since sync started, "
                             + "aborting parameters update.");
                     callback.onParametersStorageReady(false);
+                    statusManager.setParametersUpdated(false);
                     return;
                 }
 
                 if (success) {
-                    Logger.i(TAG, "Successfully retrieved parameters from " +
-                            "server");
-                    Logger.td(context, TAG + ": new " +
-                            "parameters downloaded from server");
+                    Logger.i(TAG, "Successfully retrieved parameters from server");
+                    Logger.td(context, TAG + ": new parameters downloaded from server");
 
                     // Import the parameters, and remember not to update
                     // parameters again.
