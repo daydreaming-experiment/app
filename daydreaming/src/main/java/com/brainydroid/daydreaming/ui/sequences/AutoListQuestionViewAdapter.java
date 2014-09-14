@@ -15,12 +15,12 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
-import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.db.AutoListQuestionDescriptionDetails;
 import com.brainydroid.daydreaming.db.ParametersStorage;
 import com.brainydroid.daydreaming.sequence.AutoListAnswer;
@@ -49,7 +49,7 @@ public class AutoListQuestionViewAdapter
 
     private LinearLayout selectionLayout;
     private ArrayList<String> initialPossibilities;
-    @Inject private HashMap<MetaString, LinearLayout> selectionViews;
+    @Inject private HashMap<MetaString, RelativeLayout> selectionViews;
 
     @TargetApi(11)
     @Override
@@ -151,7 +151,7 @@ public class AutoListQuestionViewAdapter
             return false;
         }
 
-        LinearLayout itemLayout = (LinearLayout)layoutInflater.inflate(
+        RelativeLayout itemLayout = (RelativeLayout)layoutInflater.inflate(
                 R.layout.question_auto_list_item_selected_view, selectionLayout, false);
         ((TextView)itemLayout.findViewById(R.id.question_auto_list_selected_item_itemText))
                 .setText(ms.getOriginal());
