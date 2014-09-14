@@ -41,7 +41,7 @@ public class ManySlidersQuestionViewAdapter
                 (ManySlidersQuestionDescriptionDetails)question.getDetails();
         ArrayList<String> userSliders = parametersStorage.getUserPossibilities(
                 question.getQuestionName());
-        if (userSliders == null) {
+        if (userSliders.size() == 0) {
             userSliders = details.getDefaultSliders();
         }
 
@@ -99,6 +99,14 @@ public class ManySlidersQuestionViewAdapter
         final AlphaSeekBar sliderSeek = (AlphaSeekBar)sliderLayout.findViewById(
                 R.id.question_many_sliders_slider_seekBar);
         sliderSeek.setProgress(details.getInitialPosition());
+        sliderSeek.setProgressDrawable(sliderLayout.getResources().getDrawable(
+                R.drawable.question_slider_progress));
+        sliderSeek.setThumb(sliderLayout.getResources().getDrawable(
+                R.drawable.question_slider_thumb));
+        // Lint erroneously catches this as a call that requires API >= 11
+        // (which is exactly why AlphaSeekBar exists),
+        // hence the @TargetApi(11) above.
+        sliderSeek.setAlpha(0.5f);
 
         // Set live indication
         final TextView selectedSeek = (TextView)sliderLayout.findViewById(
