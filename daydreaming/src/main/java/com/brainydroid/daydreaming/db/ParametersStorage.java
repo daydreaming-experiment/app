@@ -494,10 +494,11 @@ public class ParametersStorage {
             throws ParametersSyntaxException {
         Logger.d(TAG, "{} - Importing parameters from JSON", statusManager.getCurrentModeName());
         try {
-            ServerParametersJson serverParametersJson = json.fromJson(
-                    jsonParametersString, ServerParametersJson.class);
-
-            if (serverParametersJson == null) {
+            ServerParametersJson serverParametersJson;
+            try {
+                serverParametersJson = json.fromJson(jsonParametersString, ServerParametersJson.class);
+            } catch (JSONException e) {
+                errorHandler.handleBaseJsonError(jsonParametersString, e);
                 throw new JsonParametersException("Server Json was malformed, could not be parsed");
             }
 
@@ -518,9 +519,11 @@ public class ParametersStorage {
             // loading the questions
             setQuestions(serverParametersJson.getQuestions());
             setSequences(serverParametersJson.getSequences());
-        } catch (Exception e) {
+        } catch (JsonParametersException e) {
+            Logger.e(TAG, "Parameters validation failed:");
+            Logger.eRaw(TAG, e.getMessage());
             e.printStackTrace();
-            throw new ParametersSyntaxException();
+            throw new ParametersSyntaxException(e);
         }
     }
 
