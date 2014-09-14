@@ -25,6 +25,10 @@ public class ManySlidersQuestionDescriptionDetails implements IQuestionDescripti
     private int initialPosition = DEFAULT_INITIAL_POSITION;
     @JsonView(Views.Internal.class)
     private boolean showLiveIndication = false;
+    @JsonView(Views.Internal.class)
+    private String addItemHint = null;
+    @JsonView(Views.Internal.class)
+    private String dialogText = null;
 
     @Override
     public synchronized String getType() {
@@ -53,6 +57,14 @@ public class ManySlidersQuestionDescriptionDetails implements IQuestionDescripti
 
     public boolean isShowLiveIndication() {
         return showLiveIndication;
+    }
+
+    public String getAddItemHint() {
+        return addItemHint;
+    }
+
+    public String getDialogText() {
+        return dialogText;
     }
 
     public synchronized void validateInitialization() throws JsonParametersException {
@@ -88,6 +100,16 @@ public class ManySlidersQuestionDescriptionDetails implements IQuestionDescripti
         if (initialPosition < 0 || initialPosition > 100) {
             throw new JsonParametersException("initialPosition must be between 0 and 100 in "
                     + "ManySlidersQuestionDescriptionDetails");
+        }
+
+        if (addItemHint == null) {
+            throw new JsonParametersException("addItemHint can't be null in" +
+                    " ManySlidersQuestionDescriptionDetails");
+        }
+
+        if (dialogText == null) {
+            throw new JsonParametersException("dialogText can't be null in" +
+                    " ManySlidersQuestionDescriptionDetails");
         }
     }
 }
