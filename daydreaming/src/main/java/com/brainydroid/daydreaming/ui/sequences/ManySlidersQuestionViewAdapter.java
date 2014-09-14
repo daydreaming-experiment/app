@@ -29,7 +29,7 @@ public class ManySlidersQuestionViewAdapter
     String errorUntouched;
     @InjectResource(R.string.questionSlider_please_slide) String textPleaseSlide;
 
-    @Inject private LinearLayout rowContainer;
+    private LinearLayout rowContainer;
     @Inject private ArrayList<LinearLayout> sliderLayouts;
     @Inject SliderAnswer answer;
 
