@@ -21,8 +21,12 @@ public class Profile {
     @SuppressWarnings({"FieldCanBeLocal", "UnusedDeclaration"})
     @JsonView(Views.Public.class)
     private String exp_id;
-    @JsonView(Views.Public.class)
+
+    // These are defined so that deserialization doesn't fail, but are never used
+    @JsonView(Views.Internal.class)
     private String device_id = null;
+    @JsonView(Views.Internal.class)
+    private int n_results = -1;
 
     @SuppressWarnings("FieldCanBeLocal")
     @JsonView(Views.Public.class)
