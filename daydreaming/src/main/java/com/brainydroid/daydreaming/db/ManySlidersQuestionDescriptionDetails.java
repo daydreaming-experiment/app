@@ -9,6 +9,8 @@ public class ManySlidersQuestionDescriptionDetails implements IQuestionDescripti
 
     private static String TAG = "ManySlidersQuestionDescriptionDetails";
 
+    public static int DEFAULT_INITIAL_POSITION = -1;
+
     @JsonView(Views.Internal.class)
     private String type = "ManySliders";
     @JsonView(Views.Internal.class)
@@ -19,6 +21,10 @@ public class ManySlidersQuestionDescriptionDetails implements IQuestionDescripti
     private ArrayList<String> defaultSliders = null;
     @JsonView(Views.Internal.class)
     private ArrayList<String> hints = null;
+    @JsonView(Views.Internal.class)
+    private int initialPosition = DEFAULT_INITIAL_POSITION;
+    @JsonView(Views.Internal.class)
+    private boolean showLiveIndication = false;
 
     @Override
     public synchronized String getType() {
@@ -69,6 +75,11 @@ public class ManySlidersQuestionDescriptionDetails implements IQuestionDescripti
         if (hints == null || hints.size() < 2) {
             throw new JsonParametersException("There must be at least two hints in " +
                     "ManySlidersQuestionDescriptionDetails");
+        }
+
+        if (initialPosition < 0 || initialPosition > 100) {
+            throw new JsonParametersException("initialPosition must be between 0 and 100 in "
+                    + "ManySlidersQuestionDescriptionDetails");
         }
     }
 }
