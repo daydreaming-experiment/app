@@ -397,7 +397,7 @@
                     android:layout_gravity="center"
                     android:paddingTop="@dimen/dashboard_calendar_buttons_spacing"
                     android:gravity="center_horizontal"
-                    android:id="@+id/dashboard_button_row1"
+                    android:id="@+id/dashboard_button_row2"
                     android:orientation="horizontal"
                     android:baselineAligned="false"
                     >
