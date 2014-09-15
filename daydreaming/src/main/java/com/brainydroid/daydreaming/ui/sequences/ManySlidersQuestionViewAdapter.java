@@ -4,6 +4,7 @@ import android.animation.LayoutTransition;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -51,14 +52,18 @@ public class ManySlidersQuestionViewAdapter
     @Inject private HashMap<MetaString, LinearLayout> sliderLayouts;
     @Inject private ManySlidersAnswer answer;
 
+    private boolean autoCompleteAdapterLoaded = false;
+    private ProgressDialog progressDialog = null;
     private LinearLayout rowContainer;
     private boolean isEditMode = false;
+    private Activity activity;
 
     @TargetApi(11)
     @Override
     protected ArrayList<View> inflateViews(final Activity activity, final RelativeLayout outerPageLayout,
                                            final LinearLayout questionLayout) {
         Logger.d(TAG, "Inflating question views");
+        this.activity = activity;
 
         final ManySlidersQuestionDescriptionDetails details =
                 (ManySlidersQuestionDescriptionDetails)question.getDetails();
@@ -95,7 +100,6 @@ public class ManySlidersQuestionViewAdapter
         autoTextView.setAdapter(autoCompleteAdapter);
 
         // Load auto-complete adapter
-        // TODO: show a progress dialog when opening the edit mode if this isn't finished
         final ArrayList<String> allPossibleSliders = new ArrayList<String>();
         allPossibleSliders.addAll(details.getAvailableSliders());
         allPossibleSliders.addAll(userSliders);
@@ -104,6 +108,15 @@ public class ManySlidersQuestionViewAdapter
             protected Void doInBackground(Void... voids) {
                 autoCompleteAdapter.initialize(allPossibleSliders);
                 return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void result) {
+                autoCompleteAdapterLoaded = true;
+                if (progressDialog != null) {
+                    progressDialog.dismiss();
+                    progressDialog = null;
+                }
             }
         }).execute();
 
@@ -210,6 +223,11 @@ public class ManySlidersQuestionViewAdapter
 
     @TargetApi(11)
     protected void toggleEditMode(RelativeLayout pageLayout, LinearLayout questionView) {
+        // Start ProgressDialog if necessary
+        if (!autoCompleteAdapterLoaded && progressDialog == null) {
+            progressDialog = ProgressDialog.show(activity, "Loading", "Loading edit mode...");
+        }
+
         Logger.v(TAG, "Toggling edit mode");
         isEditMode = !isEditMode;
 
