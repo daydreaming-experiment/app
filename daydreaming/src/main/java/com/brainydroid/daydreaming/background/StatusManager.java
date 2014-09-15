@@ -697,7 +697,7 @@ public class StatusManager {
                 (24 * 60 * 60 * 1000));
         int daysToGo = parametersStorageProvider.get().getExpDuration() - daysElapsed;
 
-        return daysToGo <= 0;
+        return daysToGo <= 0 || getCurrentMode() == MODE_TEST;
     }
 
     public void setParametersSyncRunning(boolean running) {

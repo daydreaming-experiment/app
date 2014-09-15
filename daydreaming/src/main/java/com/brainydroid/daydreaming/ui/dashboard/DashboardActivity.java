@@ -480,8 +480,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
             }
         }
 
-        if (statusManager.areResultsAvailable() ||
-                statusManager.getCurrentMode() == StatusManager.MODE_TEST) {
+        if (statusManager.areResultsAvailable()) {
             resultsButton.setAlpha(1f);
         } else {
             resultsButton.setAlpha(0.3f);
