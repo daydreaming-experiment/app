@@ -54,6 +54,7 @@ public class ManySlidersQuestionViewAdapter
     private LinearLayout rowContainer;
     private boolean isEditMode = false;
 
+    @TargetApi(11)
     @Override
     protected ArrayList<View> inflateViews(final Activity activity, final RelativeLayout outerPageLayout,
                                            final LinearLayout questionLayout) {
@@ -206,6 +207,7 @@ public class ManySlidersQuestionViewAdapter
         parametersStorage.removeUserPossibility(question.getQuestionName(), ms.getDefinition());
     }
 
+    @TargetApi(11)
     protected void toggleEditMode(RelativeLayout pageLayout, LinearLayout questionView) {
         Logger.v(TAG, "Toggling edit mode");
         isEditMode = !isEditMode;
