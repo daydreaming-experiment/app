@@ -46,6 +46,12 @@ import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.google.inject.Inject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.logging.Filter;
 import java.util.zip.InflaterInputStream;
 
@@ -88,6 +94,8 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
     private int daysToGo = -1;
 
     ShowcaseView sv;
+    TreeMap<Integer,String[]> showcases = new TreeMap<Integer,String[]>();
+    Iterator it;
 
     IntentFilter parametersUpdateIntentFilter = new IntentFilter(StatusManager.ACTION_PARAMETERS_UPDATED);
     IntentFilter networkIntentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
@@ -117,6 +125,12 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
         setSideSwipeListener();
         setRobotoFont(this);
 
+        showcases.put(R.id.dashboard_begin_questionnaires_button,
+                new String[]{"Questions", "When blinking, there are questions for you!"});
+        showcases.put(R.id.dashboard_openAppSettings,
+                new String[]{"Settings", "Set the app parameters"});
+        it = showcases.entrySet().iterator();
+        showNextShowcase();
     }
 
     @Override
@@ -128,14 +142,6 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
         updateChromeMode();
         updateExperimentStatusViews();
         super.onStart();
-
-        ViewTarget target = new ViewTarget(R.id.dashboard_ExperimentResultsButton, this);
-        sv = new ShowcaseView.Builder(this)
-                .setTarget(target)
-                .setContentTitle("ShowcaseView")
-                .setContentText("Result button")
-                .hideOnTouchOutside()
-                .build();
     }
 
     @Override
@@ -694,4 +700,32 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
 
     @Override
     public void onClick(View v) {}
+
+    public void showNextShowcase() {
+        // getting info
+        Map.Entry pairs = (Map.Entry)it.next();
+        String[] values = (String[])pairs.getValue();
+        int id = (Integer)(pairs.getKey());
+        // building ShowcaseView
+        sv = new ShowcaseView.Builder(this)
+                .setTarget(new ViewTarget((Integer)id,DashboardActivity.this))
+                .setContentTitle( values[0] )
+                .setContentText( values[1] )
+                .singleShot(id)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        sv.hide();
+                        if (it.hasNext()) {
+                            showNextShowcase();
+                        }
+                    }
+                })
+                .build();
+        sv.setShouldCentreText(true);
+        sv.setStyle(R.style.CustomShowcaseTheme);
+    }
+
+
+
 }

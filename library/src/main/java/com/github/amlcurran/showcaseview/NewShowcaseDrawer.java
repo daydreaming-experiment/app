@@ -25,7 +25,7 @@ import android.graphics.Canvas;
  */
 class NewShowcaseDrawer extends StandardShowcaseDrawer {
 
-    private static final int ALPHA_60_PERCENT = 153;
+    private static final int ALPHA_60_PERCENT = 200;//153;
     private final float outerRadius;
     private final float innerRadius;
 

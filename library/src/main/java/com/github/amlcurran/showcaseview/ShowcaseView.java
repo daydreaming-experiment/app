@@ -57,7 +57,7 @@ public class ShowcaseView extends RelativeLayout
     // Showcase metrics
     private int showcaseX = -1;
     private int showcaseY = -1;
-    private float scaleMultiplier = 1f;
+    private float scaleMultiplier = 0.5f;
 
     // Touch items
     private boolean hasCustomClickListener = false;
