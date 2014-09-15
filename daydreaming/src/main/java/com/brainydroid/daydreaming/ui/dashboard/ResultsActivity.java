@@ -26,6 +26,7 @@ public class ResultsActivity extends RoboFragmentActivity {
     private static String TAG = "ResultsActivity";
 
     @Inject ParametersStorage parametersStorage;
+    @Inject StatusManager statusManager;
     @InjectView(R.id.activity_results_webView) private WebView webView;
 
     @Override
@@ -33,6 +34,10 @@ public class ResultsActivity extends RoboFragmentActivity {
         Logger.v(TAG, "Creating");
 
         super.onCreate(savedInstanceState);
+
+        // No need to notify results again, the user opened them
+        statusManager.setResultsNotified();
+        statusManager.setResultsNotifiedDashboard();
 
         webView.getSettings().setJavaScriptEnabled(true);
         final Activity activity = this;

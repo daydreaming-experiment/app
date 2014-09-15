@@ -3,6 +3,9 @@ package com.brainydroid.daydreaming.ui.dashboard;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -13,6 +16,7 @@ import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.v4.app.NotificationCompat;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -44,8 +48,8 @@ import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.google.inject.Inject;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -64,6 +68,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
     @Inject SntpClient sntpClient;
     @Inject SequenceBuilder sequenceBuilder;
     @Inject Sequence probe;
+    @Inject NotificationManager notificationManager;
 
     @InjectView(R.id.dashboard_main_layout) RelativeLayout dashboardMainLayout;
     @InjectView(R.id.dashboard_ExperimentTimeElapsed2)
@@ -144,7 +149,6 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
         if (statusManager.areParametersUpdated()){
              launchShowCaseViewSequence(UNIQUE);
         }
-
     }
 
     @Override
@@ -162,6 +166,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
             registerReceiver(receiver, networkIntentFilter);
         }
         updateExperimentStatus();
+        updateResultsPulse();
         super.onResume();
     }
 
@@ -478,14 +483,29 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
         if (statusManager.areResultsAvailable() ||
                 statusManager.getCurrentMode() == StatusManager.MODE_TEST) {
             resultsButton.setAlpha(1f);
-
-            // TODO: notify if first time available
         } else {
             resultsButton.setAlpha(0.3f);
         }
 
         debugInfoText.setText(statusManager.getDebugInfoString());
         updateBeginQuestionnairesButton();
+    }
+
+    private void updateResultsPulse() {
+        if (statusManager.areResultsAvailable() && !statusManager.areResultsNotifiedDashboard()) {
+            // Pulse results button. It's the first time they're available.
+            Animation animation = new AlphaAnimation(1, 0); // Change alpha from fully visible to invisible
+            animation.setDuration(1000); // duration - half a second
+            animation.setInterpolator(new AccelerateDecelerateInterpolator()); // do not alter animation rate
+            animation.setRepeatCount(Animation.INFINITE); // Repeat animation infinitely
+            animation.setRepeatMode(Animation.REVERSE); // Reverse animation at the end so the button will fade back in
+            resultsButton.setAnimation(animation);
+
+            // Remember we did all this
+            statusManager.setResultsNotifiedDashboard();
+        } else {
+            resultsButton.clearAnimation();
+        }
     }
 
     public void updateExperimentStatusViewsForceUIThread() {

@@ -68,6 +68,9 @@ public class StatusManager {
     /** Preference key storing the current mode */
     private static String EXP_CURRENT_MODE = "expCurrentMode";
 
+    public static String ARE_RESULTS_NOTIFIED_DASHBOARD = "areResultsNotifiedDashboard";
+    public static String ARE_RESULTS_NOTIFIED = "areResultsNotified";
+
     public static final String ACTION_PARAMETERS_STATUS_CHANGE = "actionParametersStatusChange";
 
     public static int MODE_PROD = 0;
@@ -186,6 +189,56 @@ public class StatusManager {
             Logger.d(TAG, "{} - Parameters not updated yet", getCurrentModeName());
             return false;
         }
+    }
+
+    public synchronized void setResultsNotifiedDashboard() {
+        Logger.d(TAG, "{} - Setting resultsNotifiedDashboard to true", getCurrentModeName(), true);
+
+        eSharedPreferences.putBoolean(getCurrentModeName() + ARE_RESULTS_NOTIFIED_DASHBOARD, true);
+        eSharedPreferences.commit();
+    }
+
+    public synchronized boolean areResultsNotifiedDashboard() {
+        if (sharedPreferences.getBoolean(getCurrentModeName() + ARE_RESULTS_NOTIFIED_DASHBOARD,
+                false)) {
+            Logger.v(TAG, "{} - Results not yet notified to dashboard", getCurrentModeName());
+            return true;
+        } else {
+            Logger.v(TAG, "{} - Results already notified to dashboard", getCurrentModeName());
+            return false;
+        }
+    }
+
+    public synchronized void clearResultsNotifiedDashboard() {
+        Logger.d(TAG, "{} - Clearing resultsNotifiedDashboard", getCurrentModeName());
+
+        eSharedPreferences.remove(getCurrentModeName() + ARE_RESULTS_NOTIFIED_DASHBOARD);
+        eSharedPreferences.commit();
+    }
+
+    public synchronized void setResultsNotified() {
+        Logger.d(TAG, "{} - Setting resultsNotified to true", getCurrentModeName(), true);
+
+        eSharedPreferences.putBoolean(getCurrentModeName() + ARE_RESULTS_NOTIFIED, true);
+        eSharedPreferences.commit();
+    }
+
+    public synchronized boolean areResultsNotified() {
+        if (sharedPreferences.getBoolean(getCurrentModeName() + ARE_RESULTS_NOTIFIED,
+                false)) {
+            Logger.v(TAG, "{} - Results not yet notified with notification", getCurrentModeName());
+            return true;
+        } else {
+            Logger.v(TAG, "{} - Results already notified with notification", getCurrentModeName());
+            return false;
+        }
+    }
+
+    public synchronized void clearResultsNotified() {
+        Logger.d(TAG, "{} - Clearing resultsNotified", getCurrentModeName());
+
+        eSharedPreferences.remove(getCurrentModeName() + ARE_RESULTS_NOTIFIED);
+        eSharedPreferences.commit();
     }
 
     /**
@@ -503,6 +556,8 @@ public class StatusManager {
         // Clear local flags (after switch)
         clearFirstLaunchCompleted();
         clearExperimentStartTimestamp();
+        clearResultsNotified();
+        clearResultsNotifiedDashboard();
 
         // Cancel any running location collection and pending notifications.
         // This is done after the switch to make sure no polls / location collection are
@@ -532,6 +587,10 @@ public class StatusManager {
 
         // Cancel any running location collection and pending notifications
         cancelNotifiedPollsAndCollectingLocations();
+
+        // Clear result flags
+        clearResultsNotified();
+        clearResultsNotifiedDashboard();
 
         // Clear crypto storage to force a new handshake
         cryptoStorageProvider.get().clearStore();
