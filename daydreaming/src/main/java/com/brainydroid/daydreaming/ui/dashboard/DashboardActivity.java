@@ -773,6 +773,9 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
         addShowCaseItem(R.id.dashboard_glossary_button, "Glossary", "A list of useful definitions");
         addShowCaseItem(R.id.dashboard_ExperimentResultsButton, "Results", "When available, a detailed report for you here!");
         addShowCaseItem(R.id.dashboard_TimeBox_layout, "Self Report", "Swipe right for a self report");
+        addShowCaseItem(R.id.dashboard_ExperimentTimeElapsed2, "Time Elapsed", "The duration you have been running this app");
+        addShowCaseItem(R.id.dashboard_ExperimentResultsIn2, "Time Left", "The duration left before you get results");
+
     }
 
     public void launchShowCaseViewSequence(boolean unique) {
