@@ -86,7 +86,8 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
 
     private boolean testModeThemeActivated = false;
     private int daysToGo = -1;
-    private long lastParametersUpdateAttempt = -1;
+    private boolean areParametersUpdating = false;
+    private long lastFailedParametersUpdate = -1;
     private Timer updateTimer = null;
 
     List<Integer> showcasesId;
@@ -105,9 +106,16 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            if (action.equals(StatusManager.ACTION_PARAMETERS_STATUS_CHANGE) ||
-                    action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
-                Logger.d(TAG, "receiver started for ACTION_PARAMETERS_STATUS_CHANGE or CONNECTIVITY_ACTION");
+            if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
+                Logger.d(TAG, "receiver started for CONNECTIVITY_ACTION");
+                updateExperimentStatus();
+            } else if (action.equals(StatusManager.ACTION_PARAMETERS_STATUS_CHANGE)) {
+                Logger.d(TAG, "receiver started for ACTION_PARAMETERS_STATUS_CHANGE");
+                if (areParametersUpdating && !statusManager.areParametersUpdated()) {
+                    // We just failed updating parameters
+                    lastFailedParametersUpdate = Calendar.getInstance().getTimeInMillis();
+                }
+                areParametersUpdating = statusManager.isParametersSyncRunning();
                 updateExperimentStatus();
             }
         }
@@ -130,7 +138,6 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
         checkExperimentModeActivatedDirty();
         updateRunningTime();
         updateChromeMode();
-        updateExperimentStatus();
         super.onStart();
 
         populateShowcaseViews();
@@ -149,7 +156,6 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
             Logger.v(TAG, "Parameters not yet updated, registering broadcast receiver");
             if (statusManager.isDataEnabled()) {
                 Logger.v(TAG, "Internet enabled, so also launching parameters update");
-                lastParametersUpdateAttempt = -1;
                 launchParametersUpdate();
             }
             registerReceiver(receiver, parametersUpdateIntentFilter);
@@ -403,41 +409,57 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
             glossaryLayout.setClickable(false);
 
             if (statusManager.isDataEnabled()) {
-                long now = Calendar.getInstance().getTimeInMillis();
-                if (now - lastParametersUpdateAttempt < 2 * 60 * 1000) {
-                    // Last update short time ago: "will retry in X seconds" + reset timer
-                    long secondsLeft = (2 * 60 * 1000 - (now - lastParametersUpdateAttempt)) / 1000;
-                    textNetworkConnection.setCompoundDrawablesWithIntrinsicBounds(
-                            R.drawable.status_wrong, 0, 0, 0);
-                    textNetworkConnection.setText(
-                            getString(R.string.dashboard_text_error_will_retry1)
-                                    + " " + secondsLeft + " "
-                                    + getString(R.string.dashboard_text_error_will_retry2));
-                    dashboardNetworkSettingsButton.setVisibility(View.INVISIBLE);
-
-                    if (updateTimer == null) {
-                        updateTimer = new Timer("updateTimer");
-                        updateTimer.schedule(new TimerTask() {
-                            @Override
-                            public void run() {
-                                updateExperimentStatusViewsForceUIThread();
-                            }
-                        }, 1000, 1000);
-                    }
-                } else {
-                    // Last update long ago: relaunch, and say "updating"
+                if (areParametersUpdating) {
+                    // Parameters are updating. Say it and cancel any possible timer.
                     textNetworkConnection.setCompoundDrawablesWithIntrinsicBounds(
                             R.drawable.status_loading, 0, 0, 0);
                     textNetworkConnection.setText(
                             getString(R.string.dashboard_text_parameters_updating));
                     dashboardNetworkSettingsButton.setVisibility(View.INVISIBLE);
 
-                    lastParametersUpdateAttempt = now;
-                    launchParametersUpdate();
-
                     if (updateTimer != null) {
                         updateTimer.cancel();
                         updateTimer = null;
+                    }
+                } else {
+                    long now = Calendar.getInstance().getTimeInMillis();
+                    if (now - lastFailedParametersUpdate < 2 * 60 * 1000) {
+                        // Last update short time ago: "will retry in X seconds" + reset timer
+                        long secondsLeft = (2 * 60 * 1000 - (now - lastFailedParametersUpdate)) / 1000;
+                        textNetworkConnection.setCompoundDrawablesWithIntrinsicBounds(
+                                R.drawable.status_wrong, 0, 0, 0);
+                        textNetworkConnection.setText(
+                                getString(R.string.dashboard_text_error_will_retry1)
+                                        + " " + secondsLeft + " "
+                                        + getString(R.string.dashboard_text_error_will_retry2)
+                        );
+                        dashboardNetworkSettingsButton.setVisibility(View.INVISIBLE);
+
+                        if (updateTimer == null) {
+                            updateTimer = new Timer("updateTimer");
+                            updateTimer.schedule(new TimerTask() {
+                                @Override
+                                public void run() {
+                                    updateExperimentStatusViewsForceUIThread();
+                                }
+                            }, 1000, 1000);
+                        }
+                    } else {
+                        // Last update long time ago. We have data connection,
+                        // and no update is running, so relaunch.
+                        launchParametersUpdate();
+
+                        // Say it and cancel any possible timer.
+                        textNetworkConnection.setCompoundDrawablesWithIntrinsicBounds(
+                                R.drawable.status_loading, 0, 0, 0);
+                        textNetworkConnection.setText(
+                                getString(R.string.dashboard_text_parameters_updating));
+                        dashboardNetworkSettingsButton.setVisibility(View.INVISIBLE);
+
+                        if (updateTimer != null) {
+                            updateTimer.cancel();
+                            updateTimer = null;
+                        }
                     }
                 }
             } else {
@@ -493,6 +515,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
     private void launchParametersUpdate() {
         Logger.d(TAG, "Launching full sync service to update parameters");
 
+        areParametersUpdating = true;
         Logger.d(TAG, "Starting SyncService");
         Intent syncIntent = new Intent(this, SyncService.class);
         startService(syncIntent);
@@ -544,9 +567,8 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
         registerReceiver(receiver, parametersUpdateIntentFilter);
         statusManager.resetParametersKeepProfileAnswers();
 
-        lastParametersUpdateAttempt = -1;
+        launchParametersUpdate();
         updateExperimentStatus();
-        // SyncService is started from inside updateExperimentStatus
     }
 
     public void setRobotoFont(Activity activity){

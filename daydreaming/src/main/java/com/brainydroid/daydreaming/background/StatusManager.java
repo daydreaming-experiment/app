@@ -84,7 +84,8 @@ public class StatusManager {
     public static long RESTART_LOCATION_POINT_SERVICE_DELAY = 1 * 60 * 60 * 1000;
 
     private int cachedCurrentMode = MODE_DEFAULT;
-    private boolean isPreSyncRunning = false;
+    private boolean isParametersSyncRunning = false;
+    private boolean isRegistrationRunning = false;
     private boolean isSequencesSyncRunning = false;
     private boolean isLocationPointsSyncRunning = false;
     private boolean isProfileSyncRunning = false;
@@ -191,7 +192,7 @@ public class StatusManager {
      * Set the updated parameters flag to completed.
      */
     public synchronized void setParametersUpdated(boolean updated) {
-        Logger.d(TAG, "{} - Setting parameters to updated", getCurrentModeName());
+        Logger.d(TAG, "{0} - Setting parameters updated to {1}", getCurrentModeName(), updated);
 
         eSharedPreferences.putBoolean(getCurrentModeName() + EXP_STATUS_PARAMETERS_UPDATED, updated);
         eSharedPreferences.commit();
@@ -640,9 +641,20 @@ public class StatusManager {
         return daysToGo <= 0;
     }
 
-    public void setPreSyncRunning(boolean running) {
-        Logger.v(TAG, "Setting isPreSyncRunning to {}", running);
-        isPreSyncRunning = running;
+    public void setParametersSyncRunning(boolean running) {
+        Logger.v(TAG, "Setting isParametersSyncRunning to {}", running);
+        isParametersSyncRunning = running;
+        isSyncRunningTimestamp = Calendar.getInstance().getTimeInMillis();
+        clearSyncRunningIfAllDone();
+    }
+
+    public boolean isParametersSyncRunning() {
+        return isParametersSyncRunning;
+    }
+
+    public void setRegistrationRunning(boolean running) {
+        Logger.v(TAG, "Setting isRegistrationRunning to {}", running);
+        isRegistrationRunning = running;
         isSyncRunningTimestamp = Calendar.getInstance().getTimeInMillis();
         clearSyncRunningIfAllDone();
     }
@@ -670,9 +682,10 @@ public class StatusManager {
 
     private void clearSyncRunningIfAllDone() {
         Logger.v(TAG, "Clearing sync running flags if all done");
-        if (!isPreSyncRunning && !isSequencesSyncRunning &&
-                !isLocationPointsSyncRunning && !isProfileSyncRunning) {
-            isPreSyncRunning = false;
+        if (!isParametersSyncRunning && !isRegistrationRunning &&
+                !isSequencesSyncRunning && !isLocationPointsSyncRunning && !isProfileSyncRunning) {
+            isParametersSyncRunning = false;
+            isRegistrationRunning = false;
             isSequencesSyncRunning = false;
             isLocationPointsSyncRunning = false;
             isProfileSyncRunning = false;
@@ -683,8 +696,8 @@ public class StatusManager {
     public boolean isSyncRunning() {
         long now = Calendar.getInstance().getTimeInMillis();
         // Sync is running and we know this from less than a minute ago
-        return (isPreSyncRunning || isSequencesSyncRunning ||
-                isLocationPointsSyncRunning || isProfileSyncRunning)
+        return (isParametersSyncRunning || isRegistrationRunning ||
+                isSequencesSyncRunning || isLocationPointsSyncRunning || isProfileSyncRunning)
                 && (now - isSyncRunningTimestamp) < 60 * 1000;
     }
 
