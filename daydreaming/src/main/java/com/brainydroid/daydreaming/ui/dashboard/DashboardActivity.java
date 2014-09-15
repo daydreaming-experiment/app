@@ -124,13 +124,6 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
         checkFirstLaunch();
         setSideSwipeListener();
         setRobotoFont(this);
-
-        showcases.put(R.id.dashboard_begin_questionnaires_button,
-                new String[]{"Questions", "When blinking, there are questions for you!"});
-        showcases.put(R.id.dashboard_openAppSettings,
-                new String[]{"Settings", "Set the app parameters"});
-        it = showcases.entrySet().iterator();
-        showNextShowcase();
     }
 
     @Override
@@ -142,6 +135,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
         updateChromeMode();
         updateExperimentStatusViews();
         super.onStart();
+        launchShowcase();
     }
 
     @Override
@@ -724,6 +718,15 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
                 .build();
         sv.setShouldCentreText(true);
         sv.setStyle(R.style.CustomShowcaseTheme);
+    }
+
+    public void launchShowcase() {
+        showcases.put(R.id.dashboard_begin_questionnaires_button,
+                new String[]{"Questions", "When blinking, there are questions for you!"});
+        showcases.put(R.id.dashboard_openAppSettings,
+            new String[]{"Settings", "Set the app parameters"});
+        it = showcases.entrySet().iterator();
+        showNextShowcase();
     }
 
 
