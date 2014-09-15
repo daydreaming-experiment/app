@@ -88,7 +88,7 @@ public class StarRatingQuestionViewAdapter extends BaseQuestionViewAdapter
 
         final int numStars = subQuestion.getNumStars();
         final int effectiveNumStars;
-        if (numStars != -1) {
+        if (numStars != StarRatingSubQuestion.DEFAULT_NUM_STARS) {
             Logger.v(TAG, "Setting ratingBar numStars to {0}", numStars);
             ratingBar.setNumStars(numStars);
             effectiveNumStars = numStars;
@@ -97,7 +97,7 @@ public class StarRatingQuestionViewAdapter extends BaseQuestionViewAdapter
         }
 
         float stepSize = subQuestion.getStepSize();
-        if (stepSize != -1f) {
+        if (stepSize != StarRatingSubQuestion.DEFAULT_STEP_SIZE) {
             Logger.v(TAG, "Setting ratingBar stepSize to {}", stepSize);
             ratingBar.setStepSize(stepSize);
         }

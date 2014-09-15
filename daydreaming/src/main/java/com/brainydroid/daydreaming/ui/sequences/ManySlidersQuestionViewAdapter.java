@@ -280,7 +280,10 @@ public class ManySlidersQuestionViewAdapter
         // Set initial position
         final AlphaSeekBar sliderSeek = (AlphaSeekBar)sliderLayout.findViewById(
                 R.id.question_many_sliders_slider_seekBar);
-        sliderSeek.setProgress(details.getInitialPosition());
+        if (details.getInitialPosition() !=
+                ManySlidersQuestionDescriptionDetails.DEFAULT_INITIAL_POSITION) {
+            sliderSeek.setProgress(details.getInitialPosition());
+        }
         sliderSeek.setProgressDrawable(sliderLayout.getResources().getDrawable(
                 R.drawable.question_slider_progress));
         sliderSeek.setThumb(sliderLayout.getResources().getDrawable(
