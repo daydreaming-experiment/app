@@ -2,13 +2,13 @@ package com.brainydroid.daydreaming.ui.sequences;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.content.Context;
 import android.text.method.LinkMovementMethod;
 import android.util.FloatMath;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,12 +38,12 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
     String errorUntouchedSingle;
     @InjectResource(R.string.questionSlider_skipped) String textSkipped;
 
-    @Inject Context context;
     @Inject ArrayList<View> subQuestionsViews;
     @Inject SliderAnswer answer;
 
     @Override
-    protected ArrayList<View> inflateViews(Activity activity, LinearLayout questionLayout) {
+    protected ArrayList<View> inflateViews(Activity activity, RelativeLayout outerPageLayout,
+                                           LinearLayout questionLayout) {
         Logger.d(TAG, "Inflating question views");
 
         ArrayList<SliderSubQuestion> subQuestions =
@@ -89,7 +89,7 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
         seekBar.setAlpha(0.5f);
 
         final int initialPosition = subQuestion.getInitialPosition();
-        if (initialPosition != SliderSubQuestion.DEFAULT_INITIAL_RATING) {
+        if (initialPosition != SliderSubQuestion.DEFAULT_INITIAL_POSITION) {
             Logger.v(TAG, "Setting seekBar initial position to {0}",
                     initialPosition);
             seekBar.setProgress(initialPosition);

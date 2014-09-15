@@ -3,6 +3,9 @@ package com.brainydroid.daydreaming.ui.dashboard;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -13,6 +16,7 @@ import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.v4.app.NotificationCompat;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -31,7 +35,6 @@ import com.brainydroid.daydreaming.background.SchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.background.SyncService;
 import com.brainydroid.daydreaming.db.ParametersStorage;
-import com.brainydroid.daydreaming.db.SequencesStorage;
 import com.brainydroid.daydreaming.network.SntpClient;
 import com.brainydroid.daydreaming.network.SntpClientCallback;
 import com.brainydroid.daydreaming.sequence.Sequence;
@@ -39,13 +42,16 @@ import com.brainydroid.daydreaming.sequence.SequenceBuilder;
 import com.brainydroid.daydreaming.ui.AlphaButton;
 import com.brainydroid.daydreaming.ui.FontUtils;
 import com.brainydroid.daydreaming.ui.firstlaunchsequence.FirstLaunch00WelcomeActivity;
-import com.brainydroid.daydreaming.ui.firstlaunchsequence.FirstLaunch03ProfileActivity;
 import com.brainydroid.daydreaming.ui.sequences.PageActivity;
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.google.inject.Inject;
 
 import java.util.ArrayList;
-import java.util.logging.Filter;
-import java.util.zip.InflaterInputStream;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import roboguice.activity.RoboFragmentActivity;
 import roboguice.inject.ContentView;
@@ -62,6 +68,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
     @Inject SntpClient sntpClient;
     @Inject SequenceBuilder sequenceBuilder;
     @Inject Sequence probe;
+    @Inject NotificationManager notificationManager;
 
     @InjectView(R.id.dashboard_main_layout) RelativeLayout dashboardMainLayout;
     @InjectView(R.id.dashboard_ExperimentTimeElapsed2)
@@ -84,8 +91,16 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
 
     private boolean testModeThemeActivated = false;
     private int daysToGo = -1;
+    private boolean areParametersUpdating = false;
+    private long lastFailedParametersUpdate = -1;
+    private Timer updateTimer = null;
 
-    IntentFilter parametersUpdateIntentFilter = new IntentFilter(StatusManager.ACTION_PARAMETERS_UPDATED);
+    List<Integer> showcasesId;
+    List<String[]> showcasesTexts;
+    int showcaseViewIndex = 0;
+    boolean UNIQUE = true;
+
+    IntentFilter parametersUpdateIntentFilter = new IntentFilter(StatusManager.ACTION_PARAMETERS_STATUS_CHANGE);
     IntentFilter networkIntentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
 
     public GestureDetector gestureDetector;
@@ -96,10 +111,17 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            if (action.equals(StatusManager.ACTION_PARAMETERS_UPDATED) ||
-                    action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
-                Logger.d(TAG, "receiver started for ACTION_PARAMETERS_UPDATED or CONNECTIVITY_ACTION");
-                updateExperimentStatusViews();
+            if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
+                Logger.d(TAG, "receiver started for CONNECTIVITY_ACTION");
+                updateExperimentStatus();
+            } else if (action.equals(StatusManager.ACTION_PARAMETERS_STATUS_CHANGE)) {
+                Logger.d(TAG, "receiver started for ACTION_PARAMETERS_STATUS_CHANGE");
+                if (areParametersUpdating && !statusManager.areParametersUpdated()) {
+                    // We just failed updating parameters
+                    lastFailedParametersUpdate = Calendar.getInstance().getTimeInMillis();
+                }
+                areParametersUpdating = statusManager.isParametersSyncRunning();
+                updateExperimentStatus();
             }
         }
     };
@@ -121,8 +143,12 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
         checkExperimentModeActivatedDirty();
         updateRunningTime();
         updateChromeMode();
-        updateExperimentStatusViews();
         super.onStart();
+
+        populateShowcaseViews();
+        if (statusManager.areParametersUpdated()){
+             launchShowCaseViewSequence(UNIQUE);
+        }
     }
 
     @Override
@@ -139,7 +165,8 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
             registerReceiver(receiver, parametersUpdateIntentFilter);
             registerReceiver(receiver, networkIntentFilter);
         }
-        updateExperimentStatusViews();
+        updateExperimentStatus();
+        updateResultsPulse();
         super.onResume();
     }
 
@@ -151,6 +178,10 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
             unregisterReceiver(receiver);
         } catch(IllegalArgumentException e) {
             Logger.v(TAG, "Receiver is not registered, so not unregistering");
+        }
+        if (updateTimer != null) {
+            updateTimer.cancel();
+            updateTimer = null;
         }
         super.onPause();
     }
@@ -234,7 +265,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
                 if (daysToGo > 1) {
                     msg += "s";
                 }
-                msg += " to wait before the results";
+                msg += " left before the results";
                 Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
                 return;
             }
@@ -288,9 +319,12 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
         sntpClient.asyncRequestTime(callback);
     }
 
-    // TODO: disable "see results" button before the results are available
-    // TODO: user should be notified once the results are available
     private void updateRunningTimeFromTimestamp(long timestampNow) {
+        if (!statusManager.areParametersUpdated()) {
+            Logger.v(TAG, "Parameters not updated, not setting running time views");
+            return;
+        }
+
         Logger.d(TAG, "Updating running time with timestamp {}", timestampNow);
         long expStartTimestamp = statusManager.getExperimentStartTimestamp();
 
@@ -344,7 +378,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
      */
 
     @TargetApi(11)
-    protected synchronized void updateExperimentStatusViews() {
+    protected synchronized void updateExperimentStatus() {
         View dashboard_TimeBox_layout = findViewById(R.id.dashboard_TimeBox_layout);
         View dashboard_TimeBox_no_param = findViewById(R.id.dashboard_TimeBox_layout_no_params);
         View dashboardNetworkSettingsButton = findViewById(R.id.dashboard_network_settings_button);
@@ -362,6 +396,11 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
             glossaryLayout.setClickable(true);
 
             updateRunningTime();
+
+            if (updateTimer != null) {
+                updateTimer.cancel();
+                updateTimer = null;
+            }
         } else {
             Logger.v(TAG, "Experiment is NOT running, setting views accordingly");
             expStatus.setText(R.string.dashboard_text_exp_stopped);
@@ -373,27 +412,108 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
             // hence the @TargetApi(11) above.
             glossaryLayout.setAlpha(0.3f);
             glossaryLayout.setClickable(false);
+
+            if (statusManager.isDataEnabled()) {
+                if (areParametersUpdating) {
+                    // Parameters are updating. Say it and cancel any possible timer.
+                    textNetworkConnection.setCompoundDrawablesWithIntrinsicBounds(
+                            R.drawable.status_loading, 0, 0, 0);
+                    textNetworkConnection.setText(
+                            getString(R.string.dashboard_text_parameters_updating));
+                    dashboardNetworkSettingsButton.setVisibility(View.INVISIBLE);
+
+                    if (updateTimer != null) {
+                        updateTimer.cancel();
+                        updateTimer = null;
+                    }
+                } else {
+                    long now = Calendar.getInstance().getTimeInMillis();
+                    if (now - lastFailedParametersUpdate < 2 * 60 * 1000) {
+                        // Last update short time ago: "will retry in X seconds" + reset timer
+                        long secondsLeft = (2 * 60 * 1000 - (now - lastFailedParametersUpdate)) / 1000;
+                        textNetworkConnection.setCompoundDrawablesWithIntrinsicBounds(
+                                R.drawable.status_wrong, 0, 0, 0);
+                        textNetworkConnection.setText(
+                                getString(R.string.dashboard_text_error_will_retry1)
+                                        + " " + secondsLeft + " "
+                                        + getString(R.string.dashboard_text_error_will_retry2)
+                        );
+                        dashboardNetworkSettingsButton.setVisibility(View.INVISIBLE);
+
+                        if (updateTimer == null) {
+                            updateTimer = new Timer("updateTimer");
+                            updateTimer.schedule(new TimerTask() {
+                                @Override
+                                public void run() {
+                                    updateExperimentStatusViewsForceUIThread();
+                                }
+                            }, 1000, 1000);
+                        }
+                    } else {
+                        // Last update long time ago. We have data connection,
+                        // and no update is running, so relaunch.
+                        launchParametersUpdate();
+
+                        // Say it and cancel any possible timer.
+                        textNetworkConnection.setCompoundDrawablesWithIntrinsicBounds(
+                                R.drawable.status_loading, 0, 0, 0);
+                        textNetworkConnection.setText(
+                                getString(R.string.dashboard_text_parameters_updating));
+                        dashboardNetworkSettingsButton.setVisibility(View.INVISIBLE);
+
+                        if (updateTimer != null) {
+                            updateTimer.cancel();
+                            updateTimer = null;
+                        }
+                    }
+                }
+            } else {
+                textNetworkConnection.setCompoundDrawablesWithIntrinsicBounds(
+                        R.drawable.status_wrong, 0, 0, 0);
+                textNetworkConnection.setText(getString(R.string.dashboard_text_enable_internet));
+                dashboardNetworkSettingsButton.setVisibility(View.VISIBLE);
+
+                if (updateTimer != null) {
+                    updateTimer.cancel();
+                    updateTimer = null;
+                }
+            }
         }
 
-        if (statusManager.areResultsAvailable()){
+        if (statusManager.areResultsAvailable()) {
             resultsButton.setAlpha(1f);
-            resultsButton.setClickable(true);
         } else {
             resultsButton.setAlpha(0.3f);
-            resultsButton.setClickable(false);
         }
-
-        boolean isDataEnabled = statusManager.isDataEnabled();
-        textNetworkConnection.setCompoundDrawablesWithIntrinsicBounds(isDataEnabled ?
-                R.drawable.status_loading :
-                R.drawable.status_wrong, 0, 0, 0);
-        textNetworkConnection.setText(isDataEnabled ?
-                getString(R.string.dashboard_text_parameters_updating) :
-                getString(R.string.dashboard_text_enable_internet));
-        dashboardNetworkSettingsButton.setVisibility(isDataEnabled ? View.INVISIBLE : View.VISIBLE);
 
         debugInfoText.setText(statusManager.getDebugInfoString());
         updateBeginQuestionnairesButton();
+    }
+
+    private void updateResultsPulse() {
+        if (statusManager.areResultsAvailable() && !statusManager.areResultsNotifiedDashboard()) {
+            // Pulse results button. It's the first time they're available.
+            Animation animation = new AlphaAnimation(1, 0); // Change alpha from fully visible to invisible
+            animation.setDuration(1000); // duration - half a second
+            animation.setInterpolator(new AccelerateDecelerateInterpolator()); // do not alter animation rate
+            animation.setRepeatCount(Animation.INFINITE); // Repeat animation infinitely
+            animation.setRepeatMode(Animation.REVERSE); // Reverse animation at the end so the button will fade back in
+            resultsButton.setAnimation(animation);
+
+            // Remember we did all this
+            statusManager.setResultsNotifiedDashboard();
+        } else {
+            resultsButton.clearAnimation();
+        }
+    }
+
+    public void updateExperimentStatusViewsForceUIThread() {
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                updateExperimentStatus();
+            }
+        });
     }
 
     protected void checkFirstLaunch() {
@@ -414,6 +534,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
     private void launchParametersUpdate() {
         Logger.d(TAG, "Launching full sync service to update parameters");
 
+        areParametersUpdating = true;
         Logger.d(TAG, "Starting SyncService");
         Intent syncIntent = new Intent(this, SyncService.class);
         startService(syncIntent);
@@ -461,11 +582,12 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
             return;
         }
 
+        // Register receiver to get the update
+        registerReceiver(receiver, parametersUpdateIntentFilter);
         statusManager.resetParametersKeepProfileAnswers();
 
-        Intent syncIntent = new Intent(this, SyncService.class);
-        syncIntent.putExtra(SyncService.DEBUG_SYNC, true);
-        startService(syncIntent);
+        launchParametersUpdate();
+        updateExperimentStatus();
     }
 
     public void setRobotoFont(Activity activity){
@@ -681,4 +803,64 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
 
     @Override
     public void onClick(View v) {}
+
+    public void populateShowcaseViews() {
+        Logger.d(TAG, "Populating ShowCaseViews");
+        // populate Showcase List
+        showcasesId = new ArrayList<Integer>();
+        showcasesTexts = new ArrayList<String[]>();
+        addShowCaseItem(R.id.dashboard_begin_questionnaires_button,"Questions", "When blinking, there are questions for you!");
+        addShowCaseItem(R.id.dashboard_openAppSettings, "Settings", "Set the app parameters");
+        addShowCaseItem(R.id.dashboard_glossary_button, "Glossary", "A list of useful definitions");
+        addShowCaseItem(R.id.dashboard_ExperimentResultsButton, "Results", "When available, a detailed report for you here!");
+        addShowCaseItem(R.id.dashboard_TimeBox_layout, "Self Report", "Swipe right for a self report");
+        addShowCaseItem(R.id.dashboard_ExperimentTimeElapsed2, "Time Elapsed", "The duration you have been running this app");
+        addShowCaseItem(R.id.dashboard_ExperimentResultsIn2, "Time Left", "The duration left before you get results");
+
+    }
+
+    public void launchShowCaseViewSequence(boolean unique) {
+        Logger.d(TAG, "Launching Sequence of ShowCaseViews");
+        showcaseViewIndex = 0;
+        inflateFromRunningIndex(unique);
+    }
+
+    public void onClick_launchInstructions(View v) {
+        launchShowCaseViewSequence(!UNIQUE);
+    }
+
+    public void addShowCaseItem(int id, String title, String text){
+        Logger.d(TAG, "Preparing ShowCaseView - id:{0}, title:{1}, text:{2}",
+                Integer.toString(id),title,text);
+        showcasesId.add(id);
+        showcasesTexts.add(new String[]{title, text});
+    }
+
+    public void inflateFromRunningIndex(final boolean unique) {
+        Logger.d(TAG, "Showing ShowCaseView - index: {}",Integer.toString(showcaseViewIndex));
+        if (showcaseViewIndex < showcasesId.size()) {
+            int id = showcasesId.get(showcaseViewIndex);
+            String[] texts = showcasesTexts.get(showcaseViewIndex);
+            ShowcaseView.Builder svBuilder = new ShowcaseView.Builder(DashboardActivity.this)
+                    .setTarget(new ViewTarget(id, DashboardActivity.this))
+                    .setContentTitle(texts[0])
+                    .setContentText(texts[1]);
+            if (unique) { svBuilder.singleShot(id); }
+            final ShowcaseView sv = svBuilder.build();
+            if (showcaseViewIndex < showcasesId.size()) {
+                sv.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        sv.hide();
+                        inflateFromRunningIndex(unique);
+                    }
+                });
+            }
+            sv.setShouldCentreText(true);
+            sv.setStyle(R.style.CustomShowcaseTheme);
+            showcaseViewIndex += 1;
+        }
+    }
+
+
 }

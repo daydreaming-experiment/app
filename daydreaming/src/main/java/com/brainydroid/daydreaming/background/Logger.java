@@ -26,6 +26,10 @@ public class Logger {
         Log.e(tag, MessageFormat.format(messagePattern, messageArgs));
     }
 
+    public static void eRaw(String tag, String message) {
+        Log.e(tag, message);
+    }
+
     /**
      * Log at Warn level.
      *
@@ -36,6 +40,10 @@ public class Logger {
     public static void w(String tag, String messagePattern,
                          Object... messageArgs) {
         Log.w(tag, MessageFormat.format(messagePattern, messageArgs));
+    }
+
+    public static void wRaw(String tag, String message) {
+        Log.w(tag, message);
     }
 
     /**
@@ -51,6 +59,10 @@ public class Logger {
                 messageArgs));
     }
 
+    public static void iRaw(String tag, String message) {
+        if (LoggerConfig.LOGI) Log.i(tag, message);
+    }
+
     /**
      * Log at Debug level.
      *
@@ -62,6 +74,10 @@ public class Logger {
                          Object... messageArgs) {
         if (LoggerConfig.LOGD) Log.d(tag, MessageFormat.format(messagePattern,
                 messageArgs));
+    }
+
+    public static void dRaw(String tag, String message) {
+        if (LoggerConfig.LOGD) Log.d(tag, message);
     }
 
     /**
@@ -77,6 +93,10 @@ public class Logger {
                 messageArgs));
     }
 
+    public static void vRaw(String tag, String message) {
+        if (LoggerConfig.LOGV) Log.v(tag, message);
+    }
+
     /**
      * Toast log at Debug level.
      *
@@ -89,6 +109,10 @@ public class Logger {
         if (LoggerConfig.TOASTD) Toast.makeText(context,
                 MessageFormat.format(messagePattern, messageArgs),
                 Toast.LENGTH_LONG).show();
+    }
+
+    public static void tdRaw(Context context, String message) {
+        if (LoggerConfig.TOASTD) Toast.makeText(context, message, Toast.LENGTH_LONG).show();
     }
 
 }

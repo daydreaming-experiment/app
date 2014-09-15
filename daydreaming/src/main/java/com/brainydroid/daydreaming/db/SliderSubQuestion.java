@@ -11,7 +11,6 @@ public class SliderSubQuestion {
     private static String TAG = "SliderSubQuestion";
 
     public static int DEFAULT_INITIAL_POSITION = -1;
-    public static int DEFAULT_INITIAL_RATING = -1;
 
     @JsonView(Views.Internal.class)
     private String text = null;
@@ -59,7 +58,8 @@ public class SliderSubQuestion {
         if (text == null) {
             throw new JsonParametersException("text can't be null in SliderSubQuestion");
         }
-        if (initialPosition < 0 || initialPosition > 100) {
+        if (initialPosition != DEFAULT_INITIAL_POSITION &&
+                (initialPosition < 0 || initialPosition > 100)) {
             throw new JsonParametersException("initialPosition must be between 0 and 100 in "
                     + "SliderSubQuestion");
         }

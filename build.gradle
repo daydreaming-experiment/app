@@ -3,3 +3,16 @@
 task wrapper(type: Wrapper) {
     gradleVersion = '1.12'
 }
+
+allprojects {
+    group = GROUP
+    version = VERSION_CODE
+
+    repositories {
+        mavenCentral()
+    }
+
+    tasks.withType(Compile) {
+        options.encoding = "UTF-8"
+    }
+}

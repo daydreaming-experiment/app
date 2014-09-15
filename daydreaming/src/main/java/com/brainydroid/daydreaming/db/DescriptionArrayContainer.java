@@ -15,7 +15,8 @@ public abstract class DescriptionArrayContainer<D extends BuildableOrderable<D,C
 
     abstract protected ArrayList<D> getContainedArray();
 
-    protected void validateContained(ArrayList<QuestionDescription> questionDescriptions) {
+    protected void validateContained(ArrayList<QuestionDescription> questionDescriptions)
+            throws JsonParametersException {
         Logger.d(TAG, "Validating contained array and related items");
 
         int nSlots = getNSlots();

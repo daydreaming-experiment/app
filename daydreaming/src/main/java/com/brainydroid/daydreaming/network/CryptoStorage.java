@@ -2,11 +2,15 @@ package com.brainydroid.daydreaming.network;
 
 import android.app.Application;
 import android.content.Context;
+
+import com.brainydroid.daydreaming.background.ErrorHandler;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.db.Json;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+
+import org.json.JSONException;
 
 import java.io.*;
 import java.security.InvalidKeyException;
@@ -35,6 +39,7 @@ public class CryptoStorage {
     @Inject Json json;
     @Inject Context context;
     @Inject StatusManager statusManager;
+    @Inject ErrorHandler errorHandler;
 
     private final File storageDir;
     @Inject private HashMap<String,File> maiIdFiles;
@@ -123,13 +128,17 @@ public class CryptoStorage {
                 if (success) {
                     Logger.d(TAG, "{} - Registration HttpConversation " +
                             "successful", statusManager.getCurrentModeName());
-                    ProfileWrapper registrationAnswer = json.fromJson(serverAnswer,
-                            ProfileWrapper.class);
-                    // TODO: handle the case where returned JSON is in fact an error.
-                    Logger.i(TAG, "Server answer:\n"
-                            + serverAnswer.replace("{", "'{'").replace("}", "'}'"));
-                    Logger.td(context, "Server answer:\n"
-                            + serverAnswer.replace("{", "'{'").replace("}", "'}'"));
+                    ProfileWrapper registrationAnswer;
+                    try {
+                        registrationAnswer = json.fromJson(serverAnswer,
+                                ProfileWrapper.class);
+                    } catch (JSONException e) {
+                        // Server answer wasn't what we expected. Try to parse it.
+                        errorHandler.handleServerError(serverAnswer, e);
+                        parentCallback.onCryptoStorageReady(false);
+                        return;
+                    }
+
                     String maiId = registrationAnswer.getProfile().getId();
                     storageSuccess = storeKeyPairAndMaiId(kp, maiId);
 

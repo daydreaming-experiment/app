@@ -11,6 +11,8 @@ public class StarRatingSubQuestion {
     private static String TAG = "StarRatingSubQuestion";
 
     public static int DEFAULT_INITIAL_RATING = -1;
+    public static int DEFAULT_NUM_STARS = -1;
+    public static float DEFAULT_STEP_SIZE = -1f;
 
     @JsonView(Views.Internal.class)
     private String text = null;
@@ -20,10 +22,10 @@ public class StarRatingSubQuestion {
     private ArrayList<String> hints = null;
     @SuppressWarnings("FieldCanBeLocal")
     @JsonView(Views.Internal.class)
-    private int numStars = -1;
+    private int numStars = DEFAULT_NUM_STARS;
     @SuppressWarnings("FieldCanBeLocal")
     @JsonView(Views.Internal.class)
-    private float stepSize = -1f;
+    private float stepSize = DEFAULT_STEP_SIZE;
     @SuppressWarnings("FieldCanBeLocal")
     @JsonView(Views.Internal.class)
     private float initialRating = DEFAULT_INITIAL_RATING;
@@ -72,15 +74,16 @@ public class StarRatingSubQuestion {
         if (text == null) {
             throw new JsonParametersException("text can't be null in StarRatingSubQuestion");
         }
-        if (numStars < 2) {
+        if (numStars != DEFAULT_NUM_STARS && numStars < 2) {
             throw new JsonParametersException("There must be at least two possible stars in "
                     + "StarRatingSubQuestion");
         }
-        if (stepSize <= 0) {
+        if (stepSize != DEFAULT_STEP_SIZE && stepSize <= 0) {
             throw new JsonParametersException("stepSize must be strictly positive in "
                     + "StarRatingSubQuestion");
         }
-        if (initialRating < 0 || initialRating > numStars) {
+        if (initialRating != DEFAULT_INITIAL_RATING &&
+                (initialRating < 0 || initialRating > numStars)) {
             throw new JsonParametersException("initialRating must be between 0 and numStars in "
                     + "StarRatingSubQuestion");
         }

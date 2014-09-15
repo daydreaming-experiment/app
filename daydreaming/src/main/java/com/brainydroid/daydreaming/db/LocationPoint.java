@@ -49,7 +49,7 @@ public final class LocationPoint extends
     private long timestamp = -1;
 
     // Our database for LocationPoints
-    @Inject @JacksonInject LocationPointsStorage locationPointsStorage;
+    @Inject LocationPointsStorage locationPointsStorage;
 
     @Override
     protected synchronized LocationPoint self() {

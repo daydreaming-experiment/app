@@ -56,7 +56,19 @@
             android:layout_marginTop="30dp"
             android:gravity="right" >
 
-            <ImageButton
+            <Button
+                android:id="@+id/page_editModeButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/page_edit_mode_edit"
+                android:visibility="gone"/>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+            <com.brainydroid.daydreaming.ui.AlphaImageButton
                 android:id="@+id/page_nextButton"
                 android:layout_width="@dimen/button_next_width"
                 android:layout_height="@dimen/button_next_height"
@@ -64,7 +76,7 @@
                 android:onClick="onClick_nextButton"
                 android:contentDescription="@string/page_button_next" />
 
-            <ImageButton
+            <com.brainydroid.daydreaming.ui.AlphaImageButton
                 android:id="@+id/page_finishButton"
                 android:layout_width="@dimen/button_next_width"
                 android:layout_height="@dimen/button_next_height"

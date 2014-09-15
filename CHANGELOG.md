@@ -1,6 +1,20 @@
 Changelog
 =========
 
+0.19.0
+------
+
+* Enhancements
+  * Set different launcher icons for QA and Debug
+  * Add some debug information to the test dashboard
+  * Update parameter-downloading UI (if errored, restarts automatically)
+  * [#229] Swipe in dashboard initiates self-report
+  * [#196] Editable ManySliders questions type, for activity questionnaire
+* Bug fixes
+  * [#202] Don't have two syncs running at the same time
+  * [#218] Sntp resolving in dashboard when parameters are not set
+  * [#178] Background JSON problems, and clean error hanlding and reporting
+
 0.18.0
 ------
 

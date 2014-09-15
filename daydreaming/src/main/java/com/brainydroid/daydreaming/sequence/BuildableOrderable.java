@@ -1,6 +1,7 @@
 package com.brainydroid.daydreaming.sequence;
 
 
+import com.brainydroid.daydreaming.db.JsonParametersException;
 import com.brainydroid.daydreaming.db.QuestionDescription;
 
 import java.util.ArrayList;
@@ -13,7 +14,8 @@ public interface BuildableOrderable<D extends BuildableOrderable<D,C>,C> {
 
     public C build(Sequence sequence);
 
-    public void validateInitialization(ArrayList<D> parentArray,
-                                       ArrayList<QuestionDescription> questionDescriptions);
+    public void validateInitialization(
+            ArrayList<D> parentArray, ArrayList<QuestionDescription> questionDescriptions)
+            throws JsonParametersException;
 
 }

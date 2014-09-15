@@ -22,6 +22,8 @@
     <string name="dashboard_button_text_terms">Terms</string>
     <string name="dashboard_button_text_description">Description</string>
     <string name="dashboard_text_enable_internet">Please enable internet</string>
+    <string name="dashboard_text_error_will_retry1">Error updating parameters\nTrying again in</string>
+    <string name="dashboard_text_error_will_retry2">seconds</string>
     <string name="dashboard_text_parameters_updating">Parameters are updating…</string>
     <string name="dashboard_button_text_glossary">Glossary</string>
     <string name="dashboard_text_days">days</string>
@@ -32,6 +34,11 @@
     <string name="dashboard_test_text_probe_now">Probe Now</string>
     <string name="dashboard_test_text_sync_now">Sync Now</string>
     <string name="dashboard_test_text_reload_parameters">Reload parameters</string>
+    <string name="dashboard_text_begin_questionnaires">Questions</string>
+    <string name="dashboard_button_text_instruction">Instructions</string>
+    <string name="results_notification_ticker">Daydreaming results available</string>
+    <string name="results_notification_title">Daydreaming results</string>
+    <string name="results_notification_content">Discover your 30 days of daydreaming</string>
 
     <!-- Glossary Activity -->
     <string name="glossary_title">GLOSSARY</string>
@@ -136,6 +143,8 @@
     <string name="page_button_finish">Finish</string>
     <string name="page_thank_you">Thank you for answering these questions!</string>
     <string name="page_intro_text">Right before the app interrupted you…</string>
+    <string name="page_edit_mode_edit">Edit mode</string>
+    <string name="page_edit_mode_done">Done</string>
 
     <!-- Display question Activity -->
     <string name="question_welcome_text">HERE ARE A FEW QUICK QUESTIONS:</string>
@@ -160,6 +169,8 @@
     <string name="questionAutoList_add_item">Add</string>
     <string name="questionAutoList_delete_item">Delete item</string>
     <string name="questionAutoList_please_select">Please select at least one item</string>
+    <string name="questionManySliders_delete_item">Delete slider</string>
+    <string name="questionManySliders_add_item">Add</string>
     <string name="locationAlert_title_location">Enable location</string>
     <string name="locationAlert_title_data">Enable data connection</string>
     <string name="locationAlert_title_location_and_data">Enable location and data</string>
@@ -180,14 +191,7 @@
     <string name="bqNotification_text">A few questions about you</string>
 
     <!-- Crash Reports -->
-    <string name="crash_toast_text">Oops Daydreaming just crashed! Building a crash report…</string>
-    <string name="crash_dialog_text">Daydreaming just crashed, sorry! Please
-        help us by sending this crash report so we can fix the problem. You
-        can also add your name or email if you agree to be contacted
-        by the developers.</string>
-    <string name="crash_dialog_title">Daydreaming crash report</string>
-    <string name="crash_dialog_ok_toast">The Android lords be with you! Thanks for sending the report</string>
-    <string name="crash_dialog_comment_prompt">Name or email</string>
+    <string name="crash_toast_text">Oops Daydreaming just crashed! The developers have been notified.</string>
 
     <!-- Other -->
 
@@ -239,6 +243,6 @@
 
 ]]>
     </string>
-    <string name="dashboard_text_begin_questionnaires">Questions</string>
+
 
 </resources>

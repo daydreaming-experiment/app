@@ -19,7 +19,10 @@ import com.brainydroid.daydreaming.network.ResultsWrapper;
 import com.brainydroid.daydreaming.network.ResultsWrapperFactory;
 import com.brainydroid.daydreaming.network.ServerTalker;
 import com.brainydroid.daydreaming.sequence.Sequence;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.inject.Inject;
+
+import org.json.JSONException;
 
 import java.util.ArrayList;
 
@@ -55,6 +58,7 @@ public class SyncService extends RoboService {
     @Inject CryptoStorage cryptoStorage;
     @Inject ServerTalker serverTalker;
     @Inject Json json;
+    @Inject ErrorHandler errorHandler;
     @Inject ResultsWrapperFactory<Sequence> sequencesWrapperFactory;
     @Inject ResultsWrapperFactory<LocationPoint> locationPointsWrapperFactory;
 
@@ -71,14 +75,17 @@ public class SyncService extends RoboService {
             // really ready and we have Internet access.
             if (areParametersUpdated && statusManager.isDataEnabled()) {
                 Logger.d(TAG, "Parameters have been update, and data is enabled");
+
+                // We enter the registration phase
+                statusManager.setRegistrationRunning(true);
                 cryptoStorage.onReady(cryptoStorageCallback);
             } else {
-                // We quit the preSync phase
-                statusManager.setPreSyncRunning(false);
                 Logger.v(TAG, "Either parameters were not updated, or data is disabled "
                 + "-> doing nothing");
             }
 
+            // We finish the parameterUpdate phase
+            statusManager.setParametersSyncRunning(false);
         }
     };
 
@@ -117,8 +124,8 @@ public class SyncService extends RoboService {
                         "connection -> doing nothing");
             }
 
-            // In all cases, this finishes the preSync phase
-            statusManager.setPreSyncRunning(false);
+            // In all cases, this finishes the registration phase
+            statusManager.setRegistrationRunning(false);
         }
 
     };
@@ -168,8 +175,8 @@ public class SyncService extends RoboService {
             Logger.i(TAG, "Data connection enabled -> starting sync tasks");
             Logger.td(this, TAG + ": starting sync...");
 
-            // We enter the preSync phase
-            statusManager.setPreSyncRunning(true);
+            // We enter the parameterUpdate phase
+            statusManager.setParametersSyncRunning(true);
             statusManager.setLastSyncToNow();
 
             // This will launch all the calls through the callback
@@ -212,7 +219,7 @@ public class SyncService extends RoboService {
 
             @Override
             public void onHttpConversationFinished(boolean success,
-                                                   String serverAnswer) {
+                                                   String serverAnswerJson) {
                 Logger.d(TAG, "Sequences sync HttpConversation finished");
 
                 // If at this point, the app has changed from one of test/prod modes
@@ -222,12 +229,21 @@ public class SyncService extends RoboService {
                 // ACRA logs.
 
                 if (success) {
-                    // TODO: handle the case where returned JSON is in fact an error.
-                    Logger.i(TAG, "Successfully uploaded sequences to server " +
-                            "(serverAnswer: {0})", serverAnswer);
-                    Logger.td(SyncService.this, SyncService.TAG + ": " +
-                            "uploaded sequences (serverAnswer: {0})",
-                            serverAnswer);
+                    try {
+                        // Check we got back what we expected (i.e. we can serialize it)
+                        json.fromJson(serverAnswerJson,
+                                new TypeReference<ResultsWrapper<Sequence>>() {});
+                    } catch (JSONException e) {
+                        errorHandler.handleServerError(serverAnswerJson, e);
+                        Logger.e(TAG, "Server answered our sequence upload with an error. Aborting.");
+                        statusManager.setSequencesSyncRunning(false);
+                        return;
+                    }
+
+                    Logger.i(TAG, "Successfully uploaded sequences to server. Server answer:");
+                    Logger.iRaw(TAG, serverAnswerJson);
+                    Logger.td(SyncService.this, SyncService.TAG + ": sequences uploaded");
+
                     Logger.d(TAG, "Removing uploaded sequences (except begin questionnaires) from db");
                     // filter what to be deleted based on status : i.e. don't delete begin and end questionnaires
                     ArrayList<Sequence> uploadedSequences = sequencesWrap.getDatas();
@@ -308,7 +324,7 @@ public class SyncService extends RoboService {
 
             @Override
             public void onHttpConversationFinished(boolean success,
-                                                   String serverAnswer) {
+                                                   String serverAnswerJson) {
                 Logger.d(TAG, "LocationPoints HttpConversation finished");
 
                 // If at this point, the app has changed from one of test/prod modes
@@ -318,21 +334,25 @@ public class SyncService extends RoboService {
                 // ACRA logs.
 
                 if (success) {
-                    // TODO: handle the case where returned JSON is in fact an error.
-                    Logger.i(TAG, "Successfully uploaded locationPoints to " +
-                            "server (serverAnswer: {0})", serverAnswer);
-                            Logger.td(SyncService.this,
-                                    SyncService.TAG + ": uploaded " +
-                                            "locationPoints (serverAnswer: " +
-                                            "{0})", serverAnswer);
+                    try {
+                        // Check we got back what we expected (i.e. we can serialize it)
+                        json.fromJson(serverAnswerJson,
+                                new TypeReference<ResultsWrapper<LocationPoint>>() {});
+                    } catch (JSONException e) {
+                        errorHandler.handleServerError(serverAnswerJson, e);
+                        Logger.e(TAG, "Server answered our locationPoints upload with an error. Aborting.");
+                        statusManager.setLocationPointsSyncRunning(false);
+                        return;
+                    }
 
-                    Logger.d(TAG, "Removing uploaded locationPoints from " +
-                            "db");
-                    locationPointsStorage.remove(
-                            locationPointsWrap.getDatas());
+                    Logger.i(TAG, "Successfully uploaded locationPoints to server. Server answer:");
+                    Logger.iRaw(TAG, serverAnswerJson);
+                    Logger.td(SyncService.this, SyncService.TAG + ": uploaded locationPoints");
+
+                    Logger.d(TAG, "Removing uploaded locationPoints from db");
+                    locationPointsStorage.remove(locationPointsWrap.getDatas());
                 } else {
-                    Logger.w(TAG, "Error while uploading locationPoints to " +
-                            "server");
+                    Logger.w(TAG, "Error while uploading locationPoints to server");
                 }
 
                 // We finish locationPointsSync
@@ -364,7 +384,7 @@ public class SyncService extends RoboService {
 
             @Override
             public void onHttpConversationFinished(boolean success,
-                                                   String serverAnswer) {
+                                                   String serverAnswerJson) {
 
                 Logger.d(TAG, "PutProfile HttpConversation finished");
 
@@ -379,25 +399,27 @@ public class SyncService extends RoboService {
                 }
 
                 if (success) {
-                    // TODO: handle the case where returned JSON is in fact an error.
-                    Logger.i(TAG, "Successfully uploaded Profile to " +
-                            "server (serverAnswer: {0})", serverAnswer);
-                    Logger.td(SyncService.this,
-                            SyncService.TAG + ": uploaded " +
-                                    "profile (serverAnswer: " +
-                                    "{0})", serverAnswer);
+                    try {
+                        json.fromJson(serverAnswerJson, new TypeReference<ProfileWrapper>() {});
+                    } catch (JSONException e) {
+                        errorHandler.handleServerError(serverAnswerJson, e);
+                        Logger.e(TAG, "Server answered our profile update with an error. Aborting.");
+                        statusManager.setProfileSyncRunning(false);
+                        return;
+                    }
+
+                    Logger.i(TAG, "Successfully uploaded profile to server. Server answer:");
+                    Logger.iRaw(TAG, serverAnswerJson);
+                    Logger.td(SyncService.this, SyncService.TAG + ": profile uploaded");
 
                     if (profileStorage.hasChangedSinceSyncStart()) {
-                        Logger.d(TAG, "Profile has changed since sync start " +
-                                "-> not clearing isDirty flag");
+                        Logger.d(TAG, "Profile has changed since sync start -> not clearing isDirty flag");
                     } else {
-                        Logger.d(TAG, "Profile untouched since sync " +
-                                "start -> clearing isDirty flag");
+                        Logger.d(TAG, "Profile untouched since sync start -> clearing isDirty flag");
                         profileStorage.clearIsDirtyAndCommit();
                     }
                 } else {
-                    Logger.w(TAG, "Error while uploading profile to " +
-                            "server");
+                    Logger.w(TAG, "Error while uploading profile to server");
                 }
 
                 // We finish profileSync

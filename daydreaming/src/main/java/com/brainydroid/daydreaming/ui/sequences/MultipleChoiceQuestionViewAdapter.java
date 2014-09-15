@@ -1,7 +1,6 @@
 package com.brainydroid.daydreaming.ui.sequences;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Build;
 import android.text.method.LinkMovementMethod;
 import android.view.KeyEvent;
@@ -11,6 +10,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,12 +38,12 @@ public class MultipleChoiceQuestionViewAdapter
     String errorFillOther;
     @InjectResource(R.string.questionMultipleChoice_please_check_one)
     String errorCheckOne;
-    @Inject Context context;
     @Inject MultipleChoiceAnswer answer;
     @Inject Injector injector;
 
     @Override
-    protected ArrayList<View> inflateViews(Activity activity, LinearLayout questionLayout) {
+    protected ArrayList<View> inflateViews(Activity activity, RelativeLayout outerPageLayout,
+                                           LinearLayout questionLayout) {
         Logger.d(TAG, "Inflating question views");
 
         MultipleChoiceQuestionDescriptionDetails details =
