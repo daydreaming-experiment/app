@@ -45,7 +45,6 @@ import com.google.inject.Inject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -90,10 +89,8 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
     private long lastParametersUpdateAttempt = -1;
     private Timer updateTimer = null;
 
-    ShowcaseView sv;
-    //TreeMap<Integer,String[]> showcases = new TreeMap<Integer,String[]>();
-    List<Pair<Integer,String[]>> showcases;
-    List<ShowcaseView.Builder> showcaseViewsList;
+    List<Integer> showcasesId;
+    List<String[]> showcasesTexts;
     int showcaseViewIndex = 0;
 
     IntentFilter parametersUpdateIntentFilter = new IntentFilter(StatusManager.ACTION_PARAMETERS_STATUS_CHANGE);
@@ -122,8 +119,6 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
         super.onCreate(savedInstanceState);
         checkFirstLaunch();
         setSideSwipeListener();
-        populateShowcaseViews();
-
         setRobotoFont(this);
     }
 
@@ -137,7 +132,10 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
         updateExperimentStatus();
         super.onStart();
 
-        //launchShowCaseViewSequence();
+        populateShowcaseViews();
+        if (statusManager.areParametersUpdated()){
+             launchShowCaseViewSequence();
+        }
 
     }
 
@@ -767,60 +765,58 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
     public void populateShowcaseViews() {
         Logger.d(TAG, "Populating ShowCaseViews");
         // populate Showcase List
-        showcases = new ArrayList<Pair<Integer,String[]>>();
-        showcaseViewsList = new ArrayList<ShowcaseView.Builder>();
+        showcasesId = new ArrayList<Integer>();
+        showcasesTexts = new ArrayList<String[]>();
         addShowCaseItem(R.id.dashboard_begin_questionnaires_button,"Questions", "When blinking, there are questions for you!");
         addShowCaseItem(R.id.dashboard_openAppSettings, "Settings", "Set the app parameters");
+        addShowCaseItem(R.id.dashboard_glossary_button, "Glossary", "A list of useful definitions");
+        addShowCaseItem(R.id.dashboard_TimeBox_layout, "Self Report", "Swipe right for a self report");
+
+
     }
 
     public void launchShowCaseViewSequence() {
         Logger.d(TAG, "Launching Sequence of ShowCaseViews");
         showcaseViewIndex = 0;
-        showNextShowcase();
-    }
-
-    public void showNextShowcase() {
-        Logger.d(TAG, "Showing ShowCaseView - index: {}",Integer.toString(showcaseViewIndex));
-        final ShowcaseView sv = showcaseViewsList.get(showcaseViewIndex).build();
-        showcaseViewIndex+=1;
-        sv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sv.hide();
-                if (showcaseViewIndex < showcases.size()) showNextShowcase();
-            }
-        });
-        sv.setShouldCentreText(true);
-        sv.setStyle(R.style.CustomShowcaseTheme);
+        inflateFromRunningIndex();
     }
 
     public void addShowCaseItem(int id, String title, String text){
         Logger.d(TAG, "Preparing ShowCaseView - id:{0}, title:{1}, text:{2}",
                 Integer.toString(id),title,text);
-        Pair<Integer,String[]> pair = new Pair<Integer,String[]>();
-        pair.setL(id);
-        pair.setR(new String[]{title, text});
-        showcases.add(pair);
-        ShowcaseView.Builder sVBuilder = new ShowcaseView.Builder(this)
-                .setTarget(new ViewTarget(id,DashboardActivity.this))
-                .setContentTitle( title )
-                .setContentText( text );
-        showcaseViewsList.add(sVBuilder);
+        showcasesId.add(id);
+        showcasesTexts.add(new String[]{title, text});
     }
 
-    public class Pair<L,R> {
-        private L l;
-        private R r;
-        public Pair(L l, R r){
-            this.l = l;
-            this.r = r;
+    public ShowcaseView inflateFromRunningIndex() {
+        Logger.d(TAG, "Showing ShowCaseView - index: {}",Integer.toString(showcaseViewIndex));
+        if (showcaseViewIndex < showcasesId.size()) {
+            // get current
+            int id = showcasesId.get(showcaseViewIndex);
+            String[] texts = showcasesTexts.get(showcaseViewIndex);
+            final ShowcaseView sv = new ShowcaseView.Builder(DashboardActivity.this)
+                    .setTarget(new ViewTarget(id, DashboardActivity.this))
+                    .setContentTitle(texts[0])
+                    .setContentText(texts[1])
+                    .singleShot(id)
+                    .build();
+            if (showcaseViewIndex < showcasesId.size()) {
+                sv.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        sv.hide();
+                        inflateFromRunningIndex();
+                    }
+                });
+            }
+            sv.setShouldCentreText(true);
+            sv.setStyle(R.style.CustomShowcaseTheme);
+            showcaseViewIndex += 1;
+            return sv;
+        } else {
+            return null;
         }
-        public Pair(){
-        }
-        public L getL(){ return l; }
-        public R getR(){ return r; }
-        public void setL(L l){ this.l = l; }
-        public void setR(R r){ this.r = r; }
     }
+
 
 }
