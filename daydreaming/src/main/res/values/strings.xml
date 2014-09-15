@@ -36,9 +36,9 @@
     <string name="dashboard_test_text_reload_parameters">Reload parameters</string>
     <string name="dashboard_text_begin_questionnaires">Questions</string>
     <string name="dashboard_button_text_instruction">Instructions</string>
-    <string name="results_notification_ticker">Daydreaming results</string>
-    <string name="results_notification_title">Daydreaming results available</string>
-    <string name="results_notification_content">Find out about your 30 days of daydreaming</string>
+    <string name="results_notification_ticker">Daydreaming results available</string>
+    <string name="results_notification_title">Daydreaming results</string>
+    <string name="results_notification_content">Discover your 30 days of daydreaming</string>
 
     <!-- Glossary Activity -->
     <string name="glossary_title">GLOSSARY</string>
