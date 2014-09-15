@@ -465,6 +465,47 @@ public class ParametersStorage {
         }
     }
 
+    public void addUserPossibilities(String questionName, ArrayList<String> possibilities) {
+        HashMap<String, ArrayList<String>> allPossibilities = getAllUserPossibilities();
+        if (!allPossibilities.containsKey(questionName)) {
+            allPossibilities.put(questionName, new ArrayList<String>());
+        }
+
+        ArrayList<String> questionPossibilities = allPossibilities.get(questionName);
+        for (String possibility : possibilities) {
+            if (!questionPossibilities.contains(possibility)) {
+                Logger.v(TAG, "{0} - Adding possibility {1} to user possibilities for question {2}",
+                        statusManager.getCurrentModeName(), possibility, questionName);
+                questionPossibilities.add(possibility);
+            }
+        }
+        eSharedPreferences.putString(
+                statusManager.getCurrentModeName() + USER_POSSIBILITIES,
+                json.toJsonInternal(allPossibilities));
+        eSharedPreferences.commit();
+    }
+
+    public void removeUserPossibility(String questionName, String possibility) {
+        HashMap<String, ArrayList<String>> allPossibilities = getAllUserPossibilities();
+        if (!allPossibilities.containsKey(questionName)) {
+            // Nothing to remove, question isn't registered here.
+            return;
+        }
+
+        ArrayList<String> questionPossibilities = allPossibilities.get(questionName);
+
+        if (questionPossibilities.contains(possibility)) {
+            Logger.v(TAG, "{0} - Removing possibility {1} from user possibilities for question {2}",
+                    statusManager.getCurrentModeName(), possibility, questionName);
+
+            questionPossibilities.remove(possibility);
+            eSharedPreferences.putString(
+                    statusManager.getCurrentModeName() + USER_POSSIBILITIES,
+                    json.toJsonInternal(allPossibilities));
+            eSharedPreferences.commit();
+        }
+    }
+
     private void clearAllUserPossibilities() {
         Logger.v(TAG, "{} - Clearing user possibilities", statusManager.getCurrentModeName());
         eSharedPreferences.remove(statusManager.getCurrentModeName() + USER_POSSIBILITIES);

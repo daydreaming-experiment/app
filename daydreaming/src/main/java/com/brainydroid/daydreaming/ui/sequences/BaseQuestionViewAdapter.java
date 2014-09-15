@@ -11,6 +11,7 @@ import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.brainydroid.daydreaming.R;
@@ -42,13 +43,14 @@ public abstract class BaseQuestionViewAdapter
     }
 
     @Override
-    public LinearLayout inflate(Activity activity, LinearLayout pageLayout) {
+    public LinearLayout inflate(Activity activity, RelativeLayout outerPageLayout,
+                                LinearLayout innerPageLayout) {
         Logger.d(TAG, "Inflating question view");
 
         int index = 0;
         LinearLayout questionLayout = (LinearLayout)layoutInflater.inflate(
-                R.layout.question_layout, pageLayout, false);
-        ArrayList<View> views = inflateViews(activity, questionLayout);
+                R.layout.question_layout, innerPageLayout, false);
+        ArrayList<View> views = inflateViews(activity, outerPageLayout, questionLayout);
 
         for (View view : views) {
             questionLayout.addView(view, index);
@@ -58,7 +60,9 @@ public abstract class BaseQuestionViewAdapter
         return questionLayout;
     }
 
-    protected abstract ArrayList<View> inflateViews(Activity activity, LinearLayout questionLayout);
+    protected abstract ArrayList<View> inflateViews(Activity activity,
+                                                    RelativeLayout outerPageLayout,
+                                                    LinearLayout questionLayout);
 
     public SpannableString getExtendedQuestionText(String qText) {
         HashMap<String,String> dictionary = parametersStorage.getGlossary();
