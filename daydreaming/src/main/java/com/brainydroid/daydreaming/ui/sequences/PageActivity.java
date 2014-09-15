@@ -117,6 +117,7 @@ public class PageActivity extends RoboFragmentActivity {
         if (!isFinishing) {
             Logger.d(TAG, "We're not finishing the sequence -> pausing it");
             sequence.setStatus(Sequence.STATUS_PARTIALLY_COMPLETED);
+            finish();
         }
 
         // Save everything to DB
