@@ -254,7 +254,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
                 if (daysToGo > 1) {
                     msg += "s";
                 }
-                msg += " to wait before the results";
+                msg += " left before the results";
                 Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
                 return;
             }
@@ -308,7 +308,6 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
         sntpClient.asyncRequestTime(callback);
     }
 
-    // TODO: user should be notified once the results are available
     private void updateRunningTimeFromTimestamp(long timestampNow) {
         if (!statusManager.areParametersUpdated()) {
             Logger.v(TAG, "Parameters not updated, not setting running time views");
@@ -454,12 +453,13 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
             }
         }
 
-        if (statusManager.areResultsAvailable()) {
+        if (statusManager.areResultsAvailable() ||
+                statusManager.getCurrentMode() == StatusManager.MODE_TEST) {
             resultsButton.setAlpha(1f);
-            resultsButton.setClickable(true);
+
+            // TODO: notify if first time available
         } else {
             resultsButton.setAlpha(0.3f);
-            resultsButton.setClickable(false);
         }
 
         debugInfoText.setText(statusManager.getDebugInfoString());
