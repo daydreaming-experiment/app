@@ -133,7 +133,7 @@ public class ProfileStorage {
         setIsDirtyAndCommit();
     }
 
-    private String getParametersVersion() {
+    public String getParametersVersion() {
         return sharedPreferences.getString(
                 statusManager.getCurrentModeName() + PROFILE_PARAMETERS_VERSION,
                 ServerParametersJson.DEFAULT_PARAMETERS_VERSION);
@@ -145,7 +145,7 @@ public class ProfileStorage {
         setIsDirtyAndCommit();
     }
 
-    private String getAppVersionName() {
+    public String getAppVersionName() {
         try {
             return context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
         } catch (PackageManager.NameNotFoundException e) {

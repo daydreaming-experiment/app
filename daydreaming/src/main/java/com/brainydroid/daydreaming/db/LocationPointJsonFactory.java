@@ -1,7 +1,10 @@
 package com.brainydroid.daydreaming.db;
 
+import com.brainydroid.daydreaming.background.ErrorHandler;
 import com.brainydroid.daydreaming.background.Logger;
 import com.google.inject.Inject;
+
+import org.json.JSONException;
 
 /**
  * Create {@link LocationPoint}s whenever we need an instance that can't be
@@ -22,10 +25,16 @@ public class LocationPointJsonFactory
     private static String TAG = "LocationPointJsonFactory";
 
     @Inject Json json;
+    @Inject ErrorHandler errorHandler;
 
     public LocationPoint createFromJson(String jsonContent) {
         Logger.v(TAG, "Creating locationPoint from json");
-        return json.fromJson(jsonContent, LocationPoint.class);
+        try {
+            return json.fromJson(jsonContent, LocationPoint.class);
+        } catch (JSONException e) {
+            errorHandler.handleBaseJsonError(jsonContent, e);
+            throw new RuntimeException(e);
+        }
     }
 
 }

@@ -32,4 +32,6 @@
     <color name="black">#000000</color>
     <color name="ui_yellow">#ede66d</color>
 
+    <color name="dark_red">#c60032</color>
+
 </resources>

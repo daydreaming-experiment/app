@@ -22,6 +22,12 @@ public class Profile {
     @JsonView(Views.Public.class)
     private String exp_id;
 
+    // These are defined so that deserialization doesn't fail, but are never used
+    @JsonView(Views.Ignored.class)
+    private String device_id = null;
+    @JsonView(Views.Ignored.class)
+    private int n_results = -1;
+
     @SuppressWarnings("FieldCanBeLocal")
     @JsonView(Views.Public.class)
     private ProfileData profile_data;

@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,6 +50,7 @@ public class PageActivity extends RoboFragmentActivity {
     private boolean isFinishing = false;
     @Inject private PageViewAdapter pageViewAdapter;
 
+    @InjectView(R.id.page_relativeLayout) RelativeLayout outerPageLayout;
     @InjectView(R.id.page_linearLayout) LinearLayout pageLinearLayout;
     @InjectView(R.id.page_intro_text) TextView pageIntroText;
 
@@ -69,15 +71,19 @@ public class PageActivity extends RoboFragmentActivity {
 
         initVars();
         setChrome();
-        pageViewAdapter.inflate(this, pageLinearLayout);
+        pageViewAdapter.inflate(this, outerPageLayout, pageLinearLayout);
         pageIntroText.setText(sequence.getIntro());
         setRobotoFont();
 
-        // If this is a probe and we're at the first page, reschedule so as not
-        // to have a new probe appear in the middle of this one
-        if (sequence.getType().equals(Sequence.TYPE_PROBE) && currentPage.isFirstOfSequence()) {
-            startSchedulerService();
+        // Sefl generated probe do not interfere with usual scheduling
+        if (!sequence.selfInitiated) {
+            // If this is a probe and we're at the first page, reschedule so as not
+            // to have a new probe appear in the middle of this one
+            if (sequence.getType().equals(Sequence.TYPE_PROBE) && currentPage.isFirstOfSequence()) {
+                startSchedulerService();
+            }
         }
+
     }
 
     @Override

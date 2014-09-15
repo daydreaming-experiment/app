@@ -14,7 +14,7 @@ public class MultipleChoiceAnswer implements IAnswer {
     private static String TAG = "MultipleChoiceAnswer";
 
     @JsonView(Views.Public.class)
-    @Inject @JacksonInject HashSet<String> choices;
+    @Inject HashSet<String> choices;
 
     public synchronized void addChoice(String choice) {
         Logger.v(TAG, "Adding choice {0}", choice);

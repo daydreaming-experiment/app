@@ -249,6 +249,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/ui_white_text_color"
                     android:textAppearance="@style/ui_font_title_bold"
+                    android:gravity="center_horizontal"
                     android:text="@string/dashboard_text_enable_internet"
                     android:id="@+id/dashboard_no_params_text"
                     android:drawablePadding="@dimen/global_text_drawable_padding"
@@ -434,6 +435,15 @@
         android:layout_marginBottom="16dp"
         android:gravity="bottom"
         android:layout_alignParentBottom="true">
+
+
+        <TextView
+            android:id="@+id/dashboard_debug_information"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:textColor="@color/dark_red"
+            android:text="xxxxx"/>
 
         <Button
             android:id="@+id/button_test_poll"

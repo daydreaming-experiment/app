@@ -26,7 +26,7 @@ public class QuestionPositionDescription
     @JsonView(Views.Internal.class)
     private Position position = null;
 
-    @Inject @JacksonInject private QuestionBuilder questionBuilder;
+    @Inject private QuestionBuilder questionBuilder;
 
     public String getName() {
         return name;

@@ -48,7 +48,8 @@ public class SequenceDescription extends DescriptionArrayContainer<PageGroupDesc
         return getPageGroups();
     }
 
-    public void validateInitialization(ArrayList<QuestionDescription> questionDescriptions) {
+    public void validateInitialization(ArrayList<QuestionDescription> questionDescriptions)
+            throws JsonParametersException {
         Logger.d(TAG, "Validating initialization");
 
         // Check name

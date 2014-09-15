@@ -46,7 +46,7 @@ public class Page implements IPage {
 
     private Sequence sequenceCache = null;
 
-    @Inject @JacksonInject private SequencesStorage sequencesStorage;
+    @Inject private SequencesStorage sequencesStorage;
 
     public void importFromPageDescription(PageDescription description) {
         setName(description.getName());

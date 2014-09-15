@@ -13,6 +13,8 @@ import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -31,10 +33,17 @@ import com.brainydroid.daydreaming.background.SyncService;
 import com.brainydroid.daydreaming.db.ParametersStorage;
 import com.brainydroid.daydreaming.network.SntpClient;
 import com.brainydroid.daydreaming.network.SntpClientCallback;
+import com.brainydroid.daydreaming.sequence.Sequence;
+import com.brainydroid.daydreaming.sequence.SequenceBuilder;
 import com.brainydroid.daydreaming.ui.AlphaButton;
 import com.brainydroid.daydreaming.ui.FontUtils;
 import com.brainydroid.daydreaming.ui.firstlaunchsequence.FirstLaunch00WelcomeActivity;
+import com.brainydroid.daydreaming.ui.sequences.PageActivity;
 import com.google.inject.Inject;
+
+import java.util.Calendar;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import roboguice.activity.RoboFragmentActivity;
 import roboguice.inject.ContentView;
@@ -42,14 +51,17 @@ import roboguice.inject.InjectResource;
 import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_dashboard)
-public class DashboardActivity extends RoboFragmentActivity {
+public class DashboardActivity extends RoboFragmentActivity implements View.OnClickListener {
 
     private static String TAG = "DashboardActivity";
 
     @Inject ParametersStorage parametersStorage;
     @Inject StatusManager statusManager;
     @Inject SntpClient sntpClient;
+    @Inject SequenceBuilder sequenceBuilder;
+    @Inject Sequence probe;
 
+    @InjectView(R.id.dashboard_main_layout) RelativeLayout dashboardMainLayout;
     @InjectView(R.id.dashboard_ExperimentTimeElapsed2)
     TextView timeElapsedTextView;
     @InjectView(R.id.dashboard_ExperimentResultsIn2) TextView timeToGoTextView;
@@ -61,25 +73,33 @@ public class DashboardActivity extends RoboFragmentActivity {
     @InjectView(R.id.dashboard_no_params_text) TextView textNetworkConnection;
     @InjectView(R.id.dashboard_ExperimentTimeElapsed2days) TextView elapsedTextDays;
     @InjectView(R.id.dashboard_ExperimentResultsIn2days) TextView toGoTextDays;
-    @InjectView(R.id.dashboard_ExperimentResultsButton) Button resultsButton;
+    @InjectView(R.id.dashboard_ExperimentResultsButton) AlphaButton resultsButton;
+    @InjectView(R.id.dashboard_debug_information) TextView debugInfoText;
 
     @InjectResource(R.string.dashboard_text_days) String textDays;
     @InjectResource(R.string.dashboard_text_day) String textDay;
+    @InjectResource(R.integer.dashboard_swipe_velocity_threshold) int SWIPE_VELOCITY_THRESHOLD;
 
     private boolean testModeThemeActivated = false;
     private int daysToGo = -1;
+    private long lastParametersUpdateAttempt = -1;
+    private Timer updateTimer = null;
 
-    IntentFilter parametersUpdateIntentFilter = new IntentFilter(StatusManager.ACTION_PARAMETERS_UPDATED);
+    IntentFilter parametersUpdateIntentFilter = new IntentFilter(StatusManager.ACTION_PARAMETERS_STATUS_CHANGE);
     IntentFilter networkIntentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+
+    public GestureDetector gestureDetector;
+    public View.OnTouchListener gestureListener;
+    public GestureDetector.SimpleOnGestureListener simpleOnGestureListener;
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            if (action.equals(StatusManager.ACTION_PARAMETERS_UPDATED) ||
+            if (action.equals(StatusManager.ACTION_PARAMETERS_STATUS_CHANGE) ||
                     action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
-                Logger.d(TAG, "receiver started for ACTION_PARAMETERS_UPDATED or CONNECTIVITY_ACTION");
-                updateExperimentStatusViews();
+                Logger.d(TAG, "receiver started for ACTION_PARAMETERS_STATUS_CHANGE or CONNECTIVITY_ACTION");
+                updateExperimentStatus();
             }
         }
     };
@@ -90,6 +110,7 @@ public class DashboardActivity extends RoboFragmentActivity {
         checkTestMode();
         super.onCreate(savedInstanceState);
         checkFirstLaunch();
+        setSideSwipeListener();
         setRobotoFont(this);
     }
 
@@ -100,7 +121,7 @@ public class DashboardActivity extends RoboFragmentActivity {
         checkExperimentModeActivatedDirty();
         updateRunningTime();
         updateChromeMode();
-        updateExperimentStatusViews();
+        updateExperimentStatus();
         super.onStart();
     }
 
@@ -113,12 +134,13 @@ public class DashboardActivity extends RoboFragmentActivity {
             Logger.v(TAG, "Parameters not yet updated, registering broadcast receiver");
             if (statusManager.isDataEnabled()) {
                 Logger.v(TAG, "Internet enabled, so also launching parameters update");
+                lastParametersUpdateAttempt = -1;
                 launchParametersUpdate();
             }
             registerReceiver(receiver, parametersUpdateIntentFilter);
             registerReceiver(receiver, networkIntentFilter);
         }
-        updateExperimentStatusViews();
+        updateExperimentStatus();
         super.onResume();
     }
 
@@ -130,6 +152,10 @@ public class DashboardActivity extends RoboFragmentActivity {
             unregisterReceiver(receiver);
         } catch(IllegalArgumentException e) {
             Logger.v(TAG, "Receiver is not registered, so not unregistering");
+        }
+        if (updateTimer != null) {
+            updateTimer.cancel();
+            updateTimer = null;
         }
         super.onPause();
     }
@@ -267,9 +293,13 @@ public class DashboardActivity extends RoboFragmentActivity {
         sntpClient.asyncRequestTime(callback);
     }
 
-    // TODO: disable "see results" button before the results are available
     // TODO: user should be notified once the results are available
     private void updateRunningTimeFromTimestamp(long timestampNow) {
+        if (!statusManager.areParametersUpdated()) {
+            Logger.v(TAG, "Parameters not updated, not setting running time views");
+            return;
+        }
+
         Logger.d(TAG, "Updating running time with timestamp {}", timestampNow);
         long expStartTimestamp = statusManager.getExperimentStartTimestamp();
 
@@ -323,7 +353,7 @@ public class DashboardActivity extends RoboFragmentActivity {
      */
 
     @TargetApi(11)
-    protected synchronized void updateExperimentStatusViews() {
+    protected synchronized void updateExperimentStatus() {
         View dashboard_TimeBox_layout = findViewById(R.id.dashboard_TimeBox_layout);
         View dashboard_TimeBox_no_param = findViewById(R.id.dashboard_TimeBox_layout_no_params);
         View dashboardNetworkSettingsButton = findViewById(R.id.dashboard_network_settings_button);
@@ -341,6 +371,11 @@ public class DashboardActivity extends RoboFragmentActivity {
             glossaryLayout.setClickable(true);
 
             updateRunningTime();
+
+            if (updateTimer != null) {
+                updateTimer.cancel();
+                updateTimer = null;
+            }
         } else {
             Logger.v(TAG, "Experiment is NOT running, setting views accordingly");
             expStatus.setText(R.string.dashboard_text_exp_stopped);
@@ -352,9 +387,59 @@ public class DashboardActivity extends RoboFragmentActivity {
             // hence the @TargetApi(11) above.
             glossaryLayout.setAlpha(0.3f);
             glossaryLayout.setClickable(false);
+
+            if (statusManager.isDataEnabled()) {
+                long now = Calendar.getInstance().getTimeInMillis();
+                if (now - lastParametersUpdateAttempt < 2 * 60 * 1000) {
+                    // Last update short time ago: "will retry in X seconds" + reset timer
+                    long secondsLeft = (2 * 60 * 1000 - (now - lastParametersUpdateAttempt)) / 1000;
+                    textNetworkConnection.setCompoundDrawablesWithIntrinsicBounds(
+                            R.drawable.status_wrong, 0, 0, 0);
+                    textNetworkConnection.setText(
+                            getString(R.string.dashboard_text_error_will_retry1)
+                                    + " " + secondsLeft + " "
+                                    + getString(R.string.dashboard_text_error_will_retry2));
+                    dashboardNetworkSettingsButton.setVisibility(View.INVISIBLE);
+
+                    if (updateTimer == null) {
+                        updateTimer = new Timer("updateTimer");
+                        updateTimer.schedule(new TimerTask() {
+                            @Override
+                            public void run() {
+                                updateExperimentStatusViewsForceUIThread();
+                            }
+                        }, 1000, 1000);
+                    }
+                } else {
+                    // Last update long ago: relaunch, and say "updating"
+                    textNetworkConnection.setCompoundDrawablesWithIntrinsicBounds(
+                            R.drawable.status_loading, 0, 0, 0);
+                    textNetworkConnection.setText(
+                            getString(R.string.dashboard_text_parameters_updating));
+                    dashboardNetworkSettingsButton.setVisibility(View.INVISIBLE);
+
+                    lastParametersUpdateAttempt = now;
+                    launchParametersUpdate();
+
+                    if (updateTimer != null) {
+                        updateTimer.cancel();
+                        updateTimer = null;
+                    }
+                }
+            } else {
+                textNetworkConnection.setCompoundDrawablesWithIntrinsicBounds(
+                        R.drawable.status_wrong, 0, 0, 0);
+                textNetworkConnection.setText(getString(R.string.dashboard_text_enable_internet));
+                dashboardNetworkSettingsButton.setVisibility(View.VISIBLE);
+
+                if (updateTimer != null) {
+                    updateTimer.cancel();
+                    updateTimer = null;
+                }
+            }
         }
 
-        if (statusManager.areResultsAvailable()){
+        if (statusManager.areResultsAvailable()) {
             resultsButton.setAlpha(1f);
             resultsButton.setClickable(true);
         } else {
@@ -362,16 +447,17 @@ public class DashboardActivity extends RoboFragmentActivity {
             resultsButton.setClickable(false);
         }
 
-        boolean isDataEnabled = statusManager.isDataEnabled();
-        textNetworkConnection.setCompoundDrawablesWithIntrinsicBounds(isDataEnabled ?
-                R.drawable.status_loading :
-                R.drawable.status_wrong, 0, 0, 0);
-        textNetworkConnection.setText(isDataEnabled ?
-                getString(R.string.dashboard_text_parameters_updating) :
-                getString(R.string.dashboard_text_enable_internet));
-        dashboardNetworkSettingsButton.setVisibility(isDataEnabled ? View.INVISIBLE : View.VISIBLE);
-
+        debugInfoText.setText(statusManager.getDebugInfoString());
         updateBeginQuestionnairesButton();
+    }
+
+    public void updateExperimentStatusViewsForceUIThread() {
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                updateExperimentStatus();
+            }
+        });
     }
 
     protected void checkFirstLaunch() {
@@ -401,26 +487,34 @@ public class DashboardActivity extends RoboFragmentActivity {
      * Launching poll from dashboard (debug)
      */
     public void runPollNow(@SuppressWarnings("UnusedParameters") View view) {
-        Logger.d(TAG, "Launching a debug poll");
+        if (statusManager.isExpRunning()) {
+            Logger.d(TAG, "Launching a debug poll");
 
-        Intent pollIntent = new Intent(this, SchedulerService.class);
-        pollIntent.putExtra(SchedulerService.SCHEDULER_DEBUGGING, true);
-        startService(pollIntent);
+            Intent pollIntent = new Intent(this, SchedulerService.class);
+            pollIntent.putExtra(SchedulerService.SCHEDULER_DEBUGGING, true);
+            startService(pollIntent);
 
-        Toast.makeText(this, "Now wait for 5 secs", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Now wait for 5 secs", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Parameters aren't loaded yet", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void runSyncNow(View view) {
-        Logger.d(TAG, "Launching debug sync now");
+        if (statusManager.isExpRunning()) {
+            Logger.d(TAG, "Launching debug sync now");
 
-        if (!statusManager.isDataEnabled()) {
-            Toast.makeText(this, "You're not connected to the internet!", Toast.LENGTH_SHORT).show();
-            return;
+            if (!statusManager.isDataEnabled()) {
+                Toast.makeText(this, "You're not connected to the internet!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            Intent syncIntent = new Intent(this, SyncService.class);
+            syncIntent.putExtra(SyncService.DEBUG_SYNC, true);
+            startService(syncIntent);
+        } else {
+            Toast.makeText(this, "Parameters aren't loaded yet", Toast.LENGTH_SHORT).show();
         }
-
-        Intent syncIntent = new Intent(this, SyncService.class);
-        syncIntent.putExtra(SyncService.DEBUG_SYNC, true);
-        startService(syncIntent);
     }
 
     public void reloadParametersKeepProfileAnswers(@SuppressWarnings("UnusedParameters") View view) {
@@ -431,11 +525,13 @@ public class DashboardActivity extends RoboFragmentActivity {
             return;
         }
 
+        // Register receiver to get the update
+        registerReceiver(receiver, parametersUpdateIntentFilter);
         statusManager.resetParametersKeepProfileAnswers();
 
-        Intent syncIntent = new Intent(this, SyncService.class);
-        syncIntent.putExtra(SyncService.DEBUG_SYNC, true);
-        startService(syncIntent);
+        lastParametersUpdateAttempt = -1;
+        updateExperimentStatus();
+        // SyncService is started from inside updateExperimentStatus
     }
 
     public void setRobotoFont(Activity activity){
@@ -467,6 +563,7 @@ public class DashboardActivity extends RoboFragmentActivity {
             testReloadButton.setClickable(false);
             testSyncButton.setVisibility(View.INVISIBLE);
             testSyncButton.setClickable(false);
+            debugInfoText.setVisibility(View.INVISIBLE);
         } else {
             Logger.d(TAG, "Setting test chrome");
             testProbeButton.setVisibility(View.VISIBLE);
@@ -475,6 +572,8 @@ public class DashboardActivity extends RoboFragmentActivity {
             testReloadButton.setClickable(true);
             testSyncButton.setVisibility(View.VISIBLE);
             testSyncButton.setClickable(true);
+            debugInfoText.setVisibility(View.VISIBLE);
+            debugInfoText.setText(statusManager.getDebugInfoString());
         }
     }
 
@@ -575,4 +674,77 @@ public class DashboardActivity extends RoboFragmentActivity {
         }
     }
 
+    public synchronized void setSideSwipeListener() {
+        Logger.d(TAG, "Setting Swipe Listener");
+
+        simpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
+            @Override
+            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+                Logger.d(TAG, "Swipe Event detected");
+                if (statusManager.areParametersUpdated()){
+                    Logger.d(TAG, "Swipe Event used");
+                    if ( Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(DashboardActivity.this);
+                        // set title
+                        alertDialogBuilder.setTitle("Self Report");
+                        // set dialog message
+                        alertDialogBuilder
+                                .setMessage("Do you want to report a daydreaming experience?")
+                                .setCancelable(false)
+                                .setPositiveButton("Yes!",new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,int id) {
+                                        createProbe();
+                                        launchProbeIntent();
+                                    }
+                                })
+                                .setNegativeButton("Nope",new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,int id) {
+                                        dialog.cancel();
+                                    }
+                                });
+                        // create alert dialog
+                        AlertDialog alertDialog = alertDialogBuilder.create();
+                        // show it
+                        alertDialog.show();
+                        return true;
+                    }
+                    return false;
+                } else {
+                    return false;
+                }
+
+            }
+        };
+
+        gestureDetector = new GestureDetector(DashboardActivity.this, simpleOnGestureListener);
+        gestureListener = new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                Logger.d(TAG, "Dashboard Touch event");
+                return gestureDetector.onTouchEvent(event);
+            }
+        };
+
+        dashboardMainLayout.setOnClickListener(DashboardActivity.this);
+        dashboardMainLayout.setOnTouchListener(gestureListener);
+    }
+
+    public Sequence createProbe() {
+        probe = sequenceBuilder.buildSave(Sequence.TYPE_PROBE);
+        probe.setSelfInitiated(true);
+        return probe;
+    }
+
+    private void launchProbeIntent() {
+        Logger.d(TAG, "Creating probe Intent");
+        Intent probeIntent = new Intent(this, PageActivity.class);
+        // Set the id of the probe to start
+        probeIntent.putExtra(PageActivity.EXTRA_SEQUENCE_ID, probe.getId());
+        // Create a new task. The rest is defined in the App manifest.
+        probeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(probeIntent);
+    }
+
+    @Override
+    public void onClick(View v) {}
 }

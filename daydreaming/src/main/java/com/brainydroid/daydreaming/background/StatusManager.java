@@ -68,7 +68,7 @@ public class StatusManager {
     /** Preference key storing the current mode */
     private static String EXP_CURRENT_MODE = "expCurrentMode";
 
-    public static final String ACTION_PARAMETERS_UPDATED = "actionParametersUpdated";
+    public static final String ACTION_PARAMETERS_STATUS_CHANGE = "actionParametersStatusChange";
 
     public static int MODE_PROD = 0;
     public static int MODE_TEST = 1;
@@ -84,6 +84,11 @@ public class StatusManager {
     public static long RESTART_LOCATION_POINT_SERVICE_DELAY = 1 * 60 * 60 * 1000;
 
     private int cachedCurrentMode = MODE_DEFAULT;
+    private boolean isPreSyncRunning = false;
+    private boolean isSequencesSyncRunning = false;
+    private boolean isLocationPointsSyncRunning = false;
+    private boolean isProfileSyncRunning = false;
+    private long isSyncRunningTimestamp = -1;
 
     /**
      * Delay below which we don't need to re-sync data to servers (in
@@ -108,10 +113,10 @@ public class StatusManager {
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor eSharedPreferences;
 
-    private void sendParametersUpdatedBroadcast() {
-        Logger.v(TAG, "Sending ACTION_PARAMETERS_UPDATED broadcast");
+    private void sendParametersStatusChangeBroadcast() {
+        Logger.v(TAG, "Sending ACTION_PARAMETERS_STATUS_CHANGE broadcast");
         Intent broadcastIntent = new Intent();
-        broadcastIntent.setAction(ACTION_PARAMETERS_UPDATED);
+        broadcastIntent.setAction(ACTION_PARAMETERS_STATUS_CHANGE);
         context.sendBroadcast(broadcastIntent);
     }
 
@@ -125,6 +130,11 @@ public class StatusManager {
         this.sharedPreferences = sharedPreferences;
         eSharedPreferences = sharedPreferences.edit();
         updateCachedCurrentMode();
+    }
+
+    public String getDebugInfoString() {
+        return "app version: " + profileStorageProvider.get().getAppVersionName()
+                + "\nparameters version: " + profileStorageProvider.get().getParametersVersion();
     }
 
     /**
@@ -180,14 +190,14 @@ public class StatusManager {
     /**
      * Set the updated parameters flag to completed.
      */
-    public synchronized void setParametersUpdated() {
+    public synchronized void setParametersUpdated(boolean updated) {
         Logger.d(TAG, "{} - Setting parameters to updated", getCurrentModeName());
 
-        eSharedPreferences.putBoolean(getCurrentModeName() + EXP_STATUS_PARAMETERS_UPDATED, true);
+        eSharedPreferences.putBoolean(getCurrentModeName() + EXP_STATUS_PARAMETERS_UPDATED, updated);
         eSharedPreferences.commit();
 
         // Broadcast the info so that the dashboard can update its view
-        sendParametersUpdatedBroadcast();
+        sendParametersStatusChangeBroadcast();
     }
 
     public synchronized void clearParametersUpdated() {
@@ -628,6 +638,54 @@ public class StatusManager {
         int daysToGo = parametersStorageProvider.get().getExpDuration() - daysElapsed;
 
         return daysToGo <= 0;
+    }
+
+    public void setPreSyncRunning(boolean running) {
+        Logger.v(TAG, "Setting isPreSyncRunning to {}", running);
+        isPreSyncRunning = running;
+        isSyncRunningTimestamp = Calendar.getInstance().getTimeInMillis();
+        clearSyncRunningIfAllDone();
+    }
+
+    public void setSequencesSyncRunning(boolean running) {
+        Logger.v(TAG, "Setting isSequencesSyncRunning to {}", running);
+        isSequencesSyncRunning = running;
+        isSyncRunningTimestamp = Calendar.getInstance().getTimeInMillis();
+        clearSyncRunningIfAllDone();
+    }
+
+    public void setLocationPointsSyncRunning(boolean running) {
+        Logger.v(TAG, "Setting isLocationPointsSyncRunning to {}", running);
+        isLocationPointsSyncRunning = running;
+        isSyncRunningTimestamp = Calendar.getInstance().getTimeInMillis();
+        clearSyncRunningIfAllDone();
+    }
+
+    public void setProfileSyncRunning(boolean running) {
+        Logger.v(TAG, "Setting isProfileSyncRunning to {}", running);
+        isProfileSyncRunning = running;
+        isSyncRunningTimestamp = Calendar.getInstance().getTimeInMillis();
+        clearSyncRunningIfAllDone();
+    }
+
+    private void clearSyncRunningIfAllDone() {
+        Logger.v(TAG, "Clearing sync running flags if all done");
+        if (!isPreSyncRunning && !isSequencesSyncRunning &&
+                !isLocationPointsSyncRunning && !isProfileSyncRunning) {
+            isPreSyncRunning = false;
+            isSequencesSyncRunning = false;
+            isLocationPointsSyncRunning = false;
+            isProfileSyncRunning = false;
+            isSyncRunningTimestamp = -1;
+        }
+    }
+
+    public boolean isSyncRunning() {
+        long now = Calendar.getInstance().getTimeInMillis();
+        // Sync is running and we know this from less than a minute ago
+        return (isPreSyncRunning || isSequencesSyncRunning ||
+                isLocationPointsSyncRunning || isProfileSyncRunning)
+                && (now - isSyncRunningTimestamp) < 60 * 1000;
     }
 
 }
