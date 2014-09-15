@@ -53,7 +53,8 @@ public class AutoListQuestionViewAdapter
 
     @TargetApi(11)
     @Override
-    protected ArrayList<View> inflateViews(Activity activity, LinearLayout questionLayout) {
+    protected ArrayList<View> inflateViews(Activity activity, RelativeLayout outerPageLayout,
+                                           LinearLayout questionLayout) {
         Logger.d(TAG, "Inflating question views");
 
         AutoListQuestionDescriptionDetails details =

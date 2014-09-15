@@ -55,7 +55,8 @@ public class ManySlidersQuestionViewAdapter
     private boolean isEditMode = false;
 
     @Override
-    protected ArrayList<View> inflateViews(Activity activity, final LinearLayout questionLayout) {
+    protected ArrayList<View> inflateViews(final Activity activity, final RelativeLayout outerPageLayout,
+                                           final LinearLayout questionLayout) {
         Logger.d(TAG, "Inflating question views");
 
         final ManySlidersQuestionDescriptionDetails details =
@@ -66,7 +67,7 @@ public class ManySlidersQuestionViewAdapter
             userSliders = details.getDefaultSliders();
         }
 
-        View questionView = layoutInflater.inflate(
+        final LinearLayout questionView = (LinearLayout)layoutInflater.inflate(
                 R.layout.question_many_sliders, questionLayout, false);
 
         rowContainer = (LinearLayout)questionView.findViewById(
@@ -85,7 +86,7 @@ public class ManySlidersQuestionViewAdapter
         }
 
         // Set auto-complete hint and adapter
-        final AutoCompleteTextView autoTextView = (AutoCompleteTextView)questionLayout
+        final AutoCompleteTextView autoTextView = (AutoCompleteTextView)questionView
                 .findViewById(R.id.question_many_sliders_autoCompleteTextView);
         autoTextView.setHint(details.getAddItemHint());
         final AutoCompleteAdapter autoCompleteAdapter = autoCompleteAdapterFactory.create();
@@ -125,7 +126,7 @@ public class ManySlidersQuestionViewAdapter
         }
 
         // Set auto-complete button listener
-        Button addButton = (Button)questionLayout.findViewById(R.id.question_many_sliders_addItem);
+        Button addButton = (Button)questionView.findViewById(R.id.question_many_sliders_addItem);
         addButton.setOnClickListener(new Button.OnClickListener() {
 
             @Override
@@ -146,8 +147,7 @@ public class ManySlidersQuestionViewAdapter
         });
 
         // Add edit button
-        Button editButton = (Button)((RelativeLayout)questionLayout
-                .getParent().getParent()).findViewById(R.id.page_editModeButton);
+        Button editButton = (Button)outerPageLayout.findViewById(R.id.page_editModeButton);
         editButton.setVisibility(View.VISIBLE);
         editButton.setOnClickListener(new Button.OnClickListener() {
 
@@ -155,20 +155,20 @@ public class ManySlidersQuestionViewAdapter
             public void onClick(View view) {
                 if (!isEditMode) {
                     // Show explanation dialog
-                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(activity);
                     alertDialogBuilder.setTitle("Edit mode");
                     alertDialogBuilder
                     .setMessage(details.getDialogText())
                     .setCancelable(false)
                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            toggleEditMode(questionLayout);
+                            toggleEditMode(outerPageLayout, questionView);
                         }
                     });
                     alertDialogBuilder.create().show();
                 } else {
                     // If we're already in edit mode, just get out
-                    toggleEditMode(questionLayout);
+                    toggleEditMode(outerPageLayout, questionView);
                 }
             }
 
@@ -206,34 +206,31 @@ public class ManySlidersQuestionViewAdapter
         parametersStorage.removeUserPossibility(question.getQuestionName(), ms.getDefinition());
     }
 
-    protected void toggleEditMode(LinearLayout questionLayout) {
+    protected void toggleEditMode(RelativeLayout pageLayout, LinearLayout questionView) {
         Logger.v(TAG, "Toggling edit mode");
         isEditMode = !isEditMode;
 
         // Toggle delete buttons visibility
         for (LinearLayout sliderLayout : sliderLayouts.values()) {
-            ((ImageButton)sliderLayout.findViewById(
-                    R.id.question_many_sliders_sliderDelete))
+            sliderLayout.findViewById(
+                    R.id.question_many_sliders_sliderDelete)
                     .setVisibility(isEditMode ? View.VISIBLE : View.GONE);
         }
 
         // Toggle auto-complete dropdown list to add items
-        RelativeLayout addLayout = (RelativeLayout)questionLayout.findViewById(
+        RelativeLayout addLayout = (RelativeLayout)questionView.findViewById(
                 R.id.question_many_sliders_addLayout);
         addLayout.setVisibility(isEditMode ? View.VISIBLE : View.GONE);
 
         // Toggle add button text
-        Button editButton = (Button)((RelativeLayout)questionLayout
-                .getParent().getParent()).findViewById(R.id.page_editModeButton);
+        Button editButton = (Button)pageLayout.findViewById(R.id.page_editModeButton);
         editButton.setText(isEditMode ? editTextDone : editTextEdit);
 
         // Toggle next and finish buttons (visibility stays the same)
-        AlphaImageButton nextButton = (AlphaImageButton)((RelativeLayout)questionLayout
-                .getParent().getParent()).findViewById(R.id.page_nextButton);
+        AlphaImageButton nextButton = (AlphaImageButton)pageLayout.findViewById(R.id.page_nextButton);
         nextButton.setClickable(!isEditMode);
         nextButton.setAlpha(isEditMode ? 0.3f : 1f);
-        AlphaImageButton finishButton = (AlphaImageButton)((RelativeLayout)questionLayout
-                .getParent().getParent()).findViewById(R.id.page_finishButton);
+        AlphaImageButton finishButton = (AlphaImageButton)pageLayout.findViewById(R.id.page_finishButton);
         finishButton.setClickable(!isEditMode);
         finishButton.setAlpha(isEditMode ? 0.3f : 1f);
     }

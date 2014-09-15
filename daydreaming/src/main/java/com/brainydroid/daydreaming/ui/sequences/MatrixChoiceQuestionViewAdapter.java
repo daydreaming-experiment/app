@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -76,13 +77,14 @@ public class MatrixChoiceQuestionViewAdapter extends BaseQuestionViewAdapter
     }
 
     @Override
-    protected ArrayList<View> inflateViews(Activity activity, LinearLayout questionLayout) {
+    protected ArrayList<View> inflateViews(Activity activity, RelativeLayout outerPageLayout,
+                                           LinearLayout questionLayout) {
         Logger.d(TAG, "Inflating question views");
 
         MatrixChoiceQuestionDescriptionDetails details =
                 (MatrixChoiceQuestionDescriptionDetails)question.getDetails();
         ArrayList<String> choices = details.getChoices();
-        View questionView = layoutInflater.inflate(
+        LinearLayout questionView = (LinearLayout)layoutInflater.inflate(
                 R.layout.question_matrix_choice, questionLayout, false);
 
         LinearLayout rowContainer = (LinearLayout) questionView.findViewById(

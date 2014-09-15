@@ -139,7 +139,7 @@
     <string name="page_thank_you">Thank you for answering these questions!</string>
     <string name="page_intro_text">Right before the app interrupted you…</string>
     <string name="page_edit_mode_edit">Edit mode</string>
-    <string name="page_edit_mode_done">Edit mode</string>
+    <string name="page_edit_mode_done">Done</string>
 
     <!-- Display question Activity -->
     <string name="question_welcome_text">HERE ARE A FEW QUICK QUESTIONS:</string>

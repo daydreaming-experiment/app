@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,7 +42,8 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
     @Inject SliderAnswer answer;
 
     @Override
-    protected ArrayList<View> inflateViews(Activity activity, LinearLayout questionLayout) {
+    protected ArrayList<View> inflateViews(Activity activity, RelativeLayout outerPageLayout,
+                                           LinearLayout questionLayout) {
         Logger.d(TAG, "Inflating question views");
 
         ArrayList<SliderSubQuestion> subQuestions =
