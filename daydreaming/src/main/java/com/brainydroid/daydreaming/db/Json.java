@@ -7,13 +7,21 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.BeanDescription;
+import com.fasterxml.jackson.databind.DeserializationConfig;
+import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.deser.AbstractDeserializer;
+import com.fasterxml.jackson.databind.deser.BeanDeserializerModifier;
 import com.fasterxml.jackson.databind.introspect.VisibilityChecker;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 import com.google.inject.Singleton;
+
+import org.json.JSONException;
 
 import java.io.IOException;
 
@@ -43,8 +51,26 @@ public class Json {
      * Constructor used with dependency injection.
      */
     @Inject
-    public Json(ObjectMapper mapper) {
+    public Json(ObjectMapper mapper, final Injector injector) {
         Logger.v(TAG, "Building Jackson reader/writer instances");
+
+        SimpleModule module = new SimpleModule();
+        module.setDeserializerModifier(new BeanDeserializerModifier()
+        {
+            @Override
+            public JsonDeserializer<?> modifyDeserializer(
+                    DeserializationConfig config, BeanDescription beanDesc,
+                    JsonDeserializer<?> deserializer) {
+                if (deserializer instanceof AbstractDeserializer) {
+                    return deserializer;
+                }
+                InjectingDeserializer<Object> injectingDeserializer =
+                        new InjectingDeserializer<Object>(deserializer);
+                injector.injectMembers(injectingDeserializer);
+                return injectingDeserializer;
+            }
+        });
+        mapper.registerModule(module);
 
         VisibilityChecker checker = mapper.getVisibilityChecker()
                 .withGetterVisibility(JsonAutoDetect.Visibility.NONE)
@@ -53,7 +79,6 @@ public class Json {
 
         mapper.setVisibilityChecker(checker);
         mapper.disable(MapperFeature.DEFAULT_VIEW_INCLUSION);
-        mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
         writerInternal = mapper.writerWithView(Views.Internal.class);
@@ -69,6 +94,7 @@ public class Json {
         } catch (JsonProcessingException e) {
             Logger.e(TAG, "Could not serialize to JSON");
             e.printStackTrace();
+            // TODO: throw real exception here
             throw new RuntimeException(e);
         }
     }
@@ -80,31 +106,32 @@ public class Json {
         } catch (JsonProcessingException e) {
             Logger.e(TAG, "Could not serialize to JSON");
             e.printStackTrace();
+            // TODO: throw real exception here
             throw new RuntimeException(e);
         }
     }
 
-    public <T> T fromJson(String json, Class<T> classOfT) {
+    public <T> T fromJson(String json, Class<T> classOfT) throws JSONException {
         Logger.v(TAG, "Deserializing from JSON");
         try {
             return mapper.readValue(json, classOfT);
         } catch (IOException e) {
-            Logger.e(TAG, "Could not deserialize JSON");
-            Logger.e(TAG, json.replace("{", "'{'").replace("}", "'}'"));
+            Logger.e(TAG, "Could not deserialize JSON. Offending JSON:");
+            Logger.eRaw(TAG, json);
             e.printStackTrace();
-            return null;
+            throw new JSONException(e.getMessage());
         }
     }
 
-    public <T> T fromJson(String json, TypeReference<T> typeRefOfT) {
+    public <T> T fromJson(String json, TypeReference<T> typeRefOfT) throws JSONException {
         Logger.v(TAG, "Deserializing from JSON");
         try {
             return mapper.readValue(json, typeRefOfT);
         } catch (IOException e) {
-            Logger.e(TAG, "Could not deserialize JSON");
-            Logger.e(TAG, json.replace("{", "'{'").replace("}", "'}'"));
+            Logger.e(TAG, "Could not deserialize JSON. Offending JSON:");
+            Logger.eRaw(TAG, json);
             e.printStackTrace();
-            return null;
+            throw new JSONException(e.getMessage());
         }
     }
 }

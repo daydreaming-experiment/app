@@ -13,8 +13,6 @@ import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import com.brainydroid.daydreaming.R;
-import com.brainydroid.daydreaming.ui.filtering.Filterer;
-import com.brainydroid.daydreaming.ui.filtering.MetaString;
 import com.google.inject.Inject;
 
 import java.util.ArrayList;

@@ -3,7 +3,6 @@ package com.brainydroid.daydreaming.db;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.sequence.IQuestion;
 import com.brainydroid.daydreaming.sequence.QuestionBuilder;
-import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -22,11 +21,12 @@ public class QuestionDescription implements IQuestion {
             @JsonSubTypes.Type(value=StarRatingQuestionDescriptionDetails.class, name="starRating"),
             @JsonSubTypes.Type(value=MultipleChoiceQuestionDescriptionDetails.class, name="multipleChoice"),
             @JsonSubTypes.Type(value=MatrixChoiceQuestionDescriptionDetails.class, name="matrixChoice"),
-            @JsonSubTypes.Type(value=AutoListQuestionDescriptionDetails.class, name="autoList")})
+            @JsonSubTypes.Type(value=AutoListQuestionDescriptionDetails.class, name="autoList"),
+            @JsonSubTypes.Type(value=ManySlidersQuestionDescriptionDetails.class, name="manySliders")})
     @JsonView(Views.Internal.class)
     private IQuestionDescriptionDetails details = null;
 
-    @Inject @JacksonInject private QuestionBuilder questionBuilder;
+    @Inject private QuestionBuilder questionBuilder;
 
     public String getQuestionName() {
         return name;

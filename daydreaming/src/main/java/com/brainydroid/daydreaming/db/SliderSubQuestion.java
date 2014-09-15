@@ -11,7 +11,6 @@ public class SliderSubQuestion {
     private static String TAG = "SliderSubQuestion";
 
     public static int DEFAULT_INITIAL_POSITION = -1;
-    public static int DEFAULT_INITIAL_RATING = -1;
 
     @JsonView(Views.Internal.class)
     private String text = null;

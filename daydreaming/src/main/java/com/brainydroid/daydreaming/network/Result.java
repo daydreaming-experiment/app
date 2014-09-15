@@ -11,6 +11,14 @@ public class Result<T> {
     @JsonView(Views.Public.class)
     private T result_data;
 
+    // These are defined so that deserialization doesn't fail, but are never used
+    @JsonView(Views.Ignored.class)
+    private String created_at;
+    @JsonView(Views.Ignored.class)
+    private String exp_id;
+    @JsonView(Views.Ignored.class)
+    private String id;
+
     public Result() {}
 
     public Result(String profile_id, T result_data) {
