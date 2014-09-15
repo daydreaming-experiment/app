@@ -34,7 +34,8 @@
     <string name="dashboard_test_text_probe_now">Probe Now</string>
     <string name="dashboard_test_text_sync_now">Sync Now</string>
     <string name="dashboard_test_text_reload_parameters">Reload parameters</string>
-
+    <string name="dashboard_text_begin_questionnaires">Questions</string>
+    <string name="dashboard_button_text_instruction">Instructions</string>
     <!-- Glossary Activity -->
     <string name="glossary_title">GLOSSARY</string>
 
@@ -238,6 +239,6 @@
 
 ]]>
     </string>
-    <string name="dashboard_text_begin_questionnaires">Questions</string>
+
 
 </resources>

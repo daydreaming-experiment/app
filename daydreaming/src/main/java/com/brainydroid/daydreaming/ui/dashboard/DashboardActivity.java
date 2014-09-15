@@ -39,8 +39,12 @@ import com.brainydroid.daydreaming.ui.AlphaButton;
 import com.brainydroid.daydreaming.ui.FontUtils;
 import com.brainydroid.daydreaming.ui.firstlaunchsequence.FirstLaunch00WelcomeActivity;
 import com.brainydroid.daydreaming.ui.sequences.PageActivity;
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.google.inject.Inject;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -85,6 +89,11 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
     private long lastParametersUpdateAttempt = -1;
     private Timer updateTimer = null;
 
+    List<Integer> showcasesId;
+    List<String[]> showcasesTexts;
+    int showcaseViewIndex = 0;
+    boolean UNIQUE = true;
+
     IntentFilter parametersUpdateIntentFilter = new IntentFilter(StatusManager.ACTION_PARAMETERS_STATUS_CHANGE);
     IntentFilter networkIntentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
 
@@ -123,6 +132,12 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
         updateChromeMode();
         updateExperimentStatus();
         super.onStart();
+
+        populateShowcaseViews();
+        if (statusManager.areParametersUpdated()){
+             launchShowCaseViewSequence(UNIQUE);
+        }
+
     }
 
     @Override
@@ -747,4 +762,64 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
 
     @Override
     public void onClick(View v) {}
+
+    public void populateShowcaseViews() {
+        Logger.d(TAG, "Populating ShowCaseViews");
+        // populate Showcase List
+        showcasesId = new ArrayList<Integer>();
+        showcasesTexts = new ArrayList<String[]>();
+        addShowCaseItem(R.id.dashboard_begin_questionnaires_button,"Questions", "When blinking, there are questions for you!");
+        addShowCaseItem(R.id.dashboard_openAppSettings, "Settings", "Set the app parameters");
+        addShowCaseItem(R.id.dashboard_glossary_button, "Glossary", "A list of useful definitions");
+        addShowCaseItem(R.id.dashboard_ExperimentResultsButton, "Results", "When available, a detailed report for you here!");
+        addShowCaseItem(R.id.dashboard_TimeBox_layout, "Self Report", "Swipe right for a self report");
+        addShowCaseItem(R.id.dashboard_ExperimentTimeElapsed2, "Time Elapsed", "The duration you have been running this app");
+        addShowCaseItem(R.id.dashboard_ExperimentResultsIn2, "Time Left", "The duration left before you get results");
+
+    }
+
+    public void launchShowCaseViewSequence(boolean unique) {
+        Logger.d(TAG, "Launching Sequence of ShowCaseViews");
+        showcaseViewIndex = 0;
+        inflateFromRunningIndex(unique);
+    }
+
+    public void onClick_launchInstructions(View v) {
+        launchShowCaseViewSequence(!UNIQUE);
+    }
+
+    public void addShowCaseItem(int id, String title, String text){
+        Logger.d(TAG, "Preparing ShowCaseView - id:{0}, title:{1}, text:{2}",
+                Integer.toString(id),title,text);
+        showcasesId.add(id);
+        showcasesTexts.add(new String[]{title, text});
+    }
+
+    public void inflateFromRunningIndex(final boolean unique) {
+        Logger.d(TAG, "Showing ShowCaseView - index: {}",Integer.toString(showcaseViewIndex));
+        if (showcaseViewIndex < showcasesId.size()) {
+            int id = showcasesId.get(showcaseViewIndex);
+            String[] texts = showcasesTexts.get(showcaseViewIndex);
+            ShowcaseView.Builder svBuilder = new ShowcaseView.Builder(DashboardActivity.this)
+                    .setTarget(new ViewTarget(id, DashboardActivity.this))
+                    .setContentTitle(texts[0])
+                    .setContentText(texts[1]);
+            if (unique) { svBuilder.singleShot(id); }
+            final ShowcaseView sv = svBuilder.build();
+            if (showcaseViewIndex < showcasesId.size()) {
+                sv.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        sv.hide();
+                        inflateFromRunningIndex(unique);
+                    }
+                });
+            }
+            sv.setShouldCentreText(true);
+            sv.setStyle(R.style.CustomShowcaseTheme);
+            showcaseViewIndex += 1;
+        }
+    }
+
+
 }
