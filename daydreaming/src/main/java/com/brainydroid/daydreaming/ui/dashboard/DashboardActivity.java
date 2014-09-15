@@ -92,6 +92,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
     List<Integer> showcasesId;
     List<String[]> showcasesTexts;
     int showcaseViewIndex = 0;
+    boolean UNIQUE = true;
 
     IntentFilter parametersUpdateIntentFilter = new IntentFilter(StatusManager.ACTION_PARAMETERS_STATUS_CHANGE);
     IntentFilter networkIntentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
@@ -134,7 +135,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
 
         populateShowcaseViews();
         if (statusManager.areParametersUpdated()){
-             launchShowCaseViewSequence();
+             launchShowCaseViewSequence(UNIQUE);
         }
 
     }
@@ -770,15 +771,18 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
         addShowCaseItem(R.id.dashboard_begin_questionnaires_button,"Questions", "When blinking, there are questions for you!");
         addShowCaseItem(R.id.dashboard_openAppSettings, "Settings", "Set the app parameters");
         addShowCaseItem(R.id.dashboard_glossary_button, "Glossary", "A list of useful definitions");
+        addShowCaseItem(R.id.dashboard_ExperimentResultsButton, "Results", "When available, a detailed report for you here!");
         addShowCaseItem(R.id.dashboard_TimeBox_layout, "Self Report", "Swipe right for a self report");
-
-
     }
 
-    public void launchShowCaseViewSequence() {
+    public void launchShowCaseViewSequence(boolean unique) {
         Logger.d(TAG, "Launching Sequence of ShowCaseViews");
         showcaseViewIndex = 0;
-        inflateFromRunningIndex();
+        inflateFromRunningIndex(unique);
+    }
+
+    public void onClick_launchInstructions(View v) {
+        launchShowCaseViewSequence(!UNIQUE);
     }
 
     public void addShowCaseItem(int id, String title, String text){
@@ -788,33 +792,29 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
         showcasesTexts.add(new String[]{title, text});
     }
 
-    public ShowcaseView inflateFromRunningIndex() {
+    public void inflateFromRunningIndex(final boolean unique) {
         Logger.d(TAG, "Showing ShowCaseView - index: {}",Integer.toString(showcaseViewIndex));
         if (showcaseViewIndex < showcasesId.size()) {
-            // get current
             int id = showcasesId.get(showcaseViewIndex);
             String[] texts = showcasesTexts.get(showcaseViewIndex);
-            final ShowcaseView sv = new ShowcaseView.Builder(DashboardActivity.this)
+            ShowcaseView.Builder svBuilder = new ShowcaseView.Builder(DashboardActivity.this)
                     .setTarget(new ViewTarget(id, DashboardActivity.this))
                     .setContentTitle(texts[0])
-                    .setContentText(texts[1])
-                    .singleShot(id)
-                    .build();
+                    .setContentText(texts[1]);
+            if (unique) { svBuilder.singleShot(id); }
+            final ShowcaseView sv = svBuilder.build();
             if (showcaseViewIndex < showcasesId.size()) {
                 sv.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         sv.hide();
-                        inflateFromRunningIndex();
+                        inflateFromRunningIndex(unique);
                     }
                 });
             }
             sv.setShouldCentreText(true);
             sv.setStyle(R.style.CustomShowcaseTheme);
             showcaseViewIndex += 1;
-            return sv;
-        } else {
-            return null;
         }
     }
 

@@ -390,34 +390,67 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
-                android:padding="15dp"
                 >
-
-                <RelativeLayout
-                    android:id="@+id/dashboard_glossary_layout"
+                <LinearLayout
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content">
-                    <ImageButton
-                        android:id="@+id/dashboard_glossary_button"
-                        android:layout_width="@dimen/dashboard_icon_size"
-                        android:layout_height="@dimen/dashboard_icon_size"
-                        android:scaleType="centerInside"
-                        android:background="@drawable/icon_glossary_selector"
-                        android:contentDescription="@null"
-                        android:onClick="onClick_OpenGlossaryActivity"
-                        android:layout_centerHorizontal="true"/>
-                    <TextView
-                        android:text="@string/dashboard_button_text_glossary"
-                        android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:paddingTop="@dimen/dashboard_calendar_buttons_spacing"
+                    android:gravity="center_horizontal"
+                    android:id="@+id/dashboard_button_row1"
+                    android:orientation="horizontal"
+                    android:baselineAligned="false"
+                    >
+                    <RelativeLayout
+                        android:id="@+id/dashboard_glossary_layout"
+                        android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:textAppearance="@style/ui_font_bodyText"
-                        android:textColor="@color/ui_white_text_color"
-                        android:layout_below="@id/dashboard_glossary_button"
-                        />
-                </RelativeLayout>
+                        android:layout_margin="15dp">
+                        <ImageButton
+                            android:id="@+id/dashboard_glossary_button"
+                            android:layout_width="@dimen/dashboard_icon_size"
+                            android:layout_height="@dimen/dashboard_icon_size"
+                            android:scaleType="centerInside"
+                            android:background="@drawable/icon_glossary_selector"
+                            android:contentDescription="@null"
+                            android:onClick="onClick_OpenGlossaryActivity"
+                            android:layout_centerHorizontal="true"/>
+                        <TextView
+                            android:text="@string/dashboard_button_text_glossary"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:textAppearance="@style/ui_font_bodyText"
+                            android:textColor="@color/ui_white_text_color"
+                            android:layout_below="@id/dashboard_glossary_button"
+                            />
+                    </RelativeLayout>
 
-
+                    <RelativeLayout
+                        android:id="@+id/dashboard_instruction_layout"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="15dp">
+                        <ImageButton
+                            android:id="@+id/dashboard_instruction_button"
+                            android:layout_width="@dimen/dashboard_icon_size"
+                            android:layout_height="@dimen/dashboard_icon_size"
+                            android:scaleType="centerInside"
+                            android:background="@drawable/icon_terms_selector"
+                            android:contentDescription="@null"
+                            android:onClick="onClick_launchInstructions"
+                            android:layout_centerHorizontal="true"/>
+                        <TextView
+                            android:text="@string/dashboard_button_text_instruction"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:textAppearance="@style/ui_font_bodyText"
+                            android:textColor="@color/ui_white_text_color"
+                            android:layout_below="@id/dashboard_instruction_button"
+                            />
+                    </RelativeLayout>
+                </LinearLayout>
             </TableRow>
 
         </TableLayout>
