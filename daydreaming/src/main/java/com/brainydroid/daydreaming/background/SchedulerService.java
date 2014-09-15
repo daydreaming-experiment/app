@@ -1,15 +1,19 @@
 package com.brainydroid.daydreaming.background;
 
 import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.os.SystemClock;
+import android.support.v4.app.NotificationCompat;
 
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.db.ParametersStorage;
 import com.brainydroid.daydreaming.db.Util;
+import com.brainydroid.daydreaming.ui.dashboard.ResultsActivity;
 import com.google.inject.Inject;
 
 import java.util.Calendar;
@@ -55,6 +59,7 @@ public class SchedulerService extends RoboService {
     @Inject ParametersStorage parametersStorage;
     @Inject Random random;
     @Inject AlarmManager alarmManager;
+    @Inject NotificationManager notificationManager;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -67,6 +72,9 @@ public class SchedulerService extends RoboService {
 
         // Check LocationPointService hasn't died
         statusManager.checkLatestLocationPointServiceWasAgesAgo();
+
+        // Notify results if they're available
+        notifyResultsIfAvailable();
 
         // Synchronise answers and get parameters if we don't have them. If parameters
         // happen to be updated, the SchedulerService will be run again.
@@ -97,6 +105,30 @@ public class SchedulerService extends RoboService {
     public IBinder onBind(Intent intent) {
         // Don't allow binding
         return null;
+    }
+
+    private synchronized void notifyResultsIfAvailable() {
+        if (statusManager.areResultsAvailable() && !statusManager.areResultsNotified()) {
+            Intent intent = new Intent(this, ResultsActivity.class);
+            PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
+                    intent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_ONE_SHOT);
+            Notification notification = new NotificationCompat.Builder(this)
+                    .setTicker(getString(R.string.results_notification_ticker))
+                    .setContentTitle(getString(R.string.results_notification_title))
+                    .setContentText(getString(R.string.results_notification_content))
+                    .setContentIntent(contentIntent)
+                    .setSmallIcon(R.drawable.ic_stat_notify_small_daydreaming)
+                    .setAutoCancel(true)
+                    .setOnlyAlertOnce(true)
+                    .setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_VIBRATE
+                            | Notification.DEFAULT_SOUND)
+                    .build();
+
+            notificationManager.notify(-1, notification);
+
+            // Remember we did all this
+            statusManager.setResultsNotified();
+        }
     }
 
     /**

@@ -68,6 +68,9 @@ public class StatusManager {
     /** Preference key storing the current mode */
     private static String EXP_CURRENT_MODE = "expCurrentMode";
 
+    public static String ARE_RESULTS_NOTIFIED_DASHBOARD = "areResultsNotifiedDashboard";
+    public static String ARE_RESULTS_NOTIFIED = "areResultsNotified";
+
     public static final String ACTION_PARAMETERS_STATUS_CHANGE = "actionParametersStatusChange";
 
     public static int MODE_PROD = 0;
@@ -84,7 +87,8 @@ public class StatusManager {
     public static long RESTART_LOCATION_POINT_SERVICE_DELAY = 1 * 60 * 60 * 1000;
 
     private int cachedCurrentMode = MODE_DEFAULT;
-    private boolean isPreSyncRunning = false;
+    private boolean isParametersSyncRunning = false;
+    private boolean isRegistrationRunning = false;
     private boolean isSequencesSyncRunning = false;
     private boolean isLocationPointsSyncRunning = false;
     private boolean isProfileSyncRunning = false;
@@ -187,11 +191,61 @@ public class StatusManager {
         }
     }
 
+    public synchronized void setResultsNotifiedDashboard() {
+        Logger.d(TAG, "{} - Setting resultsNotifiedDashboard to true", getCurrentModeName(), true);
+
+        eSharedPreferences.putBoolean(getCurrentModeName() + ARE_RESULTS_NOTIFIED_DASHBOARD, true);
+        eSharedPreferences.commit();
+    }
+
+    public synchronized boolean areResultsNotifiedDashboard() {
+        if (sharedPreferences.getBoolean(getCurrentModeName() + ARE_RESULTS_NOTIFIED_DASHBOARD,
+                false)) {
+            Logger.v(TAG, "{} - Results not yet notified to dashboard", getCurrentModeName());
+            return true;
+        } else {
+            Logger.v(TAG, "{} - Results already notified to dashboard", getCurrentModeName());
+            return false;
+        }
+    }
+
+    public synchronized void clearResultsNotifiedDashboard() {
+        Logger.d(TAG, "{} - Clearing resultsNotifiedDashboard", getCurrentModeName());
+
+        eSharedPreferences.remove(getCurrentModeName() + ARE_RESULTS_NOTIFIED_DASHBOARD);
+        eSharedPreferences.commit();
+    }
+
+    public synchronized void setResultsNotified() {
+        Logger.d(TAG, "{} - Setting resultsNotified to true", getCurrentModeName(), true);
+
+        eSharedPreferences.putBoolean(getCurrentModeName() + ARE_RESULTS_NOTIFIED, true);
+        eSharedPreferences.commit();
+    }
+
+    public synchronized boolean areResultsNotified() {
+        if (sharedPreferences.getBoolean(getCurrentModeName() + ARE_RESULTS_NOTIFIED,
+                false)) {
+            Logger.v(TAG, "{} - Results not yet notified with notification", getCurrentModeName());
+            return true;
+        } else {
+            Logger.v(TAG, "{} - Results already notified with notification", getCurrentModeName());
+            return false;
+        }
+    }
+
+    public synchronized void clearResultsNotified() {
+        Logger.d(TAG, "{} - Clearing resultsNotified", getCurrentModeName());
+
+        eSharedPreferences.remove(getCurrentModeName() + ARE_RESULTS_NOTIFIED);
+        eSharedPreferences.commit();
+    }
+
     /**
      * Set the updated parameters flag to completed.
      */
     public synchronized void setParametersUpdated(boolean updated) {
-        Logger.d(TAG, "{} - Setting parameters to updated", getCurrentModeName());
+        Logger.d(TAG, "{0} - Setting parameters updated to {1}", getCurrentModeName(), updated);
 
         eSharedPreferences.putBoolean(getCurrentModeName() + EXP_STATUS_PARAMETERS_UPDATED, updated);
         eSharedPreferences.commit();
@@ -502,6 +556,8 @@ public class StatusManager {
         // Clear local flags (after switch)
         clearFirstLaunchCompleted();
         clearExperimentStartTimestamp();
+        clearResultsNotified();
+        clearResultsNotifiedDashboard();
 
         // Cancel any running location collection and pending notifications.
         // This is done after the switch to make sure no polls / location collection are
@@ -531,6 +587,10 @@ public class StatusManager {
 
         // Cancel any running location collection and pending notifications
         cancelNotifiedPollsAndCollectingLocations();
+
+        // Clear result flags
+        clearResultsNotified();
+        clearResultsNotifiedDashboard();
 
         // Clear crypto storage to force a new handshake
         cryptoStorageProvider.get().clearStore();
@@ -637,12 +697,23 @@ public class StatusManager {
                 (24 * 60 * 60 * 1000));
         int daysToGo = parametersStorageProvider.get().getExpDuration() - daysElapsed;
 
-        return daysToGo <= 0;
+        return daysToGo <= 0 || getCurrentMode() == MODE_TEST;
     }
 
-    public void setPreSyncRunning(boolean running) {
-        Logger.v(TAG, "Setting isPreSyncRunning to {}", running);
-        isPreSyncRunning = running;
+    public void setParametersSyncRunning(boolean running) {
+        Logger.v(TAG, "Setting isParametersSyncRunning to {}", running);
+        isParametersSyncRunning = running;
+        isSyncRunningTimestamp = Calendar.getInstance().getTimeInMillis();
+        clearSyncRunningIfAllDone();
+    }
+
+    public boolean isParametersSyncRunning() {
+        return isParametersSyncRunning;
+    }
+
+    public void setRegistrationRunning(boolean running) {
+        Logger.v(TAG, "Setting isRegistrationRunning to {}", running);
+        isRegistrationRunning = running;
         isSyncRunningTimestamp = Calendar.getInstance().getTimeInMillis();
         clearSyncRunningIfAllDone();
     }
@@ -670,9 +741,10 @@ public class StatusManager {
 
     private void clearSyncRunningIfAllDone() {
         Logger.v(TAG, "Clearing sync running flags if all done");
-        if (!isPreSyncRunning && !isSequencesSyncRunning &&
-                !isLocationPointsSyncRunning && !isProfileSyncRunning) {
-            isPreSyncRunning = false;
+        if (!isParametersSyncRunning && !isRegistrationRunning &&
+                !isSequencesSyncRunning && !isLocationPointsSyncRunning && !isProfileSyncRunning) {
+            isParametersSyncRunning = false;
+            isRegistrationRunning = false;
             isSequencesSyncRunning = false;
             isLocationPointsSyncRunning = false;
             isProfileSyncRunning = false;
@@ -683,8 +755,8 @@ public class StatusManager {
     public boolean isSyncRunning() {
         long now = Calendar.getInstance().getTimeInMillis();
         // Sync is running and we know this from less than a minute ago
-        return (isPreSyncRunning || isSequencesSyncRunning ||
-                isLocationPointsSyncRunning || isProfileSyncRunning)
+        return (isParametersSyncRunning || isRegistrationRunning ||
+                isSequencesSyncRunning || isLocationPointsSyncRunning || isProfileSyncRunning)
                 && (now - isSyncRunningTimestamp) < 60 * 1000;
     }
 

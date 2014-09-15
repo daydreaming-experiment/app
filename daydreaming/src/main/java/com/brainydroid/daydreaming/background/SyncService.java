@@ -75,14 +75,17 @@ public class SyncService extends RoboService {
             // really ready and we have Internet access.
             if (areParametersUpdated && statusManager.isDataEnabled()) {
                 Logger.d(TAG, "Parameters have been update, and data is enabled");
+
+                // We enter the registration phase
+                statusManager.setRegistrationRunning(true);
                 cryptoStorage.onReady(cryptoStorageCallback);
             } else {
-                // We quit the preSync phase
-                statusManager.setPreSyncRunning(false);
                 Logger.v(TAG, "Either parameters were not updated, or data is disabled "
                 + "-> doing nothing");
             }
 
+            // We finish the parameterUpdate phase
+            statusManager.setParametersSyncRunning(false);
         }
     };
 
@@ -121,8 +124,8 @@ public class SyncService extends RoboService {
                         "connection -> doing nothing");
             }
 
-            // In all cases, this finishes the preSync phase
-            statusManager.setPreSyncRunning(false);
+            // In all cases, this finishes the registration phase
+            statusManager.setRegistrationRunning(false);
         }
 
     };
@@ -172,8 +175,8 @@ public class SyncService extends RoboService {
             Logger.i(TAG, "Data connection enabled -> starting sync tasks");
             Logger.td(this, TAG + ": starting sync...");
 
-            // We enter the preSync phase
-            statusManager.setPreSyncRunning(true);
+            // We enter the parameterUpdate phase
+            statusManager.setParametersSyncRunning(true);
             statusManager.setLastSyncToNow();
 
             // This will launch all the calls through the callback
