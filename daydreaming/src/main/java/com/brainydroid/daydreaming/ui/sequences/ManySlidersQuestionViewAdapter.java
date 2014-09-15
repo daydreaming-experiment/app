@@ -66,6 +66,7 @@ public class ManySlidersQuestionViewAdapter
                 question.getQuestionName());
         if (userSliders.size() == 0) {
             userSliders = details.getDefaultSliders();
+            parametersStorage.addUserPossibilities(question.getQuestionName(), userSliders);
         }
 
         final LinearLayout questionView = (LinearLayout)layoutInflater.inflate(
