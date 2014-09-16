@@ -42,7 +42,7 @@ public class BEQService extends RoboService {
 
         isPersistent = intent.getBooleanExtra("isPersistent",false);
 
-        type = statusManager.getCurrentBEQType();
+        type = statusManager.updateBEQType();
 
         if (statusManager.areParametersUpdated()) {
             if (!statusManager.areBEQCompleted()) {
