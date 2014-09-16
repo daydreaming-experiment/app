@@ -92,10 +92,7 @@ public class SchedulerService extends RoboService {
 
         // Schedule a probe
         boolean debugging = intent.getBooleanExtra(SCHEDULER_DEBUGGING, false);
-        checkAndScheduleProbe(debugging);
-
-        // Schedule begin questionnaire
-        checkAndLaunchBEQ();
+        scheduleProbe(debugging);
 
         stopSelf();
 
@@ -153,30 +150,6 @@ public class SchedulerService extends RoboService {
                 scheduledTime, pendingIntent);
     }
 
-    private synchronized void checkAndScheduleProbe(boolean debugging) {
-        Logger.d(TAG, "Preparing to Schedule new probe");
-        if (statusManager.wereBEQAnsweredOnTime()) {
-            scheduleProbe(debugging);
-        } else {
-            Logger.d(TAG, "Questionnaires were not answered on time -> notify questionnaire instead of probe");
-            launchBEQService(false);
-        }
-    }
-
-    private synchronized void checkAndLaunchBEQ() {
-        if (!statusManager.wereBEQAnsweredOnTime()) {
-            launchBEQService(true);
-        } else {
-            Logger.d(TAG, "BeginQuestionnaire all answered . no need to notify.");
-        }
-    }
-
-    private synchronized void launchBEQService(boolean persistent) {
-        Logger.d(TAG, "Launching BEQ Service");
-        Intent intent = new Intent(this, BEQService.class);
-        intent.putExtra("isPersistent", persistent);
-        startService(intent);
-    }
 
     private synchronized void fixNowAndGetAllowedWindow() {
         Logger.d(TAG, "Fixing now and obtaining allowed time window");

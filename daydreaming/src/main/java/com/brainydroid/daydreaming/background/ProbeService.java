@@ -62,10 +62,12 @@ public class ProbeService extends RoboService {
             // because the json was malformed), only reschedule (which will
             // re-download the questions; hopefully they will have been fixed)
             // and don't show any probe.
-            if (statusManager.areParametersUpdated()) {
+            if (statusManager.areParametersUpdated() & statusManager.wereBEQAnsweredOnTime()) {
                 // Populate and notify the probe
                 populateProbe();
                 notifyProbe();
+            } else {
+                startSchedulerService();
             }
         }
 
@@ -217,6 +219,13 @@ public class ProbeService extends RoboService {
         } else {
             Logger.v(TAG, "No pending probes to cancel");
         }
+    }
+
+    private void startSchedulerService() {
+        Logger.d(TAG, "Starting SchedulerService");
+
+        Intent schedulerIntent = new Intent(this, SchedulerService.class);
+        startService(schedulerIntent);
     }
 
 }
