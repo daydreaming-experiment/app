@@ -32,7 +32,7 @@ import roboguice.inject.InjectView;
 public class BeginEndQuestionnairesActivity extends RoboFragmentActivity {
 
     private static String TAG = "BeginEndQuestionnairesActivity";
-    @Inject  StatusManager statusManager;
+    @Inject  Provider<StatusManager> statusManagerProvider;
     @Inject  ParametersStorage parametersStorage;
     @Inject  Provider<SequencesStorage> sequencesStorageProvider;
 
@@ -52,12 +52,7 @@ public class BeginEndQuestionnairesActivity extends RoboFragmentActivity {
         populateQuestionnairesView();
         ViewGroup godfatherView = (ViewGroup)getWindow().getDecorView();
         FontUtils.setRobotoFont(this, godfatherView);
-
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            type = extras.getString("questionnaireType");
-        }
-
+        type = statusManagerProvider.get().getCurrentBEQType();
     }
 
     @Override
@@ -80,7 +75,9 @@ public class BeginEndQuestionnairesActivity extends RoboFragmentActivity {
     }
 
     protected synchronized void populateQuestionnairesView() {
-        Logger.v(TAG, "Populating questionnaire list");
+
+        type = statusManagerProvider.get().getCurrentBEQType();
+        Logger.v(TAG, "Populating questionnaire list - type:{}",type);
 
         loadedBeginEndQuestionnaires = sequencesStorageProvider.get()
                 .getSequencesByType(type);
@@ -140,7 +137,7 @@ public class BeginEndQuestionnairesActivity extends RoboFragmentActivity {
     }
 
     protected void checkFirstLaunch() {
-        if (!statusManager.isFirstLaunchCompleted()) {
+        if (!statusManagerProvider.get().isFirstLaunchCompleted()) {
             Logger.i(TAG, "First launch not completed -> starting first " +
                     "launch sequence and finishing this activity");
             Intent intent = new Intent(this, FirstLaunch00WelcomeActivity.class);
