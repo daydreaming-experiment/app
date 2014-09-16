@@ -43,6 +43,15 @@ public class BootReceiver extends RoboBroadcastReceiver {
                         SchedulerService.class);
                 context.startService(schedulerIntent);
 
+                // Start notifying questionnaires
+                if (statusManager.areParametersUpdated()) {
+                    Logger.d(TAG, "Starting BQEService");
+                    Intent BQEIntent = new Intent(context,
+                            BEQService.class);
+                    BQEIntent.putExtra(BEQService.IS_PERSISTENT, true);
+                    context.startService(schedulerIntent);
+                }
+
                 // Start getting location updates
                 Logger.d(TAG, "Starting LocationPointService");
                 Intent locationPointServiceIntent = new Intent(context,

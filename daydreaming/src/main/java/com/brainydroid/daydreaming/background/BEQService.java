@@ -1,11 +1,13 @@
 package com.brainydroid.daydreaming.background;
 
+import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.IBinder;
+import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 
 import com.brainydroid.daydreaming.R;
@@ -30,6 +32,9 @@ public class BEQService extends RoboService {
     @Inject NotificationManager notificationManager;
     @Inject SharedPreferences sharedPreferences;
     @Inject StatusManager statusManager;
+    @Inject AlarmManager alarmManager;
+
+    public static String IS_PERSISTENT = "isPersistent";
 
     String type;
     boolean isPersistent = false;
@@ -39,13 +44,15 @@ public class BEQService extends RoboService {
         Logger.d(TAG, "BEQService started");
         super.onStartCommand(intent, flags, startId);
 
-        isPersistent = intent.getBooleanExtra("isPersistent",false);
+        isPersistent = intent.getBooleanExtra(IS_PERSISTENT,false);
 
         type = statusManager.updateBEQType();
 
         if (statusManager.areParametersUpdated()) {
             if (!statusManager.areBEQCompleted()) {
+                notificationManager.cancel(TAG, 0);
                 notifyQuestionnaire();
+                scheduleBQEService();
             } else {
                 Logger.d(TAG, "cancel BEQ notifications");
                 notificationManager.cancel(TAG, 0);
@@ -62,51 +69,58 @@ public class BEQService extends RoboService {
         return null;
     }
 
-    /**
-     * Create the {@link com.brainydroid.daydreaming.ui.sequences.PageActivity} {@link android.content.Intent}.
-     *
-     * @return An {@link android.content.Intent} to launch our {@link com.brainydroid.daydreaming.sequence.Sequence}
-     */
-    private synchronized Intent createBEQIntent() {
-        Logger.d(TAG, "Creating BEQ Intent");
+    private synchronized Intent createBEQService() {
+        Logger.d(TAG, "Creating BEQ Service");
         Intent intent = new Intent(this, BEQActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra("questionnaireType",type);
         return intent;
+    }
+
+    private synchronized Notification createBEQNotification() {
+        Logger.d(TAG, "Creating BEQ notification");
+        Intent intent = createBEQService();
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
+                intent, PendingIntent.FLAG_UPDATE_CURRENT );
+        int flags = 0;
+        flags |= Notification.FLAG_NO_CLEAR;
+        // Create our notification
+        // if persistent: cant be dismissed and do not disappear on click
+        // if not persistent: can be dismissed and self destroy on click
+        Notification notification = new NotificationCompat.Builder(this)
+                .setTicker(getString(R.string.bqNotification_ticker))
+                .setContentTitle(getString(R.string.bqNotification_title))
+                .setContentText(getString(R.string.bqNotification_text))
+                .setContentIntent(contentIntent)
+                .setSmallIcon(R.drawable.ic_stat_notify_small_daydreaming)
+                .setOnlyAlertOnce(true)
+                .setAutoCancel(!isPersistent)
+                .setDefaults(flags)
+                .build();
+        return notification;
     }
 
     /**
      * Notify our probe to the user.
      */
     private synchronized void notifyQuestionnaire() {
-        Logger.d(TAG, "Notifying BEQ");
-
-        // Create the PendingIntent
-        Intent intent = createBEQIntent();
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                intent, PendingIntent.FLAG_CANCEL_CURRENT |
-                PendingIntent.FLAG_ONE_SHOT);
-        int flags = 0;
-
-        // Create our notification
-        // if persistent: cant be dismissed and do not disappear on click
-        // if not persistent: can be dismissed and self destroy on click
-
-        Notification notification = new NotificationCompat.Builder(this)
-        .setTicker(getString(R.string.bqNotification_ticker))
-        .setContentTitle(getString(R.string.bqNotification_title))
-        .setContentText(getString(R.string.bqNotification_text))
-        .setContentIntent(contentIntent)
-        .setSmallIcon(R.drawable.ic_stat_notify_small_daydreaming)
-        .setOnlyAlertOnce(true)
-        .setAutoCancel(!isPersistent)
-        .setOngoing(isPersistent)
-        .setDefaults(flags)
-        .build();
-
+        Logger.d(TAG, "Launch BEQ notification");
+        Notification notification = createBEQNotification();
         // And send it to the system
         notificationManager.cancel(TAG, 0);
         notificationManager.notify(TAG, 0, notification);
     }
+
+    private synchronized void scheduleBQEService() {
+        Logger.d(TAG, "Schedule BEQ notification in one hour");
+        Intent intent = createBEQService();
+        long scheduledTime = SystemClock.elapsedRealtime() + (60 * 60 * 1000); // 1h
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
+                intent, PendingIntent.FLAG_UPDATE_CURRENT );
+        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                scheduledTime, contentIntent);
+
+    }
+
 
 }
