@@ -46,19 +46,19 @@ public class BEQService extends RoboService {
 
         isPersistent = intent.getBooleanExtra(IS_PERSISTENT,false);
 
-        type = statusManager.updateBEQType();
 
         if (statusManager.areParametersUpdated()) {
             if (!statusManager.areBEQCompleted()) {
+                type = statusManager.updateBEQType();
                 notificationManager.cancel(TAG, 0);
                 notifyQuestionnaire();
                 scheduleBQEService();
             } else {
-                Logger.d(TAG, "cancel BEQ notifications");
+                Logger.d(TAG, "no BEQ notifications");
                 notificationManager.cancel(TAG, 0);
             }
         }
-        //TODO[Vincent] Schedule the next Questionnaire reminder
+
         stopSelf();
         return START_REDELIVER_INTENT;
     }
