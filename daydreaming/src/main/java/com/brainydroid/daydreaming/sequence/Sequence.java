@@ -63,8 +63,13 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
         return name;
     }
 
-    private synchronized void setName(String name) {
+    public synchronized void setName(String name) {
         this.name = name;
+        saveIfSync();
+    }
+
+    public synchronized void setType(String type) {
+        this.type = type;
         saveIfSync();
     }
 

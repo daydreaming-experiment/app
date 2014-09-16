@@ -3,9 +3,7 @@ package com.brainydroid.daydreaming.ui.dashboard;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Notification;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -16,7 +14,6 @@ import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.v4.app.NotificationCompat;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -199,8 +196,9 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
     /**
      * Launching beginning questionnaires activity
      */
-    public void openBeginQuestionnaires(){
-        Intent intent = new Intent(this, BeginQuestionnairesActivity.class);
+    public void openBeginQuestionnaires(String type){
+        Intent intent = new Intent(this, BeginEndQuestionnairesActivity.class);
+        intent.putExtra("questionnaireType", type);
         startActivity(intent);
         overridePendingTransition(R.anim.mainfadein, R.anim.splashfadeout);
     }
@@ -701,7 +699,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
 
         if (statusManager.areParametersUpdated()) {
             final AlphaButton btn = (AlphaButton)findViewById(R.id.dashboard_begin_questionnaires_button);
-            if (!statusManager.areBeginQuestionnairesCompleted()) {
+            if (!statusManager.areBeginEndQuestionnairesCompleted()) {
                 final Animation animation = new AlphaAnimation(1, 0); // Change alpha from fully visible to invisible
                 animation.setDuration(1000); // duration - half a second
                 animation.setInterpolator(new AccelerateDecelerateInterpolator()); // do not alter animation rate
@@ -711,7 +709,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
                 btn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(final View view) {
-                        openBeginQuestionnaires();
+                        openBeginQuestionnaires(statusManager.getCurrentBEQType());
                     }
                 });
                 btn.setClickable(true);

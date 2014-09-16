@@ -658,9 +658,7 @@ public class StatusManager {
         int nLoaded = allLoadedQuestionnaires != null ? allLoadedQuestionnaires.size() : -1;
 
         Logger.d(TAG, "Checking Begin Questionnaire status");
-        Logger.d(TAG, "Loaded : {0} - Completed {1}",
-                Integer.toString(nLoaded),
-                Integer.toString(nCompleted));
+        Logger.d(TAG, "Loaded : {0} - Completed {1}", Integer.toString(nLoaded), Integer.toString(nCompleted));
 
         return (nLoaded == nCompleted);
     }

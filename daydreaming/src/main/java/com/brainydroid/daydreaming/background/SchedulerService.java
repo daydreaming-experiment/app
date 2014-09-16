@@ -90,7 +90,7 @@ public class SchedulerService extends RoboService {
         scheduleProbe(intent.getBooleanExtra(SCHEDULER_DEBUGGING, false));
 
         // Schedule begin questionnaire
-        if (!statusManager.areBeginQuestionnairesCompleted()) {
+        if (!statusManager.areBeginEndQuestionnairesCompleted()) {
             scheduleBeginQuestionnaire(intent.getBooleanExtra(SCHEDULER_DEBUGGING, false));
         } else {
             Logger.d(TAG, "BeginQuestionnaire all answered . no need to schedule notif.");
@@ -153,7 +153,7 @@ public class SchedulerService extends RoboService {
     }
 
     /**
-     * Schedule a {@link com.brainydroid.daydreaming.ui.dashboard.BeginQuestionnairesActivity} to be created
+     * Schedule a {@link com.brainydroid.daydreaming.ui.dashboard.BeginEndQuestionnairesActivity} to be created
      * and notified by {@link com.brainydroid.daydreaming.background.BeginQuestionnaireService} later on.
      *
      * @param debugging Set to {@link true} for a fixed short delay before

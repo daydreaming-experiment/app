@@ -6,11 +6,12 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 
 import com.brainydroid.daydreaming.R;
-import com.brainydroid.daydreaming.ui.dashboard.BeginQuestionnairesActivity;
+import com.brainydroid.daydreaming.ui.dashboard.BeginEndQuestionnairesActivity;
 import com.google.inject.Inject;
 
 import roboguice.service.RoboService;
@@ -33,12 +34,17 @@ public class BeginQuestionnaireService extends RoboService {
     @Inject SharedPreferences sharedPreferences;
     @Inject StatusManager statusManager;
 
+    String type;
+
     @Override
     public synchronized int onStartCommand(Intent intent, int flags, int startId) {
         Logger.d(TAG, "BeginQuestionnaireService started");
         super.onStartCommand(intent, flags, startId);
+
+        type = statusManager.getCurrentModeName();
+
         if (statusManager.areParametersUpdated() &&
-                !statusManager.areBeginQuestionnairesCompleted()) {
+                !statusManager.areBeginEndQuestionnairesCompleted()) {
             notifyQuestionnaire();
         }
         //TODO[Vincent] Schedule the next Questionnaire reminder
@@ -57,10 +63,11 @@ public class BeginQuestionnaireService extends RoboService {
      *
      * @return An {@link android.content.Intent} to launch our {@link com.brainydroid.daydreaming.sequence.Sequence}
      */
-    private synchronized Intent createBeginQuestionnaireIntent() {
+    private synchronized Intent createBeginEndQuestionnaireIntent() {
         Logger.d(TAG, "Creating BeginQuestionnaire Intent");
-        Intent intent = new Intent(this, BeginQuestionnairesActivity.class);
+        Intent intent = new Intent(this, BeginEndQuestionnairesActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra("questionnaireType",type);
         return intent;
     }
 
@@ -71,7 +78,7 @@ public class BeginQuestionnaireService extends RoboService {
         Logger.d(TAG, "Notifying BeginQuestionnaire");
 
         // Create the PendingIntent
-        Intent intent = createBeginQuestionnaireIntent();
+        Intent intent = createBeginEndQuestionnaireIntent();
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
                 intent, PendingIntent.FLAG_CANCEL_CURRENT |
                 PendingIntent.FLAG_ONE_SHOT);
