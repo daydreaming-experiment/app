@@ -53,10 +53,10 @@ public class BEQActivity extends RoboFragmentActivity {
         super.onCreate(savedInstanceState);
         checkFirstLaunch();
         populateQuestionnairesView();
-        launchBEQService();
         ViewGroup godfatherView = (ViewGroup)getWindow().getDecorView();
         FontUtils.setRobotoFont(this, godfatherView);
         type = statusManagerProvider.get().getCurrentBEQType();
+        launchBEQService();
     }
 
     @Override
@@ -134,6 +134,7 @@ public class BEQActivity extends RoboFragmentActivity {
 
     private synchronized void launchBEQService() {
         Intent intent = new Intent(this, BEQService.class);
+        intent.putExtra(BEQService.IS_PERSISTENT,true);
         startService(intent);
     }
 
