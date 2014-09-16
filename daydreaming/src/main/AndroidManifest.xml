@@ -56,7 +56,7 @@
             android:screenOrientation="portrait">
         </activity>
 
-        <activity android:name=".ui.dashboard.BeginQuestionnairesActivity"
+        <activity android:name=".ui.dashboard.BeginEndQuestionnairesActivity"
             android:label="@string/begin_questionnaires_title_activity"
             android:theme="@style/daydreamingTheme"
             android:taskAffinity=".dashboard"
