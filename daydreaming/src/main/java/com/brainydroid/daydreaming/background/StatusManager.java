@@ -791,7 +791,7 @@ public class StatusManager {
         String type = getCurrentBEQType();
         if ( areBEQCompleted(type) ) {
             Logger.d(TAG, "all BEQ of type {} are answered", type);
-                    // questionnaires already answered
+            // questionnaires already answered
             return true;
         } else {
 

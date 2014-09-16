@@ -357,12 +357,12 @@ public class ParametersStorage {
                 endSequences.add(sdCopy);
                 sdCopy.setType(Sequence.TYPE_BEGIN_QUESTIONNAIRE);
                 sd.setName(Sequence.BEGIN_PREFIX + sd.getName());
-
             }
         }
         // and save duplicate
         sequences.addAll(endSequences);
         clearSequences();
+        sequencesCache = sequences;
         eSharedPreferences.putString(statusManager.getCurrentModeName() + SEQUENCES,
                 json.toJsonInternal(sequences));
         eSharedPreferences.commit();
