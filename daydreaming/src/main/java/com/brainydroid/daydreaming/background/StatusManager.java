@@ -769,7 +769,7 @@ public class StatusManager {
         return currentBEQType;
     }
 
-    public synchronized void updateBEQType() {
+    public synchronized String updateBEQType() {
         // if exp is running
         if (isExpRunning()) {
             String type = getCurrentBEQType();
@@ -784,6 +784,7 @@ public class StatusManager {
                 }
             }
         }
+        return getCurrentBEQType();
     }
 
     public synchronized boolean wereBEQAnsweredOnTime() {
