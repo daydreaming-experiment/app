@@ -76,6 +76,10 @@ public class SchedulerService extends RoboService {
         // Notify results if they're available
         notifyResultsIfAvailable();
 
+        // Check if we are getting close to the end to enable the final Begin/End questionnaires
+        statusManager.updateBEQType();
+
+
         // Synchronise answers and get parameters if we don't have them. If parameters
         // happen to be updated, the SchedulerService will be run again.
         startSyncService();
@@ -87,10 +91,13 @@ public class SchedulerService extends RoboService {
         }
 
         // Schedule a probe
-        scheduleProbe(intent.getBooleanExtra(SCHEDULER_DEBUGGING, false));
+        boolean debugging = intent.getBooleanExtra(SCHEDULER_DEBUGGING, false);
+        checkAndScheduleProbe(debugging);
 
         // Schedule begin questionnaire
-        if (!statusManager.areBeginEndQuestionnairesCompleted()) {
+        checkAndScheduleBEQ(debugging);
+
+        if (!statusManager.areBEQCompleted()) {
             scheduleBeginQuestionnaire(intent.getBooleanExtra(SCHEDULER_DEBUGGING, false));
         } else {
             Logger.d(TAG, "BeginQuestionnaire all answered . no need to schedule notif.");
@@ -142,7 +149,7 @@ public class SchedulerService extends RoboService {
         Logger.d(TAG, "Scheduling new probe");
 
         // Generate the time at which the probe will appear
-        long scheduledTime = generateTime(debugging);
+        long scheduledTime = generateProbeTime(debugging);
 
         // Create and schedule the PendingIntent for ProbeService
         Intent intent = new Intent(this, ProbeService.class);
@@ -151,6 +158,25 @@ public class SchedulerService extends RoboService {
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
                 scheduledTime, pendingIntent);
     }
+
+    private synchronized void checkAndScheduleProbe(boolean debugging) {
+        Logger.d(TAG, "Preparing to Schedule new probe");
+        if (statusManager.wereBEQAnsweredOnTime()) {
+            scheduleProbe(debugging);
+        } else {
+            Logger.d(TAG, "Questionnaires were not answered on time -> notify questionnaire instead of probe");
+            scheduleBeginQuestionnaire(debugging);
+        }
+    }
+
+    private synchronized void checkAndScheduleBEQ(boolean debugging) {
+        if (!statusManager.wereBEQAnsweredOnTime()) {
+            scheduleBeginQuestionnaire(debugging);
+        } else {
+            Logger.d(TAG, "BeginQuestionnaire all answered . no need to schedule notif.");
+        }
+    }
+
 
     /**
      * Schedule a {@link com.brainydroid.daydreaming.ui.dashboard.BeginEndQuestionnairesActivity} to be created
@@ -162,9 +188,21 @@ public class SchedulerService extends RoboService {
     private synchronized void scheduleBeginQuestionnaire(boolean debugging) {
         Logger.d(TAG, "Scheduling new BeginQuestionnaire");
 
-        // Generate the time at which the probe will appear
-        long scheduledTime = generateBeginQuestionnaireTime(debugging);
+        // Generate the time at which the Questionnaire will appear
+        long scheduledTime;
+        if (statusManager.wereBEQAnsweredOnTime()) {
+            // either schedule every morning
+            scheduledTime = generateProbeTime(debugging);
+        } else {
+            Logger.d(TAG, "Questionnaires is scheduled instead of and at a probe timing (i.e. more frequently)");
+            // or schedule as often as probes
+            scheduledTime = generateBeginQuestionnaireTime(debugging);
+        }
+        scheduleBeginQuestionnaireAtTime( scheduledTime,  debugging);
 
+    }
+
+    private synchronized void scheduleBeginQuestionnaireAtTime(long scheduledTime, boolean debugging) {
         // Create and schedule the PendingIntent for ProbeService
         Intent intent = new Intent(this, BeginQuestionnaireService.class);
         PendingIntent pendingIntent = PendingIntent.getService(this, 0,
@@ -273,7 +311,7 @@ public class SchedulerService extends RoboService {
      * @return Scheduled (and shifted) moment for the probe to appear,
      *         in milliseconds from epoch
      */
-    private synchronized long generateTime(boolean debugging) {
+    private synchronized long generateProbeTime(boolean debugging) {
         Logger.d(TAG, "Generating a time for schedule");
 
         // Fix what 'now' means, and retrieve the allowed time window
