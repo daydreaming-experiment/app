@@ -27,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.brainydroid.daydreaming.R;
+import com.brainydroid.daydreaming.background.BEQService;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.background.SchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
@@ -119,6 +120,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
                 }
                 areParametersUpdating = statusManager.isParametersSyncRunning();
                 updateExperimentStatus();
+                launchBEQService();
             }
         }
     };
@@ -144,7 +146,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
 
         populateShowcaseViews();
         if (statusManager.areParametersUpdated()){
-             launchShowCaseViewSequence(UNIQUE);
+            launchShowCaseViewSequence(UNIQUE);
         }
     }
 
@@ -199,6 +201,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
     public void openBEQ(String type){
         Intent intent = new Intent(this, BEQActivity.class);
         intent.putExtra("questionnaireType", type);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         overridePendingTransition(R.anim.mainfadein, R.anim.splashfadeout);
     }
@@ -868,6 +871,12 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
             sv.setStyle(R.style.CustomShowcaseTheme);
             showcaseViewIndex += 1;
         }
+    }
+
+    private synchronized void launchBEQService() {
+        Intent intent = new Intent(this, BEQService.class);
+        intent.putExtra(BEQService.IS_PERSISTENT,true);
+        startService(intent);
     }
 
 
