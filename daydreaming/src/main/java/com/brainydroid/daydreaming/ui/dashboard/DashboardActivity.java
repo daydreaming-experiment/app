@@ -196,7 +196,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
     /**
      * Launching beginning questionnaires activity
      */
-    public void openBeginQuestionnaires(String type){
+    public void openBEQ(String type){
         Intent intent = new Intent(this, BEQActivity.class);
         intent.putExtra("questionnaireType", type);
         startActivity(intent);
@@ -485,7 +485,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
         }
 
         debugInfoText.setText(statusManager.getDebugInfoString());
-        updateBeginQuestionnairesButton();
+        updateBEQButton();
     }
 
     private void updateResultsPulse() {
@@ -695,11 +695,21 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
     }
 
     @TargetApi(11)
-    private synchronized void updateBeginQuestionnairesButton() {
+    private synchronized void updateBEQButton() {
 
         if (statusManager.areParametersUpdated()) {
             final AlphaButton btn = (AlphaButton)findViewById(R.id.dashboard_begin_questionnaires_button);
+
+            if (statusManager.wereBEQAnsweredOnTime()) {
+                btn.setBackgroundResource(R.drawable.white_rectangle_selector);
+                btn.setTextColor(getResources().getColor(R.color.ui_dark_blue_color));
+            } else {
+                btn.setBackgroundResource(R.drawable.red_rectangle_selector);
+                btn.setTextColor(getResources().getColor(R.color.ui_white_text_color));
+            }
+
             if (!statusManager.areBEQCompleted()) {
+
                 final Animation animation = new AlphaAnimation(1, 0); // Change alpha from fully visible to invisible
                 animation.setDuration(1000); // duration - half a second
                 animation.setInterpolator(new AccelerateDecelerateInterpolator()); // do not alter animation rate
@@ -709,7 +719,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
                 btn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(final View view) {
-                        openBeginQuestionnaires(statusManager.getCurrentBEQType());
+                        openBEQ(statusManager.getCurrentBEQType());
                     }
                 });
                 btn.setClickable(true);
