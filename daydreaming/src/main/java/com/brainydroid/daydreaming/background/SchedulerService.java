@@ -97,12 +97,6 @@ public class SchedulerService extends RoboService {
         // Schedule begin questionnaire
         checkAndScheduleBEQ(debugging);
 
-        if (!statusManager.areBEQCompleted()) {
-            scheduleBeginQuestionnaire(intent.getBooleanExtra(SCHEDULER_DEBUGGING, false));
-        } else {
-            Logger.d(TAG, "BeginQuestionnaire all answered . no need to schedule notif.");
-        }
-
         stopSelf();
 
         return START_REDELIVER_INTENT;
@@ -165,86 +159,23 @@ public class SchedulerService extends RoboService {
             scheduleProbe(debugging);
         } else {
             Logger.d(TAG, "Questionnaires were not answered on time -> notify questionnaire instead of probe");
-            scheduleBeginQuestionnaire(debugging);
+            launchBEQService(false);
         }
     }
 
     private synchronized void checkAndScheduleBEQ(boolean debugging) {
         if (!statusManager.wereBEQAnsweredOnTime()) {
-            scheduleBeginQuestionnaire(debugging);
+            launchBEQService(true);
         } else {
             Logger.d(TAG, "BeginQuestionnaire all answered . no need to schedule notif.");
         }
     }
 
 
-    /**
-     * Schedule a {@link com.brainydroid.daydreaming.ui.dashboard.BeginEndQuestionnairesActivity} to be created
-     * and notified by {@link com.brainydroid.daydreaming.background.BeginQuestionnaireService} later on.
-     *
-     * @param debugging Set to {@link true} for a fixed short delay before
-     *                  notification
-     */
-    private synchronized void scheduleBeginQuestionnaire(boolean debugging) {
-        Logger.d(TAG, "Scheduling new BeginQuestionnaire");
-
-        // Generate the time at which the Questionnaire will appear
-        long scheduledTime;
-        if (statusManager.wereBEQAnsweredOnTime()) {
-            // either schedule every morning
-            scheduledTime = generateProbeTime(debugging);
-        } else {
-            Logger.d(TAG, "Questionnaires is scheduled instead of and at a probe timing (i.e. more frequently)");
-            // or schedule as often as probes
-            scheduledTime = generateBeginQuestionnaireTime(debugging);
-        }
-        scheduleBeginQuestionnaireAtTime( scheduledTime,  debugging);
-
-    }
-
-    private synchronized void scheduleBeginQuestionnaireAtTime(long scheduledTime, boolean debugging) {
-        // Create and schedule the PendingIntent for ProbeService
-        Intent intent = new Intent(this, BeginQuestionnaireService.class);
-        PendingIntent pendingIntent = PendingIntent.getService(this, 0,
-                intent, PendingIntent.FLAG_CANCEL_CURRENT);
-        alarmManager.set(AlarmManager.ELAPSED_REALTIME,
-                scheduledTime, pendingIntent);
-    }
-
-    private synchronized long generateBeginQuestionnaireTime(boolean debugging) {
-        fixNowAndGetAllowedWindow();
-        Logger.d(TAG, "Calculating time for new BeginQuestionnaire notification");
-
-        Calendar start = (Calendar)now.clone();
-        start.set(Calendar.HOUR_OF_DAY, startAllowedHour);
-        start.set(Calendar.MINUTE, startAllowedMinute);
-        Calendar nextStart = (Calendar)start.clone();
-        if (now.after(nextStart)) {
-            nextStart.add(Calendar.DAY_OF_YEAR, 1);
-        }
-
-        long delay;
-        if (debugging) {
-            delay = DEBUG_DELAY;
-        } else {
-            // BeginQuestionnaires are notified 30 min after begin of bother window everyday
-            delay = now.getTimeInMillis() - nextStart.getTimeInMillis()
-                    + QUESTIONNAIRE_DELAY_AFTER_WINDOW_START;
-        }
-
-        // Log the delay
-        long milliseconds = delay;
-        long hours = milliseconds / (60 * 60 * 1000);
-        milliseconds %= 60 * 60 * 1000;
-        long minutes = milliseconds / (60 * 1000);
-        milliseconds %= 60 * 1000;
-        long seconds = milliseconds / 1000;
-
-        Logger.i(TAG, "BeginQuestionnaireService scheduled in {0} hours, {1} minutes, " +
-                        "and {2} seconds",
-                hours, minutes, seconds);
-
-        return nowUpTime + delay;
+    private synchronized void launchBEQService(boolean persistent) {
+        Intent intent = new Intent(this, BEQService.class);
+        intent.putExtra("isPersistent", persistent);
+        startService(intent);
     }
 
     private synchronized void fixNowAndGetAllowedWindow() {
