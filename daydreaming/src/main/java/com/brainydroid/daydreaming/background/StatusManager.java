@@ -15,11 +15,9 @@ import android.preference.PreferenceManager;
 import com.brainydroid.daydreaming.db.LocationPointsStorage;
 import com.brainydroid.daydreaming.db.ParametersStorage;
 import com.brainydroid.daydreaming.db.ProfileStorage;
-import com.brainydroid.daydreaming.db.SequenceDescription;
 import com.brainydroid.daydreaming.db.SequencesStorage;
 import com.brainydroid.daydreaming.network.CryptoStorage;
 import com.brainydroid.daydreaming.sequence.Sequence;
-import com.brainydroid.daydreaming.sequence.SequenceBuilder;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
@@ -89,6 +87,9 @@ public class StatusManager {
 
     /** Delay after which LocationPointService must be restarted if it hasn't run. 1 hour. */
     public static long RESTART_LOCATION_POINT_SERVICE_DELAY = 1 * 60 * 60 * 1000;
+
+    /** Delay in days after which probes should not be scheduled if begin questionnaires are unanswered*/
+    public static int DELAY_TO_ANSWER_BEGQ = 3;
 
     private int cachedCurrentMode = MODE_DEFAULT;
     private boolean isParametersSyncRunning = false;
@@ -645,7 +646,7 @@ public class StatusManager {
         return areParametersUpdated();
     }
 
-    public synchronized boolean areBeginEndQuestionnairesCompleted(String type) {
+    public synchronized boolean areBEQCompleted(String type) {
         if (!areParametersUpdated()) {
             return false;
         }
@@ -664,12 +665,12 @@ public class StatusManager {
     }
 
 
-    public synchronized boolean areBeginEndQuestionnairesCompleted() {
+    public synchronized boolean areBEQCompleted() {
         if (!areParametersUpdated()) {
             return false;
         }
         String type = getCurrentBEQType();
-        return areBeginEndQuestionnairesCompleted(type);
+        return areBEQCompleted(type);
     }
 
     public synchronized boolean areResultsAvailable(){
@@ -679,7 +680,11 @@ public class StatusManager {
                 (24 * 60 * 60 * 1000));
         int daysToGo = parametersStorageProvider.get().getExpDuration() - daysElapsed;
 
-        return daysToGo <= 0 || getCurrentMode() == MODE_TEST;
+        if (areBEQCompleted(Sequence.TYPE_END_QUESTIONNAIRE)) {
+            return daysToGo <= 0 || getCurrentMode() == MODE_TEST;
+        } else {
+            return false;
+        }
     }
 
     public void setParametersSyncRunning(boolean running) {
@@ -763,5 +768,56 @@ public class StatusManager {
                 currentBEQType);
         return currentBEQType;
     }
+
+    public synchronized void updateBEQType() {
+        // if exp is running
+        if (isExpRunning()) {
+            String type = getCurrentBEQType();
+            int daysElapsed = (int)((getLatestNtpTime() - getExperimentStartTimestamp()) /
+                    (24 * 60 * 60 * 1000));
+            int daysToGo = parametersStorageProvider.get().getExpDuration() - daysElapsed;
+            // if begin Questionnaires are completed
+            if ( areBEQCompleted(type) ) {
+                // if we get close to the end
+                if (daysToGo < 3) {
+                    setCurrentBEQType(Sequence.TYPE_END_QUESTIONNAIRE);
+                }
+            }
+        }
+    }
+
+    public synchronized boolean wereBEQAnsweredOnTime() {
+
+        String type = getCurrentBEQType();
+        if ( areBEQCompleted(type) ) {
+            // questionnaires already answered
+            return true;
+        } else {
+
+            int daysElapsed = (int) ((getLatestNtpTime() - getExperimentStartTimestamp()) /
+                    (24 * 60 * 60 * 1000));
+
+            if (type.equals(Sequence.TYPE_BEGIN_QUESTIONNAIRE)) {
+
+                if (daysElapsed > DELAY_TO_ANSWER_BEGQ) {
+                    Logger.d(TAG, "{} days elapsed since experiment started and begin questionnaires still unanswered",
+                            Integer.toString(daysElapsed));
+                    return false;
+                }
+                return true;
+
+            } else if (type.equals(Sequence.TYPE_END_QUESTIONNAIRE)) {
+
+                if (daysElapsed > parametersStorageProvider.get().getExpDuration()) {
+                    Logger.d(TAG, "Experiment time is over (now {} days) but end questionnaires still unanswered",
+                            Integer.toString(daysElapsed));
+                    return false;
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
 
 }
