@@ -197,7 +197,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
      * Launching beginning questionnaires activity
      */
     public void openBeginQuestionnaires(String type){
-        Intent intent = new Intent(this, BeginEndQuestionnairesActivity.class);
+        Intent intent = new Intent(this, BEQActivity.class);
         intent.putExtra("questionnaireType", type);
         startActivity(intent);
         overridePendingTransition(R.anim.mainfadein, R.anim.splashfadeout);
