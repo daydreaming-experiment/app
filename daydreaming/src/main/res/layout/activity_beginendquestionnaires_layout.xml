@@ -25,7 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:id="@+id/beginquestionnaires_questionnaires_layout"        />
+        android:id="@+id/beginendquestionnaires_questionnaires_layout"        />
 
 
     </LinearLayout>
