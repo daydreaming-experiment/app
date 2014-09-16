@@ -25,6 +25,7 @@
     <color name="ui_blue_background_color">#00A2D4</color>
     <color name="ui_background_border_color">#EBFBFF</color>
     <color name="ui_background_border_color_test">#ff0000</color>
+    <color name="ui_warning_red_color">#ff0000</color>
 
     <color name="ui_white_text_color">#EBFBFF</color>
     <color name="ui_dark_blue_color">#00617F</color>

@@ -13,6 +13,6 @@
         android:drawableLeft="@drawable/status_wrong"
         android:drawablePadding="@dimen/global_text_drawable_padding"
         android:layout_marginBottom="@dimen/text_linespacing"
-        android:id="@+id/begin_questionnaire_name"
+        android:id="@+id/beginend_questionnaire_name"
         />
 </LinearLayout>

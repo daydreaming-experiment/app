@@ -15,6 +15,7 @@ import com.brainydroid.daydreaming.network.HttpGetData;
 import com.brainydroid.daydreaming.network.HttpGetTask;
 import com.brainydroid.daydreaming.network.ParametersStorageCallback;
 import com.brainydroid.daydreaming.network.ServerConfig;
+import com.brainydroid.daydreaming.sequence.Sequence;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -342,6 +343,26 @@ public class ParametersStorage {
         Logger.d(TAG, "{} - Setting sequences array (and keeping in cache)",
                 statusManager.getCurrentModeName());
         sequencesCache = sequences;
+        // Now duplicate begin to end (name and type are changed)
+        // This is not to have to copy the questionnaire twice in external parameters
+        ArrayList<SequenceDescription> endSequences = new ArrayList<SequenceDescription>();
+        for (SequenceDescription sd : sequences) {
+            if (sd.getType().equals(Sequence.TYPE_BEGIN_END_QUESTIONNAIRE)) {
+                SequenceDescription sdCopy = new SequenceDescription();
+                sdCopy.setPageGroups(sd.getPageGroups());
+                sdCopy.setNSlots(sd.getNSlots());
+                sdCopy.setIntro(sd.getIntro());
+                sdCopy.setType(Sequence.TYPE_END_QUESTIONNAIRE);
+                sdCopy.setName(Sequence.END_PREFIX + sd.getName());
+                endSequences.add(sdCopy);
+                sdCopy.setType(Sequence.TYPE_BEGIN_QUESTIONNAIRE);
+                sd.setName(Sequence.BEGIN_PREFIX + sd.getName());
+            }
+        }
+        // and save duplicate
+        sequences.addAll(endSequences);
+        clearSequences();
+        sequencesCache = sequences;
         eSharedPreferences.putString(statusManager.getCurrentModeName() + SEQUENCES,
                 json.toJsonInternal(sequences));
         eSharedPreferences.commit();
@@ -415,6 +436,20 @@ public class ParametersStorage {
         for (SequenceDescription s : sequences) {
             if (s.getType().equals(type)){
                 sequencesByType.add(s);
+            }
+        }
+        return sequencesByType;
+    }
+
+    public synchronized ArrayList<SequenceDescription> getSequencesByTypes(String[] types) {
+        Logger.d(TAG, "{} - Getting sequences by types", statusManager.getCurrentModeName());
+        ArrayList<SequenceDescription> sequences = getSequences();
+        ArrayList<SequenceDescription> sequencesByType = new ArrayList<SequenceDescription>();
+        for (String type : types) {
+            for (SequenceDescription s : sequences) {
+                if (s.getType().equals(type)){
+                    sequencesByType.add(s);
+                }
             }
         }
         return sequencesByType;
@@ -560,6 +595,11 @@ public class ParametersStorage {
             // loading the questions
             setQuestions(serverParametersJson.getQuestions());
             setSequences(serverParametersJson.getSequences());
+
+            // Instantiating the Begin and End Questionnaires
+            sequencesStorage.initiateBeginEndQuestionnaires();
+            statusManager.setCurrentBEQType(Sequence.TYPE_BEGIN_QUESTIONNAIRE);
+
         } catch (JsonParametersException e) {
             Logger.e(TAG, "Parameters validation failed:");
             Logger.eRaw(TAG, e.getMessage());

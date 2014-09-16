@@ -2,7 +2,9 @@ package com.brainydroid.daydreaming.db;
 
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.sequence.Sequence;
+import com.brainydroid.daydreaming.sequence.SequenceBuilder;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import java.util.ArrayList;
@@ -15,13 +17,13 @@ public class SequencesStorage
 
     private static final String TABLE_SEQUENCES = "sequences";
 
-    @Inject
-    public SequencesStorage(Storage storage) {
+    @Inject public SequencesStorage(Storage storage) {
         super(storage);
     }
+    @Inject SequenceBuilder sequenceBuilder;
+    @Inject Provider<ParametersStorage> parametersStorageProvider;
 
-    @Override
-    protected String getTableName() {
+    @Override protected String getTableName() {
         return TABLE_SEQUENCES;
     }
 
@@ -73,6 +75,16 @@ public class SequencesStorage
         if (sequences != null) {
             Logger.d(TAG, "Removing {} sequences", sequences.size());
             remove(sequences);
+        }
+    }
+
+    public synchronized void initiateBeginEndQuestionnaires(){
+        Logger.v(TAG, "Instantiating BeginEnd Questionnaires");
+        ArrayList<SequenceDescription> allBeginQuestionnairesDescriptions =
+                parametersStorageProvider.get().getSequencesByTypes(Sequence.TYPES_BEGIN_AND_END_QUESTIONNAIRE);
+        for (SequenceDescription sd : allBeginQuestionnairesDescriptions) {
+            Logger.v(TAG, "Instantiating questionnaire {}", sd.getName());
+            sequenceBuilder.buildSave(sd.getName());
         }
     }
 }

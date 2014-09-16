@@ -15,7 +15,6 @@ import android.preference.PreferenceManager;
 import com.brainydroid.daydreaming.db.LocationPointsStorage;
 import com.brainydroid.daydreaming.db.ParametersStorage;
 import com.brainydroid.daydreaming.db.ProfileStorage;
-import com.brainydroid.daydreaming.db.SequenceDescription;
 import com.brainydroid.daydreaming.db.SequencesStorage;
 import com.brainydroid.daydreaming.network.CryptoStorage;
 import com.brainydroid.daydreaming.sequence.Sequence;
@@ -71,6 +70,9 @@ public class StatusManager {
     public static String ARE_RESULTS_NOTIFIED_DASHBOARD = "areResultsNotifiedDashboard";
     public static String ARE_RESULTS_NOTIFIED = "areResultsNotified";
 
+    public static String CURRENT_BEG_END_QUESTIONNAIRE_TYPE = "currentBEQType";
+
+
     public static final String ACTION_PARAMETERS_STATUS_CHANGE = "actionParametersStatusChange";
 
     public static int MODE_PROD = 0;
@@ -85,6 +87,9 @@ public class StatusManager {
 
     /** Delay after which LocationPointService must be restarted if it hasn't run. 1 hour. */
     public static long RESTART_LOCATION_POINT_SERVICE_DELAY = 1 * 60 * 60 * 1000;
+
+    /** Delay in days after which probes should not be scheduled if begin questionnaires are unanswered*/
+    public static int DELAY_TO_ANSWER_BEGQ = 3;
 
     private int cachedCurrentMode = MODE_DEFAULT;
     private boolean isParametersSyncRunning = false;
@@ -641,53 +646,31 @@ public class StatusManager {
         return areParametersUpdated();
     }
 
-    public synchronized boolean areBeginQuestionnairesCompleted() {
+    public synchronized boolean areBEQCompleted(String type) {
         if (!areParametersUpdated()) {
             return false;
         }
-
-        ArrayList<SequenceDescription> allQuestionnairesDescriptions =
-                parametersStorageProvider.get()
-                        .getSequencesByType(Sequence.TYPE_BEGIN_QUESTIONNAIRE);
         ArrayList<Sequence> allLoadedQuestionnaires = sequencesStorageProvider.get()
-                .getSequencesByType(Sequence.TYPE_BEGIN_QUESTIONNAIRE);
+                .getSequencesByType(type);
         ArrayList<Sequence> completedQuestionnaires = sequencesStorageProvider.get()
-                .getCompletedSequences(Sequence.TYPE_BEGIN_QUESTIONNAIRE);
+                .getCompletedSequences(type);
 
         int nCompleted = completedQuestionnaires != null ? completedQuestionnaires.size() : -1;
-        int nTotal = allQuestionnairesDescriptions != null ? allQuestionnairesDescriptions.size() : -1;
         int nLoaded = allLoadedQuestionnaires != null ? allLoadedQuestionnaires.size() : -1;
 
         Logger.d(TAG, "Checking Begin Questionnaire status");
-        Logger.d(TAG, "Total : {0} - Loaded : {1} - Completed {2}",
-                Integer.toString(nTotal),
-                Integer.toString(nLoaded),
-                Integer.toString(nCompleted));
+        Logger.d(TAG, "Loaded : {0} - Completed {1}", Integer.toString(nLoaded), Integer.toString(nCompleted));
 
-        boolean completion;
-        if (nTotal > 0) {
-            // if any questionnaire at all. (suppressing inspection here for readability)
-            //noinspection SimplifiableIfStatement
-            if (nLoaded > 0) {
-                // if loaded:
+        return (nLoaded == nCompleted);
+    }
 
-                // are all of them completed?
-                completion =  nCompleted == nTotal;
-            } else {
-                // if not loaded
-                completion = false;
-            }
-        } else {
-            // no questionnaires -> return completed
-            completion = true;
+
+    public synchronized boolean areBEQCompleted() {
+        if (!areParametersUpdated()) {
+            return false;
         }
-
-        Logger.d(TAG, "Total : {0} - Loaded : {1} - Completed {2} -> Completion: {3}",
-                Integer.toString(nTotal),
-                Integer.toString(nLoaded),
-                Integer.toString(nCompleted),
-                Boolean.toString(completion));
-        return completion;
+        String type = getCurrentBEQType();
+        return areBEQCompleted(type);
     }
 
     public synchronized boolean areResultsAvailable(){
@@ -697,7 +680,11 @@ public class StatusManager {
                 (24 * 60 * 60 * 1000));
         int daysToGo = parametersStorageProvider.get().getExpDuration() - daysElapsed;
 
-        return daysToGo <= 0 || getCurrentMode() == MODE_TEST;
+        if (areBEQCompleted(Sequence.TYPE_END_QUESTIONNAIRE)) {
+            return daysToGo <= 0 || getCurrentMode() == MODE_TEST;
+        } else {
+            return false;
+        }
     }
 
     public void setParametersSyncRunning(boolean running) {
@@ -759,5 +746,79 @@ public class StatusManager {
                 isSequencesSyncRunning || isLocationPointsSyncRunning || isProfileSyncRunning)
                 && (now - isSyncRunningTimestamp) < 60 * 1000;
     }
+
+    /**
+     * Setting current Begin/End questionnaire type to type
+     */
+    public synchronized void setCurrentBEQType(String type) {
+        Logger.d(TAG, "{} - Setting currentBEQType to {}", getCurrentModeName(), type);
+        eSharedPreferences.putString(getCurrentModeName() + CURRENT_BEG_END_QUESTIONNAIRE_TYPE, type);
+        eSharedPreferences.commit();
+    }
+
+    public synchronized String getCurrentBEQType() {
+        String currentBEQType = sharedPreferences.getString(
+                getCurrentModeName() + CURRENT_BEG_END_QUESTIONNAIRE_TYPE, null);
+        if (currentBEQType == null) {
+            Logger.e(TAG, "{} - currentBEQType is asked for but not set",
+                    getCurrentMode());
+            throw new RuntimeException("currentBEQType is asked for but not set");
+        }
+        Logger.d(TAG, "{0} - currentBEQType is {1}", getCurrentModeName(),
+                currentBEQType);
+        return currentBEQType;
+    }
+
+    public synchronized String updateBEQType() {
+        // if exp is running
+        if (isExpRunning()) {
+            String type = getCurrentBEQType();
+            int daysElapsed = (int)((getLatestNtpTime() - getExperimentStartTimestamp()) /
+                    (24 * 60 * 60 * 1000));
+            int daysToGo = parametersStorageProvider.get().getExpDuration() - daysElapsed;
+            // if begin Questionnaires are completed
+            if ( areBEQCompleted(type) ) {
+                // if we get close to the end
+                if (daysToGo < 3) {
+                    setCurrentBEQType(Sequence.TYPE_END_QUESTIONNAIRE);
+                }
+            }
+        }
+        return getCurrentBEQType();
+    }
+
+    public synchronized boolean wereBEQAnsweredOnTime() {
+        String type = getCurrentBEQType();
+        if ( areBEQCompleted(type) ) {
+            Logger.d(TAG, "all BEQ of type {} are answered", type);
+            // questionnaires already answered
+            return true;
+        } else {
+
+            int daysElapsed = (int) ((getLatestNtpTime() - getExperimentStartTimestamp()) /
+                    (24 * 60 * 60 * 1000));
+
+            if (type.equals(Sequence.TYPE_BEGIN_QUESTIONNAIRE)) {
+
+                if (daysElapsed > DELAY_TO_ANSWER_BEGQ) {
+                    Logger.d(TAG, "{} days elapsed since experiment started and begin questionnaires still unanswered",
+                            Integer.toString(daysElapsed));
+                    return false;
+                }
+                return true;
+
+            } else if (type.equals(Sequence.TYPE_END_QUESTIONNAIRE)) {
+
+                if (daysElapsed > parametersStorageProvider.get().getExpDuration()) {
+                    Logger.d(TAG, "Experiment time is over (now {} days) but end questionnaires still unanswered",
+                            Integer.toString(daysElapsed));
+                    return false;
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
 
 }

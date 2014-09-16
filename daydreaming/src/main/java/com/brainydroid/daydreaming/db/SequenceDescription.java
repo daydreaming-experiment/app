@@ -70,4 +70,23 @@ public class SequenceDescription extends DescriptionArrayContainer<PageGroupDesc
         validateContained(questionDescriptions);
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setPageGroups(ArrayList<PageGroupDescription> pageGroups) {
+        this.pageGroups = pageGroups;
+    }
+
+    public void setNSlots(int nSlots) {
+        this.nSlots = nSlots;
+    }
+
+    public void setIntro(String intro) {
+        this.intro = intro;
+    }
 }

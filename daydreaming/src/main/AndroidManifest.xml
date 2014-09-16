@@ -56,11 +56,12 @@
             android:screenOrientation="portrait">
         </activity>
 
-        <activity android:name=".ui.dashboard.BeginQuestionnairesActivity"
+        <activity android:name=".ui.dashboard.BEQActivity"
             android:label="@string/begin_questionnaires_title_activity"
             android:theme="@style/daydreamingTheme"
             android:taskAffinity=".dashboard"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:noHistory="true">
         </activity>
 
         <activity android:name=".ui.dashboard.DescriptionActivity"
@@ -145,7 +146,7 @@
         <service android:name=".background.ProbeService"
             android:exported="false" />
 
-        <service android:name=".background.BeginQuestionnaireService"
+        <service android:name=".background.BEQService"
             android:exported="false" />
 
         <service android:name=".background.SchedulerService"
