@@ -788,7 +788,6 @@ public class StatusManager {
     }
 
     public synchronized boolean wereBEQAnsweredOnTime() {
-
         String type = getCurrentBEQType();
         if ( areBEQCompleted(type) ) {
             Logger.d(TAG, "all BEQ of type {} are answered", type);

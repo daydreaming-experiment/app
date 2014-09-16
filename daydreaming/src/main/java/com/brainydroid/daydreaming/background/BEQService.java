@@ -27,7 +27,6 @@ public class BEQService extends RoboService {
 
     public static String TAG = "BEQService";
 
-
     @Inject NotificationManager notificationManager;
     @Inject SharedPreferences sharedPreferences;
     @Inject StatusManager statusManager;
@@ -68,8 +67,8 @@ public class BEQService extends RoboService {
      *
      * @return An {@link android.content.Intent} to launch our {@link com.brainydroid.daydreaming.sequence.Sequence}
      */
-    private synchronized Intent createBeginEndQuestionnaireIntent() {
-        Logger.d(TAG, "Creating BeginQuestionnaire Intent");
+    private synchronized Intent createBEQIntent() {
+        Logger.d(TAG, "Creating BEQ Intent");
         Intent intent = new Intent(this, BEQActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra("questionnaireType",type);
@@ -80,10 +79,10 @@ public class BEQService extends RoboService {
      * Notify our probe to the user.
      */
     private synchronized void notifyQuestionnaire() {
-        Logger.d(TAG, "Notifying BeginQuestionnaire");
+        Logger.d(TAG, "Notifying BEQ");
 
         // Create the PendingIntent
-        Intent intent = createBeginEndQuestionnaireIntent();
+        Intent intent = createBEQIntent();
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
                 intent, PendingIntent.FLAG_CANCEL_CURRENT |
                 PendingIntent.FLAG_ONE_SHOT);

@@ -95,7 +95,7 @@ public class SchedulerService extends RoboService {
         checkAndScheduleProbe(debugging);
 
         // Schedule begin questionnaire
-        checkAndScheduleBEQ(debugging);
+        checkAndLaunchBEQ();
 
         stopSelf();
 
@@ -163,16 +163,16 @@ public class SchedulerService extends RoboService {
         }
     }
 
-    private synchronized void checkAndScheduleBEQ(boolean debugging) {
+    private synchronized void checkAndLaunchBEQ() {
         if (!statusManager.wereBEQAnsweredOnTime()) {
             launchBEQService(true);
         } else {
-            Logger.d(TAG, "BeginQuestionnaire all answered . no need to schedule notif.");
+            Logger.d(TAG, "BeginQuestionnaire all answered . no need to notify.");
         }
     }
 
-
     private synchronized void launchBEQService(boolean persistent) {
+        Logger.d(TAG, "Launching BEQ Service");
         Intent intent = new Intent(this, BEQService.class);
         intent.putExtra("isPersistent", persistent);
         startService(intent);
