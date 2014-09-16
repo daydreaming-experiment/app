@@ -359,6 +359,7 @@ public class ParametersStorage {
         }
         // and save duplicate
         sequences.addAll(endSequences);
+        clearSequences();
         eSharedPreferences.putString(statusManager.getCurrentModeName() + SEQUENCES,
                 json.toJsonInternal(sequences));
         eSharedPreferences.commit();
