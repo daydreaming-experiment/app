@@ -19,6 +19,7 @@ import com.brainydroid.daydreaming.db.SequenceDescription;
 import com.brainydroid.daydreaming.db.SequencesStorage;
 import com.brainydroid.daydreaming.network.CryptoStorage;
 import com.brainydroid.daydreaming.sequence.Sequence;
+import com.brainydroid.daydreaming.sequence.SequenceBuilder;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
@@ -70,6 +71,9 @@ public class StatusManager {
 
     public static String ARE_RESULTS_NOTIFIED_DASHBOARD = "areResultsNotifiedDashboard";
     public static String ARE_RESULTS_NOTIFIED = "areResultsNotified";
+
+    public static String CURRENT_BEG_END_QUESTIONNAIRE_TYPE = "currentBEQType";
+
 
     public static final String ACTION_PARAMETERS_STATUS_CHANGE = "actionParametersStatusChange";
 
@@ -641,53 +645,33 @@ public class StatusManager {
         return areParametersUpdated();
     }
 
-    public synchronized boolean areBeginQuestionnairesCompleted() {
+    public synchronized boolean areBeginEndQuestionnairesCompleted(String type) {
         if (!areParametersUpdated()) {
             return false;
         }
-
-        ArrayList<SequenceDescription> allQuestionnairesDescriptions =
-                parametersStorageProvider.get()
-                        .getSequencesByType(Sequence.TYPE_BEGIN_QUESTIONNAIRE);
         ArrayList<Sequence> allLoadedQuestionnaires = sequencesStorageProvider.get()
-                .getSequencesByType(Sequence.TYPE_BEGIN_QUESTIONNAIRE);
+                .getSequencesByType(type);
         ArrayList<Sequence> completedQuestionnaires = sequencesStorageProvider.get()
-                .getCompletedSequences(Sequence.TYPE_BEGIN_QUESTIONNAIRE);
+                .getCompletedSequences(type);
 
         int nCompleted = completedQuestionnaires != null ? completedQuestionnaires.size() : -1;
-        int nTotal = allQuestionnairesDescriptions != null ? allQuestionnairesDescriptions.size() : -1;
         int nLoaded = allLoadedQuestionnaires != null ? allLoadedQuestionnaires.size() : -1;
 
         Logger.d(TAG, "Checking Begin Questionnaire status");
-        Logger.d(TAG, "Total : {0} - Loaded : {1} - Completed {2}",
-                Integer.toString(nTotal),
+        Logger.d(TAG, "Loaded : {0} - Completed {1}",
                 Integer.toString(nLoaded),
                 Integer.toString(nCompleted));
 
-        boolean completion;
-        if (nTotal > 0) {
-            // if any questionnaire at all. (suppressing inspection here for readability)
-            //noinspection SimplifiableIfStatement
-            if (nLoaded > 0) {
-                // if loaded:
+        return (nLoaded == nCompleted);
+    }
 
-                // are all of them completed?
-                completion =  nCompleted == nTotal;
-            } else {
-                // if not loaded
-                completion = false;
-            }
-        } else {
-            // no questionnaires -> return completed
-            completion = true;
+
+    public synchronized boolean areBeginEndQuestionnairesCompleted() {
+        if (!areParametersUpdated()) {
+            return false;
         }
-
-        Logger.d(TAG, "Total : {0} - Loaded : {1} - Completed {2} -> Completion: {3}",
-                Integer.toString(nTotal),
-                Integer.toString(nLoaded),
-                Integer.toString(nCompleted),
-                Boolean.toString(completion));
-        return completion;
+        String type = getCurrentBEQType();
+        return areBeginEndQuestionnairesCompleted(type);
     }
 
     public synchronized boolean areResultsAvailable(){
@@ -758,6 +742,28 @@ public class StatusManager {
         return (isParametersSyncRunning || isRegistrationRunning ||
                 isSequencesSyncRunning || isLocationPointsSyncRunning || isProfileSyncRunning)
                 && (now - isSyncRunningTimestamp) < 60 * 1000;
+    }
+
+    /**
+     * Setting current Begin/End questionnaire type to type
+     */
+    public synchronized void setCurrentBEQType(String type) {
+        Logger.d(TAG, "{} - Setting currentBEQType to {}", getCurrentModeName(), type);
+        eSharedPreferences.putString(getCurrentModeName() + CURRENT_BEG_END_QUESTIONNAIRE_TYPE, type);
+        eSharedPreferences.commit();
+    }
+
+    public synchronized String getCurrentBEQType() {
+        String currentBEQType = sharedPreferences.getString(
+                getCurrentModeName() + CURRENT_BEG_END_QUESTIONNAIRE_TYPE, null);
+        if (currentBEQType == null) {
+            Logger.e(TAG, "{} - currentBEQType is asked for but not set",
+                    getCurrentMode());
+            throw new RuntimeException("currentBEQType is asked for but not set");
+        }
+        Logger.d(TAG, "{0} - currentBEQType is {1}", getCurrentModeName(),
+                currentBEQType);
+        return currentBEQType;
     }
 
 }
