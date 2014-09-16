@@ -60,7 +60,8 @@
             android:label="@string/begin_questionnaires_title_activity"
             android:theme="@style/daydreamingTheme"
             android:taskAffinity=".dashboard"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:noHistory="true">
         </activity>
 
         <activity android:name=".ui.dashboard.DescriptionActivity"
