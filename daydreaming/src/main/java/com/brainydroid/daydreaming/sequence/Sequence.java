@@ -18,11 +18,11 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
     private static String TAG = "Sequence";
 
     public static String TYPE_PROBE = "probe";
-    public static String TYPE_BEGIN_AND_END_QUESTIONNAIRE = "beginQuestionnaire";
+    public static String TYPE_BEGIN_END_QUESTIONNAIRE = "beginEndQuestionnaire";
     public static String TYPE_BEGIN_QUESTIONNAIRE = "beginQuestionnaire";
     public static String TYPE_END_QUESTIONNAIRE = "endQuestionnaire";
     public static String END_PREFIX = "end";
-
+    public static String BEGIN_PREFIX = "begin";
 
     public static String[] AVAILABLE_TYPES = new String[] {TYPE_PROBE, TYPE_BEGIN_QUESTIONNAIRE, TYPE_END_QUESTIONNAIRE};
     public static String[] TYPES_BEGIN_AND_END_QUESTIONNAIRE = new String[] {TYPE_BEGIN_QUESTIONNAIRE, TYPE_END_QUESTIONNAIRE};

@@ -347,7 +347,7 @@ public class ParametersStorage {
         // This is not to have to copy the questionnaire twice in external parameters
         ArrayList<SequenceDescription> endSequences = new ArrayList<SequenceDescription>();
         for (SequenceDescription sd : sequences) {
-            if (sd.getType().equals(Sequence.TYPE_BEGIN_QUESTIONNAIRE)) {
+            if (sd.getType().equals(Sequence.TYPE_BEGIN_END_QUESTIONNAIRE)) {
                 SequenceDescription sdCopy = new SequenceDescription();
                 sdCopy.setPageGroups(sd.getPageGroups());
                 sdCopy.setNSlots(sd.getNSlots());
@@ -355,6 +355,9 @@ public class ParametersStorage {
                 sdCopy.setType(Sequence.TYPE_END_QUESTIONNAIRE);
                 sdCopy.setName(Sequence.END_PREFIX + sd.getName());
                 endSequences.add(sdCopy);
+                sdCopy.setType(Sequence.TYPE_BEGIN_QUESTIONNAIRE);
+                sd.setName(Sequence.BEGIN_PREFIX + sd.getName());
+
             }
         }
         // and save duplicate
