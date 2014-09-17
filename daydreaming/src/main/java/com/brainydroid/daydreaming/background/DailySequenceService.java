@@ -142,9 +142,9 @@ public class DailySequenceService extends RoboService {
 
         // Create our notification
         Notification notification = new NotificationCompat.Builder(this)
-        .setTicker(getString(R.string.probeNotification_ticker))
-        .setContentTitle(getString(R.string.probeNotification_title))
-        .setContentText(getString(R.string.probeNotification_text))
+        .setTicker(getString(sequence.getIdTicker()))
+        .setContentTitle(getString(sequence.getIdTitle()))
+        .setContentText(getString(sequence.getIdText()))
         .setContentIntent(contentIntent)
         .setSmallIcon(R.drawable.ic_stat_notify_small_daydreaming)
         .setAutoCancel(true)

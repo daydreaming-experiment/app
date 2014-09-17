@@ -186,9 +186,17 @@
     <string name="probeNotification_title">Daydreaming</string>
     <string name="probeNotification_text">A few quick questions</string>
 
-    <string name="bqNotification_ticker">Daydreaming questionnaire</string>
+    <string name="mqNotification_ticker">Morning poll</string>
+    <string name="mqNotification_title">Good morning!</string>
+    <string name="mqNotification_text">A few questions to start the day</string>
+
+    <string name="eqNotification_ticker">Evening poll</string>
+    <string name="eqNotification_title">Good evening!</string>
+    <string name="eqNotification_text">A few questions to close the day</string>
+
+    <string name="bqNotification_ticker">Questionnaires</string>
     <string name="bqNotification_title">Daydreaming</string>
-    <string name="bqNotification_text">A few questions about you</string>
+    <string name="bqNotification_text">Please fill those questionnaires</string>
 
     <!-- Crash Reports -->
     <string name="crash_toast_text">Oops Daydreaming just crashed! The developers have been notified.</string>
