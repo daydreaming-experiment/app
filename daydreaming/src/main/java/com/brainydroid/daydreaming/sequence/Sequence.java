@@ -1,5 +1,6 @@
 package com.brainydroid.daydreaming.sequence;
 
+import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.SequenceDescription;
 import com.brainydroid.daydreaming.db.SequenceJsonFactory;
@@ -21,6 +22,9 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
     public static String TYPE_BEGIN_END_QUESTIONNAIRE = "beginEndQuestionnaire";
     public static String TYPE_BEGIN_QUESTIONNAIRE = "beginQuestionnaire";
     public static String TYPE_END_QUESTIONNAIRE = "endQuestionnaire";
+    public static String TYPE_MORNING_QUESTIONNAIRE = "morningQuestionnaire";
+    public static String TYPE_EVENING_QUESTIONNAIRE = "eveningQuestionnaire";
+
     public static String END_PREFIX = "end";
     public static String BEGIN_PREFIX = "begin";
 
@@ -223,6 +227,39 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
     @Override
     protected synchronized SequencesStorage getStorage() {
         return sequencesStorage;
+    }
+
+    public int getIdTicker() {
+        if (type.equals(TYPE_PROBE)) {
+            return R.string.probeNotification_ticker;
+        } else if (type.equals(TYPE_MORNING_QUESTIONNAIRE)) {
+            return R.string.mqNotification_ticker;
+        } else if (type.equals(TYPE_EVENING_QUESTIONNAIRE)) {
+            return R.string.eqNotification_ticker;
+        }
+        return -1;
+    }
+
+    public int getIdTitle() {
+        if (type.equals(TYPE_PROBE)) {
+            return R.string.probeNotification_title;
+        } else if (type.equals(TYPE_MORNING_QUESTIONNAIRE)) {
+            return R.string.mqNotification_title;
+        } else if (type.equals(TYPE_EVENING_QUESTIONNAIRE)) {
+            return R.string.eqNotification_title;
+        }
+        return -1;
+    }
+
+    public int getIdText() {
+        if (type.equals(TYPE_PROBE)) {
+            return R.string.probeNotification_text;
+        } else if (type.equals(TYPE_MORNING_QUESTIONNAIRE)) {
+            return R.string.mqNotification_text;
+        } else if (type.equals(TYPE_EVENING_QUESTIONNAIRE)) {
+            return R.string.eqNotification_text;
+        }
+        return -1;
     }
 
 }

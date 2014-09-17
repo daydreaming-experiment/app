@@ -6,7 +6,7 @@ import com.google.inject.Inject;
 import roboguice.receiver.RoboBroadcastReceiver;
 
 /**
- * Start {@link SchedulerService} to reschedule the next {@link
+ * Start {@link ProbeSchedulerService} to reschedule the next {@link
  * com.brainydroid.daydreaming.sequence.Sequence} when the user's time settings change.
  * <p/>
  * This service is only started if the first launch has been completed
@@ -14,7 +14,7 @@ import roboguice.receiver.RoboBroadcastReceiver;
  *
  * @author Sébastien Lerique
  * @author Vincent Adam
- * @see SchedulerService
+ * @see ProbeSchedulerService
  */
 public class TimeReceiver extends RoboBroadcastReceiver {
 
@@ -39,9 +39,9 @@ public class TimeReceiver extends RoboBroadcastReceiver {
                 Logger.d(TAG, "First launch is completed");
 
                 // Reschedule the next poll
-                Logger.d(TAG, "Starting SchedulerService");
+                Logger.d(TAG, "Starting ProbeSchedulerService");
                 Intent schedulerIntent = new Intent(context,
-                        SchedulerService.class);
+                        ProbeSchedulerService.class);
                 context.startService(schedulerIntent);
             } else {
                 Logger.v(TAG, "First launch not completed -> exiting");

@@ -18,7 +18,8 @@ import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.LocationCallback;
 import com.brainydroid.daydreaming.background.LocationServiceConnection;
 import com.brainydroid.daydreaming.background.Logger;
-import com.brainydroid.daydreaming.background.SchedulerService;
+import com.brainydroid.daydreaming.background.MEQSchedulerService;
+import com.brainydroid.daydreaming.background.ProbeSchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.db.SequencesStorage;
 import com.brainydroid.daydreaming.network.SntpClient;
@@ -80,7 +81,11 @@ public class PageActivity extends RoboFragmentActivity {
             // If this is a probe and we're at the first page, reschedule so as not
             // to have a new probe appear in the middle of this one
             if (sequence.getType().equals(Sequence.TYPE_PROBE) && currentPage.isFirstOfSequence()) {
-                startSchedulerService();
+                startProbeSchedulerService();
+            } else if ( sequence.getType().equals(Sequence.TYPE_MORNING_QUESTIONNAIRE) && currentPage.isFirstOfSequence()) {
+                startMEQSchedulerService();
+            } else if ( sequence.getType().equals(Sequence.TYPE_EVENING_QUESTIONNAIRE) && currentPage.isFirstOfSequence()) {
+                startMEQSchedulerService();
             }
         }
 
@@ -193,10 +198,15 @@ public class PageActivity extends RoboFragmentActivity {
                         && sequence.isSkipBonuses());
     }
 
-    private void startSchedulerService() {
-        Logger.d(TAG, "Starting SchedulerService");
+    private void startProbeSchedulerService() {
+        Logger.d(TAG, "Starting ProbeSchedulerService");
+        Intent schedulerIntent = new Intent(this, ProbeSchedulerService.class);
+        startService(schedulerIntent);
+    }
 
-        Intent schedulerIntent = new Intent(this, SchedulerService.class);
+    private void startMEQSchedulerService() {
+        Logger.d(TAG, "Starting MEQSchedulerService");
+        Intent schedulerIntent = new Intent(this, MEQSchedulerService.class);
         startService(schedulerIntent);
     }
 

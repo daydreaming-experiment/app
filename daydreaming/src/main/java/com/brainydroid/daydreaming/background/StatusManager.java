@@ -82,7 +82,7 @@ public class StatusManager {
     public static String MODE_NAME_PROD = "production";
     public static String[] AVAILABLE_MODE_NAMES = {MODE_NAME_PROD, MODE_NAME_TEST};
 
-    /** Delay after which SchedulerService must be restarted if it hasn't run. 2 days. */
+    /** Delay after which ProbeSchedulerService must be restarted if it hasn't run. 2 days. */
     public static long RESTART_SCHEDULER_SERVICE_DELAY = 2 * 24 * 60 * 60 * 1000;
 
     /** Delay after which LocationPointService must be restarted if it hasn't run. 1 hour. */
@@ -436,7 +436,7 @@ public class StatusManager {
     }
 
     public synchronized void setLatestSchedulerServiceSystemTimestampToNow() {
-        Logger.d(TAG, "Setting last time SchedulerService ran to now (system timestamp)");
+        Logger.d(TAG, "Setting last time ProbeSchedulerService ran to now (system timestamp)");
         eSharedPreferences.putLong(LATEST_SCHEDULER_SERVICE_SYSTEM_TIMESTAMP,
                 Calendar.getInstance().getTimeInMillis());
         eSharedPreferences.commit();
@@ -445,16 +445,16 @@ public class StatusManager {
     public synchronized void checkLatestSchedulerWasAgesAgo() {
         long latest = sharedPreferences.getLong(LATEST_SCHEDULER_SERVICE_SYSTEM_TIMESTAMP, -1);
         if (latest == -1) {
-            // SchedulerService never ran, which means first launch wasn't finished
-            Logger.d(TAG, "SchedulerService never ran yet, no need to restart it");
+            // ProbeSchedulerService never ran, which means first launch wasn't finished
+            Logger.d(TAG, "ProbeSchedulerService never ran yet, no need to restart it");
         } else {
             if (Calendar.getInstance().getTimeInMillis() - latest > RESTART_SCHEDULER_SERVICE_DELAY) {
-                Logger.d(TAG, "SchedulerService hasn't run since long ago -> restarting it");
+                Logger.d(TAG, "ProbeSchedulerService hasn't run since long ago -> restarting it");
 
-                Intent schedulerIntent = new Intent(context, SchedulerService.class);
+                Intent schedulerIntent = new Intent(context, ProbeSchedulerService.class);
                 context.startService(schedulerIntent);
             } else {
-                Logger.d(TAG, "SchedulerService ran not long ago, leaving it be");
+                Logger.d(TAG, "ProbeSchedulerService ran not long ago, leaving it be");
             }
         }
     }
@@ -637,8 +637,9 @@ public class StatusManager {
         context.startService(locationPointServiceIntent);
 
         Logger.d(TAG, "Cancelling notified polls");
-        Intent pollServiceIntent = new Intent(context, ProbeService.class);
-        pollServiceIntent.putExtra(ProbeService.CANCEL_PENDING_POLLS, true);
+        Intent pollServiceIntent = new Intent(context, DailySequenceService.class);
+        pollServiceIntent.putExtra(DailySequenceService.SEQUENCE_TYPE, Sequence.TYPE_PROBE);
+        pollServiceIntent.putExtra(DailySequenceService.CANCEL_PENDING_POLLS, true);
         context.startService(pollServiceIntent);
     }
 

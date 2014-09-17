@@ -15,8 +15,10 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.*;
 import com.brainydroid.daydreaming.R;
+import com.brainydroid.daydreaming.background.BEQSchedulerService;
 import com.brainydroid.daydreaming.background.Logger;
-import com.brainydroid.daydreaming.background.SchedulerService;
+import com.brainydroid.daydreaming.background.MEQSchedulerService;
+import com.brainydroid.daydreaming.background.ProbeSchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.db.Util;
 import com.brainydroid.daydreaming.ui.firstlaunchsequence.FirstLaunch00WelcomeActivity;
@@ -132,7 +134,7 @@ public class SettingsActivity extends RoboFragmentActivity {
                         // Listener can correct and update the view here
                         correctTimeWindow();
                         updateTimeViews();
-                        startSchedulerService();
+                        startSchedulerServices();
 
                     }
 
@@ -167,7 +169,7 @@ public class SettingsActivity extends RoboFragmentActivity {
                         // Listener can correct and update the view here
                         correctTimeWindow();
                         updateTimeViews();
-                        startSchedulerService();
+                        startSchedulerServices();
                     }
 
                 };
@@ -273,10 +275,14 @@ public class SettingsActivity extends RoboFragmentActivity {
         tv_time_until.setText(Time_until);
     }
 
-    private void startSchedulerService() {
-        Logger.d(TAG, "Starting SchedulerService");
-        Intent schedulerIntent = new Intent(this, SchedulerService.class);
+    private void startSchedulerServices() {
+        Logger.d(TAG, "Starting ProbeSchedulerService");
+        Intent schedulerIntent = new Intent(this, ProbeSchedulerService.class);
         startService(schedulerIntent);
+        schedulerIntent = new Intent(this, BEQSchedulerService.class);
+        this.startService(schedulerIntent);
+        schedulerIntent = new Intent(this, MEQSchedulerService.class);
+        this.startService(schedulerIntent);
     }
 
     @Override
