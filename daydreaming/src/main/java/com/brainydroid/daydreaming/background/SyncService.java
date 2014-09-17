@@ -40,8 +40,8 @@ import roboguice.service.RoboService;
  *
  * @author Sébastien Lerique
  * @author Vincent Adam
- * @see ProbeService
- * @see SchedulerService
+ * @see DailySequenceService
+ * @see ProbeSchedulerService
  */
 public class SyncService extends RoboService {
 

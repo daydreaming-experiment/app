@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.db.SequencesStorage;
@@ -29,43 +30,51 @@ import roboguice.service.RoboService;
  * @author Sébastien Lerique
  * @author Vincent Adam
  * @see Sequence
- * @see SchedulerService
+ * @see ProbeSchedulerService
  * @see SyncService
  */
-public class ProbeService extends RoboService {
+public class DailySequenceService extends RoboService {
 
-    private static String TAG = "ProbeService";
+    private static String TAG = "DailySequenceService";
 
-    public static String CANCEL_PENDING_POLLS = "cancelPendingProbes";
+    public static String CANCEL_PENDING_POLLS = "cancelPendingSequences";
+    public static String SEQUENCE_TYPE = "sequenceType";
 
     @Inject NotificationManager notificationManager;
     @Inject SequencesStorage sequencesStorage;
     @Inject SequenceBuilder sequenceBuilder;
     @Inject SharedPreferences sharedPreferences;
     @Inject SntpClient sntpClient;
-    @Inject Sequence probe;
+    @Inject Sequence sequence;
     @Inject StatusManager statusManager;
+
+    String sequenceType;
 
     @Override
     public synchronized int onStartCommand(Intent intent, int flags, int startId) {
-        Logger.d(TAG, "ProbeService started");
+        Logger.d(TAG, "DailySequenceService started");
 
         super.onStartCommand(intent, flags, startId);
 
+        sequenceType = intent.getStringExtra(DailySequenceService.SEQUENCE_TYPE);
+        if (sequenceType == null) {
+            Log.d(TAG, "Sequence type not found in intent, found null");
+            throw new NullPointerException(); }
+
         if (intent.getBooleanExtra(CANCEL_PENDING_POLLS, false)) {
-            Logger.v(TAG, "Started to cancel pending probes");
-            cancelPendingProbes();
+            Logger.v(TAG, "Started to cancel pending sequences of type {}", sequenceType);
+            cancelPendingSequences();
         } else {
-            Logger.v(TAG, "Started to create and notify a probe");
+            Logger.v(TAG, "Started to create and notify a sequence of type {}", sequenceType);
 
             // If the questions haven't been downloaded (which is probably
             // because the json was malformed), only reschedule (which will
             // re-download the questions; hopefully they will have been fixed)
-            // and don't show any probe.
+            // and don't show any sequence.
             if (statusManager.areParametersUpdated() & statusManager.wereBEQAnsweredOnTime()) {
-                // Populate and notify the probe
-                populateProbe();
-                notifyProbe();
+                // Populate and notify the sequence
+                populateSequence();
+                notifySequence();
             } else {
                 startSchedulerService();
             }
@@ -86,13 +95,13 @@ public class ProbeService extends RoboService {
      *
      * @return An {@link Intent} to launch our {@link Sequence}
      */
-    private synchronized Intent createProbeIntent() {
-        Logger.d(TAG, "Creating probe Intent");
+    private synchronized Intent createSequenceIntent() {
+        Logger.d(TAG, "Creating sequence Intent - type: {}", sequenceType);
 
         Intent intent = new Intent(this, PageActivity.class);
 
-        // Set the id of the probe to start
-        intent.putExtra(PageActivity.EXTRA_SEQUENCE_ID, probe.getId());
+        // Set the id of the sequence to start
+        intent.putExtra(PageActivity.EXTRA_SEQUENCE_ID, sequence.getId());
 
         // Create a new task. The rest is defined in the App manifest.
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -100,13 +109,13 @@ public class ProbeService extends RoboService {
     }
 
     /**
-     * Notify our probe to the user.
+     * Notify our sequence to the user.
      */
-    private synchronized void notifyProbe() {
-        Logger.d(TAG, "Notifying probe");
+    private synchronized void notifySequence() {
+        Logger.d(TAG, "Notifying sequence of type {}", sequenceType);
 
         // Create the PendingIntent
-        Intent intent = createProbeIntent();
+        Intent intent = createSequenceIntent();
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
                 intent, PendingIntent.FLAG_CANCEL_CURRENT |
                 PendingIntent.FLAG_ONE_SHOT);
@@ -150,38 +159,38 @@ public class ProbeService extends RoboService {
         }
 
         // And send it to the system
-        notificationManager.cancel(probe.getId());
-        notificationManager.notify(probe.getId(), notification);
+        notificationManager.cancel(sequence.getId());
+        notificationManager.notify(sequence.getId(), notification);
     }
 
     /**
      * Fill our {@link Sequence} with questions.
      */
-    private synchronized void populateProbe() {
-        Logger.d(TAG, "Populating probe with sequence");
+    private synchronized void populateSequence() {
+        Logger.d(TAG, "Populating sequence with sequence of type {}", sequenceType);
 
-        // Pick from already created probes that were never shown to the
+        // Pick from already created sequences of type sequenceType that were never shown to the
         // user, if there are any
-        ArrayList<Sequence> pendingProbes = sequencesStorage.getPendingSequences(
-                Sequence.TYPE_PROBE);
+        ArrayList<Sequence> pendingSequences = sequencesStorage.getPendingSequences(
+                sequenceType);
 
-        if (pendingProbes != null) {
-            Logger.d(TAG, "Reusing previously pending probe");
-            probe = pendingProbes.get(0);
+        if (pendingSequences != null) {
+            Logger.d(TAG, "Reusing previously pending sequence of type {}", sequenceType);
+            sequence = pendingSequences.get(0);
         } else {
-            Logger.d(TAG, "Creating new probe");
-            probe = sequenceBuilder.buildSave(Sequence.TYPE_PROBE);
+            Logger.d(TAG, "Creating new sequence of type {}",sequenceType);
+            sequence = sequenceBuilder.buildSave(sequenceType);
         }
 
-        // Update the probe's status
-        Logger.d(TAG, "Setting probe status and timestamp, and saving");
-        probe.retainSaves();
-        probe.setNotificationSystemTimestamp(
+        // Update the sequence's status
+        Logger.d(TAG, "Setting sequence status and timestamp, and saving");
+        sequence.retainSaves();
+        sequence.setNotificationSystemTimestamp(
                 Calendar.getInstance().getTimeInMillis());
-        probe.setStatus(Sequence.STATUS_PENDING);
-        probe.flushSaves();
+        sequence.setStatus(Sequence.STATUS_PENDING);
+        sequence.flushSaves();
 
-        // Get a timestamp for the probe
+        // Get a timestamp for the sequence
         SntpClientCallback sntpCallback = new SntpClientCallback() {
 
             private final String TAG = "SntpClientCallback";
@@ -189,9 +198,9 @@ public class ProbeService extends RoboService {
             @Override
             public void onTimeReceived(SntpClient sntpClient) {
                 if (sntpClient != null) {
-                    probe.setNotificationNtpTimestamp(sntpClient.getNow());
+                    sequence.setNotificationNtpTimestamp(sntpClient.getNow());
                     Logger.i(TAG, "Received and saved NTP time for " +
-                            "probe notification");
+                            "sequence notification");
                 } else {
                     Logger.e(TAG, "Received successful NTP request but " +
                             "sntpClient is null");
@@ -207,24 +216,24 @@ public class ProbeService extends RoboService {
     /**
      * Cancel any pending {@link Sequence}s already notified.
      */
-    private synchronized void cancelPendingProbes() {
-        Logger.d(TAG, "Cancelling pending probes");
-        ArrayList<Sequence> pendingProbes = sequencesStorage.getPendingSequences(
-                Sequence.TYPE_PROBE);
-        if (pendingProbes != null) {
-            for (Sequence probe : pendingProbes) {
-                notificationManager.cancel(probe.getId());
-                sequencesStorage.remove(probe.getId());
+    private synchronized void cancelPendingSequences() {
+        Logger.d(TAG, "Cancelling pending sequences of type {}", sequenceType);
+        ArrayList<Sequence> pendingSequences = sequencesStorage.getPendingSequences(
+                sequenceType);
+        if (pendingSequences != null) {
+            for (Sequence sequence : pendingSequences) {
+                notificationManager.cancel(sequence.getId());
+                sequencesStorage.remove(sequence.getId());
             }
         } else {
-            Logger.v(TAG, "No pending probes to cancel");
+            Logger.v(TAG, "No pending sequences of type {} to cancel", sequenceType);
         }
     }
 
     private void startSchedulerService() {
-        Logger.d(TAG, "Starting SchedulerService");
+        Logger.d(TAG, "Starting ProbeSchedulerService");
 
-        Intent schedulerIntent = new Intent(this, SchedulerService.class);
+        Intent schedulerIntent = new Intent(this, ProbeSchedulerService.class);
         startService(schedulerIntent);
     }
 

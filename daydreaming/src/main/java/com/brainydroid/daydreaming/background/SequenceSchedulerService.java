@@ -13,6 +13,7 @@ import android.support.v4.app.NotificationCompat;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.db.ParametersStorage;
 import com.brainydroid.daydreaming.db.Util;
+import com.brainydroid.daydreaming.sequence.Sequence;
 import com.brainydroid.daydreaming.ui.dashboard.ResultsActivity;
 import com.google.inject.Inject;
 
@@ -29,12 +30,12 @@ import roboguice.service.RoboService;
  *
  * @author Sébastien Lerique
  * @author Vincent Adam
- * @see SyncService
- * @see ProbeService
+ * @see com.brainydroid.daydreaming.background.SyncService
+ * @see com.brainydroid.daydreaming.background.DailySequenceService
  */
-public class SchedulerService extends RoboService {
+public class SequenceSchedulerService extends RoboService {
 
-    private static String TAG = "SchedulerService";
+    private static String TAG = "SequenceSchedulerService";
 
     /** Extra to set to {@code true} for debugging */
     public static String SCHEDULER_DEBUGGING = "schedulerDebugging";
@@ -45,14 +46,16 @@ public class SchedulerService extends RoboService {
     public static long QUESTIONNAIRE_DELAY_AFTER_WINDOW_START = 30 * 60 * 1000; // 30 minutes
 
     // Handy object that will be holding the 'now' time
-    private Calendar now;
-    private long nowUpTime;
+    protected Calendar now;
+    protected long nowUpTime;
 
     // Useful data about the user's settings
-    private int startAllowedHour;
-    private int startAllowedMinute;
-    private int allowedSpan;
-    private int forbiddenSpan;
+    protected int startAllowedHour;
+    protected int startAllowedMinute;
+    protected int endAllowedHour;
+    protected int endAllowedMinute;
+    protected int allowedSpan;
+    protected int forbiddenSpan;
 
     @Inject SharedPreferences sharedPreferences;
     @Inject StatusManager statusManager;
@@ -61,41 +64,12 @@ public class SchedulerService extends RoboService {
     @Inject AlarmManager alarmManager;
     @Inject NotificationManager notificationManager;
 
+    protected boolean debugging;
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Logger.d(TAG, "SchedulerService started");
-
+        Logger.d(TAG, "ProbeSchedulerService started (should not ever happen)");
         super.onStartCommand(intent, flags, startId);
-
-        // Record last time we ran
-        statusManager.setLatestSchedulerServiceSystemTimestampToNow();
-
-        // Check LocationPointService hasn't died
-        statusManager.checkLatestLocationPointServiceWasAgesAgo();
-
-        // Notify results if they're available
-        notifyResultsIfAvailable();
-
-        // Check if we are getting close to the end to enable the final Begin/End questionnaires
-        statusManager.updateBEQType();
-
-
-        // Synchronise answers and get parameters if we don't have them. If parameters
-        // happen to be updated, the SchedulerService will be run again.
-        startSyncService();
-
-        // Schedule a probe
-        if (!statusManager.areParametersUpdated()) {
-            Logger.d(TAG, "Parameters not updated yet. aborting scheduling.");
-            return START_REDELIVER_INTENT;
-        }
-
-        // Schedule a probe
-        boolean debugging = intent.getBooleanExtra(SCHEDULER_DEBUGGING, false);
-        scheduleProbe(debugging);
-
-        stopSelf();
-
         return START_REDELIVER_INTENT;
     }
 
@@ -105,7 +79,7 @@ public class SchedulerService extends RoboService {
         return null;
     }
 
-    private synchronized void notifyResultsIfAvailable() {
+    protected synchronized void notifyResultsIfAvailable() {
         if (statusManager.areResultsAvailable() && !statusManager.areResultsNotified()) {
             Intent intent = new Intent(this, ResultsActivity.class);
             PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
@@ -131,27 +105,36 @@ public class SchedulerService extends RoboService {
 
     /**
      * Schedule a {@link com.brainydroid.daydreaming.sequence.Sequence} to be created
-     * and notified by {@link ProbeService} later on.
+     * and notified by {@link com.brainydroid.daydreaming.background.DailySequenceService} later on.
      *
-     * @param debugging Set to {@link true} for a fixed short delay before
+     * debugging Set to {@link true} for a fixed short delay before
      *                  notification
      */
-    private synchronized void scheduleProbe(boolean debugging) {
-        Logger.d(TAG, "Scheduling new probe");
-
-        // Generate the time at which the probe will appear
-        long scheduledTime = generateProbeTime(debugging);
-
-        // Create and schedule the PendingIntent for ProbeService
-        Intent intent = new Intent(this, ProbeService.class);
+    protected synchronized void scheduleSequence(String sequenceType) {
+        Logger.d(TAG, "Scheduling new sequence of type {}", sequenceType);
+        // Generate the time at which the sequence will appear
+        long scheduledTime = generateTime(sequenceType);
+        // Create and schedule the PendingIntent for DailySequenceService
+        Intent intent = new Intent(this, DailySequenceService.class);
+        intent.putExtra(DailySequenceService.SEQUENCE_TYPE, sequenceType);
         PendingIntent pendingIntent = PendingIntent.getService(this, 0,
                 intent, PendingIntent.FLAG_CANCEL_CURRENT);
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
                 scheduledTime, pendingIntent);
     }
 
+    protected long generateTime(String sequenceType) {
+        if (sequenceType.equals(Sequence.TYPE_PROBE)) {
+            return generateProbeTime();
+        } else if (sequenceType.equals(Sequence.TYPE_MORNING_QUESTIONNAIRE)) {
+            return generateMQTime();
+        } else if (sequenceType.equals(Sequence.TYPE_EVENING_QUESTIONNAIRE)) {
+            return generateEQTime();
+        }
+        return 0;
+    }
 
-    private synchronized void fixNowAndGetAllowedWindow() {
+    protected synchronized void fixNowAndGetAllowedWindow() {
         Logger.d(TAG, "Fixing now and obtaining allowed time window");
 
         now = Calendar.getInstance();
@@ -167,8 +150,8 @@ public class SchedulerService extends RoboService {
 
         startAllowedHour = Util.getHour(startAllowedString);
         startAllowedMinute = Util.getMinute(startAllowedString);
-        int endAllowedHour = Util.getHour(endAllowedString);
-        int endAllowedMinute = Util.getMinute(endAllowedString);
+        endAllowedHour = Util.getHour(endAllowedString);
+        endAllowedMinute = Util.getMinute(endAllowedString);
 
         Logger.d(TAG, "Allowed start: {0}:{1}",
                 startAllowedHour, startAllowedMinute);
@@ -210,12 +193,12 @@ public class SchedulerService extends RoboService {
      * is the same (see {@link #makeRespectfulDelay} and {@link
      * #makeRespectfulExpansion} for details).
      *
-     * @param debugging Set to {@link true} to get a fixed short delay for
+     * debugging Set to {@link true} to get a fixed short delay for
      *                  the notification instead of a random delay
-     * @return Scheduled (and shifted) moment for the probe to appear,
+     * @return Scheduled (and shifted) moment for the sequence to appear,
      *         in milliseconds from epoch
      */
-    private synchronized long generateProbeTime(boolean debugging) {
+    protected synchronized long generateProbeTime() {
         Logger.d(TAG, "Generating a time for schedule");
 
         // Fix what 'now' means, and retrieve the allowed time window
@@ -242,22 +225,74 @@ public class SchedulerService extends RoboService {
         // obverse the user's settings.         Intent schedulerIntent =
 
         // Compute waiting hour, minute, and second values
-        long milliseconds = respectfulDelay;
-        long hours = milliseconds / (60 * 60 * 1000);
-        milliseconds %= 60 * 60 * 1000;
-        long minutes = milliseconds / (60 * 1000);
-        milliseconds %= 60 * 1000;
-        long seconds = milliseconds / 1000;
-
         String scheduledString = Util.formatDate(scheduledCalendar.getTime());
-        Logger.i(TAG, "Probe scheduled in {0} hours, {1} minutes, " +
-                "and {2} seconds (i.e. {3})",
-                hours, minutes, seconds, scheduledString);
-        Logger.td(this, "New probe scheduled at {0}", scheduledString);
+        printLogOfDelay(respectfulDelay);
+        Logger.td(this, "New sequence scheduled at {0}", scheduledString);
 
         // The scheduled time is returned in milliseconds
         return nowUpTime + respectfulDelay;
     }
+
+
+    protected synchronized long generateMQTime() {
+        Logger.d(TAG, "Generating a time for schedule of MQ");
+
+        // Fix what 'now' means, and retrieve the allowed time window
+        fixNowAndGetAllowedWindow();
+
+        Calendar startIfToday = (Calendar) now.clone();
+        startIfToday.set(Calendar.HOUR_OF_DAY, startAllowedHour);
+        startIfToday.set(Calendar.MINUTE, startAllowedMinute);
+        Calendar startIfTomorrow = (Calendar) startIfToday.clone();
+        startIfTomorrow.add(Calendar.DAY_OF_YEAR, 1);
+
+        long scheduledTime;
+        if (nowUpTime < startIfToday.getTimeInMillis()) {
+            // still time to schedule for today!
+            scheduledTime =  startIfToday.getTimeInMillis();
+        } else {
+            scheduledTime = startIfTomorrow.getTimeInMillis();
+        }
+
+        long delay = scheduledTime - nowUpTime;
+        printLogOfDelay(delay);
+        return scheduledTime;
+    }
+
+    protected synchronized long generateEQTime() {
+        Logger.d(TAG, "Generating a time for schedule of MQ");
+        // Fix what 'now' means, and retrieve the allowed time window
+        fixNowAndGetAllowedWindow();
+        Calendar startIfToday = (Calendar) now.clone();
+        startIfToday.set(Calendar.HOUR_OF_DAY, endAllowedHour );
+        startIfToday.set(Calendar.MINUTE, endAllowedMinute);
+        Calendar startIfTomorrow = (Calendar) startIfToday.clone();
+        startIfTomorrow.add(Calendar.DAY_OF_YEAR, 1);
+        long scheduledTime;
+        if (nowUpTime < startIfToday.getTimeInMillis()) {
+            // still time to schedule for today!
+            scheduledTime =  startIfToday.getTimeInMillis();
+        } else {
+            scheduledTime = startIfTomorrow.getTimeInMillis();
+        }
+
+        long delay = scheduledTime - nowUpTime;
+        printLogOfDelay(delay);
+        return scheduledTime;
+    }
+
+    protected void printLogOfDelay(long delay) {
+        long hours = delay / (60 * 60 * 1000);
+        delay %= 60 * 60 * 1000;
+        long minutes = delay / (60 * 1000);
+        delay %= 60 * 1000;
+        long seconds = delay / 1000;
+        Logger.i(TAG, "Sequence of scheduled in {0} hours, {1} minutes, " +
+                        "and {2} seconds",
+                hours, minutes, seconds
+        );
+    }
+
 
     /**
      * Sample a delay following an exponential distribution with parameter
@@ -265,7 +300,7 @@ public class SchedulerService extends RoboService {
      *
      * @return Sampled delay in milliseconds
      */
-    private synchronized long sampleDelay() {
+    protected synchronized long sampleDelay() {
         Logger.d(TAG, "Sampling delay");
         // Delays are given in seconds by the parameters
         int minDelayMilli = 1000 * parametersStorage.getSchedulingMinDelay();
@@ -279,7 +314,7 @@ public class SchedulerService extends RoboService {
      * preferences_appSettings in notification time window.
      * <p/>
      * If the suggested scheduled time falls in the user's forbidden time
-     * window, we need to adapt to make sure no probe will get notified in
+     * window, we need to adapt to make sure no sequence will get notified in
      * that time window. We need to do so in a random-respectful way,
      * i.e. so that we don't have half the probes appearing right at the
      * beginning of the allowed time window (which would be the result of a
@@ -292,7 +327,7 @@ public class SchedulerService extends RoboService {
      * @param delay Initial delay to make respectful of user's settings
      * @return Resulting respectful delay
      */
-    private synchronized long makeRespectfulDelay(long delay) {
+    protected synchronized long makeRespectfulDelay(long delay) {
         Logger.d(TAG, "Expanding delay to respect user's time window");
 
         long expansion = makeRespectfulExpansion(now, delay);
@@ -327,7 +362,7 @@ public class SchedulerService extends RoboService {
      * @return Prolonged waiting delay respecting the user's
      * preferences_appSettings
      */
-    private synchronized long makeRespectfulExpansion(Calendar hypothesizedNow,
+    protected synchronized long makeRespectfulExpansion(Calendar hypothesizedNow,
                                          long delay) {
         Logger.d(TAG, "Recursively building expansion value");
 
@@ -421,9 +456,9 @@ public class SchedulerService extends RoboService {
     }
 
     /**
-     * Start {@link SyncService} to synchronize answers.
+     * Start {@link com.brainydroid.daydreaming.background.SyncService} to synchronize answers.
      */
-    private synchronized void startSyncService() {
+    protected synchronized void startSyncService() {
         Logger.d(TAG, "Starting SyncService");
         Intent syncIntent = new Intent(this, SyncService.class);
         startService(syncIntent);

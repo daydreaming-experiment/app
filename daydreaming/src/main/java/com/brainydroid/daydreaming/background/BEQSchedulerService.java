@@ -22,12 +22,12 @@ import roboguice.service.RoboService;
  * @author Sébastien Lerique
  * @author Vincent Adam
  * @see com.brainydroid.daydreaming.sequence.Sequence
- * @see SchedulerService
+ * @see ProbeSchedulerService
  * @see com.brainydroid.daydreaming.background.SyncService
  */
-public class BEQService extends RoboService {
+public class BEQSchedulerService extends RoboService {
 
-    public static String TAG = "BEQService";
+    public static String TAG = "BEQSchedulerService";
 
     @Inject NotificationManager notificationManager;
     @Inject SharedPreferences sharedPreferences;
@@ -41,7 +41,7 @@ public class BEQService extends RoboService {
 
     @Override
     public synchronized int onStartCommand(Intent intent, int flags, int startId) {
-        Logger.d(TAG, "BEQService started");
+        Logger.d(TAG, "BEQSchedulerService started");
         super.onStartCommand(intent, flags, startId);
 
         isPersistent = intent.getBooleanExtra(IS_PERSISTENT,false);
@@ -101,7 +101,7 @@ public class BEQService extends RoboService {
     }
 
     /**
-     * Notify our probe to the user.
+     * Notify our sequence to the user.
      */
     private synchronized void notifyQuestionnaire() {
         Logger.d(TAG, "Launch BEQ notification");

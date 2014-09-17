@@ -6,7 +6,7 @@ import com.google.inject.Inject;
 import roboguice.receiver.RoboBroadcastReceiver;
 
 /**
- * Start {@link SchedulerService} and {@link LocationPointService} when boot
+ * Start {@link ProbeSchedulerService} and {@link LocationPointService} when boot
  * is completed.
  * <p/>
  * These services are only started if the first launch has been completed
@@ -14,7 +14,7 @@ import roboguice.receiver.RoboBroadcastReceiver;
  *
  * @author Sébastien Lerique
  * @author Vincent Adam
- * @see SchedulerService
+ * @see ProbeSchedulerService
  * @see LocationPointService
  */
 public class BootReceiver extends RoboBroadcastReceiver {
@@ -38,18 +38,26 @@ public class BootReceiver extends RoboBroadcastReceiver {
                 Logger.d(TAG, "First launch is completed");
 
                 // Start scheduling polls
-                Logger.d(TAG, "Starting SchedulerService");
+                Logger.d(TAG, "Starting ProbeSchedulerService");
                 Intent schedulerIntent = new Intent(context,
-                        SchedulerService.class);
+                        ProbeSchedulerService.class);
                 context.startService(schedulerIntent);
 
-                // Start notifying questionnaires
+                // Start notifying BE questionnaires
                 if (statusManager.areParametersUpdated()) {
-                    Logger.d(TAG, "Starting BQEService");
-                    Intent BQEIntent = new Intent(context,
-                            BEQService.class);
-                    BQEIntent.putExtra(BEQService.IS_PERSISTENT, true);
-                    context.startService(schedulerIntent);
+                    Logger.d(TAG, "Starting BEQService");
+                    Intent BEQIntent = new Intent(context,
+                            BEQSchedulerService.class);
+                    BEQIntent.putExtra(BEQSchedulerService.IS_PERSISTENT, true);
+                    context.startService(BEQIntent);
+                }
+
+                // Start notifying ME questionnaires
+                if (statusManager.areParametersUpdated()) {
+                    Logger.d(TAG, "Starting MEQService");
+                    Intent MEQIntent = new Intent(context,
+                            MEQSchedulerService.class);
+                    context.startService(MEQIntent);
                 }
 
                 // Start getting location updates
