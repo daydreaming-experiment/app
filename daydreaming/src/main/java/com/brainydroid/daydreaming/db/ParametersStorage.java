@@ -6,9 +6,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.widget.Toast;
 
+import com.brainydroid.daydreaming.background.BEQSchedulerService;
 import com.brainydroid.daydreaming.background.ErrorHandler;
 import com.brainydroid.daydreaming.background.Logger;
-import com.brainydroid.daydreaming.background.SchedulerService;
+import com.brainydroid.daydreaming.background.MEQSchedulerService;
+import com.brainydroid.daydreaming.background.ProbeSchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.network.HttpConversationCallback;
 import com.brainydroid.daydreaming.network.HttpGetData;
@@ -696,8 +698,12 @@ public class ParametersStorage {
                                 Toast.LENGTH_SHORT).show();
                     }
 
-                    Logger.d(TAG, "Starting SchedulerService to take new parameters into account");
-                    Intent schedulerIntent = new Intent(context, SchedulerService.class);
+                    Logger.d(TAG, "Starting ProbeSchedulerService & co to take new parameters into account");
+                    Intent schedulerIntent = new Intent(context, ProbeSchedulerService.class);
+                    context.startService(schedulerIntent);
+                    schedulerIntent = new Intent(context, BEQSchedulerService.class);
+                    context.startService(schedulerIntent);
+                    schedulerIntent = new Intent(context, MEQSchedulerService.class);
                     context.startService(schedulerIntent);
                 } else {
                     Logger.w(TAG, "Error while retrieving new parameters from " +

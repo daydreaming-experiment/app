@@ -27,9 +27,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.brainydroid.daydreaming.R;
-import com.brainydroid.daydreaming.background.BEQService;
+import com.brainydroid.daydreaming.background.BEQSchedulerService;
 import com.brainydroid.daydreaming.background.Logger;
-import com.brainydroid.daydreaming.background.SchedulerService;
+import com.brainydroid.daydreaming.background.ProbeSchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.background.SyncService;
 import com.brainydroid.daydreaming.db.ParametersStorage;
@@ -548,8 +548,8 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
         if (statusManager.isExpRunning()) {
             Logger.d(TAG, "Launching a debug poll");
 
-            Intent pollIntent = new Intent(this, SchedulerService.class);
-            pollIntent.putExtra(SchedulerService.SCHEDULER_DEBUGGING, true);
+            Intent pollIntent = new Intent(this, ProbeSchedulerService.class);
+            pollIntent.putExtra(ProbeSchedulerService.SCHEDULER_DEBUGGING, true);
             startService(pollIntent);
 
             Toast.makeText(this, "Now wait for 5 secs", Toast.LENGTH_SHORT).show();
@@ -874,8 +874,8 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
     }
 
     private synchronized void launchBEQService() {
-        Intent intent = new Intent(this, BEQService.class);
-        intent.putExtra(BEQService.IS_PERSISTENT,true);
+        Intent intent = new Intent(this, BEQSchedulerService.class);
+        intent.putExtra(BEQSchedulerService.IS_PERSISTENT,true);
         startService(intent);
     }
 
