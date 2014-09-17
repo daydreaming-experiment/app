@@ -143,13 +143,13 @@
         <service android:name=".background.SyncService"
             android:exported="false" />
 
-        <service android:name=".background.ProbeService"
+        <service android:name=".background.DailySequenceService"
             android:exported="false" />
 
-        <service android:name=".background.BEQService"
+        <service android:name=".background.BEQSchedulerService"
             android:exported="false" />
 
-        <service android:name=".background.SchedulerService"
+        <service android:name=".background.ProbeSchedulerService"
             android:exported="false" />
 
         <service android:name=".background.LocationPointService"

@@ -123,7 +123,7 @@ public abstract class FirstLaunchActivity extends RoboFragmentActivity {
 
         statusManager.setFirstLaunchCompleted();
 
-        // The SyncService (and following SchedulerService) and first parameter
+        // The SyncService (and following ProbeSchedulerService) and first parameter
         // update are launched by the dashboard. Here we only need to start the
         // LocationPointService for the first time.
 

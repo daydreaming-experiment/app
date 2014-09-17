@@ -21,6 +21,9 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
     public static String TYPE_BEGIN_END_QUESTIONNAIRE = "beginEndQuestionnaire";
     public static String TYPE_BEGIN_QUESTIONNAIRE = "beginQuestionnaire";
     public static String TYPE_END_QUESTIONNAIRE = "endQuestionnaire";
+    public static String TYPE_MORNING_QUESTIONNAIRE = "morningQuestionnaire";
+    public static String TYPE_EVENING_QUESTIONNAIRE = "eveningQuestionnaire";
+
     public static String END_PREFIX = "end";
     public static String BEGIN_PREFIX = "begin";
 

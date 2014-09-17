@@ -9,11 +9,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.brainydroid.daydreaming.R;
-import com.brainydroid.daydreaming.background.BEQService;
+import com.brainydroid.daydreaming.background.BEQSchedulerService;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.db.ParametersStorage;
-import com.brainydroid.daydreaming.db.SequenceDescription;
 import com.brainydroid.daydreaming.db.SequencesStorage;
 import com.brainydroid.daydreaming.sequence.ISequence;
 import com.brainydroid.daydreaming.sequence.Sequence;
@@ -133,8 +132,8 @@ public class BEQActivity extends RoboFragmentActivity {
     }
 
     private synchronized void launchBEQService() {
-        Intent intent = new Intent(this, BEQService.class);
-        intent.putExtra(BEQService.IS_PERSISTENT,true);
+        Intent intent = new Intent(this, BEQSchedulerService.class);
+        intent.putExtra(BEQSchedulerService.IS_PERSISTENT,true);
         startService(intent);
     }
 
