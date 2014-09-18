@@ -1,6 +1,16 @@
 Changelog
 =========
 
+0.20.0
+------
+
+* Enhancements
+  * Results page (loads and caches data before webview call)
+  * Instructions on dashboard
+  * All questionnaires working
+* Bug fixes
+  * Issues with BEQ, MEQ Scheduling
+
 0.19.0
 ------
 
