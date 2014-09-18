@@ -7,8 +7,6 @@ import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
 
-import java.util.HashMap;
-
 public class Profile {
 
     private static String TAG = "Profile";
@@ -50,7 +48,6 @@ public class Profile {
                    @Assisted("age") String age,
                    @Assisted("gender") String gender,
                    @Assisted("education") String education,
-                   @Assisted HashMap<String, Integer> tipiAnswers,
                    @Assisted("parametersVersion") String parametersVersion,
                    @Assisted("appVersionName") String appVersionName,
                    @Assisted("appVersionCode") int appVersionCode,
@@ -58,7 +55,7 @@ public class Profile {
         Logger.v(TAG, "Creating a Profile instance with detailed data");
         this.exp_id = expId;
         this.profile_data = profileDataFactory.create(age, gender, education,
-                tipiAnswers, parametersVersion, appVersionName, appVersionCode, mode);
+                parametersVersion, appVersionName, appVersionCode, mode);
     }
 
     public synchronized String getId() {

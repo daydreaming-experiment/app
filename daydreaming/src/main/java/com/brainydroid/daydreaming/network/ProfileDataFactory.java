@@ -9,7 +9,6 @@ public interface ProfileDataFactory {
     public ProfileData create(@Assisted("age") String age,
                               @Assisted("gender") String gender,
                               @Assisted("education") String education,
-                              HashMap<String, Integer> tipiAnswers,
                               @Assisted("parametersVersion") String parametersVersion,
                               @Assisted("appVersionName") String appVersionName,
                               @Assisted("appVersionCode") int appVersionCode,

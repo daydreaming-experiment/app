@@ -13,9 +13,6 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @Singleton
 public class ProfileStorage {
 
@@ -25,10 +22,6 @@ public class ProfileStorage {
     private static String PROFILE_AGE = "profileAge";
     private static String PROFILE_GENDER = "profileGender";
     private static String PROFILE_EDUCATION = "profileEducation";
-    private static String PROFILE_TIPI_NAME_PREFIX = "profileTipiQuestionName";
-    private static String PROFILE_TIPI_ANSWER_PREFIX = "profileTipiAnswer";
-    private static String PROFILE_TIPI_NUMBER_OF_ANSWERS =
-            "profileTipiNumberOfAnswers";
     public static String PROFILE_PARAMETERS_VERSION =
             "profileParametersVersion";
 
@@ -78,53 +71,6 @@ public class ProfileStorage {
 
     private String getEducation() {
         return sharedPreferences.getString(statusManager.getCurrentModeName() + PROFILE_EDUCATION, null);
-    }
-
-    public void setTipiAnswers(HashMap<String, Integer> tipiAnswers) {
-        Logger.d(TAG, "{} - Setting tipi questionnaire answers", statusManager.getCurrentModeName());
-        int index = 0;
-        for (Map.Entry<String, Integer> answer : tipiAnswers.entrySet()) {
-            eSharedPreferences.putString(
-                    statusManager.getCurrentModeName() + PROFILE_TIPI_NAME_PREFIX + index, answer.getKey());
-            eSharedPreferences.putInt(
-                    statusManager.getCurrentModeName() + PROFILE_TIPI_ANSWER_PREFIX + index, answer.getValue());
-            index++;
-        }
-        eSharedPreferences.putInt(statusManager.getCurrentModeName() + PROFILE_TIPI_NUMBER_OF_ANSWERS, index);
-        setIsDirtyAndCommit();
-    }
-
-    private HashMap<String, Integer> getTipiAnswers() {
-        Logger.d(TAG, "{} - Building tipiAnswers HashMap", statusManager.getCurrentModeName());
-
-        HashMap<String, Integer> tipiAnswers =
-                new HashMap<String, Integer>();
-        int numberOfAnswers = sharedPreferences.getInt(statusManager.getCurrentModeName() +
-                PROFILE_TIPI_NUMBER_OF_ANSWERS, 0);
-        String questionName;
-        int answer;
-
-        for (int index = 0; index < numberOfAnswers; index++) {
-            questionName = sharedPreferences.getString(
-                    statusManager.getCurrentModeName() + PROFILE_TIPI_NAME_PREFIX + index, null);
-            answer = sharedPreferences.getInt(
-                    statusManager.getCurrentModeName() + PROFILE_TIPI_ANSWER_PREFIX + index, -1);
-            tipiAnswers.put(questionName, answer);
-        }
-
-        return tipiAnswers;
-    }
-
-    private void clearTipiAnswers() {
-        Logger.d(TAG, "{} - Clearing tipiAnswers", statusManager.getCurrentModeName());
-
-        int numberOfAnswers = sharedPreferences.getInt(statusManager.getCurrentModeName() +
-                PROFILE_TIPI_NUMBER_OF_ANSWERS, 0);
-        for (int index = 0; index < numberOfAnswers; index++) {
-            eSharedPreferences.remove(statusManager.getCurrentModeName() + PROFILE_TIPI_NAME_PREFIX + index);
-        }
-
-        eSharedPreferences.commit();
     }
 
     public void setParametersVersion(String version) {
@@ -196,7 +142,7 @@ public class ProfileStorage {
         Logger.d(TAG, "Building Profile instance from saved data");
         return profileFactory.create(parametersStorageProvider.get().getBackendExpId(),
                 getAge(), getGender(), getEducation(),
-                getTipiAnswers(), getParametersVersion(), getAppVersionName(),
+                getParametersVersion(), getAppVersionName(),
                 getAppVersionCode(), statusManager.getCurrentModeName());
     }
 
@@ -207,14 +153,10 @@ public class ProfileStorage {
         statusManager.clearParametersUpdated();
         parametersStorageProvider.get().flush();
 
-        // First clear tipi answers, since it uses the tipiNumberOfQuestions key
-        clearTipiAnswers();
-
         eSharedPreferences.remove(statusManager.getCurrentModeName() + PROFILE_IS_DIRTY);
         eSharedPreferences.remove(statusManager.getCurrentModeName() + PROFILE_AGE);
         eSharedPreferences.remove(statusManager.getCurrentModeName() + PROFILE_GENDER);
         eSharedPreferences.remove(statusManager.getCurrentModeName() + PROFILE_EDUCATION);
-        eSharedPreferences.remove(statusManager.getCurrentModeName() + PROFILE_TIPI_NUMBER_OF_ANSWERS);
         eSharedPreferences.remove(statusManager.getCurrentModeName() + PROFILE_PARAMETERS_VERSION);
         eSharedPreferences.commit();
         return true;

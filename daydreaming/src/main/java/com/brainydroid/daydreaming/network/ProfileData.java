@@ -6,8 +6,6 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 
-import java.util.HashMap;
-
 public class ProfileData {
 
     private static String TAG = "ProfileData";
@@ -18,8 +16,6 @@ public class ProfileData {
     private String gender;
     @JsonView(Views.Public.class)
     private String education;
-    @JsonView(Views.Public.class)
-    private HashMap<String, Integer> tipi_answers;
     @JsonView(Views.Public.class)
     private String parametersVersion;
     @JsonView(Views.Public.class)
@@ -35,7 +31,6 @@ public class ProfileData {
     public ProfileData(@Assisted("age") String age,
                        @Assisted("gender") String gender,
                        @Assisted("education") String education,
-                       @Assisted HashMap<String, Integer> tipiAnswers,
                        @Assisted("parametersVersion") String parametersVersion,
                        @Assisted("appVersionName") String appVersionName,
                        @Assisted("appVersionCode") int appVersionCode,
@@ -44,7 +39,6 @@ public class ProfileData {
         this.age = age;
         this.gender = gender;
         this.education = education;
-        tipi_answers = tipiAnswers;
         this.parametersVersion = parametersVersion;
         this.appVersionName = appVersionName;
         this.appVersionCode = appVersionCode;
