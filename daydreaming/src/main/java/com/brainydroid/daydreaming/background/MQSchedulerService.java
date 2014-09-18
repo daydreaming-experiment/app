@@ -70,16 +70,24 @@ public class MQSchedulerService extends SequenceSchedulerService {
         startIfTomorrow.add(Calendar.DAY_OF_YEAR, 1);
 
         long scheduledTime;
-        if (nowUpTime < startIfToday.getTimeInMillis()) {
+        if (now.before(startIfToday)) {
+            Logger.d(TAG, "now < morning time today -> sheduling today");
             // still time to schedule for today!
             scheduledTime =  startIfToday.getTimeInMillis();
         } else {
+            Logger.d(TAG, "now > morning time today -> sheduling tomorrow");
             scheduledTime = startIfTomorrow.getTimeInMillis();
         }
 
-        long delay = scheduledTime - nowUpTime + 5000;
+        long delay = scheduledTime - now.getTimeInMillis() + 5000;
         printLogOfDelay(delay);
-        return scheduledTime;
+        return nowUpTime +delay;
+    }
+
+    public class BadTimeScheduleException extends Exception {
+        public BadTimeScheduleException(String message) {
+            super(message);
+        }
     }
 
 }

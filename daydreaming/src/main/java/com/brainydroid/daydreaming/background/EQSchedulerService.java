@@ -67,17 +67,21 @@ public class EQSchedulerService extends SequenceSchedulerService {
         startIfToday.set(Calendar.MINUTE, endAllowedMinute);
         Calendar startIfTomorrow = (Calendar) startIfToday.clone();
         startIfTomorrow.add(Calendar.DAY_OF_YEAR, 1);
+
         long scheduledTime;
-        if (nowUpTime < startIfToday.getTimeInMillis()) {
+        if (now.before(startIfToday)) {
+            Logger.d(TAG, "now < morning time today -> sheduling today : {}",  startIfToday.toString());
             // still time to schedule for today!
             scheduledTime =  startIfToday.getTimeInMillis();
+            startIfToday.toString();
         } else {
+            Logger.d(TAG, "now > morning time today -> sheduling tomorrow : {}",  startIfTomorrow.toString());
             scheduledTime = startIfTomorrow.getTimeInMillis();
         }
 
-        long delay = scheduledTime - nowUpTime + 5000;
+        long delay = scheduledTime - now.getTimeInMillis() + 5000;
         printLogOfDelay(delay);
-        return scheduledTime;
+        return nowUpTime +delay;
     }
 
 
