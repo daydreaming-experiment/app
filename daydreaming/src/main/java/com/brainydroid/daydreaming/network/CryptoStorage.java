@@ -372,7 +372,7 @@ public class CryptoStorage {
                 if (sntpClient != null) {
                     Logger.d(TAG, "Sntp request returned successfully");
 
-                    // Sntp answers with microseconds. We want seconds.
+                    // Sntp answers with milliseconds. We want seconds.
                     int now = (int)(sntpClient.getNow() / 1000);
 
                     String b64Header = Crypto.base64urlEncode(JWS_HEADER.getBytes());
