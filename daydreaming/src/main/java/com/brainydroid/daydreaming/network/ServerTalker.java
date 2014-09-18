@@ -21,11 +21,11 @@ public class ServerTalker {
     @Inject CryptoStorage cryptoStorage;
     @Inject Json json;
 
-    private synchronized String getPostResultUrl() {
+    public synchronized String getResultsUrl() {
         return parametersStorage.getBackendApiUrl() + ServerConfig.YE_URL_RESULTS;
     }
 
-    private synchronized String getPutProfileUrl() {
+    private synchronized String getProfileUrl() {
         return parametersStorage.getBackendApiUrl() + ServerConfig.YE_URL_PROFILES + "/"
                 + cryptoStorage.getMaiId();
     }
@@ -42,7 +42,7 @@ public class ServerTalker {
 
         Logger.i(TAG, "Going to send the following to server (signed):");
         Logger.iRaw(TAG, jsonPayload);
-        String signedJson = cryptoStorage.signJws(jsonPayload, keyPair.getPrivate());
+        String signedJson = cryptoStorage.signJose(jsonPayload, keyPair.getPrivate());
         Logger.i(TAG, "Signed form:");
         Logger.iRaw(TAG, signedJson);
 
@@ -63,7 +63,7 @@ public class ServerTalker {
         Logger.i(TAG, "Signing and POSTing data to server");
 
         Logger.d(TAG, "Signing data");
-        String signedData = cryptoStorage.signJws(data);
+        String signedData = cryptoStorage.signJose(data);
 
         Logger.d(TAG, "Url is {}", url);
         HttpPostData postData = new HttpPostData(url, callback);
@@ -77,7 +77,7 @@ public class ServerTalker {
 
     public synchronized void signAndPostResult(
             String data, HttpConversationCallback callback) {
-        signAndPostData(getPostResultUrl(), data, callback);
+        signAndPostData(getResultsUrl(), data, callback);
     }
 
     private synchronized void signAndPutData(
@@ -85,7 +85,7 @@ public class ServerTalker {
         Logger.i(TAG, "Signing and PUTing data to server");
 
         Logger.d(TAG, "Signing data");
-        String signedData = cryptoStorage.signJws(data);
+        String signedData = cryptoStorage.signJose(data);
 
         Logger.d(TAG, "Url is {}", url);
         HttpPutData putData = new HttpPutData(url, callback);
@@ -100,7 +100,32 @@ public class ServerTalker {
 
     public synchronized void signAndPutProfile(
             String data, HttpConversationCallback callback) {
-        signAndPutData(getPutProfileUrl(), data, callback);
+        signAndPutData(getProfileUrl(), data, callback);
+    }
+
+    public synchronized void authenticatedGet(final String url,
+                                              final HttpConversationCallback callback) {
+        Logger.i(TAG, "Getting {} with auth token", url);
+
+        CryptoStorage.AuthTokenCallback authTokenCallback = new CryptoStorage.AuthTokenCallback() {
+            private String TAG = "authenticatedGet AuthTokenCallback";
+            @Override
+            public void onAuthTokenReady(String authToken) {
+                if (authToken != null) {
+                    Logger.d(TAG, "AuthToken successfully created. Launching GET.");
+
+                    String authedUrl = url + "?auth_token=" + authToken;
+                    HttpGetData getData = new HttpGetData(authedUrl, callback);
+                    HttpGetTask getTask = new HttpGetTask();
+                    getTask.execute(getData);
+                } else {
+                    Logger.d(TAG, "AuthToken creation failed. Aborting GET.");
+                    callback.onHttpConversationFinished(false, null);
+                }
+            }
+        };
+
+        cryptoStorage.createJwsAuthToken(authTokenCallback);
     }
 
 }

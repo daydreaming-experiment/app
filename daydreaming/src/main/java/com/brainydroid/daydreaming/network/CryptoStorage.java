@@ -40,6 +40,7 @@ public class CryptoStorage {
     @Inject Context context;
     @Inject StatusManager statusManager;
     @Inject ErrorHandler errorHandler;
+    @Inject SntpClient sntpClient;
 
     private final File storageDir;
     @Inject private HashMap<String,File> maiIdFiles;
@@ -339,12 +340,12 @@ public class CryptoStorage {
         }
     }
 
-    public synchronized String signJws(String data) {
-        return signJws(data, getPrivateKey());
+    public synchronized String signJose(String data) {
+        return signJose(data, getPrivateKey());
     }
 
-    public synchronized String signJws(String data, PrivateKey privateKey) {
-        Logger.i(TAG, "{} - Creating JWS for data", statusManager.getCurrentModeName());
+    public synchronized String signJose(String data, PrivateKey privateKey) {
+        Logger.i(TAG, "{} - Creating JOSE for data", statusManager.getCurrentModeName());
 
         String b64Header = Crypto.base64urlEncode(JWS_HEADER.getBytes());
         String b64Payload = Crypto.base64urlEncode(data.getBytes());
@@ -361,4 +362,38 @@ public class CryptoStorage {
         return json.toJsonPublic(jws);
     }
 
+    public synchronized void createJwsAuthToken(final AuthTokenCallback authTokenCallback) {
+        Logger.i(TAG, "{} - Creating JWS auth token", statusManager.getCurrentModeName());
+
+        SntpClientCallback sntpCallback = new SntpClientCallback() {
+            private String TAG = "createJwsAuthToken sntpCallback";
+            @Override
+            public void onTimeReceived(SntpClient sntpClient) {
+                if (sntpClient != null) {
+                    Logger.d(TAG, "Sntp request returned successfully");
+
+                    long now = sntpClient.getNow();
+
+                    String b64Header = Crypto.base64urlEncode(JWS_HEADER.getBytes());
+                    String payload = json.toJsonPublic(new AuthContent(getMaiId(), now));
+                    String b64Payload = Crypto.base64urlEncode(payload.getBytes());
+
+                    String b64Input = b64Header + "." + b64Payload;
+                    String b64Sig = Crypto.base64urlEncode(
+                            sign(b64Input.getBytes(), getPrivateKey()));
+
+                    authTokenCallback.onAuthTokenReady(b64Header + "." + b64Payload + "." + b64Sig);
+                } else {
+                    Logger.v(TAG, "Sntp request failed");
+                    authTokenCallback.onAuthTokenReady(null);
+                }
+            }
+        };
+
+        sntpClient.asyncRequestTime(sntpCallback);
+    }
+
+    public static interface AuthTokenCallback {
+        public void onAuthTokenReady(String authToken);
+    }
 }
