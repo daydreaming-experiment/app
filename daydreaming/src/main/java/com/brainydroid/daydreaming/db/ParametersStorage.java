@@ -412,10 +412,6 @@ public class ParametersStorage {
         sequencesCache = null;
         eSharedPreferences.remove(statusManager.getCurrentModeName() + SEQUENCES);
         eSharedPreferences.commit();
-        // clear db
-        sequencesStorage.removeAllSequences(Sequence.TYPES_BEGIN_AND_END_QUESTIONNAIRE);
-        // clear notifications
-        notificationManager.cancel(BEQSchedulerService.TAG, 0);
     }
 
     public synchronized void clearBEQ() {
