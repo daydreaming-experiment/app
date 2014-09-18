@@ -18,7 +18,8 @@ import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.LocationCallback;
 import com.brainydroid.daydreaming.background.LocationServiceConnection;
 import com.brainydroid.daydreaming.background.Logger;
-import com.brainydroid.daydreaming.background.MEQSchedulerService;
+import com.brainydroid.daydreaming.background.EQSchedulerService;
+import com.brainydroid.daydreaming.background.MQSchedulerService;
 import com.brainydroid.daydreaming.background.ProbeSchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.db.SequencesStorage;
@@ -83,9 +84,9 @@ public class PageActivity extends RoboFragmentActivity {
             if (sequence.getType().equals(Sequence.TYPE_PROBE) && currentPage.isFirstOfSequence()) {
                 startProbeSchedulerService();
             } else if ( sequence.getType().equals(Sequence.TYPE_MORNING_QUESTIONNAIRE) && currentPage.isFirstOfSequence()) {
-                startMEQSchedulerService();
+                startMQSchedulerService();
             } else if ( sequence.getType().equals(Sequence.TYPE_EVENING_QUESTIONNAIRE) && currentPage.isFirstOfSequence()) {
-                startMEQSchedulerService();
+                startEQSchedulerService();
             }
         }
 
@@ -204,9 +205,15 @@ public class PageActivity extends RoboFragmentActivity {
         startService(schedulerIntent);
     }
 
-    private void startMEQSchedulerService() {
-        Logger.d(TAG, "Starting MEQSchedulerService");
-        Intent schedulerIntent = new Intent(this, MEQSchedulerService.class);
+    private void startMQSchedulerService() {
+        Logger.d(TAG, "Starting EQSchedulerService");
+        Intent schedulerIntent = new Intent(this, EQSchedulerService.class);
+        startService(schedulerIntent);
+    }
+
+    private void startEQSchedulerService() {
+        Logger.d(TAG, "Starting EQSchedulerService");
+        Intent schedulerIntent = new Intent(this, MQSchedulerService.class);
         startService(schedulerIntent);
     }
 

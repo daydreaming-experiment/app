@@ -4,6 +4,8 @@ import android.content.Intent;
 
 import com.brainydroid.daydreaming.sequence.Sequence;
 
+import java.util.Calendar;
+
 /**
  * Schedule a {@link com.brainydroid.daydreaming.sequence.Sequence} to be created and
  * notified later on. The delay before creation-notification of the {@link
@@ -15,9 +17,9 @@ import com.brainydroid.daydreaming.sequence.Sequence;
  * @see com.brainydroid.daydreaming.background.SyncService
  * @see com.brainydroid.daydreaming.background.DailySequenceService
  */
-public class MEQSchedulerService extends SequenceSchedulerService {
+public class EQSchedulerService extends SequenceSchedulerService {
 
-    protected static String TAG = "MEQSchedulerService";
+    protected static String TAG = "EQSchedulerService";
 
     /** Extra to set to {@code true} for debugging */
     public static String SCHEDULER_DEBUGGING = "schedulerDebugging";
@@ -49,11 +51,35 @@ public class MEQSchedulerService extends SequenceSchedulerService {
 
         // Schedule a sequence
         debugging = intent.getBooleanExtra(SCHEDULER_DEBUGGING, false);
-        scheduleSequence(Sequence.TYPE_MORNING_QUESTIONNAIRE);
         scheduleSequence(Sequence.TYPE_EVENING_QUESTIONNAIRE);
         stopSelf();
 
         return START_REDELIVER_INTENT;
     }
+
+
+    protected synchronized long generateTime() {
+        Logger.d(TAG, "Generating a time for schedule of EQ");
+        // Fix what 'now' means, and retrieve the allowed time window
+        fixNowAndGetAllowedWindow();
+        Calendar startIfToday = (Calendar) now.clone();
+        startIfToday.set(Calendar.HOUR_OF_DAY, endAllowedHour );
+        startIfToday.set(Calendar.MINUTE, endAllowedMinute);
+        Calendar startIfTomorrow = (Calendar) startIfToday.clone();
+        startIfTomorrow.add(Calendar.DAY_OF_YEAR, 1);
+        long scheduledTime;
+        if (nowUpTime < startIfToday.getTimeInMillis()) {
+            // still time to schedule for today!
+            scheduledTime =  startIfToday.getTimeInMillis();
+        } else {
+            scheduledTime = startIfTomorrow.getTimeInMillis();
+        }
+
+        long delay = scheduledTime - nowUpTime + 5000;
+        printLogOfDelay(delay);
+        return scheduledTime;
+    }
+
+
 
 }

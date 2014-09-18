@@ -17,7 +17,8 @@ import android.widget.*;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.BEQSchedulerService;
 import com.brainydroid.daydreaming.background.Logger;
-import com.brainydroid.daydreaming.background.MEQSchedulerService;
+import com.brainydroid.daydreaming.background.EQSchedulerService;
+import com.brainydroid.daydreaming.background.MQSchedulerService;
 import com.brainydroid.daydreaming.background.ProbeSchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.db.Util;
@@ -281,7 +282,9 @@ public class SettingsActivity extends RoboFragmentActivity {
         startService(schedulerIntent);
         schedulerIntent = new Intent(this, BEQSchedulerService.class);
         this.startService(schedulerIntent);
-        schedulerIntent = new Intent(this, MEQSchedulerService.class);
+        schedulerIntent = new Intent(this, EQSchedulerService.class);
+        this.startService(schedulerIntent);
+        schedulerIntent = new Intent(this, MQSchedulerService.class);
         this.startService(schedulerIntent);
     }
 
