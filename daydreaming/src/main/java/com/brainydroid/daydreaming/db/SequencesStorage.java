@@ -78,6 +78,13 @@ public class SequencesStorage
         }
     }
 
+    public synchronized void removeAllSequences(String[] types) {
+        Logger.d(TAG, "Removing all sequences of types {}", types.toString());
+        for (String type : types) {
+            removeAllSequences(type);
+        }
+    }
+
     public synchronized void initiateBeginEndQuestionnaires(){
         Logger.v(TAG, "Instantiating BeginEnd Questionnaires");
         ArrayList<SequenceDescription> allBeginQuestionnairesDescriptions =
