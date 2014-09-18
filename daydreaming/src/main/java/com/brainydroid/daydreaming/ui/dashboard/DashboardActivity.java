@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.BEQSchedulerService;
+import com.brainydroid.daydreaming.background.BootReceiver;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.background.ProbeSchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
@@ -654,8 +655,12 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
         registerReceiver(receiver, parametersUpdateIntentFilter);
         statusManager.resetParametersKeepProfileAnswers();
 
+        // update time of experiment
+        statusManager.setExperimentStartTimestamp(Calendar.getInstance().getTimeInMillis());
+
         launchParametersUpdate();
         updateExperimentStatus();
+        statusManager.relaunchAllServices();
     }
 
     public void setRobotoFont(Activity activity){

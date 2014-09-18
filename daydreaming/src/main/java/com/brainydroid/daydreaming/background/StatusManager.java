@@ -850,5 +850,52 @@ public class StatusManager {
         return false;
     }
 
+    public synchronized void relaunchAllServices() {
+        // If first launch hasn't been completed, the user doesn't want
+        // anything yet
+        if (isFirstLaunchCompleted()) {
+            Logger.d(TAG, "First launch is completed");
+
+            // Start scheduling polls
+            Logger.d(TAG, "Starting ProbeSchedulerService");
+            Intent schedulerIntent = new Intent(context,
+                    ProbeSchedulerService.class);
+            context.startService(schedulerIntent);
+
+            // Start notifying BE questionnaires
+            if (areParametersUpdated()) {
+                Logger.d(TAG, "Starting BEQService");
+                Intent BEQIntent = new Intent(context,
+                        BEQSchedulerService.class);
+                BEQIntent.putExtra(BEQSchedulerService.IS_PERSISTENT, true);
+                context.startService(BEQIntent);
+            }
+
+            // Start notifying Morning questionnaires
+            if (areParametersUpdated()) {
+                Logger.d(TAG, "Starting MEQService");
+                Intent MEQIntent = new Intent(context,
+                        EQSchedulerService.class);
+                context.startService(MEQIntent);
+            }
+
+            // Start notifying Evening questionnaires
+            if (areParametersUpdated()) {
+                Logger.d(TAG, "Starting MEQService");
+                Intent MEQIntent = new Intent(context,
+                        EQSchedulerService.class);
+                context.startService(MEQIntent);
+            }
+
+            // Start getting location updates
+            Logger.d(TAG, "Starting LocationPointService");
+            Intent locationPointServiceIntent = new Intent(context,
+                    LocationPointService.class);
+            context.startService(locationPointServiceIntent);
+        } else {
+            Logger.v(TAG, "First launch not completed -> exiting");
+        }
+    }
+
 
 }
