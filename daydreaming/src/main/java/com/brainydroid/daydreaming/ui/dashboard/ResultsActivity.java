@@ -1,5 +1,6 @@
 package com.brainydroid.daydreaming.ui.dashboard;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -36,6 +37,8 @@ public class ResultsActivity extends RoboFragmentActivity {
     private boolean resultsLoadFinished = false;
     private boolean pageLoadFinished = false;
     private ProgressDialog progressDialog;
+    private Activity activity;
+    private JSResults jsResultsCache;
 
     public static class JSResults {
 
@@ -66,11 +69,12 @@ public class ResultsActivity extends RoboFragmentActivity {
         statusManager.setResultsNotified();
         statusManager.setResultsNotifiedDashboard();
 
+        activity = this;
         webView.getSettings().setJavaScriptEnabled(true);
     }
 
-    public void onStart() {
-        Logger.v(TAG, "Starting");
+    public void onResume() {
+        Logger.v(TAG, "Resuming");
         super.onStart();
         loadResultsAndWebView();
     }
@@ -91,62 +95,71 @@ public class ResultsActivity extends RoboFragmentActivity {
         }
     }
 
-
     public void loadResultsAndWebView() {
         Logger.d(TAG, "Starting results retrieval from server");
 
-        progressDialog = ProgressDialog.show(ResultsActivity.this,
+        progressDialog = ProgressDialog.show(activity,
                 "Results", "Loading your results...");
 
-        HttpConversationCallback resultsCallback = new HttpConversationCallback() {
-            private String TAG = "getResults HttpConversationCallback";
-            @Override
-            public void onHttpConversationFinished(boolean success, String serverAnswer) {
-                if (success) {
-                    Logger.i(TAG, "Results successfully retrieved");
+        if (!resultsLoadFinished) {
+            HttpConversationCallback resultsCallback = new HttpConversationCallback() {
+                private String TAG = "getResults HttpConversationCallback";
 
-                    setResultsLoadFinished();
+                @Override
+                public void onHttpConversationFinished(boolean success, String serverAnswer) {
+                    if (success) {
+                        Logger.i(TAG, "Results successfully retrieved");
 
-                    // Now load the results in the webView and start it
-                    webView.clearCache(true);
-                    webView.addJavascriptInterface(
-                            new JSResults(profileStorage.getAppVersionCode(), serverAnswer),
-                            "injectedResults");
-                    webView.setWebViewClient(new WebViewClient() {
+                        setResultsLoadFinished();
 
-                        @Override
-                        public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                            super.onPageStarted(view, url, favicon);
-                        }
-
-                        public void onPageFinished(WebView view, String url) {
-                            super.onPageFinished(view, url);
-                            setPageLoadFinished();
-                        }
-
-                        public void onReceivedError(WebView view, int errorCode,
-                                                    String description, String failingUrl) {
-                            progressDialog.dismiss();
-                            Toast.makeText(ResultsActivity.this,
-                                    "Oh no! " + description, Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                    webView.loadUrl(parametersStorage.getResultsPageUrl());
-                } else {
-                    Logger.i(TAG, "Failed to get results");
-                    Toast.makeText(ResultsActivity.this,
-                            "Oh no! There was an error loading the results",
-                            Toast.LENGTH_SHORT).show();
-                    progressDialog.dismiss();
-                    onBackPressed();
+                        jsResultsCache = new JSResults(profileStorage.getAppVersionCode(),
+                                serverAnswer);
+                        launchVebView();
+                    } else {
+                        Logger.i(TAG, "Failed to get results");
+                        Toast.makeText(activity,
+                                "Oh no! There was an error loading the results",
+                                Toast.LENGTH_SHORT).show();
+                        progressDialog.dismiss();
+                        onBackPressed();
+                    }
                 }
+            };
+
+            HashMap<String, String> args = new HashMap<String, String>();
+            args.put("access", "private");
+
+            serverTalker.authenticatedGet(serverTalker.getResultsUrl(), args, resultsCallback);
+        } else {
+            Logger.d(TAG, "Directly launching web view, we already have results");
+            launchVebView();
+        }
+    }
+
+    private void launchVebView() {
+        // Load the results in the webView and start it
+        webView.clearCache(true);
+        webView.addJavascriptInterface(jsResultsCache, "injectedResults");
+        webView.setWebViewClient(new WebViewClient() {
+
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                super.onPageStarted(view, url, favicon);
             }
-        };
 
-        HashMap<String, String> args = new HashMap<String, String>();
-        args.put("access", "private");
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                setPageLoadFinished();
+            }
 
-        serverTalker.authenticatedGet(serverTalker.getResultsUrl(), args, resultsCallback);
+            public void onReceivedError(WebView view, int errorCode,
+                                        String description, String failingUrl) {
+                progressDialog.dismiss();
+                Toast.makeText(activity,
+                        "Oh no! " + description, Toast.LENGTH_SHORT).show();
+            }
+        });
+        webView.loadUrl(parametersStorage.getResultsPageUrl());
     }
 
     @Override
