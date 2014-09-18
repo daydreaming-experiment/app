@@ -67,8 +67,6 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
     @Inject SntpClient sntpClient;
     @Inject SequenceBuilder sequenceBuilder;
     @Inject Sequence probe;
-    @Inject NotificationManager notificationManager;
-    @Inject ServerTalker serverTalker;
 
     @InjectView(R.id.dashboard_main_layout) RelativeLayout dashboardMainLayout;
     @InjectView(R.id.dashboard_ExperimentTimeElapsed2)
