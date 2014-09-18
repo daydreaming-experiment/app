@@ -154,7 +154,7 @@ public class ProfileStorage {
         }
     }
 
-    private int getAppVersionCode() {
+    public int getAppVersionCode() {
         try {
             return context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode;
         } catch (PackageManager.NameNotFoundException e) {

@@ -133,9 +133,6 @@ public class ServerTalker {
                     urlBuilder.append(authToken);
                     String getUrl = urlBuilder.toString();
 
-                    // TODO: remove this afterwards, since it logs credentials
-                    Logger.i(TAG, "Final url: {}", getUrl);
-
                     HttpGetData getData = new HttpGetData(getUrl, callback);
                     getTask.execute(getData);
                 } else {

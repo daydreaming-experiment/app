@@ -33,6 +33,7 @@ import com.brainydroid.daydreaming.background.ProbeSchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.background.SyncService;
 import com.brainydroid.daydreaming.db.ParametersStorage;
+import com.brainydroid.daydreaming.network.ServerTalker;
 import com.brainydroid.daydreaming.network.SntpClient;
 import com.brainydroid.daydreaming.network.SntpClientCallback;
 import com.brainydroid.daydreaming.sequence.Sequence;
@@ -67,6 +68,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
     @Inject SequenceBuilder sequenceBuilder;
     @Inject Sequence probe;
     @Inject NotificationManager notificationManager;
+    @Inject ServerTalker serverTalker;
 
     @InjectView(R.id.dashboard_main_layout) RelativeLayout dashboardMainLayout;
     @InjectView(R.id.dashboard_ExperimentTimeElapsed2)
