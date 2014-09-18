@@ -372,10 +372,12 @@ public class CryptoStorage {
                 if (sntpClient != null) {
                     Logger.d(TAG, "Sntp request returned successfully");
 
-                    long now = sntpClient.getNow();
+                    // Sntp answers with microseconds. We want seconds.
+                    int now = (int)(sntpClient.getNow() / 1000);
 
                     String b64Header = Crypto.base64urlEncode(JWS_HEADER.getBytes());
                     String payload = json.toJsonPublic(new AuthContent(getMaiId(), now));
+                    Logger.i(TAG, "Auth content: {}", payload);
                     String b64Payload = Crypto.base64urlEncode(payload.getBytes());
 
                     String b64Input = b64Header + "." + b64Payload;

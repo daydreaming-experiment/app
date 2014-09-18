@@ -9,6 +9,8 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import java.security.KeyPair;
+import java.util.HashMap;
+import java.util.Map;
 
 @Singleton
 public class ServerTalker {
@@ -104,9 +106,11 @@ public class ServerTalker {
     }
 
     public synchronized void authenticatedGet(final String url,
+                                              final HashMap<String,String> args,
                                               final HttpConversationCallback callback) {
         Logger.i(TAG, "Getting {} with auth token", url);
 
+        final HttpGetTask getTask = new HttpGetTask();
         CryptoStorage.AuthTokenCallback authTokenCallback = new CryptoStorage.AuthTokenCallback() {
             private String TAG = "authenticatedGet AuthTokenCallback";
             @Override
@@ -114,9 +118,25 @@ public class ServerTalker {
                 if (authToken != null) {
                     Logger.d(TAG, "AuthToken successfully created. Launching GET.");
 
-                    String authedUrl = url + "?auth_token=" + authToken;
-                    HttpGetData getData = new HttpGetData(authedUrl, callback);
-                    HttpGetTask getTask = new HttpGetTask();
+                    // Build the url with query arguments
+                    StringBuilder urlBuilder = new StringBuilder(url);
+                    urlBuilder.append("?");
+                    if (args != null) {
+                        for (Map.Entry<String, String> argPair : args.entrySet()) {
+                            urlBuilder.append(argPair.getKey());
+                            urlBuilder.append("=");
+                            urlBuilder.append(argPair.getValue());
+                            urlBuilder.append("&");
+                        }
+                    }
+                    urlBuilder.append("auth_token=");
+                    urlBuilder.append(authToken);
+                    String getUrl = urlBuilder.toString();
+
+                    // TODO: remove this afterwards, since it logs credentials
+                    Logger.i(TAG, "Final url: {}", getUrl);
+
+                    HttpGetData getData = new HttpGetData(getUrl, callback);
                     getTask.execute(getData);
                 } else {
                     Logger.d(TAG, "AuthToken creation failed. Aborting GET.");

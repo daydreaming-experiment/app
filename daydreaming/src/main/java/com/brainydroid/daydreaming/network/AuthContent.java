@@ -12,9 +12,9 @@ public class AuthContent {
     @JsonView(Views.Public.class)
     private String id = null;
     @JsonView(Views.Public.class)
-    private long timestamp = -1;
+    private int timestamp = -1;
 
-    public AuthContent(String id, long timestamp) {
+    public AuthContent(String id, int timestamp) {
         this.id = id;
         this.timestamp = timestamp;
     }
