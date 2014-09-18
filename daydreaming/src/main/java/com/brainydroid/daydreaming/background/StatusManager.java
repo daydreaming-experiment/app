@@ -72,6 +72,7 @@ public class StatusManager {
 
     public static String CURRENT_BEG_END_QUESTIONNAIRE_TYPE = "currentBEQType";
 
+    public static String RESULTS_DOWNLOADED = "resultsDownloaded";
 
     public static final String ACTION_PARAMETERS_STATUS_CHANGE = "actionParametersStatusChange";
 
@@ -243,6 +244,32 @@ public class StatusManager {
         Logger.d(TAG, "{} - Clearing resultsNotified", getCurrentModeName());
 
         eSharedPreferences.remove(getCurrentModeName() + ARE_RESULTS_NOTIFIED);
+        eSharedPreferences.commit();
+    }
+
+    public synchronized void setResultsDownloadedToNow() {
+        Logger.d(TAG, "{} - Setting resultsDownloaded to true", getCurrentModeName(), true);
+
+        eSharedPreferences.putLong(getCurrentModeName() + RESULTS_DOWNLOADED,
+                Calendar.getInstance().getTimeInMillis());
+        eSharedPreferences.commit();
+    }
+
+    public synchronized long getResultsDownloadTimestamp() {
+        long timestamp = sharedPreferences.getLong(getCurrentModeName() + RESULTS_DOWNLOADED, -1);
+        if (timestamp == -1) {
+            Logger.v(TAG, "{} - Results not yet downloaded", getCurrentModeName());
+            return -1;
+        } else {
+            Logger.v(TAG, "{} - Results already downloaded", getCurrentModeName());
+            return timestamp;
+        }
+    }
+
+    public synchronized void clearResultsDownloaded() {
+        Logger.d(TAG, "{} - Clearing resultsDownloaded", getCurrentModeName());
+
+        eSharedPreferences.remove(getCurrentModeName() + RESULTS_DOWNLOADED);
         eSharedPreferences.commit();
     }
 
@@ -563,6 +590,7 @@ public class StatusManager {
         clearExperimentStartTimestamp();
         clearResultsNotified();
         clearResultsNotifiedDashboard();
+        clearResultsDownloaded();
 
         // Cancel any running location collection and pending notifications.
         // This is done after the switch to make sure no polls / location collection are
@@ -596,6 +624,7 @@ public class StatusManager {
         // Clear result flags
         clearResultsNotified();
         clearResultsNotifiedDashboard();
+        clearResultsDownloaded();
 
         // Clear crypto storage to force a new handshake
         cryptoStorageProvider.get().clearStore();

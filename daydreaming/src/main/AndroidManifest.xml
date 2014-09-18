@@ -91,7 +91,8 @@
         <activity android:name=".ui.dashboard.ResultsActivity"
             android:theme="@style/daydreamingTheme"
             android:taskAffinity=".dashboard"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:noHistory="true">
         </activity>
 
         <!-- Page Activity -->

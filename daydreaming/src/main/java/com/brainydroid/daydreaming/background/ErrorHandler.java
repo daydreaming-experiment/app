@@ -51,4 +51,11 @@ public class ErrorHandler {
         Logger.td(context, "Internal error parsing JSON: {}",
                 parsingException.getMessage());
     }
+
+    public synchronized void logError(Exception exception) {
+        // Report silently
+        ACRA.getErrorReporter().handleSilentException(exception);
+        Logger.td(context, "Internal error: {}",
+                exception.getMessage());
+    }
 }

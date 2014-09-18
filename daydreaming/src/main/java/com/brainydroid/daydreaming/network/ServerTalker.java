@@ -9,6 +9,8 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import java.security.KeyPair;
+import java.util.HashMap;
+import java.util.Map;
 
 @Singleton
 public class ServerTalker {
@@ -21,11 +23,11 @@ public class ServerTalker {
     @Inject CryptoStorage cryptoStorage;
     @Inject Json json;
 
-    private synchronized String getPostResultUrl() {
+    public synchronized String getResultsUrl() {
         return parametersStorage.getBackendApiUrl() + ServerConfig.YE_URL_RESULTS;
     }
 
-    private synchronized String getPutProfileUrl() {
+    private synchronized String getProfileUrl() {
         return parametersStorage.getBackendApiUrl() + ServerConfig.YE_URL_PROFILES + "/"
                 + cryptoStorage.getMaiId();
     }
@@ -42,7 +44,7 @@ public class ServerTalker {
 
         Logger.i(TAG, "Going to send the following to server (signed):");
         Logger.iRaw(TAG, jsonPayload);
-        String signedJson = cryptoStorage.signJws(jsonPayload, keyPair.getPrivate());
+        String signedJson = cryptoStorage.signJose(jsonPayload, keyPair.getPrivate());
         Logger.i(TAG, "Signed form:");
         Logger.iRaw(TAG, signedJson);
 
@@ -63,7 +65,7 @@ public class ServerTalker {
         Logger.i(TAG, "Signing and POSTing data to server");
 
         Logger.d(TAG, "Signing data");
-        String signedData = cryptoStorage.signJws(data);
+        String signedData = cryptoStorage.signJose(data);
 
         Logger.d(TAG, "Url is {}", url);
         HttpPostData postData = new HttpPostData(url, callback);
@@ -77,7 +79,7 @@ public class ServerTalker {
 
     public synchronized void signAndPostResult(
             String data, HttpConversationCallback callback) {
-        signAndPostData(getPostResultUrl(), data, callback);
+        signAndPostData(getResultsUrl(), data, callback);
     }
 
     private synchronized void signAndPutData(
@@ -85,7 +87,7 @@ public class ServerTalker {
         Logger.i(TAG, "Signing and PUTing data to server");
 
         Logger.d(TAG, "Signing data");
-        String signedData = cryptoStorage.signJws(data);
+        String signedData = cryptoStorage.signJose(data);
 
         Logger.d(TAG, "Url is {}", url);
         HttpPutData putData = new HttpPutData(url, callback);
@@ -100,7 +102,47 @@ public class ServerTalker {
 
     public synchronized void signAndPutProfile(
             String data, HttpConversationCallback callback) {
-        signAndPutData(getPutProfileUrl(), data, callback);
+        signAndPutData(getProfileUrl(), data, callback);
+    }
+
+    public synchronized void authenticatedGet(final String url,
+                                              final HashMap<String,String> args,
+                                              final HttpConversationCallback callback) {
+        Logger.i(TAG, "Getting {} with auth token", url);
+
+        final HttpGetTask getTask = new HttpGetTask();
+        CryptoStorage.AuthTokenCallback authTokenCallback = new CryptoStorage.AuthTokenCallback() {
+            private String TAG = "authenticatedGet AuthTokenCallback";
+            @Override
+            public void onAuthTokenReady(String authToken) {
+                if (authToken != null) {
+                    Logger.d(TAG, "AuthToken successfully created. Launching GET.");
+
+                    // Build the url with query arguments
+                    StringBuilder urlBuilder = new StringBuilder(url);
+                    urlBuilder.append("?");
+                    if (args != null) {
+                        for (Map.Entry<String, String> argPair : args.entrySet()) {
+                            urlBuilder.append(argPair.getKey());
+                            urlBuilder.append("=");
+                            urlBuilder.append(argPair.getValue());
+                            urlBuilder.append("&");
+                        }
+                    }
+                    urlBuilder.append("auth_token=");
+                    urlBuilder.append(authToken);
+                    String getUrl = urlBuilder.toString();
+
+                    HttpGetData getData = new HttpGetData(getUrl, callback);
+                    getTask.execute(getData);
+                } else {
+                    Logger.d(TAG, "AuthToken creation failed. Aborting GET.");
+                    callback.onHttpConversationFinished(false, null);
+                }
+            }
+        };
+
+        cryptoStorage.createJwsAuthToken(authTokenCallback);
     }
 
 }
