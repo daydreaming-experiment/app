@@ -3,6 +3,7 @@ Grammar versions of releases
 
 Each release of the app can use a different parameter grammar version. Here is the correspondance table:
 
+* release `0.20.0`: grammar `v3`
 * release `0.19.0`: grammar `v3-alpha.2`
 * release `0.18.0`: grammar `v3-alpha.1`
 * release `0.17.2`: grammar `v3-alpha`
