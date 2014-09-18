@@ -88,6 +88,13 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
     @InjectResource(R.string.dashboard_text_days) String textDays;
     @InjectResource(R.string.dashboard_text_day) String textDay;
     @InjectResource(R.integer.dashboard_swipe_velocity_threshold) int SWIPE_VELOCITY_THRESHOLD;
+    @InjectResource(R.string.results_never_downloaded) String resultsNeverDownloaded;
+    @InjectResource(R.string.results_never_downloaded_yes) String resultsNeverDownloadedYes;
+    @InjectResource(R.string.results_never_downloaded_no) String resultsNeverDownloadedNo;
+    @InjectResource(R.string.results_refresh_download1) String resultsRefresh1;
+    @InjectResource(R.string.results_refresh_download2) String resultsRefresh2;
+    @InjectResource(R.string.results_refresh_download_yes) String resultsRefreshYes;
+    @InjectResource(R.string.results_refresh_download_no) String resultsRefreshNo;
 
     private boolean testModeThemeActivated = false;
     private int daysToGo = -1;
@@ -276,14 +283,74 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
 
         if (statusManager.isDataEnabled()) {
             Logger.d(TAG, "Data enabled, transitioning to results");
-            Intent resultsIntent = new Intent(this, ResultsActivity.class);
-            startActivity(resultsIntent);
-            overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+
+            long resultsDownloadTimestamp = statusManager.getResultsDownloadTimestamp();
+            long delay = Calendar.getInstance().getTimeInMillis() - resultsDownloadTimestamp;
+            String msg, yes, no;
+            if (resultsDownloadTimestamp == -1) {
+                Logger.d(TAG, "Results never downloaded -> asking");
+                msg = resultsNeverDownloaded;
+                yes = resultsNeverDownloadedYes;
+                no = resultsNeverDownloadedNo;
+
+                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
+                alertBuilder.setTitle("Download results")
+                .setMessage(msg)
+                .setPositiveButton(yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        launchResultsActivity(true);
+                    }
+                })
+                .setNegativeButton(no, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                });
+
+                alertBuilder.show();
+            } else if (delay > 24 * 60 * 60 * 1000) {
+                Logger.d(TAG, "Results more than a day old -> suggesting refresh");
+                // Results more than a day old
+                int days = (int)Math.floor((double)delay / (24 * 60 * 60 * 1000));
+
+                msg = resultsRefresh1 + " " + days + " " + (days == 1 ? textDay : textDays) + " " + resultsRefresh2;
+                yes = resultsRefreshYes;
+                no = resultsRefreshNo;
+
+                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
+                alertBuilder.setTitle("Refresh results")
+                .setMessage(msg)
+                .setPositiveButton(yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        launchResultsActivity(true);
+                    }
+                })
+                .setNegativeButton(no, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        launchResultsActivity(false);
+                    }
+                });
+
+                alertBuilder.show();
+            } else {
+                launchResultsActivity(false);
+            }
         } else {
             Logger.v(TAG, "No data connection => aborting");
             Toast.makeText(this, "You're not connected to the internet!",
                     Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void launchResultsActivity(boolean reload) {
+        Intent intent = new Intent(this, ResultsActivity.class);
+        intent.putExtra(ResultsActivity.DOWNLOAD_RESULTS, reload);
+        startActivity(intent);
+        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
     }
 
     public void  onClick_OpenNetworkSettings(
