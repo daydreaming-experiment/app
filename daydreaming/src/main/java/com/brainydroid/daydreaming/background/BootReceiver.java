@@ -52,11 +52,19 @@ public class BootReceiver extends RoboBroadcastReceiver {
                     context.startService(BEQIntent);
                 }
 
-                // Start notifying ME questionnaires
+                // Start notifying Morning questionnaires
                 if (statusManager.areParametersUpdated()) {
                     Logger.d(TAG, "Starting MEQService");
                     Intent MEQIntent = new Intent(context,
-                            MEQSchedulerService.class);
+                            EQSchedulerService.class);
+                    context.startService(MEQIntent);
+                }
+
+                // Start notifying Evening questionnaires
+                if (statusManager.areParametersUpdated()) {
+                    Logger.d(TAG, "Starting MEQService");
+                    Intent MEQIntent = new Intent(context,
+                            EQSchedulerService.class);
                     context.startService(MEQIntent);
                 }
 

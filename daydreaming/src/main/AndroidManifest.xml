@@ -153,6 +153,12 @@
         <service android:name=".background.ProbeSchedulerService"
             android:exported="false" />
 
+        <service android:name=".background.MQSchedulerService"
+            android:exported="false" />
+
+        <service android:name=".background.EQSchedulerService"
+            android:exported="false" />
+
         <service android:name=".background.LocationPointService"
             android:exported="false" />
 

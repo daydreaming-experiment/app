@@ -4,6 +4,8 @@ import android.content.Intent;
 
 import com.brainydroid.daydreaming.sequence.Sequence;
 
+import java.util.Calendar;
+
 /**
  * Schedule a {@link com.brainydroid.daydreaming.sequence.Sequence} to be created and
  * notified later on. The delay before creation-notification of the {@link
@@ -12,19 +14,19 @@ import com.brainydroid.daydreaming.sequence.Sequence;
  *
  * @author Sébastien Lerique
  * @author Vincent Adam
- * @see com.brainydroid.daydreaming.background.SyncService
- * @see com.brainydroid.daydreaming.background.DailySequenceService
+ * @see SyncService
+ * @see DailySequenceService
  */
-public class MEQSchedulerService extends SequenceSchedulerService {
+public class MQSchedulerService extends SequenceSchedulerService {
 
-    protected static String TAG = "MEQSchedulerService";
+    protected static String TAG = "MorningQSchedulerService";
 
     /** Extra to set to {@code true} for debugging */
     public static String SCHEDULER_DEBUGGING = "schedulerDebugging";
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Logger.d(TAG, "ProbeSchedulerService started");
+        Logger.d(TAG, "MorningSchedulerService started");
 
         super.onStartCommand(intent, flags, startId);
 
@@ -50,10 +52,42 @@ public class MEQSchedulerService extends SequenceSchedulerService {
         // Schedule a sequence
         debugging = intent.getBooleanExtra(SCHEDULER_DEBUGGING, false);
         scheduleSequence(Sequence.TYPE_MORNING_QUESTIONNAIRE);
-        scheduleSequence(Sequence.TYPE_EVENING_QUESTIONNAIRE);
         stopSelf();
 
         return START_REDELIVER_INTENT;
+    }
+
+    protected synchronized long generateTime() {
+        Logger.d(TAG, "Generating a time for schedule of MQ");
+
+        // Fix what 'now' means, and retrieve the allowed time window
+        fixNowAndGetAllowedWindow();
+
+        Calendar startIfToday = (Calendar) now.clone();
+        startIfToday.set(Calendar.HOUR_OF_DAY, startAllowedHour);
+        startIfToday.set(Calendar.MINUTE, startAllowedMinute);
+        Calendar startIfTomorrow = (Calendar) startIfToday.clone();
+        startIfTomorrow.add(Calendar.DAY_OF_YEAR, 1);
+
+        long scheduledTime;
+        if (now.before(startIfToday)) {
+            Logger.d(TAG, "now < morning time today -> sheduling today");
+            // still time to schedule for today!
+            scheduledTime =  startIfToday.getTimeInMillis();
+        } else {
+            Logger.d(TAG, "now > morning time today -> sheduling tomorrow");
+            scheduledTime = startIfTomorrow.getTimeInMillis();
+        }
+
+        long delay = scheduledTime - now.getTimeInMillis() + 5000;
+        printLogOfDelay(delay);
+        return nowUpTime +delay;
+    }
+
+    public class BadTimeScheduleException extends Exception {
+        public BadTimeScheduleException(String message) {
+            super(message);
+        }
     }
 
 }
