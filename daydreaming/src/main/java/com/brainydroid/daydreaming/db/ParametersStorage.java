@@ -1,6 +1,7 @@
 package com.brainydroid.daydreaming.db;
 
 import android.annotation.SuppressLint;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -56,6 +57,7 @@ public class ParametersStorage {
     private SharedPreferences.Editor eSharedPreferences;
 
     @Inject Json json;
+    @Inject NotificationManager notificationManager;
     @Inject SequencesStorage sequencesStorage;
     @Inject ProfileStorage profileStorage;
     @Inject StatusManager statusManager;
@@ -365,6 +367,7 @@ public class ParametersStorage {
         // and save duplicate
         sequences.addAll(endSequences);
         clearSequences();
+        clearBEQ();
         sequencesCache = sequences;
         eSharedPreferences.putString(statusManager.getCurrentModeName() + SEQUENCES,
                 json.toJsonInternal(sequences));
@@ -409,6 +412,14 @@ public class ParametersStorage {
         sequencesCache = null;
         eSharedPreferences.remove(statusManager.getCurrentModeName() + SEQUENCES);
         eSharedPreferences.commit();
+    }
+
+    public synchronized void clearBEQ() {
+        Logger.d(TAG, "Clearing BEQ sequences from storage, and pending notifications");
+        // clear db
+        sequencesStorage.removeAllSequences(Sequence.TYPES_BEGIN_AND_END_QUESTIONNAIRE);
+        // clear notifications
+        notificationManager.cancel(BEQSchedulerService.TAG, 0);
     }
 
     public synchronized SequenceDescription getSequenceDescription(String name) {
