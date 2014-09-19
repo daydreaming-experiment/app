@@ -91,7 +91,6 @@ public class PageActivity extends RoboFragmentActivity {
                 startEQSchedulerService();
             }
         }
-
     }
 
     @Override
