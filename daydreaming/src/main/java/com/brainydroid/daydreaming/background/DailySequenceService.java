@@ -16,6 +16,7 @@ import com.brainydroid.daydreaming.network.SntpClient;
 import com.brainydroid.daydreaming.network.SntpClientCallback;
 import com.brainydroid.daydreaming.sequence.Sequence;
 import com.brainydroid.daydreaming.sequence.SequenceBuilder;
+import com.brainydroid.daydreaming.ui.dashboard.BEQActivity;
 import com.brainydroid.daydreaming.ui.sequences.PageActivity;
 import com.google.inject.Inject;
 
@@ -37,7 +38,7 @@ public class DailySequenceService extends RoboService {
 
     private static String TAG = "DailySequenceService";
 
-    public static String CANCEL_PENDING_POLLS = "cancelPendingSequences";
+    public static String CANCEL_PENDING_SEQUENCES = "cancelPendingSequences";
     public static String SEQUENCE_TYPE = "sequenceType";
 
     @Inject NotificationManager notificationManager;
@@ -56,13 +57,16 @@ public class DailySequenceService extends RoboService {
 
         super.onStartCommand(intent, flags, startId);
 
+        // Always check if BEQ notification is necessary
+        checkBEQ();
+
         sequenceType = intent.getStringExtra(DailySequenceService.SEQUENCE_TYPE);
         if (sequenceType == null) {
             Log.d(TAG, "Sequence type not found in intent, found null");
             throw new NullPointerException();
         }
 
-        if (intent.getBooleanExtra(CANCEL_PENDING_POLLS, false)) {
+        if (intent.getBooleanExtra(CANCEL_PENDING_SEQUENCES, false)) {
             Logger.v(TAG, "Started to cancel pending sequences of type {}", sequenceType);
             cancelPendingSequences();
             // No need to reschedule:
@@ -94,6 +98,40 @@ public class DailySequenceService extends RoboService {
     public synchronized IBinder onBind(Intent intent) {
         // Don't allow binding
         return null;
+    }
+
+    private synchronized void checkBEQ() {
+        if (!statusManager.areBEQCompleted()) {
+            Logger.d(TAG, "BEQs not completed, refreshing/creating notification");
+
+            Intent intent = new Intent(this, BEQActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
+                    intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            int flags = 0;
+            flags |= Notification.FLAG_NO_CLEAR;
+            // Create our notification
+            // if persistent: cant be dismissed and do not disappear on click
+            // if not persistent: can be dismissed and self destroy on click
+            Notification notification = new NotificationCompat.Builder(this)
+                    .setTicker(getString(R.string.beqNotification_ticker))
+                    .setContentTitle(getString(R.string.beqNotification_title))
+                    .setContentText(getString(R.string.beqNotification_text))
+                    .setContentIntent(contentIntent)
+                    .setSmallIcon(R.drawable.ic_stat_notify_small_daydreaming)
+                    .setOnlyAlertOnce(true)
+                    .setAutoCancel(false)
+                    .setOngoing(true)
+                    .setDefaults(flags)
+                    .build();
+
+            notificationManager.cancel(Sequence.TYPE_BEGIN_END_QUESTIONNAIRE, 0);
+            notificationManager.notify(Sequence.TYPE_BEGIN_END_QUESTIONNAIRE, 0, notification);
+        } else {
+            Logger.d(TAG, "BEQs completed");
+            notificationManager.cancel(Sequence.TYPE_BEGIN_END_QUESTIONNAIRE, 0);
+        }
     }
 
     /**

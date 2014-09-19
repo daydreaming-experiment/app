@@ -9,7 +9,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.brainydroid.daydreaming.R;
-import com.brainydroid.daydreaming.background.BEQSchedulerService;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.db.ParametersStorage;
@@ -55,7 +54,6 @@ public class BEQActivity extends RoboFragmentActivity {
         ViewGroup godfatherView = (ViewGroup)getWindow().getDecorView();
         FontUtils.setRobotoFont(this, godfatherView);
         type = statusManagerProvider.get().getCurrentBEQType();
-        launchBEQService();
     }
 
     @Override
@@ -63,7 +61,6 @@ public class BEQActivity extends RoboFragmentActivity {
         Logger.v(TAG, "Resuming");
         super.onResume();
         updateQuestionnairesStatusView();
-        launchBEQService();
     }
 
     protected ArrayList<String> getSequenceNames(ArrayList<? extends ISequence> sequences) {
@@ -129,12 +126,6 @@ public class BEQActivity extends RoboFragmentActivity {
             Logger.v(TAG, "Questionnaire TextView text: {0} - completion is {1}" , tv.getText(), isComplete ? "true":"false");
             bq_linearLayout.setClickable(!isComplete);
         }
-    }
-
-    // FIXME: is this necessary?
-    private synchronized void launchBEQService() {
-        Intent intent = new Intent(this, BEQSchedulerService.class);
-        startService(intent);
     }
 
     protected void openBeginQuestionnaireByIndex(int index) {

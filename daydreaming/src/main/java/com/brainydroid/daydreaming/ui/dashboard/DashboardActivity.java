@@ -26,7 +26,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.brainydroid.daydreaming.R;
-import com.brainydroid.daydreaming.background.BEQSchedulerService;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.background.ProbeSchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
@@ -125,7 +124,6 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
                 }
                 areParametersUpdating = statusManager.isParametersSyncRunning();
                 updateExperimentStatus();
-                launchBEQService();
             }
         }
     };
@@ -939,12 +937,6 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
             sv.setStyle(R.style.CustomShowcaseTheme);
             showcaseViewIndex += 1;
         }
-    }
-
-    // FIXME: is this necessary?
-    private synchronized void launchBEQService() {
-        Intent intent = new Intent(this, BEQSchedulerService.class);
-        startService(intent);
     }
 
 }

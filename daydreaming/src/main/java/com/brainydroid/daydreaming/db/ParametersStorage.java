@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.widget.Toast;
 
-import com.brainydroid.daydreaming.background.BEQSchedulerService;
 import com.brainydroid.daydreaming.background.ErrorHandler;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.background.StatusManager;
@@ -415,7 +414,7 @@ public class ParametersStorage {
         // clear db
         sequencesStorage.removeAllSequences(Sequence.TYPES_BEGIN_AND_END_QUESTIONNAIRE);
         // clear notifications
-        notificationManager.cancel(BEQSchedulerService.TAG, 0);
+        notificationManager.cancel(Sequence.TYPE_BEGIN_END_QUESTIONNAIRE, 0);
     }
 
     public synchronized SequenceDescription getSequenceDescription(String name) {
@@ -699,7 +698,7 @@ public class ParametersStorage {
 
                     Logger.i(TAG, "Parameters successfully imported");
                     statusManager.setParametersUpdated(true);
-                    statusManager.launchSchedulerServices();
+                    statusManager.launchNotifyingServices();
                     callback.onParametersStorageReady(true);
 
                     if (isDebug && statusManager.getCurrentMode() == StatusManager.MODE_TEST) {
@@ -708,7 +707,7 @@ public class ParametersStorage {
                     }
 
                     Logger.d(TAG, "Starting scheduler services to take new parameters into account");
-                    statusManager.launchSchedulerServices();
+                    statusManager.launchNotifyingServices();
                 } else {
                     Logger.w(TAG, "Error while retrieving new parameters from " +
                             "server");

@@ -669,7 +669,7 @@ public class StatusManager {
         Logger.d(TAG, "Cancelling notified polls");
         Intent pollServiceIntent = new Intent(context, DailySequenceService.class);
         pollServiceIntent.putExtra(DailySequenceService.SEQUENCE_TYPE, Sequence.TYPE_PROBE);
-        pollServiceIntent.putExtra(DailySequenceService.CANCEL_PENDING_POLLS, true);
+        pollServiceIntent.putExtra(DailySequenceService.CANCEL_PENDING_SEQUENCES, true);
         context.startService(pollServiceIntent);
     }
 
@@ -850,7 +850,7 @@ public class StatusManager {
         return false;
     }
 
-    public synchronized void launchSchedulerServices() {
+    public synchronized void launchNotifyingServices() {
         if (isFirstLaunchCompleted()) {
             Logger.d(TAG, "First launch is completed, launching scheduler services");
 
@@ -858,11 +858,6 @@ public class StatusManager {
             Logger.d(TAG, "Starting ProbeSchedulerService");
             Intent schedulerIntent = new Intent(context, ProbeSchedulerService.class);
             context.startService(schedulerIntent);
-
-            // Start notifying BE questionnaires
-            Logger.d(TAG, "Starting BEQSchedulerService");
-            Intent BEQIntent = new Intent(context, BEQSchedulerService.class);
-            context.startService(BEQIntent);
 
             // Start notifying Morning questionnaires
             Logger.d(TAG, "Starting MQSchedulerService");
@@ -882,7 +877,7 @@ public class StatusManager {
         // If first launch hasn't been completed, the user doesn't want
         // anything yet
         if (isFirstLaunchCompleted()) {
-            launchSchedulerServices();
+            launchNotifyingServices();
 
             // Start getting location updates
             Logger.d(TAG, "First launch completed, starting LocationPointService");

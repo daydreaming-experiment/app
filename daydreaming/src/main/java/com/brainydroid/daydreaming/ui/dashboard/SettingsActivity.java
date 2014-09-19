@@ -15,11 +15,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.*;
 import com.brainydroid.daydreaming.R;
-import com.brainydroid.daydreaming.background.BEQSchedulerService;
-import com.brainydroid.daydreaming.background.EQSchedulerService;
 import com.brainydroid.daydreaming.background.Logger;
-import com.brainydroid.daydreaming.background.MQSchedulerService;
-import com.brainydroid.daydreaming.background.ProbeSchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.db.Util;
 import com.brainydroid.daydreaming.ui.firstlaunchsequence.FirstLaunch00WelcomeActivity;
@@ -135,7 +131,7 @@ public class SettingsActivity extends RoboFragmentActivity {
                         // Listener can correct and update the view here
                         correctTimeWindow();
                         updateTimeViews();
-                        statusManager.launchSchedulerServices();
+                        statusManager.launchNotifyingServices();
                     }
 
                 };
@@ -169,7 +165,7 @@ public class SettingsActivity extends RoboFragmentActivity {
                         // Listener can correct and update the view here
                         correctTimeWindow();
                         updateTimeViews();
-                        statusManager.launchSchedulerServices();
+                        statusManager.launchNotifyingServices();
                     }
 
                 };
@@ -316,7 +312,7 @@ public class SettingsActivity extends RoboFragmentActivity {
                 Toast.makeText(getApplicationContext(), "Switched back to production mode", Toast.LENGTH_SHORT).show();
 
                 // Relaunch scheduling to refresh notifications
-                statusManager.launchSchedulerServices();
+                statusManager.launchNotifyingServices();
 
                 // Restart Dashboard
                 Intent intent = new Intent(SettingsActivity.this, DashboardActivity.class);
