@@ -39,10 +39,15 @@ public class ProbeSchedulerService extends SequenceSchedulerService {
 
         // Schedule a sequence
         debugging = intent.getBooleanExtra(SCHEDULER_DEBUGGING, false);
-        scheduleSequence(Sequence.TYPE_PROBE);
+        scheduleSequence();
         stopSelf();
 
         return START_REDELIVER_INTENT;
+    }
+
+    @Override
+    protected String getSequenceType() {
+        return Sequence.TYPE_PROBE;
     }
 
     /**

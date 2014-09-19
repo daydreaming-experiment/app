@@ -59,7 +59,6 @@ public abstract class SequenceSchedulerService extends RoboService {
     @Inject NotificationManager notificationManager;
 
     protected boolean debugging;
-    protected String seqType;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -68,6 +67,7 @@ public abstract class SequenceSchedulerService extends RoboService {
         super.onStartCommand(intent, flags, startId);
 
         // Record last time we ran
+        // FIXME: do this by type
         statusManager.setLatestSchedulerServiceSystemTimestampToNow();
         // Check LocationPointService hasn't died
         statusManager.checkLatestLocationPointServiceWasAgesAgo();
@@ -113,16 +113,15 @@ public abstract class SequenceSchedulerService extends RoboService {
         }
     }
 
-    protected synchronized void scheduleSequence(String sequenceType) {
-        Logger.d(TAG, "Scheduling new sequence of type {}", sequenceType);
-        seqType = sequenceType;
+    protected synchronized void scheduleSequence() {
+        Logger.d(TAG, "Scheduling new sequence of type {}", getSequenceType());
 
         // Generate the time at which the sequence will appear
         long scheduledTime = generateTime();
 
         // Create and schedule the PendingIntent for DailySequenceService
         Intent intent = new Intent(this, DailySequenceService.class);
-        intent.putExtra(DailySequenceService.SEQUENCE_TYPE, sequenceType);
+        intent.putExtra(DailySequenceService.SEQUENCE_TYPE, getSequenceType());
         PendingIntent pendingIntent = PendingIntent.getService(this, 0,
                 intent, PendingIntent.FLAG_CANCEL_CURRENT);
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
@@ -130,6 +129,8 @@ public abstract class SequenceSchedulerService extends RoboService {
     }
 
     protected abstract long generateTime();
+
+    protected abstract String getSequenceType();
 
     protected synchronized void fixNowAndGetAllowedWindow() {
         Logger.d(TAG, "Fixing now and obtaining allowed time window");
@@ -184,7 +185,7 @@ public abstract class SequenceSchedulerService extends RoboService {
         delay %= 60 * 1000;
         long seconds = delay / 1000;
         Logger.i(TAG, "Sequence of type {3} scheduled in {0} hours, {1} minutes, and {2} seconds",
-                hours, minutes, seconds, seqType);
+                hours, minutes, seconds, getSequenceType());
     }
 
 

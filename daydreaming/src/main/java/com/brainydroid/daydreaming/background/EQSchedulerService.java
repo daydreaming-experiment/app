@@ -23,13 +23,18 @@ public class EQSchedulerService extends SequenceSchedulerService {
         }
 
         // Schedule a sequence
-        scheduleSequence(Sequence.TYPE_EVENING_QUESTIONNAIRE);
+        scheduleSequence();
         stopSelf();
 
         return START_REDELIVER_INTENT;
     }
 
+    @Override
+    protected String getSequenceType() {
+        return Sequence.TYPE_EVENING_QUESTIONNAIRE;
+    }
 
+    @Override
     protected synchronized long generateTime() {
         Logger.d(TAG, "Generating a time for schedule of EQ");
 
