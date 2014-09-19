@@ -115,7 +115,13 @@ public class PageActivity extends RoboFragmentActivity {
         super.onPause();
         if (!isFinishing) {
             Logger.d(TAG, "We're not finishing the sequence -> pausing it");
-            sequence.setStatus(Sequence.STATUS_RECENTLY_PARTIALLY_COMPLETED);
+            if (sequence.wasMissedOrDismissedOrPaused()) {
+                // We were already paused before. Closing this probe definitively.
+                sequence.setStatus(Sequence.STATUS_MISSED_OR_DISMISSED_OR_INCOMPLETE);
+            } else {
+                // Never paused before, we're allowing the user to take up again.
+                sequence.setStatus(Sequence.STATUS_RECENTLY_PARTIALLY_COMPLETED);
+            }
             finish();
         }
 
