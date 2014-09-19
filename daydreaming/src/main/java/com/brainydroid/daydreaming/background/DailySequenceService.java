@@ -57,6 +57,11 @@ public class DailySequenceService extends RoboService {
 
         super.onStartCommand(intent, flags, startId);
 
+        // Record last time we ran
+        statusManager.setLatestDailyServiceSystemTimestampToNow();
+        // Check LocationPointService hasn't died
+        statusManager.checkLatestLocationPointServiceWasAgesAgo();
+
         // Always check if BEQ notification is necessary
         checkBEQ();
 

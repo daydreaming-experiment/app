@@ -67,11 +67,6 @@ public abstract class RecurrentSequenceSchedulerService extends RoboService {
 
         super.onStartCommand(intent, flags, startId);
 
-        // Record last time we ran
-        // FIXME: do this by type
-        statusManager.setLatestSchedulerServiceSystemTimestampToNow();
-        // Check LocationPointService hasn't died
-        statusManager.checkLatestLocationPointServiceWasAgesAgo();
         // Notify results if they're available
         notifyResultsIfAvailable();
         // Check if we are getting close to the end to enable the final Begin/End questionnaires

@@ -156,7 +156,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
     @Override
     public void onResume() {
         Logger.v(TAG, "Resuming");
-        statusManager.checkLatestSchedulerWasAgesAgo();
+        statusManager.checkLatestDailyWasAgesAgo();
         checkExperimentModeActivatedDirty();
         if (!statusManager.areParametersUpdated()) {
             Logger.v(TAG, "Parameters not yet updated, registering broadcast receiver");
