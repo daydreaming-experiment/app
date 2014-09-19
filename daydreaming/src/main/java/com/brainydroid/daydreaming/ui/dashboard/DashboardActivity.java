@@ -3,7 +3,6 @@ package com.brainydroid.daydreaming.ui.dashboard;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -28,13 +27,11 @@ import android.widget.Toast;
 
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.BEQSchedulerService;
-import com.brainydroid.daydreaming.background.BootReceiver;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.background.ProbeSchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.background.SyncService;
 import com.brainydroid.daydreaming.db.ParametersStorage;
-import com.brainydroid.daydreaming.network.ServerTalker;
 import com.brainydroid.daydreaming.network.SntpClient;
 import com.brainydroid.daydreaming.network.SntpClientCallback;
 import com.brainydroid.daydreaming.sequence.Sequence;
@@ -206,9 +203,8 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
     /**
      * Launching beginning questionnaires activity
      */
-    public void openBEQ(String type){
+    public void openBEQ(){
         Intent intent = new Intent(this, BEQActivity.class);
-        intent.putExtra("questionnaireType", type);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         overridePendingTransition(R.anim.mainfadein, R.anim.splashfadeout);
@@ -794,7 +790,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
                 btn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(final View view) {
-                        openBEQ(statusManager.getCurrentBEQType());
+                        openBEQ();
                     }
                 });
                 btn.setClickable(true);

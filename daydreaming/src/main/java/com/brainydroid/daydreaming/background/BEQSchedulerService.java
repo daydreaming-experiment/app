@@ -36,7 +36,6 @@ public class BEQSchedulerService extends RoboService {
 
     public static String IS_PERSISTENT = "isPersistent";
 
-    String type;
     boolean isPersistent;
 
     @Override
@@ -44,16 +43,15 @@ public class BEQSchedulerService extends RoboService {
         Logger.d(TAG, "BEQSchedulerService started");
         super.onStartCommand(intent, flags, startId);
 
-        isPersistent = intent.getBooleanExtra(IS_PERSISTENT,true);
+        isPersistent = intent.getBooleanExtra(IS_PERSISTENT, true);
 
         if (statusManager.areParametersUpdated()) {
             if (!statusManager.areBEQCompleted()) {
-                type = statusManager.updateBEQType();
                 notificationManager.cancel(TAG, 0);
                 notifyQuestionnaire();
                 scheduleBEQService();
             } else {
-                Logger.d(TAG, "no BEQ notifications");
+                Logger.d(TAG, "BEQs completed");
                 notificationManager.cancel(TAG, 0);
             }
         }
@@ -72,8 +70,6 @@ public class BEQSchedulerService extends RoboService {
         Logger.d(TAG, "Creating BEQ Service");
         Intent intent = new Intent(this, BEQActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
-        // FIXME: static string
-        intent.putExtra("questionnaireType", type);
         return intent;
     }
 
@@ -81,7 +77,7 @@ public class BEQSchedulerService extends RoboService {
         Logger.d(TAG, "Creating BEQ notification");
         Intent intent = createBEQService();
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                intent, PendingIntent.FLAG_UPDATE_CURRENT );
+                intent, PendingIntent.FLAG_UPDATE_CURRENT);
         int flags = 0;
         flags |= Notification.FLAG_NO_CLEAR;
         // Create our notification
@@ -123,6 +119,5 @@ public class BEQSchedulerService extends RoboService {
                 scheduledTime, contentIntent);
 
     }
-
 
 }

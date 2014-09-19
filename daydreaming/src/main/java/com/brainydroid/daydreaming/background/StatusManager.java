@@ -858,30 +858,24 @@ public class StatusManager {
 
             // Start scheduling polls
             Logger.d(TAG, "Starting ProbeSchedulerService");
-            Intent schedulerIntent = new Intent(context,
-                    ProbeSchedulerService.class);
+            Intent schedulerIntent = new Intent(context, ProbeSchedulerService.class);
             context.startService(schedulerIntent);
 
             // Start notifying BE questionnaires
-            if (areParametersUpdated()) {
-                Logger.d(TAG, "Starting BEQService");
-                Intent BEQIntent = new Intent(context,
-                        BEQSchedulerService.class);
-                BEQIntent.putExtra(BEQSchedulerService.IS_PERSISTENT, true);
-                context.startService(BEQIntent);
+            Logger.d(TAG, "Starting BEQSchedulerService");
+            Intent BEQIntent = new Intent(context, BEQSchedulerService.class);
+            BEQIntent.putExtra(BEQSchedulerService.IS_PERSISTENT, true);
+            context.startService(BEQIntent);
 
-                // Start notifying Morning questionnaires
-                Logger.d(TAG, "Starting MEQService");
-                Intent MQIntent = new Intent(context,
-                        MQSchedulerService.class);
-                context.startService(MQIntent);
+            // Start notifying Morning questionnaires
+            Logger.d(TAG, "Starting MQSchedulerService");
+            Intent MQIntent = new Intent(context, MQSchedulerService.class);
+            context.startService(MQIntent);
 
-                // Start notifying Evening questionnaires
-                Logger.d(TAG, "Starting MEQService");
-                Intent EQIntent = new Intent(context,
-                        EQSchedulerService.class);
-                context.startService(EQIntent);
-            }
+            // Start notifying Evening questionnaires
+            Logger.d(TAG, "Starting EQSchedulerService");
+            Intent EQIntent = new Intent(context, EQSchedulerService.class);
+            context.startService(EQIntent);
 
             // Start getting location updates
             Logger.d(TAG, "Starting LocationPointService");

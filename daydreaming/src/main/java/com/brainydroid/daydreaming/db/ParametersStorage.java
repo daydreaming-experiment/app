@@ -348,9 +348,9 @@ public class ParametersStorage {
     public synchronized void setSequences(ArrayList<SequenceDescription> sequences) {
         Logger.d(TAG, "{} - Setting sequences array (and keeping in cache)",
                 statusManager.getCurrentModeName());
-        sequencesCache = sequences;
-        // Now duplicate begin to end (name and type are changed)
-        // This is not to have to copy the questionnaire twice in external parameters
+
+        // Duplicate begin to end (name and type are changed)
+        // To avoid having to duplicate the questionnaires in external parameters
         ArrayList<SequenceDescription> endSequences = new ArrayList<SequenceDescription>();
         for (SequenceDescription sd : sequences) {
             if (sd.getType().equals(Sequence.TYPE_BEGIN_END_QUESTIONNAIRE)) {
@@ -402,7 +402,6 @@ public class ParametersStorage {
                 throw new RuntimeException(e);
             }
         }
-
 
         return sequencesCache;
     }
@@ -712,14 +711,7 @@ public class ParametersStorage {
                     }
 
                     Logger.d(TAG, "Starting ProbeSchedulerService & co to take new parameters into account");
-                    Intent schedulerIntent = new Intent(context, ProbeSchedulerService.class);
-                    context.startService(schedulerIntent);
-                    schedulerIntent = new Intent(context, BEQSchedulerService.class);
-                    context.startService(schedulerIntent);
-                    schedulerIntent = new Intent(context, EQSchedulerService.class);
-                    context.startService(schedulerIntent);
-                    schedulerIntent = new Intent(context, MQSchedulerService.class);
-                    context.startService(schedulerIntent);
+                    statusManager.relaunchAllServices();
                 } else {
                     Logger.w(TAG, "Error while retrieving new parameters from " +
                             "server");

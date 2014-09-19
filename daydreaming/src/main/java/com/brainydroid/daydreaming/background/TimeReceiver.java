@@ -33,19 +33,7 @@ public class TimeReceiver extends RoboBroadcastReceiver {
             Logger.d(TAG, "TimeReceiver started for ACTION_TIME_CHANGED or " +
                     "ACTION_TIMEZONE_CHANGED");
 
-            // If first launch hasn't been completed, the user doesn't want
-            // anything yet
-            if (statusManager.isFirstLaunchCompleted()) {
-                Logger.d(TAG, "First launch is completed");
-
-                // Reschedule the next poll
-                Logger.d(TAG, "Starting ProbeSchedulerService");
-                Intent schedulerIntent = new Intent(context,
-                        ProbeSchedulerService.class);
-                context.startService(schedulerIntent);
-            } else {
-                Logger.v(TAG, "First launch not completed -> exiting");
-            }
+            statusManager.relaunchAllServices();
         } else {
             Logger.v(TAG, "BootReceiver started for something different " +
                     "than ACTION_TIME_CHANGED or ACTION_TIMEZONE_CHANGED ->" +
