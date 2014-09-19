@@ -93,6 +93,8 @@ public class StatusManager {
     public static int DELAY_TO_ANSWER_BEGQ = 3;
 
     private int cachedCurrentMode = MODE_DEFAULT;
+    private boolean isDashboardRunning = false;
+    private long isDashboardRunningTimestamp = -1;
     private boolean isParametersSyncRunning = false;
     private boolean isRegistrationRunning = false;
     private boolean isSequencesSyncRunning = false;
@@ -279,7 +281,7 @@ public class StatusManager {
         eSharedPreferences.commit();
     }
 
-    public synchronized boolean areNotificationExpiryExplained() {
+    public synchronized boolean isNotificationExpiryExplained() {
         if (sharedPreferences.getBoolean(getCurrentModeName() + NOTIFICATION_EXPIRY_EXPLAINED,
                 false)) {
             Logger.v(TAG, "{} - Notification expiry not yet explained", getCurrentModeName());
@@ -296,6 +298,18 @@ public class StatusManager {
        eSharedPreferences.remove(getCurrentModeName() + NOTIFICATION_EXPIRY_EXPLAINED);
        eSharedPreferences.commit();
    }
+
+    public synchronized void setDashboardRunning(boolean running) {
+        Logger.v(TAG, "Setting isDashboardRunning to {}", running);
+        isDashboardRunning = true;
+        isDashboardRunningTimestamp = Calendar.getInstance().getTimeInMillis();
+    }
+
+    public synchronized boolean isDashboardRunning() {
+        long now = Calendar.getInstance().getTimeInMillis();
+        // Dashboard is running, and we have that information from less than 1 minute ago
+        return isDashboardRunning && (now - isDashboardRunningTimestamp < 1 * 60 * 1000);
+    }
 
     /**
      * Set the updated parameters flag to completed.
