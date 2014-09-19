@@ -101,6 +101,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
     List<String[]> showcasesTexts;
     int showcaseViewIndex = 0;
     boolean UNIQUE = true;
+    private boolean areShowcaseViewsLaunched = false;
 
     IntentFilter parametersUpdateIntentFilter = new IntentFilter(StatusManager.ACTION_PARAMETERS_STATUS_CHANGE);
     IntentFilter networkIntentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
@@ -551,7 +552,11 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
 
         debugInfoText.setText(statusManager.getDebugInfoString());
         updateBEQButton();
-        launchShowCaseViewSequence(UNIQUE);
+
+        if (!areShowcaseViewsLaunched & statusManager.areParametersUpdated()) {
+            launchShowCaseViewSequence(UNIQUE);
+            areShowcaseViewsLaunched = true;
+        }
 
     }
 

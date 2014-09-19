@@ -62,6 +62,20 @@ public class SequenceBuilder {
         sequence.getPageGroups().get(nPageGroups - 1)
                 .getPages().get(nPagesLastGroup - 1).setIsLastOfSequence();
 
+        int indexPageGroup = 1;
+        for (PageGroup pageGroup : sequence.getPageGroups()) {
+            pageGroup.setIndexInSequence(indexPageGroup);
+            pageGroup.setNPageGroups(nPageGroups);
+            int indexPage = 1;
+            for (Page page : pageGroup.getPages()) {
+                page.setIndexOfParentPageGroupInSequence(indexPageGroup);
+                page.setnPageGroupsInSequence(nPageGroups);
+                page.setIndexInPageGroup(indexPage);
+                page.setnPages(pageGroup.getPages().size());
+                indexPage+=1;
+            }
+            indexPageGroup+=1;
+        }
         sequence.flushSaves();
         return sequence;
     }

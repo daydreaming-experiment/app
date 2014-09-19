@@ -4,7 +4,6 @@ import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.PageDescription;
 import com.brainydroid.daydreaming.db.SequencesStorage;
 import com.brainydroid.daydreaming.db.Views;
-import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.google.inject.Inject;
 
@@ -48,6 +47,15 @@ public class Page implements IPage {
 
     @Inject private SequencesStorage sequencesStorage;
 
+    @JsonView(Views.Internal.class)
+    private int indexInPageGroup = 0;
+    @JsonView(Views.Internal.class)
+    private int nPages = 0;
+    @JsonView(Views.Internal.class)
+    private int indexOfParentPageGroupInSequence = 0;
+    @JsonView(Views.Internal.class)
+    private int nPageGroupsInSequence = 0;
+    
     public void importFromPageDescription(PageDescription description) {
         setName(description.getName());
         setBonus(description.getPosition().isBonus());
@@ -186,4 +194,35 @@ public class Page implements IPage {
         }
     }
 
+    public void setIndexInPageGroup(int indexInPageGroup) {
+        this.indexInPageGroup = indexInPageGroup;
+    }
+
+    public void setnPages(int nPages) {
+        this.nPages = nPages;
+    }
+
+    public int getIndexInPageGroup() {
+        return indexInPageGroup;
+    }
+
+    public int getnPages() {
+        return nPages;
+    }
+
+    public void setIndexOfParentPageGroupInSequence(int indexOfParentPageGroupInSequence) {
+        this.indexOfParentPageGroupInSequence = indexOfParentPageGroupInSequence;
+    }
+
+    public void setnPageGroupsInSequence(int nPageGroupsInSequence) {
+        this.nPageGroupsInSequence = nPageGroupsInSequence;
+    }
+
+    public int getIndexOfParentPageGroupInSequence() {
+        return indexOfParentPageGroupInSequence;
+    }
+
+    public int getnPageGroupsInSequence() {
+        return nPageGroupsInSequence;
+    }
 }

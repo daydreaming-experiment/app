@@ -15,11 +15,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.brainydroid.daydreaming.R;
-import com.brainydroid.daydreaming.background.EQSchedulerService;
 import com.brainydroid.daydreaming.background.LocationCallback;
 import com.brainydroid.daydreaming.background.LocationServiceConnection;
 import com.brainydroid.daydreaming.background.Logger;
-import com.brainydroid.daydreaming.background.MQSchedulerService;
 import com.brainydroid.daydreaming.background.ProbeSchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.db.SequencesStorage;
@@ -59,6 +57,12 @@ public class PageActivity extends RoboFragmentActivity {
     @InjectView(R.id.page_nextButton) ImageButton nextButton;
     @InjectView(R.id.page_finishButton) ImageButton finishButton;
 
+    @InjectView(R.id.page_progress_current) TextView page_index_current;
+    @InjectView(R.id.page_progress_total) TextView page_index_total;
+
+    @InjectView(R.id.pagegroup_progress_current) TextView pagegroup_index_current;
+    @InjectView(R.id.pagegroup_progress_total) TextView pagegroup_index_total;
+
     @Inject LocationServiceConnection locationServiceConnection;
     @Inject SequencesStorage sequencesStorage;
     @Inject StatusManager statusManager;
@@ -75,6 +79,14 @@ public class PageActivity extends RoboFragmentActivity {
         setChrome();
         pageViewAdapter.inflate(this, outerPageLayout, pageLinearLayout);
         pageIntroText.setText(sequence.getIntro());
+
+        // set progress
+        // pagegroups level
+        page_index_current.setText(Integer.toString(currentPage.getIndexInPageGroup()));
+        page_index_total.setText(" / " + Integer.toString(currentPage.getnPages()));
+        // pages level
+        pagegroup_index_current.setText(Integer.toString(currentPage.getIndexOfParentPageGroupInSequence()));
+        pagegroup_index_total.setText(" / " + Integer.toString(currentPage.getnPageGroupsInSequence()));
         setRobotoFont();
 
         // Self generated probe do not interfere with usual scheduling
@@ -285,7 +297,7 @@ public class PageActivity extends RoboFragmentActivity {
                 AlertDialog bonusAlert = builder.create();
                 // show it
                 bonusAlert.show();
-                FontUtils.setRobotoToAlertDialog(bonusAlert,PageActivity.this);
+                FontUtils.setRobotoToAlertDialog(bonusAlert, PageActivity.this);
 
             } else {
                 transitionToNext();

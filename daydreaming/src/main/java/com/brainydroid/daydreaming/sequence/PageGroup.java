@@ -19,6 +19,11 @@ public class PageGroup implements IPageGroup {
     @JsonView(Views.Public.class)
     private ArrayList<Page> pages = null;
 
+    @JsonView(Views.Internal.class)
+    private int NPageGroups = 0;
+    @JsonView(Views.Internal.class)
+    private int indexInSequence = 0;
+
     public synchronized void importFromPageGroupDescription(PageGroupDescription description) {
         setName(description.getName());
         setFriendlyName(description.getFriendlyName());
@@ -49,4 +54,12 @@ public class PageGroup implements IPageGroup {
         return pages;
     }
 
+
+    public void setIndexInSequence(int indexInSequence) {
+        this.indexInSequence = indexInSequence;
+    }
+
+    public void setNPageGroups(int NPageGroups) {
+        this.NPageGroups = NPageGroups;
+    }
 }
