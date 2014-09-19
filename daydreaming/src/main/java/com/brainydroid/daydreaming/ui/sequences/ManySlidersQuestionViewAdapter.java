@@ -26,6 +26,7 @@ import com.brainydroid.daydreaming.db.ManySlidersQuestionDescriptionDetails;
 import com.brainydroid.daydreaming.sequence.ManySlidersAnswer;
 import com.brainydroid.daydreaming.ui.AlphaImageButton;
 import com.brainydroid.daydreaming.ui.AlphaSeekBar;
+import com.brainydroid.daydreaming.ui.FontUtils;
 import com.brainydroid.daydreaming.ui.filtering.AutoCompleteAdapter;
 import com.brainydroid.daydreaming.ui.filtering.AutoCompleteAdapterFactory;
 import com.brainydroid.daydreaming.ui.filtering.MetaString;
@@ -180,7 +181,11 @@ public class ManySlidersQuestionViewAdapter
                             toggleEditMode(outerPageLayout, questionView);
                         }
                     });
-                    alertDialogBuilder.create().show();
+                    // create alert dialog
+                    AlertDialog alertDialog = alertDialogBuilder.create();
+                    // show it
+                    alertDialog.show();
+                    FontUtils.setRobotoToAlertDialog(alertDialog, context);
                 } else {
                     // If we're already in edit mode, just get out
                     toggleEditMode(outerPageLayout, questionView);

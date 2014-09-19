@@ -2,6 +2,8 @@ package com.brainydroid.daydreaming.ui;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.view.View;
@@ -77,6 +79,17 @@ public class FontUtils {
             Typeface currentTypeface = ((TextView) view).getTypeface();
             ((TextView) view).setTypeface(getRobotoTypeface(context, currentTypeface));
         }
+    }
+
+    public static void setRobotoToAlertDialog(AlertDialog alertDialog, Context context) {
+        TextView dialogTextView = (TextView) alertDialog.findViewById(android.R.id.message);
+        FontUtils.setRobotoFont(context, dialogTextView);
+        dialogTextView = (TextView) alertDialog.findViewById(android.R.id.title);
+        FontUtils.setRobotoFont(context, dialogTextView);
+        dialogTextView = (TextView) alertDialog.findViewById(android.R.id.button1);
+        FontUtils.setRobotoFont(context, dialogTextView);
+        dialogTextView = (TextView) alertDialog.findViewById(android.R.id.button2);
+        FontUtils.setRobotoFont(context, dialogTextView);
     }
 }
 

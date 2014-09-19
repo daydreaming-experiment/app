@@ -301,8 +301,12 @@ public class PageActivity extends RoboFragmentActivity {
 
                         });
 
+                // create alert dialog
                 AlertDialog bonusAlert = builder.create();
+                // show it
                 bonusAlert.show();
+                FontUtils.setRobotoToAlertDialog(bonusAlert,PageActivity.this);
+
             } else {
                 transitionToNext();
             }

@@ -47,6 +47,13 @@
     <string name="results_refresh_download_yes">Refresh results</string>
     <string name="results_refresh_download_no">Use cache</string>
 
+    <string name="dashboard_toast_experiment_not_running">Experiment hasn\'t started yet!</string>
+    <string name="dashboard_toast_not_connected">You\'re not connected to the internet!</string>
+    <string name="dashboard_parameters_not_loaded">Parameters aren\'t loaded yet</string>
+
+    <string name="dashboard_alert_download_results">Download results</string>
+    <string name="dashboard_alert_title_refresh_results">Refresh results</string>
+    "You\'re not connected to the internet!"
     <!-- Showcase view Text -->
     <string name="sv_questions_title">Questions</string>
     <string name="sv_questions_text">When blinking, there are questions for you!</string>

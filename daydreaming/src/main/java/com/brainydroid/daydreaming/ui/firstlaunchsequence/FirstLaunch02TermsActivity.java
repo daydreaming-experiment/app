@@ -109,15 +109,7 @@ public class FirstLaunch02TermsActivity extends FirstLaunchActivity implements S
             AlertDialog alertDialog = alertDialogBuilder.create();
             // show it
             alertDialog.show();
-
-            TextView dialogTextView = (TextView) alertDialog.findViewById(android.R.id.message);
-            FontUtils.setRobotoFont(this, dialogTextView);
-            dialogTextView = (TextView) alertDialog.findViewById(android.R.id.title);
-            FontUtils.setRobotoFont(this, dialogTextView);
-            dialogTextView = (TextView) alertDialog.findViewById(android.R.id.button1);
-            FontUtils.setRobotoFont(this, dialogTextView);
-            dialogTextView = (TextView) alertDialog.findViewById(android.R.id.button2);
-            FontUtils.setRobotoFont(this, dialogTextView);
+            FontUtils.setRobotoToAlertDialog(alertDialog,FirstLaunch02TermsActivity.this);
 
         } else {
             launchNextActivity(FirstLaunch03ProfileActivity.class);

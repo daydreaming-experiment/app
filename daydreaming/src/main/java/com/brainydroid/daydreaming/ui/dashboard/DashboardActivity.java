@@ -251,7 +251,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
 
         if (!statusManager.isExpRunning()) {
             Logger.v(TAG, "Experiment not yet running => aborting");
-            Toast.makeText(this, "Experiment hasn't started yet!",
+            Toast.makeText(this, getString(R.string.dashboard_toast_experiment_not_running),
                     Toast.LENGTH_SHORT).show();
             return;
         }
@@ -286,7 +286,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
                 no = resultsNeverDownloadedNo;
 
                 AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
-                alertBuilder.setTitle("Download results")
+                alertBuilder.setTitle(getString(R.string.dashboard_alert_download_results))
                 .setMessage(msg)
                 .setPositiveButton(yes, new DialogInterface.OnClickListener() {
                     @Override
@@ -312,7 +312,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
                 no = resultsRefreshNo;
 
                 AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
-                alertBuilder.setTitle("Refresh results")
+                alertBuilder.setTitle(getString(R.string.dashboard_alert_title_refresh_results))
                 .setMessage(msg)
                 .setPositiveButton(yes, new DialogInterface.OnClickListener() {
                     @Override
@@ -327,13 +327,18 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
                     }
                 });
 
-                alertBuilder.show();
+                // create alert dialog
+                AlertDialog alertDialog = alertBuilder.create();
+                // show it
+                alertDialog.show();
+                FontUtils.setRobotoToAlertDialog(alertDialog,this);
+;
             } else {
                 launchResultsActivity(false);
             }
         } else {
             Logger.v(TAG, "No data connection => aborting");
-            Toast.makeText(this, "You're not connected to the internet!",
+            Toast.makeText(this, getString(R.string.dashboard_toast_not_connected),
                     Toast.LENGTH_SHORT).show();
         }
     }
@@ -626,7 +631,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
             Logger.d(TAG, "Launching debug sync now");
 
             if (!statusManager.isDataEnabled()) {
-                Toast.makeText(this, "You're not connected to the internet!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.dashboard_toast_not_connected), Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -634,7 +639,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
             syncIntent.putExtra(SyncService.DEBUG_SYNC, true);
             startService(syncIntent);
         } else {
-            Toast.makeText(this, "Parameters aren't loaded yet", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.dashboard_parameters_not_loaded), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -642,7 +647,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
         Logger.d(TAG, "Resetting parameters and profile_id, but keeping profile answers");
 
         if (!statusManager.isDataEnabled()) {
-            Toast.makeText(this, "You're not connected to the internet!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.dashboard_toast_not_connected), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -739,9 +744,9 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
 
         // create alert dialog
         AlertDialog alertDialog = alertDialogBuilder.create();
-
         // show it
         alertDialog.show();
+        FontUtils.setRobotoToAlertDialog(alertDialog,this);
     }
 
     private void launchNetworkDataSettings() {
@@ -840,6 +845,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
                         AlertDialog alertDialog = alertDialogBuilder.create();
                         // show it
                         alertDialog.show();
+                        FontUtils.setRobotoToAlertDialog(alertDialog,DashboardActivity.this);
                         return true;
                     }
                     return false;
