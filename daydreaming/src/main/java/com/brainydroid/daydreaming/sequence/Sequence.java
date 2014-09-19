@@ -37,6 +37,7 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
     public static final String STATUS_RUNNING = "running"; // Activity is running
     public static final String STATUS_PARTIALLY_COMPLETED = "partiallyCompleted"; // Activity was stopped (if a probe, it expired, if a questionnaire, can be resumed)
     public static final String STATUS_COMPLETED = "completed"; // Activity completed
+    public static final String STATUS_MISSED = "missed"; // For probes: Notification died away
 
     public static String[] AVAILABLE_STATUSES = new String[] {STATUS_PENDING,STATUS_RUNNING,STATUS_PARTIALLY_COMPLETED,STATUS_COMPLETED};
 
@@ -56,7 +57,7 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
     @JsonView(Views.Internal.class)
     private boolean skipBonusesAsked = false;
     @JsonView(Views.Public.class)
-    public boolean selfInitiated = false;
+    private boolean selfInitiated = false;
 
     @Inject private SequencesStorage sequencesStorage;
     @Inject private ErrorHandler errorHandler;

@@ -15,11 +15,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.brainydroid.daydreaming.R;
-import com.brainydroid.daydreaming.background.EQSchedulerService;
 import com.brainydroid.daydreaming.background.LocationCallback;
 import com.brainydroid.daydreaming.background.LocationServiceConnection;
 import com.brainydroid.daydreaming.background.Logger;
-import com.brainydroid.daydreaming.background.MQSchedulerService;
 import com.brainydroid.daydreaming.background.ProbeSchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.db.SequencesStorage;
@@ -78,7 +76,7 @@ public class PageActivity extends RoboFragmentActivity {
         setRobotoFont();
 
         // Self generated probe do not interfere with usual scheduling
-        if (!sequence.selfInitiated) {
+        if (!sequence.isSelfInitiated()) {
             // If this is a probe and we're at the first page, reschedule so as not
             // to have a new probe appear in the middle of this one
             if (sequence.getType().equals(Sequence.TYPE_PROBE) && currentPage.isFirstOfSequence()) {
