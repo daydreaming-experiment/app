@@ -614,6 +614,7 @@ public class StatusManager {
         clearExperimentStartTimestamp();
         clearResultsNotified();
         clearResultsNotifiedDashboard();
+        clearNotificationExpiryExplained();
         clearResultsDownloaded();
 
         // Cancel any running location collection and pending notifications.
@@ -648,6 +649,7 @@ public class StatusManager {
         // Clear result flags
         clearResultsNotified();
         clearResultsNotifiedDashboard();
+        clearNotificationExpiryExplained();
         clearResultsDownloaded();
 
         // Clear crypto storage to force a new handshake
