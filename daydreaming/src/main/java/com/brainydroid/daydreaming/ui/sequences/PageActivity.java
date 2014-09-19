@@ -83,9 +83,11 @@ public class PageActivity extends RoboFragmentActivity {
             // to have a new probe appear in the middle of this one
             if (sequence.getType().equals(Sequence.TYPE_PROBE) && currentPage.isFirstOfSequence()) {
                 startProbeSchedulerService();
-            } else if (sequence.getType().equals(Sequence.TYPE_MORNING_QUESTIONNAIRE) && currentPage.isFirstOfSequence()) {
+            } else if (sequence.getType().equals(Sequence.TYPE_MORNING_QUESTIONNAIRE)
+                    && currentPage.isFirstOfSequence()) {
                 startMQSchedulerService();
-            } else if (sequence.getType().equals(Sequence.TYPE_EVENING_QUESTIONNAIRE) && currentPage.isFirstOfSequence()) {
+            } else if (sequence.getType().equals(Sequence.TYPE_EVENING_QUESTIONNAIRE)
+                    && currentPage.isFirstOfSequence()) {
                 startEQSchedulerService();
             }
         }
@@ -206,14 +208,14 @@ public class PageActivity extends RoboFragmentActivity {
     }
 
     private void startMQSchedulerService() {
-        Logger.d(TAG, "Starting EQSchedulerService");
-        Intent schedulerIntent = new Intent(this, EQSchedulerService.class);
+        Logger.d(TAG, "Starting MQSchedulerService");
+        Intent schedulerIntent = new Intent(this, MQSchedulerService.class);
         startService(schedulerIntent);
     }
 
     private void startEQSchedulerService() {
         Logger.d(TAG, "Starting EQSchedulerService");
-        Intent schedulerIntent = new Intent(this, MQSchedulerService.class);
+        Intent schedulerIntent = new Intent(this, EQSchedulerService.class);
         startService(schedulerIntent);
     }
 

@@ -76,10 +76,10 @@ public class DailySequenceService extends RoboService {
                 // Populate and notify the sequence
                 populateSequence();
                 notifySequence();
-            } else {
-                // FIXME: relaunch every time
-                startSchedulerService();
             }
+
+            // Always reschedule
+            startSchedulerService();
         }
 
         stopSelf();

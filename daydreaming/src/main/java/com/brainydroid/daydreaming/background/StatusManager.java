@@ -462,6 +462,7 @@ public class StatusManager {
     }
 
     public synchronized void setLatestSchedulerServiceSystemTimestampToNow() {
+        // FIXME: do this by types
         Logger.d(TAG, "Setting last time ProbeSchedulerService ran to now (system timestamp)");
         eSharedPreferences.putLong(LATEST_SCHEDULER_SERVICE_SYSTEM_TIMESTAMP,
                 Calendar.getInstance().getTimeInMillis());
@@ -469,6 +470,7 @@ public class StatusManager {
     }
 
     public synchronized void checkLatestSchedulerWasAgesAgo() {
+        // FIXME: do this by types
         long latest = sharedPreferences.getLong(LATEST_SCHEDULER_SERVICE_SYSTEM_TIMESTAMP, -1);
         if (latest == -1) {
             // ProbeSchedulerService never ran, which means first launch wasn't finished

@@ -275,18 +275,6 @@ public class SettingsActivity extends RoboFragmentActivity {
         tv_time_until.setText(Time_until);
     }
 
-    private void startSchedulerServices() {
-        Logger.d(TAG, "Starting ProbeSchedulerService");
-        Intent schedulerIntent = new Intent(this, ProbeSchedulerService.class);
-        startService(schedulerIntent);
-        schedulerIntent = new Intent(this, BEQSchedulerService.class);
-        this.startService(schedulerIntent);
-        schedulerIntent = new Intent(this, EQSchedulerService.class);
-        this.startService(schedulerIntent);
-        schedulerIntent = new Intent(this, MQSchedulerService.class);
-        this.startService(schedulerIntent);
-    }
-
     @Override
     public void onBackPressed() {
         Logger.v(TAG, "Back pressed, setting slide transition");
@@ -326,6 +314,9 @@ public class SettingsActivity extends RoboFragmentActivity {
 
                 statusManager.switchToProdMode();
                 Toast.makeText(getApplicationContext(), "Switched back to production mode", Toast.LENGTH_SHORT).show();
+
+                // Relaunch scheduling
+                statusManager.launchSchedulerServices();
 
                 // Restart Dashboard
                 Intent intent = new Intent(SettingsActivity.this, DashboardActivity.class);
@@ -377,6 +368,8 @@ public class SettingsActivity extends RoboFragmentActivity {
 
                     statusManager.switchToTestMode();
                     Toast.makeText(getApplicationContext(), "Switched to test mode", Toast.LENGTH_SHORT).show();
+
+                    // Don't relaunch scheduling since we go through first launch again.
 
                     // Restart first launch
                     Intent intent = new Intent(SettingsActivity.this, FirstLaunch00WelcomeActivity.class);

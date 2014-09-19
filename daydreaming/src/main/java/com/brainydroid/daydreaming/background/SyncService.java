@@ -74,7 +74,7 @@ public class SyncService extends RoboService {
             // Only launch the rest of the synchronization tasks if ParametersStorage is
             // really ready and we have Internet access.
             if (areParametersUpdated && statusManager.isDataEnabled()) {
-                Logger.d(TAG, "Parameters have been update, and data is enabled");
+                Logger.d(TAG, "Parameters have been updated, and data is enabled");
 
                 // We enter the registration phase
                 statusManager.setRegistrationRunning(true);
