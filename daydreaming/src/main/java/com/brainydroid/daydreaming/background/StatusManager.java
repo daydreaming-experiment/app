@@ -73,6 +73,7 @@ public class StatusManager {
     public static String CURRENT_BEG_END_QUESTIONNAIRE_TYPE = "currentBEQType";
 
     public static String RESULTS_DOWNLOADED = "resultsDownloaded";
+    public static String NOTIFICATION_EXPIRY_EXPLAINED = "notificationExpiryExplained";
 
     public static final String ACTION_PARAMETERS_STATUS_CHANGE = "actionParametersStatusChange";
 
@@ -271,6 +272,30 @@ public class StatusManager {
         eSharedPreferences.remove(getCurrentModeName() + RESULTS_DOWNLOADED);
         eSharedPreferences.commit();
     }
+    public synchronized void setNotificationExpiryExplained() {
+        Logger.d(TAG, "{} - Setting notificationExpiryExplained to true", getCurrentModeName(), true);
+
+        eSharedPreferences.putBoolean(getCurrentModeName() + NOTIFICATION_EXPIRY_EXPLAINED, true);
+        eSharedPreferences.commit();
+    }
+
+    public synchronized boolean areNotificationExpiryExplained() {
+        if (sharedPreferences.getBoolean(getCurrentModeName() + NOTIFICATION_EXPIRY_EXPLAINED,
+                false)) {
+            Logger.v(TAG, "{} - Notification expiry not yet explained", getCurrentModeName());
+            return true;
+        } else {
+            Logger.v(TAG, "{} - Notification expiry not yet explained", getCurrentModeName());
+            return false;
+        }
+    }
+
+   public synchronized void clearNotificationExpiryExplained() {
+       Logger.d(TAG, "{} - Clearing notificationExpiryExplained", getCurrentModeName());
+
+       eSharedPreferences.remove(getCurrentModeName() + NOTIFICATION_EXPIRY_EXPLAINED);
+       eSharedPreferences.commit();
+   }
 
     /**
      * Set the updated parameters flag to completed.
