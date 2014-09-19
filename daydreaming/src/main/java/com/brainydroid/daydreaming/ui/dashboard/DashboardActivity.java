@@ -550,6 +550,8 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
 
         debugInfoText.setText(statusManager.getDebugInfoString());
         updateBEQButton();
+        launchShowCaseViewSequence(UNIQUE);
+
     }
 
     private void updateResultsPulse() {
