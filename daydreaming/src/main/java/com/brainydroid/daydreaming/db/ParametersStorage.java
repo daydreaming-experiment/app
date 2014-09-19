@@ -356,7 +356,7 @@ public class ParametersStorage {
                 sdCopy.setType(Sequence.TYPE_END_QUESTIONNAIRE);
                 sdCopy.setName(Sequence.END_PREFIX + sd.getName());
                 endSequences.add(sdCopy);
-                sdCopy.setType(Sequence.TYPE_BEGIN_QUESTIONNAIRE);
+                sd.setType(Sequence.TYPE_BEGIN_QUESTIONNAIRE);
                 sd.setName(Sequence.BEGIN_PREFIX + sd.getName());
             }
         }
@@ -412,7 +412,8 @@ public class ParametersStorage {
     public synchronized void clearBEQ() {
         Logger.d(TAG, "Clearing BEQ sequences from storage, and pending notifications");
         // clear db
-        sequencesStorage.removeAllSequences(Sequence.TYPES_BEGIN_AND_END_QUESTIONNAIRE);
+        sequencesStorage.removeAllSequences(new String[] {Sequence.TYPE_BEGIN_QUESTIONNAIRE,
+                Sequence.TYPE_END_QUESTIONNAIRE});
         // clear notifications
         notificationManager.cancel(Sequence.TYPE_BEGIN_END_QUESTIONNAIRE, 0);
     }
@@ -606,7 +607,7 @@ public class ParametersStorage {
             setSequences(serverParametersJson.getSequences());
 
             // Instantiating the Begin and End Questionnaires
-            sequencesStorage.initiateBeginEndQuestionnaires();
+            sequencesStorage.instantiateBeginEndQuestionnaires();
             statusManager.setCurrentBEQType(Sequence.TYPE_BEGIN_QUESTIONNAIRE);
 
         } catch (JsonParametersException e) {

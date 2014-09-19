@@ -1,13 +1,13 @@
 package com.brainydroid.daydreaming.sequence;
 
 import com.brainydroid.daydreaming.R;
+import com.brainydroid.daydreaming.background.ErrorHandler;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.SequenceDescription;
 import com.brainydroid.daydreaming.db.SequenceJsonFactory;
 import com.brainydroid.daydreaming.db.SequencesStorage;
 import com.brainydroid.daydreaming.db.TypedStatusModel;
 import com.brainydroid.daydreaming.db.Views;
-import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.google.inject.Inject;
 
@@ -28,8 +28,9 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
     public static String END_PREFIX = "end";
     public static String BEGIN_PREFIX = "begin";
 
-    public static String[] AVAILABLE_TYPES = new String[] {TYPE_PROBE, TYPE_BEGIN_QUESTIONNAIRE, TYPE_END_QUESTIONNAIRE};
-    public static String[] TYPES_BEGIN_AND_END_QUESTIONNAIRE = new String[] {TYPE_BEGIN_QUESTIONNAIRE, TYPE_END_QUESTIONNAIRE};
+    public static String[] AVAILABLE_REAL_TYPES = new String[] {
+            TYPE_PROBE, TYPE_BEGIN_QUESTIONNAIRE, TYPE_END_QUESTIONNAIRE,
+            TYPE_MORNING_QUESTIONNAIRE, TYPE_EVENING_QUESTIONNAIRE};
 
     public static final String STATUS_UPLOADED_AND_KEEP = "uploadedAndKeep";
     public static final String STATUS_PENDING = "pending"; // Notification has appeared
@@ -58,6 +59,33 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
     public boolean selfInitiated = false;
 
     @Inject private SequencesStorage sequencesStorage;
+    @Inject private ErrorHandler errorHandler;
+
+    public static int getRecurrentRequestCode(String sequenceType) {
+        if (sequenceType.equals(TYPE_PROBE)) {
+            return 0;
+        } else if (sequenceType.equals(TYPE_MORNING_QUESTIONNAIRE)) {
+            return 1;
+        } else if (sequenceType.equals(TYPE_EVENING_QUESTIONNAIRE)) {
+            return 2;
+        } else {
+            throw new RuntimeException("Asked for request code for type " + sequenceType
+                    + " but we don't have one.");
+        }
+    }
+
+    public int getRecurrentNotificationId() {
+        if (type.equals(TYPE_PROBE)) {
+            return getId();
+        } else if (type.equals(TYPE_MORNING_QUESTIONNAIRE)) {
+            return 0;
+        } else if (type.equals(TYPE_EVENING_QUESTIONNAIRE)) {
+            return 0;
+        } else {
+            throw new RuntimeException("Asked for notification id for type " + type
+                    + " but we don't have one.");
+        }
+    }
 
     public synchronized String getIntro() {
         return intro;

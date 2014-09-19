@@ -13,6 +13,7 @@ import android.support.v4.app.NotificationCompat;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.db.ParametersStorage;
 import com.brainydroid.daydreaming.db.Util;
+import com.brainydroid.daydreaming.sequence.Sequence;
 import com.brainydroid.daydreaming.ui.dashboard.ResultsActivity;
 import com.google.inject.Inject;
 
@@ -92,6 +93,8 @@ public abstract class RecurrentSequenceSchedulerService extends RoboService {
     protected synchronized void notifyResultsIfAvailable() {
         if (statusManager.areResultsAvailable() && !statusManager.areResultsNotified()) {
             Intent intent = new Intent(this, ResultsActivity.class);
+            // No need for special request code here, ResultsActivity is only ever called
+            // with a PendingIntent from here.
             PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
                     intent, PendingIntent.FLAG_UPDATE_CURRENT);
             Notification notification = new NotificationCompat.Builder(this)
@@ -122,7 +125,8 @@ public abstract class RecurrentSequenceSchedulerService extends RoboService {
         // Create and schedule the PendingIntent for DailySequenceService
         Intent intent = new Intent(this, DailySequenceService.class);
         intent.putExtra(DailySequenceService.SEQUENCE_TYPE, getSequenceType());
-        PendingIntent pendingIntent = PendingIntent.getService(this, 0,
+        PendingIntent pendingIntent = PendingIntent.getService(this,
+                Sequence.getRecurrentRequestCode(getSequenceType()),
                 intent, PendingIntent.FLAG_UPDATE_CURRENT);
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
                 scheduledTime, pendingIntent);

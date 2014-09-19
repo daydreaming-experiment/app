@@ -273,6 +273,7 @@ public class SyncService extends RoboService {
     public ArrayList<Sequence> getDeletableFromArrayList(ArrayList<Sequence> sequences) {
         ArrayList<Sequence> deletableSequences = new ArrayList<Sequence>();
         for (Sequence s : sequences) {
+            // FIXME: also add TYPE_END_QUESTIONNAIRE
             if (!s.getType().equals(Sequence.TYPE_BEGIN_QUESTIONNAIRE) ) {
                 deletableSequences.add(s);
             }
@@ -283,6 +284,7 @@ public class SyncService extends RoboService {
     public ArrayList<Sequence> getToBeKeptFromArrayList(ArrayList<Sequence> sequences) {
         ArrayList<Sequence> toBeKeptQuestionnaires = new ArrayList<Sequence>();
         for (Sequence s : sequences) {
+            // FIXME: also add TYPE_END_QUESTIONNAIRE
             if (s.getType().equals(Sequence.TYPE_BEGIN_QUESTIONNAIRE) ) {
                 toBeKeptQuestionnaires.add(s);
             }

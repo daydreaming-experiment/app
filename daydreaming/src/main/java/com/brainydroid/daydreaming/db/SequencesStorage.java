@@ -60,7 +60,7 @@ public class SequencesStorage
     public synchronized ArrayList<Sequence> getUploadableSequences() {
         Logger.v(TAG, "Getting uploadable sequences");
         return getModelsByStatusesAndTypes(new String[]{Sequence.STATUS_COMPLETED},
-                Sequence.AVAILABLE_TYPES);
+                Sequence.AVAILABLE_REAL_TYPES);
     }
 
     public synchronized ArrayList<Sequence> getPendingSequences(String type) {
@@ -85,10 +85,12 @@ public class SequencesStorage
         }
     }
 
-    public synchronized void initiateBeginEndQuestionnaires(){
+    public synchronized void instantiateBeginEndQuestionnaires() {
         Logger.v(TAG, "Instantiating BeginEnd Questionnaires");
         ArrayList<SequenceDescription> allBeginQuestionnairesDescriptions =
-                parametersStorageProvider.get().getSequencesByTypes(Sequence.TYPES_BEGIN_AND_END_QUESTIONNAIRE);
+                parametersStorageProvider.get().getSequencesByTypes(
+                        new String[] {Sequence.TYPE_BEGIN_QUESTIONNAIRE,
+                                Sequence.TYPE_END_QUESTIONNAIRE});
         for (SequenceDescription sd : allBeginQuestionnairesDescriptions) {
             Logger.v(TAG, "Instantiating questionnaire {}", sd.getName());
             sequenceBuilder.buildSave(sd.getName());

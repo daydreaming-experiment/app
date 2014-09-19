@@ -105,6 +105,8 @@ public class DailySequenceService extends RoboService {
             Logger.d(TAG, "BEQs not completed, refreshing/creating notification");
 
             Intent intent = new Intent(this, BEQActivity.class);
+            // No need for a request code here, BEQActivity is only ever started from
+            // a PendingIntent from here.
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent,
                     PendingIntent.FLAG_UPDATE_CURRENT);
@@ -126,6 +128,7 @@ public class DailySequenceService extends RoboService {
                     .setDefaults(flags)
                     .build();
 
+            // Only one begin/end notification should ever exist. id = 0
             notificationManager.cancel(Sequence.TYPE_BEGIN_END_QUESTIONNAIRE, 0);
             notificationManager.notify(Sequence.TYPE_BEGIN_END_QUESTIONNAIRE, 0, notification);
         } else {
@@ -160,8 +163,11 @@ public class DailySequenceService extends RoboService {
 
         // Create the PendingIntent
         Intent intent = createSequenceIntent();
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
+        // Make sure our PendingIntent is original: cancel current one, and set a different request
+        // code for different types of sequences
+        PendingIntent contentIntent = PendingIntent.getActivity(this,
+                Sequence.getRecurrentRequestCode(sequenceType), intent,
+                PendingIntent.FLAG_CANCEL_CURRENT);
 
         int flags = 0;
 
@@ -201,9 +207,11 @@ public class DailySequenceService extends RoboService {
             notification.sound = Uri.parse("android.resource://" + "com.brainydroid.daydreaming" + "/" + R.raw.notification);
         }
 
-        // And send it to the system
-        notificationManager.cancel(sequenceType, sequence.getId());
-        notificationManager.notify(sequenceType, sequence.getId(), notification);
+        // Get a proper id for the notification, to replace the right notifications
+        // That way only one of morning notification and one evening notification will ever be there
+        notificationManager.cancel(sequenceType, sequence.getRecurrentNotificationId());
+        notificationManager.notify(sequenceType, sequence.getRecurrentNotificationId(),
+                notification);
     }
 
     /**
@@ -265,7 +273,7 @@ public class DailySequenceService extends RoboService {
                 sequenceType);
         if (pendingSequences != null) {
             for (Sequence sequence : pendingSequences) {
-                notificationManager.cancel(sequenceType, sequence.getId());
+                notificationManager.cancel(sequenceType, sequence.getRecurrentNotificationId());
                 sequencesStorage.remove(sequence.getId());
             }
         } else {
