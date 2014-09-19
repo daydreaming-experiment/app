@@ -149,6 +149,7 @@ public class ParametersStorage {
         Logger.d(TAG, "{} - Setting backendApiUrl to {}", statusManager.getCurrentModeName(), backendApiUrl);
         eSharedPreferences.putString(statusManager.getCurrentModeName() + BACKEND_API_URL, backendApiUrl);
         eSharedPreferences.commit();
+        eSharedPreferences.commit();
     }
 
     public synchronized String getBackendApiUrl() {

@@ -807,7 +807,7 @@ public class StatusManager {
                     (24 * 60 * 60 * 1000));
             int daysToGo = parametersStorageProvider.get().getExpDuration() - daysElapsed;
             // if begin Questionnaires are completed
-            if ( areBEQCompleted(type) ) {
+            if (areBEQCompleted(type)) {
                 // if we get close to the end
                 if (daysToGo < 3) {
                     setCurrentBEQType(Sequence.TYPE_END_QUESTIONNAIRE);
@@ -869,22 +869,18 @@ public class StatusManager {
                         BEQSchedulerService.class);
                 BEQIntent.putExtra(BEQSchedulerService.IS_PERSISTENT, true);
                 context.startService(BEQIntent);
-            }
 
-            // Start notifying Morning questionnaires
-            if (areParametersUpdated()) {
+                // Start notifying Morning questionnaires
                 Logger.d(TAG, "Starting MEQService");
-                Intent MEQIntent = new Intent(context,
-                        EQSchedulerService.class);
-                context.startService(MEQIntent);
-            }
+                Intent MQIntent = new Intent(context,
+                        MQSchedulerService.class);
+                context.startService(MQIntent);
 
-            // Start notifying Evening questionnaires
-            if (areParametersUpdated()) {
+                // Start notifying Evening questionnaires
                 Logger.d(TAG, "Starting MEQService");
-                Intent MEQIntent = new Intent(context,
+                Intent EQIntent = new Intent(context,
                         EQSchedulerService.class);
-                context.startService(MEQIntent);
+                context.startService(EQIntent);
             }
 
             // Start getting location updates

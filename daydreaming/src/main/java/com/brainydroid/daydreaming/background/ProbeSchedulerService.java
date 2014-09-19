@@ -31,23 +31,6 @@ public class ProbeSchedulerService extends SequenceSchedulerService {
 
         super.onStartCommand(intent, flags, startId);
 
-        // Record last time we ran
-        statusManager.setLatestSchedulerServiceSystemTimestampToNow();
-
-        // Check LocationPointService hasn't died
-        statusManager.checkLatestLocationPointServiceWasAgesAgo();
-
-        // Notify results if they're available
-        notifyResultsIfAvailable();
-
-        // Check if we are getting close to the end to enable the final Begin/End questionnaires
-        statusManager.updateBEQType();
-
-
-        // Synchronise answers and get parameters if we don't have them. If parameters
-        // happen to be updated, the ProbeSchedulerService will be run again.
-        startSyncService();
-
         // Schedule a sequence
         if (!statusManager.areParametersUpdated()) {
             Logger.d(TAG, "Parameters not updated yet. aborting scheduling.");
@@ -110,7 +93,7 @@ public class ProbeSchedulerService extends SequenceSchedulerService {
 
         // Compute waiting hour, minute, and second values
         String scheduledString = Util.formatDate(scheduledCalendar.getTime());
-        printLogOfDelay(respectfulDelay);
+        logDelay(respectfulDelay);
         Logger.td(this, "New sequence scheduled at {0}", scheduledString);
 
         // The scheduled time is returned in milliseconds
