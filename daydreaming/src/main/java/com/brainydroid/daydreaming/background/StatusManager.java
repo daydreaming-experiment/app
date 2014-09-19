@@ -860,7 +860,6 @@ public class StatusManager {
             // Start notifying BE questionnaires
             Logger.d(TAG, "Starting BEQSchedulerService");
             Intent BEQIntent = new Intent(context, BEQSchedulerService.class);
-            BEQIntent.putExtra(BEQSchedulerService.IS_PERSISTENT, true);
             context.startService(BEQIntent);
 
             // Start notifying Morning questionnaires

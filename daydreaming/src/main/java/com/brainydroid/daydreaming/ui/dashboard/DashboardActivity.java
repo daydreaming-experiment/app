@@ -944,7 +944,6 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
     // FIXME: is this necessary?
     private synchronized void launchBEQService() {
         Intent intent = new Intent(this, BEQSchedulerService.class);
-        intent.putExtra(BEQSchedulerService.IS_PERSISTENT,true);
         startService(intent);
     }
 

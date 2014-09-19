@@ -34,16 +34,10 @@ public class BEQSchedulerService extends RoboService {
     @Inject StatusManager statusManager;
     @Inject AlarmManager alarmManager;
 
-    public static String IS_PERSISTENT = "isPersistent";
-
-    boolean isPersistent;
-
     @Override
     public synchronized int onStartCommand(Intent intent, int flags, int startId) {
         Logger.d(TAG, "BEQSchedulerService started");
         super.onStartCommand(intent, flags, startId);
-
-        isPersistent = intent.getBooleanExtra(IS_PERSISTENT, true);
 
         if (statusManager.areParametersUpdated()) {
             if (!statusManager.areBEQCompleted()) {
@@ -90,7 +84,7 @@ public class BEQSchedulerService extends RoboService {
                 .setContentIntent(contentIntent)
                 .setSmallIcon(R.drawable.ic_stat_notify_small_daydreaming)
                 .setOnlyAlertOnce(true)
-                .setAutoCancel(!isPersistent)
+                .setAutoCancel(false)
                 .setOngoing(true)
                 .setDefaults(flags)
                 .build();
