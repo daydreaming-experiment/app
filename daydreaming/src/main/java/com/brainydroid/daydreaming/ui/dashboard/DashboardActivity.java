@@ -146,11 +146,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
         updateRunningTime();
         updateChromeMode();
         super.onStart();
-
         populateShowcaseViews();
-        if (statusManager.areParametersUpdated()){
-            launchShowCaseViewSequence(UNIQUE);
-        }
     }
 
     @Override
