@@ -21,6 +21,7 @@ import com.brainydroid.daydreaming.db.Util;
 import com.brainydroid.daydreaming.ui.firstlaunchsequence.FirstLaunch00WelcomeActivity;
 import com.brainydroid.daydreaming.ui.FontUtils;
 import com.brainydroid.daydreaming.ui.TimePickerFragment;
+import com.brainydroid.daydreaming.ui.sequences.PageActivity;
 import com.google.inject.Inject;
 import roboguice.activity.RoboFragmentActivity;
 import roboguice.inject.ContentView;
@@ -331,15 +332,7 @@ public class SettingsActivity extends RoboFragmentActivity {
 
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
-
-        TextView dialogTextView = (TextView) alertDialog.findViewById(android.R.id.message);
-        FontUtils.setRobotoFont(this, dialogTextView);
-        dialogTextView = (TextView) alertDialog.findViewById(android.R.id.title);
-        FontUtils.setRobotoFont(this, dialogTextView);
-        dialogTextView = (TextView) alertDialog.findViewById(android.R.id.button1);
-        FontUtils.setRobotoFont(this, dialogTextView);
-        dialogTextView = (TextView) alertDialog.findViewById(android.R.id.button2);
-        FontUtils.setRobotoFont(this, dialogTextView);
+        FontUtils.setRobotoToAlertDialog(alertDialog,SettingsActivity.this);
     }
 
     public void prodToTestDialog(){
@@ -388,6 +381,7 @@ public class SettingsActivity extends RoboFragmentActivity {
 
         testAlert.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         testAlert.show();
+        FontUtils.setRobotoToAlertDialog(testAlert, this);
     }
 
     private static String pad(int c) {

@@ -101,6 +101,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
     List<String[]> showcasesTexts;
     int showcaseViewIndex = 0;
     boolean UNIQUE = true;
+    private boolean areShowcaseViewsLaunched = false;
 
     IntentFilter parametersUpdateIntentFilter = new IntentFilter(StatusManager.ACTION_PARAMETERS_STATUS_CHANGE);
     IntentFilter networkIntentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
@@ -146,11 +147,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
         updateRunningTime();
         updateChromeMode();
         super.onStart();
-
         populateShowcaseViews();
-        if (statusManager.areParametersUpdated()){
-            launchShowCaseViewSequence(UNIQUE);
-        }
     }
 
     @Override
@@ -251,7 +248,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
 
         if (!statusManager.isExpRunning()) {
             Logger.v(TAG, "Experiment not yet running => aborting");
-            Toast.makeText(this, "Experiment hasn't started yet!",
+            Toast.makeText(this, getString(R.string.dashboard_toast_experiment_not_running),
                     Toast.LENGTH_SHORT).show();
             return;
         }
@@ -286,7 +283,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
                 no = resultsNeverDownloadedNo;
 
                 AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
-                alertBuilder.setTitle("Download results")
+                alertBuilder.setTitle(getString(R.string.dashboard_alert_download_results))
                 .setMessage(msg)
                 .setPositiveButton(yes, new DialogInterface.OnClickListener() {
                     @Override
@@ -312,7 +309,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
                 no = resultsRefreshNo;
 
                 AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
-                alertBuilder.setTitle("Refresh results")
+                alertBuilder.setTitle(getString(R.string.dashboard_alert_title_refresh_results))
                 .setMessage(msg)
                 .setPositiveButton(yes, new DialogInterface.OnClickListener() {
                     @Override
@@ -327,13 +324,18 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
                     }
                 });
 
-                alertBuilder.show();
+                // create alert dialog
+                AlertDialog alertDialog = alertBuilder.create();
+                // show it
+                alertDialog.show();
+                FontUtils.setRobotoToAlertDialog(alertDialog,this);
+;
             } else {
                 launchResultsActivity(false);
             }
         } else {
             Logger.v(TAG, "No data connection => aborting");
-            Toast.makeText(this, "You're not connected to the internet!",
+            Toast.makeText(this, getString(R.string.dashboard_toast_not_connected),
                     Toast.LENGTH_SHORT).show();
         }
     }
@@ -550,6 +552,12 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
 
         debugInfoText.setText(statusManager.getDebugInfoString());
         updateBEQButton();
+
+        if (!areShowcaseViewsLaunched & statusManager.areParametersUpdated()) {
+            launchShowCaseViewSequence(UNIQUE);
+            areShowcaseViewsLaunched = true;
+        }
+
     }
 
     private void updateResultsPulse() {
@@ -624,7 +632,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
             Logger.d(TAG, "Launching debug sync now");
 
             if (!statusManager.isDataEnabled()) {
-                Toast.makeText(this, "You're not connected to the internet!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.dashboard_toast_not_connected), Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -632,7 +640,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
             syncIntent.putExtra(SyncService.DEBUG_SYNC, true);
             startService(syncIntent);
         } else {
-            Toast.makeText(this, "Parameters aren't loaded yet", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.dashboard_parameters_not_loaded), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -640,7 +648,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
         Logger.d(TAG, "Resetting parameters and profile_id, but keeping profile answers");
 
         if (!statusManager.isDataEnabled()) {
-            Toast.makeText(this, "You're not connected to the internet!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.dashboard_toast_not_connected), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -737,9 +745,9 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
 
         // create alert dialog
         AlertDialog alertDialog = alertDialogBuilder.create();
-
         // show it
         alertDialog.show();
+        FontUtils.setRobotoToAlertDialog(alertDialog,this);
     }
 
     private void launchNetworkDataSettings() {
@@ -838,6 +846,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
                         AlertDialog alertDialog = alertDialogBuilder.create();
                         // show it
                         alertDialog.show();
+                        FontUtils.setRobotoToAlertDialog(alertDialog,DashboardActivity.this);
                         return true;
                     }
                     return false;
@@ -885,14 +894,13 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
         // populate Showcase List
         showcasesId = new ArrayList<Integer>();
         showcasesTexts = new ArrayList<String[]>();
-        addShowCaseItem(R.id.dashboard_begin_questionnaires_button,"Questions", "When blinking, there are questions for you!");
-        addShowCaseItem(R.id.dashboard_openAppSettings, "Settings", "Set the app parameters");
-        addShowCaseItem(R.id.dashboard_glossary_button, "Glossary", "A list of useful definitions");
-        addShowCaseItem(R.id.dashboard_ExperimentResultsButton, "Results", "When available, a detailed report for you here!");
-        addShowCaseItem(R.id.dashboard_TimeBox_layout, "Self Report", "Swipe right for a self report");
-        addShowCaseItem(R.id.dashboard_ExperimentTimeElapsed2, "Time Elapsed", "The duration you have been running this app");
-        addShowCaseItem(R.id.dashboard_ExperimentResultsIn2, "Time Left", "The duration left before you get results");
-
+        addShowCaseItem(R.id.dashboard_begin_questionnaires_button, getString(R.string.sv_questions_title), getString(R.string.sv_questions_text));
+        addShowCaseItem(R.id.dashboard_openAppSettings, getString(R.string.sv_settings_title), getString(R.string.sv_settings_text));
+        addShowCaseItem(R.id.dashboard_glossary_button, getString(R.string.sv_glossary_title), getString(R.string.sv_glossary_text));
+        addShowCaseItem(R.id.dashboard_ExperimentResultsButton, getString(R.string.sv_results_title), getString(R.string.sv_results_text));
+        addShowCaseItem(R.id.dashboard_TimeBox_layout, getString(R.string.sv_swipe_title), getString(R.string.sv_swipe_text));
+        addShowCaseItem(R.id.dashboard_ExperimentTimeElapsed2, getString(R.string.sv_time_elapsed_title), getString(R.string.sv_time_elapsed_text));
+        addShowCaseItem(R.id.dashboard_ExperimentResultsIn2, getString(R.string.sv_time_left_title), getString(R.string.sv_time_left_text));
     }
 
     public void launchShowCaseViewSequence(boolean unique) {
