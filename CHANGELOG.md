@@ -1,6 +1,24 @@
 Changelog
 =========
 
+0.21.0
+------
+
+* Enhancements
+  * [#232] Add instructions in dashboard
+  * [#193] Results button properly styled
+  * Finer-grain parameter-update view in dashbaord
+  * [#118] Implement initial questionnaires
+  * [#119] Implement final questionnaires
+  * [#173] Results page fully implemented
+* Bug fixes
+  * [#123] Issues in questionnaire lifecycle
+
+0.20.0
+------
+
+Aborted release because of mistake in the process.
+
 0.19.0
 ------
 
