@@ -1,6 +1,12 @@
 Changelog
 =========
 
+0.21.1
+------
+
+* Bug fixes
+  * If getting BEQ type before it's set, set it instead of crashing
+
 0.21.0
 ------
 
