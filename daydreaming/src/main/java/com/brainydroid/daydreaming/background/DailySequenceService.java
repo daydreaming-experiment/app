@@ -106,8 +106,8 @@ public class DailySequenceService extends RoboService {
 
             Intent intent = new Intent(this, BEQActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                    intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT);
 
             int flags = 0;
             flags |= Notification.FLAG_NO_CLEAR;
@@ -160,9 +160,8 @@ public class DailySequenceService extends RoboService {
 
         // Create the PendingIntent
         Intent intent = createSequenceIntent();
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                intent, PendingIntent.FLAG_CANCEL_CURRENT |
-                PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
 
         int flags = 0;
 

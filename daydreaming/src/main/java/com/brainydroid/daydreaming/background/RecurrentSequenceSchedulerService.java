@@ -93,7 +93,7 @@ public abstract class RecurrentSequenceSchedulerService extends RoboService {
         if (statusManager.areResultsAvailable() && !statusManager.areResultsNotified()) {
             Intent intent = new Intent(this, ResultsActivity.class);
             PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                    intent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_ONE_SHOT);
+                    intent, PendingIntent.FLAG_UPDATE_CURRENT);
             Notification notification = new NotificationCompat.Builder(this)
                     .setTicker(getString(R.string.results_notification_ticker))
                     .setContentTitle(getString(R.string.results_notification_title))
@@ -123,7 +123,7 @@ public abstract class RecurrentSequenceSchedulerService extends RoboService {
         Intent intent = new Intent(this, DailySequenceService.class);
         intent.putExtra(DailySequenceService.SEQUENCE_TYPE, getSequenceType());
         PendingIntent pendingIntent = PendingIntent.getService(this, 0,
-                intent, PendingIntent.FLAG_CANCEL_CURRENT);
+                intent, PendingIntent.FLAG_UPDATE_CURRENT);
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
                 scheduledTime, pendingIntent);
     }
