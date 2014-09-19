@@ -34,7 +34,7 @@ import roboguice.service.RoboService;
  */
 public abstract class RecurrentSequenceSchedulerService extends RoboService {
 
-    private static String TAG = "SequenceSchedulerService";
+    private static String TAG = "RecurrentSequenceSchedulerService";
 
     /** Scheduling delay when debugging is activated */
     public static long DEBUG_DELAY = 5 * 1000; // 5 seconds
