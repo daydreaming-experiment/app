@@ -676,7 +676,7 @@ public class StatusManager {
         return areParametersUpdated();
     }
 
-    public synchronized boolean areBEQCompleted(String type) {
+    private synchronized boolean areBEQCompleted(String type) {
         if (!areParametersUpdated()) {
             return false;
         }
@@ -703,7 +703,7 @@ public class StatusManager {
         return areBEQCompleted(type);
     }
 
-    public synchronized boolean areResultsAvailable(){
+    public synchronized boolean areResultsAvailable() {
         if (!isExpRunning()) return false;
 
         int daysElapsed = (int)((getLatestNtpTime() - getExperimentStartTimestamp()) /
@@ -790,9 +790,8 @@ public class StatusManager {
         String currentBEQType = sharedPreferences.getString(
                 getCurrentModeName() + CURRENT_BEG_END_QUESTIONNAIRE_TYPE, null);
         if (currentBEQType == null) {
-            Logger.e(TAG, "{} - currentBEQType is asked for but not set",
-                    getCurrentMode());
-            throw new RuntimeException("currentBEQType is asked for but not set");
+            Logger.d(TAG, "currentBEGType not set, setting it to BeginQuestionnaire");
+            setCurrentBEQType(Sequence.TYPE_BEGIN_QUESTIONNAIRE);
         }
         Logger.d(TAG, "{0} - currentBEQType is {1}", getCurrentModeName(),
                 currentBEQType);
