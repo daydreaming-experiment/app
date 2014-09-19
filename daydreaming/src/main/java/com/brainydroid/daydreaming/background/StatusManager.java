@@ -81,7 +81,6 @@ public class StatusManager {
     public static int MODE_DEFAULT = MODE_PROD;
     public static String MODE_NAME_TEST = "test";
     public static String MODE_NAME_PROD = "production";
-    public static String[] AVAILABLE_MODE_NAMES = {MODE_NAME_PROD, MODE_NAME_TEST};
 
     /** Delay after which ProbeSchedulerService must be restarted if it hasn't run. 2 days. */
     public static long RESTART_SCHEDULER_SERVICE_DELAY = 2 * 24 * 60 * 60 * 1000;
@@ -688,10 +687,10 @@ public class StatusManager {
         int nCompleted = completedQuestionnaires != null ? completedQuestionnaires.size() : -1;
         int nLoaded = allLoadedQuestionnaires != null ? allLoadedQuestionnaires.size() : -1;
 
-        Logger.d(TAG, "Checking Begin Questionnaire status");
+        Logger.d(TAG, "Checking BEQ status");
         Logger.d(TAG, "Loaded : {0} - Completed {1}", Integer.toString(nLoaded), Integer.toString(nCompleted));
 
-        return (nLoaded == nCompleted);
+        return nLoaded == nCompleted;
     }
 
 
