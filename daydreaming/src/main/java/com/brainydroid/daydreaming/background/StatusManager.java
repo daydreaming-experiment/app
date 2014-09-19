@@ -848,11 +848,9 @@ public class StatusManager {
         return false;
     }
 
-    public synchronized void relaunchAllServices() {
-        // If first launch hasn't been completed, the user doesn't want
-        // anything yet
+    public synchronized void launchSchedulerServices() {
         if (isFirstLaunchCompleted()) {
-            Logger.d(TAG, "First launch is completed");
+            Logger.d(TAG, "First launch is completed, launching scheduler services");
 
             // Start scheduling polls
             Logger.d(TAG, "Starting ProbeSchedulerService");
@@ -874,9 +872,19 @@ public class StatusManager {
             Logger.d(TAG, "Starting EQSchedulerService");
             Intent EQIntent = new Intent(context, EQSchedulerService.class);
             context.startService(EQIntent);
+        } else {
+            Logger.v(TAG, "First launch not completed -> not re-launching scheduler services");
+        }
+    }
+
+    public synchronized void launchAllServices() {
+        // If first launch hasn't been completed, the user doesn't want
+        // anything yet
+        if (isFirstLaunchCompleted()) {
+            launchSchedulerServices();
 
             // Start getting location updates
-            Logger.d(TAG, "Starting LocationPointService");
+            Logger.d(TAG, "First launch completed, starting LocationPointService");
             Intent locationPointServiceIntent = new Intent(context,
                     LocationPointService.class);
             context.startService(locationPointServiceIntent);

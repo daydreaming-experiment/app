@@ -131,6 +131,7 @@ public class BEQActivity extends RoboFragmentActivity {
         }
     }
 
+    // FIXME: is this necessary?
     private synchronized void launchBEQService() {
         Intent intent = new Intent(this, BEQSchedulerService.class);
         intent.putExtra(BEQSchedulerService.IS_PERSISTENT,true);

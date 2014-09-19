@@ -706,8 +706,8 @@ public class ParametersStorage {
                                 Toast.LENGTH_SHORT).show();
                     }
 
-                    Logger.d(TAG, "Starting ProbeSchedulerService & co to take new parameters into account");
-                    statusManager.relaunchAllServices();
+                    Logger.d(TAG, "Starting scheduler services to take new parameters into account");
+                    statusManager.launchSchedulerServices();
                 } else {
                     Logger.w(TAG, "Error while retrieving new parameters from " +
                             "server");

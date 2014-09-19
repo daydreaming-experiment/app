@@ -135,8 +135,7 @@ public class SettingsActivity extends RoboFragmentActivity {
                         // Listener can correct and update the view here
                         correctTimeWindow();
                         updateTimeViews();
-                        startSchedulerServices();
-
+                        statusManager.launchSchedulerServices();
                     }
 
                 };
@@ -170,7 +169,7 @@ public class SettingsActivity extends RoboFragmentActivity {
                         // Listener can correct and update the view here
                         correctTimeWindow();
                         updateTimeViews();
-                        startSchedulerServices();
+                        statusManager.launchSchedulerServices();
                     }
 
                 };
