@@ -77,7 +77,7 @@ public class PageActivity extends RoboFragmentActivity {
         pageIntroText.setText(sequence.getIntro());
         setRobotoFont();
 
-        // Sefl generated probe do not interfere with usual scheduling
+        // Self generated probe do not interfere with usual scheduling
         if (!sequence.selfInitiated) {
             // If this is a probe and we're at the first page, reschedule so as not
             // to have a new probe appear in the middle of this one

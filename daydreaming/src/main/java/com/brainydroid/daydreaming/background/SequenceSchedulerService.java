@@ -13,7 +13,6 @@ import android.support.v4.app.NotificationCompat;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.db.ParametersStorage;
 import com.brainydroid.daydreaming.db.Util;
-import com.brainydroid.daydreaming.sequence.Sequence;
 import com.brainydroid.daydreaming.ui.dashboard.ResultsActivity;
 import com.google.inject.Inject;
 
@@ -37,13 +36,8 @@ public abstract class SequenceSchedulerService extends RoboService {
 
     private static String TAG = "SequenceSchedulerService";
 
-    /** Extra to set to {@code true} for debugging */
-    public static String SCHEDULER_DEBUGGING = "schedulerDebugging";
-
     /** Scheduling delay when debugging is activated */
     public static long DEBUG_DELAY = 5 * 1000; // 5 seconds
-
-    public static long QUESTIONNAIRE_DELAY_AFTER_WINDOW_START = 30 * 60 * 1000; // 30 minutes
 
     // Handy object that will be holding the 'now' time
     protected Calendar now;
@@ -69,8 +63,23 @@ public abstract class SequenceSchedulerService extends RoboService {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Logger.d(TAG, "ProbeSchedulerService started (should not ever happen)");
+        Logger.d(TAG, "Started (super from sub-class)");
+
         super.onStartCommand(intent, flags, startId);
+
+        // Record last time we ran
+        statusManager.setLatestSchedulerServiceSystemTimestampToNow();
+        // Check LocationPointService hasn't died
+        statusManager.checkLatestLocationPointServiceWasAgesAgo();
+        // Notify results if they're available
+        notifyResultsIfAvailable();
+        // Check if we are getting close to the end to enable the final Begin/End questionnaires
+        statusManager.updateBEQType();
+
+        // Synchronise answers and get parameters if we don't have them. If parameters
+        // happen to be updated, all the *SchedulerService will be run again.
+        startSyncService();
+
         return START_REDELIVER_INTENT;
     }
 
@@ -104,18 +113,13 @@ public abstract class SequenceSchedulerService extends RoboService {
         }
     }
 
-    /**
-     * Schedule a {@link com.brainydroid.daydreaming.sequence.Sequence} to be created
-     * and notified by {@link com.brainydroid.daydreaming.background.DailySequenceService} later on.
-     *
-     * debugging Set to {@link true} for a fixed short delay before
-     *                  notification
-     */
     protected synchronized void scheduleSequence(String sequenceType) {
         Logger.d(TAG, "Scheduling new sequence of type {}", sequenceType);
         seqType = sequenceType;
+
         // Generate the time at which the sequence will appear
         long scheduledTime = generateTime();
+
         // Create and schedule the PendingIntent for DailySequenceService
         Intent intent = new Intent(this, DailySequenceService.class);
         intent.putExtra(DailySequenceService.SEQUENCE_TYPE, sequenceType);
@@ -173,18 +177,15 @@ public abstract class SequenceSchedulerService extends RoboService {
     }
 
 
-    protected void printLogOfDelay(long delay) {
+    protected void logDelay(long delay) {
         long hours = delay / (60 * 60 * 1000);
         delay %= 60 * 60 * 1000;
         long minutes = delay / (60 * 1000);
         delay %= 60 * 1000;
         long seconds = delay / 1000;
-        Logger.i(TAG, "Sequence of type {3} scheduled in {0} hours, {1} minutes, " +
-                        "and {2} seconds",
-                hours, minutes, seconds,seqType
-        );
+        Logger.i(TAG, "Sequence of type {3} scheduled in {0} hours, {1} minutes, and {2} seconds",
+                hours, minutes, seconds, seqType);
     }
-
 
 
     /**

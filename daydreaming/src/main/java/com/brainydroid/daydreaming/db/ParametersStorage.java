@@ -3,16 +3,12 @@ package com.brainydroid.daydreaming.db;
 import android.annotation.SuppressLint;
 import android.app.NotificationManager;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.widget.Toast;
 
 import com.brainydroid.daydreaming.background.BEQSchedulerService;
-import com.brainydroid.daydreaming.background.EQSchedulerService;
 import com.brainydroid.daydreaming.background.ErrorHandler;
 import com.brainydroid.daydreaming.background.Logger;
-import com.brainydroid.daydreaming.background.MQSchedulerService;
-import com.brainydroid.daydreaming.background.ProbeSchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.network.HttpConversationCallback;
 import com.brainydroid.daydreaming.network.HttpGetData;
@@ -148,6 +144,7 @@ public class ParametersStorage {
     private synchronized void setBackendApiUrl(String backendApiUrl) {
         Logger.d(TAG, "{} - Setting backendApiUrl to {}", statusManager.getCurrentModeName(), backendApiUrl);
         eSharedPreferences.putString(statusManager.getCurrentModeName() + BACKEND_API_URL, backendApiUrl);
+        eSharedPreferences.commit();
         eSharedPreferences.commit();
     }
 
@@ -347,9 +344,9 @@ public class ParametersStorage {
     public synchronized void setSequences(ArrayList<SequenceDescription> sequences) {
         Logger.d(TAG, "{} - Setting sequences array (and keeping in cache)",
                 statusManager.getCurrentModeName());
-        sequencesCache = sequences;
-        // Now duplicate begin to end (name and type are changed)
-        // This is not to have to copy the questionnaire twice in external parameters
+
+        // Duplicate begin to end (name and type are changed)
+        // To avoid having to duplicate the questionnaires in external parameters
         ArrayList<SequenceDescription> endSequences = new ArrayList<SequenceDescription>();
         for (SequenceDescription sd : sequences) {
             if (sd.getType().equals(Sequence.TYPE_BEGIN_END_QUESTIONNAIRE)) {
@@ -401,7 +398,6 @@ public class ParametersStorage {
                 throw new RuntimeException(e);
             }
         }
-
 
         return sequencesCache;
     }
@@ -711,14 +707,7 @@ public class ParametersStorage {
                     }
 
                     Logger.d(TAG, "Starting ProbeSchedulerService & co to take new parameters into account");
-                    Intent schedulerIntent = new Intent(context, ProbeSchedulerService.class);
-                    context.startService(schedulerIntent);
-                    schedulerIntent = new Intent(context, BEQSchedulerService.class);
-                    context.startService(schedulerIntent);
-                    schedulerIntent = new Intent(context, EQSchedulerService.class);
-                    context.startService(schedulerIntent);
-                    schedulerIntent = new Intent(context, MQSchedulerService.class);
-                    context.startService(schedulerIntent);
+                    statusManager.relaunchAllServices();
                 } else {
                     Logger.w(TAG, "Error while retrieving new parameters from " +
                             "server");
