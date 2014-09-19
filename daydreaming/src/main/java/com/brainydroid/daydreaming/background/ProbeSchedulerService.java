@@ -22,9 +22,6 @@ public class ProbeSchedulerService extends RecurrentSequenceSchedulerService {
 
     protected static String TAG = "ProbeSchedulerService";
 
-    /** Extra to set to {@code true} for debugging */
-    public static String SCHEDULER_DEBUGGING = "schedulerDebugging";
-
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Logger.d(TAG, "Started");
@@ -38,7 +35,6 @@ public class ProbeSchedulerService extends RecurrentSequenceSchedulerService {
         }
 
         // Schedule a sequence
-        debugging = intent.getBooleanExtra(SCHEDULER_DEBUGGING, false);
         scheduleSequence();
         stopSelf();
 
@@ -64,8 +60,6 @@ public class ProbeSchedulerService extends RecurrentSequenceSchedulerService {
      * is the same (see {@link #makeRespectfulDelay} and {@link
      * #makeRespectfulExpansion} for details).
      *
-     * debugging Set to {@link true} to get a fixed short delay for
-     *                  the notification instead of a random delay
      * @return Scheduled (and shifted) moment for the sequence to appear,
      *         in milliseconds from epoch
      */
@@ -78,16 +72,10 @@ public class ProbeSchedulerService extends RecurrentSequenceSchedulerService {
 
         // Build a delay that respects the user's settings.
         long respectfulDelay;
-        if (debugging) {
-            // If we're debugging, keep it real simple.
-            Logger.d(TAG, "Using debug delay");
-            respectfulDelay = DEBUG_DELAY;
-        } else {
-            // Sample a delay and prolong it as necessary to respect the
-            // user's settings.
-            Logger.d(TAG, "Using random time-window-respectful delay");
-            respectfulDelay = makeRespectfulDelay(sampleDelay());
-        }
+        // Sample a delay and prolong it as necessary to respect the
+        // user's settings.
+        Logger.d(TAG, "Using random time-window-respectful delay");
+        respectfulDelay = makeRespectfulDelay(sampleDelay());
 
         // Get the scheduled time into a palatable object.
         Calendar scheduledCalendar = (Calendar)now.clone();

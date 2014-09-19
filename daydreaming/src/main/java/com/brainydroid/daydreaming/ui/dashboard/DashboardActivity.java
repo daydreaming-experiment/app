@@ -27,7 +27,6 @@ import android.widget.Toast;
 
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
-import com.brainydroid.daydreaming.background.ProbeSchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.background.SyncService;
 import com.brainydroid.daydreaming.db.ParametersStorage;
@@ -207,10 +206,6 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
         }
 
         super.onPause();
-    }
-
-    private void updateRecentProbesView() {
-
     }
 
     /**
@@ -603,6 +598,10 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
         });
     }
 
+    private void updateRecentProbesView() {
+
+    }
+
     protected void checkFirstLaunch() {
         if (!statusManager.isFirstLaunchCompleted()) {
             Logger.i(TAG, "First launch not completed -> starting first " +
@@ -627,18 +626,18 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
         startService(syncIntent);
     }
 
-    /**
-     * Launching poll from dashboard (debug)
-     */
-    public void runPollNow(@SuppressWarnings("UnusedParameters") View view) {
+    public void runSyncNow(View view) {
         if (statusManager.isExpRunning()) {
-            Logger.d(TAG, "Launching a debug poll");
+            Logger.d(TAG, "Launching debug sync now");
 
-            Intent pollIntent = new Intent(this, ProbeSchedulerService.class);
-            pollIntent.putExtra(ProbeSchedulerService.SCHEDULER_DEBUGGING, true);
-            startService(pollIntent);
+            if (!statusManager.isDataEnabled()) {
+                Toast.makeText(this, "You're not connected to the internet!", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-            Toast.makeText(this, "Now wait for 5 secs", Toast.LENGTH_SHORT).show();
+            Intent syncIntent = new Intent(this, SyncService.class);
+            syncIntent.putExtra(SyncService.DEBUG_SYNC, true);
+            startService(syncIntent);
         } else {
             Toast.makeText(this, "Parameters aren't loaded yet", Toast.LENGTH_SHORT).show();
         }
