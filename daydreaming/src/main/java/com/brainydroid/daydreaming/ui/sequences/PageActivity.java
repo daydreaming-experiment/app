@@ -115,7 +115,7 @@ public class PageActivity extends RoboFragmentActivity {
         super.onPause();
         if (!isFinishing) {
             Logger.d(TAG, "We're not finishing the sequence -> pausing it");
-            sequence.setStatus(Sequence.STATUS_PARTIALLY_COMPLETED);
+            sequence.setStatus(Sequence.STATUS_RECENTLY_PARTIALLY_COMPLETED);
             finish();
         }
 
