@@ -203,7 +203,6 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
      */
     public void openBEQ(){
         Intent intent = new Intent(this, BEQActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         overridePendingTransition(R.anim.mainfadein, R.anim.splashfadeout);
     }
