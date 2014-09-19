@@ -85,9 +85,11 @@ public class PageActivity extends RoboFragmentActivity {
                 startProbeSchedulerService();
             } else if (sequence.getType().equals(Sequence.TYPE_MORNING_QUESTIONNAIRE)
                     && currentPage.isFirstOfSequence()) {
+                // FIXME: no need to relaunch. Already done in DailySequenceService
                 startMQSchedulerService();
             } else if (sequence.getType().equals(Sequence.TYPE_EVENING_QUESTIONNAIRE)
                     && currentPage.isFirstOfSequence()) {
+                // FIXME: no need to relaunch. Already done in DailySequenceService
                 startEQSchedulerService();
             }
         }
