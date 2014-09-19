@@ -27,7 +27,7 @@ public class ProbeSchedulerService extends SequenceSchedulerService {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Logger.d(TAG, "ProbeSchedulerService started");
+        Logger.d(TAG, "Started");
 
         super.onStartCommand(intent, flags, startId);
 

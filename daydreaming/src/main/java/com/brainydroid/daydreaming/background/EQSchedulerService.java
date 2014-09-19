@@ -12,7 +12,7 @@ public class EQSchedulerService extends SequenceSchedulerService {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Logger.d(TAG, "EQSchedulerService started");
+        Logger.d(TAG, "Started");
 
         super.onStartCommand(intent, flags, startId);
 

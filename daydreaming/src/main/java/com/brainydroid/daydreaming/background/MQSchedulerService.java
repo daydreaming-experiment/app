@@ -12,7 +12,7 @@ public class MQSchedulerService extends SequenceSchedulerService {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Logger.d(TAG, "MQSchedulerService started");
+        Logger.d(TAG, "Started");
 
         super.onStartCommand(intent, flags, startId);
 

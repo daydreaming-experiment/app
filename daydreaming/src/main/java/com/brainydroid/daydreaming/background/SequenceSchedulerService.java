@@ -63,7 +63,7 @@ public abstract class SequenceSchedulerService extends RoboService {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Logger.d(TAG, "SequenceSchedulerService started (super from sub-class)");
+        Logger.d(TAG, "Started (super from sub-class)");
 
         super.onStartCommand(intent, flags, startId);
 
