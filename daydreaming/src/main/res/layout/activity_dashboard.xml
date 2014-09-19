@@ -479,20 +479,11 @@
             android:text="xxxxx"/>
 
         <Button
-            android:id="@+id/button_test_poll"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:onClick="runPollNow"
-            android:text="@string/dashboard_test_text_probe_now"/>
-
-        <Button
             android:id="@+id/button_test_sync"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:layout_above="@id/button_test_poll"
+            android:layout_alignParentBottom="true"
             android:onClick="runSyncNow"
             android:text="@string/dashboard_test_text_sync_now" />
 
