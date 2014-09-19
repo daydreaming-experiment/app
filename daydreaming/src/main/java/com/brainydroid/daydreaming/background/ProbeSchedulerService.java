@@ -18,7 +18,7 @@ import java.util.Calendar;
  * @see SyncService
  * @see DailySequenceService
  */
-public class ProbeSchedulerService extends SequenceSchedulerService {
+public class ProbeSchedulerService extends RecurrentSequenceSchedulerService {
 
     protected static String TAG = "ProbeSchedulerService";
 

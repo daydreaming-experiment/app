@@ -6,7 +6,7 @@ import com.brainydroid.daydreaming.sequence.Sequence;
 
 import java.util.Calendar;
 
-public class MQSchedulerService extends SequenceSchedulerService {
+public class MQSchedulerService extends RecurrentSequenceSchedulerService {
 
     protected static String TAG = "MQSchedulerService";
 

@@ -32,7 +32,7 @@ import roboguice.service.RoboService;
  * @see com.brainydroid.daydreaming.background.SyncService
  * @see com.brainydroid.daydreaming.background.DailySequenceService
  */
-public abstract class SequenceSchedulerService extends RoboService {
+public abstract class RecurrentSequenceSchedulerService extends RoboService {
 
     private static String TAG = "SequenceSchedulerService";
 

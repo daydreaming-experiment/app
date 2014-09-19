@@ -15,10 +15,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.brainydroid.daydreaming.R;
+import com.brainydroid.daydreaming.background.EQSchedulerService;
 import com.brainydroid.daydreaming.background.LocationCallback;
 import com.brainydroid.daydreaming.background.LocationServiceConnection;
 import com.brainydroid.daydreaming.background.Logger;
-import com.brainydroid.daydreaming.background.EQSchedulerService;
 import com.brainydroid.daydreaming.background.MQSchedulerService;
 import com.brainydroid.daydreaming.background.ProbeSchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
