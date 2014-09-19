@@ -47,7 +47,6 @@ public class BEQSchedulerService extends RoboService {
 
         if (statusManager.areParametersUpdated()) {
             if (!statusManager.areBEQCompleted()) {
-                notificationManager.cancel(TAG, 0);
                 notifyQuestionnaire();
                 scheduleBEQService();
             } else {
