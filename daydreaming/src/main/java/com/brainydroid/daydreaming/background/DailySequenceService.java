@@ -65,6 +65,10 @@ public class DailySequenceService extends RoboService {
         if (intent.getBooleanExtra(CANCEL_PENDING_POLLS, false)) {
             Logger.v(TAG, "Started to cancel pending sequences of type {}", sequenceType);
             cancelPendingSequences();
+            // No need to reschedule:
+            // This is run from statusManager, directly to cancel pending stuff,
+            // and doesn't interfere with scheduling. If other classes do interfere
+            // (e.g. clearing parameters), they relaunch scheduler services.
         } else {
             Logger.v(TAG, "Started to create and notify a sequence of type {}", sequenceType);
 

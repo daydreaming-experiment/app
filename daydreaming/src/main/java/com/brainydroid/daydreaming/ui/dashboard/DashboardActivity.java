@@ -654,9 +654,9 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
         // update time of experiment
         statusManager.setExperimentStartTimestamp(Calendar.getInstance().getTimeInMillis());
 
+        // Scheduler services are relaunched once the parameters are updated
         launchParametersUpdate();
         updateExperimentStatus();
-        statusManager.launchSchedulerServices();
     }
 
     public void setRobotoFont(Activity activity){

@@ -315,7 +315,7 @@ public class SettingsActivity extends RoboFragmentActivity {
                 statusManager.switchToProdMode();
                 Toast.makeText(getApplicationContext(), "Switched back to production mode", Toast.LENGTH_SHORT).show();
 
-                // Relaunch scheduling
+                // Relaunch scheduling to refresh notifications
                 statusManager.launchSchedulerServices();
 
                 // Restart Dashboard
