@@ -287,10 +287,19 @@ public class DailySequenceService extends RoboService {
     }
 
     private void startSchedulerService() {
-        Logger.d(TAG, "Starting ProbeSchedulerService");
+        Logger.d(TAG, "Starting scheduler for type {}", sequenceType);
 
-        // FIXME: if type == MEQ, schedule the right scheduler
-        Intent schedulerIntent = new Intent(this, ProbeSchedulerService.class);
+        Intent schedulerIntent;
+        if (sequenceType.equals(Sequence.TYPE_PROBE)) {
+            schedulerIntent = new Intent(this, ProbeSchedulerService.class);
+        } else if (sequenceType.equals(Sequence.TYPE_MORNING_QUESTIONNAIRE)) {
+            schedulerIntent = new Intent(this, MQSchedulerService.class);
+        } else if (sequenceType.equals(Sequence.TYPE_EVENING_QUESTIONNAIRE)) {
+            schedulerIntent = new Intent(this, EQSchedulerService.class);
+        } else {
+            throw new RuntimeException("Could not match sequence type to start scheduler ("
+                    + sequenceType + ")");
+        }
         startService(schedulerIntent);
     }
 
