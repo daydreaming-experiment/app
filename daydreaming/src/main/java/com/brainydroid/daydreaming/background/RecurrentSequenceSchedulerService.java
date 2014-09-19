@@ -106,7 +106,7 @@ public abstract class RecurrentSequenceSchedulerService extends RoboService {
                             | Notification.DEFAULT_SOUND)
                     .build();
 
-            notificationManager.notify(TAG, -1, notification);
+            notificationManager.notify(ResultsActivity.TAG, 0, notification);
 
             // Remember we did all this
             statusManager.setResultsNotified();

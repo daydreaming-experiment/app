@@ -203,8 +203,8 @@ public class DailySequenceService extends RoboService {
         }
 
         // And send it to the system
-        notificationManager.cancel(TAG, sequence.getId());
-        notificationManager.notify(TAG, sequence.getId(), notification);
+        notificationManager.cancel(sequenceType, sequence.getId());
+        notificationManager.notify(sequenceType, sequence.getId(), notification);
     }
 
     /**
@@ -266,7 +266,7 @@ public class DailySequenceService extends RoboService {
                 sequenceType);
         if (pendingSequences != null) {
             for (Sequence sequence : pendingSequences) {
-                notificationManager.cancel(TAG, sequence.getId());
+                notificationManager.cancel(sequenceType, sequence.getId());
                 sequencesStorage.remove(sequence.getId());
             }
         } else {

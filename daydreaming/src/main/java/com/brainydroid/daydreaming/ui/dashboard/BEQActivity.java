@@ -1,6 +1,5 @@
 package com.brainydroid.daydreaming.ui.dashboard;
 
-import android.app.NotificationManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -35,7 +34,6 @@ public class BEQActivity extends RoboFragmentActivity {
     @Inject  Provider<StatusManager> statusManagerProvider;
     @Inject  ParametersStorage parametersStorage;
     @Inject  Provider<SequencesStorage> sequencesStorageProvider;
-    @Inject  NotificationManager notificationManager;
 
     @InjectView(R.id.beginendquestionnaires_questionnaires_layout)
     LinearLayout beginEndQuestionnairesLinearLayout;

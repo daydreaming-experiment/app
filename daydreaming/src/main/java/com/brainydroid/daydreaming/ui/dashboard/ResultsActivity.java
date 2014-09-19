@@ -29,7 +29,7 @@ import roboguice.inject.InjectView;
 @ContentView(R.layout.activity_results)
 public class ResultsActivity extends RoboFragmentActivity {
 
-    private static String TAG = "ResultsActivity";
+    public static String TAG = "ResultsActivity";
 
     public static String DOWNLOAD_RESULTS = "loadResults";
 
