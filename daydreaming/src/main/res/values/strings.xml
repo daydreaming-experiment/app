@@ -201,9 +201,9 @@
     <string name="eqNotification_title">Good evening!</string>
     <string name="eqNotification_text">A few questions to close the day</string>
 
-    <string name="bqNotification_ticker">Questionnaires</string>
-    <string name="bqNotification_title">Daydreaming</string>
-    <string name="bqNotification_text">Please fill those questionnaires</string>
+    <string name="beqNotification_ticker">Questionnaires</string>
+    <string name="beqNotification_title">Daydreaming</string>
+    <string name="beqNotification_text">Please fill those questionnaires</string>
 
     <!-- Crash Reports -->
     <string name="crash_toast_text">Oops Daydreaming just crashed! The developers have been notified.</string>

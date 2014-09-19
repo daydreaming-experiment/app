@@ -106,7 +106,7 @@ public abstract class SequenceSchedulerService extends RoboService {
                             | Notification.DEFAULT_SOUND)
                     .build();
 
-            notificationManager.notify(-1, notification);
+            notificationManager.notify(TAG, -1, notification);
 
             // Remember we did all this
             statusManager.setResultsNotified();

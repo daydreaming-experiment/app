@@ -77,6 +77,7 @@ public class DailySequenceService extends RoboService {
                 populateSequence();
                 notifySequence();
             } else {
+                // FIXME: relaunch every time
                 startSchedulerService();
             }
         }
@@ -234,6 +235,7 @@ public class DailySequenceService extends RoboService {
     private void startSchedulerService() {
         Logger.d(TAG, "Starting ProbeSchedulerService");
 
+        // FIXME: if type == MEQ, schedule the right scheduler
         Intent schedulerIntent = new Intent(this, ProbeSchedulerService.class);
         startService(schedulerIntent);
     }

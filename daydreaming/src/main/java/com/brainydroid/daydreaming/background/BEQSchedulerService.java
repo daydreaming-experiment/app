@@ -68,8 +68,9 @@ public class BEQSchedulerService extends RoboService {
 
     private synchronized Intent createBEQService() {
         Logger.d(TAG, "Creating BEQ Service");
+        // FIXME: bad activity. But don't reschedule anyway, it can be launched from elsewhere.
         Intent intent = new Intent(this, BEQActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         return intent;
     }
 
@@ -84,9 +85,9 @@ public class BEQSchedulerService extends RoboService {
         // if persistent: cant be dismissed and do not disappear on click
         // if not persistent: can be dismissed and self destroy on click
         Notification notification = new NotificationCompat.Builder(this)
-                .setTicker(getString(R.string.bqNotification_ticker))
-                .setContentTitle(getString(R.string.bqNotification_title))
-                .setContentText(getString(R.string.bqNotification_text))
+                .setTicker(getString(R.string.beqNotification_ticker))
+                .setContentTitle(getString(R.string.beqNotification_title))
+                .setContentText(getString(R.string.beqNotification_text))
                 .setContentIntent(contentIntent)
                 .setSmallIcon(R.drawable.ic_stat_notify_small_daydreaming)
                 .setOnlyAlertOnce(true)
