@@ -36,7 +36,7 @@ public class SequencesStorage
             Logger.v(TAG, "Type is probe, so uploadable means either STATUS_COMPLETED " +
                     "or STATUS_PARTIALLY_COMPLETED");
             uploadableStatuses = new String[] {Sequence.STATUS_COMPLETED,
-                    Sequence.STATUS_PARTIALLY_COMPLETED};
+                    Sequence.STATUS_PARTIALLY_COMPLETED, Sequence.STATUS_MISSED};
         } else {
             Logger.v(TAG, "Type is NOT probe, so uploadable means only STATUS_COMPLETED");
             uploadableStatuses = new String[] {Sequence.STATUS_COMPLETED};
@@ -59,8 +59,11 @@ public class SequencesStorage
 
     public synchronized ArrayList<Sequence> getUploadableSequences() {
         Logger.v(TAG, "Getting uploadable sequences");
-        return getModelsByStatusesAndTypes(new String[]{Sequence.STATUS_COMPLETED},
-                Sequence.AVAILABLE_REAL_TYPES);
+        ArrayList<Sequence> uploadableSequences = new ArrayList<Sequence>();
+        for (String type : Sequence.AVAILABLE_REAL_TYPES) {
+            uploadableSequences.addAll(getUploadableSequences(type));
+        }
+        return uploadableSequences;
     }
 
     public synchronized ArrayList<Sequence> getPendingSequences(String type) {
