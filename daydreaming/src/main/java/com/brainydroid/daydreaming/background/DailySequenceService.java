@@ -59,7 +59,8 @@ public class DailySequenceService extends RoboService {
         sequenceType = intent.getStringExtra(DailySequenceService.SEQUENCE_TYPE);
         if (sequenceType == null) {
             Log.d(TAG, "Sequence type not found in intent, found null");
-            throw new NullPointerException(); }
+            throw new NullPointerException();
+        }
 
         if (intent.getBooleanExtra(CANCEL_PENDING_POLLS, false)) {
             Logger.v(TAG, "Started to cancel pending sequences of type {}", sequenceType);
@@ -71,7 +72,7 @@ public class DailySequenceService extends RoboService {
             // because the json was malformed), only reschedule (which will
             // re-download the questions; hopefully they will have been fixed)
             // and don't show any sequence.
-            if (statusManager.areParametersUpdated() & statusManager.wereBEQAnsweredOnTime()) {
+            if (statusManager.areParametersUpdated() && statusManager.wereBEQAnsweredOnTime()) {
                 // Populate and notify the sequence
                 populateSequence();
                 notifySequence();

@@ -46,13 +46,12 @@ public class BEQSchedulerService extends RoboService {
 
         isPersistent = intent.getBooleanExtra(IS_PERSISTENT,true);
 
-
         if (statusManager.areParametersUpdated()) {
             if (!statusManager.areBEQCompleted()) {
                 type = statusManager.updateBEQType();
                 notificationManager.cancel(TAG, 0);
                 notifyQuestionnaire();
-                scheduleBQEService();
+                scheduleBEQService();
             } else {
                 Logger.d(TAG, "no BEQ notifications");
                 notificationManager.cancel(TAG, 0);
@@ -73,7 +72,8 @@ public class BEQSchedulerService extends RoboService {
         Logger.d(TAG, "Creating BEQ Service");
         Intent intent = new Intent(this, BEQActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra("questionnaireType",type);
+        // FIXME: static string
+        intent.putExtra("questionnaireType", type);
         return intent;
     }
 
@@ -112,12 +112,13 @@ public class BEQSchedulerService extends RoboService {
         notificationManager.notify(TAG, 0, notification);
     }
 
-    private synchronized void scheduleBQEService() {
+    private synchronized void scheduleBEQService() {
         Logger.d(TAG, "Schedule BEQ notification in one hour");
+        // FIXME: why in 1 hour?
         Intent intent = createBEQService();
         long scheduledTime = SystemClock.elapsedRealtime() + (60 * 60 * 1000); // 1h
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                intent, PendingIntent.FLAG_UPDATE_CURRENT );
+                intent, PendingIntent.FLAG_UPDATE_CURRENT);
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
                 scheduledTime, contentIntent);
 

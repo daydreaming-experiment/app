@@ -179,10 +179,8 @@ public abstract class SequenceSchedulerService extends RoboService {
         long minutes = delay / (60 * 1000);
         delay %= 60 * 1000;
         long seconds = delay / 1000;
-        Logger.i(TAG, "Sequence of type {3} scheduled in {0} hours, {1} minutes, " +
-                        "and {2} seconds",
-                hours, minutes, seconds,seqType
-        );
+        Logger.i(TAG, "Sequence of type {3} scheduled in {0} hours, {1} minutes, and {2} seconds",
+                hours, minutes, seconds, seqType);
     }
 
 
