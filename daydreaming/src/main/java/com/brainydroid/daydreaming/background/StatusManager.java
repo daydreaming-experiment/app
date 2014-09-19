@@ -59,7 +59,7 @@ public class StatusManager {
     @SuppressWarnings("FieldCanBeLocal")
     private static String LATEST_NTP_TIMESTAMP = "latestNtpTimestamp";
 
-    private static String LATEST_SCHEDULER_SERVICE_SYSTEM_TIMESTAMP =
+    private static String LATEST_DAILY_SERVICE_SYSTEM_TIMESTAMP =
             "latestSchedulerServiceSystemTimestamp";
     private static String LATEST_LOCATION_POINT_SERVICE_SYSTEM_TIMESTAMP =
             "latestLocationPointServiceSystemTimestamp";
@@ -461,17 +461,15 @@ public class StatusManager {
         eSharedPreferences.commit();
     }
 
-    public synchronized void setLatestSchedulerServiceSystemTimestampToNow() {
-        // FIXME: do this by types
-        Logger.d(TAG, "Setting last time ProbeSchedulerService ran to now (system timestamp)");
-        eSharedPreferences.putLong(LATEST_SCHEDULER_SERVICE_SYSTEM_TIMESTAMP,
+    public synchronized void setLatestDailyServiceSystemTimestampToNow() {
+        Logger.d(TAG, "Setting last time DailySequenceService ran to now (system timestamp)");
+        eSharedPreferences.putLong(LATEST_DAILY_SERVICE_SYSTEM_TIMESTAMP,
                 Calendar.getInstance().getTimeInMillis());
         eSharedPreferences.commit();
     }
 
-    public synchronized void checkLatestSchedulerWasAgesAgo() {
-        // FIXME: do this by types
-        long latest = sharedPreferences.getLong(LATEST_SCHEDULER_SERVICE_SYSTEM_TIMESTAMP, -1);
+    public synchronized void checkLatestDailyWasAgesAgo() {
+        long latest = sharedPreferences.getLong(LATEST_DAILY_SERVICE_SYSTEM_TIMESTAMP, -1);
         if (latest == -1) {
             // ProbeSchedulerService never ran, which means first launch wasn't finished
             Logger.d(TAG, "ProbeSchedulerService never ran yet, no need to restart it");
