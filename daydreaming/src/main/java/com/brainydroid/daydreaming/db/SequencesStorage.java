@@ -33,9 +33,9 @@ public class SequencesStorage
         String[] uploadableStatuses;
         if (type.equals(Sequence.TYPE_PROBE)) {
             Logger.v(TAG, "Type is probe, so uploadable means either STATUS_COMPLETED " +
-                    "or STATUS_MISSED_OR_INCOMPLETE");
+                    "or STATUS_MISSED_OR_DISMISSED_OR_INCOMPLETE");
             uploadableStatuses = new String[] {Sequence.STATUS_COMPLETED,
-                    Sequence.STATUS_MISSED_OR_INCOMPLETE};
+                    Sequence.STATUS_MISSED_OR_DISMISSED_OR_INCOMPLETE};
         } else {
             Logger.v(TAG, "Type is NOT probe, so uploadable means only STATUS_COMPLETED");
             uploadableStatuses = new String[] {Sequence.STATUS_COMPLETED};

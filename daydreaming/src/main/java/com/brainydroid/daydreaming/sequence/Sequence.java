@@ -32,14 +32,39 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
             TYPE_PROBE, TYPE_BEGIN_QUESTIONNAIRE, TYPE_END_QUESTIONNAIRE,
             TYPE_MORNING_QUESTIONNAIRE, TYPE_EVENING_QUESTIONNAIRE};
 
+    /* Probes/Questionnaires: notification has appeared */
+    public static final String STATUS_PENDING = "pending";
+    /* Probes: notification was dismissed, and probe not yet re-suggested nor dropped */
+    public static final String STATUS_RECENTLY_DISMISSED = "recentlyDismissed";
+    /* Probes: notification died away, and probe not yet re-suggested nor dropped */
+    public static final String STATUS_RECENTLY_MISSED = "recentlyMissed";
+    /* Probes/Questionnaires: activity is running */
+    public static final String STATUS_RUNNING = "running";
+    /**
+     * Probes/Questionnaires: Activity was stopped in the middle of the sequence,
+     * and probe not yet re-suggested nor dropped
+     */
+    public static final String STATUS_RECENTLY_PARTIALLY_COMPLETED = "recentlyPartiallyCompleted";
+    /**
+     * Probes: was re-suggested after miss/dismiss/partialCompletion, and was refused.
+     * Or, dropped after too long missed/dismissed/partialCompletion.
+     */
+    public static final String STATUS_MISSED_OR_DISMISSED_OR_INCOMPLETE = "missedOrDismissedOrIncomplete";
+    /* Probes/Questionnaires: sequence completely answered */
+    public static final String STATUS_COMPLETED = "completed";
+    /* Questionnaires: sequence completely answered, uploaded, and must be kept locally */
     public static final String STATUS_UPLOADED_AND_KEEP = "uploadedAndKeep";
-    public static final String STATUS_PENDING = "pending"; // Notification has appeared
-    public static final String STATUS_RUNNING = "running"; // Activity is running
-    public static final String STATUS_PARTIALLY_COMPLETED = "partiallyCompleted"; // Activity was stopped (if a probe, it expired, if a questionnaire, can be resumed)
-    public static final String STATUS_COMPLETED = "completed"; // Activity completed
-    public static final String STATUS_MISSED_OR_INCOMPLETE = "missedOrIncomplete"; // For probes: Notification died away
 
-    public static String[] AVAILABLE_STATUSES = new String[] {STATUS_PENDING,STATUS_RUNNING,STATUS_PARTIALLY_COMPLETED,STATUS_COMPLETED};
+
+    public static String[] AVAILABLE_STATUSES = new String[] {
+            STATUS_PENDING,
+            STATUS_RECENTLY_DISMISSED,
+            STATUS_RECENTLY_MISSED,
+            STATUS_RUNNING,
+            STATUS_RECENTLY_PARTIALLY_COMPLETED,
+            STATUS_MISSED_OR_DISMISSED_OR_INCOMPLETE,
+            STATUS_COMPLETED,
+            STATUS_UPLOADED_AND_KEEP};
 
     @JsonView(Views.Public.class)
     private String name = null;
