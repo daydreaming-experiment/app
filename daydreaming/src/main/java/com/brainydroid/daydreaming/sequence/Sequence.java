@@ -73,6 +73,8 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
             STATUS_RECENTLY_MISSED,
             STATUS_RECENTLY_PARTIALLY_COMPLETED}));
 
+    public static long EXPIRY_DELAY = 3 * 60 * 1000;  // 3 minutes
+
     @JsonView(Views.Public.class)
     private String name = null;
     @JsonView(Views.Public.class)

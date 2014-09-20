@@ -15,11 +15,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.brainydroid.daydreaming.R;
+import com.brainydroid.daydreaming.background.ErrorHandler;
 import com.brainydroid.daydreaming.background.LocationCallback;
 import com.brainydroid.daydreaming.background.LocationServiceConnection;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.background.ProbeSchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
+import com.brainydroid.daydreaming.db.ConsistencyException;
 import com.brainydroid.daydreaming.db.SequencesStorage;
 import com.brainydroid.daydreaming.network.SntpClient;
 import com.brainydroid.daydreaming.network.SntpClientCallback;
@@ -32,6 +34,7 @@ import java.util.Calendar;
 
 import roboguice.activity.RoboFragmentActivity;
 import roboguice.inject.ContentView;
+import roboguice.inject.InjectResource;
 import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_page)
@@ -47,7 +50,7 @@ public class PageActivity extends RoboFragmentActivity {
     private Sequence sequence;
     private Page currentPage;
     private long lastBackTime = 0;
-    private boolean isFinishing = false;
+    private boolean isContinuingOrFinishing = false;
     @Inject private PageViewAdapter pageViewAdapter;
 
     @InjectView(R.id.page_relativeLayout) RelativeLayout outerPageLayout;
@@ -57,10 +60,14 @@ public class PageActivity extends RoboFragmentActivity {
     @InjectView(R.id.page_nextButton) ImageButton nextButton;
     @InjectView(R.id.page_finishButton) ImageButton finishButton;
 
+    @InjectResource(R.string.page_too_late_title) String tooLateTitle;
+    @InjectResource(R.string.page_too_late_body) String tooLateBody;
+
     @Inject LocationServiceConnection locationServiceConnection;
     @Inject SequencesStorage sequencesStorage;
     @Inject StatusManager statusManager;
     @Inject SntpClient sntpClient;
+    @Inject ErrorHandler errorHandler;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -75,13 +82,14 @@ public class PageActivity extends RoboFragmentActivity {
         pageIntroText.setText(sequence.getIntro());
         setRobotoFont();
 
-        // Self generated probe do not interfere with usual scheduling
-        if (!sequence.isSelfInitiated()) {
-            // If this is a probe and we're at the first page, reschedule so as not
-            // to have a new probe appear in the middle of this one
-            if (sequence.getType().equals(Sequence.TYPE_PROBE) && currentPage.isFirstOfSequence()) {
-                startProbeSchedulerService();
-            }
+        // If this is a probe that is not being re-opened, and this is the first page,
+        // then if we're too late -> expire the probe.
+        if (sequence.getType().equals(Sequence.TYPE_PROBE) &&
+                currentPage.isFirstOfSequence() && !sequence.wasMissedOrDismissedOrPaused()
+                && !checkTooLate()) {
+            // Fail straight away without going through onStart/onResume/onPause/onStop
+            sequence.setStatus(Sequence.STATUS_RECENTLY_MISSED);
+            finish();
         }
     }
 
@@ -113,7 +121,7 @@ public class PageActivity extends RoboFragmentActivity {
     public void onPause() {
         Logger.d(TAG, "Pausing");
         super.onPause();
-        if (!isFinishing) {
+        if (!isContinuingOrFinishing) {
             Logger.d(TAG, "We're not finishing the sequence -> pausing it");
             if (sequence.wasMissedOrDismissedOrPaused()) {
                 // We were already paused before. Closing this probe definitively.
@@ -122,6 +130,7 @@ public class PageActivity extends RoboFragmentActivity {
                 // Never paused before, we're allowing the user to take up again.
                 sequence.setStatus(Sequence.STATUS_RECENTLY_PARTIALLY_COMPLETED);
             }
+            startProbeSchedulerService();
             finish();
         }
 
@@ -145,6 +154,37 @@ public class PageActivity extends RoboFragmentActivity {
 
         finish();
         super.onBackPressed();
+    }
+
+    private boolean checkTooLate() {
+        long now = Calendar.getInstance().getTimeInMillis();
+        // Add 30 seconds to the expiry delay to make sure the user didn't just click the
+        // notification milliseconds before it was to expire.
+        if (now - sequence.getNotificationSystemTimestamp() > Sequence.EXPIRY_DELAY + 30 * 1000) {
+            if (statusManager.isNotificationExpiryExplained()) {
+                // We shouldn't be here: we already explained this and somehow a probe did not expire.
+                // Log this error, but keep going.
+                errorHandler.logError("We already explained the notification expiry, " +
+                        "but somehow got to this point where we must re-explain it.",
+                        new ConsistencyException());
+            }
+
+            statusManager.setNotificationExpiryExplained();
+            AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
+            alertBuilder.setCancelable(false)
+            .setTitle(tooLateTitle)
+            .setMessage(tooLateBody)
+            .setPositiveButton("Got it", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.cancel();
+                }
+            });
+
+            return false;
+        }
+
+        return true;
     }
 
     private boolean isRepeatingBack() {
@@ -179,8 +219,8 @@ public class PageActivity extends RoboFragmentActivity {
         }
     }
 
-    private void setIsFinishing() {
-        isFinishing = true;
+    private void setIsContinuingOrFinishing() {
+        isContinuingOrFinishing = true;
     }
 
     public boolean isPotentialEndPage() {
@@ -294,6 +334,7 @@ public class PageActivity extends RoboFragmentActivity {
     }
 
     private void transitionToNext() {
+        setIsContinuingOrFinishing();
         if (isEndPage()) {
             Logger.d(TAG, "End page -> finishing sequence");
             finishSequence();
@@ -316,8 +357,6 @@ public class PageActivity extends RoboFragmentActivity {
 
     private void finishSequence() {
         Logger.i(TAG, "Finishing sequence");
-
-        setIsFinishing();
 
         Toast.makeText(this, getString(R.string.page_thank_you), Toast.LENGTH_SHORT).show();
         sequence.skipRemainingBonuses();
