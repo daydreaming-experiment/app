@@ -650,8 +650,8 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
         StringBuilder msgBuilder = new StringBuilder();
 
         long now = Calendar.getInstance().getTimeInMillis();
-        float delayMinutes = ((float)(now - probe.getNotificationSystemTimestamp()))
-                / (60 * 1000);
+        int delayMinutes = Math.round(((float)(now - probe.getNotificationSystemTimestamp()))
+                / (60 * 1000));
         if (delayMinutes < 60) {
             msgBuilder.append(Math.round(delayMinutes));
             msgBuilder.append(" ");
