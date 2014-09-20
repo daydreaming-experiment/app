@@ -36,6 +36,13 @@
     <string name="dashboard_test_text_reload_parameters">Reload parameters</string>
     <string name="dashboard_text_begin_questionnaires">Questions</string>
     <string name="dashboard_button_text_instruction">Instructions</string>
+    <string name="dashboard_you_missed">You missed a probe about</string>
+    <string name="dashboard_you_dismissed">You dismissed a probe about</string>
+    <string name="dashboard_you_started">You started answering a probe about</string>
+    <string name="dashboard_hour">hour</string>
+    <string name="dashboard_hours">hours</string>
+    <string name="dashboard_minutes">minutes</string>
+    <string name="dashboard_ago_swipe_to_get_back">ago.\nSwipe to get it back.</string>
     <string name="results_notification_ticker">Daydreaming results available</string>
     <string name="results_notification_title">Daydreaming results</string>
     <string name="results_notification_content">Discover your 30 days of daydreaming</string>

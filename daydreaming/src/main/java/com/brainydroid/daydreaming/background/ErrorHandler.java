@@ -52,10 +52,8 @@ public class ErrorHandler {
                 parsingException.getMessage());
     }
 
-    public synchronized void logError(Exception exception) {
-        // Report silently
+    public synchronized void logError(String error, Exception exception) {
+        Logger.eRaw(TAG, error);
         ACRA.getErrorReporter().handleSilentException(exception);
-        Logger.td(context, "Internal error: {}",
-                exception.getMessage());
     }
 }

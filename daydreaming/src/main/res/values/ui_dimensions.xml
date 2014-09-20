@@ -130,7 +130,7 @@
     <dimen  name="dashboard_result_vert_padding_size" >20dp</dimen>
     <dimen  name="dashboard_calendar_buttons_spacing" >20dp</dimen>
     <dimen  name="dashboard_calendar_spacing" >16dp</dimen>
-    <dimen  name="dashboard_title_to_calendar_padding" >25dp</dimen>
+    <dimen  name="dashboard_title_to_calendar_padding" >16dp</dimen>
     <dimen  name="dashboard_intericon_spacing" >20dp</dimen>
 
 

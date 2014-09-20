@@ -26,10 +26,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.brainydroid.daydreaming.R;
+import com.brainydroid.daydreaming.background.ErrorHandler;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.background.SyncService;
+import com.brainydroid.daydreaming.db.ConsistencyException;
+import com.brainydroid.daydreaming.db.Json;
 import com.brainydroid.daydreaming.db.ParametersStorage;
+import com.brainydroid.daydreaming.db.SequencesStorage;
 import com.brainydroid.daydreaming.network.SntpClient;
 import com.brainydroid.daydreaming.network.SntpClientCallback;
 import com.brainydroid.daydreaming.sequence.Sequence;
@@ -63,6 +67,9 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
     @Inject SntpClient sntpClient;
     @Inject SequenceBuilder sequenceBuilder;
     @Inject Sequence probe;
+    @Inject SequencesStorage sequencesStorage;
+    @Inject Json json;
+    @Inject ErrorHandler errorHandler;
 
     @InjectView(R.id.dashboard_main_layout) RelativeLayout dashboardMainLayout;
     @InjectView(R.id.dashboard_ExperimentTimeElapsed2)
@@ -78,6 +85,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
     @InjectView(R.id.dashboard_ExperimentResultsIn2days) TextView toGoTextDays;
     @InjectView(R.id.dashboard_ExperimentResultsButton) AlphaButton resultsButton;
     @InjectView(R.id.dashboard_debug_information) TextView debugInfoText;
+    @InjectView(R.id.dashboard_recent_probe_text) TextView recentProbeText;
 
     @InjectResource(R.string.dashboard_text_days) String textDays;
     @InjectResource(R.string.dashboard_text_day) String textDay;
@@ -89,6 +97,13 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
     @InjectResource(R.string.results_refresh_download2) String resultsRefresh2;
     @InjectResource(R.string.results_refresh_download_yes) String resultsRefreshYes;
     @InjectResource(R.string.results_refresh_download_no) String resultsRefreshNo;
+    @InjectResource(R.string.dashboard_you_missed) String youMissed;
+    @InjectResource(R.string.dashboard_you_dismissed) String youDismissed;
+    @InjectResource(R.string.dashboard_you_started) String youStarted;
+    @InjectResource(R.string.dashboard_hour) String textHour;
+    @InjectResource(R.string.dashboard_hours) String textHours;
+    @InjectResource(R.string.dashboard_minutes) String textMinutes;
+    @InjectResource(R.string.dashboard_ago_swipe_to_get_back) String swipeToGetBack;
 
     private boolean testModeThemeActivated = false;
     private int daysToGo = -1;
@@ -169,6 +184,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
         }
         updateExperimentStatus();
         updateResultsPulse();
+        updateRecentProbesView();
 
         // Set dashboard lock
         statusManager.setDashboardRunning(true);
@@ -327,7 +343,8 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
                 // Results more than a day old
                 int days = (int)Math.floor((double)delay / (24 * 60 * 60 * 1000));
 
-                msg = resultsRefresh1 + " " + days + " " + (days == 1 ? textDay : textDays) + " " + resultsRefresh2;
+                msg = resultsRefresh1 + " " + days + " " +
+                        (days == 1 ? textDay : textDays) + " " + resultsRefresh2;
                 yes = resultsRefreshYes;
                 no = resultsRefreshNo;
 
@@ -512,7 +529,8 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
                     long now = Calendar.getInstance().getTimeInMillis();
                     if (now - lastFailedParametersUpdate < 2 * 60 * 1000) {
                         // Last update short time ago: "will retry in X seconds" + reset timer
-                        long secondsLeft = (2 * 60 * 1000 - (now - lastFailedParametersUpdate)) / 1000;
+                        long secondsLeft = (2 * 60 * 1000 -
+                                (now - lastFailedParametersUpdate)) / 1000;
                         textNetworkConnection.setCompoundDrawablesWithIntrinsicBounds(
                                 R.drawable.status_wrong, 0, 0, 0);
                         textNetworkConnection.setText(
@@ -599,7 +617,60 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
     }
 
     private void updateRecentProbesView() {
+        ArrayList<Sequence> recentProbes =
+                sequencesStorage.getRecentlyMarkedSequences(Sequence.TYPE_PROBE);
+        if (recentProbes.size() > 0) {
+            if (recentProbes.size() > 1) {
+                Logger.e(TAG, "Found more than one probe marked recent. Offending probes:");
+                Logger.eRaw(TAG, json.toJsonInternal(recentProbes));
+                errorHandler.logError("Too many recently* probes", new ConsistencyException());
+                return;
+            }
 
+            Sequence recentProbe = recentProbes.get(0);
+            StringBuilder msgBuilder = new StringBuilder();
+            if (recentProbe.getStatus().equals(Sequence.STATUS_RECENTLY_MISSED)) {
+                msgBuilder.append(youMissed);
+            } else if (recentProbe.getStatus().equals(Sequence.STATUS_RECENTLY_DISMISSED)) {
+                msgBuilder.append(youDismissed);
+            } else if (recentProbe.getPageGroups().equals(Sequence.STATUS_RECENTLY_PARTIALLY_COMPLETED)) {
+                msgBuilder.append(youStarted);
+            } else {
+                // We got a problem!
+                Logger.e(TAG, "The following sequence is supposed to be marked recently*, but isn't");
+                Logger.eRaw(TAG, json.toJsonInternal(recentProbe));
+                errorHandler.logError("Sequence gotten as marked recently*, " +
+                        "but couldn't match its status", new ConsistencyException());
+                return;
+            }
+
+            msgBuilder.append(" ");
+
+            long now = Calendar.getInstance().getTimeInMillis();
+            float delayMinutes = ((float)(now - recentProbe.getNotificationSystemTimestamp()))
+                    / (60 * 1000);
+            if (delayMinutes < 60) {
+                msgBuilder.append(Math.round(delayMinutes));
+                msgBuilder.append(textMinutes);
+            } else {
+                int hourNumber = Math.round(delayMinutes / 60);
+                msgBuilder.append(hourNumber);
+                if (hourNumber > 1) {
+                    msgBuilder.append(textHours);
+                } else {
+                    msgBuilder.append(textHour);
+                }
+            }
+
+            msgBuilder.append(" ");
+            msgBuilder.append(swipeToGetBack);
+
+            recentProbeText.setText(msgBuilder.toString());
+            recentProbeText.setVisibility(View.VISIBLE);
+        } else {
+            recentProbeText.setText("");
+            recentProbeText.setVisibility(View.GONE);
+        }
     }
 
     protected void checkFirstLaunch() {
@@ -823,7 +894,8 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
                 if (statusManager.areParametersUpdated()){
                     Logger.d(TAG, "Swipe Event used");
                     if ( Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
-                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(DashboardActivity.this);
+                        AlertDialog.Builder alertDialogBuilder =
+                                new AlertDialog.Builder(DashboardActivity.this);
                         // set title
                         alertDialogBuilder.setTitle("Self Report");
                         // set dialog message
@@ -892,13 +964,20 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
         // populate Showcase List
         showcasesId = new ArrayList<Integer>();
         showcasesTexts = new ArrayList<String[]>();
-        addShowCaseItem(R.id.dashboard_begin_questionnaires_button,"Questions", "When blinking, there are questions for you!");
-        addShowCaseItem(R.id.dashboard_openAppSettings, "Settings", "Set the app parameters");
-        addShowCaseItem(R.id.dashboard_glossary_button, "Glossary", "A list of useful definitions");
-        addShowCaseItem(R.id.dashboard_ExperimentResultsButton, "Results", "When available, a detailed report for you here!");
-        addShowCaseItem(R.id.dashboard_TimeBox_layout, "Self Report", "Swipe right for a self report");
-        addShowCaseItem(R.id.dashboard_ExperimentTimeElapsed2, "Time Elapsed", "The duration you have been running this app");
-        addShowCaseItem(R.id.dashboard_ExperimentResultsIn2, "Time Left", "The duration left before you get results");
+        addShowCaseItem(R.id.dashboard_begin_questionnaires_button,"Questions",
+                "When blinking, there are questions for you!");
+        addShowCaseItem(R.id.dashboard_openAppSettings, "Settings",
+                "Set the app parameters");
+        addShowCaseItem(R.id.dashboard_glossary_button, "Glossary",
+                "A list of useful definitions");
+        addShowCaseItem(R.id.dashboard_ExperimentResultsButton, "Results",
+                "When available, a detailed report for you here!");
+        addShowCaseItem(R.id.dashboard_TimeBox_layout, "Self Report",
+                "Swipe right for a self report");
+        addShowCaseItem(R.id.dashboard_ExperimentTimeElapsed2, "Time Elapsed",
+                "The duration you have been running this app");
+        addShowCaseItem(R.id.dashboard_ExperimentResultsIn2, "Time Left",
+                "The duration left before you get results");
 
     }
 
