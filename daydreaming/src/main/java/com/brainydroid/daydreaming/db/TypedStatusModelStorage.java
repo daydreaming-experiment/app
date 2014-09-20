@@ -122,7 +122,7 @@ public abstract class TypedStatusModelStorage<M extends TypedStatusModel<M,S,F>,
 
         ArrayList<Integer> statusTypeModelIds = getModelIdsByStatusesAndTypes(statuses, types);
         if (statusTypeModelIds == null) {
-            Logger.v(TAG, "No models found with statuses {0} and types {0}", logStatuses, logTypes);
+            Logger.v(TAG, "No models found with statuses {0} and types {1}", logStatuses, logTypes);
             return null;
         } else {
             Logger.d(TAG, "Found {0} models with statuses {1} and types {2}",
