@@ -201,7 +201,7 @@ public class SyncService extends RoboService {
 
         // Do we have any sequences to upload?
         final ArrayList<Sequence> uploadableSequences = sequencesStorage.getUploadableSequences();
-        if (uploadableSequences == null) {
+        if (uploadableSequences == null || uploadableSequences.size() == 0) {
             Logger.i(TAG, "No sequences to upload -> exiting");
             Logger.td(this, TAG + ": no sequences to upload");
             return;
@@ -307,7 +307,7 @@ public class SyncService extends RoboService {
         // Do we have any location points to upload?
         ArrayList<LocationPoint> uploadableLocationPoints =
                 locationPointsStorage.getUploadableLocationPoints();
-        if (uploadableLocationPoints == null) {
+        if (uploadableLocationPoints == null || uploadableLocationPoints.size() == 0) {
             Logger.i(TAG, "No locationPoints to upload -> exiting");
             Logger.td(this, TAG + ": no locationItems to upload");
             return;

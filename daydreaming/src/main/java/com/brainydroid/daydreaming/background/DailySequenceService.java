@@ -413,7 +413,7 @@ public class DailySequenceService extends RoboService {
         Logger.d(TAG, "Cancelling pending sequences of type {}", sequenceType);
         ArrayList<Sequence> pendingSequences = sequencesStorage.getPendingSequences(
                 sequenceType);
-        if (pendingSequences != null) {
+        if (pendingSequences != null && pendingSequences.size() > 0) {
             for (Sequence sequence : pendingSequences) {
                 notificationManager.cancel(sequenceType, sequence.getRecurrentNotificationId());
                 sequencesStorage.remove(sequence.getId());
