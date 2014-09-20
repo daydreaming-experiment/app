@@ -36,6 +36,15 @@
     <string name="dashboard_test_text_reload_parameters">Reload parameters</string>
     <string name="dashboard_text_begin_questionnaires">Questions</string>
     <string name="dashboard_button_text_instruction">Instructions</string>
+    <string name="dashboard_you_missed">You missed a probe about</string>
+    <string name="dashboard_you_dismissed">You dismissed a probe about</string>
+    <string name="dashboard_you_started">You started answering a probe about</string>
+    <string name="dashboard_hour">hour</string>
+    <string name="dashboard_hours">hours</string>
+    <string name="dashboard_minute">minute</string>
+    <string name="dashboard_minutes">minutes</string>
+    <string name="dashboard_ago">ago</string>
+    <string name="dashboard_swipe_to_get_back">Swipe to get it back.</string>
     <string name="results_notification_ticker">Daydreaming results available</string>
     <string name="results_notification_title">Daydreaming results</string>
     <string name="results_notification_content">Discover your 30 days of daydreaming</string>
@@ -175,6 +184,8 @@
     <string name="page_intro_text">Right before the app interrupted you…</string>
     <string name="page_edit_mode_edit">Edit mode</string>
     <string name="page_edit_mode_done">Done</string>
+    <string name="page_too_late_title">Oops, too late!</string>
+    <string name="page_too_late_body">Probes are meant to be answered quickly, so we can\'t let you answer this one. From now on notifications will disappear on their own after a few minutes. If you want to answer a probe you missed, you can do so in the dashboard, it will suggest any missed probes.</string>
 
     <!-- Display question Activity -->
     <string name="question_welcome_text">HERE ARE A FEW QUICK QUESTIONS:</string>

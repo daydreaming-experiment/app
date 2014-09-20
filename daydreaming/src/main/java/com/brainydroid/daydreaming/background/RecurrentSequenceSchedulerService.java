@@ -33,12 +33,10 @@ import roboguice.service.RoboService;
  * @see com.brainydroid.daydreaming.background.SyncService
  * @see com.brainydroid.daydreaming.background.DailySequenceService
  */
+// TODO: database cleaning. If running since long time ago, or null status: flush.
 public abstract class RecurrentSequenceSchedulerService extends RoboService {
 
     private static String TAG = "RecurrentSequenceSchedulerService";
-
-    /** Scheduling delay when debugging is activated */
-    public static long DEBUG_DELAY = 5 * 1000; // 5 seconds
 
     // Handy object that will be holding the 'now' time
     protected Calendar now;
@@ -58,8 +56,6 @@ public abstract class RecurrentSequenceSchedulerService extends RoboService {
     @Inject Random random;
     @Inject AlarmManager alarmManager;
     @Inject NotificationManager notificationManager;
-
-    protected boolean debugging;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {

@@ -1,6 +1,7 @@
 package com.brainydroid.daydreaming.sequence;
 
 import com.brainydroid.daydreaming.R;
+import com.brainydroid.daydreaming.background.DailySequenceService;
 import com.brainydroid.daydreaming.background.ErrorHandler;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.SequenceDescription;
@@ -12,6 +13,8 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.google.inject.Inject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 
 public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,SequenceJsonFactory>
         implements ISequence {
@@ -32,13 +35,46 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
             TYPE_PROBE, TYPE_BEGIN_QUESTIONNAIRE, TYPE_END_QUESTIONNAIRE,
             TYPE_MORNING_QUESTIONNAIRE, TYPE_EVENING_QUESTIONNAIRE};
 
+    /* Probes/Questionnaires: notification has appeared */
+    public static final String STATUS_PENDING = "pending";
+    /* Probes: notification was dismissed, and probe not yet re-suggested nor dropped */
+    public static final String STATUS_RECENTLY_DISMISSED = "recentlyDismissed";
+    /* Probes: notification died away, and probe not yet re-suggested nor dropped */
+    public static final String STATUS_RECENTLY_MISSED = "recentlyMissed";
+    /* Probes/Questionnaires: activity is running */
+    public static final String STATUS_RUNNING = "running";
+    /**
+     * Probes/Questionnaires: Activity was stopped in the middle of the sequence,
+     * and probe not yet re-suggested nor dropped
+     */
+    public static final String STATUS_RECENTLY_PARTIALLY_COMPLETED = "recentlyPartiallyCompleted";
+    /**
+     * Probes: was re-suggested after miss/dismiss/partialCompletion, and was refused.
+     * Or, dropped after too long missed/dismissed/partialCompletion.
+     */
+    public static final String STATUS_MISSED_OR_DISMISSED_OR_INCOMPLETE = "missedOrDismissedOrIncomplete";
+    /* Probes/Questionnaires: sequence completely answered */
+    public static final String STATUS_COMPLETED = "completed";
+    /* Questionnaires: sequence completely answered, uploaded, and must be kept locally */
     public static final String STATUS_UPLOADED_AND_KEEP = "uploadedAndKeep";
-    public static final String STATUS_PENDING = "pending"; // Notification has appeared
-    public static final String STATUS_RUNNING = "running"; // Activity is running
-    public static final String STATUS_PARTIALLY_COMPLETED = "partiallyCompleted"; // Activity was stopped (if a probe, it expired, if a questionnaire, can be resumed)
-    public static final String STATUS_COMPLETED = "completed"; // Activity completed
 
-    public static String[] AVAILABLE_STATUSES = new String[] {STATUS_PENDING,STATUS_RUNNING,STATUS_PARTIALLY_COMPLETED,STATUS_COMPLETED};
+
+    public static String[] AVAILABLE_STATUSES = new String[] {
+            STATUS_PENDING,
+            STATUS_RECENTLY_DISMISSED,
+            STATUS_RECENTLY_MISSED,
+            STATUS_RUNNING,
+            STATUS_RECENTLY_PARTIALLY_COMPLETED,
+            STATUS_MISSED_OR_DISMISSED_OR_INCOMPLETE,
+            STATUS_COMPLETED,
+            STATUS_UPLOADED_AND_KEEP};
+
+    public static HashSet<String> PAUSED_STATUSES = new HashSet<String>(Arrays.asList(new String[]{
+            STATUS_RECENTLY_DISMISSED,
+            STATUS_RECENTLY_MISSED,
+            STATUS_RECENTLY_PARTIALLY_COMPLETED}));
+
+    public static long EXPIRY_DELAY = 3 * 60 * 1000;  // 3 minutes
 
     @JsonView(Views.Public.class)
     private String name = null;
@@ -56,22 +92,39 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
     @JsonView(Views.Internal.class)
     private boolean skipBonusesAsked = false;
     @JsonView(Views.Public.class)
-    public boolean selfInitiated = false;
+    private boolean selfInitiated = false;
+    @JsonView(Views.Public.class)
+    private boolean wasMissedOrDismissedOrPaused = false;
 
     @Inject private SequencesStorage sequencesStorage;
     @Inject private ErrorHandler errorHandler;
 
-    public static int getRecurrentRequestCode(String sequenceType) {
+    public static int getRecurrentRequestCode(String sequenceType, String action) {
         if (sequenceType.equals(TYPE_PROBE)) {
-            return 0;
+            if (action != null) {
+                if (action.equals(DailySequenceService.EXPIRE_PROBE)) {
+                    return 0;
+                } else if (action.equals(DailySequenceService.DISMISS_PROBE)) {
+                    return 1;
+                } else {
+                    throw new RuntimeException("Asked for request code for type probe and action "
+                            + action + " but we don't have one");
+                }
+            } else {
+                return 2;
+            }
         } else if (sequenceType.equals(TYPE_MORNING_QUESTIONNAIRE)) {
-            return 1;
+            return 3;
         } else if (sequenceType.equals(TYPE_EVENING_QUESTIONNAIRE)) {
-            return 2;
+            return 4;
         } else {
             throw new RuntimeException("Asked for request code for type " + sequenceType
                     + " but we don't have one.");
         }
+    }
+
+    public static int getRecurrentRequestCode(String sequenceType) {
+        return getRecurrentRequestCode(sequenceType, null);
     }
 
     public int getRecurrentNotificationId() {
@@ -151,6 +204,14 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
         return skipBonuses;
     }
 
+    public synchronized boolean isSkipBonusesAsked() {
+        return skipBonusesAsked;
+    }
+
+    public synchronized long getNotificationSystemTimestamp() {
+        return notificationSystemTimestamp;
+    }
+
     public synchronized boolean isSelfInitiated() {
         return selfInitiated;
     }
@@ -159,8 +220,18 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
         this.selfInitiated = selfInitiated;
     }
 
-    public synchronized boolean isSkipBonusesAsked() {
-        return skipBonusesAsked;
+    @Override
+    public synchronized void setStatus(String status) {
+        if (PAUSED_STATUSES.contains(status)) {
+            Logger.v(TAG, "Remembering that sequence went through a paused state (recently*)");
+            wasMissedOrDismissedOrPaused = true;
+        }
+        // Save occurs in super.setStatus()
+        super.setStatus(status);
+    }
+
+    public boolean wasMissedOrDismissedOrPaused() {
+        return wasMissedOrDismissedOrPaused;
     }
 
     public synchronized Page getCurrentPage() {

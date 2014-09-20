@@ -59,8 +59,16 @@
                 android:textColor="@color/ui_dark_blue_color"/>
         </LinearLayout>
 
-
-
+        <TextView
+            android:id="@+id/dashboard_recent_probe_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:text="xxxxxxxxx XXXXX XXXXXXXXXXXXXX XXXXXXXXX"/>
 
         <!-- Two colums time-elapsed / results -->
 
@@ -69,7 +77,7 @@
             android:id="@+id/dashboard_TimeBoxorOptions_layout"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dashboard_title_to_calendar_padding"
+            android:layout_marginTop="8dp"
             android:gravity="center_horizontal"
             >
 
@@ -479,20 +487,11 @@
             android:text="xxxxx"/>
 
         <Button
-            android:id="@+id/button_test_poll"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:onClick="runPollNow"
-            android:text="@string/dashboard_test_text_probe_now"/>
-
-        <Button
             android:id="@+id/button_test_sync"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:layout_above="@id/button_test_poll"
+            android:layout_alignParentBottom="true"
             android:onClick="runSyncNow"
             android:text="@string/dashboard_test_text_sync_now" />
 

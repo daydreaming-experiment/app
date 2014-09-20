@@ -32,17 +32,24 @@ public class SequencesStorage
 
         String[] uploadableStatuses;
         if (type.equals(Sequence.TYPE_PROBE)) {
-            // TODO[seb]: once #214 is fixed, remove STATUS_PARTIALLY_COMPLETED here
             Logger.v(TAG, "Type is probe, so uploadable means either STATUS_COMPLETED " +
-                    "or STATUS_PARTIALLY_COMPLETED");
+                    "or STATUS_MISSED_OR_DISMISSED_OR_INCOMPLETE");
             uploadableStatuses = new String[] {Sequence.STATUS_COMPLETED,
-                    Sequence.STATUS_PARTIALLY_COMPLETED};
+                    Sequence.STATUS_MISSED_OR_DISMISSED_OR_INCOMPLETE};
         } else {
             Logger.v(TAG, "Type is NOT probe, so uploadable means only STATUS_COMPLETED");
             uploadableStatuses = new String[] {Sequence.STATUS_COMPLETED};
         }
 
         return getModelsByStatusesAndTypes(uploadableStatuses, new String[]{type});
+    }
+
+    public synchronized ArrayList<Sequence> getRecentlyMarkedSequences(String type) {
+        Logger.v(TAG, "Getting sequences with status recently*");
+
+        String[] statuses = new String[] {Sequence.STATUS_RECENTLY_MISSED,
+                Sequence.STATUS_RECENTLY_DISMISSED, Sequence.STATUS_RECENTLY_PARTIALLY_COMPLETED};
+        return getModelsByStatusesAndTypes(statuses, new String[] {type});
     }
 
     public synchronized ArrayList<Sequence> getCompletedSequences(String type) {
@@ -59,8 +66,19 @@ public class SequencesStorage
 
     public synchronized ArrayList<Sequence> getUploadableSequences() {
         Logger.v(TAG, "Getting uploadable sequences");
-        return getModelsByStatusesAndTypes(new String[]{Sequence.STATUS_COMPLETED},
-                Sequence.AVAILABLE_REAL_TYPES);
+        ArrayList<Sequence> uploadableSequences = new ArrayList<Sequence>();
+        for (String type : Sequence.AVAILABLE_REAL_TYPES) {
+            ArrayList<Sequence> typedUploadableSequences = getUploadableSequences(type);
+            if (typedUploadableSequences != null) {
+                uploadableSequences.addAll(typedUploadableSequences);
+            }
+        }
+
+        if (uploadableSequences.size() == 0) {
+            return null;
+        } else {
+            return uploadableSequences;
+        }
     }
 
     public synchronized ArrayList<Sequence> getPendingSequences(String type) {

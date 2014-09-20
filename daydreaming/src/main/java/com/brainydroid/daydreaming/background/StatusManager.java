@@ -73,6 +73,7 @@ public class StatusManager {
     public static String CURRENT_BEG_END_QUESTIONNAIRE_TYPE = "currentBEQType";
 
     public static String RESULTS_DOWNLOADED = "resultsDownloaded";
+    public static String NOTIFICATION_EXPIRY_EXPLAINED = "notificationExpiryExplained";
 
     public static final String ACTION_PARAMETERS_STATUS_CHANGE = "actionParametersStatusChange";
 
@@ -92,6 +93,8 @@ public class StatusManager {
     public static int DELAY_TO_ANSWER_BEGQ = 3;
 
     private int cachedCurrentMode = MODE_DEFAULT;
+    private boolean isDashboardRunning = false;
+    private long isDashboardRunningTimestamp = -1;
     private boolean isParametersSyncRunning = false;
     private boolean isRegistrationRunning = false;
     private boolean isSequencesSyncRunning = false;
@@ -270,6 +273,42 @@ public class StatusManager {
 
         eSharedPreferences.remove(getCurrentModeName() + RESULTS_DOWNLOADED);
         eSharedPreferences.commit();
+    }
+    public synchronized void setNotificationExpiryExplained() {
+        Logger.d(TAG, "{} - Setting notificationExpiryExplained to true", getCurrentModeName(), true);
+
+        eSharedPreferences.putBoolean(getCurrentModeName() + NOTIFICATION_EXPIRY_EXPLAINED, true);
+        eSharedPreferences.commit();
+    }
+
+    public synchronized boolean isNotificationExpiryExplained() {
+        if (sharedPreferences.getBoolean(getCurrentModeName() + NOTIFICATION_EXPIRY_EXPLAINED,
+                false)) {
+            Logger.v(TAG, "{} - Notification expiry not yet explained", getCurrentModeName());
+            return true;
+        } else {
+            Logger.v(TAG, "{} - Notification expiry not yet explained", getCurrentModeName());
+            return false;
+        }
+    }
+
+   public synchronized void clearNotificationExpiryExplained() {
+       Logger.d(TAG, "{} - Clearing notificationExpiryExplained", getCurrentModeName());
+
+       eSharedPreferences.remove(getCurrentModeName() + NOTIFICATION_EXPIRY_EXPLAINED);
+       eSharedPreferences.commit();
+   }
+
+    public synchronized void setDashboardRunning(boolean running) {
+        Logger.v(TAG, "Setting isDashboardRunning to {}", running);
+        isDashboardRunning = true;
+        isDashboardRunningTimestamp = Calendar.getInstance().getTimeInMillis();
+    }
+
+    public synchronized boolean isDashboardRunning() {
+        long now = Calendar.getInstance().getTimeInMillis();
+        // Dashboard is running, and we have that information from less than 1 minute ago
+        return isDashboardRunning && (now - isDashboardRunningTimestamp < 1 * 60 * 1000);
     }
 
     /**
@@ -589,6 +628,7 @@ public class StatusManager {
         clearExperimentStartTimestamp();
         clearResultsNotified();
         clearResultsNotifiedDashboard();
+        clearNotificationExpiryExplained();
         clearResultsDownloaded();
 
         // Cancel any running location collection and pending notifications.
@@ -623,6 +663,7 @@ public class StatusManager {
         // Clear result flags
         clearResultsNotified();
         clearResultsNotifiedDashboard();
+        clearNotificationExpiryExplained();
         clearResultsDownloaded();
 
         // Clear crypto storage to force a new handshake
