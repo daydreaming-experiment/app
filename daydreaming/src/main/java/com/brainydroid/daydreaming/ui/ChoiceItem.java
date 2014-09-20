@@ -4,7 +4,6 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -17,9 +16,9 @@ public class ChoiceItem extends LinearLayout {
     private static String TAG = "ChoiceItem";
 
     private boolean isChecked = false;
-    private ImageButton imageButton;
+    private ImageView imageView;
     private TextView textView;
-    private int drawableSelector;
+    private int drawableUnchecked;
     private int drawableChecked;
 
 
@@ -39,85 +38,65 @@ public class ChoiceItem extends LinearLayout {
     // TODO: add image here once we have the icons
     public void initialize(String text) {
         Logger.v(TAG, "Initializing");
-        imageButton = (ImageButton)findViewById(R.id.question_matrix_choice_item_image);
-        setDrawableSelector(text);
+        imageView = (ImageView)findViewById(R.id.question_matrix_choice_item_image);
+        setDrawableUnchecked(text);
         setDrawableChecked(text);
         textView = (TextView)findViewById(R.id.question_matrix_choice_item_text);
         textView.setText(text);
-        setClickable(true);
-        imageButton.setBackgroundResource(drawableSelector);
-        textView.setTextColor(getResources().getColorStateList(R.color.choice_item_text_selector));
-        imageButton.setClickable(false);
+        isChecked = false;
+        updateDrawable();
     }
 
     public boolean isChecked() {
         return isChecked;
     }
 
-    public void setChecked(boolean isChecked) {
-        Logger.v(TAG, "Setting checked to " + (isChecked ? "true" : "false"));
-
-        this.isChecked = isChecked;
-        imageButton.setBackgroundResource(isChecked ? drawableChecked : drawableSelector);
-        textView.setTextColor(isChecked ?
-                getResources().getColorStateList(R.color.choice_item_text_selected_selector):
-                getResources().getColorStateList(R.color.choice_item_text_selector));
+    public void swapStatus() {
+        Logger.v(TAG, "Setting checked to " + (!isChecked ? "true" : "false"));
+        isChecked = !isChecked;
+        updateDrawable();
     }
 
-    public void toggleChecked() {
-        Logger.v(TAG, "Toggling checked");
-        setChecked(!isChecked);
+    public void updateDrawable() {
+        imageView.setBackgroundResource(isChecked ? drawableChecked : drawableUnchecked);
+        textView.setTextColor(isChecked ?
+                getResources().getColorStateList(R.color.ui_yellow):
+                getResources().getColorStateList(R.color.ui_dark_blue_color));
     }
 
     public String getText() {
         return textView.getText().toString();
     }
 
-    public synchronized void setIcon(Drawable drawable) {
-        imageButton.setImageDrawable(drawable);
-    }
 
-    public synchronized void setDrawableSelector(String choice) {
+    public synchronized void setDrawableUnchecked(String choice) {
         Logger.d(TAG, "Loading icon : {}", choice);
         if (choice.equals("Home")) {
-            //drawableSelector = context.getResources().getDrawable(R.drawable.button_location_home_selector);
-            drawableSelector = R.drawable.button_location_home_selector;
+            drawableUnchecked = R.drawable.button_location_home;
         } else if (choice.equals("Commuting")) {
-            //drawableSelector = context.getResources().getDrawable(R.drawable.button_location_commuting_selector);
-            drawableSelector = R.drawable.button_location_commuting_selector;
+            drawableUnchecked = R.drawable.button_location_commuting;
         } else if (choice.equals("Work")) {
-            //drawableSelector = context.getResources().getDrawable(R.drawable.button_location_work_selector);
-            drawableSelector = R.drawable.button_location_work_selector;
+            drawableUnchecked = R.drawable.button_location_work;
         } else if (choice.equals("Public place")) {
-            //drawableSelector = context.getResources().getDrawable(R.drawable.button_location_publicplace_selector);
-            drawableSelector = R.drawable.button_location_publicplace_selector;
+            drawableUnchecked = R.drawable.button_location_publicplace;
         } else if (choice.equals("Outside")) {
-            //drawableSelector = context.getResources().getDrawable(R.drawable.button_location_outside_selector);
-            drawableSelector = R.drawable.button_location_outside_selector;
+            drawableUnchecked = R.drawable.button_location_outside;
         }
     }
 
     public synchronized void setDrawableChecked(String choice) {
         Logger.d(TAG, "Loading icon : {}", choice);
         if (choice.equals("Home")) {
-            //drawableChecked = context.getResources().getDrawable(R.drawable.button_location_home_yellow);
             drawableChecked = R.drawable.button_location_home_yellow;
         } else if (choice.equals("Commuting")) {
-            //drawableChecked = context.getResources().getDrawable(R.drawable.button_location_commuting_yellow);
             drawableChecked = R.drawable.button_location_commuting_yellow;
         } else if (choice.equals("Work")) {
-            //drawableChecked = context.getResources().getDrawable(R.drawable.button_location_work_yellow);
             drawableChecked = R.drawable.button_location_work_yellow;
         } else if (choice.equals("Public place")) {
-            //drawableChecked = context.getResources().getDrawable(R.drawable.button_location_publicplace_yellow);
             drawableChecked = R.drawable.button_location_publicplace_yellow;
         } else if (choice.equals("Outside")) {
-            //drawableChecked = context.getResources().getDrawable(R.drawable.button_location_outside_yellow);
             drawableChecked = R.drawable.button_location_outside_yellow;
         }
     }
 
-    public boolean getChecked() {
-        return isChecked;
-    }
 }

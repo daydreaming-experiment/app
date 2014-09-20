@@ -39,18 +39,6 @@ public class MatrixChoiceQuestionViewAdapter extends BaseQuestionViewAdapter
     @Inject Injector injector;
     @Inject Context context;
 
-    private static class ChoiceClickListener implements View.OnClickListener {
-
-        private static String TAG = "ChoiceClickListener";
-
-        private ChoiceItem choiceItem;
-
-        @Override
-        public void onClick(View view) {
-            choiceItem.toggleChecked();
-        }
-    }
-
     private ArrayList<ArrayList<String>> flowChoices(ArrayList<String> choices) {
         Logger.v(TAG, "Flowing choices");
 
@@ -113,7 +101,7 @@ public class MatrixChoiceQuestionViewAdapter extends BaseQuestionViewAdapter
                 choiceItem.setOnClickListener(new LinearLayout.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        choiceItem.setChecked(!choiceItem.getChecked());
+                        ((ChoiceItem) v).swapStatus();
                     }
                 });
 
