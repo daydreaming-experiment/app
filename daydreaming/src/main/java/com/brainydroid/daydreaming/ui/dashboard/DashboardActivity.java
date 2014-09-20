@@ -66,7 +66,6 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
     @Inject StatusManager statusManager;
     @Inject SntpClient sntpClient;
     @Inject SequenceBuilder sequenceBuilder;
-    @Inject Sequence probe;
     @Inject SequencesStorage sequencesStorage;
     @Inject Json json;
     @Inject ErrorHandler errorHandler;
@@ -103,7 +102,8 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
     @InjectResource(R.string.dashboard_hour) String textHour;
     @InjectResource(R.string.dashboard_hours) String textHours;
     @InjectResource(R.string.dashboard_minutes) String textMinutes;
-    @InjectResource(R.string.dashboard_ago_swipe_to_get_back) String swipeToGetBack;
+    @InjectResource(R.string.dashboard_ago) String agoText;
+    @InjectResource(R.string.dashboard_swipe_to_get_back) String swipeToGetBack;
 
     private boolean testModeThemeActivated = false;
     private int daysToGo = -1;
@@ -616,53 +616,81 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
         });
     }
 
-    private void updateRecentProbesView() {
+    private Sequence getRecentProbe() {
+        Logger.v(TAG, "Getting recently* marked probes");
         ArrayList<Sequence> recentProbes =
-                sequencesStorage.getRecentlyMarkedSequences(Sequence.TYPE_PROBE);
+        sequencesStorage.getRecentlyMarkedSequences(Sequence.TYPE_PROBE);
         if (recentProbes.size() > 0) {
             if (recentProbes.size() > 1) {
                 Logger.e(TAG, "Found more than one probe marked recent. Offending probes:");
                 Logger.eRaw(TAG, json.toJsonInternal(recentProbes));
-                errorHandler.logError("Too many recently* probes", new ConsistencyException());
-                return;
+                errorHandler.logError("Too many recently* probes. " +
+                                "Marking them as missedOrDismissedOrIncomplete.",
+                        new ConsistencyException());
+                for (Sequence probe : recentProbes) {
+                    probe.setStatus(Sequence.STATUS_UPLOADED_AND_KEEP);
+                }
+                return null;
             }
+            return recentProbes.get(0);
+        } else {
+            return null;
+        }
+    }
 
-            Sequence recentProbe = recentProbes.get(0);
+    private void logSequenceMarkingError(Sequence erroredSequence) {
+        // We got a problem!
+        Logger.e(TAG, "The following sequence is supposed to be marked recently*, but isn't");
+        Logger.eRaw(TAG, json.toJsonInternal(erroredSequence));
+        errorHandler.logError("Sequence gotten as marked recently*, " +
+                "but couldn't match its status", new ConsistencyException());
+    }
+
+    private String buildRecentProbeDelayString(Sequence probe) {
+        StringBuilder msgBuilder = new StringBuilder();
+
+        long now = Calendar.getInstance().getTimeInMillis();
+        float delayMinutes = ((float)(now - probe.getNotificationSystemTimestamp()))
+                / (60 * 1000);
+        if (delayMinutes < 60) {
+            msgBuilder.append(Math.round(delayMinutes));
+            msgBuilder.append(textMinutes);
+        } else {
+            int hourNumber = Math.round(delayMinutes / 60);
+            msgBuilder.append(hourNumber);
+            if (hourNumber > 1) {
+                msgBuilder.append(textHours);
+            } else {
+                msgBuilder.append(textHour);
+            }
+        }
+
+        msgBuilder.append(" ");
+        msgBuilder.append(agoText);
+        return msgBuilder.toString();
+
+}
+
+    private void updateRecentProbesView() {
+        Sequence recentProbe = getRecentProbe();
+        if (recentProbe != null) {
+
             StringBuilder msgBuilder = new StringBuilder();
             if (recentProbe.getStatus().equals(Sequence.STATUS_RECENTLY_MISSED)) {
                 msgBuilder.append(youMissed);
             } else if (recentProbe.getStatus().equals(Sequence.STATUS_RECENTLY_DISMISSED)) {
                 msgBuilder.append(youDismissed);
-            } else if (recentProbe.getPageGroups().equals(Sequence.STATUS_RECENTLY_PARTIALLY_COMPLETED)) {
+            } else if (recentProbe.getStatus().equals(Sequence.STATUS_RECENTLY_PARTIALLY_COMPLETED)) {
                 msgBuilder.append(youStarted);
             } else {
                 // We got a problem!
-                Logger.e(TAG, "The following sequence is supposed to be marked recently*, but isn't");
-                Logger.eRaw(TAG, json.toJsonInternal(recentProbe));
-                errorHandler.logError("Sequence gotten as marked recently*, " +
-                        "but couldn't match its status", new ConsistencyException());
+                logSequenceMarkingError(recentProbe);
                 return;
             }
 
             msgBuilder.append(" ");
-
-            long now = Calendar.getInstance().getTimeInMillis();
-            float delayMinutes = ((float)(now - recentProbe.getNotificationSystemTimestamp()))
-                    / (60 * 1000);
-            if (delayMinutes < 60) {
-                msgBuilder.append(Math.round(delayMinutes));
-                msgBuilder.append(textMinutes);
-            } else {
-                int hourNumber = Math.round(delayMinutes / 60);
-                msgBuilder.append(hourNumber);
-                if (hourNumber > 1) {
-                    msgBuilder.append(textHours);
-                } else {
-                    msgBuilder.append(textHour);
-                }
-            }
-
-            msgBuilder.append(" ");
+            msgBuilder.append(buildRecentProbeDelayString(recentProbe));
+            msgBuilder.append(".\n");
             msgBuilder.append(swipeToGetBack);
 
             recentProbeText.setText(msgBuilder.toString());
@@ -893,26 +921,74 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
                 Logger.d(TAG, "Swipe Event detected");
                 if (statusManager.areParametersUpdated()){
                     Logger.d(TAG, "Swipe Event used");
-                    if ( Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
+                    if (Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
+                        // Create dialog builder
                         AlertDialog.Builder alertDialogBuilder =
                                 new AlertDialog.Builder(DashboardActivity.this);
-                        // set title
                         alertDialogBuilder.setTitle("Self Report");
-                        // set dialog message
-                        alertDialogBuilder
-                                .setMessage("Do you want to report a daydreaming experience?")
-                                .setCancelable(false)
-                                .setPositiveButton("Yes!",new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog,int id) {
-                                        createProbe();
-                                        launchProbeIntent();
-                                    }
-                                })
-                                .setNegativeButton("Nope",new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog,int id) {
-                                        dialog.cancel();
-                                    }
-                                });
+                        StringBuilder msgBuilder = new StringBuilder("Do you want to report a" +
+                                " daydreaming experience?\n");
+                        final Sequence recentProbe = getRecentProbe();
+
+                        // If we have a recent probe, adapt
+                        if (recentProbe != null) {
+                            String neutralButtonText;
+                            if (recentProbe.getStatus().equals(Sequence.STATUS_RECENTLY_MISSED)) {
+                                msgBuilder.append("You can answer your last missed probe (");
+                                neutralButtonText = "Missed";
+                            } else if (recentProbe.getStatus().equals(
+                                    Sequence.STATUS_RECENTLY_DISMISSED)) {
+                                msgBuilder.append("You can answer your last dismissed probe (");
+                                neutralButtonText = "Dismissed";
+                            } else if (recentProbe.getStatus().equals(
+                                    Sequence.STATUS_RECENTLY_PARTIALLY_COMPLETED)) {
+                                msgBuilder.append("You can answer your last" +
+                                        " partially completed probe (");
+                                neutralButtonText = "Last partial";
+                            } else {
+                                // We have a problem
+                                logSequenceMarkingError(recentProbe);
+                                return false;
+                            }
+                            msgBuilder.append(buildRecentProbeDelayString(recentProbe));
+                            msgBuilder.append(").");
+
+                            alertDialogBuilder
+                            .setPositiveButton("New report", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    recentProbe.setStatus(
+                                            Sequence.STATUS_MISSED_OR_DISMISSED_OR_INCOMPLETE);
+                                    launchProbeIntent(createNewProbe());
+                                }
+                            })
+                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    recentProbe.setStatus(
+                                            Sequence.STATUS_MISSED_OR_DISMISSED_OR_INCOMPLETE);
+                                    dialog.cancel();
+                                }
+                            })
+                            .setNeutralButton(neutralButtonText,
+                                    new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    launchProbeIntent(recentProbe);
+                                }
+                            });
+                        } else {
+                            alertDialogBuilder
+                            .setPositiveButton("New report", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    launchProbeIntent(createNewProbe());
+                                }
+                            })
+                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                }
+                            });
+                        }
+
+                        alertDialogBuilder.setMessage(msgBuilder.toString());
                         // create alert dialog
                         AlertDialog alertDialog = alertDialogBuilder.create();
                         // show it
@@ -940,13 +1016,13 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
         dashboardMainLayout.setOnTouchListener(gestureListener);
     }
 
-    public Sequence createProbe() {
-        probe = sequenceBuilder.buildSave(Sequence.TYPE_PROBE);
+    public Sequence createNewProbe() {
+        Sequence probe = sequenceBuilder.buildSave(Sequence.TYPE_PROBE);
         probe.setSelfInitiated(true);
         return probe;
     }
 
-    private void launchProbeIntent() {
+    private void launchProbeIntent(Sequence probe) {
         Logger.d(TAG, "Creating probe Intent");
         Intent probeIntent = new Intent(this, PageActivity.class);
         // Set the id of the probe to start

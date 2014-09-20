@@ -42,7 +42,8 @@
     <string name="dashboard_hour">hour</string>
     <string name="dashboard_hours">hours</string>
     <string name="dashboard_minutes">minutes</string>
-    <string name="dashboard_ago_swipe_to_get_back">ago.\nSwipe to get it back.</string>
+    <string name="dashboard_ago">ago</string>
+    <string name="dashboard_swipe_to_get_back">Swipe to get it back.</string>
     <string name="results_notification_ticker">Daydreaming results available</string>
     <string name="results_notification_title">Daydreaming results</string>
     <string name="results_notification_content">Discover your 30 days of daydreaming</string>
