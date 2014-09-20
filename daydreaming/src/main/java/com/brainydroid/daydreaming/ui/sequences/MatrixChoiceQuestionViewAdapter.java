@@ -1,6 +1,8 @@
 package com.brainydroid.daydreaming.ui.sequences;
 
 import android.app.Activity;
+import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -35,23 +37,7 @@ public class MatrixChoiceQuestionViewAdapter extends BaseQuestionViewAdapter
     String errorCheckOne;
     @Inject MatrixChoiceAnswer answer;
     @Inject Injector injector;
-
-    private static class ChoiceClickListener implements View.OnClickListener {
-
-        private static String TAG = "ChoiceClickListener";
-
-        private ChoiceItem choiceItem;
-
-        public ChoiceClickListener(ChoiceItem choiceItem) {
-            Logger.v(TAG, "Initializing");
-            this.choiceItem = choiceItem;
-        }
-
-        @Override
-        public void onClick(View view) {
-            choiceItem.toggleChecked();
-        }
-    }
+    @Inject Context context;
 
     private ArrayList<ArrayList<String>> flowChoices(ArrayList<String> choices) {
         Logger.v(TAG, "Flowing choices");
@@ -108,11 +94,16 @@ public class MatrixChoiceQuestionViewAdapter extends BaseQuestionViewAdapter
             for (String itemText : textRow) {
                 Logger.v(TAG, "Inflating choice {0}", itemText);
 
-                ChoiceItem choiceItem = (ChoiceItem)layoutInflater.inflate(
+                final ChoiceItem choiceItem = (ChoiceItem)layoutInflater.inflate(
                         R.layout.question_matrix_choice_item, rowLayout, false);
-
                 choiceItem.initialize(itemText);
-                choiceItem.setOnClickListener(new ChoiceClickListener(choiceItem));
+                //choiceItem.setOnClickListener(new ChoiceClickListener(choiceItem));
+                choiceItem.setOnClickListener(new LinearLayout.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ((ChoiceItem) v).swapStatus();
+                    }
+                });
 
                 rowLayout.addView(choiceItem);
                 rowLayout.addView(layoutInflater.inflate(
@@ -160,4 +151,7 @@ public class MatrixChoiceQuestionViewAdapter extends BaseQuestionViewAdapter
 
         question.setAnswer(answer);
     }
+
+
+
 }
