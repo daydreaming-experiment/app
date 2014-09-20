@@ -75,7 +75,6 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
     TextView timeElapsedTextView;
     @InjectView(R.id.dashboard_ExperimentResultsIn2) TextView timeToGoTextView;
     @InjectView(R.id.button_test_sync) Button testSyncButton;
-    @InjectView(R.id.button_test_poll) Button testProbeButton;
     @InjectView(R.id.button_reload_parameters) Button testReloadButton;
     @InjectView(R.id.dashboard_glossary_layout) RelativeLayout glossaryLayout;
     @InjectView(R.id.dashboard_textExperimentStatus) TextView expStatus;
@@ -785,8 +784,6 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
         Logger.d(TAG, "Updating chrome depending on test mode");
         if (statusManager.getCurrentMode() == StatusManager.MODE_PROD) {
             Logger.d(TAG, "Setting production chrome");
-            testProbeButton.setVisibility(View.INVISIBLE);
-            testProbeButton.setClickable(false);
             testReloadButton.setVisibility(View.INVISIBLE);
             testReloadButton.setClickable(false);
             testSyncButton.setVisibility(View.INVISIBLE);
@@ -794,8 +791,6 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
             debugInfoText.setVisibility(View.INVISIBLE);
         } else {
             Logger.d(TAG, "Setting test chrome");
-            testProbeButton.setVisibility(View.VISIBLE);
-            testProbeButton.setClickable(true);
             testReloadButton.setVisibility(View.VISIBLE);
             testReloadButton.setClickable(true);
             testSyncButton.setVisibility(View.VISIBLE);
