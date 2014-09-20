@@ -1,6 +1,7 @@
 package com.brainydroid.daydreaming.sequence;
 
 import com.brainydroid.daydreaming.R;
+import com.brainydroid.daydreaming.background.DailySequenceService;
 import com.brainydroid.daydreaming.background.ErrorHandler;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.SequenceDescription;
@@ -98,17 +99,32 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
     @Inject private SequencesStorage sequencesStorage;
     @Inject private ErrorHandler errorHandler;
 
-    public static int getRecurrentRequestCode(String sequenceType) {
+    public static int getRecurrentRequestCode(String sequenceType, String action) {
         if (sequenceType.equals(TYPE_PROBE)) {
-            return 0;
+            if (action != null) {
+                if (action.equals(DailySequenceService.EXPIRE_PROBE)) {
+                    return 0;
+                } else if (action.equals(DailySequenceService.DISMISS_PROBE)) {
+                    return 1;
+                } else {
+                    throw new RuntimeException("Asked for request code for type probe and action "
+                            + action + " but we don't have one");
+                }
+            } else {
+                return 2;
+            }
         } else if (sequenceType.equals(TYPE_MORNING_QUESTIONNAIRE)) {
-            return 1;
+            return 3;
         } else if (sequenceType.equals(TYPE_EVENING_QUESTIONNAIRE)) {
-            return 2;
+            return 4;
         } else {
             throw new RuntimeException("Asked for request code for type " + sequenceType
                     + " but we don't have one.");
         }
+    }
+
+    public static int getRecurrentRequestCode(String sequenceType) {
+        return getRecurrentRequestCode(sequenceType, null);
     }
 
     public int getRecurrentNotificationId() {
