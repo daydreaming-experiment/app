@@ -46,6 +46,7 @@ public class ChoiceItem extends LinearLayout {
         textView.setText(text);
         setClickable(true);
         imageButton.setBackgroundResource(drawableSelector);
+        textView.setTextColor(getResources().getColorStateList(R.color.choice_item_text_selector));
         imageButton.setClickable(false);
     }
 
@@ -59,8 +60,8 @@ public class ChoiceItem extends LinearLayout {
         this.isChecked = isChecked;
         imageButton.setBackgroundResource(isChecked ? drawableChecked : drawableSelector);
         textView.setTextColor(isChecked ?
-                getResources().getColorStateList(R.color.choice_item_text_selector):
-                getResources().getColorStateList(R.color.choice_item_text_selected_selector));
+                getResources().getColorStateList(R.color.choice_item_text_selected_selector):
+                getResources().getColorStateList(R.color.choice_item_text_selector));
     }
 
     public void toggleChecked() {
