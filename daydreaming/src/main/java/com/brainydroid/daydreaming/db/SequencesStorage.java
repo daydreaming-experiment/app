@@ -68,7 +68,10 @@ public class SequencesStorage
         Logger.v(TAG, "Getting uploadable sequences");
         ArrayList<Sequence> uploadableSequences = new ArrayList<Sequence>();
         for (String type : Sequence.AVAILABLE_REAL_TYPES) {
-            uploadableSequences.addAll(getUploadableSequences(type));
+            ArrayList<Sequence> typedUploadableSequences = getUploadableSequences(type);
+            if (typedUploadableSequences != null) {
+                uploadableSequences.addAll(typedUploadableSequences);
+            }
         }
         return uploadableSequences;
     }
