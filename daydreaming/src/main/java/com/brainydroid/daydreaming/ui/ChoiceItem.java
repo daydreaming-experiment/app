@@ -19,6 +19,9 @@ public class ChoiceItem extends LinearLayout {
     private boolean isChecked = false;
     private ImageButton imageButton;
     private TextView textView;
+    private int drawableSelector;
+    private int drawableChecked;
+
 
     public ChoiceItem(Context context) {
         super(context);
@@ -37,10 +40,12 @@ public class ChoiceItem extends LinearLayout {
     public void initialize(String text) {
         Logger.v(TAG, "Initializing");
         imageButton = (ImageButton)findViewById(R.id.question_matrix_choice_item_image);
+        setDrawableSelector(text);
+        setDrawableChecked(text);
         textView = (TextView)findViewById(R.id.question_matrix_choice_item_text);
         textView.setText(text);
-
         setClickable(true);
+        imageButton.setBackgroundResource(drawableSelector);
         imageButton.setClickable(false);
     }
 
@@ -48,16 +53,14 @@ public class ChoiceItem extends LinearLayout {
         return isChecked;
     }
 
-    private void setChecked(boolean isChecked) {
+    public void setChecked(boolean isChecked) {
         Logger.v(TAG, "Setting checked to " + (isChecked ? "true" : "false"));
 
         this.isChecked = isChecked;
-        imageButton.setBackgroundResource(isChecked ?
-                R.drawable.choice_item_image_selected_selector :
-                R.drawable.choice_item_image_selector);
+        imageButton.setBackgroundResource(isChecked ? drawableChecked : drawableSelector);
         textView.setTextColor(isChecked ?
-                getResources().getColorStateList(R.color.choice_item_text_selected_selector) :
-                getResources().getColorStateList(R.color.choice_item_text_selector));
+                getResources().getColorStateList(R.color.choice_item_text_selector):
+                getResources().getColorStateList(R.color.choice_item_text_selected_selector));
     }
 
     public void toggleChecked() {
@@ -73,5 +76,47 @@ public class ChoiceItem extends LinearLayout {
         imageButton.setImageDrawable(drawable);
     }
 
+    public synchronized void setDrawableSelector(String choice) {
+        Logger.d(TAG, "Loading icon : {}", choice);
+        if (choice.equals("Home")) {
+            //drawableSelector = context.getResources().getDrawable(R.drawable.button_location_home_selector);
+            drawableSelector = R.drawable.button_location_home_selector;
+        } else if (choice.equals("Commuting")) {
+            //drawableSelector = context.getResources().getDrawable(R.drawable.button_location_commuting_selector);
+            drawableSelector = R.drawable.button_location_commuting_selector;
+        } else if (choice.equals("Work")) {
+            //drawableSelector = context.getResources().getDrawable(R.drawable.button_location_work_selector);
+            drawableSelector = R.drawable.button_location_work_selector;
+        } else if (choice.equals("Public place")) {
+            //drawableSelector = context.getResources().getDrawable(R.drawable.button_location_publicplace_selector);
+            drawableSelector = R.drawable.button_location_publicplace_selector;
+        } else if (choice.equals("Outside")) {
+            //drawableSelector = context.getResources().getDrawable(R.drawable.button_location_outside_selector);
+            drawableSelector = R.drawable.button_location_outside_selector;
+        }
+    }
 
+    public synchronized void setDrawableChecked(String choice) {
+        Logger.d(TAG, "Loading icon : {}", choice);
+        if (choice.equals("Home")) {
+            //drawableChecked = context.getResources().getDrawable(R.drawable.button_location_home_yellow);
+            drawableChecked = R.drawable.button_location_home_yellow;
+        } else if (choice.equals("Commuting")) {
+            //drawableChecked = context.getResources().getDrawable(R.drawable.button_location_commuting_yellow);
+            drawableChecked = R.drawable.button_location_commuting_yellow;
+        } else if (choice.equals("Work")) {
+            //drawableChecked = context.getResources().getDrawable(R.drawable.button_location_work_yellow);
+            drawableChecked = R.drawable.button_location_work_yellow;
+        } else if (choice.equals("Public place")) {
+            //drawableChecked = context.getResources().getDrawable(R.drawable.button_location_publicplace_yellow);
+            drawableChecked = R.drawable.button_location_publicplace_yellow;
+        } else if (choice.equals("Outside")) {
+            //drawableChecked = context.getResources().getDrawable(R.drawable.button_location_outside_yellow);
+            drawableChecked = R.drawable.button_location_outside_yellow;
+        }
+    }
+
+    public boolean getChecked() {
+        return isChecked;
+    }
 }

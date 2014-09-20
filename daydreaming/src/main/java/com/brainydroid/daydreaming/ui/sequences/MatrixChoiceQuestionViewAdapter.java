@@ -45,11 +45,6 @@ public class MatrixChoiceQuestionViewAdapter extends BaseQuestionViewAdapter
 
         private ChoiceItem choiceItem;
 
-        public ChoiceClickListener(ChoiceItem choiceItem) {
-            Logger.v(TAG, "Initializing");
-            this.choiceItem = choiceItem;
-        }
-
         @Override
         public void onClick(View view) {
             choiceItem.toggleChecked();
@@ -111,13 +106,17 @@ public class MatrixChoiceQuestionViewAdapter extends BaseQuestionViewAdapter
             for (String itemText : textRow) {
                 Logger.v(TAG, "Inflating choice {0}", itemText);
 
-                ChoiceItem choiceItem = (ChoiceItem)layoutInflater.inflate(
+                final ChoiceItem choiceItem = (ChoiceItem)layoutInflater.inflate(
                         R.layout.question_matrix_choice_item, rowLayout, false);
-
                 choiceItem.initialize(itemText);
-                choiceItem.setOnClickListener(new ChoiceClickListener(choiceItem));;
-                Drawable drawable = getDrawable(itemText);
-                choiceItem.setIcon(drawable);
+                //choiceItem.setOnClickListener(new ChoiceClickListener(choiceItem));
+                choiceItem.setOnClickListener(new LinearLayout.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        choiceItem.setChecked(!choiceItem.getChecked());
+                    }
+                });
+
                 rowLayout.addView(choiceItem);
                 rowLayout.addView(layoutInflater.inflate(
                         R.layout.question_matrix_choice_inter_view, rowLayout, false));
@@ -165,20 +164,6 @@ public class MatrixChoiceQuestionViewAdapter extends BaseQuestionViewAdapter
         question.setAnswer(answer);
     }
 
-    private synchronized Drawable getDrawable(String choice) {
-        Logger.d(TAG, "Loading icon : {}", choice);
-        if (choice.equals("Home")) {
-            return context.getResources().getDrawable(R.drawable.button_location_home_selector);
-        } else if (choice.equals("Commuting")) {
-            return context.getResources().getDrawable(R.drawable.button_location_commuting_selector);
-        } else if (choice.equals("Work")) {
-            return context.getResources().getDrawable(R.drawable.button_location_work_selector);
-        } else if (choice.equals("Public place")) {
-            return context.getResources().getDrawable(R.drawable.button_location_publicplace_selector);
-        } else if (choice.equals("Outside")) {
-            return context.getResources().getDrawable(R.drawable.button_location_outside_selector);
-        }
-        return null;
-    }
+
 
 }
