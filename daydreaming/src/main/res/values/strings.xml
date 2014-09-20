@@ -41,6 +41,7 @@
     <string name="dashboard_you_started">You started answering a probe about</string>
     <string name="dashboard_hour">hour</string>
     <string name="dashboard_hours">hours</string>
+    <string name="dashboard_minute">minute</string>
     <string name="dashboard_minutes">minutes</string>
     <string name="dashboard_ago">ago</string>
     <string name="dashboard_swipe_to_get_back">Swipe to get it back.</string>
