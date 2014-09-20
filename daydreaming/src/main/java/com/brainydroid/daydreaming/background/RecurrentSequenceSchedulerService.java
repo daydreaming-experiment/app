@@ -33,6 +33,7 @@ import roboguice.service.RoboService;
  * @see com.brainydroid.daydreaming.background.SyncService
  * @see com.brainydroid.daydreaming.background.DailySequenceService
  */
+// TODO: database cleaning. If running since long time ago, or null status: flush.
 public abstract class RecurrentSequenceSchedulerService extends RoboService {
 
     private static String TAG = "RecurrentSequenceSchedulerService";

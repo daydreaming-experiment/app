@@ -64,6 +64,11 @@ public class DailySequenceService extends RoboService {
     String sequenceType;
 
     @Override
+    public synchronized void onDestroy() {
+        Logger.v(TAG, "Destroying");
+    }
+
+    @Override
     public synchronized int onStartCommand(Intent intent, int flags, int startId) {
         Logger.d(TAG, "DailySequenceService started");
 
@@ -92,6 +97,7 @@ public class DailySequenceService extends RoboService {
             // and doesn't interfere with scheduling. If other classes do interfere
             // (e.g. clearing parameters), they relaunch scheduler services.
         } else if (intent.getBooleanExtra(EXPIRE_PROBE, false)) {
+            Logger.v(TAG, "Started to expire pending probes");
             int probeId = intent.getIntExtra(PROBE_ID, -1);
             if (probeId == -1) {
                 // We have a problem
@@ -105,6 +111,7 @@ public class DailySequenceService extends RoboService {
                 expireProbe(probeId);
             }
         } else if (intent.getBooleanExtra(DISMISS_PROBE, false)) {
+            Logger.v(TAG, "Started to dismiss probe");
             int probeId = intent.getIntExtra(PROBE_ID, -1);
             if (probeId == -1) {
                 // We have a problem
@@ -126,6 +133,7 @@ public class DailySequenceService extends RoboService {
                 if (sequenceType.equals(Sequence.TYPE_PROBE)) {
                     // If Dashboard is running, reschedule (so as not to flush recently* during dashboard)
                     if (statusManager.isDashboardRunning()) {
+                        Logger.v(TAG, "Dashboard is running, rescheduling");
                         startSchedulerService();
                         stopSelf();
                         return START_REDELIVER_INTENT;
