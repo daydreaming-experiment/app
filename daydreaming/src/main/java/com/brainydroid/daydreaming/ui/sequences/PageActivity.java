@@ -88,7 +88,6 @@ public class PageActivity extends RoboFragmentActivity {
         if (sequence.getType().equals(Sequence.TYPE_PROBE) &&
                 currentPage.isFirstOfSequence() && !sequence.wasMissedOrDismissedOrPaused()) {
             checkTooLate();
-            finish();
         }
     }
 
