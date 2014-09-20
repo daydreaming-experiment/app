@@ -2,6 +2,7 @@ package com.brainydroid.daydreaming.ui;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -67,4 +68,10 @@ public class ChoiceItem extends LinearLayout {
     public String getText() {
         return textView.getText().toString();
     }
+
+    public synchronized void setIcon(Drawable drawable) {
+        imageButton.setImageDrawable(drawable);
+    }
+
+
 }

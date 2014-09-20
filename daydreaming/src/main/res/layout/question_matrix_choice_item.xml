@@ -9,11 +9,11 @@
 
     <ImageButton
         android:id="@+id/question_matrix_choice_item_image"
-        android:layout_width="66dp"
-        android:layout_height="40dp"
-        android:duplicateParentState="true"
-        android:focusableInTouchMode="true"
-        android:background="@drawable/choice_item_image_selector"/>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:background="@null"
+        />
 
     <TextView
         android:id="@+id/question_matrix_choice_item_text"

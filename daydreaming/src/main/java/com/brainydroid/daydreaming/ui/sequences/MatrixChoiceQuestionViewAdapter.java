@@ -1,6 +1,8 @@
 package com.brainydroid.daydreaming.ui.sequences;
 
 import android.app.Activity;
+import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -35,6 +37,7 @@ public class MatrixChoiceQuestionViewAdapter extends BaseQuestionViewAdapter
     String errorCheckOne;
     @Inject MatrixChoiceAnswer answer;
     @Inject Injector injector;
+    @Inject Context context;
 
     private static class ChoiceClickListener implements View.OnClickListener {
 
@@ -112,8 +115,9 @@ public class MatrixChoiceQuestionViewAdapter extends BaseQuestionViewAdapter
                         R.layout.question_matrix_choice_item, rowLayout, false);
 
                 choiceItem.initialize(itemText);
-                choiceItem.setOnClickListener(new ChoiceClickListener(choiceItem));
-
+                choiceItem.setOnClickListener(new ChoiceClickListener(choiceItem));;
+                Drawable drawable = getDrawable(itemText);
+                choiceItem.setIcon(drawable);
                 rowLayout.addView(choiceItem);
                 rowLayout.addView(layoutInflater.inflate(
                         R.layout.question_matrix_choice_inter_view, rowLayout, false));
@@ -160,4 +164,21 @@ public class MatrixChoiceQuestionViewAdapter extends BaseQuestionViewAdapter
 
         question.setAnswer(answer);
     }
+
+    private synchronized Drawable getDrawable(String choice) {
+        Logger.d(TAG, "Loading icon : {}", choice);
+        if (choice.equals("Home")) {
+            return context.getResources().getDrawable(R.drawable.button_location_home_selector);
+        } else if (choice.equals("Commuting")) {
+            return context.getResources().getDrawable(R.drawable.button_location_commuting_selector);
+        } else if (choice.equals("Work")) {
+            return context.getResources().getDrawable(R.drawable.button_location_work_selector);
+        } else if (choice.equals("Public place")) {
+            return context.getResources().getDrawable(R.drawable.button_location_publicplace_selector);
+        } else if (choice.equals("Outside")) {
+            return context.getResources().getDrawable(R.drawable.button_location_outside_selector);
+        }
+        return null;
+    }
+
 }
