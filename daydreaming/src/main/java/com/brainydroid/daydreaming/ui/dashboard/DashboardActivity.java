@@ -26,12 +26,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.brainydroid.daydreaming.R;
-import com.brainydroid.daydreaming.background.BEQSchedulerService;
+import com.brainydroid.daydreaming.background.ErrorHandler;
 import com.brainydroid.daydreaming.background.Logger;
-import com.brainydroid.daydreaming.background.ProbeSchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.background.SyncService;
+import com.brainydroid.daydreaming.db.ConsistencyException;
+import com.brainydroid.daydreaming.db.Json;
 import com.brainydroid.daydreaming.db.ParametersStorage;
+import com.brainydroid.daydreaming.db.SequencesStorage;
 import com.brainydroid.daydreaming.network.SntpClient;
 import com.brainydroid.daydreaming.network.SntpClientCallback;
 import com.brainydroid.daydreaming.sequence.Sequence;
@@ -64,14 +66,15 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
     @Inject StatusManager statusManager;
     @Inject SntpClient sntpClient;
     @Inject SequenceBuilder sequenceBuilder;
-    @Inject Sequence probe;
+    @Inject SequencesStorage sequencesStorage;
+    @Inject Json json;
+    @Inject ErrorHandler errorHandler;
 
     @InjectView(R.id.dashboard_main_layout) RelativeLayout dashboardMainLayout;
     @InjectView(R.id.dashboard_ExperimentTimeElapsed2)
     TextView timeElapsedTextView;
     @InjectView(R.id.dashboard_ExperimentResultsIn2) TextView timeToGoTextView;
     @InjectView(R.id.button_test_sync) Button testSyncButton;
-    @InjectView(R.id.button_test_poll) Button testProbeButton;
     @InjectView(R.id.button_reload_parameters) Button testReloadButton;
     @InjectView(R.id.dashboard_glossary_layout) RelativeLayout glossaryLayout;
     @InjectView(R.id.dashboard_textExperimentStatus) TextView expStatus;
@@ -80,6 +83,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
     @InjectView(R.id.dashboard_ExperimentResultsIn2days) TextView toGoTextDays;
     @InjectView(R.id.dashboard_ExperimentResultsButton) AlphaButton resultsButton;
     @InjectView(R.id.dashboard_debug_information) TextView debugInfoText;
+    @InjectView(R.id.dashboard_recent_probe_text) TextView recentProbeText;
 
     @InjectResource(R.string.dashboard_text_days) String textDays;
     @InjectResource(R.string.dashboard_text_day) String textDay;
@@ -91,17 +95,28 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
     @InjectResource(R.string.results_refresh_download2) String resultsRefresh2;
     @InjectResource(R.string.results_refresh_download_yes) String resultsRefreshYes;
     @InjectResource(R.string.results_refresh_download_no) String resultsRefreshNo;
+    @InjectResource(R.string.dashboard_you_missed) String youMissed;
+    @InjectResource(R.string.dashboard_you_dismissed) String youDismissed;
+    @InjectResource(R.string.dashboard_you_started) String youStarted;
+    @InjectResource(R.string.dashboard_hour) String textHour;
+    @InjectResource(R.string.dashboard_hours) String textHours;
+    @InjectResource(R.string.dashboard_minute) String textMinute;
+    @InjectResource(R.string.dashboard_minutes) String textMinutes;
+    @InjectResource(R.string.dashboard_ago) String agoText;
+    @InjectResource(R.string.dashboard_swipe_to_get_back) String swipeToGetBack;
 
     private boolean testModeThemeActivated = false;
     private int daysToGo = -1;
     private boolean areParametersUpdating = false;
     private long lastFailedParametersUpdate = -1;
     private Timer updateTimer = null;
+    private Timer lockTimer = null;
 
     List<Integer> showcasesId;
     List<String[]> showcasesTexts;
     int showcaseViewIndex = 0;
     boolean UNIQUE = true;
+    private boolean areShowcaseViewsLaunched = false;
 
     IntentFilter parametersUpdateIntentFilter = new IntentFilter(StatusManager.ACTION_PARAMETERS_STATUS_CHANGE);
     IntentFilter networkIntentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
@@ -125,7 +140,6 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
                 }
                 areParametersUpdating = statusManager.isParametersSyncRunning();
                 updateExperimentStatus();
-                launchBEQService();
             }
         }
     };
@@ -148,17 +162,13 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
         updateRunningTime();
         updateChromeMode();
         super.onStart();
-
         populateShowcaseViews();
-        if (statusManager.areParametersUpdated()){
-            launchShowCaseViewSequence(UNIQUE);
-        }
     }
 
     @Override
     public void onResume() {
         Logger.v(TAG, "Resuming");
-        statusManager.checkLatestSchedulerWasAgesAgo();
+        statusManager.checkLatestDailyWasAgesAgo();
         checkExperimentModeActivatedDirty();
         if (!statusManager.areParametersUpdated()) {
             Logger.v(TAG, "Parameters not yet updated, registering broadcast receiver");
@@ -171,6 +181,20 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
         }
         updateExperimentStatus();
         updateResultsPulse();
+        updateRecentProbesView();
+
+        // Set dashboard lock
+        statusManager.setDashboardRunning(true);
+        if (lockTimer == null) {
+            lockTimer = new Timer("lockTimer");
+            lockTimer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                        statusManager.setDashboardRunning(true);
+                    }
+            }, 30 * 1000, 30 * 1000);
+        }
+
         super.onResume();
     }
 
@@ -187,6 +211,13 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
             updateTimer.cancel();
             updateTimer = null;
         }
+
+        // Remove dashboard lock
+        if (lockTimer != null) {
+            lockTimer.cancel();
+            lockTimer = null;
+        }
+
         super.onPause();
     }
 
@@ -205,7 +236,6 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
      */
     public void openBEQ(){
         Intent intent = new Intent(this, BEQActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         overridePendingTransition(R.anim.mainfadein, R.anim.splashfadeout);
     }
@@ -254,7 +284,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
 
         if (!statusManager.isExpRunning()) {
             Logger.v(TAG, "Experiment not yet running => aborting");
-            Toast.makeText(this, "Experiment hasn't started yet!",
+            Toast.makeText(this, getString(R.string.dashboard_toast_experiment_not_running),
                     Toast.LENGTH_SHORT).show();
             return;
         }
@@ -289,7 +319,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
                 no = resultsNeverDownloadedNo;
 
                 AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
-                alertBuilder.setTitle("Download results")
+                alertBuilder.setTitle(getString(R.string.dashboard_alert_download_results))
                 .setMessage(msg)
                 .setPositiveButton(yes, new DialogInterface.OnClickListener() {
                     @Override
@@ -310,12 +340,13 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
                 // Results more than a day old
                 int days = (int)Math.floor((double)delay / (24 * 60 * 60 * 1000));
 
-                msg = resultsRefresh1 + " " + days + " " + (days == 1 ? textDay : textDays) + " " + resultsRefresh2;
+                msg = resultsRefresh1 + " " + days + " " +
+                        (days == 1 ? textDay : textDays) + " " + resultsRefresh2;
                 yes = resultsRefreshYes;
                 no = resultsRefreshNo;
 
                 AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
-                alertBuilder.setTitle("Refresh results")
+                alertBuilder.setTitle(getString(R.string.dashboard_alert_title_refresh_results))
                 .setMessage(msg)
                 .setPositiveButton(yes, new DialogInterface.OnClickListener() {
                     @Override
@@ -330,13 +361,18 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
                     }
                 });
 
-                alertBuilder.show();
+                // create alert dialog
+                AlertDialog alertDialog = alertBuilder.create();
+                // show it
+                alertDialog.show();
+                FontUtils.setRobotoToAlertDialog(alertDialog,this);
+;
             } else {
                 launchResultsActivity(false);
             }
         } else {
             Logger.v(TAG, "No data connection => aborting");
-            Toast.makeText(this, "You're not connected to the internet!",
+            Toast.makeText(this, getString(R.string.dashboard_toast_not_connected),
                     Toast.LENGTH_SHORT).show();
         }
     }
@@ -495,7 +531,8 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
                     long now = Calendar.getInstance().getTimeInMillis();
                     if (now - lastFailedParametersUpdate < 2 * 60 * 1000) {
                         // Last update short time ago: "will retry in X seconds" + reset timer
-                        long secondsLeft = (2 * 60 * 1000 - (now - lastFailedParametersUpdate)) / 1000;
+                        long secondsLeft = (2 * 60 * 1000 -
+                                (now - lastFailedParametersUpdate)) / 1000;
                         textNetworkConnection.setCompoundDrawablesWithIntrinsicBounds(
                                 R.drawable.status_wrong, 0, 0, 0);
                         textNetworkConnection.setText(
@@ -553,6 +590,12 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
 
         debugInfoText.setText(statusManager.getDebugInfoString());
         updateBEQButton();
+
+        if (!areShowcaseViewsLaunched & statusManager.areParametersUpdated()) {
+            launchShowCaseViewSequence(UNIQUE);
+            areShowcaseViewsLaunched = true;
+        }
+
     }
 
     private void updateResultsPulse() {
@@ -581,6 +624,89 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
         });
     }
 
+    private Sequence getRecentProbe() {
+        Logger.v(TAG, "Getting recently* marked probes");
+        ArrayList<Sequence> recentProbes =
+        sequencesStorage.getRecentlyMarkedSequences(Sequence.TYPE_PROBE);
+        if (recentProbes != null && recentProbes.size() > 0) {
+            if (recentProbes.size() > 1) {
+                Logger.e(TAG, "Found more than one probe marked recent. Offending probes:");
+                Logger.eRaw(TAG, json.toJsonInternal(recentProbes));
+                errorHandler.logError("Too many recently* probes. " +
+                                "Marking them as missedOrDismissedOrIncomplete.",
+                        new ConsistencyException());
+                for (Sequence probe : recentProbes) {
+                    probe.setStatus(Sequence.STATUS_UPLOADED_AND_KEEP);
+                }
+                return null;
+            }
+            return recentProbes.get(0);
+        } else {
+            return null;
+        }
+    }
+
+    private void logSequenceMarkingError(Sequence erroredSequence) {
+        // We got a problem!
+        Logger.e(TAG, "The following sequence is supposed to be marked recently*, but isn't");
+        Logger.eRaw(TAG, json.toJsonInternal(erroredSequence));
+        errorHandler.logError("Sequence gotten as marked recently*, " +
+                "but couldn't match its status", new ConsistencyException());
+    }
+
+    private String buildRecentProbeDelayString(Sequence probe) {
+        StringBuilder msgBuilder = new StringBuilder();
+
+        long now = Calendar.getInstance().getTimeInMillis();
+        int delayMinutes = Math.round(((float)(now - probe.getNotificationSystemTimestamp()))
+                / (60 * 1000));
+        if (delayMinutes < 60) {
+            msgBuilder.append(Math.round(delayMinutes));
+            msgBuilder.append(" ");
+            msgBuilder.append(delayMinutes == 1 ? textMinute : textMinutes);
+        } else {
+            int hourNumber = Math.round(delayMinutes / 60);
+            msgBuilder.append(hourNumber);
+            msgBuilder.append(" ");
+            msgBuilder.append(hourNumber == 1 ? textHour : textHours);
+        }
+
+        msgBuilder.append(" ");
+        msgBuilder.append(agoText);
+        return msgBuilder.toString();
+
+}
+
+    private void updateRecentProbesView() {
+        Sequence recentProbe = getRecentProbe();
+        if (recentProbe != null) {
+            Logger.v(TAG, "Found a recent probe");
+            StringBuilder msgBuilder = new StringBuilder();
+            if (recentProbe.getStatus().equals(Sequence.STATUS_RECENTLY_MISSED)) {
+                msgBuilder.append(youMissed);
+            } else if (recentProbe.getStatus().equals(Sequence.STATUS_RECENTLY_DISMISSED)) {
+                msgBuilder.append(youDismissed);
+            } else if (recentProbe.getStatus().equals(Sequence.STATUS_RECENTLY_PARTIALLY_COMPLETED)) {
+                msgBuilder.append(youStarted);
+            } else {
+                // We got a problem!
+                logSequenceMarkingError(recentProbe);
+                return;
+            }
+
+            msgBuilder.append(" ");
+            msgBuilder.append(buildRecentProbeDelayString(recentProbe));
+            msgBuilder.append(".\n");
+            msgBuilder.append(swipeToGetBack);
+
+            recentProbeText.setText(msgBuilder.toString());
+            recentProbeText.setVisibility(View.VISIBLE);
+        } else {
+            recentProbeText.setText("");
+            recentProbeText.setVisibility(View.INVISIBLE);
+        }
+    }
+
     protected void checkFirstLaunch() {
         if (!statusManager.isFirstLaunchCompleted()) {
             Logger.i(TAG, "First launch not completed -> starting first " +
@@ -605,29 +731,12 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
         startService(syncIntent);
     }
 
-    /**
-     * Launching poll from dashboard (debug)
-     */
-    public void runPollNow(@SuppressWarnings("UnusedParameters") View view) {
-        if (statusManager.isExpRunning()) {
-            Logger.d(TAG, "Launching a debug poll");
-
-            Intent pollIntent = new Intent(this, ProbeSchedulerService.class);
-            pollIntent.putExtra(ProbeSchedulerService.SCHEDULER_DEBUGGING, true);
-            startService(pollIntent);
-
-            Toast.makeText(this, "Now wait for 5 secs", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "Parameters aren't loaded yet", Toast.LENGTH_SHORT).show();
-        }
-    }
-
     public void runSyncNow(View view) {
         if (statusManager.isExpRunning()) {
             Logger.d(TAG, "Launching debug sync now");
 
             if (!statusManager.isDataEnabled()) {
-                Toast.makeText(this, "You're not connected to the internet!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.dashboard_toast_not_connected), Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -635,7 +744,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
             syncIntent.putExtra(SyncService.DEBUG_SYNC, true);
             startService(syncIntent);
         } else {
-            Toast.makeText(this, "Parameters aren't loaded yet", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.dashboard_parameters_not_loaded), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -643,7 +752,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
         Logger.d(TAG, "Resetting parameters and profile_id, but keeping profile answers");
 
         if (!statusManager.isDataEnabled()) {
-            Toast.makeText(this, "You're not connected to the internet!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.dashboard_toast_not_connected), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -654,9 +763,9 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
         // update time of experiment
         statusManager.setExperimentStartTimestamp(Calendar.getInstance().getTimeInMillis());
 
+        // Scheduler services are relaunched once the parameters are updated
         launchParametersUpdate();
         updateExperimentStatus();
-        statusManager.relaunchAllServices();
     }
 
     public void setRobotoFont(Activity activity){
@@ -682,8 +791,6 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
         Logger.d(TAG, "Updating chrome depending on test mode");
         if (statusManager.getCurrentMode() == StatusManager.MODE_PROD) {
             Logger.d(TAG, "Setting production chrome");
-            testProbeButton.setVisibility(View.INVISIBLE);
-            testProbeButton.setClickable(false);
             testReloadButton.setVisibility(View.INVISIBLE);
             testReloadButton.setClickable(false);
             testSyncButton.setVisibility(View.INVISIBLE);
@@ -691,8 +798,6 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
             debugInfoText.setVisibility(View.INVISIBLE);
         } else {
             Logger.d(TAG, "Setting test chrome");
-            testProbeButton.setVisibility(View.VISIBLE);
-            testProbeButton.setClickable(true);
             testReloadButton.setVisibility(View.VISIBLE);
             testReloadButton.setClickable(true);
             testSyncButton.setVisibility(View.VISIBLE);
@@ -740,9 +845,9 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
 
         // create alert dialog
         AlertDialog alertDialog = alertDialogBuilder.create();
-
         // show it
         alertDialog.show();
+        FontUtils.setRobotoToAlertDialog(alertDialog,this);
     }
 
     private void launchNetworkDataSettings() {
@@ -818,29 +923,80 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
                 Logger.d(TAG, "Swipe Event detected");
                 if (statusManager.areParametersUpdated()){
                     Logger.d(TAG, "Swipe Event used");
-                    if ( Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
-                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(DashboardActivity.this);
-                        // set title
+                    if (Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
+                        // Create dialog builder
+                        AlertDialog.Builder alertDialogBuilder =
+                                new AlertDialog.Builder(DashboardActivity.this);
                         alertDialogBuilder.setTitle("Self Report");
-                        // set dialog message
-                        alertDialogBuilder
-                                .setMessage("Do you want to report a daydreaming experience?")
-                                .setCancelable(false)
-                                .setPositiveButton("Yes!",new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog,int id) {
-                                        createProbe();
-                                        launchProbeIntent();
-                                    }
-                                })
-                                .setNegativeButton("Nope",new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog,int id) {
-                                        dialog.cancel();
-                                    }
-                                });
+                        StringBuilder msgBuilder = new StringBuilder("Do you want to report a" +
+                                " daydreaming experience?\n");
+                        final Sequence recentProbe = getRecentProbe();
+
+                        // If we have a recent probe, adapt
+                        if (recentProbe != null) {
+                            String neutralButtonText;
+                            if (recentProbe.getStatus().equals(Sequence.STATUS_RECENTLY_MISSED)) {
+                                msgBuilder.append("You can answer your last missed probe (");
+                                neutralButtonText = "Missed";
+                            } else if (recentProbe.getStatus().equals(
+                                    Sequence.STATUS_RECENTLY_DISMISSED)) {
+                                msgBuilder.append("You can answer your last dismissed probe (");
+                                neutralButtonText = "Dismissed";
+                            } else if (recentProbe.getStatus().equals(
+                                    Sequence.STATUS_RECENTLY_PARTIALLY_COMPLETED)) {
+                                msgBuilder.append("You can answer your last" +
+                                        " partially completed probe (");
+                                neutralButtonText = "Last partial";
+                            } else {
+                                // We have a problem
+                                logSequenceMarkingError(recentProbe);
+                                return false;
+                            }
+                            msgBuilder.append(buildRecentProbeDelayString(recentProbe));
+                            msgBuilder.append(").");
+
+                            alertDialogBuilder
+                            .setPositiveButton("New report", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    recentProbe.setStatus(
+                                            Sequence.STATUS_MISSED_OR_DISMISSED_OR_INCOMPLETE);
+                                    launchProbeIntent(createNewProbe());
+                                }
+                            })
+                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    recentProbe.setStatus(
+                                            Sequence.STATUS_MISSED_OR_DISMISSED_OR_INCOMPLETE);
+                                    updateRecentProbesView();
+                                    dialog.cancel();
+                                }
+                            })
+                            .setNeutralButton(neutralButtonText,
+                                    new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    launchProbeIntent(recentProbe);
+                                }
+                            });
+                        } else {
+                            alertDialogBuilder
+                            .setPositiveButton("New report", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    launchProbeIntent(createNewProbe());
+                                }
+                            })
+                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                }
+                            });
+                        }
+
+                        alertDialogBuilder.setMessage(msgBuilder.toString());
                         // create alert dialog
                         AlertDialog alertDialog = alertDialogBuilder.create();
                         // show it
                         alertDialog.show();
+                        FontUtils.setRobotoToAlertDialog(alertDialog,DashboardActivity.this);
                         return true;
                     }
                     return false;
@@ -864,17 +1020,40 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
         dashboardMainLayout.setOnTouchListener(gestureListener);
     }
 
-    public Sequence createProbe() {
-        probe = sequenceBuilder.buildSave(Sequence.TYPE_PROBE);
+    public Sequence createNewProbe() {
+        Sequence probe;
+
+        // Look for a pending probe
+        ArrayList<Sequence> pendingSequences = sequencesStorage.getPendingSequences(Sequence.TYPE_PROBE);
+        if (pendingSequences != null && pendingSequences.size() > 0) {
+            if (pendingSequences.size() > 1) {
+                // We have a problem
+                Logger.e(TAG, "Found more than one pending probe. Offending probes:");
+                Logger.eRaw(TAG, json.toJsonInternal(pendingSequences));
+                for (Sequence offendingProbe : pendingSequences) {
+                    offendingProbe.setStatus(Sequence.STATUS_MISSED_OR_DISMISSED_OR_INCOMPLETE);
+                }
+                errorHandler.logError("Found more than one pending probe. Setting as missedOrDismissedOrIncomplete",
+                        new ConsistencyException());
+                // Still build a probe
+                probe = sequenceBuilder.buildSave(Sequence.TYPE_PROBE);
+            } else {
+                probe = pendingSequences.get(0);
+            }
+        } else {
+            // Otherwise build one
+            probe = sequenceBuilder.buildSave(Sequence.TYPE_PROBE);
+        }
         probe.setSelfInitiated(true);
         return probe;
     }
 
-    private void launchProbeIntent() {
+    private void launchProbeIntent(Sequence probe) {
         Logger.d(TAG, "Creating probe Intent");
         Intent probeIntent = new Intent(this, PageActivity.class);
         // Set the id of the probe to start
         probeIntent.putExtra(PageActivity.EXTRA_SEQUENCE_ID, probe.getId());
+        probe.setNotificationSystemTimestamp(Calendar.getInstance().getTimeInMillis());
         // Create a new task. The rest is defined in the App manifest.
         probeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(probeIntent);
@@ -888,14 +1067,13 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
         // populate Showcase List
         showcasesId = new ArrayList<Integer>();
         showcasesTexts = new ArrayList<String[]>();
-        addShowCaseItem(R.id.dashboard_begin_questionnaires_button,"Questions", "When blinking, there are questions for you!");
-        addShowCaseItem(R.id.dashboard_openAppSettings, "Settings", "Set the app parameters");
-        addShowCaseItem(R.id.dashboard_glossary_button, "Glossary", "A list of useful definitions");
-        addShowCaseItem(R.id.dashboard_ExperimentResultsButton, "Results", "When available, a detailed report for you here!");
-        addShowCaseItem(R.id.dashboard_TimeBox_layout, "Self Report", "Swipe right for a self report");
-        addShowCaseItem(R.id.dashboard_ExperimentTimeElapsed2, "Time Elapsed", "The duration you have been running this app");
-        addShowCaseItem(R.id.dashboard_ExperimentResultsIn2, "Time Left", "The duration left before you get results");
-
+        addShowCaseItem(R.id.dashboard_begin_questionnaires_button, getString(R.string.sv_questions_title), getString(R.string.sv_questions_text));
+        addShowCaseItem(R.id.dashboard_openAppSettings, getString(R.string.sv_settings_title), getString(R.string.sv_settings_text));
+        addShowCaseItem(R.id.dashboard_glossary_button, getString(R.string.sv_glossary_title), getString(R.string.sv_glossary_text));
+        addShowCaseItem(R.id.dashboard_ExperimentResultsButton, getString(R.string.sv_results_title), getString(R.string.sv_results_text));
+        addShowCaseItem(R.id.dashboard_TimeBox_layout, getString(R.string.sv_swipe_title), getString(R.string.sv_swipe_text));
+        addShowCaseItem(R.id.dashboard_ExperimentTimeElapsed2, getString(R.string.sv_time_elapsed_title), getString(R.string.sv_time_elapsed_text));
+        addShowCaseItem(R.id.dashboard_ExperimentResultsIn2, getString(R.string.sv_time_left_title), getString(R.string.sv_time_left_text));
     }
 
     public void launchShowCaseViewSequence(boolean unique) {
@@ -940,12 +1118,5 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
             showcaseViewIndex += 1;
         }
     }
-
-    private synchronized void launchBEQService() {
-        Intent intent = new Intent(this, BEQSchedulerService.class);
-        intent.putExtra(BEQSchedulerService.IS_PERSISTENT,true);
-        startService(intent);
-    }
-
 
 }

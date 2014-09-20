@@ -2,7 +2,6 @@ package com.brainydroid.daydreaming.db;
 
 import com.brainydroid.daydreaming.background.Logger;
 import com.fasterxml.jackson.annotation.JsonView;
-
 import java.util.ArrayList;
 
 public class MatrixChoiceQuestionDescriptionDetails implements IQuestionDescriptionDetails {
@@ -56,4 +55,5 @@ public class MatrixChoiceQuestionDescriptionDetails implements IQuestionDescript
                     + "a MatrixChoiceQuestionsDescriptionDetails");
         }
     }
+
 }

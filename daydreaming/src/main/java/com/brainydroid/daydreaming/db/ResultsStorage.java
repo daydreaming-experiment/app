@@ -72,11 +72,11 @@ public class ResultsStorage {
             return results;
         } catch (FileNotFoundException e) {
             Logger.e(TAG, "{} - results file not found", statusManager.getCurrentModeName());
-            errorHandler.logError(e);
+            errorHandler.logError("Results file not found", e);
             return null;
         } catch (IOException e) {
             Logger.e(TAG, "{} - IO error reading results file", statusManager.getCurrentModeName());
-            errorHandler.logError(e);
+            errorHandler.logError("IO error reading results file", e);
             return null;
         }
     }
@@ -100,7 +100,7 @@ public class ResultsStorage {
         } catch (IOException e) {
             Logger.e(TAG, "{} - IO error writing to results file",
                     statusManager.getCurrentModeName());
-            errorHandler.logError(e);
+            errorHandler.logError("IO error writing to results file", e);
             return false;
         }
     }

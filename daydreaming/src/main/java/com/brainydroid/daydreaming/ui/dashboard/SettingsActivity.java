@@ -15,16 +15,13 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.*;
 import com.brainydroid.daydreaming.R;
-import com.brainydroid.daydreaming.background.BEQSchedulerService;
 import com.brainydroid.daydreaming.background.Logger;
-import com.brainydroid.daydreaming.background.EQSchedulerService;
-import com.brainydroid.daydreaming.background.MQSchedulerService;
-import com.brainydroid.daydreaming.background.ProbeSchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.db.Util;
 import com.brainydroid.daydreaming.ui.firstlaunchsequence.FirstLaunch00WelcomeActivity;
 import com.brainydroid.daydreaming.ui.FontUtils;
 import com.brainydroid.daydreaming.ui.TimePickerFragment;
+import com.brainydroid.daydreaming.ui.sequences.PageActivity;
 import com.google.inject.Inject;
 import roboguice.activity.RoboFragmentActivity;
 import roboguice.inject.ContentView;
@@ -135,8 +132,7 @@ public class SettingsActivity extends RoboFragmentActivity {
                         // Listener can correct and update the view here
                         correctTimeWindow();
                         updateTimeViews();
-                        startSchedulerServices();
-
+                        statusManager.launchNotifyingServices();
                     }
 
                 };
@@ -170,7 +166,7 @@ public class SettingsActivity extends RoboFragmentActivity {
                         // Listener can correct and update the view here
                         correctTimeWindow();
                         updateTimeViews();
-                        startSchedulerServices();
+                        statusManager.launchNotifyingServices();
                     }
 
                 };
@@ -276,18 +272,6 @@ public class SettingsActivity extends RoboFragmentActivity {
         tv_time_until.setText(Time_until);
     }
 
-    private void startSchedulerServices() {
-        Logger.d(TAG, "Starting ProbeSchedulerService");
-        Intent schedulerIntent = new Intent(this, ProbeSchedulerService.class);
-        startService(schedulerIntent);
-        schedulerIntent = new Intent(this, BEQSchedulerService.class);
-        this.startService(schedulerIntent);
-        schedulerIntent = new Intent(this, EQSchedulerService.class);
-        this.startService(schedulerIntent);
-        schedulerIntent = new Intent(this, MQSchedulerService.class);
-        this.startService(schedulerIntent);
-    }
-
     @Override
     public void onBackPressed() {
         Logger.v(TAG, "Back pressed, setting slide transition");
@@ -328,6 +312,9 @@ public class SettingsActivity extends RoboFragmentActivity {
                 statusManager.switchToProdMode();
                 Toast.makeText(getApplicationContext(), "Switched back to production mode", Toast.LENGTH_SHORT).show();
 
+                // Relaunch scheduling to refresh notifications
+                statusManager.launchNotifyingServices();
+
                 // Restart Dashboard
                 Intent intent = new Intent(SettingsActivity.this, DashboardActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -345,15 +332,7 @@ public class SettingsActivity extends RoboFragmentActivity {
 
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
-
-        TextView dialogTextView = (TextView) alertDialog.findViewById(android.R.id.message);
-        FontUtils.setRobotoFont(this, dialogTextView);
-        dialogTextView = (TextView) alertDialog.findViewById(android.R.id.title);
-        FontUtils.setRobotoFont(this, dialogTextView);
-        dialogTextView = (TextView) alertDialog.findViewById(android.R.id.button1);
-        FontUtils.setRobotoFont(this, dialogTextView);
-        dialogTextView = (TextView) alertDialog.findViewById(android.R.id.button2);
-        FontUtils.setRobotoFont(this, dialogTextView);
+        FontUtils.setRobotoToAlertDialog(alertDialog,SettingsActivity.this);
     }
 
     public void prodToTestDialog(){
@@ -379,6 +358,8 @@ public class SettingsActivity extends RoboFragmentActivity {
                     statusManager.switchToTestMode();
                     Toast.makeText(getApplicationContext(), "Switched to test mode", Toast.LENGTH_SHORT).show();
 
+                    // Don't relaunch scheduling since we go through first launch again.
+
                     // Restart first launch
                     Intent intent = new Intent(SettingsActivity.this, FirstLaunch00WelcomeActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -400,6 +381,7 @@ public class SettingsActivity extends RoboFragmentActivity {
 
         testAlert.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         testAlert.show();
+        FontUtils.setRobotoToAlertDialog(testAlert, this);
     }
 
     private static String pad(int c) {

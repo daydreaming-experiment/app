@@ -4,13 +4,16 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.ViewGroup;
+
 import com.brainydroid.daydreaming.R;
-import com.brainydroid.daydreaming.background.*;
+import com.brainydroid.daydreaming.background.LocationPointService;
+import com.brainydroid.daydreaming.background.Logger;
+import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.network.SntpClient;
-import com.brainydroid.daydreaming.network.SntpClientCallback;
-import com.brainydroid.daydreaming.ui.dashboard.DashboardActivity;
 import com.brainydroid.daydreaming.ui.FontUtils;
+import com.brainydroid.daydreaming.ui.dashboard.DashboardActivity;
 import com.google.inject.Inject;
+
 import roboguice.activity.RoboFragmentActivity;
 
 

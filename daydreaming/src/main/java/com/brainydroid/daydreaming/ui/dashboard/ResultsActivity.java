@@ -29,7 +29,7 @@ import roboguice.inject.InjectView;
 @ContentView(R.layout.activity_results)
 public class ResultsActivity extends RoboFragmentActivity {
 
-    private static String TAG = "ResultsActivity";
+    public static String TAG = "ResultsActivity";
 
     public static String DOWNLOAD_RESULTS = "loadResults";
 
@@ -187,7 +187,8 @@ public class ResultsActivity extends RoboFragmentActivity {
                             // We already went through this. Do not recurse.
                             Toast.makeText(activity, "Sorry! There was problem loading your results, " +
                                     "developers have been notified", Toast.LENGTH_LONG).show();
-                            errorHandler.logError(new Exception("Could not load results, twice"));
+                            errorHandler.logError("Could not load results, twice",
+                                    new Exception("Could not load results, twice"));
                             if (progressDialog != null) {
                                 progressDialog.dismiss();
                             }

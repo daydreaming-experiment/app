@@ -1,5 +1,6 @@
 package com.brainydroid.daydreaming.background;
 
+import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -7,15 +8,20 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.IBinder;
+import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.brainydroid.daydreaming.R;
+import com.brainydroid.daydreaming.db.ConsistencyException;
+import com.brainydroid.daydreaming.db.Json;
+import com.brainydroid.daydreaming.db.ParametersStorage;
 import com.brainydroid.daydreaming.db.SequencesStorage;
 import com.brainydroid.daydreaming.network.SntpClient;
 import com.brainydroid.daydreaming.network.SntpClientCallback;
 import com.brainydroid.daydreaming.sequence.Sequence;
 import com.brainydroid.daydreaming.sequence.SequenceBuilder;
+import com.brainydroid.daydreaming.ui.dashboard.BEQActivity;
 import com.brainydroid.daydreaming.ui.sequences.PageActivity;
 import com.google.inject.Inject;
 
@@ -37,8 +43,11 @@ public class DailySequenceService extends RoboService {
 
     private static String TAG = "DailySequenceService";
 
-    public static String CANCEL_PENDING_POLLS = "cancelPendingSequences";
+    public static String CANCEL_PENDING_SEQUENCES = "cancelPendingSequences";
     public static String SEQUENCE_TYPE = "sequenceType";
+    public static String EXPIRE_PROBE = "expireProbe";
+    public static String DISMISS_PROBE = "dismissProbe";
+    public static String PROBE_ID = "probeId";
 
     @Inject NotificationManager notificationManager;
     @Inject SequencesStorage sequencesStorage;
@@ -47,8 +56,17 @@ public class DailySequenceService extends RoboService {
     @Inject SntpClient sntpClient;
     @Inject Sequence sequence;
     @Inject StatusManager statusManager;
+    @Inject ErrorHandler errorHandler;
+    @Inject Json json;
+    @Inject ParametersStorage parametersStorage;
+    @Inject AlarmManager alarmManager;
 
     String sequenceType;
+
+    @Override
+    public synchronized void onDestroy() {
+        Logger.v(TAG, "Destroying");
+    }
 
     @Override
     public synchronized int onStartCommand(Intent intent, int flags, int startId) {
@@ -56,15 +74,54 @@ public class DailySequenceService extends RoboService {
 
         super.onStartCommand(intent, flags, startId);
 
+        // Record last time we ran
+        statusManager.setLatestDailyServiceSystemTimestampToNow();
+        // Check LocationPointService hasn't died
+        statusManager.checkLatestLocationPointServiceWasAgesAgo();
+
+        // Always check if BEQ notification is necessary
+        checkBEQ();
+
         sequenceType = intent.getStringExtra(DailySequenceService.SEQUENCE_TYPE);
         if (sequenceType == null) {
             Log.d(TAG, "Sequence type not found in intent, found null");
             throw new NullPointerException();
         }
 
-        if (intent.getBooleanExtra(CANCEL_PENDING_POLLS, false)) {
+        if (intent.getBooleanExtra(CANCEL_PENDING_SEQUENCES, false)) {
             Logger.v(TAG, "Started to cancel pending sequences of type {}", sequenceType);
             cancelPendingSequences();
+            flushRecentlyMarkedProbes();
+            // No need to reschedule:
+            // This is run from statusManager, directly to cancel pending stuff,
+            // and doesn't interfere with scheduling. If other classes do interfere
+            // (e.g. clearing parameters), they relaunch scheduler services.
+        } else if (intent.getBooleanExtra(EXPIRE_PROBE, false)) {
+            Logger.v(TAG, "Started to expire pending probes");
+            int probeId = intent.getIntExtra(PROBE_ID, -1);
+            if (probeId == -1) {
+                // We have a problem
+                errorHandler.logError("ProbeService started to expire a probe, " +
+                        "but not probe id given", new ConsistencyException());
+                stopSelf();
+                return START_REDELIVER_INTENT;
+            }
+
+            if (statusManager.isNotificationExpiryExplained()) {
+                expireProbe(probeId);
+            }
+        } else if (intent.getBooleanExtra(DISMISS_PROBE, false)) {
+            Logger.v(TAG, "Started to dismiss probe");
+            int probeId = intent.getIntExtra(PROBE_ID, -1);
+            if (probeId == -1) {
+                // We have a problem
+                errorHandler.logError("ProbeService started to dismiss a probe, " +
+                        "but not probe id given", new ConsistencyException());
+                stopSelf();
+                return START_REDELIVER_INTENT;
+            }
+
+            dismissProbe(probeId);
         } else {
             Logger.v(TAG, "Started to create and notify a sequence of type {}", sequenceType);
 
@@ -73,12 +130,31 @@ public class DailySequenceService extends RoboService {
             // re-download the questions; hopefully they will have been fixed)
             // and don't show any sequence.
             if (statusManager.areParametersUpdated() && statusManager.wereBEQAnsweredOnTime()) {
+                if (sequenceType.equals(Sequence.TYPE_PROBE)) {
+                    // If Dashboard is running, reschedule (so as not to flush recently* during dashboard)
+                    if (statusManager.isDashboardRunning()) {
+                        Logger.v(TAG, "Dashboard is running, rescheduling");
+                        startSchedulerService();
+                        stopSelf();
+                        return START_REDELIVER_INTENT;
+                    }
+
+                    // Flush recently* marked probes
+                    flushRecentlyMarkedProbes();
+                }
+
                 // Populate and notify the sequence
                 populateSequence();
                 notifySequence();
-            } else {
-                startSchedulerService();
+
+                if (sequenceType.equals(Sequence.TYPE_PROBE)) {
+                    // Schedule expiry
+                    scheduleProbeExpiry();
+                }
             }
+
+            // Always reschedule
+            startSchedulerService();
         }
 
         stopSelf();
@@ -89,6 +165,43 @@ public class DailySequenceService extends RoboService {
     public synchronized IBinder onBind(Intent intent) {
         // Don't allow binding
         return null;
+    }
+
+    private synchronized void checkBEQ() {
+        if (!statusManager.areBEQCompleted()) {
+            Logger.d(TAG, "BEQs not completed, refreshing/creating notification");
+
+            Intent intent = new Intent(this, BEQActivity.class);
+            // No need for a request code here, BEQActivity is only ever started from
+            // a PendingIntent from here.
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT);
+
+            int flags = 0;
+            flags |= Notification.FLAG_NO_CLEAR;
+            // Create our notification
+            // if persistent: cant be dismissed and do not disappear on click
+            // if not persistent: can be dismissed and self destroy on click
+            Notification notification = new NotificationCompat.Builder(this)
+                    .setTicker(getString(R.string.beqNotification_ticker))
+                    .setContentTitle(getString(R.string.beqNotification_title))
+                    .setContentText(getString(R.string.beqNotification_text))
+                    .setContentIntent(contentIntent)
+                    .setSmallIcon(R.drawable.ic_stat_notify_small_daydreaming)
+                    .setOnlyAlertOnce(true)
+                    .setAutoCancel(false)
+                    .setOngoing(true)
+                    .setDefaults(flags)
+                    .build();
+
+            // Only one begin/end notification should ever exist. id = 0
+            notificationManager.cancel(Sequence.TYPE_BEGIN_END_QUESTIONNAIRE, 0);
+            notificationManager.notify(Sequence.TYPE_BEGIN_END_QUESTIONNAIRE, 0, notification);
+        } else {
+            Logger.d(TAG, "BEQs completed");
+            notificationManager.cancel(Sequence.TYPE_BEGIN_END_QUESTIONNAIRE, 0);
+        }
     }
 
     /**
@@ -109,6 +222,58 @@ public class DailySequenceService extends RoboService {
         return intent;
     }
 
+    private synchronized void dismissProbe(int probeId) {
+        Logger.v(TAG, "Dismissing probe");
+        Sequence probe = sequencesStorage.get(probeId);
+        probe.setStatus(Sequence.STATUS_RECENTLY_DISMISSED);
+        // Notification was already removed by the user.
+    }
+
+    private synchronized void expireProbe(int probeId) {
+        Logger.v(TAG, "Expiring probe");
+        Sequence probe = sequencesStorage.get(probeId);
+        String status = probe.getStatus();
+        if (status.equals(Sequence.STATUS_PENDING)) {
+            probe.setStatus(Sequence.STATUS_RECENTLY_MISSED);
+            notificationManager.cancel(sequenceType, sequence.getRecurrentNotificationId());
+        } else {
+            Logger.v(TAG, "Probe {0} was not pending any more, but {1}. Not expiring.", status);
+        }
+    }
+
+    private synchronized void scheduleProbeExpiry() {
+        // Create and schedule the PendingIntent for DailySequenceService
+        Intent intent = new Intent(this, DailySequenceService.class);
+        intent.putExtra(EXPIRE_PROBE, true);
+        intent.putExtra(PROBE_ID, sequence.getId());
+
+        long scheduledTime = SystemClock.elapsedRealtime() + Sequence.EXPIRY_DELAY;
+        PendingIntent pendingIntent = PendingIntent.getService(this,
+                Sequence.getRecurrentRequestCode(sequenceType, EXPIRE_PROBE),
+                intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                scheduledTime, pendingIntent);
+    }
+
+    private synchronized void flushRecentlyMarkedProbes() {
+        ArrayList<Sequence> recentProbes = sequencesStorage.getRecentlyMarkedSequences(
+                Sequence.TYPE_PROBE);
+        if (recentProbes != null && recentProbes.size() > 0) {
+            if (recentProbes.size() > 1) {
+                Logger.e(TAG, "Found more than one recently marked probe. Offending probes:");
+                Logger.eRaw(TAG, json.toJsonInternal(recentProbes));
+                errorHandler.logError("Found more than one recently marked probe",
+                        new ConsistencyException());
+            }
+
+            // One or many, flush them all
+            for (Sequence probe : recentProbes) {
+                notificationManager.cancel(probe.getId());
+                sequencesStorage.remove(probe.getId());
+            }
+        }
+    }
+
     /**
      * Notify our sequence to the user.
      */
@@ -117,9 +282,11 @@ public class DailySequenceService extends RoboService {
 
         // Create the PendingIntent
         Intent intent = createSequenceIntent();
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                intent, PendingIntent.FLAG_CANCEL_CURRENT |
-                PendingIntent.FLAG_ONE_SHOT);
+        // Make sure our PendingIntent is original: cancel current one, and set a different request
+        // code for different types of sequences
+        PendingIntent contentIntent = PendingIntent.getActivity(this,
+                Sequence.getRecurrentRequestCode(sequenceType), intent,
+                PendingIntent.FLAG_CANCEL_CURRENT);
 
         int flags = 0;
 
@@ -142,7 +309,7 @@ public class DailySequenceService extends RoboService {
         }
 
         // Create our notification
-        Notification notification = new NotificationCompat.Builder(this)
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
         .setTicker(getString(sequence.getIdTicker()))
         .setContentTitle(getString(sequence.getIdTitle()))
         .setContentText(getString(sequence.getIdText()))
@@ -150,8 +317,21 @@ public class DailySequenceService extends RoboService {
         .setSmallIcon(R.drawable.ic_stat_notify_small_daydreaming)
         .setAutoCancel(true)
         .setOnlyAlertOnce(true)
-        .setDefaults(flags)
-        .build();
+        .setDefaults(flags);
+
+        if (sequenceType.equals(Sequence.TYPE_PROBE)) {
+            // Create dismissal intent
+            Intent dismissalIntent = new Intent(this, DailySequenceService.class);
+            dismissalIntent.putExtra(DISMISS_PROBE, true);
+            dismissalIntent.putExtra(PROBE_ID, sequence.getId());
+            PendingIntent pendingDismissal = PendingIntent.getService(this,
+                    Sequence.getRecurrentRequestCode(sequenceType, DISMISS_PROBE),
+                    dismissalIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            notificationBuilder.setDeleteIntent(pendingDismissal);
+        }
+
+        Notification notification = notificationBuilder.build();
 
         // How to beep?
         if (sharedPreferences.getBoolean("notification_sound_key", true)) {
@@ -159,9 +339,11 @@ public class DailySequenceService extends RoboService {
             notification.sound = Uri.parse("android.resource://" + "com.brainydroid.daydreaming" + "/" + R.raw.notification);
         }
 
-        // And send it to the system
-        notificationManager.cancel(sequence.getId());
-        notificationManager.notify(sequence.getId(), notification);
+        // Get a proper id for the notification, to replace the right notifications
+        // That way only one of morning notification and one evening notification will ever be there
+        notificationManager.cancel(sequenceType, sequence.getRecurrentNotificationId());
+        notificationManager.notify(sequenceType, sequence.getRecurrentNotificationId(),
+                notification);
     }
 
     /**
@@ -175,9 +357,27 @@ public class DailySequenceService extends RoboService {
         ArrayList<Sequence> pendingSequences = sequencesStorage.getPendingSequences(
                 sequenceType);
 
-        if (pendingSequences != null) {
+        if (pendingSequences != null && pendingSequences.size() > 0) {
             Logger.d(TAG, "Reusing previously pending sequence of type {}", sequenceType);
             sequence = pendingSequences.get(0);
+            // Cancelling the notification if this is a probe, is done in notifyProbe()
+
+            if (sequenceType.equals(Sequence.TYPE_PROBE)) {
+                // Check that these pending probes are not an error.
+                Logger.w(TAG, "Found pending probes, this is highly unlikely.");
+                if (Sequence.EXPIRY_DELAY <= parametersStorage.getSchedulingMinDelay()) {
+                    Logger.e(TAG, "Found pending probes when EXPIRY_DELAY <= SCHEDULING_MIN_DELAY");
+                    Logger.e(TAG, "The only possibility is that the phone rebooted before expiry of a probe, " +
+                            "and notification was recreated.");
+                    if (pendingSequences.size() > 1) {
+                        Logger.e(TAG, "There are even several pending probes, which is really wrong");
+                    }
+                    Logger.e(TAG, "Offending probes:");
+                    Logger.eRaw(TAG, json.toJsonInternal(pendingSequences));
+                    errorHandler.logError("Found pending probe(s) in unlikely situation.",
+                            new ConsistencyException());
+                }
+            }
         } else {
             Logger.d(TAG, "Creating new sequence of type {}",sequenceType);
             sequence = sequenceBuilder.buildSave(sequenceType);
@@ -221,9 +421,9 @@ public class DailySequenceService extends RoboService {
         Logger.d(TAG, "Cancelling pending sequences of type {}", sequenceType);
         ArrayList<Sequence> pendingSequences = sequencesStorage.getPendingSequences(
                 sequenceType);
-        if (pendingSequences != null) {
+        if (pendingSequences != null && pendingSequences.size() > 0) {
             for (Sequence sequence : pendingSequences) {
-                notificationManager.cancel(sequence.getId());
+                notificationManager.cancel(sequenceType, sequence.getRecurrentNotificationId());
                 sequencesStorage.remove(sequence.getId());
             }
         } else {
@@ -232,9 +432,19 @@ public class DailySequenceService extends RoboService {
     }
 
     private void startSchedulerService() {
-        Logger.d(TAG, "Starting ProbeSchedulerService");
+        Logger.d(TAG, "Starting scheduler for type {}", sequenceType);
 
-        Intent schedulerIntent = new Intent(this, ProbeSchedulerService.class);
+        Intent schedulerIntent;
+        if (sequenceType.equals(Sequence.TYPE_PROBE)) {
+            schedulerIntent = new Intent(this, ProbeSchedulerService.class);
+        } else if (sequenceType.equals(Sequence.TYPE_MORNING_QUESTIONNAIRE)) {
+            schedulerIntent = new Intent(this, MQSchedulerService.class);
+        } else if (sequenceType.equals(Sequence.TYPE_EVENING_QUESTIONNAIRE)) {
+            schedulerIntent = new Intent(this, EQSchedulerService.class);
+        } else {
+            throw new RuntimeException("Could not match sequence type to start scheduler ("
+                    + sequenceType + ")");
+        }
         startService(schedulerIntent);
     }
 

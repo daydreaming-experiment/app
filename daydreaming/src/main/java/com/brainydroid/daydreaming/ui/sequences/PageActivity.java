@@ -15,13 +15,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.brainydroid.daydreaming.R;
+import com.brainydroid.daydreaming.background.ErrorHandler;
 import com.brainydroid.daydreaming.background.LocationCallback;
 import com.brainydroid.daydreaming.background.LocationServiceConnection;
 import com.brainydroid.daydreaming.background.Logger;
-import com.brainydroid.daydreaming.background.EQSchedulerService;
-import com.brainydroid.daydreaming.background.MQSchedulerService;
 import com.brainydroid.daydreaming.background.ProbeSchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
+import com.brainydroid.daydreaming.db.ConsistencyException;
 import com.brainydroid.daydreaming.db.SequencesStorage;
 import com.brainydroid.daydreaming.network.SntpClient;
 import com.brainydroid.daydreaming.network.SntpClientCallback;
@@ -34,6 +34,7 @@ import java.util.Calendar;
 
 import roboguice.activity.RoboFragmentActivity;
 import roboguice.inject.ContentView;
+import roboguice.inject.InjectResource;
 import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_page)
@@ -49,8 +50,8 @@ public class PageActivity extends RoboFragmentActivity {
     private Sequence sequence;
     private Page currentPage;
     private long lastBackTime = 0;
-    private boolean isFinishing = false;
-    @Inject private PageViewAdapter pageViewAdapter;
+    private boolean isContinuingOrFinishing = false;
+    private boolean isTooLate = false;
 
     @InjectView(R.id.page_relativeLayout) RelativeLayout outerPageLayout;
     @InjectView(R.id.page_linearLayout) LinearLayout pageLinearLayout;
@@ -59,10 +60,21 @@ public class PageActivity extends RoboFragmentActivity {
     @InjectView(R.id.page_nextButton) ImageButton nextButton;
     @InjectView(R.id.page_finishButton) ImageButton finishButton;
 
+    @InjectView(R.id.page_progress_current) TextView page_index_current;
+    @InjectView(R.id.page_progress_total) TextView page_index_total;
+
+    @InjectView(R.id.pagegroup_progress_current) TextView pagegroup_index_current;
+    @InjectView(R.id.pagegroup_progress_total) TextView pagegroup_index_total;
+
+    @InjectResource(R.string.page_too_late_title) String tooLateTitle;
+    @InjectResource(R.string.page_too_late_body) String tooLateBody;
+
+    @Inject private PageViewAdapter pageViewAdapter;
     @Inject LocationServiceConnection locationServiceConnection;
     @Inject SequencesStorage sequencesStorage;
     @Inject StatusManager statusManager;
     @Inject SntpClient sntpClient;
+    @Inject ErrorHandler errorHandler;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -75,21 +87,22 @@ public class PageActivity extends RoboFragmentActivity {
         setChrome();
         pageViewAdapter.inflate(this, outerPageLayout, pageLinearLayout);
         pageIntroText.setText(sequence.getIntro());
+
+        // set progress
+        // pagegroups level
+        page_index_current.setText(Integer.toString(currentPage.getIndexInPageGroup()));
+        page_index_total.setText(" / " + Integer.toString(currentPage.getnPages()));
+        // pages level
+        pagegroup_index_current.setText(Integer.toString(currentPage.getIndexOfParentPageGroupInSequence()));
+        pagegroup_index_total.setText(" / " + Integer.toString(currentPage.getnPageGroupsInSequence()));
         setRobotoFont();
 
-        // Self generated probe do not interfere with usual scheduling
-        if (!sequence.selfInitiated) {
-            // If this is a probe and we're at the first page, reschedule so as not
-            // to have a new probe appear in the middle of this one
-            if (sequence.getType().equals(Sequence.TYPE_PROBE) && currentPage.isFirstOfSequence()) {
-                startProbeSchedulerService();
-            } else if ( sequence.getType().equals(Sequence.TYPE_MORNING_QUESTIONNAIRE) && currentPage.isFirstOfSequence()) {
-                startMQSchedulerService();
-            } else if ( sequence.getType().equals(Sequence.TYPE_EVENING_QUESTIONNAIRE) && currentPage.isFirstOfSequence()) {
-                startEQSchedulerService();
-            }
+        // If this is a probe that is not being re-opened, and this is the first page,
+        // then if we're too late -> expire the probe.
+        if (sequence.getType().equals(Sequence.TYPE_PROBE) &&
+                currentPage.isFirstOfSequence() && !sequence.wasMissedOrDismissedOrPaused()) {
+            checkTooLate();
         }
-
     }
 
     @Override
@@ -120,9 +133,22 @@ public class PageActivity extends RoboFragmentActivity {
     public void onPause() {
         Logger.d(TAG, "Pausing");
         super.onPause();
-        if (!isFinishing) {
+        if (!isContinuingOrFinishing && !isTooLate) {
             Logger.d(TAG, "We're not finishing the sequence -> pausing it");
-            sequence.setStatus(Sequence.STATUS_PARTIALLY_COMPLETED);
+            if (sequence.wasMissedOrDismissedOrPaused() ||
+                    !sequence.getType().equals(Sequence.TYPE_PROBE)) {
+                // We were already paused before, or we're not a probe.
+                // Closing this sequence definitively.
+                sequence.setStatus(Sequence.STATUS_MISSED_OR_DISMISSED_OR_INCOMPLETE);
+            } else {
+                // Never paused before, we're allowing the user to take up again.
+                sequence.setStatus(Sequence.STATUS_RECENTLY_PARTIALLY_COMPLETED);
+            }
+
+            if (sequence.getType().equals(Sequence.TYPE_PROBE)) {
+                startProbeSchedulerService();
+            }
+
             finish();
         }
 
@@ -146,6 +172,45 @@ public class PageActivity extends RoboFragmentActivity {
 
         finish();
         super.onBackPressed();
+    }
+
+    private boolean checkTooLate() {
+        long now = Calendar.getInstance().getTimeInMillis();
+        // Add 30 seconds to the expiry delay to make sure the user didn't just click the
+        // notification milliseconds before it was to expire.
+        if (now - sequence.getNotificationSystemTimestamp() > Sequence.EXPIRY_DELAY + 30 * 1000) {
+            if (statusManager.isNotificationExpiryExplained()) {
+                // We shouldn't be here: we already explained this and somehow a probe did not expire.
+                // Log this error, but keep going.
+                errorHandler.logError("We already explained the notification expiry, " +
+                        "but somehow got to this point where we must re-explain it.",
+                        new ConsistencyException());
+            }
+
+            statusManager.setNotificationExpiryExplained();
+            AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
+            alertBuilder.setCancelable(false)
+            .setTitle(tooLateTitle)
+            .setMessage(tooLateBody)
+            .setPositiveButton("Got it", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.cancel();
+                    sequence.setStatus(Sequence.STATUS_RECENTLY_MISSED);
+                    setIsTooLate();
+                    finish();
+                }
+            });
+            alertBuilder.show();
+
+            return false;
+        }
+
+        return true;
+    }
+
+    private void setIsTooLate() {
+        isTooLate = true;
     }
 
     private boolean isRepeatingBack() {
@@ -180,8 +245,8 @@ public class PageActivity extends RoboFragmentActivity {
         }
     }
 
-    private void setIsFinishing() {
-        isFinishing = true;
+    private void setIsContinuingOrFinishing() {
+        isContinuingOrFinishing = true;
     }
 
     public boolean isPotentialEndPage() {
@@ -202,18 +267,6 @@ public class PageActivity extends RoboFragmentActivity {
     private void startProbeSchedulerService() {
         Logger.d(TAG, "Starting ProbeSchedulerService");
         Intent schedulerIntent = new Intent(this, ProbeSchedulerService.class);
-        startService(schedulerIntent);
-    }
-
-    private void startMQSchedulerService() {
-        Logger.d(TAG, "Starting EQSchedulerService");
-        Intent schedulerIntent = new Intent(this, EQSchedulerService.class);
-        startService(schedulerIntent);
-    }
-
-    private void startEQSchedulerService() {
-        Logger.d(TAG, "Starting EQSchedulerService");
-        Intent schedulerIntent = new Intent(this, MQSchedulerService.class);
         startService(schedulerIntent);
     }
 
@@ -298,8 +351,12 @@ public class PageActivity extends RoboFragmentActivity {
 
                         });
 
+                // create alert dialog
                 AlertDialog bonusAlert = builder.create();
+                // show it
                 bonusAlert.show();
+                FontUtils.setRobotoToAlertDialog(bonusAlert, PageActivity.this);
+
             } else {
                 transitionToNext();
             }
@@ -307,6 +364,7 @@ public class PageActivity extends RoboFragmentActivity {
     }
 
     private void transitionToNext() {
+        setIsContinuingOrFinishing();
         if (isEndPage()) {
             Logger.d(TAG, "End page -> finishing sequence");
             finishSequence();
@@ -329,8 +387,6 @@ public class PageActivity extends RoboFragmentActivity {
 
     private void finishSequence() {
         Logger.i(TAG, "Finishing sequence");
-
-        setIsFinishing();
 
         Toast.makeText(this, getString(R.string.page_thank_you), Toast.LENGTH_SHORT).show();
         sequence.skipRemainingBonuses();

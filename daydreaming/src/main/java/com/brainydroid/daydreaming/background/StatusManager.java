@@ -59,7 +59,7 @@ public class StatusManager {
     @SuppressWarnings("FieldCanBeLocal")
     private static String LATEST_NTP_TIMESTAMP = "latestNtpTimestamp";
 
-    private static String LATEST_SCHEDULER_SERVICE_SYSTEM_TIMESTAMP =
+    private static String LATEST_DAILY_SERVICE_SYSTEM_TIMESTAMP =
             "latestSchedulerServiceSystemTimestamp";
     private static String LATEST_LOCATION_POINT_SERVICE_SYSTEM_TIMESTAMP =
             "latestLocationPointServiceSystemTimestamp";
@@ -73,6 +73,7 @@ public class StatusManager {
     public static String CURRENT_BEG_END_QUESTIONNAIRE_TYPE = "currentBEQType";
 
     public static String RESULTS_DOWNLOADED = "resultsDownloaded";
+    public static String NOTIFICATION_EXPIRY_EXPLAINED = "notificationExpiryExplained";
 
     public static final String ACTION_PARAMETERS_STATUS_CHANGE = "actionParametersStatusChange";
 
@@ -81,7 +82,6 @@ public class StatusManager {
     public static int MODE_DEFAULT = MODE_PROD;
     public static String MODE_NAME_TEST = "test";
     public static String MODE_NAME_PROD = "production";
-    public static String[] AVAILABLE_MODE_NAMES = {MODE_NAME_PROD, MODE_NAME_TEST};
 
     /** Delay after which ProbeSchedulerService must be restarted if it hasn't run. 2 days. */
     public static long RESTART_SCHEDULER_SERVICE_DELAY = 2 * 24 * 60 * 60 * 1000;
@@ -93,6 +93,8 @@ public class StatusManager {
     public static int DELAY_TO_ANSWER_BEGQ = 3;
 
     private int cachedCurrentMode = MODE_DEFAULT;
+    private boolean isDashboardRunning = false;
+    private long isDashboardRunningTimestamp = -1;
     private boolean isParametersSyncRunning = false;
     private boolean isRegistrationRunning = false;
     private boolean isSequencesSyncRunning = false;
@@ -271,6 +273,42 @@ public class StatusManager {
 
         eSharedPreferences.remove(getCurrentModeName() + RESULTS_DOWNLOADED);
         eSharedPreferences.commit();
+    }
+    public synchronized void setNotificationExpiryExplained() {
+        Logger.d(TAG, "{} - Setting notificationExpiryExplained to true", getCurrentModeName(), true);
+
+        eSharedPreferences.putBoolean(getCurrentModeName() + NOTIFICATION_EXPIRY_EXPLAINED, true);
+        eSharedPreferences.commit();
+    }
+
+    public synchronized boolean isNotificationExpiryExplained() {
+        if (sharedPreferences.getBoolean(getCurrentModeName() + NOTIFICATION_EXPIRY_EXPLAINED,
+                false)) {
+            Logger.v(TAG, "{} - Notification expiry not yet explained", getCurrentModeName());
+            return true;
+        } else {
+            Logger.v(TAG, "{} - Notification expiry not yet explained", getCurrentModeName());
+            return false;
+        }
+    }
+
+   public synchronized void clearNotificationExpiryExplained() {
+       Logger.d(TAG, "{} - Clearing notificationExpiryExplained", getCurrentModeName());
+
+       eSharedPreferences.remove(getCurrentModeName() + NOTIFICATION_EXPIRY_EXPLAINED);
+       eSharedPreferences.commit();
+   }
+
+    public synchronized void setDashboardRunning(boolean running) {
+        Logger.v(TAG, "Setting isDashboardRunning to {}", running);
+        isDashboardRunning = true;
+        isDashboardRunningTimestamp = Calendar.getInstance().getTimeInMillis();
+    }
+
+    public synchronized boolean isDashboardRunning() {
+        long now = Calendar.getInstance().getTimeInMillis();
+        // Dashboard is running, and we have that information from less than 1 minute ago
+        return isDashboardRunning && (now - isDashboardRunningTimestamp < 1 * 60 * 1000);
     }
 
     /**
@@ -462,15 +500,15 @@ public class StatusManager {
         eSharedPreferences.commit();
     }
 
-    public synchronized void setLatestSchedulerServiceSystemTimestampToNow() {
-        Logger.d(TAG, "Setting last time ProbeSchedulerService ran to now (system timestamp)");
-        eSharedPreferences.putLong(LATEST_SCHEDULER_SERVICE_SYSTEM_TIMESTAMP,
+    public synchronized void setLatestDailyServiceSystemTimestampToNow() {
+        Logger.d(TAG, "Setting last time DailySequenceService ran to now (system timestamp)");
+        eSharedPreferences.putLong(LATEST_DAILY_SERVICE_SYSTEM_TIMESTAMP,
                 Calendar.getInstance().getTimeInMillis());
         eSharedPreferences.commit();
     }
 
-    public synchronized void checkLatestSchedulerWasAgesAgo() {
-        long latest = sharedPreferences.getLong(LATEST_SCHEDULER_SERVICE_SYSTEM_TIMESTAMP, -1);
+    public synchronized void checkLatestDailyWasAgesAgo() {
+        long latest = sharedPreferences.getLong(LATEST_DAILY_SERVICE_SYSTEM_TIMESTAMP, -1);
         if (latest == -1) {
             // ProbeSchedulerService never ran, which means first launch wasn't finished
             Logger.d(TAG, "ProbeSchedulerService never ran yet, no need to restart it");
@@ -590,6 +628,7 @@ public class StatusManager {
         clearExperimentStartTimestamp();
         clearResultsNotified();
         clearResultsNotifiedDashboard();
+        clearNotificationExpiryExplained();
         clearResultsDownloaded();
 
         // Cancel any running location collection and pending notifications.
@@ -624,6 +663,7 @@ public class StatusManager {
         // Clear result flags
         clearResultsNotified();
         clearResultsNotifiedDashboard();
+        clearNotificationExpiryExplained();
         clearResultsDownloaded();
 
         // Clear crypto storage to force a new handshake
@@ -668,7 +708,7 @@ public class StatusManager {
         Logger.d(TAG, "Cancelling notified polls");
         Intent pollServiceIntent = new Intent(context, DailySequenceService.class);
         pollServiceIntent.putExtra(DailySequenceService.SEQUENCE_TYPE, Sequence.TYPE_PROBE);
-        pollServiceIntent.putExtra(DailySequenceService.CANCEL_PENDING_POLLS, true);
+        pollServiceIntent.putExtra(DailySequenceService.CANCEL_PENDING_SEQUENCES, true);
         context.startService(pollServiceIntent);
     }
 
@@ -688,10 +728,10 @@ public class StatusManager {
         int nCompleted = completedQuestionnaires != null ? completedQuestionnaires.size() : -1;
         int nLoaded = allLoadedQuestionnaires != null ? allLoadedQuestionnaires.size() : -1;
 
-        Logger.d(TAG, "Checking Begin Questionnaire status");
+        Logger.d(TAG, "Checking BEQ status");
         Logger.d(TAG, "Loaded : {0} - Completed {1}", Integer.toString(nLoaded), Integer.toString(nCompleted));
 
-        return (nLoaded == nCompleted);
+        return nLoaded == nCompleted;
     }
 
 
@@ -849,22 +889,14 @@ public class StatusManager {
         return false;
     }
 
-    public synchronized void relaunchAllServices() {
-        // If first launch hasn't been completed, the user doesn't want
-        // anything yet
+    public synchronized void launchNotifyingServices() {
         if (isFirstLaunchCompleted()) {
-            Logger.d(TAG, "First launch is completed");
+            Logger.d(TAG, "First launch is completed, launching scheduler services");
 
             // Start scheduling polls
             Logger.d(TAG, "Starting ProbeSchedulerService");
             Intent schedulerIntent = new Intent(context, ProbeSchedulerService.class);
             context.startService(schedulerIntent);
-
-            // Start notifying BE questionnaires
-            Logger.d(TAG, "Starting BEQSchedulerService");
-            Intent BEQIntent = new Intent(context, BEQSchedulerService.class);
-            BEQIntent.putExtra(BEQSchedulerService.IS_PERSISTENT, true);
-            context.startService(BEQIntent);
 
             // Start notifying Morning questionnaires
             Logger.d(TAG, "Starting MQSchedulerService");
@@ -875,9 +907,19 @@ public class StatusManager {
             Logger.d(TAG, "Starting EQSchedulerService");
             Intent EQIntent = new Intent(context, EQSchedulerService.class);
             context.startService(EQIntent);
+        } else {
+            Logger.v(TAG, "First launch not completed -> not re-launching scheduler services");
+        }
+    }
+
+    public synchronized void launchAllServices() {
+        // If first launch hasn't been completed, the user doesn't want
+        // anything yet
+        if (isFirstLaunchCompleted()) {
+            launchNotifyingServices();
 
             // Start getting location updates
-            Logger.d(TAG, "Starting LocationPointService");
+            Logger.d(TAG, "First launch completed, starting LocationPointService");
             Intent locationPointServiceIntent = new Intent(context,
                     LocationPointService.class);
             context.startService(locationPointServiceIntent);

@@ -6,7 +6,7 @@ import com.brainydroid.daydreaming.sequence.Sequence;
 
 import java.util.Calendar;
 
-public class MQSchedulerService extends SequenceSchedulerService {
+public class MQSchedulerService extends RecurrentSequenceSchedulerService {
 
     protected static String TAG = "MQSchedulerService";
 
@@ -23,12 +23,18 @@ public class MQSchedulerService extends SequenceSchedulerService {
         }
 
         // Schedule a sequence
-        scheduleSequence(Sequence.TYPE_MORNING_QUESTIONNAIRE);
+        scheduleSequence();
         stopSelf();
 
         return START_REDELIVER_INTENT;
     }
 
+    @Override
+    protected String getSequenceType() {
+        return Sequence.TYPE_MORNING_QUESTIONNAIRE;
+    }
+
+    @Override
     protected synchronized long generateTime() {
         Logger.d(TAG, "Generating a time for schedule of MQ");
 

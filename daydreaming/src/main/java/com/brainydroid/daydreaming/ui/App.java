@@ -15,7 +15,6 @@ import org.acra.sender.HttpSender;
 
 import roboguice.RoboGuice;
 
-// TODO: don't ask to send report
 @ReportsCrashes(
         formKey = "",
         formUri = "http://crash-reports.daydreaming-the-app.net/acra-daydreaming/_design/acra-storage/_update/report",

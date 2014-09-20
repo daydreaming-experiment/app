@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.sequence.Page;
 import com.brainydroid.daydreaming.sequence.Question;
@@ -28,6 +27,7 @@ public class PageViewAdapter {
     public void setPage(Page page) {
         this.page = page;
     }
+
 
     public void inflate(Activity activity, RelativeLayout outerPageLayout,
                         LinearLayout pageLayout) {

@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.widget.Toast;
 
-import com.brainydroid.daydreaming.background.BEQSchedulerService;
 import com.brainydroid.daydreaming.background.ErrorHandler;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.background.StatusManager;
@@ -357,7 +356,7 @@ public class ParametersStorage {
                 sdCopy.setType(Sequence.TYPE_END_QUESTIONNAIRE);
                 sdCopy.setName(Sequence.END_PREFIX + sd.getName());
                 endSequences.add(sdCopy);
-                sdCopy.setType(Sequence.TYPE_BEGIN_QUESTIONNAIRE);
+                sd.setType(Sequence.TYPE_BEGIN_QUESTIONNAIRE);
                 sd.setName(Sequence.BEGIN_PREFIX + sd.getName());
             }
         }
@@ -413,9 +412,10 @@ public class ParametersStorage {
     public synchronized void clearBEQ() {
         Logger.d(TAG, "Clearing BEQ sequences from storage, and pending notifications");
         // clear db
-        sequencesStorage.removeAllSequences(Sequence.TYPES_BEGIN_AND_END_QUESTIONNAIRE);
+        sequencesStorage.removeAllSequences(new String[] {Sequence.TYPE_BEGIN_QUESTIONNAIRE,
+                Sequence.TYPE_END_QUESTIONNAIRE});
         // clear notifications
-        notificationManager.cancel(BEQSchedulerService.TAG, 0);
+        notificationManager.cancel(Sequence.TYPE_BEGIN_END_QUESTIONNAIRE, 0);
     }
 
     public synchronized SequenceDescription getSequenceDescription(String name) {
@@ -607,7 +607,7 @@ public class ParametersStorage {
             setSequences(serverParametersJson.getSequences());
 
             // Instantiating the Begin and End Questionnaires
-            sequencesStorage.initiateBeginEndQuestionnaires();
+            sequencesStorage.instantiateBeginEndQuestionnaires();
             statusManager.setCurrentBEQType(Sequence.TYPE_BEGIN_QUESTIONNAIRE);
 
         } catch (JsonParametersException e) {
@@ -699,6 +699,7 @@ public class ParametersStorage {
 
                     Logger.i(TAG, "Parameters successfully imported");
                     statusManager.setParametersUpdated(true);
+                    statusManager.launchNotifyingServices();
                     callback.onParametersStorageReady(true);
 
                     if (isDebug && statusManager.getCurrentMode() == StatusManager.MODE_TEST) {
@@ -706,8 +707,8 @@ public class ParametersStorage {
                                 Toast.LENGTH_SHORT).show();
                     }
 
-                    Logger.d(TAG, "Starting ProbeSchedulerService & co to take new parameters into account");
-                    statusManager.relaunchAllServices();
+                    Logger.d(TAG, "Starting scheduler services to take new parameters into account");
+                    statusManager.launchNotifyingServices();
                 } else {
                     Logger.w(TAG, "Error while retrieving new parameters from " +
                             "server");

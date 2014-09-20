@@ -31,7 +31,7 @@ public class BootReceiver extends RoboBroadcastReceiver {
         String action = intent.getAction();
         if (action.equals(Intent.ACTION_BOOT_COMPLETED)) {
             Logger.d(TAG, "BootReceiver started for ACTION_BOOT_COMPLETED");
-            statusManager.relaunchAllServices();
+            statusManager.launchAllServices();
         }
     }
 

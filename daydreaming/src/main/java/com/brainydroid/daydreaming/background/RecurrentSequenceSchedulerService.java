@@ -13,6 +13,7 @@ import android.support.v4.app.NotificationCompat;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.db.ParametersStorage;
 import com.brainydroid.daydreaming.db.Util;
+import com.brainydroid.daydreaming.sequence.Sequence;
 import com.brainydroid.daydreaming.ui.dashboard.ResultsActivity;
 import com.google.inject.Inject;
 
@@ -32,12 +33,10 @@ import roboguice.service.RoboService;
  * @see com.brainydroid.daydreaming.background.SyncService
  * @see com.brainydroid.daydreaming.background.DailySequenceService
  */
-public abstract class SequenceSchedulerService extends RoboService {
+// TODO: database cleaning. If running since long time ago, or null status: flush.
+public abstract class RecurrentSequenceSchedulerService extends RoboService {
 
-    private static String TAG = "SequenceSchedulerService";
-
-    /** Scheduling delay when debugging is activated */
-    public static long DEBUG_DELAY = 5 * 1000; // 5 seconds
+    private static String TAG = "RecurrentSequenceSchedulerService";
 
     // Handy object that will be holding the 'now' time
     protected Calendar now;
@@ -58,19 +57,12 @@ public abstract class SequenceSchedulerService extends RoboService {
     @Inject AlarmManager alarmManager;
     @Inject NotificationManager notificationManager;
 
-    protected boolean debugging;
-    protected String seqType;
-
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Logger.d(TAG, "Started (super from sub-class)");
 
         super.onStartCommand(intent, flags, startId);
 
-        // Record last time we ran
-        statusManager.setLatestSchedulerServiceSystemTimestampToNow();
-        // Check LocationPointService hasn't died
-        statusManager.checkLatestLocationPointServiceWasAgesAgo();
         // Notify results if they're available
         notifyResultsIfAvailable();
         // Check if we are getting close to the end to enable the final Begin/End questionnaires
@@ -92,8 +84,10 @@ public abstract class SequenceSchedulerService extends RoboService {
     protected synchronized void notifyResultsIfAvailable() {
         if (statusManager.areResultsAvailable() && !statusManager.areResultsNotified()) {
             Intent intent = new Intent(this, ResultsActivity.class);
+            // No need for special request code here, ResultsActivity is only ever called
+            // with a PendingIntent from here.
             PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                    intent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_ONE_SHOT);
+                    intent, PendingIntent.FLAG_UPDATE_CURRENT);
             Notification notification = new NotificationCompat.Builder(this)
                     .setTicker(getString(R.string.results_notification_ticker))
                     .setContentTitle(getString(R.string.results_notification_title))
@@ -106,30 +100,32 @@ public abstract class SequenceSchedulerService extends RoboService {
                             | Notification.DEFAULT_SOUND)
                     .build();
 
-            notificationManager.notify(-1, notification);
+            notificationManager.notify(ResultsActivity.TAG, 0, notification);
 
             // Remember we did all this
             statusManager.setResultsNotified();
         }
     }
 
-    protected synchronized void scheduleSequence(String sequenceType) {
-        Logger.d(TAG, "Scheduling new sequence of type {}", sequenceType);
-        seqType = sequenceType;
+    protected synchronized void scheduleSequence() {
+        Logger.d(TAG, "Scheduling new sequence of type {}", getSequenceType());
 
         // Generate the time at which the sequence will appear
         long scheduledTime = generateTime();
 
         // Create and schedule the PendingIntent for DailySequenceService
         Intent intent = new Intent(this, DailySequenceService.class);
-        intent.putExtra(DailySequenceService.SEQUENCE_TYPE, sequenceType);
-        PendingIntent pendingIntent = PendingIntent.getService(this, 0,
-                intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        intent.putExtra(DailySequenceService.SEQUENCE_TYPE, getSequenceType());
+        PendingIntent pendingIntent = PendingIntent.getService(this,
+                Sequence.getRecurrentRequestCode(getSequenceType()),
+                intent, PendingIntent.FLAG_UPDATE_CURRENT);
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
                 scheduledTime, pendingIntent);
     }
 
     protected abstract long generateTime();
+
+    protected abstract String getSequenceType();
 
     protected synchronized void fixNowAndGetAllowedWindow() {
         Logger.d(TAG, "Fixing now and obtaining allowed time window");
@@ -184,7 +180,7 @@ public abstract class SequenceSchedulerService extends RoboService {
         delay %= 60 * 1000;
         long seconds = delay / 1000;
         Logger.i(TAG, "Sequence of type {3} scheduled in {0} hours, {1} minutes, and {2} seconds",
-                hours, minutes, seconds, seqType);
+                hours, minutes, seconds, getSequenceType());
     }
 
 

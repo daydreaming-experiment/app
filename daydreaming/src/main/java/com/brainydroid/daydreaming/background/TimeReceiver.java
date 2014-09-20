@@ -33,7 +33,7 @@ public class TimeReceiver extends RoboBroadcastReceiver {
             Logger.d(TAG, "TimeReceiver started for ACTION_TIME_CHANGED or " +
                     "ACTION_TIMEZONE_CHANGED");
 
-            statusManager.relaunchAllServices();
+            statusManager.launchAllServices();
         } else {
             Logger.v(TAG, "BootReceiver started for something different " +
                     "than ACTION_TIME_CHANGED or ACTION_TIMEZONE_CHANGED ->" +

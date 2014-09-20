@@ -1,6 +1,16 @@
 Changelog
 =========
 
+0.22.0
+------
+
+* Enhancements
+  * [#91] Add progress information in sequences
+  * [#200] Matrix choice usability
+  * [#214] Notification lifecycle
+* Bug fixes
+  * [#235] Dashboard instructions usability
+
 0.21.1
 ------
 

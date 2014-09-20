@@ -74,7 +74,7 @@ public class SyncService extends RoboService {
             // Only launch the rest of the synchronization tasks if ParametersStorage is
             // really ready and we have Internet access.
             if (areParametersUpdated && statusManager.isDataEnabled()) {
-                Logger.d(TAG, "Parameters have been update, and data is enabled");
+                Logger.d(TAG, "Parameters have been updated, and data is enabled");
 
                 // We enter the registration phase
                 statusManager.setRegistrationRunning(true);
@@ -201,7 +201,7 @@ public class SyncService extends RoboService {
 
         // Do we have any sequences to upload?
         final ArrayList<Sequence> uploadableSequences = sequencesStorage.getUploadableSequences();
-        if (uploadableSequences == null) {
+        if (uploadableSequences == null || uploadableSequences.size() == 0) {
             Logger.i(TAG, "No sequences to upload -> exiting");
             Logger.td(this, TAG + ": no sequences to upload");
             return;
@@ -273,7 +273,8 @@ public class SyncService extends RoboService {
     public ArrayList<Sequence> getDeletableFromArrayList(ArrayList<Sequence> sequences) {
         ArrayList<Sequence> deletableSequences = new ArrayList<Sequence>();
         for (Sequence s : sequences) {
-            if (!s.getType().equals(Sequence.TYPE_BEGIN_QUESTIONNAIRE) ) {
+            if (!s.getType().equals(Sequence.TYPE_BEGIN_QUESTIONNAIRE) &&
+                    !s.getType().equals(Sequence.TYPE_END_QUESTIONNAIRE)) {
                 deletableSequences.add(s);
             }
         }
@@ -283,7 +284,8 @@ public class SyncService extends RoboService {
     public ArrayList<Sequence> getToBeKeptFromArrayList(ArrayList<Sequence> sequences) {
         ArrayList<Sequence> toBeKeptQuestionnaires = new ArrayList<Sequence>();
         for (Sequence s : sequences) {
-            if (s.getType().equals(Sequence.TYPE_BEGIN_QUESTIONNAIRE) ) {
+            if (s.getType().equals(Sequence.TYPE_BEGIN_QUESTIONNAIRE) ||
+                    s.getType().equals(Sequence.TYPE_END_QUESTIONNAIRE)) {
                 toBeKeptQuestionnaires.add(s);
             }
         }
@@ -305,7 +307,7 @@ public class SyncService extends RoboService {
         // Do we have any location points to upload?
         ArrayList<LocationPoint> uploadableLocationPoints =
                 locationPointsStorage.getUploadableLocationPoints();
-        if (uploadableLocationPoints == null) {
+        if (uploadableLocationPoints == null || uploadableLocationPoints.size() == 0) {
             Logger.i(TAG, "No locationPoints to upload -> exiting");
             Logger.td(this, TAG + ": no locationItems to upload");
             return;

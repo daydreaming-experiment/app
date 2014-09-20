@@ -36,6 +36,15 @@
     <string name="dashboard_test_text_reload_parameters">Reload parameters</string>
     <string name="dashboard_text_begin_questionnaires">Questions</string>
     <string name="dashboard_button_text_instruction">Instructions</string>
+    <string name="dashboard_you_missed">You missed a probe about</string>
+    <string name="dashboard_you_dismissed">You dismissed a probe about</string>
+    <string name="dashboard_you_started">You started answering a probe about</string>
+    <string name="dashboard_hour">hour</string>
+    <string name="dashboard_hours">hours</string>
+    <string name="dashboard_minute">minute</string>
+    <string name="dashboard_minutes">minutes</string>
+    <string name="dashboard_ago">ago</string>
+    <string name="dashboard_swipe_to_get_back">Swipe to get it back.</string>
     <string name="results_notification_ticker">Daydreaming results available</string>
     <string name="results_notification_title">Daydreaming results</string>
     <string name="results_notification_content">Discover your 30 days of daydreaming</string>
@@ -46,6 +55,29 @@
     <string name="results_refresh_download2">old. Do you want to refresh them? This can take up to 10MB, and is best done over wifi.</string>
     <string name="results_refresh_download_yes">Refresh results</string>
     <string name="results_refresh_download_no">Use cache</string>
+
+    <string name="dashboard_toast_experiment_not_running">Experiment hasn\'t started yet!</string>
+    <string name="dashboard_toast_not_connected">You\'re not connected to the internet!</string>
+    <string name="dashboard_parameters_not_loaded">Parameters aren\'t loaded yet</string>
+
+    <string name="dashboard_alert_download_results">Download results</string>
+    <string name="dashboard_alert_title_refresh_results">Refresh results</string>
+    "You\'re not connected to the internet!"
+    <!-- Showcase view Text -->
+    <string name="sv_questions_title">Questions</string>
+    <string name="sv_questions_text">When blinking, there are questions for you!</string>
+    <string name="sv_settings_title">Settings</string>
+    <string name="sv_settings_text">Set the app parameters</string>
+    <string name="sv_glossary_title">Glossary</string>
+    <string name="sv_glossary_text">A list of useful definitions</string>
+    <string name="sv_results_title">Results</string>
+    <string name="sv_results_text">When available, a detailed report for you here!</string>
+    <string name="sv_swipe_title">Self Report</string>
+    <string name="sv_swipe_text">Swipe right for a self report</string>
+    <string name="sv_time_elapsed_title">Time Elapsed</string>
+    <string name="sv_time_elapsed_text">The duration you have been running this app</string>
+    <string name="sv_time_left_title">Time Left</string>
+    <string name="sv_time_left_text">The duration left before you get results</string>
 
     <!-- Glossary Activity -->
     <string name="glossary_title">GLOSSARY</string>
@@ -152,6 +184,8 @@
     <string name="page_intro_text">Right before the app interrupted you…</string>
     <string name="page_edit_mode_edit">Edit mode</string>
     <string name="page_edit_mode_done">Done</string>
+    <string name="page_too_late_title">Oops, too late!</string>
+    <string name="page_too_late_body">Probes are meant to be answered quickly, so we can\'t let you answer this one. From now on notifications will disappear on their own after a few minutes. If you want to answer a probe you missed, you can do so in the dashboard, it will suggest any missed probes.</string>
 
     <!-- Display question Activity -->
     <string name="question_welcome_text">HERE ARE A FEW QUICK QUESTIONS:</string>
@@ -201,9 +235,9 @@
     <string name="eqNotification_title">Good evening!</string>
     <string name="eqNotification_text">A few questions to close the day</string>
 
-    <string name="bqNotification_ticker">Questionnaires</string>
-    <string name="bqNotification_title">Daydreaming</string>
-    <string name="bqNotification_text">Please fill those questionnaires</string>
+    <string name="beqNotification_ticker">Questionnaires</string>
+    <string name="beqNotification_title">Daydreaming</string>
+    <string name="beqNotification_text">Please fill those questionnaires</string>
 
     <!-- Crash Reports -->
     <string name="crash_toast_text">Oops Daydreaming just crashed! The developers have been notified.</string>
