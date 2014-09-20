@@ -195,7 +195,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
                 public void run() {
                         statusManager.setDashboardRunning(true);
                     }
-            }, 60 * 1000, 60 * 1000);
+            }, 30 * 1000, 30 * 1000);
         }
 
         super.onResume();
