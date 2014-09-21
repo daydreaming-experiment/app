@@ -1,6 +1,16 @@
 Changelog
 =========
 
+0.23.0
+------
+
+* Enhancements:
+  * [#273] Add test MEQ buttons in test dashboard
+* Bug fixes
+  * [#263] Scheduling problems, settings not honoured
+  * [#241] Parameters not re-updating if quick failure
+  * Server-side, upload of questions with '.' in names is fixed
+
 0.22.0
 ------
 
