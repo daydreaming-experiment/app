@@ -73,25 +73,32 @@ public abstract class BaseQuestionViewAdapter
             final String term = glossaryPair.getKey();
 
             // if term is in question text
-            if (qText.contains(term)) {
-                final String definition = glossaryPair.getValue();
-                int i_start = qText.indexOf(term);
-                int i_end = i_start + term.length();
-                // set style bold
-                sbqText.setSpan(new ForegroundColorSpan(context.getResources().getColor(R.color.ui_dark_blue_color)), i_start, i_end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                // set clickable
-                ClickableSpan clickableSpan = new ClickableSpan() {
-                    @Override
-                    public void onClick(View widget) {
-                        Toast.makeText(context, definition,
-                                Toast.LENGTH_LONG).show();
-                    }
-                    public void updateDrawState(TextPaint ds) {
-                        ds.setUnderlineText(false);
-                    }
-                };
-                sbqText.setSpan(clickableSpan, i_start, i_end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            String qText_low = qText.toLowerCase();
+            String term_low = term.toLowerCase();
+            String regex = "[;.,:'!?()-]"; // not cutting by space since some of Mikael tokens contain spaces
+            String[] tokens = qText_low.split(regex);
+            for (String word: tokens) {  // looping through substrings
+                if (word.contains(term_low)) { // looping through dictionnary entries
+                    Logger.d(TAG, "Found {0} in {1}", term_low, qText);
 
+                    final String definition = glossaryPair.getValue();
+                    int i_start = qText_low.indexOf(term_low);
+                    int i_end = i_start + term_low.length();
+                    // set style bold
+                    sbqText.setSpan(new ForegroundColorSpan(context.getResources().getColor(R.color.ui_dark_blue_color)), i_start, i_end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    // set clickable
+                    ClickableSpan clickableSpan = new ClickableSpan() {
+                        @Override
+                        public void onClick(View widget) {
+                            Toast.makeText(context, definition,
+                                    Toast.LENGTH_LONG).show();
+                        }
+                        public void updateDrawState(TextPaint ds) {
+                            ds.setUnderlineText(false);
+                        }
+                    };
+                    sbqText.setSpan(clickableSpan, i_start, i_end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                }
             }
         }
         return sbqText;
