@@ -18,7 +18,7 @@
         android:paddingRight="@dimen/page_horizontal_margin"
         android:paddingTop="@dimen/page_vertical_margin" >
 
-
+<!-- FIXME: commented until #265 is settled
         <LinearLayout
             android:orientation="horizontal"
             android:id="@+id/pagegroup_progress_linearLayout"
@@ -66,11 +66,12 @@
                 android:id="@+id/page_progress_total"
                 android:textColor="@color/ui_white_text_color"
                 android:gravity="center_horizontal" />
-        </LinearLayout>
+        </LinearLayout> -->
 
+        <!-- FIXME: commented until #265 is settled -->
+        <!--     android:layout_below="@id/page_progress_linearLayout" -->
         <LinearLayout
             android:id="@+id/page_intro_linearLayout"
-            android:layout_below="@id/page_progress_linearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
