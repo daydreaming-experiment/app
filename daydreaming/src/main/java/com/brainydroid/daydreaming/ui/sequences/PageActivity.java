@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -46,12 +45,9 @@ public class PageActivity extends RoboFragmentActivity {
 
     public static String EXTRA_SEQUENCE_ID = "sequenceId";
 
-    public static long BACK_REPEAT_DELAY = 2 * 1000; // 2 seconds, in milliseconds
-
     private int sequenceId;
     private Sequence sequence;
     private Page currentPage;
-    private long lastBackTime = 0;
     private boolean isContinuingOrFinishing = false;
     private boolean isTooLate = false;
 
@@ -173,12 +169,6 @@ public class PageActivity extends RoboFragmentActivity {
     @Override
     public void onBackPressed() {
         Logger.v(TAG, "Back pressed");
-        if (!isRepeatingBack()) {
-            Toast.makeText(this, getString(R.string.questionActivity_catch_key),
-                    Toast.LENGTH_SHORT).show();
-            return;
-        }
-
         finish();
         super.onBackPressed();
     }
@@ -220,13 +210,6 @@ public class PageActivity extends RoboFragmentActivity {
 
     private void setIsTooLate() {
         isTooLate = true;
-    }
-
-    private boolean isRepeatingBack() {
-        long now = SystemClock.elapsedRealtime();
-        boolean ret = (lastBackTime != 0) && (lastBackTime + BACK_REPEAT_DELAY >= now);
-        lastBackTime = now;
-        return ret;
     }
 
     private void initVars() {
@@ -285,8 +268,8 @@ public class PageActivity extends RoboFragmentActivity {
         } else if (type.equals(Sequence.TYPE_EVENING_QUESTIONNAIRE)) {
             schedulerIntent = new Intent(this, EQSchedulerService.class);
         } else {
-            throw new RuntimeException("Could not match sequence type to start scheduler ("
-                    + type + ")");
+            // This was a begin/end questionnaire, do nothing.
+            return;
         }
         startService(schedulerIntent);
     }
