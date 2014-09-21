@@ -496,6 +496,15 @@
             android:text="@string/dashboard_test_text_sync_now" />
 
         <Button
+            android:id="@+id/button_test_morningQ"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/button_test_sync"
+            android:layout_alignParentLeft="true"
+            android:onClick="runMorningQuestionnaire"
+            android:text="@string/dashboard_test_text_morningQuestionnaire" />
+
+        <Button
             android:id="@+id/button_reload_parameters"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -503,6 +512,15 @@
             android:layout_alignParentRight="true"
             android:onClick="reloadParametersKeepProfileAnswers"
             android:text="@string/dashboard_test_text_reload_parameters" />
+
+        <Button
+            android:id="@+id/button_test_eveningQ"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/button_reload_parameters"
+            android:layout_alignParentRight="true"
+            android:onClick="runEveningQuestionnaire"
+            android:text="@string/dashboard_test_text_eveningQuestionnaire" />
 
     </RelativeLayout>
 
