@@ -177,7 +177,11 @@ public class SyncService extends RoboService {
 
             // We enter the parameterUpdate phase
             statusManager.setParametersSyncRunning(true);
-            statusManager.setLastSyncToNow();
+            if (statusManager.areParametersUpdated()) {
+                // Only remember last sync (i.e. start pooling syncs a little)
+                // if we have parameters. Else try to sync each time we're started.
+                statusManager.setLastSyncToNow();
+            }
 
             // This will launch all the calls through the callback
             parametersStorage.onReady(parametersStorageCallback, startSyncAppMode, isDebugSync);
