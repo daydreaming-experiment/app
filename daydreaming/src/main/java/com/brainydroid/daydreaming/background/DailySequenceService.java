@@ -121,10 +121,6 @@ public class DailySequenceService extends RoboService {
         } else {
             Logger.v(TAG, "Started to create and notify a sequence of type {}", sequenceType);
 
-            // If the questions haven't been downloaded (which is probably
-            // because the json was malformed), only reschedule (which will
-            // re-download the questions; hopefully they will have been fixed)
-            // and don't show any sequence.
             if (statusManager.areParametersUpdated() && statusManager.wereBEQAnsweredOnTime()) {
                 if (sequenceType.equals(Sequence.TYPE_PROBE)) {
                     // If Dashboard is running, reschedule (so as not to flush recently* during dashboard)
