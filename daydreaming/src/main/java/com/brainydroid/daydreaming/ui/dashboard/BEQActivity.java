@@ -4,8 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
@@ -89,13 +92,20 @@ public class BEQActivity extends RoboFragmentActivity {
             for (int index = 0; index < loadedBeginEndQuestionnaires.size(); index++) {
                 LinearLayout bq_linearLayout = (LinearLayout) getLayoutInflater().inflate(
                         R.layout.beginend_questionnaire_layout, beginEndQuestionnairesLinearLayout, false);
-                TextView questionnaireName = (TextView) bq_linearLayout.findViewById(R.id.beginend_questionnaire_name);
-                questionnaireName.setText("Questionnaire " + Integer.toString(index));
+                TextView bq_name = (TextView) bq_linearLayout.findViewById(R.id.beq_name);
+                bq_name.setText("Questionnaire " + Integer.toString(index+1));
                 final int finalIndex = index;
                 LinearLayout.OnClickListener bqClickListener = new LinearLayout.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        openBeginQuestionnaireByIndex(finalIndex);
+                        final String status = loadedBeginEndQuestionnaires.get(finalIndex).getStatus();
+                        if (status != null ? status.equals(Sequence.STATUS_UPLOADED_AND_KEEP) : false) {
+                            Logger.d(TAG,"Quesitonnaire {} completed already", Integer.toString(finalIndex+1));
+                            Toast.makeText(BEQActivity.this,"Already done",Toast.LENGTH_SHORT).show();
+                        } else {
+                            Logger.d(TAG,"Quesitonnaire {} not completed, opening", Integer.toString(finalIndex+1));
+                            openBeginQuestionnaireByIndex(finalIndex);
+                        }
                     }
                 };
                 bq_linearLayout.setOnClickListener(bqClickListener);
@@ -117,19 +127,23 @@ public class BEQActivity extends RoboFragmentActivity {
 
         for (int i = 0; i < beginEndQuestionnairesLinearLayout.getChildCount(); i++) {
             LinearLayout bq_linearLayout = (LinearLayout) beginEndQuestionnairesLinearLayout.getChildAt(i);
-            TextView tv = (TextView)bq_linearLayout.findViewById(R.id.beginend_questionnaire_name);
+            TextView tv = (TextView)bq_linearLayout.findViewById(R.id.beq_name);
             String bq_name = allBeginQuestionnairesNames.get(i);
+
             boolean isComplete = completedBeginQuestionnairesNames.contains(bq_name);
-            tv.setCompoundDrawablesWithIntrinsicBounds(isComplete ? R.drawable.status_ok : R.drawable.status_wrong, 0, 0, 0);
-            Logger.v(TAG, "Questionnaire TextView text: {0} - completion is {1}" , tv.getText(), isComplete ? "true":"false");
-            bq_linearLayout.setClickable(!isComplete);
+            String status = loadedBeginEndQuestionnaires.get(i).getStatus();
+            if (status != null ? status.equals(Sequence.STATUS_PENDING) : false) {
+                tv.setCompoundDrawablesWithIntrinsicBounds(R.drawable.status_loading, 0, 0, 0);
+            } else {
+                tv.setCompoundDrawablesWithIntrinsicBounds(isComplete ? R.drawable.status_ok : R.drawable.status_wrong, 0, 0, 0);
+            }
+            Logger.v(TAG, "Questionnaire TextView text: {0} - completion is {1}", tv.getText(), isComplete ? "true" : "false");
         }
     }
 
     protected void openBeginQuestionnaireByIndex(int index) {
         Logger.i(TAG, "Launching questionnaire with index {}" , Integer.toString(index));
         Logger.i(TAG, "There are {} loaded questionnaires" , Integer.toString(loadedBeginEndQuestionnaires.size()));
-
         Sequence questionnaire = loadedBeginEndQuestionnaires.get(index);
         Intent intent = createQuestionnaireIntent(questionnaire);
         launchQuestionnaireIntent(intent);
