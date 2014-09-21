@@ -1,6 +1,13 @@
 Changelog
 =========
 
+0.23.1
+------
+
+* Bug fixes:
+  * [#288] Launching a begin/end questionnaire crashes
+  * [#276] Fix back button behaviour in page activity
+
 0.23.0
 ------
 
