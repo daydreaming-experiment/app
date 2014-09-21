@@ -44,6 +44,7 @@ public class BEQActivity extends RoboFragmentActivity {
     private ArrayList<Sequence> loadedBeginEndQuestionnaires;
     private ArrayList<Sequence> completedBeginEndQuestionnaires;
 
+    private boolean testModeThemeActivated = false;
     private String type;
 
     @Override
@@ -51,6 +52,7 @@ public class BEQActivity extends RoboFragmentActivity {
         Logger.v(TAG, "Creating");
         super.onCreate(savedInstanceState);
         checkFirstLaunch();
+        checkTestMode();
         populateQuestionnairesView();
         ViewGroup godfatherView = (ViewGroup)getWindow().getDecorView();
         FontUtils.setRobotoFont(this, godfatherView);
@@ -199,6 +201,19 @@ public class BEQActivity extends RoboFragmentActivity {
         Logger.d(TAG, "Launching Questionnaire");
         startActivity(questionnaireIntent);
         overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+    }
+
+    private void checkTestMode() {
+        Logger.d(TAG, "Checking test mode status");
+        if (StatusManager.getCurrentModeStatic(this) == StatusManager.MODE_PROD) {
+            Logger.d(TAG, "Setting production theme");
+            setTheme(R.style.daydreamingTheme);
+            testModeThemeActivated = false;
+        } else {
+            Logger.d(TAG, "Setting test theme");
+            setTheme(R.style.daydreamingTestTheme);
+            testModeThemeActivated = true;
+        }
     }
 
 }
