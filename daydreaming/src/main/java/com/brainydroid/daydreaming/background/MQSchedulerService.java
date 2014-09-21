@@ -43,6 +43,8 @@ public class MQSchedulerService extends RecurrentSequenceSchedulerService {
 
         Calendar startIfToday = (Calendar)now.clone();
         startIfToday.set(Calendar.HOUR_OF_DAY, startAllowedHour);
+        // Start 3 hours before opening of bother window
+        startIfToday.add(Calendar.HOUR_OF_DAY, -3);
         startIfToday.set(Calendar.MINUTE, startAllowedMinute);
         Calendar startIfTomorrow = (Calendar)startIfToday.clone();
         startIfTomorrow.add(Calendar.DAY_OF_YEAR, 1);
@@ -57,7 +59,7 @@ public class MQSchedulerService extends RecurrentSequenceSchedulerService {
             scheduledTime = startIfTomorrow.getTimeInMillis();
         }
 
-        long delay = scheduledTime - now.getTimeInMillis() + 5000;
+        long delay = scheduledTime - now.getTimeInMillis();
         logDelay(delay);
         return nowUpTime + delay;
     }

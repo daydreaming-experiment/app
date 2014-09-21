@@ -699,7 +699,6 @@ public class ParametersStorage {
 
                     Logger.i(TAG, "Parameters successfully imported");
                     statusManager.setParametersUpdated(true);
-                    statusManager.launchNotifyingServices();
                     callback.onParametersStorageReady(true);
 
                     if (isDebug && statusManager.getCurrentMode() == StatusManager.MODE_TEST) {

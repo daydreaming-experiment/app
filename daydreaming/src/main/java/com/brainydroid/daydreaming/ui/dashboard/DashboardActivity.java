@@ -76,6 +76,8 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
     @InjectView(R.id.dashboard_ExperimentResultsIn2) TextView timeToGoTextView;
     @InjectView(R.id.button_test_sync) Button testSyncButton;
     @InjectView(R.id.button_reload_parameters) Button testReloadButton;
+    @InjectView(R.id.button_test_morningQ) Button testMorningButton;
+    @InjectView(R.id.button_test_eveningQ) Button testEveningButton;
     @InjectView(R.id.dashboard_glossary_layout) RelativeLayout glossaryLayout;
     @InjectView(R.id.dashboard_textExperimentStatus) TextView expStatus;
     @InjectView(R.id.dashboard_no_params_text) TextView textNetworkConnection;
@@ -366,7 +368,6 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
                 // show it
                 alertDialog.show();
                 FontUtils.setRobotoToAlertDialog(alertDialog,this);
-;
             } else {
                 launchResultsActivity(false);
             }
@@ -748,6 +749,30 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
         }
     }
 
+    public void runMorningQuestionnaire(@SuppressWarnings("UnusedParameters") View view) {
+        if (statusManager.isExpRunning()) {
+            Logger.d(TAG, "Launching morning questionnaire now");
+
+            Sequence questionnaire = createNewSequence(Sequence.TYPE_MORNING_QUESTIONNAIRE);
+            launchSequenceIntent(questionnaire);
+        } else {
+            Toast.makeText(this, getString(R.string.dashboard_parameters_not_loaded),
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void runEveningQuestionnaire(@SuppressWarnings("UnusedParameters") View view) {
+        if (statusManager.isExpRunning()) {
+            Logger.d(TAG, "Launching evening questionnaire now");
+
+            Sequence questionnaire = createNewSequence(Sequence.TYPE_EVENING_QUESTIONNAIRE);
+            launchSequenceIntent(questionnaire);
+        } else {
+            Toast.makeText(this, getString(R.string.dashboard_parameters_not_loaded),
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
     public void reloadParametersKeepProfileAnswers(@SuppressWarnings("UnusedParameters") View view) {
         Logger.d(TAG, "Resetting parameters and profile_id, but keeping profile answers");
 
@@ -795,6 +820,10 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
             testReloadButton.setClickable(false);
             testSyncButton.setVisibility(View.INVISIBLE);
             testSyncButton.setClickable(false);
+            testMorningButton.setVisibility(View.INVISIBLE);
+            testMorningButton.setClickable(false);
+            testEveningButton.setVisibility(View.INVISIBLE);
+            testEveningButton.setClickable(false);
             debugInfoText.setVisibility(View.INVISIBLE);
         } else {
             Logger.d(TAG, "Setting test chrome");
@@ -802,6 +831,10 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
             testReloadButton.setClickable(true);
             testSyncButton.setVisibility(View.VISIBLE);
             testSyncButton.setClickable(true);
+            testMorningButton.setVisibility(View.VISIBLE);
+            testMorningButton.setClickable(true);
+            testEveningButton.setVisibility(View.VISIBLE);
+            testEveningButton.setClickable(true);
             debugInfoText.setVisibility(View.VISIBLE);
             debugInfoText.setText(statusManager.getDebugInfoString());
         }
@@ -960,7 +993,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
                                 public void onClick(DialogInterface dialog, int id) {
                                     recentProbe.setStatus(
                                             Sequence.STATUS_MISSED_OR_DISMISSED_OR_INCOMPLETE);
-                                    launchProbeIntent(createNewProbe());
+                                    launchSequenceIntent(createNewSequence(Sequence.TYPE_PROBE));
                                 }
                             })
                             .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -974,14 +1007,14 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
                             .setNeutralButton(neutralButtonText,
                                     new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
-                                    launchProbeIntent(recentProbe);
+                                    launchSequenceIntent(recentProbe);
                                 }
                             });
                         } else {
                             alertDialogBuilder
                             .setPositiveButton("New report", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
-                                    launchProbeIntent(createNewProbe());
+                                    launchSequenceIntent(createNewSequence(Sequence.TYPE_PROBE));
                                 }
                             })
                             .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -1020,15 +1053,16 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
         dashboardMainLayout.setOnTouchListener(gestureListener);
     }
 
-    public Sequence createNewProbe() {
-        Sequence probe;
+    public Sequence createNewSequence(String type) {
+        Sequence sequence;
 
         // Look for a pending probe
-        ArrayList<Sequence> pendingSequences = sequencesStorage.getPendingSequences(Sequence.TYPE_PROBE);
+        ArrayList<Sequence> pendingSequences = sequencesStorage.getPendingSequences(type);
         if (pendingSequences != null && pendingSequences.size() > 0) {
             if (pendingSequences.size() > 1) {
                 // We have a problem
-                Logger.e(TAG, "Found more than one pending probe. Offending probes:");
+                Logger.e(TAG, "Found more than one pending sequence of type {}. " +
+                        "Offending sequences:", type);
                 Logger.eRaw(TAG, json.toJsonInternal(pendingSequences));
                 for (Sequence offendingProbe : pendingSequences) {
                     offendingProbe.setStatus(Sequence.STATUS_MISSED_OR_DISMISSED_OR_INCOMPLETE);
@@ -1036,24 +1070,24 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
                 errorHandler.logError("Found more than one pending probe. Setting as missedOrDismissedOrIncomplete",
                         new ConsistencyException());
                 // Still build a probe
-                probe = sequenceBuilder.buildSave(Sequence.TYPE_PROBE);
+                sequence = sequenceBuilder.buildSave(type);
             } else {
-                probe = pendingSequences.get(0);
+                sequence = pendingSequences.get(0);
             }
         } else {
             // Otherwise build one
-            probe = sequenceBuilder.buildSave(Sequence.TYPE_PROBE);
+            sequence = sequenceBuilder.buildSave(type);
         }
-        probe.setSelfInitiated(true);
-        return probe;
+        sequence.setSelfInitiated(true);
+        return sequence;
     }
 
-    private void launchProbeIntent(Sequence probe) {
-        Logger.d(TAG, "Creating probe Intent");
+    private void launchSequenceIntent(Sequence sequence) {
+        Logger.d(TAG, "Creating sequence Intent");
         Intent probeIntent = new Intent(this, PageActivity.class);
-        // Set the id of the probe to start
-        probeIntent.putExtra(PageActivity.EXTRA_SEQUENCE_ID, probe.getId());
-        probe.setNotificationSystemTimestamp(Calendar.getInstance().getTimeInMillis());
+        // Set the id of the sequence to start
+        probeIntent.putExtra(PageActivity.EXTRA_SEQUENCE_ID, sequence.getId());
+        sequence.setNotificationSystemTimestamp(Calendar.getInstance().getTimeInMillis());
         // Create a new task. The rest is defined in the App manifest.
         probeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(probeIntent);

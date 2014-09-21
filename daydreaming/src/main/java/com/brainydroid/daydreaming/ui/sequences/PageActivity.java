@@ -15,10 +15,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.brainydroid.daydreaming.R;
+import com.brainydroid.daydreaming.background.EQSchedulerService;
 import com.brainydroid.daydreaming.background.ErrorHandler;
 import com.brainydroid.daydreaming.background.LocationCallback;
 import com.brainydroid.daydreaming.background.LocationServiceConnection;
 import com.brainydroid.daydreaming.background.Logger;
+import com.brainydroid.daydreaming.background.MQSchedulerService;
 import com.brainydroid.daydreaming.background.ProbeSchedulerService;
 import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.db.ConsistencyException;
@@ -60,11 +62,13 @@ public class PageActivity extends RoboFragmentActivity {
     @InjectView(R.id.page_nextButton) ImageButton nextButton;
     @InjectView(R.id.page_finishButton) ImageButton finishButton;
 
+    /* FIXME: commented while #265 isn't settled
     @InjectView(R.id.page_progress_current) TextView page_index_current;
     @InjectView(R.id.page_progress_total) TextView page_index_total;
 
-    @InjectView(R.id.pagegroup_progress_current) TextView pagegroup_index_current;
-    @InjectView(R.id.pagegroup_progress_total) TextView pagegroup_index_total;
+    @InjectView(R.id.pagegroup_progress_current) TextView pageGroup_index_current;
+    @InjectView(R.id.pagegroup_progress_total) TextView pageGroup_index_total;
+    */
 
     @InjectResource(R.string.page_too_late_title) String tooLateTitle;
     @InjectResource(R.string.page_too_late_body) String tooLateBody;
@@ -85,16 +89,25 @@ public class PageActivity extends RoboFragmentActivity {
 
         initVars();
         setChrome();
+
+        // Self-initiated sequences don't interfere with normal scheduling
+        if (currentPage.isFirstOfSequence() && !sequence.isSelfInitiated()) {
+            startSchedulerService();
+        }
+
         pageViewAdapter.inflate(this, outerPageLayout, pageLinearLayout);
         pageIntroText.setText(sequence.getIntro());
 
+        /* FIXME: commented while #265 isn't settled
         // set progress
-        // pagegroups level
+        // pageGroups level
         page_index_current.setText(Integer.toString(currentPage.getIndexInPageGroup()));
         page_index_total.setText(" / " + Integer.toString(currentPage.getnPages()));
         // pages level
-        pagegroup_index_current.setText(Integer.toString(currentPage.getIndexOfParentPageGroupInSequence()));
-        pagegroup_index_total.setText(" / " + Integer.toString(currentPage.getnPageGroupsInSequence()));
+        pageGroup_index_current.setText(Integer.toString(currentPage.getIndexOfParentPageGroupInSequence()));
+        pageGroup_index_total.setText(" / " + Integer.toString(currentPage.getnPageGroupsInSequence()));
+        */
+
         setRobotoFont();
 
         // If this is a probe that is not being re-opened, and this is the first page,
@@ -143,10 +156,6 @@ public class PageActivity extends RoboFragmentActivity {
             } else {
                 // Never paused before, we're allowing the user to take up again.
                 sequence.setStatus(Sequence.STATUS_RECENTLY_PARTIALLY_COMPLETED);
-            }
-
-            if (sequence.getType().equals(Sequence.TYPE_PROBE)) {
-                startProbeSchedulerService();
             }
 
             finish();
@@ -264,9 +273,21 @@ public class PageActivity extends RoboFragmentActivity {
                         && sequence.isSkipBonuses());
     }
 
-    private void startProbeSchedulerService() {
-        Logger.d(TAG, "Starting ProbeSchedulerService");
-        Intent schedulerIntent = new Intent(this, ProbeSchedulerService.class);
+    private void startSchedulerService() {
+        String type = sequence.getType();
+        Logger.d(TAG, "Starting scheduler for type {}", type);
+
+        Intent schedulerIntent;
+        if (type.equals(Sequence.TYPE_PROBE)) {
+            schedulerIntent = new Intent(this, ProbeSchedulerService.class);
+        } else if (type.equals(Sequence.TYPE_MORNING_QUESTIONNAIRE)) {
+            schedulerIntent = new Intent(this, MQSchedulerService.class);
+        } else if (type.equals(Sequence.TYPE_EVENING_QUESTIONNAIRE)) {
+            schedulerIntent = new Intent(this, EQSchedulerService.class);
+        } else {
+            throw new RuntimeException("Could not match sequence type to start scheduler ("
+                    + type + ")");
+        }
         startService(schedulerIntent);
     }
 

@@ -21,7 +21,6 @@ import com.brainydroid.daydreaming.network.SntpClient;
 import com.brainydroid.daydreaming.network.SntpClientCallback;
 import com.brainydroid.daydreaming.sequence.Sequence;
 import com.brainydroid.daydreaming.sequence.SequenceBuilder;
-import com.brainydroid.daydreaming.ui.dashboard.BEQActivity;
 import com.brainydroid.daydreaming.ui.sequences.PageActivity;
 import com.google.inject.Inject;
 
@@ -79,9 +78,6 @@ public class DailySequenceService extends RoboService {
         // Check LocationPointService hasn't died
         statusManager.checkLatestLocationPointServiceWasAgesAgo();
 
-        // Always check if BEQ notification is necessary
-        checkBEQ();
-
         sequenceType = intent.getStringExtra(DailySequenceService.SEQUENCE_TYPE);
         if (sequenceType == null) {
             Log.d(TAG, "Sequence type not found in intent, found null");
@@ -125,10 +121,6 @@ public class DailySequenceService extends RoboService {
         } else {
             Logger.v(TAG, "Started to create and notify a sequence of type {}", sequenceType);
 
-            // If the questions haven't been downloaded (which is probably
-            // because the json was malformed), only reschedule (which will
-            // re-download the questions; hopefully they will have been fixed)
-            // and don't show any sequence.
             if (statusManager.areParametersUpdated() && statusManager.wereBEQAnsweredOnTime()) {
                 if (sequenceType.equals(Sequence.TYPE_PROBE)) {
                     // If Dashboard is running, reschedule (so as not to flush recently* during dashboard)
@@ -165,43 +157,6 @@ public class DailySequenceService extends RoboService {
     public synchronized IBinder onBind(Intent intent) {
         // Don't allow binding
         return null;
-    }
-
-    private synchronized void checkBEQ() {
-        if (!statusManager.areBEQCompleted()) {
-            Logger.d(TAG, "BEQs not completed, refreshing/creating notification");
-
-            Intent intent = new Intent(this, BEQActivity.class);
-            // No need for a request code here, BEQActivity is only ever started from
-            // a PendingIntent from here.
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT);
-
-            int flags = 0;
-            flags |= Notification.FLAG_NO_CLEAR;
-            // Create our notification
-            // if persistent: cant be dismissed and do not disappear on click
-            // if not persistent: can be dismissed and self destroy on click
-            Notification notification = new NotificationCompat.Builder(this)
-                    .setTicker(getString(R.string.beqNotification_ticker))
-                    .setContentTitle(getString(R.string.beqNotification_title))
-                    .setContentText(getString(R.string.beqNotification_text))
-                    .setContentIntent(contentIntent)
-                    .setSmallIcon(R.drawable.ic_stat_notify_small_daydreaming)
-                    .setOnlyAlertOnce(true)
-                    .setAutoCancel(false)
-                    .setOngoing(true)
-                    .setDefaults(flags)
-                    .build();
-
-            // Only one begin/end notification should ever exist. id = 0
-            notificationManager.cancel(Sequence.TYPE_BEGIN_END_QUESTIONNAIRE, 0);
-            notificationManager.notify(Sequence.TYPE_BEGIN_END_QUESTIONNAIRE, 0, notification);
-        } else {
-            Logger.d(TAG, "BEQs completed");
-            notificationManager.cancel(Sequence.TYPE_BEGIN_END_QUESTIONNAIRE, 0);
-        }
     }
 
     /**
@@ -244,6 +199,7 @@ public class DailySequenceService extends RoboService {
     private synchronized void scheduleProbeExpiry() {
         // Create and schedule the PendingIntent for DailySequenceService
         Intent intent = new Intent(this, DailySequenceService.class);
+        intent.putExtra(SEQUENCE_TYPE, sequenceType);
         intent.putExtra(EXPIRE_PROBE, true);
         intent.putExtra(PROBE_ID, sequence.getId());
 
@@ -290,22 +246,26 @@ public class DailySequenceService extends RoboService {
 
         int flags = 0;
 
+
         // Should we flash the LED?
         if (sharedPreferences.getBoolean("notification_blink_key", true)) {
             Logger.v(TAG, "Activating lights");
             flags |= Notification.DEFAULT_LIGHTS;
         }
 
-        // Should we vibrate?
-        if (sharedPreferences.getBoolean("notification_vibrator_key", true)) {
-            Logger.v(TAG, "Activating vibration");
-            flags |= Notification.DEFAULT_VIBRATE;
-        }
+        // If this is NOT an MQ, we can vibrate and beep.
+        if (!sequenceType.equals(Sequence.TYPE_MORNING_QUESTIONNAIRE)) {
+            // Should we vibrate?
+            if (sharedPreferences.getBoolean("notification_vibrator_key", true)) {
+                Logger.v(TAG, "Activating vibration");
+                flags |= Notification.DEFAULT_VIBRATE;
+            }
 
-        // Should we beep?
-        if (sharedPreferences.getBoolean("notification_sound_key", true)) {
-            Logger.v(TAG, "Activating sound");
-            flags |= Notification.DEFAULT_SOUND;
+            // Should we beep?
+            if (sharedPreferences.getBoolean("notification_sound_key", true)) {
+                Logger.v(TAG, "Activating sound");
+                flags |= Notification.DEFAULT_SOUND;
+            }
         }
 
         // Create our notification
@@ -322,6 +282,7 @@ public class DailySequenceService extends RoboService {
         if (sequenceType.equals(Sequence.TYPE_PROBE)) {
             // Create dismissal intent
             Intent dismissalIntent = new Intent(this, DailySequenceService.class);
+            dismissalIntent.putExtra(SEQUENCE_TYPE, sequenceType);
             dismissalIntent.putExtra(DISMISS_PROBE, true);
             dismissalIntent.putExtra(PROBE_ID, sequence.getId());
             PendingIntent pendingDismissal = PendingIntent.getService(this,
