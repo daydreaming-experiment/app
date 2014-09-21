@@ -268,8 +268,8 @@ public class PageActivity extends RoboFragmentActivity {
         } else if (type.equals(Sequence.TYPE_EVENING_QUESTIONNAIRE)) {
             schedulerIntent = new Intent(this, EQSchedulerService.class);
         } else {
-            throw new RuntimeException("Could not match sequence type to start scheduler ("
-                    + type + ")");
+            // This was a begin/end questionnaire, do nothing.
+            return;
         }
         startService(schedulerIntent);
     }
