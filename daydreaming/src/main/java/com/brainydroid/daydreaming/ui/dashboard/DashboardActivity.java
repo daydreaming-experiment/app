@@ -134,6 +134,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
             if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
                 Logger.d(TAG, "receiver started for CONNECTIVITY_ACTION");
                 updateExperimentStatus();
+                updateRecentProbesView();
             } else if (action.equals(StatusManager.ACTION_PARAMETERS_STATUS_CHANGE)) {
                 Logger.d(TAG, "receiver started for ACTION_PARAMETERS_STATUS_CHANGE");
                 if (areParametersUpdating && !statusManager.areParametersUpdated()) {
@@ -142,6 +143,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
                 }
                 areParametersUpdating = statusManager.isParametersSyncRunning();
                 updateExperimentStatus();
+                updateRecentProbesView();
             }
         }
     };
@@ -791,6 +793,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
         // Scheduler services are relaunched once the parameters are updated
         launchParametersUpdate();
         updateExperimentStatus();
+        updateRecentProbesView();
     }
 
     public void setRobotoFont(Activity activity){
