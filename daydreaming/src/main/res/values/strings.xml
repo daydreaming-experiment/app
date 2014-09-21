@@ -97,14 +97,14 @@
     <string name="sebastien_name">Sébastien Lerique</string>
     <string name="sebastien_description">Phd Student at Berlin</string>
 
-    <string name="mikael_name">Mikael Bastian</string>
-    <string name="mikael_description">Phd Student at Paris \n Ecole Normale Superieure</string>
+    <string name="mikael_name">Mikaël Bastian</string>
+    <string name="mikael_description">Phd Student at Paris \n Ecole Normale Supérieure</string>
 
     <string name="gislain_name">Gislain Delaire</string>
     <string name="gislain_description">Designer at Paris</string>
 
-    <string name="jerome_name">Jerome Sackur</string>
-    <string name="jerome_description">Cognitive Psychologist at Paris</string>
+    <string name="jerome_name">Jérôme Sackur</string>
+    <string name="jerome_description">Cognitive Psychologist at Paris \n Ecole Normale Supérieure</string>
 
     <string name="credits_institution1">inst1</string>
     <string name="credits_institution2">inst2</string>
