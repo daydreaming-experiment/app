@@ -245,22 +245,26 @@ public class DailySequenceService extends RoboService {
 
         int flags = 0;
 
+
         // Should we flash the LED?
         if (sharedPreferences.getBoolean("notification_blink_key", true)) {
             Logger.v(TAG, "Activating lights");
             flags |= Notification.DEFAULT_LIGHTS;
         }
 
-        // Should we vibrate?
-        if (sharedPreferences.getBoolean("notification_vibrator_key", true)) {
-            Logger.v(TAG, "Activating vibration");
-            flags |= Notification.DEFAULT_VIBRATE;
-        }
+        // If this is NOT an MQ, we can vibrate and beep.
+        if (!sequenceType.equals(Sequence.TYPE_MORNING_QUESTIONNAIRE)) {
+            // Should we vibrate?
+            if (sharedPreferences.getBoolean("notification_vibrator_key", true)) {
+                Logger.v(TAG, "Activating vibration");
+                flags |= Notification.DEFAULT_VIBRATE;
+            }
 
-        // Should we beep?
-        if (sharedPreferences.getBoolean("notification_sound_key", true)) {
-            Logger.v(TAG, "Activating sound");
-            flags |= Notification.DEFAULT_SOUND;
+            // Should we beep?
+            if (sharedPreferences.getBoolean("notification_sound_key", true)) {
+                Logger.v(TAG, "Activating sound");
+                flags |= Notification.DEFAULT_SOUND;
+            }
         }
 
         // Create our notification
