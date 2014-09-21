@@ -1,8 +1,10 @@
 package com.brainydroid.daydreaming.ui.filtering;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.database.DataSetObserver;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +15,7 @@ import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import com.brainydroid.daydreaming.R;
+import com.brainydroid.daydreaming.db.Util;
 import com.google.inject.Inject;
 
 import java.util.ArrayList;
@@ -116,17 +119,22 @@ public class AutoCompleteAdapter implements Filterable, ListAdapter {
         text.setText(item.getOriginal());
         TextView tagsView = (TextView)layout.findViewById(R.id.question_auto_list_item_itemTags);
         if (!areFilterResultsEmpty()) {
-            text.setTextColor(context.getResources().getColor(android.R.color.black));
             String joinedTags = item.getJoinedTags();
             if (joinedTags == null) {
                 tagsView.setVisibility(View.GONE);
+                text.setPadding(Util.dpToPx(context, 8), Util.dpToPx(context, 8),
+                        0, Util.dpToPx(context, 8));
             } else {
                 tagsView.setVisibility(View.VISIBLE);
-                tagsView.setText(joinedTags);
+                tagsView.setText("(" + joinedTags + ")");
+                text.setPadding(Util.dpToPx(context, 8), Util.dpToPx(context, 8),
+                        0, 0);
             }
         } else {
             tagsView.setVisibility(View.GONE);
             text.setTextColor(context.getResources().getColor(android.R.color.darker_gray));
+            text.setPadding(Util.dpToPx(context, 8), Util.dpToPx(context, 8),
+                    0, Util.dpToPx(context, 8));
         }
 
         return layout;
