@@ -44,6 +44,7 @@ public class BEQActivity extends RoboFragmentActivity {
     private ArrayList<Sequence> loadedBeginEndQuestionnaires;
     private ArrayList<Sequence> completedBeginEndQuestionnaires;
 
+    private boolean testModeThemeActivated = false;
     private String type;
 
     @Override
@@ -51,6 +52,7 @@ public class BEQActivity extends RoboFragmentActivity {
         Logger.v(TAG, "Creating");
         super.onCreate(savedInstanceState);
         checkFirstLaunch();
+        checkTestMode();
         populateQuestionnairesView();
         ViewGroup godfatherView = (ViewGroup)getWindow().getDecorView();
         FontUtils.setRobotoFont(this, godfatherView);
@@ -99,7 +101,7 @@ public class BEQActivity extends RoboFragmentActivity {
                     @Override
                     public void onClick(View v) {
                         final String status = loadedBeginEndQuestionnaires.get(finalIndex).getStatus();
-                        if (status != null ? status.equals(Sequence.STATUS_UPLOADED_AND_KEEP) : false) {
+                        if (status != null ? (status.equals(Sequence.STATUS_UPLOADED_AND_KEEP) || status.equals(Sequence.STATUS_COMPLETED)) : false) {
                             Logger.d(TAG,"Quesitonnaire {} completed already", Integer.toString(finalIndex+1));
                             Toast.makeText(BEQActivity.this,"Already done",Toast.LENGTH_SHORT).show();
                         } else {
@@ -132,10 +134,10 @@ public class BEQActivity extends RoboFragmentActivity {
 
             boolean isComplete = completedBeginQuestionnairesNames.contains(bq_name);
             String status = loadedBeginEndQuestionnaires.get(i).getStatus();
-            if (status != null ? status.equals(Sequence.STATUS_PENDING) : false) {
-                tv.setCompoundDrawablesWithIntrinsicBounds(R.drawable.status_loading, 0, 0, 0);
+            if (status != null ? status.equals(Sequence.STATUS_MISSED_OR_DISMISSED_OR_INCOMPLETE) : false) {
+                tv.setCompoundDrawablesWithIntrinsicBounds(R.drawable.status_loading_blue, 0, 0, 0);
             } else {
-                tv.setCompoundDrawablesWithIntrinsicBounds(isComplete ? R.drawable.status_ok : R.drawable.status_wrong, 0, 0, 0);
+                tv.setCompoundDrawablesWithIntrinsicBounds(isComplete ? R.drawable.status_ok_blue : R.drawable.status_wrong_blue, 0, 0, 0);
             }
             Logger.v(TAG, "Questionnaire TextView text: {0} - completion is {1}", tv.getText(), isComplete ? "true" : "false");
         }
@@ -199,6 +201,19 @@ public class BEQActivity extends RoboFragmentActivity {
         Logger.d(TAG, "Launching Questionnaire");
         startActivity(questionnaireIntent);
         overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+    }
+
+    private void checkTestMode() {
+        Logger.d(TAG, "Checking test mode status");
+        if (StatusManager.getCurrentModeStatic(this) == StatusManager.MODE_PROD) {
+            Logger.d(TAG, "Setting production theme");
+            setTheme(R.style.daydreamingTheme);
+            testModeThemeActivated = false;
+        } else {
+            Logger.d(TAG, "Setting test theme");
+            setTheme(R.style.daydreamingTestTheme);
+            testModeThemeActivated = true;
+        }
     }
 
 }
