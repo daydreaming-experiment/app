@@ -199,6 +199,7 @@ public class DailySequenceService extends RoboService {
     private synchronized void scheduleProbeExpiry() {
         // Create and schedule the PendingIntent for DailySequenceService
         Intent intent = new Intent(this, DailySequenceService.class);
+        intent.putExtra(SEQUENCE_TYPE, sequenceType);
         intent.putExtra(EXPIRE_PROBE, true);
         intent.putExtra(PROBE_ID, sequence.getId());
 
@@ -281,6 +282,7 @@ public class DailySequenceService extends RoboService {
         if (sequenceType.equals(Sequence.TYPE_PROBE)) {
             // Create dismissal intent
             Intent dismissalIntent = new Intent(this, DailySequenceService.class);
+            dismissalIntent.putExtra(SEQUENCE_TYPE, sequenceType);
             dismissalIntent.putExtra(DISMISS_PROBE, true);
             dismissalIntent.putExtra(PROBE_ID, sequence.getId());
             PendingIntent pendingDismissal = PendingIntent.getService(this,
