@@ -134,7 +134,7 @@ public class BEQActivity extends RoboFragmentActivity {
 
             boolean isComplete = completedBeginQuestionnairesNames.contains(bq_name);
             String status = loadedBeginEndQuestionnaires.get(i).getStatus();
-            if (status != null ? status.equals(Sequence.STATUS_RECENTLY_PARTIALLY_COMPLETED) : false) {
+            if (status != null ? status.equals(Sequence.STATUS_MISSED_OR_DISMISSED_OR_INCOMPLETE) : false) {
                 tv.setCompoundDrawablesWithIntrinsicBounds(R.drawable.status_loading_blue, 0, 0, 0);
             } else {
                 tv.setCompoundDrawablesWithIntrinsicBounds(isComplete ? R.drawable.status_ok_blue : R.drawable.status_wrong_blue, 0, 0, 0);
