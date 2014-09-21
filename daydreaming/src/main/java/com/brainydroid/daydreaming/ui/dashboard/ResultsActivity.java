@@ -16,6 +16,7 @@ import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.db.ParametersStorage;
 import com.brainydroid.daydreaming.db.ProfileStorage;
 import com.brainydroid.daydreaming.db.ResultsStorage;
+import com.brainydroid.daydreaming.network.CryptoStorage;
 import com.brainydroid.daydreaming.network.HttpConversationCallback;
 import com.brainydroid.daydreaming.network.ServerTalker;
 import com.google.inject.Inject;
@@ -36,16 +37,17 @@ public class ResultsActivity extends RoboFragmentActivity {
     @Inject ParametersStorage parametersStorage;
     @Inject StatusManager statusManager;
     @Inject ServerTalker serverTalker;
+    @Inject CryptoStorage cryptoStorage;
     @Inject ProfileStorage profileStorage;
     @Inject ResultsStorage resultsStorage;
     @Inject ErrorHandler errorHandler;
+    @Inject Activity activity;
     @InjectView(R.id.activity_results_webView) private WebView webView;
 
     private boolean failedOnceAlready = false;
     private boolean resultsDownloaded = false;
     private boolean pageLoaded = false;
     private ProgressDialog progressDialog;
-    private Activity activity;
     private JSResults jsResults = null;
 
     public static class JSResults {
@@ -77,7 +79,6 @@ public class ResultsActivity extends RoboFragmentActivity {
         statusManager.setResultsNotified();
         statusManager.setResultsNotifiedDashboard();
 
-        activity = this;
         if (getIntent().getBooleanExtra(DOWNLOAD_RESULTS, true)) {
             resultsDownloaded = false;
             pageLoaded = false;
@@ -226,7 +227,33 @@ public class ResultsActivity extends RoboFragmentActivity {
                         "Oh no! " + description, Toast.LENGTH_SHORT).show();
             }
         });
-        webView.loadUrl(parametersStorage.getResultsPageUrl());
+
+        CryptoStorage.AuthTokenCallback authTokenCallback = new CryptoStorage.AuthTokenCallback() {
+            private String TAG = "launchWebView AuthTokenCallback";
+            @Override
+            public void onAuthTokenReady(String authToken) {
+                if (authToken != null) {
+                    Logger.d(TAG, "AuthToken successfully created. Launching GET.");
+
+                    // Build the url with query arguments
+                    String authenticatedResultsUrl = parametersStorage.getResultsPageUrl();
+                    if (authenticatedResultsUrl.contains("?")) {
+                        authenticatedResultsUrl += "&";
+                    } else {
+                        authenticatedResultsUrl += "?";
+                    }
+                    authenticatedResultsUrl += "auth_token=" + authToken;
+                    webView.loadUrl(authenticatedResultsUrl);
+                } else {
+                    Logger.e(TAG, "Error retrieving auth token");
+                    progressDialog.dismiss();
+                    Toast.makeText(activity, "Could not retrieve your results! " +
+                                    "Please Try again later", Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
+
+        cryptoStorage.createJwsAuthToken(authTokenCallback);
     }
 
     @Override
