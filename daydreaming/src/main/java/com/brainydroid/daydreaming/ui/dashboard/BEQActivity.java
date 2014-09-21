@@ -99,7 +99,7 @@ public class BEQActivity extends RoboFragmentActivity {
                     @Override
                     public void onClick(View v) {
                         final String status = loadedBeginEndQuestionnaires.get(finalIndex).getStatus();
-                        if (status != null ? status.equals(Sequence.STATUS_UPLOADED_AND_KEEP) : false) {
+                        if (status != null ? (status.equals(Sequence.STATUS_UPLOADED_AND_KEEP) || status.equals(Sequence.STATUS_COMPLETED)) : false) {
                             Logger.d(TAG,"Quesitonnaire {} completed already", Integer.toString(finalIndex+1));
                             Toast.makeText(BEQActivity.this,"Already done",Toast.LENGTH_SHORT).show();
                         } else {
@@ -132,10 +132,10 @@ public class BEQActivity extends RoboFragmentActivity {
 
             boolean isComplete = completedBeginQuestionnairesNames.contains(bq_name);
             String status = loadedBeginEndQuestionnaires.get(i).getStatus();
-            if (status != null ? status.equals(Sequence.STATUS_PENDING) : false) {
-                tv.setCompoundDrawablesWithIntrinsicBounds(R.drawable.status_loading, 0, 0, 0);
+            if (status != null ? status.equals(Sequence.STATUS_RECENTLY_PARTIALLY_COMPLETED) : false) {
+                tv.setCompoundDrawablesWithIntrinsicBounds(R.drawable.status_loading_blue, 0, 0, 0);
             } else {
-                tv.setCompoundDrawablesWithIntrinsicBounds(isComplete ? R.drawable.status_ok : R.drawable.status_wrong, 0, 0, 0);
+                tv.setCompoundDrawablesWithIntrinsicBounds(isComplete ? R.drawable.status_ok_blue : R.drawable.status_wrong_blue, 0, 0, 0);
             }
             Logger.v(TAG, "Questionnaire TextView text: {0} - completion is {1}", tv.getText(), isComplete ? "true" : "false");
         }
