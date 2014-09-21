@@ -15,6 +15,7 @@ import com.brainydroid.daydreaming.db.ParametersStorage;
 import com.brainydroid.daydreaming.db.Util;
 import com.brainydroid.daydreaming.sequence.Sequence;
 import com.brainydroid.daydreaming.ui.dashboard.ResultsActivity;
+import com.brainydroid.daydreaming.ui.dashboard.SettingsActivity;
 import com.google.inject.Inject;
 
 import java.util.Calendar;
@@ -135,10 +136,10 @@ public abstract class RecurrentSequenceSchedulerService extends RoboService {
 
         // Get the user's allowed time window
         String startAllowedString = sharedPreferences.getString(
-                "time_window_lb_key",
+                SettingsActivity.TIME_FROM,
                 getString(R.string.settings_time_window_lb_default));
         String endAllowedString = sharedPreferences.getString(
-                "time_window_ub_key",
+                SettingsActivity.TIME_UNTIL,
                 getString(R.string.settings_time_window_ub_default));
 
         startAllowedHour = Util.getHour(startAllowedString);
