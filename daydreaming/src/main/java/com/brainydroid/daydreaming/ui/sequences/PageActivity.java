@@ -63,8 +63,8 @@ public class PageActivity extends RoboFragmentActivity {
     @InjectView(R.id.page_progress_current) TextView page_index_current;
     @InjectView(R.id.page_progress_total) TextView page_index_total;
 
-    @InjectView(R.id.pagegroup_progress_current) TextView pagegroup_index_current;
-    @InjectView(R.id.pagegroup_progress_total) TextView pagegroup_index_total;
+    @InjectView(R.id.pagegroup_progress_current) TextView pageGroup_index_current;
+    @InjectView(R.id.pagegroup_progress_total) TextView pageGroup_index_total;
 
     @InjectResource(R.string.page_too_late_title) String tooLateTitle;
     @InjectResource(R.string.page_too_late_body) String tooLateBody;
@@ -89,12 +89,12 @@ public class PageActivity extends RoboFragmentActivity {
         pageIntroText.setText(sequence.getIntro());
 
         // set progress
-        // pagegroups level
+        // pageGroups level
         page_index_current.setText(Integer.toString(currentPage.getIndexInPageGroup()));
         page_index_total.setText(" / " + Integer.toString(currentPage.getnPages()));
         // pages level
-        pagegroup_index_current.setText(Integer.toString(currentPage.getIndexOfParentPageGroupInSequence()));
-        pagegroup_index_total.setText(" / " + Integer.toString(currentPage.getnPageGroupsInSequence()));
+        pageGroup_index_current.setText(Integer.toString(currentPage.getIndexOfParentPageGroupInSequence()));
+        pageGroup_index_total.setText(" / " + Integer.toString(currentPage.getnPageGroupsInSequence()));
         setRobotoFont();
 
         // If this is a probe that is not being re-opened, and this is the first page,
