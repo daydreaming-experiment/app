@@ -4,14 +4,14 @@ Changelog
 0.23.1
 ------
 
-* Bug fixes:
+* Bug fixes
   * [#288] Launching a begin/end questionnaire crashes
   * [#276] Fix back button behaviour in page activity
 
 0.23.0
 ------
 
-* Enhancements:
+* Enhancements
   * [#273] Add test MEQ buttons in test dashboard
 * Bug fixes
   * [#263] Scheduling problems, settings not honoured
