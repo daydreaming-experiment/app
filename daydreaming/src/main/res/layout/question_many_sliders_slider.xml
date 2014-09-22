@@ -16,8 +16,10 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_toLeftOf="@+id/question_many_sliders_sliderDelete"
+            android:layout_alignParentLeft="true"
             android:textAppearance="@style/ui_font_title_bold"
-            android:textColor="@color/ui_white_text_color"/>
+            android:textColor="@color/ui_white_text_color"
+            android:text="XXXXXXXXX"/>
 
         <ImageButton
             android:id="@id/question_many_sliders_sliderDelete"
@@ -25,9 +27,8 @@
             android:layout_height="20dp"
             android:layout_gravity="center_vertical"
             android:layout_alignParentRight="true"
-            android:background="@drawable/status_wrong"
-            android:layout_margin="8dp"
-            android:padding="8dp"
+            android:background="@drawable/button_garbage"
+            android:padding="20dp"
             android:visibility="gone"
             android:contentDescription="@string/questionManySliders_delete_item"/>
         
