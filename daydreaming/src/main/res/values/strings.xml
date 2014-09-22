@@ -104,8 +104,8 @@
     <string name="gislain_name">Gislain Delaire</string>
     <string name="gislain_description">Designer at Paris</string>
 
-    <string name="mikael_name">Jérôme Sackur</string>
-    <string name="mikael_description">Cognitive Psychologist at Paris \nEcole Normale Supérieure</string>
+    <string name="jerome_name">Jérôme Sackur</string>
+    <string name="jerome_description">Cognitive Psychologist at Paris \nEcole Normale Supérieure</string>
     
     <string name="credits_institution1">inst1</string>
     <string name="credits_institution2">inst2</string>
