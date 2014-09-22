@@ -4,23 +4,29 @@
     android:id="@+id/item_something_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:background="@drawable/white_rectangle_selector" >
 
     <TextView
         android:id="@+id/question_auto_list_item_itemText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
-        android:layout_marginBottom="2dp"
-        android:layout_margin="8dp"/>
+        android:paddingTop="8dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:textAppearance="@style/ui_font_spinner"
+        android:textColor="@color/ui_dark_blue_color"
+        android:text="XXXXXXXXXX"/>
 
     <TextView
         android:id="@+id/question_auto_list_item_itemTags"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:layout_margin="8dp"
-        android:layout_marginLeft="24dp"
-        android:layout_marginTop="2dp"/>
+        android:paddingLeft="25dp"
+        android:paddingRight="8dp"
+        android:paddingBottom="8dp"
+        android:textAppearance="@style/ui_font_bodyText"
+        android:textColor="@color/ui_blue_background_color"
+        android:text="XXXXXXXX"/>
 
 </LinearLayout>

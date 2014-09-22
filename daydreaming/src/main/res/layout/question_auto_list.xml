@@ -25,6 +25,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
         android:orientation="horizontal">
 
         <AutoCompleteTextView
@@ -35,15 +36,22 @@
             android:layout_alignBottom="@id/question_auto_list_addButton"
             android:layout_margin="4dp"
             android:inputType="textCapSentences"
-            android:completionThreshold="2" />
+            android:completionThreshold="2"
+            android:textColorHint="@color/ui_light_gray_text_color"/>
 
-        <Button
+        <com.brainydroid.daydreaming.ui.AlphaButton
             android:id="@id/question_auto_list_addButton"
-            android:text="@string/questionAutoList_add_item"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"/>
-
+            android:layout_alignParentRight="true"
+            android:textAppearance="@style/ui_font_button"
+            android:textColor="@color/ui_dark_blue_color"
+            android:text="@string/questionAutoList_add_item"
+            android:paddingBottom="@dimen/block_button_vertical_padding"
+            android:paddingTop="@dimen/block_button_vertical_padding"
+            android:gravity="center"
+            android:background="@drawable/white_rectangle_selector"
+            />
     </RelativeLayout>
 
 </LinearLayout>
