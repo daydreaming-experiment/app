@@ -16,20 +16,25 @@
             android:id="@+id/question_auto_list_selected_item_itemText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:layout_margin="8dp"/>
+            android:textAppearance="@style/ui_font_bodyText"
+            android:textColor="@color/ui_white_text_color"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:gravity="left"
+            android:text="XXXXXX"/>
 
     </LinearLayout>
 
     <ImageButton
         android:id="@id/question_auto_list_selected_item_itemDelete"
         android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:layout_height="24.5dp"
         android:layout_alignParentRight="true"
         android:layout_gravity="center_vertical"
-        android:background="@drawable/status_wrong"
-        android:layout_margin="8dp"
-        android:padding="8dp"
+        android:background="@drawable/button_garbage"
+        android:layout_margin="20dp"
+        android:padding="20dp"
         android:contentDescription="@string/questionAutoList_delete_item"/>
 
 </RelativeLayout>

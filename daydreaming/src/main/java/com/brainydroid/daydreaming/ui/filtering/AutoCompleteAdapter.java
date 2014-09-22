@@ -119,22 +119,23 @@ public class AutoCompleteAdapter implements Filterable, ListAdapter {
         text.setText(item.getOriginal());
         TextView tagsView = (TextView)layout.findViewById(R.id.question_auto_list_item_itemTags);
         if (!areFilterResultsEmpty()) {
+            text.setTextColor(context.getResources().getColor(R.color.ui_dark_blue_color));
             String joinedTags = item.getJoinedTags();
             if (joinedTags == null) {
                 tagsView.setVisibility(View.GONE);
                 text.setPadding(Util.dpToPx(context, 8), Util.dpToPx(context, 8),
-                        0, Util.dpToPx(context, 8));
+                        Util.dpToPx(context, 8), Util.dpToPx(context, 8));
             } else {
                 tagsView.setVisibility(View.VISIBLE);
                 tagsView.setText("(" + joinedTags + ")");
                 text.setPadding(Util.dpToPx(context, 8), Util.dpToPx(context, 8),
-                        0, 0);
+                        Util.dpToPx(context, 8), 0);
             }
         } else {
             tagsView.setVisibility(View.GONE);
             text.setTextColor(context.getResources().getColor(android.R.color.darker_gray));
             text.setPadding(Util.dpToPx(context, 8), Util.dpToPx(context, 8),
-                    0, Util.dpToPx(context, 8));
+                    Util.dpToPx(context, 8), Util.dpToPx(context, 8));
         }
 
         return layout;
