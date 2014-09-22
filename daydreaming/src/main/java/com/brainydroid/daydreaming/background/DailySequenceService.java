@@ -53,7 +53,6 @@ public class DailySequenceService extends RoboService {
     @Inject SequenceBuilder sequenceBuilder;
     @Inject SharedPreferences sharedPreferences;
     @Inject SntpClient sntpClient;
-    @Inject Sequence sequence;
     @Inject StatusManager statusManager;
     @Inject ErrorHandler errorHandler;
     @Inject Json json;
@@ -136,12 +135,12 @@ public class DailySequenceService extends RoboService {
                 }
 
                 // Populate and notify the sequence
-                populateSequence();
-                notifySequence();
+                Sequence sequence = populateSequence();
+                notifySequence(sequence);
 
                 if (sequenceType.equals(Sequence.TYPE_PROBE)) {
                     // Schedule expiry
-                    scheduleProbeExpiry();
+                    scheduleProbeExpiry(sequence);
                 }
             }
 
@@ -164,7 +163,7 @@ public class DailySequenceService extends RoboService {
      *
      * @return An {@link Intent} to launch our {@link Sequence}
      */
-    private synchronized Intent createSequenceIntent() {
+    private synchronized Intent createSequenceIntent(Sequence sequence) {
         Logger.d(TAG, "Creating sequence Intent - type: {}", sequenceType);
 
         Intent intent = new Intent(this, PageActivity.class);
@@ -190,13 +189,13 @@ public class DailySequenceService extends RoboService {
         String status = probe.getStatus();
         if (status.equals(Sequence.STATUS_PENDING)) {
             probe.setStatus(Sequence.STATUS_RECENTLY_MISSED);
-            notificationManager.cancel(sequenceType, sequence.getRecurrentNotificationId());
+            notificationManager.cancel(sequenceType, probe.getRecurrentNotificationId());
         } else {
             Logger.v(TAG, "Probe {0} was not pending any more, but {1}. Not expiring.", status);
         }
     }
 
-    private synchronized void scheduleProbeExpiry() {
+    private synchronized void scheduleProbeExpiry(Sequence sequence) {
         // Create and schedule the PendingIntent for DailySequenceService
         Intent intent = new Intent(this, DailySequenceService.class);
         intent.putExtra(SEQUENCE_TYPE, sequenceType);
@@ -233,11 +232,11 @@ public class DailySequenceService extends RoboService {
     /**
      * Notify our sequence to the user.
      */
-    private synchronized void notifySequence() {
+    private synchronized void notifySequence(Sequence sequence) {
         Logger.d(TAG, "Notifying sequence of type {}", sequenceType);
 
         // Create the PendingIntent
-        Intent intent = createSequenceIntent();
+        Intent intent = createSequenceIntent(sequence);
         // Make sure our PendingIntent is original: cancel current one, and set a different request
         // code for different types of sequences
         PendingIntent contentIntent = PendingIntent.getActivity(this,
@@ -310,7 +309,7 @@ public class DailySequenceService extends RoboService {
     /**
      * Fill our {@link Sequence} with questions.
      */
-    private synchronized void populateSequence() {
+    private synchronized Sequence populateSequence() {
         Logger.d(TAG, "Populating sequence with sequence of type {}", sequenceType);
 
         // Pick from already created sequences of type sequenceType that were never shown to the
@@ -318,6 +317,7 @@ public class DailySequenceService extends RoboService {
         ArrayList<Sequence> pendingSequences = sequencesStorage.getPendingSequences(
                 sequenceType);
 
+        final Sequence sequence;
         if (pendingSequences != null && pendingSequences.size() > 0) {
             Logger.d(TAG, "Reusing previously pending sequence of type {}", sequenceType);
             sequence = pendingSequences.get(0);
@@ -373,6 +373,8 @@ public class DailySequenceService extends RoboService {
 
         Logger.i(TAG, "Launching NTP request");
         sntpClient.asyncRequestTime(sntpCallback);
+
+        return sequence;
     }
 
     /**
