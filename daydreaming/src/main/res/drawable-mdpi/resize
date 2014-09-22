@@ -1,0 +1,6 @@
+#!/bin/bash
+y=0
+for i in *.png
+do y=$((y+1))
+   convert -resize 50% "$i" "$i.png"
+done
