@@ -9,7 +9,9 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -44,9 +46,12 @@ public class AutoListQuestionViewAdapter
     @Inject AutoListAnswer answer;
     @Inject AutoCompleteAdapterFactory autoCompleteAdapterFactory;
     @Inject ParametersStorage parametersStorage;
+    @Inject InputMethodManager inputMethodManager;
 
     @InjectResource(R.string.questionAutoList_please_select) String errorPleaseSelect;
 
+    private boolean donePressCalledOnce = false;
+    private AutoCompleteTextView autoTextView;
     private LinearLayout selectionLayout;
     private ArrayList<String> initialPossibilities;
     @Inject private HashMap<MetaString, RelativeLayout> selectionViews;
@@ -73,7 +78,7 @@ public class AutoListQuestionViewAdapter
 
         selectionLayout = (LinearLayout)questionView.findViewById(
                 R.id.question_auto_list_selectionList);
-        final AutoCompleteTextView autoTextView = (AutoCompleteTextView)questionView.findViewById(
+        autoTextView = (AutoCompleteTextView)questionView.findViewById(
                 R.id.question_auto_list_autoCompleteTextView);
         Button addButton = (Button)questionView.findViewById(R.id.question_auto_list_addButton);
 
@@ -101,18 +106,18 @@ public class AutoListQuestionViewAdapter
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Logger.d(TAG, "Item " + position + " clicked (id " + id + ")");
-                addSelection(adapter.getItemById(id));
-                autoTextView.setText("");
+                if (addSelection(adapter.getItemById(id))) {
+                    ((RelativeLayout)autoTextView.getParent()).requestFocus();
+                    inputMethodManager.hideSoftInputFromWindow(
+                            autoTextView.getApplicationWindowToken(), 0);
+                    autoTextView.setText("");
+                }
             }
         });
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             // If we can, animate layout changes
             selectionLayout.setLayoutTransition(new LayoutTransition());
-        } else {
-            // Adapt colors for API <= 10
-            autoTextView.setTextColor(context.getResources().getColor(
-                    R.color.ui_dark_blue_color));
         }
 
         Button.OnClickListener addItemClickListener =
@@ -127,6 +132,9 @@ public class AutoListQuestionViewAdapter
                     return;
                 }
                 if (addSelection(MetaString.getInstance(userString))) {
+                    ((RelativeLayout)autoTextView.getParent()).requestFocus();
+                    inputMethodManager.hideSoftInputFromWindow(
+                            autoTextView.getApplicationWindowToken(), 0);
                     autoTextView.setText("");
                     // Update adapter
                     adapter.addPossibility(userString);
@@ -137,6 +145,39 @@ public class AutoListQuestionViewAdapter
 
         addButton.setOnClickListener(addItemClickListener);
 
+        View.OnKeyListener onSoftKeyboardDonePress =
+                new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                    if (donePressCalledOnce) {
+                        // Dirty workaround for this listener being called twice
+                        donePressCalledOnce = false;
+                        return false;
+                    } else {
+                        // Dirty workaround for this listener being called twice
+                        donePressCalledOnce = true;
+                    }
+                    Logger.v(TAG, "Received enter key");
+                    String userString = autoTextView.getText().toString();
+                    if (userString.length() < 2) {
+                        Toast.makeText(context, "Please type in an activity", Toast.LENGTH_SHORT).show();
+                        return false;
+                    }
+                    if (addSelection(MetaString.getInstance(userString))) {
+                        ((RelativeLayout)autoTextView.getParent()).requestFocus();
+                        inputMethodManager.hideSoftInputFromWindow(
+                                autoTextView.getApplicationWindowToken(), 0);
+                        autoTextView.setText("");
+                        // Update adapter
+                        adapter.addPossibility(userString);
+                    }
+                }
+                return false;
+            }
+        };
+
+        autoTextView.setOnKeyListener(onSoftKeyboardDonePress);
 
         ArrayList<View> views = new ArrayList<View>();
         views.add(questionView);
@@ -161,6 +202,8 @@ public class AutoListQuestionViewAdapter
             @Override
             public void onClick(View v) {
                 removeSelection(ms);
+                autoTextView.requestFocus();
+                inputMethodManager.showSoftInput(autoTextView, 0);
             }
         };
         itemLayout.findViewById(R.id.question_auto_list_selected_item_itemDelete)

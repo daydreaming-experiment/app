@@ -2,7 +2,7 @@
     android:id="@+id/question_multiple_choice_rootLinearLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="16dp"
+    android:layout_marginBottom="@dimen/global_inter_question_space"
     android:orientation="vertical" >
 
     <TextView
@@ -10,8 +10,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginBottom="16dp"
-        android:textAppearance="@style/ui_font_big_title_bold"
+        android:layout_marginBottom="@dimen/question_mainText_to_rest"
+        android:textAppearance="@style/ui_font_title_bold"
         android:textColor="@color/ui_white_text_color"/>
 
     <LinearLayout

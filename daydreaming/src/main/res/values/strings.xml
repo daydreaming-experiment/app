@@ -73,8 +73,8 @@
     <string name="sv_glossary_text">A list of useful definitions</string>
     <string name="sv_results_title">Results</string>
     <string name="sv_results_text">When available, a detailed report for you here!</string>
-    <string name="sv_swipe_title">Self Report</string>
-    <string name="sv_swipe_text">Swipe right for a self report</string>
+    <string name="sv_swipe_title">Share your daydream!</string>
+    <string name="sv_swipe_text">Swipe if you can\'t wait for notifications</string>
     <string name="sv_time_elapsed_title">Time Elapsed</string>
     <string name="sv_time_elapsed_text">The duration you have been running this app</string>
     <string name="sv_time_left_title">Time Left</string>
@@ -148,8 +148,8 @@
     <string name="appsettings_allow_blink_text">Blinks at questions</string>
     <string name="appsettings_allow_vibrations_text">Vibrates at questions</string>
     <string name="appsettings_allow_sound_text">Beeps at questions</string>
-    <string name="settings_time_window_lb_default">10:00</string>
-    <string name="settings_time_window_ub_default">19:00</string>
+    <string name="settings_time_window_lb_default">8:00</string>
+    <string name="settings_time_window_ub_default">22:00</string>
 
     <!-- Profile Activity -->
     <string name="firstLaunchProfile_title_activity">Profile</string>
@@ -185,8 +185,8 @@
     <string name="page_button_finish">Finish</string>
     <string name="page_thank_you">Thank you for answering these questions!</string>
     <string name="page_intro_text">Right before the app interrupted you…</string>
-    <string name="page_edit_mode_edit">Edit mode</string>
-    <string name="page_edit_mode_done">Done</string>
+    <string name="page_edit_mode_edit">Add an\nactivity</string>
+    <string name="page_edit_mode_cancel">Cancel</string>
     <string name="page_too_late_title">Oops, too late!</string>
     <string name="page_too_late_body">Probes are meant to be answered quickly, so we can\'t let you answer this one. From now on notifications will disappear on their own after a few minutes. If you want to answer a probe you missed, you can do so in the dashboard, it will suggest any missed probes.</string>
 

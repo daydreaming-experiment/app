@@ -134,6 +134,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
             if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
                 Logger.d(TAG, "receiver started for CONNECTIVITY_ACTION");
                 updateExperimentStatus();
+                updateRecentProbesView();
             } else if (action.equals(StatusManager.ACTION_PARAMETERS_STATUS_CHANGE)) {
                 Logger.d(TAG, "receiver started for ACTION_PARAMETERS_STATUS_CHANGE");
                 if (areParametersUpdating && !statusManager.areParametersUpdated()) {
@@ -142,6 +143,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
                 }
                 areParametersUpdating = statusManager.isParametersSyncRunning();
                 updateExperimentStatus();
+                updateRecentProbesView();
             }
         }
     };
@@ -791,6 +793,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
         // Scheduler services are relaunched once the parameters are updated
         launchParametersUpdate();
         updateExperimentStatus();
+        updateRecentProbesView();
     }
 
     public void setRobotoFont(Activity activity){
@@ -979,7 +982,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
                                     Sequence.STATUS_RECENTLY_PARTIALLY_COMPLETED)) {
                                 msgBuilder.append("You can answer your last" +
                                         " partially completed probe (");
-                                neutralButtonText = "Last partial";
+                                neutralButtonText = "Last";
                             } else {
                                 // We have a problem
                                 logSequenceMarkingError(recentProbe);
@@ -1103,11 +1106,11 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
         showcasesTexts = new ArrayList<String[]>();
         addShowCaseItem(R.id.dashboard_begin_questionnaires_button, getString(R.string.sv_questions_title), getString(R.string.sv_questions_text));
         addShowCaseItem(R.id.dashboard_openAppSettings, getString(R.string.sv_settings_title), getString(R.string.sv_settings_text));
-        addShowCaseItem(R.id.dashboard_glossary_button, getString(R.string.sv_glossary_title), getString(R.string.sv_glossary_text));
-        addShowCaseItem(R.id.dashboard_ExperimentResultsButton, getString(R.string.sv_results_title), getString(R.string.sv_results_text));
-        addShowCaseItem(R.id.dashboard_TimeBox_layout, getString(R.string.sv_swipe_title), getString(R.string.sv_swipe_text));
+        //addShowCaseItem(R.id.dashboard_glossary_button, getString(R.string.sv_glossary_title), getString(R.string.sv_glossary_text));
         addShowCaseItem(R.id.dashboard_ExperimentTimeElapsed2, getString(R.string.sv_time_elapsed_title), getString(R.string.sv_time_elapsed_text));
         addShowCaseItem(R.id.dashboard_ExperimentResultsIn2, getString(R.string.sv_time_left_title), getString(R.string.sv_time_left_text));
+        addShowCaseItem(R.id.dashboard_TimeBox_layout, getString(R.string.sv_swipe_title), getString(R.string.sv_swipe_text));
+        addShowCaseItem(R.id.dashboard_ExperimentResultsButton, getString(R.string.sv_results_title), getString(R.string.sv_results_text));
     }
 
     public void launchShowCaseViewSequence(boolean unique) {

@@ -1,5 +1,9 @@
 package com.brainydroid.daydreaming.db;
 
+import android.content.Context;
+import android.content.res.Resources;
+import android.util.TypedValue;
+
 import com.brainydroid.daydreaming.background.Logger;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -27,6 +31,12 @@ public class Util {
     private static SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT, Locale.US);
 
     @Inject Random random;
+
+    public static int dpToPx(Context context, int dp) {
+        Resources resources = context.getResources();
+        return (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
+                resources.getDisplayMetrics());
+    }
 
     public static String multiplyString(String string, int times, String joinString) {
         Logger.v(TAG, "Multiplying strings");

@@ -1,17 +1,27 @@
 Changelog
 =========
 
+0.24.0
+------
+
+* Enhancements
+  * [#123] Glossary word matching in questions
+  * [#274] Questionnaire activity redesign
+  * ]#224] autoList question design and usability
+  * [#267] manySliders question design and usability
+  * Many design enhancements, and work nearly done on the matrixQuestion design
+
 0.23.1
 ------
 
-* Bug fixes:
+* Bug fixes
   * [#288] Launching a begin/end questionnaire crashes
   * [#276] Fix back button behaviour in page activity
 
 0.23.0
 ------
 
-* Enhancements:
+* Enhancements
   * [#273] Add test MEQ buttons in test dashboard
 * Bug fixes
   * [#263] Scheduling problems, settings not honoured

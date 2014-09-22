@@ -257,7 +257,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/ui_white_text_color"
                     android:textAppearance="@style/ui_font_title_bold"
-                    android:gravity="center_horizontal"
+                    android:gravity="center_horizontal|center_vertical"
                     android:text="@string/dashboard_text_enable_internet"
                     android:id="@+id/dashboard_no_params_text"
                     android:drawablePadding="@dimen/global_text_drawable_padding"
@@ -444,7 +444,7 @@
                             android:layout_width="@dimen/dashboard_icon_size"
                             android:layout_height="@dimen/dashboard_icon_size"
                             android:scaleType="centerInside"
-                            android:background="@drawable/icon_terms_selector"
+                            android:background="@drawable/icon_instructions_selector"
                             android:contentDescription="@null"
                             android:onClick="onClick_launchInstructions"
                             android:layout_centerHorizontal="true"/>

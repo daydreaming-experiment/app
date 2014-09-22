@@ -14,7 +14,7 @@
 
 <!-- LATENCIES -->
     <integer name="welcome_animation_duration">2000</integer> <!-- given in milliseconds-->
-    <integer name="welcome_animation_cycle_duration">500</integer> <!-- given in milliseconds-->
+    <integer name="welcome_animation_cycle_duration">50</integer> <!-- given in milliseconds-->
 
     <integer name="dashboard_swipe_velocity_threshold">500</integer> <!-- given in pix per second -->
 
@@ -61,6 +61,8 @@
 
     <!-- Questions -->
     <dimen  name="slider_question_bar_width" >3dp</dimen>
+    <dimen name="slider_text_to_bar">5dp</dimen>
+    <dimen name="question_mainText_to_rest">10dp</dimen>
 
     <!-- Seekbar -->
     <integer name="thumb_lateral_offset">0</integer>  <!-- in dps! -->
@@ -86,6 +88,7 @@
 
     <!-- OTHER PADDING/MARGIN -->
     <dimen  name="global_text_drawable_padding" >10dp</dimen>
+    <dimen name="global_inter_question_space">40dp</dimen>
 
     <dimen  name="description_text_padding" >15dp</dimen>
     <dimen  name="settings_textpadding_from_icons" >20dp</dimen>

@@ -2,7 +2,7 @@
     android:id="@+id/question_slider_rootLinearLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="16dp"
+    android:layout_marginBottom="@dimen/global_inter_question_space"
     android:orientation="vertical" >
 
     <TextView
@@ -10,15 +10,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginBottom="16dp"
-        android:textAppearance="@style/ui_font_big_title_bold"
+        android:layout_marginBottom="@dimen/question_mainText_to_rest"
+        android:textAppearance="@style/ui_font_title_bold"
         android:textColor="@color/ui_white_text_color"/>
 
     <TextView
         android:id="@+id/question_slider_selectedSeek"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
         android:gravity="center"
         android:text="@string/questionSlider_please_slide"
         android:textAppearance="@style/ui_font_bodyText"
@@ -37,9 +36,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="16dp" >
+        android:layout_height="wrap_content">
 
         <TextView
             android:id="@+id/question_slider_leftHint"
@@ -67,7 +64,7 @@
         android:id="@+id/question_slider_naCheckBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="@dimen/global_inter_question_space"
         android:text="@string/questionSlider_skip"
         android:button="@drawable/custom_checkbox"
         android:gravity="center_vertical"

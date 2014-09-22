@@ -2,7 +2,7 @@
     android:id="@+id/question_many_sliders_rootLinearLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="16dp"
+    android:layout_marginBottom="@dimen/global_inter_question_space"
     android:orientation="vertical" >
 
     <TextView
@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_marginBottom="16dp"
-        android:textAppearance="@style/ui_font_big_title_bold"
+        android:textAppearance="@style/ui_font_title_bold"
         android:textColor="@color/ui_white_text_color"
         android:text="XXXXXXXXX"/>
 
@@ -28,7 +28,6 @@
         android:id="@+id/question_many_sliders_addLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:visibility="gone">
 
         <AutoCompleteTextView
@@ -39,14 +38,21 @@
             android:layout_alignBottom="@id/question_many_sliders_addItem"
             android:layout_margin="4dp"
             android:inputType="textCapSentences"
-            android:completionThreshold="2" />
+            android:completionThreshold="2"
+            android:textColorHint="@color/ui_light_gray_text_color" />
 
-        <Button
+        <com.brainydroid.daydreaming.ui.AlphaButton
             android:id="@id/question_many_sliders_addItem"
             android:text="@string/questionManySliders_add_item"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"/>
+            android:layout_alignParentRight="true"
+            android:textAppearance="@style/ui_font_button"
+            android:textColor="@color/ui_dark_blue_color"
+            android:paddingBottom="@dimen/block_button_vertical_padding"
+            android:paddingTop="@dimen/block_button_vertical_padding"
+            android:gravity="center"
+            android:background="@drawable/white_rectangle_selector" />
 
     </RelativeLayout>
 
