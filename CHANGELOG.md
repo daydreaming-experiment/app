@@ -1,6 +1,16 @@
 Changelog
 =========
 
+0.24.0
+------
+
+* Enhancements
+  * [#123] Glossary word matching in questions
+  * [#274] Questionnaire activity redesign
+  * ]#224] autoList question design and usability
+  * [#267] manySliders question design and usability
+  * Many design enhancements, and work nearly done on the matrixQuestion design
+
 0.23.1
 ------
 
