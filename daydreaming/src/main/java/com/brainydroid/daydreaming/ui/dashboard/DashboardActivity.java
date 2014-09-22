@@ -982,7 +982,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
                                     Sequence.STATUS_RECENTLY_PARTIALLY_COMPLETED)) {
                                 msgBuilder.append("You can answer your last" +
                                         " partially completed probe (");
-                                neutralButtonText = "Last partial";
+                                neutralButtonText = "Last";
                             } else {
                                 // We have a problem
                                 logSequenceMarkingError(recentProbe);
