@@ -11,10 +11,11 @@
 
     <style name="CustomTitle" parent="TextAppearance.ShowcaseView.Title">
         <item name="android:textColor">#ffffffff</item>
+        <item name="android:textAppearance">@style/ui_font_title_bold</item>
     </style>
 
     <style name="CustomDetail">
-        <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
+        <item name="android:textAppearance">@style/ui_font_bodyText</item>
         <item name="android:textColor">#ffffffff</item>
     </style>
 </resources>

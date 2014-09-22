@@ -1106,11 +1106,11 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
         showcasesTexts = new ArrayList<String[]>();
         addShowCaseItem(R.id.dashboard_begin_questionnaires_button, getString(R.string.sv_questions_title), getString(R.string.sv_questions_text));
         addShowCaseItem(R.id.dashboard_openAppSettings, getString(R.string.sv_settings_title), getString(R.string.sv_settings_text));
-        addShowCaseItem(R.id.dashboard_glossary_button, getString(R.string.sv_glossary_title), getString(R.string.sv_glossary_text));
-        addShowCaseItem(R.id.dashboard_ExperimentResultsButton, getString(R.string.sv_results_title), getString(R.string.sv_results_text));
-        addShowCaseItem(R.id.dashboard_TimeBox_layout, getString(R.string.sv_swipe_title), getString(R.string.sv_swipe_text));
+        //addShowCaseItem(R.id.dashboard_glossary_button, getString(R.string.sv_glossary_title), getString(R.string.sv_glossary_text));
         addShowCaseItem(R.id.dashboard_ExperimentTimeElapsed2, getString(R.string.sv_time_elapsed_title), getString(R.string.sv_time_elapsed_text));
         addShowCaseItem(R.id.dashboard_ExperimentResultsIn2, getString(R.string.sv_time_left_title), getString(R.string.sv_time_left_text));
+        addShowCaseItem(R.id.dashboard_TimeBox_layout, getString(R.string.sv_swipe_title), getString(R.string.sv_swipe_text));
+        addShowCaseItem(R.id.dashboard_ExperimentResultsButton, getString(R.string.sv_results_title), getString(R.string.sv_results_text));
     }
 
     public void launchShowCaseViewSequence(boolean unique) {

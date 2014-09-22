@@ -91,8 +91,8 @@ public class PageActivity extends RoboFragmentActivity {
             startSchedulerService();
         }
 
-        pageViewAdapter.inflate(this, outerPageLayout, pageLinearLayout);
         pageIntroText.setText(sequence.getIntro());
+        pageViewAdapter.inflate(this, outerPageLayout, pageLinearLayout);
 
         /* FIXME: commented while #265 isn't settled
         // set progress
