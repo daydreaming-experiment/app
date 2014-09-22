@@ -10,7 +10,9 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.text.method.LinkMovementMethod;
 import android.util.FloatMath;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -46,18 +48,23 @@ public class ManySlidersQuestionViewAdapter
     @InjectResource(R.string.questionSlider_sliders_untouched_multiple)
     String errorUntouched;
     @InjectResource(R.string.questionSlider_please_slide) String textPleaseSlide;
-    @InjectResource(R.string.page_edit_mode_done) String editTextDone;
+    @InjectResource(R.string.page_edit_mode_cancel) String editTextCancel;
     @InjectResource(R.string.page_edit_mode_edit) String editTextEdit;
 
     @Inject private AutoCompleteAdapterFactory autoCompleteAdapterFactory;
     @Inject private HashMap<MetaString, LinearLayout> sliderLayouts;
     @Inject private ManySlidersAnswer answer;
+    @Inject private InputMethodManager inputMethodManager;
 
     private boolean autoCompleteAdapterLoaded = false;
     private ProgressDialog progressDialog = null;
     private LinearLayout rowContainer;
     private boolean isEditMode = false;
+    private boolean donePressCalledOnce = false;
     private Activity activity;
+    RelativeLayout outerPageLayout;
+    LinearLayout questionView;
+    AutoCompleteTextView autoTextView;
 
     @TargetApi(11)
     @Override
@@ -65,6 +72,7 @@ public class ManySlidersQuestionViewAdapter
                                            final LinearLayout questionLayout) {
         Logger.d(TAG, "Inflating question views");
         this.activity = activity;
+        this.outerPageLayout = outerPageLayout;
 
         final ManySlidersQuestionDescriptionDetails details =
                 (ManySlidersQuestionDescriptionDetails)question.getDetails();
@@ -75,7 +83,7 @@ public class ManySlidersQuestionViewAdapter
             parametersStorage.addUserPossibilities(question.getQuestionName(), userSliders);
         }
 
-        final LinearLayout questionView = (LinearLayout)layoutInflater.inflate(
+        questionView = (LinearLayout)layoutInflater.inflate(
                 R.layout.question_many_sliders, questionLayout, false);
 
         rowContainer = (LinearLayout)questionView.findViewById(
@@ -94,7 +102,7 @@ public class ManySlidersQuestionViewAdapter
         }
 
         // Set auto-complete hint and adapter
-        final AutoCompleteTextView autoTextView = (AutoCompleteTextView)questionView
+        autoTextView = (AutoCompleteTextView)questionView
                 .findViewById(R.id.question_many_sliders_autoCompleteTextView);
         autoTextView.setHint(details.getAddItemHint());
         final AutoCompleteAdapter autoCompleteAdapter = autoCompleteAdapterFactory.create();
@@ -126,8 +134,14 @@ public class ManySlidersQuestionViewAdapter
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Logger.d(TAG, "Item " + position + " clicked (id " + id + ")");
-                addSelection(autoCompleteAdapter.getItemById(id));
-                autoTextView.setText("");
+                if (addSelection(autoCompleteAdapter.getItemById(id))) {
+                    ((RelativeLayout)autoTextView.getParent()).requestFocus();
+                    inputMethodManager.hideSoftInputFromWindow(
+                            autoTextView.getApplicationWindowToken(), 0);
+                    autoTextView.setText("");
+
+                    toggleEditMode();
+                }
             }
         });
 
@@ -150,13 +164,17 @@ public class ManySlidersQuestionViewAdapter
                 Logger.v(TAG, "Add button clicked");
                 String userString = autoTextView.getText().toString();
                 if (userString.length() < 2) {
-                    Toast.makeText(context, "No text entered", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Please type in an activity", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if (addSelection(MetaString.getInstance(userString))) {
+                    inputMethodManager.hideSoftInputFromWindow(
+                            autoTextView.getApplicationWindowToken(), 0);
                     autoTextView.setText("");
                     // Update adapter
                     autoCompleteAdapter.addPossibility(userString);
+
+                    toggleEditMode();
                 }
             }
 
@@ -172,13 +190,14 @@ public class ManySlidersQuestionViewAdapter
                 if (!isEditMode) {
                     // Show explanation dialog
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(activity);
-                    alertDialogBuilder.setTitle("Edit mode");
+                    alertDialogBuilder.setTitle("Add or remove activities");
                     alertDialogBuilder
                     .setMessage(details.getDialogText())
-                    .setCancelable(false)
                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            toggleEditMode(outerPageLayout, questionView);
+                            toggleEditMode();
+                            autoTextView.requestFocus();
+                            inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
                         }
                     });
                     // create alert dialog
@@ -188,11 +207,46 @@ public class ManySlidersQuestionViewAdapter
                     FontUtils.setRobotoToAlertDialog(alertDialog, context);
                 } else {
                     // If we're already in edit mode, just get out
-                    toggleEditMode(outerPageLayout, questionView);
+                    toggleEditMode();
                 }
             }
 
         });
+
+        View.OnKeyListener onSoftKeyboardDonePress =
+                new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                    if (donePressCalledOnce) {
+                        // Dirty workaround for this listener being called twice
+                        donePressCalledOnce = false;
+                        return false;
+                    } else {
+                        // Dirty workaround for this listener being called twice
+                        donePressCalledOnce = true;
+                    }
+                    Logger.v(TAG, "Received enter key");
+                    String userString = autoTextView.getText().toString();
+                    if (userString.length() < 2) {
+                        Toast.makeText(context, "Please type in an activity", Toast.LENGTH_SHORT).show();
+                        return false;
+                    }
+                    if (addSelection(MetaString.getInstance(userString))) {
+                        inputMethodManager.hideSoftInputFromWindow(
+                                autoTextView.getApplicationWindowToken(), 0);
+                        autoTextView.setText("");
+                        // Update adapter
+                        autoCompleteAdapter.addPossibility(userString);
+
+                        toggleEditMode();
+                    }
+                }
+                return false;
+            }
+        };
+
+        autoTextView.setOnKeyListener(onSoftKeyboardDonePress);
 
         ArrayList<View> views = new ArrayList<View>();
         views.add(questionView);
@@ -227,7 +281,7 @@ public class ManySlidersQuestionViewAdapter
     }
 
     @TargetApi(11)
-    protected void toggleEditMode(RelativeLayout pageLayout, LinearLayout questionView) {
+    protected void toggleEditMode() {
         // Start ProgressDialog if necessary
         if (!autoCompleteAdapterLoaded && progressDialog == null) {
             progressDialog = ProgressDialog.show(activity, "Loading", "Loading edit mode...");
@@ -249,14 +303,14 @@ public class ManySlidersQuestionViewAdapter
         addLayout.setVisibility(isEditMode ? View.VISIBLE : View.GONE);
 
         // Toggle add button text
-        Button editButton = (Button)pageLayout.findViewById(R.id.page_editModeButton);
-        editButton.setText(isEditMode ? editTextDone : editTextEdit);
+        Button editButton = (Button)outerPageLayout.findViewById(R.id.page_editModeButton);
+        editButton.setText(isEditMode ? editTextCancel : editTextEdit);
 
         // Toggle next and finish buttons (visibility stays the same)
-        AlphaImageButton nextButton = (AlphaImageButton)pageLayout.findViewById(R.id.page_nextButton);
+        AlphaImageButton nextButton = (AlphaImageButton)outerPageLayout.findViewById(R.id.page_nextButton);
         nextButton.setClickable(!isEditMode);
         nextButton.setAlpha(isEditMode ? 0.3f : 1f);
-        AlphaImageButton finishButton = (AlphaImageButton)pageLayout.findViewById(R.id.page_finishButton);
+        AlphaImageButton finishButton = (AlphaImageButton)outerPageLayout.findViewById(R.id.page_finishButton);
         finishButton.setClickable(!isEditMode);
         finishButton.setAlpha(isEditMode ? 0.3f : 1f);
     }
@@ -349,6 +403,11 @@ public class ManySlidersQuestionViewAdapter
                 Logger.v(TAG, "Remove button clicked for item {}, removing slider",
                         sliderLayout.getOrientation());
                 removeSelection(sliderMetaString);
+
+                inputMethodManager.hideSoftInputFromWindow(
+                        autoTextView.getApplicationWindowToken(), 0);
+                autoTextView.setText("");
+                toggleEditMode();
             }
         });
 

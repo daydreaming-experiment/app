@@ -128,7 +128,6 @@ public class AutoListQuestionViewAdapter
                 Logger.d(TAG, "Add button clicked");
                 String userString = autoTextView.getText().toString();
                 if (userString.length() < 2) {
-                    Logger.vRaw(TAG, userString);
                     Toast.makeText(context, "Please type in an activity", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -155,6 +154,9 @@ public class AutoListQuestionViewAdapter
                         // Dirty workaround for this listener being called twice
                         donePressCalledOnce = false;
                         return false;
+                    } else {
+                        // Dirty workaround for this listener being called twice
+                        donePressCalledOnce = true;
                     }
                     Logger.v(TAG, "Received enter key");
                     String userString = autoTextView.getText().toString();
@@ -163,9 +165,6 @@ public class AutoListQuestionViewAdapter
                         return false;
                     }
                     if (addSelection(MetaString.getInstance(userString))) {
-                        // Dirty workaround for this listener being called twice
-                        donePressCalledOnce = true;
-
                         ((RelativeLayout)autoTextView.getParent()).requestFocus();
                         inputMethodManager.hideSoftInputFromWindow(
                                 autoTextView.getApplicationWindowToken(), 0);
