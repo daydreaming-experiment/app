@@ -15,9 +15,10 @@
         android:textAppearance="@style/ui_font_button"
         android:textColor="@color/ui_dark_blue_color"
         android:text="Questionnaire"
+        android:gravity="center_vertical"
         android:background="@drawable/white_rectangle_selector"
         android:id="@+id/beq_name"
-        android:drawableLeft="@drawable/status_wrong"
+        android:drawableLeft="@drawable/status_wrong_blue"
         android:drawablePadding="10dp"
         android:layout_marginBottom="10dp"/>
 </LinearLayout>
