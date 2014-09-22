@@ -1,6 +1,12 @@
 Changelog
 =========
 
+0.24.1
+------
+
+* Bug fixes
+  * Fix NullPointerException in probe expiry
+
 0.24.0
 ------
 
