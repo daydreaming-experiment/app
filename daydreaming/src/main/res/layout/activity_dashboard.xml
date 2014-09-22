@@ -444,7 +444,7 @@
                             android:layout_width="@dimen/dashboard_icon_size"
                             android:layout_height="@dimen/dashboard_icon_size"
                             android:scaleType="centerInside"
-                            android:background="@drawable/icon_terms_selector"
+                            android:background="@drawable/icon_instructions_selector"
                             android:contentDescription="@null"
                             android:onClick="onClick_launchInstructions"
                             android:layout_centerHorizontal="true"/>

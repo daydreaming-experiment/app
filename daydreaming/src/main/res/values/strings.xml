@@ -73,8 +73,8 @@
     <string name="sv_glossary_text">A list of useful definitions</string>
     <string name="sv_results_title">Results</string>
     <string name="sv_results_text">When available, a detailed report for you here!</string>
-    <string name="sv_swipe_title">Self Report</string>
-    <string name="sv_swipe_text">Swipe right for a self report</string>
+    <string name="sv_swipe_title">Share your daydream!</string>
+    <string name="sv_swipe_text">Swipe if you can\'t wait for notifications</string>
     <string name="sv_time_elapsed_title">Time Elapsed</string>
     <string name="sv_time_elapsed_text">The duration you have been running this app</string>
     <string name="sv_time_left_title">Time Left</string>

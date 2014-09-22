@@ -2,13 +2,13 @@
     android:id="@+id/question_many_sliders_slider"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="16dp"
+    android:layout_marginBottom="@dimen/global_inter_question_space"
     android:orientation="vertical" >
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp">
+        android:layout_marginBottom="@dimen/question_mainText_to_rest">
 
         <TextView
             android:id="@+id/question_many_sliders_slider_mainText"
@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_toLeftOf="@+id/question_many_sliders_sliderDelete"
-            android:textAppearance="@style/ui_font_big_title_bold"
+            android:textAppearance="@style/ui_font_title_bold"
             android:textColor="@color/ui_white_text_color"/>
 
         <ImageButton
@@ -37,7 +37,6 @@
         android:id="@+id/question_many_sliders_slider_selectedSeek"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
         android:gravity="center"
         android:text="@string/questionSlider_please_slide"
         android:textAppearance="@style/ui_font_bodyText"
@@ -57,7 +56,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:layout_marginBottom="16dp" >
 
         <TextView
