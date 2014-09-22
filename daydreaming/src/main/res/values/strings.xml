@@ -87,26 +87,26 @@
     <string name="credits_text_title_about">ABOUT</string>
     <string name="credits_text_main1">
     This App has been developped by a team of French researchers in Paris, London and Berlin. 
-    \n Science en Poche ("Science in your pocket") kindly supports this project.</string>
+    \n \nScience en Poche ("Science in your pocket") kindly supports this project.</string>
     <string name="credits_text_main2">We do other apps to. For more information, feel free to visit our website</string>
     <string name="credits_website">www.daydreaming-the-app.net</string>
     <string name="credits_text_title_our_team">OUR TEAM</string>
 
     <string name="vincent_name">Vincent Adam</string>
-    <string name="vincent_description">Phd Student at UCL \n Gatsby Unit</string>
+    <string name="vincent_description">Phd Student at UCL \nGatsby Unit</string>
 
     <string name="sebastien_name">Sébastien Lerique</string>
     <string name="sebastien_description">Phd Student at Berlin</string>
 
     <string name="mikael_name">Mikaël Bastian</string>
-    <string name="mikael_description">Phd Student at Paris \n Ecole Normale Supérieure</string>
+    <string name="mikael_description">Phd Student at Paris \nEcole Normale Supérieure</string>
 
     <string name="gislain_name">Gislain Delaire</string>
     <string name="gislain_description">Designer at Paris</string>
 
-    <string name="jerome_name">Jérôme Sackur</string>
-    <string name="jerome_description">Cognitive Psychologist at Paris \n Ecole Normale Supérieure</string>
-
+    <string name="mikael_name">Jérôme Sackur</string>
+    <string name="mikael_description">Cognitive Psychologist at Paris \nEcole Normale Supérieure</string>
+    
     <string name="credits_institution1">inst1</string>
     <string name="credits_institution2">inst2</string>
     <string name="credits_institution3">inst3</string>
@@ -249,15 +249,15 @@
 
 
     <string name="terms_html">
-        <![CDATA[<p>Welcome to the Daydreaming app! </p>
-<p>This application is part of a <i>research project</i> in cognitive psychology that aims at describing the richness of human mental life and at understanding the conditions causing people to daydream. </p>
+        <![CDATA[
+<p>This application is part of a <i>cognitive science research project</i> that aims at describing the richness of human mental life and at understanding the conditions causing people to daydream. </p>
 <p>The Daydreaming app sends notifications at random moments every day to probe the content and form of your thoughts and the context in which they occur.
-After a few examples, each notification will take just a minute or so to fill out.</p>
+After a few examples, filling each notification will only take about a minute.</p>
 <p>Specific questions about your sleep qualities and how you spent your free time will also be displayed every morning and every evening.</p>
 <p>Finally, during the first three days, the Daydream app requires you to fill three psychological questionnaires about your mental habits.</p>
 
-<p>Your responses, along with your current location, will be sent back to our server <b>in anonymous form</b>. 
-After a month of using the app, <i>you will unlock a “See results” sections</i> that presents a detailed report on what kind of daydreamer you are.</p>
+<p>Your responses, along with your current location, will be sent back to our server <b>in anonymous form</b>. </p>
+<p>After a month of using the app, you will unlock a <i>“See results”</i> sections that presents a <b>detailed report on what kind of daydreamer</b> you are.</p>
 <p>Before starting, you will be asked to answer a few questions about yourself and to define the settings of the app. This should only take a few minutes, and only needs to be done once.</p>
 <p>If you’d like to know more about our research, and how we use your data, please click on “more information“ below. You can also find this information again at any time in the ‘Terms’ section of the app. </p>
 <p>If you’re ready to begin, click “Agree” below.</p>]]>
@@ -269,10 +269,15 @@ After a month of using the app, <i>you will unlock a “See results” sections<
 <hr>
 
 <p><b>What will I do?  </b></p>
-<p>Just wait until the app notifies you that questions are available, and then answer them! In the meanwhile you can start answering the three psychological questionnaires.</p>
+<p>Just wait until the app notifies you that questions are available, and then answer them! In the meanwhile you can fill the three psychological questionnaires.</p>
 
 <p><b>How long will it take? </b></p>
-<p>Filling the three questionnaires will take less than fifteen minutes, and you can fill each of them when you wish. You\'ll do that only twice: in the first three days, and once again in a month. Answering the questions about your thoughts will take about a minute every time, and the app will notify you a few times a day (5 - 7 on average). Answering the questions about your sleep quality and your free time will take again a couple of minutes. So even if you respond to every single notification every single day, you will spend <b>no more than 10 minutes a day</b> using DayDreaming. But if you wish to participate more, you can always spontaneously report your thoughts, by swyping on the dashboard.</p>
+<p><i>Less than 10 minutes/day</i>. Here is the detail:</p>
+<p>Answering the questions about your thoughts will take about a minute every time, and the app will notify you a few times a day (5 - 7 on average).</p> 
+<p>Answering the questions about your sleep quality and your free time will take again a couple of minutes.</p> 
+<p>So even if you respond to every single notification every single day, you will spend <b>no more than 10 minutes a day</b> using DayDreaming. </p>
+<p>But if you wish to participate more, you can always spontaneously report your thoughts, by swyping on the dashboard.</p>
+<p>And as for filling all of the three questionnaires, it will take less than fifteen minutes. You can fill each of them when you wish. You\'ll do that only twice: in the first three days, and once again in a month. </p>
 
 <p><b>What data will I be sharing?</b></p>
 <p>In addition to the responses you give to the questions presented in each notification, we also collect coarse GPS data, which tells us your current location accurate to approximately 0.2 - 0.5 miles.</p>
