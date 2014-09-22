@@ -201,6 +201,31 @@
                     <TextView
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
+                        android:text="@string/jerome_name"
+                        android:textAppearance="@style/ui_font_title_bold"
+                        android:textColor="@color/ui_blue_background_color"/>
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/jerome_description"
+                        android:textAppearance="@style/ui_font_title"
+                        android:textColor="@color/ui_blue_background_color"/>
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="5dp"
+                        android:layout_marginBottom="20dp">
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="left"
+                            android:src="@drawable/logo_ens" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
                         android:text="@string/gislain_name"
                         android:textAppearance="@style/ui_font_title_bold"
                         android:textColor="@color/ui_blue_background_color"/>
