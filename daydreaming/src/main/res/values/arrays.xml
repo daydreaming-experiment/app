@@ -40,6 +40,112 @@
         <item>Advanced Degree (MA, PhD, etc.)</item>
     </string-array>
 
+    <string-array name="languages">
+        <item>Mandarin</item>
+        <item>Spanish</item>
+        <item>English</item>
+        <item>Hindi</item>
+        <item>Arabic</item>
+        <item>Portuguese</item>
+        <item>Bengali</item>
+        <item>Russian</item>
+        <item>Japanese</item>
+        <item>Punjabi</item>
+        <item>German</item>
+        <item>Javanese</item>
+        <item>Wu</item>
+        <item>Malay/Indonesian</item>
+        <item>Telugu</item>
+        <item>Vietnamese</item>
+        <item>Korean</item>
+        <item>French</item>
+        <item>Marathi</item>
+        <item>Tamil</item>
+        <item>Urdu</item>
+        <item>Turkish</item>
+        <item>Italian</item>
+        <item>Cantonese</item>
+        <item>Persian</item>
+        <item>Thai</item>
+        <item>Gujarati</item>
+        <item>Jin</item>
+        <item>Min Nan</item>
+        <item>Polish</item>
+        <item>Pashto</item>
+        <item>Kannada</item>
+        <item>Xiang</item>
+        <item>Malayalam</item>
+        <item>Sundanese</item>
+        <item>Hausa</item>
+        <item>Oriya</item>
+        <item>Burmese</item>
+        <item>Hakka</item>
+        <item>Ukrainian</item>
+        <item>Bhojpuri</item>
+        <item>Tagalog</item>
+        <item>Yoruba</item>
+        <item>Maithili</item>
+        <item>Swahili</item>
+        <item>Uzbek</item>
+        <item>Sindhi</item>
+        <item>Amharic</item>
+        <item>Fula</item>
+        <item>Romanian</item>
+        <item>Oromo</item>
+        <item>Igbo</item>
+        <item>Azerbaijani</item>
+        <item>Awadhi</item>
+        <item>Gan</item>
+        <item>Cebuano</item>
+        <item>Dutch</item>
+        <item>Kurdish</item>
+        <item>Lao</item>
+        <item>Serbo-Croatian</item>
+        <item>Malagasy</item>
+        <item>Saraiki</item>
+        <item>Nepali</item>
+        <item>Sinhalese</item>
+        <item>Chittagonian</item>
+        <item>Zhuang</item>
+        <item>Khmer</item>
+        <item>Assamese</item>
+        <item>Madurese</item>
+        <item>Somali</item>
+        <item>Marwari</item>
+        <item>Magahi</item>
+        <item>Haryanvi</item>
+        <item>Hungarian</item>
+        <item>Chhattisgarhi</item>
+        <item>Greek</item>
+        <item>Chewa</item>
+        <item>Deccan</item>
+        <item>Akan</item>
+        <item>Kazakh</item>
+        <item>Min Bei</item>
+        <item>Sylheti</item>
+        <item>Zulu</item>
+        <item>Czech</item>
+        <item>Kinyarwanda</item>
+        <item>Dhundhari</item>
+        <item>Haitian Creole</item>
+        <item>Min Dong</item>
+        <item>Ilokano</item>
+        <item>Quechua</item>
+        <item>Kirundi</item>
+        <item>Swedish</item>
+        <item>Hmong</item>
+        <item>Shona</item>
+        <item>Uyghur</item>
+        <item>Hiligaynon</item>
+        <item>Mossi</item>
+        <item>Xhosa</item>
+        <item>Belarusian</item>
+        <item>Balochi</item>
+        <item>Afrikaans</item>
+        <item>Icelandic</item>
+        <item>Danish</item>
+        <item>Finnish</item>
+    </string-array>
 
 
 </resources>

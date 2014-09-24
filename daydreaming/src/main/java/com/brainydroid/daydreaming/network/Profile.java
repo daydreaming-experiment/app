@@ -48,13 +48,14 @@ public class Profile {
                    @Assisted("age") String age,
                    @Assisted("gender") String gender,
                    @Assisted("education") String education,
+                   @Assisted("motherTongue") String motherTongue,
                    @Assisted("parametersVersion") String parametersVersion,
                    @Assisted("appVersionName") String appVersionName,
                    @Assisted("appVersionCode") int appVersionCode,
                    @Assisted("mode") String mode) {
         Logger.v(TAG, "Creating a Profile instance with detailed data");
         this.exp_id = expId;
-        this.profile_data = profileDataFactory.create(age, gender, education,
+        this.profile_data = profileDataFactory.create(age, gender, education, motherTongue,
                 parametersVersion, appVersionName, appVersionCode, mode);
     }
 
