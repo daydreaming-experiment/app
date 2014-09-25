@@ -15,6 +15,10 @@ import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.ProfileStorage;
 import com.brainydroid.daydreaming.ui.FontUtils;
 import com.google.inject.Inject;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
@@ -37,6 +41,7 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
     public boolean genderSpinnerTouched = false;
     public boolean ageSpinnerTouched = false;
     public boolean educationSpinnerTouched = false;
+    public String motherTongue;
 
     @Inject ProfileStorage profileStorage;
 
@@ -44,6 +49,8 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
     @InjectView(R.id.firstLaunchProfile_educationSpinner)
     Spinner educationSpinner;
     @InjectView(R.id.firstLaunchProfile_ageSpinner) Spinner ageSpinner;
+    @InjectView(R.id.firstLaunchProfile_motherTongueAutoCompleteTextView) AutoCompleteTextView languageAutoCompleteTextView;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -67,6 +74,7 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
                     genderSpinner.getSelectedItem().toString());
             profileStorage.setEducation(
                     educationSpinner.getSelectedItem().toString());
+            profileStorage.setMotherTongue(languageAutoCompleteTextView.getText().toString());
 
             Logger.d(TAG, "Launching next activity");
 
@@ -83,8 +91,14 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
     }
 
     private boolean checkForm() {
+        motherTongue = languageAutoCompleteTextView.getText().toString();
+        Logger.d(TAG, "MotherTongue set to {}", motherTongue);
+
+        ArrayList<String> languagesArrayList = new ArrayList( Arrays.asList(getResources().getStringArray(R.array.languages)) );
+
         boolean b = genderSpinnerTouched && ageSpinnerTouched &&
-                educationSpinnerTouched;
+                educationSpinnerTouched && languagesArrayList.contains(motherTongue);
+
         if (!b) {
             Logger.d(TAG, "At least one untouched spinner");
             Toast.makeText(this, "Please answer all fields",
@@ -121,6 +135,10 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
                 new MyCustomAdapter(getApplicationContext(),
                         R.layout.spinner_layout_icon, R.array.ages));
 
+        ArrayAdapter<CharSequence> adapter_mother_tongue =
+                ArrayAdapter.createFromResource(this, R.array.languages,
+                        R.layout.spinner_layout);
+        adapter_mother_tongue.setDropDownViewResource(R.layout.spinner_layout);
 
         genderSpinner.setOnItemSelectedListener(
                 new AdapterView.OnItemSelectedListener() {
@@ -170,6 +188,7 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
 
         });
 
+        languageAutoCompleteTextView.setAdapter(adapter_mother_tongue);
 
     }
 

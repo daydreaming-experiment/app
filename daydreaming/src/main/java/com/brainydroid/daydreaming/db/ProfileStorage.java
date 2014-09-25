@@ -22,6 +22,8 @@ public class ProfileStorage {
     private static String PROFILE_AGE = "profileAge";
     private static String PROFILE_GENDER = "profileGender";
     private static String PROFILE_EDUCATION = "profileEducation";
+    private static String PROFILE_MOTHER_TONGUE = "profileMotherTongue";
+
     public static String PROFILE_PARAMETERS_VERSION =
             "profileParametersVersion";
 
@@ -71,6 +73,16 @@ public class ProfileStorage {
 
     private String getEducation() {
         return sharedPreferences.getString(statusManager.getCurrentModeName() + PROFILE_EDUCATION, null);
+    }
+
+    public void setMotherTongue(String motherTongue) {
+        Logger.d(TAG, "{0} - Setting motherTongue to {1}", statusManager.getCurrentModeName(), motherTongue);
+        eSharedPreferences.putString(statusManager.getCurrentModeName() + PROFILE_MOTHER_TONGUE, motherTongue);
+        setIsDirtyAndCommit();
+    }
+
+    private String getMotherTongue() {
+        return sharedPreferences.getString(statusManager.getCurrentModeName() + PROFILE_MOTHER_TONGUE, null);
     }
 
     public void setParametersVersion(String version) {
@@ -141,7 +153,7 @@ public class ProfileStorage {
     public Profile getProfile() {
         Logger.d(TAG, "Building Profile instance from saved data");
         return profileFactory.create(parametersStorageProvider.get().getBackendExpId(),
-                getAge(), getGender(), getEducation(),
+                getAge(), getGender(), getEducation(), getMotherTongue(),
                 getParametersVersion(), getAppVersionName(),
                 getAppVersionCode(), statusManager.getCurrentModeName());
     }
@@ -156,6 +168,7 @@ public class ProfileStorage {
         eSharedPreferences.remove(statusManager.getCurrentModeName() + PROFILE_IS_DIRTY);
         eSharedPreferences.remove(statusManager.getCurrentModeName() + PROFILE_AGE);
         eSharedPreferences.remove(statusManager.getCurrentModeName() + PROFILE_GENDER);
+        eSharedPreferences.remove(statusManager.getCurrentModeName() + PROFILE_MOTHER_TONGUE);
         eSharedPreferences.remove(statusManager.getCurrentModeName() + PROFILE_EDUCATION);
         eSharedPreferences.remove(statusManager.getCurrentModeName() + PROFILE_PARAMETERS_VERSION);
         eSharedPreferences.commit();
