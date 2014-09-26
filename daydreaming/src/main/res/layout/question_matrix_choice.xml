@@ -2,7 +2,6 @@
     android:id="@+id/question_matrix_choice_rootLinearLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/global_inter_question_space"
     android:orientation="vertical" >
 
     <TextView

@@ -141,6 +141,7 @@
 
     <!-- ProfileActivity -->
     <dimen  name="profile_spinner_text_vertical_padding" >10sp</dimen>
+    <dimen  name="profile_editText_text_left_padding" >40dp</dimen>
     <dimen  name="profile_spinner_text_left_padding" >30dp</dimen>
     <dimen  name="profile_spinner_side_padding" >10dp</dimen>
     <dimen  name="profile_spinner_icon_left_margin" >5dp</dimen>

@@ -91,7 +91,13 @@ public class PageActivity extends RoboFragmentActivity {
             startSchedulerService();
         }
 
-        pageIntroText.setText(sequence.getIntro());
+        String introText = sequence.getIntro();
+        if(introText.isEmpty()) {
+            Logger.d(TAG,"No intro text, remove intro layout");
+            pageIntroText.setVisibility(View.GONE);
+        } else {
+            pageIntroText.setText(sequence.getIntro());
+        }
         pageViewAdapter.inflate(this, outerPageLayout, pageLinearLayout);
 
         /* FIXME: commented while #265 isn't settled

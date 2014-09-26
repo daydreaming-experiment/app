@@ -2,19 +2,32 @@ package com.brainydroid.daydreaming.ui.firstlaunchsequence;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Typeface;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.ProfileStorage;
 import com.brainydroid.daydreaming.ui.FontUtils;
 import com.google.inject.Inject;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
@@ -37,13 +50,17 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
     public boolean genderSpinnerTouched = false;
     public boolean ageSpinnerTouched = false;
     public boolean educationSpinnerTouched = false;
+    public String motherTongue;
 
     @Inject ProfileStorage profileStorage;
+    @Inject InputMethodManager inputMethodManager;
 
     @InjectView(R.id.firstLaunchProfile_genderSpinner) Spinner genderSpinner;
     @InjectView(R.id.firstLaunchProfile_educationSpinner)
     Spinner educationSpinner;
     @InjectView(R.id.firstLaunchProfile_ageSpinner) Spinner ageSpinner;
+    @InjectView(R.id.firstLaunchProfile_motherTongueAutoCompleteTextView) AutoCompleteTextView languageAutoCompleteTextView;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -67,6 +84,7 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
                     genderSpinner.getSelectedItem().toString());
             profileStorage.setEducation(
                     educationSpinner.getSelectedItem().toString());
+            profileStorage.setMotherTongue(languageAutoCompleteTextView.getText().toString());
 
             Logger.d(TAG, "Launching next activity");
 
@@ -83,8 +101,15 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
     }
 
     private boolean checkForm() {
+        motherTongue = languageAutoCompleteTextView.getText().toString();
+        Logger.d(TAG, "MotherTongue set to {}", motherTongue);
+
+        ArrayList<String> languagesArrayList = new ArrayList<String>(
+                Arrays.asList(getResources().getStringArray(R.array.languages)));
+
         boolean b = genderSpinnerTouched && ageSpinnerTouched &&
-                educationSpinnerTouched;
+                educationSpinnerTouched && languagesArrayList.contains(motherTongue);
+
         if (!b) {
             Logger.d(TAG, "At least one untouched spinner");
             Toast.makeText(this, "Please answer all fields",
@@ -121,6 +146,10 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
                 new MyCustomAdapter(getApplicationContext(),
                         R.layout.spinner_layout_icon, R.array.ages));
 
+        ArrayAdapter<CharSequence> adapter_mother_tongue =
+                ArrayAdapter.createFromResource(this, R.array.languages,
+                        R.layout.spinner_layout);
+        adapter_mother_tongue.setDropDownViewResource(R.layout.spinner_layout);
 
         genderSpinner.setOnItemSelectedListener(
                 new AdapterView.OnItemSelectedListener() {
@@ -157,19 +186,44 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
         ageSpinner.setOnItemSelectedListener(
                 new AdapterView.OnItemSelectedListener() {
 
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view,
-                                       int i, long l) {
-                ageSpinnerTouched = i > 0;
-            }
+                    @Override
+                    public void onItemSelected(AdapterView<?> adapterView, View view,
+                                               int i, long l) {
+                        ageSpinnerTouched = i > 0;
+                    }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-                ageSpinnerTouched = false;
-            }
+                    @Override
+                    public void onNothingSelected(AdapterView<?> adapterView) {
+                        ageSpinnerTouched = false;
+                    }
 
+                }
+        );
+
+        languageAutoCompleteTextView.setAdapter(adapter_mother_tongue);
+
+        languageAutoCompleteTextView.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                    // Hide keyboard
+                    inputMethodManager.hideSoftInputFromWindow(
+                            languageAutoCompleteTextView.getApplicationWindowToken(), 0);
+                    ((LinearLayout)languageAutoCompleteTextView.getParent()).requestFocus();
+                }
+                return false;
+            }
         });
 
+        languageAutoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // Hide keyboard
+                inputMethodManager.hideSoftInputFromWindow(
+                        languageAutoCompleteTextView.getApplicationWindowToken(), 0);
+                ((LinearLayout)languageAutoCompleteTextView.getParent()).requestFocus();
+            }
+        });
 
     }
 

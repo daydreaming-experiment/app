@@ -58,8 +58,6 @@
                 android:textColor="@color/ui_white_text_color"/>
 
 
-
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -88,8 +86,6 @@
                     android:paddingLeft="@dimen/profile_spinner_side_padding"
                     android:prompt="@string/firstLaunchProfile_Spinner_age_prompt"
                     android:background="@drawable/profile_spinner_box_selector" />
-
-
 
             </LinearLayout>
 
@@ -121,7 +117,6 @@
                     android:prompt="@string/firstLaunchProfile_Spinner_gender_prompt"
                     android:background="@drawable/profile_spinner_box_selector"
                     />
-
 
             </LinearLayout>
 
@@ -156,9 +151,44 @@
                     android:background="@drawable/profile_spinner_box_selector"
                     />
 
-
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:focusableInTouchMode="true"
+                android:layout_marginBottom="@dimen/profile_field_vertical_spacing"
+                >
+
+                <TextView
+                    android:id="@+id/firstLaunchProfile_textMotherTongue"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="2"
+                    android:layout_marginRight="@dimen/profile_field_to_spinner_margin"
+                    android:text="@string/firstLaunchProfile_text_mother_tongue"
+                    android:textAppearance="@style/ui_font_title"
+                    android:textColor="@color/ui_white_text_color"/>
+
+                <AutoCompleteTextView
+                    android:id="@+id/firstLaunchProfile_motherTongueAutoCompleteTextView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="3"
+                    android:singleLine = "true"
+                    android:hint="@string/firstLaunchProfile_hint_mother_tongue"
+                    android:textColorHint="@color/ui_blue_background_color"
+                    android:paddingBottom="@dimen/profile_spinner_text_vertical_padding"
+                    android:paddingTop="@dimen/profile_spinner_text_vertical_padding"
+                    android:paddingLeft="@dimen/profile_editText_text_left_padding"
+                    android:textColor="@color/ui_blue_background_color"
+                    android:background="@drawable/profile_spinner_box"
+                    />
+
+            </LinearLayout>
 
         </LinearLayout>
 
