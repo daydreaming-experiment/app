@@ -2,14 +2,23 @@ package com.brainydroid.daydreaming.ui.firstlaunchsequence;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Typeface;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.ProfileStorage;
@@ -44,6 +53,7 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
     public String motherTongue;
 
     @Inject ProfileStorage profileStorage;
+    @Inject InputMethodManager inputMethodManager;
 
     @InjectView(R.id.firstLaunchProfile_genderSpinner) Spinner genderSpinner;
     @InjectView(R.id.firstLaunchProfile_educationSpinner)
@@ -94,7 +104,8 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
         motherTongue = languageAutoCompleteTextView.getText().toString();
         Logger.d(TAG, "MotherTongue set to {}", motherTongue);
 
-        ArrayList<String> languagesArrayList = new ArrayList( Arrays.asList(getResources().getStringArray(R.array.languages)) );
+        ArrayList<String> languagesArrayList = new ArrayList<String>(
+                Arrays.asList(getResources().getStringArray(R.array.languages)));
 
         boolean b = genderSpinnerTouched && ageSpinnerTouched &&
                 educationSpinnerTouched && languagesArrayList.contains(motherTongue);
@@ -175,20 +186,44 @@ public class FirstLaunch03ProfileActivity extends FirstLaunchActivity {
         ageSpinner.setOnItemSelectedListener(
                 new AdapterView.OnItemSelectedListener() {
 
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view,
-                                       int i, long l) {
-                ageSpinnerTouched = i > 0;
-            }
+                    @Override
+                    public void onItemSelected(AdapterView<?> adapterView, View view,
+                                               int i, long l) {
+                        ageSpinnerTouched = i > 0;
+                    }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-                ageSpinnerTouched = false;
-            }
+                    @Override
+                    public void onNothingSelected(AdapterView<?> adapterView) {
+                        ageSpinnerTouched = false;
+                    }
 
-        });
+                }
+        );
 
         languageAutoCompleteTextView.setAdapter(adapter_mother_tongue);
+
+        languageAutoCompleteTextView.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                    // Hide keyboard
+                    inputMethodManager.hideSoftInputFromWindow(
+                            languageAutoCompleteTextView.getApplicationWindowToken(), 0);
+                    ((LinearLayout)languageAutoCompleteTextView.getParent()).requestFocus();
+                }
+                return false;
+            }
+        });
+
+        languageAutoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // Hide keyboard
+                inputMethodManager.hideSoftInputFromWindow(
+                        languageAutoCompleteTextView.getApplicationWindowToken(), 0);
+                ((LinearLayout)languageAutoCompleteTextView.getParent()).requestFocus();
+            }
+        });
 
     }
 
