@@ -1,6 +1,16 @@
 Changelog
 =========
 
+0.25.0
+------
+
+* Enhancements
+  * [#305] MatrixQuestion doesn't need to scroll
+  * [#306] If intro text is empty, hide the extra space
+  * Add mother tongue in profile and first launch
+* Bug fixes
+  * Add Jérôme in Credits, was missing
+
 0.24.1
 ------
 
