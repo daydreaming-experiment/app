@@ -253,16 +253,33 @@
 
     <string name="terms_html">
         <![CDATA[
-<p>This application is part of a <i>cognitive science research project</i> that aims at describing the richness of human mental life and at understanding the conditions causing people to daydream. </p>
-<p>The Daydreaming app sends notifications at random moments every day to probe the content and form of your thoughts and the context in which they occur.
-After a few examples, filling each notification will only take about a minute.</p>
-<p>Specific questions about your sleep qualities and how you spent your free time will also be displayed every morning and every evening.</p>
-<p>Finally, during the first three days, the Daydream app requires you to fill three psychological questionnaires about your mental habits.</p>
+<p>This application is part of a <i>cognitive science research project</i>. As such, it requires your informed consent. Please read the following and uninstall the app if you disagree with anything.</p>
 
-<p>Your responses, along with your current location, will be sent back to our server <b>in anonymous form</b>. </p>
-<p>After a month of using the app, you will unlock a <i>“See results”</i> sections that presents a <b>detailed report on what kind of daydreamer</b> you are.</p>
-<p>Before starting, you will be asked to answer a few questions about yourself and to define the settings of the app. This should only take a few minutes, and only needs to be done once.</p>
-<p>If you’d like to know more about our research, and how we use your data, please click on “more information“ below. You can also find this information again at any time in the ‘Terms’ section of the app. </p>
+<p><b>What data will I be sharing?</b></p>
+<p>Scientific research is based on data collection and analysis. The app collects your responses to the questionnaires and probes. Your coarse GPS data, which tells us your current location with a 0.2 - 0.5 miles error is also collected every 20 minutes. Crucially, these two kind of data are sent to our server <b> in anonymous form </b>, with a personnalized but arbitrary identification number. </p>
+
+<p><b>What will you do with this data?</b></p>
+<p><i>Research!</i> We’ll combine your data with data from thousands of other people to ask questions like: what activities tend to precipitate daydreaming? In what locations are people most likely to daydream? What kind of people are more or less likely to experience mind wandering? And so on. We expect to publish our findings in traditional peer-reviewed social/cognitive science journals.</p>
+
+<p><b>Is it anonymous?</b><p>
+<p><i>Yes</i>. We deliberately avoid asking you for any identifying information such as your email address, name, address, etc. If you look at the app permissions you’ll note that the only permissions we ask for are network access (required in order to send your data back to our server) and coarse GPS data (which we use to determine where you were when you answered the notification).</p>
+
+<p><b>Is it confidential?</b></p>
+<p><i>Yes</i>. We will not share your responses with anyone except the research team. But remember that since your responses are anonymous to begin with, so it’s not as though the data is of much use to anyone except us.</p>
+
+<p><b>Is it secure?</b></p>
+<p><i>Yes</i>. Your data is sent back to our server over a secure connection.</p>
+
+<p><b>Do I have to take part in the research to use the app?</b></p>
+<p>Technically, no; you can choose to opt out of sending your data to our server. But if you do opt out, we won’t be able to analyze your responses and provide you with any feedback about your daydreaming tendencies, so we’re not sure why you’d want to use the app without participating in the research!</p>
+
+<p><b>Can I stop participating in the research at any time?</b></p>
+<p>Absolutely. You can remove or stop using the app at any time.</p>
+
+<p><b>How much data does it use?</b></p>
+<p>Very little: under 10kb per day. To put it in perspective, this is much less than the vast majority of apps you can install from the Play Store, and is only a fraction of the amount of data an app like Google Maps will use in a typical session.</p>
+
+<p>If you’d like to know more about the app, please click on “more information“ below. You can also find this information again at any time in the ‘Terms’ section of the app. </p>
 <p>If you’re ready to begin, click “Agree” below.</p>]]>
     </string>
 
@@ -282,29 +299,12 @@ After a few examples, filling each notification will only take about a minute.</
 <p>But if you wish to participate more, you can always spontaneously report your thoughts, by swyping on the dashboard.</p>
 <p>And as for filling all of the three questionnaires, it will take less than fifteen minutes. You can fill each of them when you wish. You\'ll do that only twice: in the first three days, and once again in a month. </p>
 
-<p><b>What data will I be sharing?</b></p>
-<p>In addition to the responses you give to the questions presented in each notification, we also collect coarse GPS data, which tells us your current location accurate to approximately 0.2 - 0.5 miles.</p>
+<p><b>When do I get to see my results? </b></p>
+<p>After 30 days, you will unlock a <i>“See results”</i> sections that presents a <b>detailed report on what kind of daydreamer</b> you are.</p>
+<p>After 60 days, we will provide you with a comparison with the people that also completed the app.</p>
 
-<p><b>What will you do with this data?</b></p>
-<p><i>Research!</i> We’ll combine your data with data from thousands of other people to ask questions like: what activities tend to precipitate daydreaming? In what locations are people most likely to daydream? What kind of people are more or less likely to experience mind wandering? And so on. We expect to publish our findings in traditional peer-reviewed social/cognitive science journals.</p>
-
-<p><b>Is it anonymous?</b><p>
-<p><i>Yes</i>. We deliberately avoid asking you for any identifying information such as your email address, name, address, etc. If you look at the app permissions you’ll note that the only permissions we ask for are network access (required in order to send your data back to our server) and coarse GPS data (which we use to determine where you were when you answered the notification).<p>
-
-<p><b>Is it confidential?</b></p>
-<p>Yes. We will not share your responses with anyone except the research team. But remember that since your responses are anonymous to begin with, so it’s not as though the data is of much use to anyone except us.</p>
-
-<p><b>Is it secure?</b></p>
-<p>Yes. Your data is sent back to our server over a secure connection.<p>
-
-<p><b>Do I have to take part in the research to use the app?</b></p>
-<p>Technically, no; you can choose to opt out of sending your data to our server. But if you do opt out, we won’t be able to analyze your responses and provide you with any feedback about your daydreaming tendencies, so we’re not sure why you’d want to use the app without participating in the research!</p>
-
-<p><b>Can I stop participating in the research at any time?</b></p>
-<p>Absolutely. You can remove or stop using the app at any time.</p>
-
-<p><b>How much data does it use?</b></p>
-<p>Very little: under 10kb per day. To put it in perspective, this is much less than the vast majority of apps you can install from the Play Store, and is only a fraction of the amount of data an app like Google Maps will use in a typical session.</p>
+<p><b>Why do I have to wait this long? </b></p>
+<p>Analysis must be done on sufficient data, and we don't want to provide you with a faulty summary. For example, if you want to know whether you daydream more at home or at work, you must answer many reports. Reports that would be of course both at home and at work, but also at different times a day, different days, and even different weeks. All these reports would drown errors arising from extraordinary contexts: in case you would be particularly tired one day, or you would have an very busy week, or a specific event at home, or even simply made a mistake when reporting!</p>
 
 ]]>
     </string>
