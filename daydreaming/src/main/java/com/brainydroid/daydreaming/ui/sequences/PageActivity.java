@@ -337,7 +337,7 @@ public class PageActivity extends RoboFragmentActivity {
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-                String skipText = "Skip those";
+                String skipText = "Skip";
                 if (currentPage.isLastBeforeBonuses()) {
                     skipText = "Nope, had enough";
                 }
