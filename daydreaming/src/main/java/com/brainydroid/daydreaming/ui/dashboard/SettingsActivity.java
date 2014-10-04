@@ -13,16 +13,23 @@ import android.text.format.DateFormat;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.*;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.TimePicker;
+import android.widget.Toast;
+
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.db.Util;
-import com.brainydroid.daydreaming.ui.firstlaunchsequence.FirstLaunch00WelcomeActivity;
 import com.brainydroid.daydreaming.ui.FontUtils;
 import com.brainydroid.daydreaming.ui.TimePickerFragment;
-import com.brainydroid.daydreaming.ui.sequences.PageActivity;
+import com.brainydroid.daydreaming.ui.firstlaunchsequence.FirstLaunch00WelcomeActivity;
 import com.google.inject.Inject;
+
 import roboguice.activity.RoboFragmentActivity;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectResource;
@@ -41,8 +48,8 @@ public class SettingsActivity extends RoboFragmentActivity {
     private static String NOTIF_BLINK = "notification_blink_key";
     private static String NOTIF_SOUND = "notification_sound_key";
 
-    @InjectView(R.id.settings_time_text_from_layout)   LinearLayout layout_time_from;
-    @InjectView(R.id.settings_time_text_until_layout) LinearLayout layout_time_until;
+    @InjectView(R.id.settings_time_text_from_layout)   LinearLayout fromLayout;
+    @InjectView(R.id.settings_time_text_until_layout) LinearLayout untilLayout;
 
     @InjectView(R.id.settings_time_text_from) TextView tv_time_from;
     @InjectView(R.id.settings_time_text_until) TextView tv_time_until;
@@ -107,26 +114,28 @@ public class SettingsActivity extends RoboFragmentActivity {
 
         Logger.v(TAG, "Creating Listeners");
 
-        layout_time_from.setOnClickListener(new View.OnClickListener() {
+        fromLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                String Time_from = sharedPreferences.getString(TIME_FROM, defaultTimePreferenceMin);
-                final int minute_from = Integer.parseInt(Time_from.substring(3, 5));
-                final int hour_from = Integer.parseInt(Time_from.substring(0, 2));
+                String timeFrom = sharedPreferences.getString(TIME_FROM, defaultTimePreferenceMin);
+                String[] fromParts = timeFrom.split(":");
+                final int minuteFrom = Integer.parseInt(fromParts[1]);
+                final int hourFrom = Integer.parseInt(fromParts[0]);
 
-                DialogFragment newFragment = new TimePickerFragment() {
+                DialogFragment fromPicker = new TimePickerFragment() {
 
                     @Override
                     public Dialog onCreateDialog(Bundle savedInstanceState) {
-                        return new TimePickerDialog(getActivity(), this, hour_from, minute_from, DateFormat.is24HourFormat(getActivity()));
+                        return new TimePickerDialog(getActivity(), this, hourFrom, minuteFrom,
+                                DateFormat.is24HourFormat(getActivity()));
                     }
 
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                         // Update shared preference
                         SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putString(TIME_FROM, pad(hourOfDay) + ":" + pad(minute));
+                        editor.putString(TIME_FROM, hourOfDay + ":" + pad(minute));
                         editor.apply();
 
                         // Listener can correct and update the view here
@@ -137,30 +146,32 @@ public class SettingsActivity extends RoboFragmentActivity {
 
                 };
 
-                newFragment.show(getSupportFragmentManager(), "timePicker_from");
+                fromPicker.show(getSupportFragmentManager(), "timePicker_from");
             }
         });
 
-        layout_time_until.setOnClickListener(new View.OnClickListener() {
+        untilLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                String Time_until = sharedPreferences.getString(TIME_UNTIL, defaultTimePreferenceMax);
-                final int minute_until = Integer.parseInt(Time_until.substring(3, 5));
-                final int hour_until = Integer.parseInt(Time_until.substring(0, 2));
+                String timeUntil = sharedPreferences.getString(TIME_UNTIL, defaultTimePreferenceMax);
+                String[] untilParts = timeUntil.split(":");
+                final int minuteUntil = Integer.parseInt(untilParts[1]);
+                final int hourUntil = Integer.parseInt(untilParts[0]);
 
-                DialogFragment newFragment = new TimePickerFragment() {
+                DialogFragment untilPicker = new TimePickerFragment() {
 
                     @Override
                     public Dialog onCreateDialog(Bundle savedInstanceState) {
-                        return new TimePickerDialog(getActivity(), this, hour_until, minute_until, DateFormat.is24HourFormat(getActivity()));
+                        return new TimePickerDialog(getActivity(), this, hourUntil, minuteUntil,
+                                DateFormat.is24HourFormat(getActivity()));
                     }
 
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                         // Update shared preference
                         SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putString(TIME_UNTIL, pad(hourOfDay) + ":" + pad(minute));
+                        editor.putString(TIME_UNTIL, hourOfDay + ":" + pad(minute));
                         editor.apply();
 
                         // Listener can correct and update the view here
@@ -171,7 +182,7 @@ public class SettingsActivity extends RoboFragmentActivity {
 
                 };
 
-                newFragment.show(getSupportFragmentManager(), "timePicker_until");
+                untilPicker.show(getSupportFragmentManager(), "timePicker_until");
             }
         });
 
