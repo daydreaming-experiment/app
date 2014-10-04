@@ -186,6 +186,12 @@ public class DailySequenceService extends RoboService {
     private synchronized void expireProbe(int probeId) {
         Logger.v(TAG, "Expiring probe");
         Sequence probe = sequencesStorage.get(probeId);
+        if (probe == null) {
+            Logger.v(TAG, "Probe not in DB any more, probably answered+synced+flushed. " +
+                    "No need to expire it.");
+            return;
+        }
+
         String status = probe.getStatus();
         if (status.equals(Sequence.STATUS_PENDING)) {
             probe.setStatus(Sequence.STATUS_RECENTLY_MISSED);
