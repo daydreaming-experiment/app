@@ -54,11 +54,11 @@ public class SettingsActivity extends RoboFragmentActivity {
     @InjectView(R.id.settings_time_text_from) TextView tv_time_from;
     @InjectView(R.id.settings_time_text_until) TextView tv_time_until;
 
-    @InjectView(R.id.appsettings_allow_blink_check) CheckBox blink_check;
-    @InjectView(R.id.appsettings_allow_sound_check) CheckBox sound_check;
-    @InjectView(R.id.appsettings_allow_vibrations_check) CheckBox vibrations_check;
+    @InjectView(R.id.appsettings_allow_blink_check) CheckBox blinkCheck;
+    @InjectView(R.id.appsettings_allow_sound_check) CheckBox soundCheck;
+    @InjectView(R.id.appsettings_allow_vibrations_check) CheckBox vibrationsCheck;
 
-    @InjectView(R.id.appsettings_testmode_button) ImageButton test_button;
+    @InjectView(R.id.appsettings_testmode_button) ImageButton testButton;
 
     @Inject SharedPreferences sharedPreferences;
     @Inject StatusManager statusManager;
@@ -186,40 +186,40 @@ public class SettingsActivity extends RoboFragmentActivity {
             }
         });
 
-        blink_check.setOnClickListener(new View.OnClickListener() {
+        blinkCheck.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putBoolean(NOTIF_BLINK, blink_check.isChecked()); // value to store
+                editor.putBoolean(NOTIF_BLINK, blinkCheck.isChecked()); // value to store
                 editor.apply();
             }
 
         });
 
-        vibrations_check.setOnClickListener(new View.OnClickListener() {
+        vibrationsCheck.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putBoolean(NOTIF_VIBRATION, vibrations_check.isChecked()); // value to store
+                editor.putBoolean(NOTIF_VIBRATION, vibrationsCheck.isChecked()); // value to store
                 editor.apply();
             }
 
         });
 
-        sound_check.setOnClickListener(new View.OnClickListener() {
+        soundCheck.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putBoolean(NOTIF_SOUND, sound_check.isChecked()); // value to store
+                editor.putBoolean(NOTIF_SOUND, soundCheck.isChecked()); // value to store
                 editor.apply();
             }
 
         });
 
-        test_button.setOnLongClickListener(new View.OnLongClickListener() {
+        testButton.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 Logger.d(TAG, "Mode switch button clicked");
@@ -405,9 +405,9 @@ public class SettingsActivity extends RoboFragmentActivity {
 
     public void loadCheckBoxPreferences() {
         Logger.v(TAG, "Loading checkBox preferences");
-        blink_check.setChecked(sharedPreferences.getBoolean(NOTIF_BLINK, true));
-        sound_check.setChecked(sharedPreferences.getBoolean(NOTIF_SOUND, true));
-        vibrations_check.setChecked(sharedPreferences.getBoolean(NOTIF_VIBRATION, true));
+        blinkCheck.setChecked(sharedPreferences.getBoolean(NOTIF_BLINK, true));
+        soundCheck.setChecked(sharedPreferences.getBoolean(NOTIF_SOUND, true));
+        vibrationsCheck.setChecked(sharedPreferences.getBoolean(NOTIF_VIBRATION, true));
     }
 
     public void checkTestMode() {
