@@ -6,7 +6,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
@@ -251,15 +250,14 @@ public class DailySequenceService extends RoboService {
 
         int flags = 0;
 
-
-        // Should we flash the LED?
-        if (sharedPreferences.getBoolean("notification_blink_key", true)) {
-            Logger.v(TAG, "Activating lights");
-            flags |= Notification.DEFAULT_LIGHTS;
-        }
-
-        // If this is NOT an MQ, we can vibrate and beep.
+        // If this is NOT an MQ, we can flash lights, vibrate and beep.
         if (!sequenceType.equals(Sequence.TYPE_MORNING_QUESTIONNAIRE)) {
+            // Should we flash the LED?
+            if (sharedPreferences.getBoolean("notification_blink_key", true)) {
+                Logger.v(TAG, "Activating lights");
+                flags |= Notification.DEFAULT_LIGHTS;
+            }
+
             // Should we vibrate?
             if (sharedPreferences.getBoolean("notification_vibrator_key", true)) {
                 Logger.v(TAG, "Activating vibration");
@@ -298,12 +296,6 @@ public class DailySequenceService extends RoboService {
         }
 
         Notification notification = notificationBuilder.build();
-
-        // How to beep?
-        if (sharedPreferences.getBoolean("notification_sound_key", true)) {
-            Logger.v(TAG, "Adding custom sound");
-            notification.sound = Uri.parse("android.resource://" + "com.brainydroid.daydreaming" + "/" + R.raw.notification);
-        }
 
         // Get a proper id for the notification, to replace the right notifications
         // That way only one of morning notification and one evening notification will ever be there
