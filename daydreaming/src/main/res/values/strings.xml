@@ -182,7 +182,7 @@
     <string name="page_welcome_text">HERE ARE A FEW QUICK QUESTIONS:</string>
     <string name="page_button_next">Next</string>
     <string name="page_button_finish">Finish</string>
-    <string name="page_thank_you">Great! That's recorded</string>
+    <string name="page_thank_you">Great! That\'s recorded</string>
     <string name="page_intro_text">Right before the app interrupted you…</string>
     <string name="page_edit_mode_edit">Edit mode</string>
     <string name="page_edit_mode_done">Done</string>
@@ -193,7 +193,7 @@
     <string name="question_welcome_text">HERE ARE A FEW QUICK QUESTIONS:</string>
     <string name="question_button_next">Next</string>
     <string name="question_button_finish">Finish</string>
-    <string name="question_thank_you">Great! That's recorded</string>
+    <string name="question_thank_you">Great! That\'s recorded</string>
     <string name="questionSlider_please_slide">(Slide to answer)</string>
     <string name="questionSlider_skipped">(Skipped)</string>
     <string name="questionSlider_sliders_untouched_single">Please answer using the slider</string>
