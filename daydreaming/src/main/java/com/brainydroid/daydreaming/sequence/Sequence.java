@@ -369,7 +369,7 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
         return numberOfPages;
     }
 
-    public int getIndexOfPage(String pageName, boolean withBonus) {
+    public int getIndexOfPage(Page searchedPage, boolean withBonus) {
         int indexOfPage = 0;
         for (PageGroup pageGroup : pageGroups) {
             for (Page page : pageGroup.getPages()) {
@@ -380,13 +380,12 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
                         indexOfPage += 1;
                     }
                 }
-                if (page.getName().equals(pageName)) {
+                if (page == searchedPage) {
                     return indexOfPage;
                 }
             }
         }
         return indexOfPage;
     }
-
 
 }

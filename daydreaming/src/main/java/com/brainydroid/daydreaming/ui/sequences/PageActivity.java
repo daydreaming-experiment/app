@@ -90,18 +90,8 @@ public class PageActivity extends RoboFragmentActivity {
         }
         pageViewAdapter.inflate(this, outerPageLayout, pageLinearLayout);
 
-        page_index_current.setText(Integer.toString(sequence.getIndexOfPage(currentPage.getName(), !sequence.isSkipBonuses() )));
-        page_index_total.setText(" / " + Integer.toString(sequence.getTotalPageCount( !sequence.isSkipBonuses() )));
-
-        /* FIXME: commented while #265 isn't settled
-        // set progress
-        // pageGroups level
-        page_index_current.setText(Integer.toString(currentPage.getIndexInPageGroup()));
-        page_index_total.setText(" / " + Integer.toString(currentPage.getnPages()));
-        // pages level
-        pageGroup_index_current.setText(Integer.toString(currentPage.getIndexOfParentPageGroupInSequence()));
-        pageGroup_index_total.setText(" / " + Integer.toString(currentPage.getnPageGroupsInSequence()));
-        */
+        page_index_current.setText(Integer.toString(sequence.getIndexOfPage(currentPage, !sequence.isSkipBonuses())));
+        page_index_total.setText(" / " + Integer.toString(sequence.getTotalPageCount(!sequence.isSkipBonuses())));
 
         setRobotoFont();
 
