@@ -43,6 +43,16 @@ android {
         }
     }
 
+    productFlavors {
+        beta {
+            applicationId "com.brainydroid.daydreamingbeta"
+        }
+
+        production {
+            applicationId "com.brainydroid.daydreaming"
+        }
+    }
+
     // Fix for duplicate files copied
     packagingOptions {
         exclude 'META-INF/DEPENDENCIES'
