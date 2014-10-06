@@ -3,21 +3,27 @@ package com.brainydroid.daydreaming.background;
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.SystemClock;
 import android.preference.PreferenceManager;
+import android.support.v4.app.NotificationCompat;
 
+import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.db.LocationPointsStorage;
 import com.brainydroid.daydreaming.db.ParametersStorage;
 import com.brainydroid.daydreaming.db.ProfileStorage;
 import com.brainydroid.daydreaming.db.SequencesStorage;
 import com.brainydroid.daydreaming.network.CryptoStorage;
 import com.brainydroid.daydreaming.sequence.Sequence;
+import com.brainydroid.daydreaming.ui.dashboard.BEQActivity;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
@@ -77,6 +83,8 @@ public class StatusManager {
 
     public static final String ACTION_PARAMETERS_STATUS_CHANGE = "actionParametersStatusChange";
 
+    public static String STORAGE_VERSION = "storageVersion";
+
     public static int MODE_PROD = 0;
     public static int MODE_TEST = 1;
     public static int MODE_DEFAULT = MODE_PROD;
@@ -114,14 +122,15 @@ public class StatusManager {
     @Inject LocationManager locationManager;
     @Inject ConnectivityManager connectivityManager;
     @Inject ActivityManager activityManager;
-    @Inject Context context;
     // Use providers here to prevent circular dependencies
     @Inject Provider<ProfileStorage> profileStorageProvider;
     @Inject Provider<SequencesStorage> sequencesStorageProvider;
     @Inject Provider<LocationPointsStorage> locationPointsStorageProvider;
     @Inject Provider<ParametersStorage> parametersStorageProvider;
     @Inject Provider<CryptoStorage> cryptoStorageProvider;
+    @Inject NotificationManager notificationManager;
 
+    Context context;
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor eSharedPreferences;
 
@@ -137,10 +146,12 @@ public class StatusManager {
      */
     @SuppressLint("CommitPrefEdits")
     @Inject
-    public StatusManager(SharedPreferences sharedPreferences) {
+    public StatusManager(Context context, SharedPreferences sharedPreferences) {
         Logger.d(TAG, "StatusManager created");
+        this.context = context;
         this.sharedPreferences = sharedPreferences;
         eSharedPreferences = sharedPreferences.edit();
+        checkStorageVersion();
         updateCachedCurrentMode();
     }
 
@@ -320,6 +331,9 @@ public class StatusManager {
         eSharedPreferences.putBoolean(getCurrentModeName() + EXP_STATUS_PARAMETERS_UPDATED, updated);
         eSharedPreferences.commit();
 
+        // (Re)create BEQ notification if necessary
+        updateBEQNotification();
+
         // Broadcast the info so that the dashboard can update its view
         sendParametersStatusChangeBroadcast();
     }
@@ -442,7 +456,7 @@ public class StatusManager {
      * Set the timestamp of the last sync operation to now.
      */
     public synchronized void setLastSyncToNow() {
-        long now = SystemClock.elapsedRealtime();
+        long now = Calendar.getInstance().getTimeInMillis();
         Logger.d(TAG, "{} - Setting last sync timestamp to now", getCurrentModeName());
         eSharedPreferences.putLong(getCurrentModeName() + LAST_SYNC_TIMESTAMP, now);
         eSharedPreferences.commit();
@@ -465,7 +479,7 @@ public class StatusManager {
         int syncDelay = getSyncDelay();
         long threshold = sharedPreferences.getLong(getCurrentModeName() + LAST_SYNC_TIMESTAMP,
                 - syncDelay) + syncDelay;
-        if (threshold < SystemClock.elapsedRealtime()) {
+        if (threshold < Calendar.getInstance().getTimeInMillis()) {
             Logger.d(TAG, "{} - Last sync was long ago", getCurrentModeName());
             return true;
         } else {
@@ -852,13 +866,53 @@ public class StatusManager {
                     setCurrentBEQType(Sequence.TYPE_END_QUESTIONNAIRE);
                 }
             }
+            updateBEQNotification();
         }
         return getCurrentBEQType();
     }
 
+    public synchronized void updateBEQNotification() {
+        // if exp is running
+        if (isExpRunning()) {
+            if (areBEQCompleted()) {
+                Logger.d(TAG, "BEQs completed");
+                notificationManager.cancel(Sequence.TYPE_BEGIN_END_QUESTIONNAIRE, 0);
+            } else {
+                Logger.d(TAG, "BEQs not completed, refreshing/creating notification");
+                Intent intent = new Intent(context, BEQActivity.class);
+                // No need for a request code here, BEQActivity is only ever started from
+                // a PendingIntent from here.
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                PendingIntent contentIntent = PendingIntent.getActivity(context, 0, intent,
+                        PendingIntent.FLAG_UPDATE_CURRENT);
+
+                int flags = 0;
+                flags |= Notification.FLAG_NO_CLEAR;
+                // Create our notification
+                // if persistent: cant be dismissed and do not disappear on click
+                // if not persistent: can be dismissed and self destroy on click
+                Notification notification = new NotificationCompat.Builder(context)
+                        .setTicker(context.getString(R.string.beqNotification_ticker))
+                        .setContentTitle(context.getString(R.string.beqNotification_title))
+                        .setContentText(context.getString(R.string.beqNotification_text))
+                        .setContentIntent(contentIntent)
+                        .setSmallIcon(R.drawable.ic_stat_notify_small_daydreaming)
+                        .setOnlyAlertOnce(true)
+                        .setAutoCancel(false)
+                        .setOngoing(true)
+                        .setDefaults(flags)
+                        .build();
+
+                // Only one begin/end notification should ever exist. id = 0
+                notificationManager.cancel(Sequence.TYPE_BEGIN_END_QUESTIONNAIRE, 0);
+                notificationManager.notify(Sequence.TYPE_BEGIN_END_QUESTIONNAIRE, 0, notification);
+            }
+        }
+    }
+
     public synchronized boolean wereBEQAnsweredOnTime() {
         String type = getCurrentBEQType();
-        if ( areBEQCompleted(type) ) {
+        if (areBEQCompleted(type)) {
             Logger.d(TAG, "all BEQ of type {} are answered", type);
             // questionnaires already answered
             return true;
@@ -928,5 +982,50 @@ public class StatusManager {
         }
     }
 
+    public synchronized void setAppStorageVersion() {
+        Logger.d(TAG, "Setting Storage version");
+
+        try {
+            int versionCode = context.getPackageManager().getPackageInfo(
+                    context.getPackageName(), 0).versionCode;
+            eSharedPreferences.putInt(STORAGE_VERSION, versionCode);
+            eSharedPreferences.commit();
+        } catch (PackageManager.NameNotFoundException e) {
+            Logger.e(TAG, "Package not found when retrieving app versionCode");
+            throw new RuntimeException(e);
+        }
+    }
+
+    public synchronized int getAppStorageVersion() {
+        Logger.d(TAG, "Get Storage version from sharedPreferences");
+        return sharedPreferences.getInt(STORAGE_VERSION, -1);
+    }
+
+    public int getAppVersionCode() {
+        try {
+            return context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            Logger.e(TAG, "Package not found when retrieving app versionCode");
+            throw new RuntimeException(e);
+        }
+    }
+
+    public synchronized void checkStorageVersion() {
+        int savedStorageVersion = getAppStorageVersion();
+        int ongoingStorageVersion = getAppVersionCode();
+
+        if (savedStorageVersion == ongoingStorageVersion) {
+            Logger.i(TAG, "Stored and ongoing storage version are the same");
+        } else {
+            Logger.i(TAG, "Updating storage version {0} to {1}", savedStorageVersion,
+                    ongoingStorageVersion);
+
+            // If we change the structure of the storage, here is the place
+            // to upgrade from a previous version to the ongoing version
+            // (using another class for all the logic).
+
+            setAppStorageVersion();
+        }
+    }
 
 }

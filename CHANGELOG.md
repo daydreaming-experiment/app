@@ -1,6 +1,21 @@
 Changelog
 =========
 
+0.26.0
+------
+
+* Enhancements
+  * [#316, #337]Changes and enhancements in app text
+  * [#330] Add storage versioning
+* Bug fixes
+  * [#331] StringIndexOutOfBoundsException in SettingsActivity
+  * [#332] NullPointerException in DailySequenceService
+  * [#333] BEQ Notification not removed when BEQs completed
+  * [#336] Morning questionnaire beeping and sound for other notifications
+  * [#346] Empty results uploaded
+  * Fix sync pooling using a bad timer
+  * Fix upload of incomplete/missed/dismissed morning and evening questionnaires
+
 0.25.0
 ------
 

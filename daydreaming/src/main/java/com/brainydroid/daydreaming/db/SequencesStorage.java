@@ -31,13 +31,15 @@ public class SequencesStorage
         Logger.v(TAG, "Getting uploadable sequences of type {}", type);
 
         String[] uploadableStatuses;
-        if (type.equals(Sequence.TYPE_PROBE)) {
-            Logger.v(TAG, "Type is probe, so uploadable means either STATUS_COMPLETED " +
-                    "or STATUS_MISSED_OR_DISMISSED_OR_INCOMPLETE");
+        if (type.equals(Sequence.TYPE_PROBE) || type.equals(Sequence.TYPE_MORNING_QUESTIONNAIRE)
+                || type.equals(Sequence.TYPE_EVENING_QUESTIONNAIRE)) {
+            Logger.v(TAG, "Type is probe|morning|evening, so uploadable means either " +
+                    "STATUS_COMPLETED or STATUS_MISSED_OR_DISMISSED_OR_INCOMPLETE");
             uploadableStatuses = new String[] {Sequence.STATUS_COMPLETED,
                     Sequence.STATUS_MISSED_OR_DISMISSED_OR_INCOMPLETE};
         } else {
-            Logger.v(TAG, "Type is NOT probe, so uploadable means only STATUS_COMPLETED");
+            Logger.v(TAG, "Type is NOT probe|morning|evening, so uploadable means " +
+                    "only STATUS_COMPLETED");
             uploadableStatuses = new String[] {Sequence.STATUS_COMPLETED};
         }
 

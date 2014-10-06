@@ -13,8 +13,9 @@ public class MatrixChoiceAnswer implements IAnswer {
     @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "MatrixChoiceAnswer";
 
+    // Json-marked members cannot be injected, or else the json-deserialized value is overridden
     @JsonView(Views.Public.class)
-    @Inject HashSet<String> choices;
+    HashSet<String> choices = new HashSet<String>();
 
     public synchronized void addChoice(String choice) {
         Logger.v(TAG, "Adding choice {0}", choice);
