@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
@@ -250,7 +251,8 @@ public class DailySequenceService extends RoboService {
 
         int flags = 0;
 
-        // If this is NOT an MQ, we can flash lights, vibrate and beep.
+        // If this is NOT an MQ, we can flash lights and vibrate.
+        // Beeping is dealt with further down (custom sound on the notification object).
         if (!sequenceType.equals(Sequence.TYPE_MORNING_QUESTIONNAIRE)) {
             // Should we flash the LED?
             if (sharedPreferences.getBoolean("notification_blink_key", true)) {
@@ -262,12 +264,6 @@ public class DailySequenceService extends RoboService {
             if (sharedPreferences.getBoolean("notification_vibrator_key", true)) {
                 Logger.v(TAG, "Activating vibration");
                 flags |= Notification.DEFAULT_VIBRATE;
-            }
-
-            // Should we beep?
-            if (sharedPreferences.getBoolean("notification_sound_key", true)) {
-                Logger.v(TAG, "Activating sound");
-                flags |= Notification.DEFAULT_SOUND;
             }
         }
 
@@ -296,6 +292,13 @@ public class DailySequenceService extends RoboService {
         }
 
         Notification notification = notificationBuilder.build();
+
+        // Should we beep?
+        if (!sequenceType.equals(Sequence.TYPE_MORNING_QUESTIONNAIRE)) {
+            Logger.v(TAG, "Activating beep for notification, custom sound");
+            notification.sound = Uri.parse("android.resource://" + "com.brainydroid.daydreaming" +
+                    "/" + R.raw.notification);
+        }
 
         // Get a proper id for the notification, to replace the right notifications
         // That way only one of morning notification and one evening notification will ever be there
