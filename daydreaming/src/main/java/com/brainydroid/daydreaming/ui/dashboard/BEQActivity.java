@@ -147,6 +147,7 @@ public class BEQActivity extends RoboFragmentActivity {
         Logger.i(TAG, "Launching questionnaire with index {}" , Integer.toString(index));
         Logger.i(TAG, "There are {} loaded questionnaires" , Integer.toString(loadedBeginEndQuestionnaires.size()));
         Sequence questionnaire = loadedBeginEndQuestionnaires.get(index);
+        questionnaire.setSelfInitiated(true);
         Intent intent = createQuestionnaireIntent(questionnaire);
         launchQuestionnaireIntent(intent);
     }

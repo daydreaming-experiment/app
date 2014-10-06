@@ -86,11 +86,6 @@ public class PageActivity extends RoboFragmentActivity {
         initVars();
         setChrome();
 
-        // Self-initiated sequences don't interfere with normal scheduling
-        if (currentPage.isFirstOfSequence() && !sequence.isSelfInitiated()) {
-            startSchedulerService();
-        }
-
         String introText = sequence.getIntro();
         if(introText.isEmpty()) {
             Logger.d(TAG,"No intro text, remove intro layout");
@@ -160,6 +155,10 @@ public class PageActivity extends RoboFragmentActivity {
                 sequence.setStatus(Sequence.STATUS_RECENTLY_PARTIALLY_COMPLETED);
             }
 
+            // Self-initiated sequences don't interfere with normal scheduling
+            if (sequence.isSelfInitiated()) {
+                startSchedulerService();
+            }
             finish();
         }
 
@@ -170,6 +169,7 @@ public class PageActivity extends RoboFragmentActivity {
         locationServiceConnection.clearQuestionLocationCallback();
         // the LocationService finishes if nobody else has listeners registered
         locationServiceConnection.unbindLocationService();
+
     }
 
     @Override
@@ -401,6 +401,15 @@ public class PageActivity extends RoboFragmentActivity {
         Toast.makeText(this, getString(R.string.page_thank_you), Toast.LENGTH_SHORT).show();
         sequence.skipRemainingBonuses();
         sequence.setStatus(Sequence.STATUS_COMPLETED);
+
+        String sequenceType = sequence.getType();
+        if (sequenceType.equals(Sequence.TYPE_BEGIN_QUESTIONNAIRE) || sequenceType.equals(Sequence.TYPE_END_QUESTIONNAIRE)) {
+            statusManager.updateBEQType();
+        } else {
+            if (isEndPage() && !sequence.isSelfInitiated()) {
+                startSchedulerService();
+            }
+        }
 
         finish();
     }
