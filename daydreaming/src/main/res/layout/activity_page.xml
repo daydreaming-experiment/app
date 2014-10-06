@@ -18,35 +18,9 @@
         android:paddingRight="@dimen/page_horizontal_margin"
         android:paddingTop="@dimen/page_vertical_margin" >
 
-<!-- FIXME: commented until #265 is settled
-        <LinearLayout
-            android:orientation="horizontal"
-            android:id="@+id/pagegroup_progress_linearLayout"
-            android:gravity="center_horizontal"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="@style/ui_font_big_title_bold"
-                android:text="X"
-                android:id="@+id/pagegroup_progress_current"
-                android:textColor="@color/ui_white_text_color"
-                android:gravity="center_horizontal" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="@style/ui_font_big_title_bold"
-                android:text="/Y"
-                android:id="@+id/pagegroup_progress_total"
-                android:textColor="@color/ui_white_text_color"
-                android:gravity="center_horizontal" />
-        </LinearLayout>
-
         <LinearLayout
             android:orientation="horizontal"
             android:id="@+id/page_progress_linearLayout"
-            android:layout_below="@id/pagegroup_progress_linearLayout"
             android:gravity="center_horizontal"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content">
@@ -66,15 +40,14 @@
                 android:id="@+id/page_progress_total"
                 android:textColor="@color/ui_white_text_color"
                 android:gravity="center_horizontal" />
-        </LinearLayout> -->
+        </LinearLayout>
 
-        <!-- FIXME: commented until #265 is settled -->
-        <!--     android:layout_below="@id/page_progress_linearLayout" -->
         <LinearLayout
             android:id="@+id/page_intro_linearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:layout_below="@id/page_progress_linearLayout"
             android:paddingBottom="@dimen/page_vertical_margin"
             android:paddingTop="@dimen/page_vertical_margin" >
             <TextView
