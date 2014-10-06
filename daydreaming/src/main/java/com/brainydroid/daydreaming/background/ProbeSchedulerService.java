@@ -1,14 +1,9 @@
 package com.brainydroid.daydreaming.background;
 
-import android.app.Notification;
-import android.app.PendingIntent;
 import android.content.Intent;
-import android.support.v4.app.NotificationCompat;
 
-import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.db.Util;
 import com.brainydroid.daydreaming.sequence.Sequence;
-import com.brainydroid.daydreaming.ui.dashboard.BEQActivity;
 
 import java.util.Calendar;
 
@@ -40,7 +35,7 @@ public class ProbeSchedulerService extends RecurrentSequenceSchedulerService {
         }
 
         // Always check if BEQ notification is necessary
-        statusManager.updateBEQType();
+        statusManager.updateBEQNotification();
 
         // Schedule a sequence
         scheduleSequence();
