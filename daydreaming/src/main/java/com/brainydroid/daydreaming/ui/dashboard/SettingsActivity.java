@@ -44,9 +44,9 @@ public class SettingsActivity extends RoboFragmentActivity {
     private static String TAG = "SettingsActivity";
     @SuppressWarnings("FieldCanBeLocal") private static int MIN_WINDOW_HOURS = 5; // 5 hours (in hours)
 
-    private static String NOTIF_VIBRATION = "notification_vibrator_key";
-    private static String NOTIF_BLINK = "notification_blink_key";
-    private static String NOTIF_SOUND = "notification_sound_key";
+    public static String NOTIF_VIBRATION = "notification_vibrator_key";
+    public static String NOTIF_BLINK = "notification_blink_key";
+    public static String NOTIF_SOUND = "notification_sound_key";
 
     @InjectView(R.id.settings_time_text_from_layout)   LinearLayout fromLayout;
     @InjectView(R.id.settings_time_text_until_layout) LinearLayout untilLayout;
