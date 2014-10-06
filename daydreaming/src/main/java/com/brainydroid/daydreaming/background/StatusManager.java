@@ -331,6 +331,9 @@ public class StatusManager {
         eSharedPreferences.putBoolean(getCurrentModeName() + EXP_STATUS_PARAMETERS_UPDATED, updated);
         eSharedPreferences.commit();
 
+        // (Re)create BEQ notification if necessary
+        updateBEQNotification();
+
         // Broadcast the info so that the dashboard can update its view
         sendParametersStatusChangeBroadcast();
     }
