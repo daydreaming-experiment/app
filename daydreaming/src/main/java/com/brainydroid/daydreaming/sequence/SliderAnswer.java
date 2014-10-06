@@ -13,8 +13,9 @@ public class SliderAnswer implements IAnswer {
     @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "SliderAnswer";
 
+    // Json-marked members cannot be injected, or else the json-deserialized value is overridden
     @JsonView(Views.Public.class)
-    @Inject HashMap<String, Integer> sliders;
+    HashMap<String, Integer> sliders = new HashMap<String, Integer>();
 
     public synchronized void addAnswer(String text, int position) {
         Logger.v(TAG, "Adding answer {0} at position {1}", text, position);

@@ -15,6 +15,7 @@ public class Node<T> {
 
     @JsonView(Views.Internal.class)
     private T data;
+    // Json-marked members cannot be injected, or else the json-deserialized value is overridden
     @JsonView(Views.Internal.class)
     private ArrayList<Node<T>> children = new ArrayList<Node<T>>();
 

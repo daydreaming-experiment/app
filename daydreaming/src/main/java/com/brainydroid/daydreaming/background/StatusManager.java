@@ -9,7 +9,6 @@ import android.content.SharedPreferences;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.SystemClock;
 import android.preference.PreferenceManager;
 
 import com.brainydroid.daydreaming.db.LocationPointsStorage;
@@ -442,7 +441,7 @@ public class StatusManager {
      * Set the timestamp of the last sync operation to now.
      */
     public synchronized void setLastSyncToNow() {
-        long now = SystemClock.elapsedRealtime();
+        long now = Calendar.getInstance().getTimeInMillis();
         Logger.d(TAG, "{} - Setting last sync timestamp to now", getCurrentModeName());
         eSharedPreferences.putLong(getCurrentModeName() + LAST_SYNC_TIMESTAMP, now);
         eSharedPreferences.commit();
@@ -465,7 +464,7 @@ public class StatusManager {
         int syncDelay = getSyncDelay();
         long threshold = sharedPreferences.getLong(getCurrentModeName() + LAST_SYNC_TIMESTAMP,
                 - syncDelay) + syncDelay;
-        if (threshold < SystemClock.elapsedRealtime()) {
+        if (threshold < Calendar.getInstance().getTimeInMillis()) {
             Logger.d(TAG, "{} - Last sync was long ago", getCurrentModeName());
             return true;
         } else {
