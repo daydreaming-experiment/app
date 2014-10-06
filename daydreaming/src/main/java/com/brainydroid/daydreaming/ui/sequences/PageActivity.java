@@ -156,7 +156,7 @@ public class PageActivity extends RoboFragmentActivity {
             }
 
             // Self-initiated sequences don't interfere with normal scheduling
-            if (sequence.isSelfInitiated()) {
+            if (!sequence.isSelfInitiated()) {
                 startSchedulerService();
             }
             finish();
