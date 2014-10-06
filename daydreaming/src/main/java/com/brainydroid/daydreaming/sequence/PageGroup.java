@@ -62,4 +62,18 @@ public class PageGroup implements IPageGroup {
     public void setNPageGroups(int NPageGroups) {
         this.NPageGroups = NPageGroups;
     }
+
+    public int getNumberOfPages(boolean withBonus) {
+        int numberOfPages = 0;
+        for (Page page : pages) {
+            if (withBonus) {
+                numberOfPages += 1;
+            } else {
+                if (!page.isBonus()) {
+                    numberOfPages += 1;
+                }
+            }
+        }
+        return numberOfPages;
+    }
 }

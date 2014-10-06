@@ -361,4 +361,31 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
         return -1;
     }
 
+    public int getTotalPageCount(boolean withBonus) {
+        int numberOfPages = 0;
+        for (PageGroup pageGroup : pageGroups) {
+            numberOfPages += pageGroup.getNumberOfPages(withBonus);
+        }
+        return numberOfPages;
+    }
+
+    public int getIndexOfPage(Page searchedPage, boolean withBonus) {
+        int indexOfPage = 0;
+        for (PageGroup pageGroup : pageGroups) {
+            for (Page page : pageGroup.getPages()) {
+                if (withBonus) {
+                    indexOfPage += 1;
+                } else {
+                    if (!page.isBonus()) {
+                        indexOfPage += 1;
+                    }
+                }
+                if (page == searchedPage) {
+                    return indexOfPage;
+                }
+            }
+        }
+        return indexOfPage;
+    }
+
 }
