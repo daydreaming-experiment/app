@@ -968,6 +968,11 @@ public class StatusManager {
         } else {
             Logger.i(TAG, "Updating storage version {0} to {1}", savedStorageVersion,
                     ongoingStorageVersion);
+
+            // If we change the structure of the storage, here is the place
+            // to upgrade from a previous version to the ongoing version
+            // (using another class for all the logic).
+
             setAppStorageVersion();
         }
     }
