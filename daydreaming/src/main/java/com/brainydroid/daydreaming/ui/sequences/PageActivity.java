@@ -58,13 +58,8 @@ public class PageActivity extends RoboFragmentActivity {
     @InjectView(R.id.page_nextButton) ImageButton nextButton;
     @InjectView(R.id.page_finishButton) ImageButton finishButton;
 
-    /* FIXME: commented while #265 isn't settled
     @InjectView(R.id.page_progress_current) TextView page_index_current;
     @InjectView(R.id.page_progress_total) TextView page_index_total;
-
-    @InjectView(R.id.pagegroup_progress_current) TextView pageGroup_index_current;
-    @InjectView(R.id.pagegroup_progress_total) TextView pageGroup_index_total;
-    */
 
     @InjectResource(R.string.page_too_late_title) String tooLateTitle;
     @InjectResource(R.string.page_too_late_body) String tooLateBody;
@@ -94,6 +89,9 @@ public class PageActivity extends RoboFragmentActivity {
             pageIntroText.setText(sequence.getIntro());
         }
         pageViewAdapter.inflate(this, outerPageLayout, pageLinearLayout);
+
+        page_index_current.setText(Integer.toString(sequence.getIndexOfPage(currentPage.getName(), !sequence.isSkipBonuses() )));
+        page_index_total.setText(" / " + Integer.toString(sequence.getTotalPageCount( !sequence.isSkipBonuses() )));
 
         /* FIXME: commented while #265 isn't settled
         // set progress
@@ -152,7 +150,7 @@ public class PageActivity extends RoboFragmentActivity {
         String sequenceType = sequence.getType();
         if (!isContinuingOrFinishing && !sequence.isSelfInitiated()
                 && !(sequenceType.equals(Sequence.TYPE_BEGIN_QUESTIONNAIRE) ||
-                    sequenceType.equals(Sequence.TYPE_END_QUESTIONNAIRE))) {
+                sequenceType.equals(Sequence.TYPE_END_QUESTIONNAIRE))) {
             startSchedulerService();
         }
 
@@ -196,24 +194,24 @@ public class PageActivity extends RoboFragmentActivity {
                 // We shouldn't be here: we already explained this and somehow a probe did not expire.
                 // Log this error, but keep going.
                 errorHandler.logError("We already explained the notification expiry, " +
-                        "but somehow got to this point where we must re-explain it.",
+                                "but somehow got to this point where we must re-explain it.",
                         new ConsistencyException());
             }
 
             statusManager.setNotificationExpiryExplained();
             AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
             alertBuilder.setCancelable(false)
-            .setTitle(tooLateTitle)
-            .setMessage(tooLateBody)
-            .setPositiveButton("Got it", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    dialogInterface.cancel();
-                    sequence.setStatus(Sequence.STATUS_RECENTLY_MISSED);
-                    setIsTooLate();
-                    finish();
-                }
-            });
+                    .setTitle(tooLateTitle)
+                    .setMessage(tooLateBody)
+                    .setPositiveButton("Got it", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.cancel();
+                            sequence.setStatus(Sequence.STATUS_RECENTLY_MISSED);
+                            setIsTooLate();
+                            finish();
+                        }
+                    });
             alertBuilder.show();
 
             return false;
@@ -441,4 +439,5 @@ public class PageActivity extends RoboFragmentActivity {
             setTheme(R.style.daydreamingTestTheme);
         }
     }
+
 }

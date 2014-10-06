@@ -55,7 +55,7 @@ public class Page implements IPage {
     private int indexOfParentPageGroupInSequence = 0;
     @JsonView(Views.Internal.class)
     private int nPageGroupsInSequence = 0;
-    
+
     public void importFromPageDescription(PageDescription description) {
         setName(description.getName());
         setBonus(description.getPosition().isBonus());
@@ -202,14 +202,6 @@ public class Page implements IPage {
         this.nPages = nPages;
     }
 
-    public int getIndexInPageGroup() {
-        return indexInPageGroup;
-    }
-
-    public int getnPages() {
-        return nPages;
-    }
-
     public void setIndexOfParentPageGroupInSequence(int indexOfParentPageGroupInSequence) {
         this.indexOfParentPageGroupInSequence = indexOfParentPageGroupInSequence;
     }
@@ -218,11 +210,4 @@ public class Page implements IPage {
         this.nPageGroupsInSequence = nPageGroupsInSequence;
     }
 
-    public int getIndexOfParentPageGroupInSequence() {
-        return indexOfParentPageGroupInSequence;
-    }
-
-    public int getnPageGroupsInSequence() {
-        return nPageGroupsInSequence;
-    }
 }
