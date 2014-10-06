@@ -903,15 +903,13 @@ public class StatusManager {
                 // Only one begin/end notification should ever exist. id = 0
                 notificationManager.cancel(Sequence.TYPE_BEGIN_END_QUESTIONNAIRE, 0);
                 notificationManager.notify(Sequence.TYPE_BEGIN_END_QUESTIONNAIRE, 0, notification);
-
-                }
             }
         }
-
+    }
 
     public synchronized boolean wereBEQAnsweredOnTime() {
         String type = getCurrentBEQType();
-        if ( areBEQCompleted(type) ) {
+        if (areBEQCompleted(type)) {
             Logger.d(TAG, "all BEQ of type {} are answered", type);
             // questionnaires already answered
             return true;
