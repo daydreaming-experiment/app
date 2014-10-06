@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,9 +32,11 @@ import roboguice.inject.InjectView;
 public class BEQActivity extends RoboFragmentActivity {
 
     private static String TAG = "BEQActivity";
-    @Inject  Provider<StatusManager> statusManagerProvider;
-    @Inject  ParametersStorage parametersStorage;
-    @Inject  Provider<SequencesStorage> sequencesStorageProvider;
+
+    @Inject Provider<StatusManager> statusManagerProvider;
+    @Inject ParametersStorage parametersStorage;
+    @Inject Provider<SequencesStorage> sequencesStorageProvider;
+    @Inject StatusManager statusManager;
 
     @InjectView(R.id.beginendquestionnaires_questionnaires_layout)
     LinearLayout beginEndQuestionnairesLinearLayout;
@@ -63,6 +63,7 @@ public class BEQActivity extends RoboFragmentActivity {
     public synchronized void onResume() {
         Logger.v(TAG, "Resuming");
         super.onResume();
+        checkExperimentModeActivatedDirty();
         updateQuestionnairesStatusView();
     }
 
@@ -101,11 +102,12 @@ public class BEQActivity extends RoboFragmentActivity {
                     @Override
                     public void onClick(View v) {
                         final String status = loadedBeginEndQuestionnaires.get(finalIndex).getStatus();
-                        if (status != null ? (status.equals(Sequence.STATUS_UPLOADED_AND_KEEP) || status.equals(Sequence.STATUS_COMPLETED)) : false) {
-                            Logger.d(TAG,"Quesitonnaire {} completed already", Integer.toString(finalIndex+1));
+                        if (status != null && (status.equals(Sequence.STATUS_UPLOADED_AND_KEEP)
+                                || status.equals(Sequence.STATUS_COMPLETED))) {
+                            Logger.d(TAG,"Questionnaire {} completed already", Integer.toString(finalIndex+1));
                             Toast.makeText(BEQActivity.this,"Already done",Toast.LENGTH_SHORT).show();
                         } else {
-                            Logger.d(TAG,"Quesitonnaire {} not completed, opening", Integer.toString(finalIndex+1));
+                            Logger.d(TAG,"Questionnaire {} not completed, opening", Integer.toString(finalIndex+1));
                             openBeginQuestionnaireByIndex(finalIndex);
                         }
                     }
@@ -134,7 +136,7 @@ public class BEQActivity extends RoboFragmentActivity {
 
             boolean isComplete = completedBeginQuestionnairesNames.contains(bq_name);
             String status = loadedBeginEndQuestionnaires.get(i).getStatus();
-            if (status != null ? status.equals(Sequence.STATUS_MISSED_OR_DISMISSED_OR_INCOMPLETE) : false) {
+            if (status != null && status.equals(Sequence.STATUS_MISSED_OR_DISMISSED_OR_INCOMPLETE)) {
                 tv.setCompoundDrawablesWithIntrinsicBounds(R.drawable.status_loading_blue, 0, 0, 0);
             } else {
                 tv.setCompoundDrawablesWithIntrinsicBounds(isComplete ? R.drawable.status_ok_blue : R.drawable.status_wrong_blue, 0, 0, 0);
@@ -202,6 +204,17 @@ public class BEQActivity extends RoboFragmentActivity {
         Logger.d(TAG, "Launching Questionnaire");
         startActivity(questionnaireIntent);
         overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+    }
+
+    private void checkExperimentModeActivatedDirty() {
+        if ((statusManager.getCurrentMode() == StatusManager.MODE_TEST && !testModeThemeActivated)
+                || (statusManager.getCurrentMode() == StatusManager.MODE_PROD && testModeThemeActivated)) {
+            Logger.w(TAG, "Test/production mode theme discrepancy, " +
+                    "meaning a vicious activity path didn't let us update");
+            finish();
+        } else {
+            Logger.v(TAG, "No test mode theming discrepancy");
+        }
     }
 
     private void checkTestMode() {
