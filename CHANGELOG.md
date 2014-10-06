@@ -1,6 +1,12 @@
 Changelog
 =========
 
+0.27.0
+------
+
+* Enhancements
+  * [#265] Add a bonus-aware progress indication in sequences
+
 0.26.0
 ------
 
