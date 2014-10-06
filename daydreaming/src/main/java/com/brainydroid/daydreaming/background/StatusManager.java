@@ -965,7 +965,8 @@ public class StatusManager {
         if (savedStorageVersion == ongoingStorageVersion) {
             Logger.i(TAG, "Stored and ongoing storage version are the same");
         } else {
-            Logger.i(TAG, "Updating storage version {0} to {1}", Integer.toString(savedStorageVersion), Integer.toString(ongoingStorageVersion));
+            Logger.i(TAG, "Updating storage version {0} to {1}", savedStorageVersion,
+                    ongoingStorageVersion);
             setAppStorageVersion();
         }
     }
