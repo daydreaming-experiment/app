@@ -871,7 +871,7 @@ public class StatusManager {
     public synchronized void updateBEQNotification() {
         // if exp is running
         if (isExpRunning()) {
-            if (wereBEQAnsweredOnTime()) {
+            if (areBEQCompleted()) {
                 Logger.d(TAG, "BEQs completed");
                 notificationManager.cancel(Sequence.TYPE_BEGIN_END_QUESTIONNAIRE, 0);
             } else {
