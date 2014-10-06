@@ -143,6 +143,19 @@ public class PageActivity extends RoboFragmentActivity {
     public void onPause() {
         Logger.d(TAG, "Pausing");
         super.onPause();
+
+        // BEQs and self-initiated probes don't interfere with normal scheduling.
+        // Note that if the sequence is in fact finishing, this is run in finishSequence()
+        // (and skipped here).
+        // Finally, note that this *does* run if the PageActivity is being finished
+        // because a probe was open too late.
+        String sequenceType = sequence.getType();
+        if (!isContinuingOrFinishing && !sequence.isSelfInitiated()
+                && !(sequenceType.equals(Sequence.TYPE_BEGIN_QUESTIONNAIRE) ||
+                    sequenceType.equals(Sequence.TYPE_END_QUESTIONNAIRE))) {
+            startSchedulerService();
+        }
+
         if (!isContinuingOrFinishing && !isTooLate) {
             Logger.d(TAG, "We're not finishing the sequence -> pausing it");
             if (sequence.wasMissedOrDismissedOrPaused() ||
@@ -155,10 +168,6 @@ public class PageActivity extends RoboFragmentActivity {
                 sequence.setStatus(Sequence.STATUS_RECENTLY_PARTIALLY_COMPLETED);
             }
 
-            // Self-initiated sequences don't interfere with normal scheduling
-            if (sequence.isSelfInitiated()) {
-                startSchedulerService();
-            }
             finish();
         }
 
@@ -169,7 +178,6 @@ public class PageActivity extends RoboFragmentActivity {
         locationServiceConnection.clearQuestionLocationCallback();
         // the LocationService finishes if nobody else has listeners registered
         locationServiceConnection.unbindLocationService();
-
     }
 
     @Override
@@ -403,10 +411,13 @@ public class PageActivity extends RoboFragmentActivity {
         sequence.setStatus(Sequence.STATUS_COMPLETED);
 
         String sequenceType = sequence.getType();
-        if (sequenceType.equals(Sequence.TYPE_BEGIN_QUESTIONNAIRE) || sequenceType.equals(Sequence.TYPE_END_QUESTIONNAIRE)) {
-            statusManager.updateBEQType();
+        if (sequenceType.equals(Sequence.TYPE_BEGIN_QUESTIONNAIRE) ||
+                sequenceType.equals(Sequence.TYPE_END_QUESTIONNAIRE)) {
+            // No need to schedule, just check if we can clear the BEQ notification
+            statusManager.updateBEQNotification();
         } else {
-            if (isEndPage() && !sequence.isSelfInitiated()) {
+            // Self-initiated probes don't interfere with normal scheduling
+            if (!sequence.isSelfInitiated()) {
                 startSchedulerService();
             }
         }
