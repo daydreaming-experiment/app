@@ -10,19 +10,21 @@ fi
 version=$1
 
 echo "##"
-echo "## Copying daydreaming-$version+release.apk to server"
+echo "## Copying daydreaming-{production,beta}-$version+release.apk to server"
 echo "##"
 echo
 
-rsync -vhP daydreaming/daydreaming-$version+release.apk daydreaming@74.207.250.156:daydreaming/srv/releases/
+rsync -vhP daydreaming/daydreaming-production-$version+release.apk daydreaming@74.207.250.156:daydreaming/srv/releases/
+rsync -vhP daydreaming/daydreaming-beta-$version+release.apk daydreaming@74.207.250.156:daydreaming/srv/releases/
 
 echo
 echo "##"
-echo "## Setting symlink for daydreaming-latest.apk on server"
+echo "## Setting symlinks for daydreaming-{production,beta}-latest.apk on server"
 echo "##"
 echo
 
-ssh daydreaming@74.207.250.156 "cd daydreaming/srv/releases; unlink daydreaming-latest.apk; ln -s daydreaming-$version+release.apk daydreaming-latest.apk"
+ssh daydreaming@74.207.250.156 "cd daydreaming/srv/releases; unlink daydreaming-production-latest.apk; ln -s daydreaming-production-$version+release.apk daydreaming-production-latest.apk"
+ssh daydreaming@74.207.250.156 "cd daydreaming/srv/releases; unlink daydreaming-beta-latest.apk; ln -s daydreaming-beta-$version+release.apk daydreaming-beta-latest.apk"
 
 echo "##"
 echo "## All done!"
