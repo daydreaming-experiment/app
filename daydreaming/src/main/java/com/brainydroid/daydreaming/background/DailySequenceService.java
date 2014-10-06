@@ -21,6 +21,7 @@ import com.brainydroid.daydreaming.network.SntpClient;
 import com.brainydroid.daydreaming.network.SntpClientCallback;
 import com.brainydroid.daydreaming.sequence.Sequence;
 import com.brainydroid.daydreaming.sequence.SequenceBuilder;
+import com.brainydroid.daydreaming.ui.dashboard.SettingsActivity;
 import com.brainydroid.daydreaming.ui.sequences.PageActivity;
 import com.google.inject.Inject;
 
@@ -255,13 +256,13 @@ public class DailySequenceService extends RoboService {
         // Beeping is dealt with further down (custom sound on the notification object).
         if (!sequenceType.equals(Sequence.TYPE_MORNING_QUESTIONNAIRE)) {
             // Should we flash the LED?
-            if (sharedPreferences.getBoolean("notification_blink_key", true)) {
+            if (sharedPreferences.getBoolean(SettingsActivity.NOTIF_BLINK, true)) {
                 Logger.v(TAG, "Activating lights");
                 flags |= Notification.DEFAULT_LIGHTS;
             }
 
             // Should we vibrate?
-            if (sharedPreferences.getBoolean("notification_vibrator_key", true)) {
+            if (sharedPreferences.getBoolean(SettingsActivity.NOTIF_VIBRATION, true)) {
                 Logger.v(TAG, "Activating vibration");
                 flags |= Notification.DEFAULT_VIBRATE;
             }
@@ -294,7 +295,8 @@ public class DailySequenceService extends RoboService {
         Notification notification = notificationBuilder.build();
 
         // Should we beep?
-        if (!sequenceType.equals(Sequence.TYPE_MORNING_QUESTIONNAIRE)) {
+        if (!sequenceType.equals(Sequence.TYPE_MORNING_QUESTIONNAIRE)
+                && sharedPreferences.getBoolean(SettingsActivity.NOTIF_SOUND, true)) {
             Logger.v(TAG, "Activating beep for notification, custom sound");
             notification.sound = Uri.parse("android.resource://" + "com.brainydroid.daydreaming" +
                     "/" + R.raw.notification);
