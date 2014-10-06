@@ -6,6 +6,7 @@ import android.app.ActivityManager.RunningServiceInfo;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -76,6 +77,8 @@ public class StatusManager {
 
     public static final String ACTION_PARAMETERS_STATUS_CHANGE = "actionParametersStatusChange";
 
+    public static String STORAGE_VERSION = "storageVersion";
+
     public static int MODE_PROD = 0;
     public static int MODE_TEST = 1;
     public static int MODE_DEFAULT = MODE_PROD;
@@ -140,6 +143,7 @@ public class StatusManager {
         Logger.d(TAG, "StatusManager created");
         this.sharedPreferences = sharedPreferences;
         eSharedPreferences = sharedPreferences.edit();
+        checkStorageVersion();
         updateCachedCurrentMode();
     }
 
@@ -927,5 +931,43 @@ public class StatusManager {
         }
     }
 
+    public synchronized void setAppStorageVersion() {
+        Logger.d(TAG, "Setting Storage version");
+
+        try {
+            int versionCode = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode;
+            eSharedPreferences.putInt(getCurrentModeName() + STORAGE_VERSION, versionCode);
+            eSharedPreferences.commit();
+        } catch (PackageManager.NameNotFoundException e) {
+            Logger.e(TAG, "Package not found when retrieving app versionCode");
+            throw new RuntimeException(e);
+        }
+    }
+
+    public synchronized int getAppStorageVersion() {
+        Logger.d(TAG, "Get Storage version from sharedPreferences");
+        return sharedPreferences.getInt(STORAGE_VERSION, -1);
+    }
+
+    public int getAppVersionCode() {
+        try {
+            return context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            Logger.e(TAG, "Package not found when retrieving app versionCode");
+            throw new RuntimeException(e);
+        }
+    }
+
+    public synchronized void checkStorageVersion() {
+        int savedStorageVersion = getAppStorageVersion();
+        int ongoingStorageVersion = getAppVersionCode();
+
+        if (savedStorageVersion == ongoingStorageVersion) {
+            Logger.i(TAG, "Stored and ongoing storage version are the same");
+        } else {
+            Logger.i(TAG, "Updating storage version {0} to {1}", Integer.toString(savedStorageVersion), Integer.toString(ongoingStorageVersion));
+            setAppStorageVersion();
+        }
+    }
 
 }
