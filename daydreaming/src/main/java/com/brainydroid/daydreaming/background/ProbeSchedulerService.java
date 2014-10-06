@@ -1,14 +1,9 @@
 package com.brainydroid.daydreaming.background;
 
-import android.app.Notification;
-import android.app.PendingIntent;
 import android.content.Intent;
-import android.support.v4.app.NotificationCompat;
 
-import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.db.Util;
 import com.brainydroid.daydreaming.sequence.Sequence;
-import com.brainydroid.daydreaming.ui.dashboard.BEQActivity;
 
 import java.util.Calendar;
 
@@ -40,7 +35,7 @@ public class ProbeSchedulerService extends RecurrentSequenceSchedulerService {
         }
 
         // Always check if BEQ notification is necessary
-        checkBEQ();
+        statusManager.updateBEQNotification();
 
         // Schedule a sequence
         scheduleSequence();
@@ -52,43 +47,6 @@ public class ProbeSchedulerService extends RecurrentSequenceSchedulerService {
     @Override
     protected String getSequenceType() {
         return Sequence.TYPE_PROBE;
-    }
-
-    private synchronized void checkBEQ() {
-        if (!statusManager.areBEQCompleted()) {
-            Logger.d(TAG, "BEQs not completed, refreshing/creating notification");
-
-            Intent intent = new Intent(this, BEQActivity.class);
-            // No need for a request code here, BEQActivity is only ever started from
-            // a PendingIntent from here.
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT);
-
-            int flags = 0;
-            flags |= Notification.FLAG_NO_CLEAR;
-            // Create our notification
-            // if persistent: cant be dismissed and do not disappear on click
-            // if not persistent: can be dismissed and self destroy on click
-            Notification notification = new NotificationCompat.Builder(this)
-                    .setTicker(getString(R.string.beqNotification_ticker))
-                    .setContentTitle(getString(R.string.beqNotification_title))
-                    .setContentText(getString(R.string.beqNotification_text))
-                    .setContentIntent(contentIntent)
-                    .setSmallIcon(R.drawable.ic_stat_notify_small_daydreaming)
-                    .setOnlyAlertOnce(true)
-                    .setAutoCancel(false)
-                    .setOngoing(true)
-                    .setDefaults(flags)
-                    .build();
-
-            // Only one begin/end notification should ever exist. id = 0
-            notificationManager.cancel(Sequence.TYPE_BEGIN_END_QUESTIONNAIRE, 0);
-            notificationManager.notify(Sequence.TYPE_BEGIN_END_QUESTIONNAIRE, 0, notification);
-        } else {
-            Logger.d(TAG, "BEQs completed");
-            notificationManager.cancel(Sequence.TYPE_BEGIN_END_QUESTIONNAIRE, 0);
-        }
     }
 
     /**
