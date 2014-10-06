@@ -935,8 +935,9 @@ public class StatusManager {
         Logger.d(TAG, "Setting Storage version");
 
         try {
-            int versionCode = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode;
-            eSharedPreferences.putInt(getCurrentModeName() + STORAGE_VERSION, versionCode);
+            int versionCode = context.getPackageManager().getPackageInfo(
+                    context.getPackageName(), 0).versionCode;
+            eSharedPreferences.putInt(STORAGE_VERSION, versionCode);
             eSharedPreferences.commit();
         } catch (PackageManager.NameNotFoundException e) {
             Logger.e(TAG, "Package not found when retrieving app versionCode");
