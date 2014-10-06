@@ -116,7 +116,6 @@ public class StatusManager {
     @Inject LocationManager locationManager;
     @Inject ConnectivityManager connectivityManager;
     @Inject ActivityManager activityManager;
-    @Inject Context context;
     // Use providers here to prevent circular dependencies
     @Inject Provider<ProfileStorage> profileStorageProvider;
     @Inject Provider<SequencesStorage> sequencesStorageProvider;
@@ -124,6 +123,7 @@ public class StatusManager {
     @Inject Provider<ParametersStorage> parametersStorageProvider;
     @Inject Provider<CryptoStorage> cryptoStorageProvider;
 
+    Context context;
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor eSharedPreferences;
 
@@ -139,8 +139,9 @@ public class StatusManager {
      */
     @SuppressLint("CommitPrefEdits")
     @Inject
-    public StatusManager(SharedPreferences sharedPreferences) {
+    public StatusManager(Context context, SharedPreferences sharedPreferences) {
         Logger.d(TAG, "StatusManager created");
+        this.context = context;
         this.sharedPreferences = sharedPreferences;
         eSharedPreferences = sharedPreferences.edit();
         checkStorageVersion();
