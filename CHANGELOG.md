@@ -11,7 +11,7 @@ Changelog
 ------
 
 * Enhancements
-  * [#316, #337]Changes and enhancements in app text
+  * [#316, #337] Changes and enhancements in app text
   * [#330] Add storage versioning
 * Bug fixes
   * [#331] StringIndexOutOfBoundsException in SettingsActivity
