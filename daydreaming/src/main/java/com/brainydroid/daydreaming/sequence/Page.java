@@ -131,7 +131,7 @@ public class Page implements IPage {
         saveIfSync();
     }
 
-    private synchronized Sequence getSequence() {
+    public synchronized Sequence getSequence() {
         if (sequenceCache == null) {
             sequenceCache = sequencesStorage.get(sequenceId);
         }

@@ -88,6 +88,8 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
     @JsonView(Views.Internal.class)
     private String intro = null;
     @JsonView(Views.Internal.class)
+    private boolean showProgressHeader = true;
+    @JsonView(Views.Internal.class)
     private boolean skipBonuses = true;
     @JsonView(Views.Internal.class)
     private boolean skipBonusesAsked = false;
@@ -144,6 +146,10 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
         return intro;
     }
 
+    public synchronized boolean isShowProgressHeader() {
+        return showProgressHeader;
+    }
+
     public synchronized String getName() {
         return name;
     }
@@ -163,10 +169,16 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
         saveIfSync();
     }
 
+    public void setShowProgressHeader(boolean showProgressHeader) {
+        this.showProgressHeader = showProgressHeader;
+        saveIfSync();
+    }
+
     public synchronized void importFromSequenceDescription(SequenceDescription description) {
         setName(description.getName());
         setType(description.getType());
         setIntro(description.getIntro());
+        setShowProgressHeader(description.isShowProgressHeader());
     }
 
     public synchronized void setPageGroups(ArrayList<PageGroup> pageGroups) {

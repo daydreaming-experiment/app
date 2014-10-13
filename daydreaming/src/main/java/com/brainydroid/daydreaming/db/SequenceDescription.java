@@ -22,6 +22,8 @@ public class SequenceDescription extends DescriptionArrayContainer<PageGroupDesc
     @JsonView(Views.Internal.class)
     private int nSlots = -1;
     @JsonView(Views.Internal.class)
+    private boolean showProgressHeader = true;
+    @JsonView(Views.Internal.class)
     private ArrayList<PageGroupDescription> pageGroups = null;
 
     public String getName() {
@@ -38,6 +40,10 @@ public class SequenceDescription extends DescriptionArrayContainer<PageGroupDesc
 
     public int getNSlots() {
         return nSlots;
+    }
+
+    public boolean isShowProgressHeader() {
+        return showProgressHeader;
     }
 
     public ArrayList<PageGroupDescription> getPageGroups() {
