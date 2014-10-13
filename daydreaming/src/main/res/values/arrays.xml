@@ -16,7 +16,7 @@
         <item>@drawable/empty</item>
         <item>@drawable/icon_female</item>
         <item>@drawable/icon_male</item>
-        <item>@drawable/icon_questionmark</item>
+        <item>@drawable/icon_questionmark_blue</item>
     </array>
 
 

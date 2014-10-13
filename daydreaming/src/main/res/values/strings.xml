@@ -261,10 +261,10 @@
 <p><i>Research!</i> We’ll combine your data with data from thousands of other people to ask questions like: what activities tend to precipitate daydreaming? In what locations are people most likely to daydream? What kind of people are more or less likely to experience mind wandering? And so on. We expect to publish our findings in traditional peer-reviewed social/cognitive science journals.</p>
 
 <p><b>Is it anonymous?</b><p>
-<p><i>Yes</i>. We deliberately avoid asking you for any identifying information such as your email address, name, address, etc. If you look at the app permissions you’ll note that the only permissions we ask for are network access (required in order to send your data back to our server) and coarse GPS data (which we use to determine where you were when you answered the notification).</p>
+<p><i>Yes</i>. We deliberately avoid asking you for any identifying information such as your email address, name, address, etc. If you look at the app permissions you\'ll note that the only permissions we ask for are network access (required in order to send your data back to our server) and coarse GPS data (which we use to determine where you were when you answered the notification).</p>
 
 <p><b>Is it confidential?</b></p>
-<p><i>Yes</i>. We will not share your responses with anyone except the research team. But remember that since your responses are anonymous to begin with, so it’s not as though the data is of much use to anyone except us.</p>
+<p><i>Yes</i>. We will not share your responses with anyone except the research team. But remember that since your responses are anonymous to begin with, it\'s not as though the data is of much use to anyone except us.</p>
 
 <p><b>Is it secure?</b></p>
 <p><i>Yes</i>. Your data is sent back to our server over a secure connection.</p>
@@ -303,7 +303,7 @@
 <p>After 60 days, we will provide you with a comparison with the people that also completed the app.</p>
 
 <p><b>Why do I have to wait this long? </b></p>
-<p>Analysis must be done on sufficient data, and we don\'t want to provide you with a faulty summary. For example, if you want to know whether you daydream more at home or at work, you must answer many reports. Reports that would be of course both at home and at work, but also at different times a day, different days, and even different weeks. All these reports would drown errors arising from extraordinary contexts: in case you would be particularly tired one day, or you would have an very busy week, or a specific event at home, or even simply made a mistake when reporting!</p>
+<p>Analysis must be one on sufficient data, and we don\'t want to provide you with a faulty summary. For example, if you want to know whether you daydream more at home or at work, you must answer many reports. These reports should be of course both at home and at work, but also at taken at different hours of a day, different days, and even different weeks. The idea is that their number will then drown errors arising from extraordinary circumstances: you may have been tired one day, have had a very busy week or a specific event at home, or even simply made a mistake when reporting!</p>
 
 ]]>
     </string>
