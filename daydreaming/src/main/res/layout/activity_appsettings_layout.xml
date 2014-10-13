@@ -2,7 +2,8 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+    android:layout_height="fill_parent"
+    android:id="@+id/">
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -277,7 +278,37 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/settings_erase_data_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/global_text_titleTopMargin"
+            android:layout_gravity="center">
+
+            <ImageView
+                android:id ="@+id/appsettings_erase_icon"
+                android:layout_width="@dimen/settings_icon_size"
+                android:layout_height="@dimen/settings_icon_size"
+                android:scaleType="fitCenter"
+                android:src="@drawable/button_erase_data_selector"
+                android:layout_centerVertical="true"
+                android:contentDescription="@null"
+                />
+            <TextView
+                android:id="@+id/settings_erase_data"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="Erase my data"
+                android:textAppearance="@style/ui_font_bodytext_bold"
+                android:textColor="@color/ui_white_text_color"
+                android:paddingLeft="@dimen/settings_textpadding_from_icons"
+                android:gravity="center_vertical"/>
+        </LinearLayout>
+
     </LinearLayout>
+
+
 
 
     <LinearLayout android:layout_width="wrap_content"
