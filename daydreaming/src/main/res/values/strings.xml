@@ -149,7 +149,11 @@
     <string name="appsettings_allow_sound_text">Beeps at questions</string>
     <string name="settings_time_window_lb_default">8:00</string>
     <string name="settings_time_window_ub_default">22:00</string>
-
+    <string name="settings_erase_my_data">Erase my data</string>
+    <string name="appsettings_warning_data_erase">You won\'t be able to see your results any longer</string>
+    <string name="appsettings_dialog_button_erase_data">Erase anyway</string>
+    <string name="appsettings_dialog_button_keep_data">No, keep my data</string>
+    
     <!-- Profile Activity -->
     <string name="firstLaunchProfile_title_activity">Profile</string>
     <string name="firstLaunchProfile_title_about_you">A LITTLE ABOUT YOU</string>
@@ -307,6 +311,5 @@
 
 ]]>
     </string>
-
 
 </resources>

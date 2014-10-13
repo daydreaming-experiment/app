@@ -126,14 +126,14 @@ public class SettingsActivity extends RoboFragmentActivity {
 
                 // set dialog message
                 alertDialogBuilder
-                        .setMessage("You won't be able to see your results any longer")
+                        .setMessage(getString(R.string.appsettings_warning_data_erase))
                         .setCancelable(false)
-                        .setPositiveButton("Erase anyway",new DialogInterface.OnClickListener() {
+                        .setPositiveButton(getString(R.string.appsettings_dialog_button_erase_data),new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog,int id) {
                                 eraseMyData();
                             }
                         })
-                        .setNegativeButton("No, keep my data",new DialogInterface.OnClickListener() {
+                        .setNegativeButton(getString(R.string.appsettings_dialog_button_keep_data),new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog,int id) {
                                 dialog.cancel();
                             }
