@@ -3,7 +3,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:id="@+id/">
+    android:id="@+id/appsettings_RelativeLayout">
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -279,7 +279,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/settings_erase_data_layout"
+            android:id="@+id/appsettings_erase_data_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -291,7 +291,7 @@
                 android:layout_width="@dimen/settings_icon_size"
                 android:layout_height="@dimen/settings_icon_size"
                 android:scaleType="fitCenter"
-                android:src="@drawable/button_erase_data_selector"
+                android:src="@drawable/erase"
                 android:layout_centerVertical="true"
                 android:contentDescription="@null"
                 />

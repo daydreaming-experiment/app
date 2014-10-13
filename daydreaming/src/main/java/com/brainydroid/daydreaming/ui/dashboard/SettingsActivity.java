@@ -48,7 +48,7 @@ public class SettingsActivity extends RoboFragmentActivity {
     public static String NOTIF_BLINK = "notification_blink_key";
     public static String NOTIF_SOUND = "notification_sound_key";
 
-    @InjectView(R.id.settings_erase_data_layout)  LinearLayout eraseDataLayout;
+    @InjectView(R.id.appsettings_erase_data_layout)  LinearLayout eraseDataLayout;
 
     @InjectView(R.id.settings_time_text_from_layout)   LinearLayout fromLayout;
     @InjectView(R.id.settings_time_text_until_layout) LinearLayout untilLayout;
