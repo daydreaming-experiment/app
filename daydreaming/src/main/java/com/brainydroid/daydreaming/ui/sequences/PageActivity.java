@@ -1,8 +1,11 @@
 package com.brainydroid.daydreaming.ui.sequences;
 
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
@@ -49,6 +52,7 @@ public class PageActivity extends RoboFragmentActivity {
     private Sequence sequence;
     private Page currentPage;
     private boolean isContinuingOrFinishing = false;
+    private boolean isScreenGoingOff = false;
     private boolean isTooLate = false;
 
     @InjectView(R.id.page_relativeLayout) RelativeLayout outerPageLayout;
@@ -70,6 +74,25 @@ public class PageActivity extends RoboFragmentActivity {
     @Inject StatusManager statusManager;
     @Inject SntpClient sntpClient;
     @Inject ErrorHandler errorHandler;
+
+    private IntentFilter screenIntentFilter;
+    private BroadcastReceiver screenReceiver = new BroadcastReceiver() {
+
+        private String TAG = "PageActivity screenReceiver";
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Logger.v(TAG, "Started");
+
+            String action = intent.getAction();
+            if (action.equals(Intent.ACTION_SCREEN_OFF)) {
+                Logger.v(TAG, "Started for ACTION_SCREEN_OFF -> setting screenGoingOff flag");
+                // TODO: setIsScreenGoingOff();
+            } else {
+                Logger.v(TAG, "Started for an unknown action, exiting");
+            }
+        }
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -108,6 +131,9 @@ public class PageActivity extends RoboFragmentActivity {
         Logger.d(TAG, "Resuming");
         super.onResume();
 
+        Logger.d(TAG, "Registering screenReceiver");
+        registerReceiver(screenReceiver, screenIntentFilter);
+
         sequence.retainSaves();
         sequence.setStatus(Sequence.STATUS_RUNNING);
         currentPage.setStatus(Page.STATUS_ASKED);
@@ -132,6 +158,13 @@ public class PageActivity extends RoboFragmentActivity {
         Logger.d(TAG, "Pausing");
         super.onPause();
 
+        Logger.d(TAG, "Unregistering screenReceiver");
+        try {
+            unregisterReceiver(screenReceiver);
+        } catch(IllegalArgumentException e) {
+            Logger.v(TAG, "ScreenReceiver is not registered, so not unregistering");
+        }
+
         // BEQs and self-initiated probes don't interfere with normal scheduling.
         // Note that if the sequence is in fact finishing, this is run in finishSequence()
         // (and skipped here).
@@ -145,11 +178,12 @@ public class PageActivity extends RoboFragmentActivity {
         }
 
         if (!isContinuingOrFinishing && !isTooLate) {
+            // TODO: if also the screen is not going off
             Logger.d(TAG, "We're not finishing the sequence -> pausing it");
             if (sequence.wasMissedOrDismissedOrPaused() ||
                     !sequence.getType().equals(Sequence.TYPE_PROBE)) {
                 // We were already paused before, or we're not a probe.
-                // Closing this sequence definitively.
+                // Closing this sequence definitively (can be reopened if it's a BEQ).
                 sequence.setStatus(Sequence.STATUS_MISSED_OR_DISMISSED_OR_INCOMPLETE);
             } else {
                 // Never paused before, we're allowing the user to take up again.
@@ -158,6 +192,7 @@ public class PageActivity extends RoboFragmentActivity {
 
             finish();
         }
+        // TODO: else, if the screen is going off, set to paused, and don't finish(). Also clear isScreenGoingOff.
 
         // Save everything to DB
         sequence.flushSaves();
@@ -214,6 +249,14 @@ public class PageActivity extends RoboFragmentActivity {
         isTooLate = true;
     }
 
+    private void setIsScreenGoingOff() {
+        isScreenGoingOff = true;
+    }
+
+    private void clearIsScreenGoingOff() {
+        isScreenGoingOff = false;
+    }
+
     private void initVars() {
         Logger.d(TAG, "Initializing variables");
         Intent intent = getIntent();
@@ -226,6 +269,8 @@ public class PageActivity extends RoboFragmentActivity {
         sequence = sequencesStorage.get(sequenceId);
         currentPage = sequence.getCurrentPage();
         pageViewAdapter.setPage(currentPage);
+        screenIntentFilter = new IntentFilter(Intent.ACTION_SCREEN_OFF);
+        screenIntentFilter.addAction(Intent.ACTION_SCREEN_ON);
     }
 
     private void setChrome() {

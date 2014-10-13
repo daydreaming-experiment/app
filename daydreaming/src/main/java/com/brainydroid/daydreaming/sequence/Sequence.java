@@ -44,6 +44,12 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
     /* Probes/Questionnaires: activity is running */
     public static final String STATUS_RUNNING = "running";
     /**
+     * Probes/Questionnaires: activity was paused due to screen going off. These sequences
+     * are resumable if the user comes back directly to them as the screen comes back on.
+     * Otherwise they're flushed by DailySequenceService by its DB sanity check.
+     */
+    public static final String STATUS_PAUSED = "paused";
+    /**
      * Probes/Questionnaires: Activity was stopped in the middle of the sequence,
      * and probe not yet re-suggested nor dropped
      */
