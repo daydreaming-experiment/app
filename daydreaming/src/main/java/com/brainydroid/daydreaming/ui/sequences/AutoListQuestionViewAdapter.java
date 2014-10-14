@@ -88,6 +88,8 @@ public class AutoListQuestionViewAdapter
         if (details.isPreLoaded()) {
             Logger.v(TAG, "Details already pre-loaded, getting adapter directly");
             adapter = (AutoCompleteAdapter)details.getPreLoadedObject();
+            // Add missing user possibilities
+            addUserPossibilitiesToAdapter();
             autoTextView.setAdapter(adapter);
         } else {
             Logger.v(TAG, "Details not yet pre-loaded, registering callback");
@@ -101,6 +103,8 @@ public class AutoListQuestionViewAdapter
                 public void onPreLoaded() {
                     Logger.v(TAG, "Details pre-loaded");
                     adapter = (AutoCompleteAdapter)details.getPreLoadedObject();
+                    // Add missing user possibilities
+                    addUserPossibilitiesToAdapter();
                     autoTextView.setAdapter(adapter);
                     progressDialog.dismiss();
                 }
@@ -188,6 +192,16 @@ public class AutoListQuestionViewAdapter
         views.add(questionView);
 
         return views;
+    }
+
+    private void addUserPossibilitiesToAdapter() {
+        Logger.v(TAG, "Adding user possibilities to adapter");
+
+        ArrayList<String> userPossibilities =
+                parametersStorage.getUserPossibilities(question.getQuestionName());
+        for (String possibility : userPossibilities) {
+            adapter.addPossibility(possibility);
+        }
     }
 
     protected boolean addSelection(final MetaString ms) {
