@@ -1,10 +1,8 @@
 package com.brainydroid.daydreaming.ui.filtering;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.database.DataSetObserver;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
