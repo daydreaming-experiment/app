@@ -355,6 +355,9 @@ public class DailySequenceService extends RoboService {
         sequence.setStatus(Sequence.STATUS_PENDING);
         sequence.flushSaves();
 
+        // Pre-load it
+        sequence.onPreLoaded(null);
+
         // Get a timestamp for the sequence
         SntpClientCallback sntpCallback = new SntpClientCallback() {
 
