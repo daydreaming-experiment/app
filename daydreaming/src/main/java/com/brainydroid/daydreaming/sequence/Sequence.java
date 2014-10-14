@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 
 public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,SequenceJsonFactory>
-        implements ISequence {
+        implements ISequence, PreLoadable {
 
     private static String TAG = "Sequence";
 
@@ -57,7 +57,6 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
     public static final String STATUS_COMPLETED = "completed";
     /* Questionnaires: sequence completely answered, uploaded, and must be kept locally */
     public static final String STATUS_UPLOADED_AND_KEEP = "uploadedAndKeep";
-
 
     public static String[] AVAILABLE_STATUSES = new String[] {
             STATUS_PENDING,
@@ -101,6 +100,8 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
     @Inject private SequencesStorage sequencesStorage;
     @Inject private ErrorHandler errorHandler;
 
+    private boolean isPreLoaded = false;
+
     public static int getRecurrentRequestCode(String sequenceType, String action) {
         if (sequenceType.equals(TYPE_PROBE)) {
             if (action != null) {
@@ -139,6 +140,62 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
         } else {
             throw new RuntimeException("Asked for notification id for type " + type
                     + " but we don't have one.");
+        }
+    }
+
+    @Override
+    public synchronized boolean isPreLoaded() {
+        return isPreLoaded;
+    }
+
+    @Override
+    public synchronized void onPreLoaded(final PreLoadCallback preLoadCallback) {
+        if (isPreLoaded) {
+            if (preLoadCallback != null) {
+                Logger.v(TAG, "Already pre-loaded, calling callback");
+                preLoadCallback.onPreLoaded();
+            } else {
+                Logger.v(TAG, "Already pre-loaded, but no callback to call");
+            }
+        } else {
+            Logger.v(TAG, "Pre-loading");
+
+            final ArrayList<Boolean> pageGroupsLoaded = new ArrayList<Boolean>();
+            int index = 0;
+            for (PageGroup pg : pageGroups) {
+                pageGroupsLoaded.add(false);
+                final int indexFinal = index;
+
+                PreLoadCallback onPageGroupLoaded = new PreLoadCallback() {
+                    private String TAG = "PreLoadCallback onPageGroupLoaded";
+                    @Override
+                    public void onPreLoaded() {
+                        Logger.v(TAG, "PageGroup loaded");
+                        pageGroupsLoaded.set(indexFinal, true);
+
+                        // See if all page groups are loaded
+                        boolean foundNotLoaded = false;
+                        for (boolean loaded : pageGroupsLoaded) {
+                            if (!loaded) {
+                                foundNotLoaded = true;
+                                break;
+                            }
+                        }
+
+                        if (!foundNotLoaded) {
+                            Logger.v(TAG, "All page groups loaded");
+                            isPreLoaded = true;
+                            if (preLoadCallback != null) {
+                                Logger.v(TAG, "Calling callback");
+                                preLoadCallback.onPreLoaded();
+                            }
+                        }
+                    }
+                };
+
+                pg.onPreLoaded(onPageGroupLoaded);
+                index++;
+            }
         }
     }
 

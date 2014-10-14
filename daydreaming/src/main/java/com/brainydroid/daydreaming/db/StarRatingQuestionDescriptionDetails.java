@@ -10,9 +10,11 @@ public class StarRatingQuestionDescriptionDetails implements IQuestionDescriptio
     @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "StarRatingQuestionDescriptionDetails";
 
+    public static String TYPE = "StarRating";
+
     @SuppressWarnings("FieldCanBeLocal")
     @JsonView(Views.Internal.class)
-    private String type = "StarRating";
+    private String type = TYPE;
     @SuppressWarnings("UnusedDeclaration")
     @JsonView(Views.Internal.class)
     private ArrayList<StarRatingSubQuestion> subQuestions = null;

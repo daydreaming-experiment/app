@@ -9,9 +9,11 @@ public class AutoListQuestionDescriptionDetails implements IQuestionDescriptionD
 
     private static String TAG = "AutoListQuestionDescriptionDetails";
 
+    public static String TYPE = "AutoList";
+
     @SuppressWarnings("FieldCanBeLocal")
     @JsonView(Views.Internal.class)
-    private String type = "AutoList";
+    private String type = TYPE;
     @SuppressWarnings("UnusedDeclaration")
     @JsonView(Views.Internal.class)
     private String text = null;

@@ -10,9 +10,11 @@ public class SliderQuestionDescriptionDetails implements IQuestionDescriptionDet
     @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "SliderQuestionDescriptionDetails";
 
+    public static String TYPE = "Slider";
+
     @SuppressWarnings("FieldCanBeLocal")
     @JsonView(Views.Internal.class)
-    private String type = "Slider";
+    private String type = TYPE;
     @SuppressWarnings("UnusedDeclaration")
     @JsonView(Views.Internal.class)
     private ArrayList<SliderSubQuestion> subQuestions = null;

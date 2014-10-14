@@ -9,9 +9,11 @@ public class MatrixChoiceQuestionDescriptionDetails implements IQuestionDescript
     @SuppressWarnings({"FieldCanBeLocal"})
     private static String TAG = "MatrixChoiceQuestionDescriptionDetails";
 
+    public static String TYPE = "MatrixChoice";
+
     @SuppressWarnings("FieldCanBeLocal")
     @JsonView(Views.Internal.class)
-    private String type = "MatrixChoice";
+    private String type = TYPE;
     @SuppressWarnings("UnusedDeclaration")
     @JsonView(Views.Internal.class)
     private String text = null;

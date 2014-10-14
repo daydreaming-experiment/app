@@ -1,6 +1,7 @@
 package com.brainydroid.daydreaming.sequence;
 
 import com.brainydroid.daydreaming.background.Logger;
+import com.brainydroid.daydreaming.db.AutoListQuestionDescriptionDetails;
 import com.brainydroid.daydreaming.db.IQuestionDescriptionDetails;
 import com.brainydroid.daydreaming.db.ParametersStorage;
 import com.brainydroid.daydreaming.db.QuestionDescription;
@@ -17,7 +18,7 @@ import com.google.inject.Injector;
 // TODO: add some way to saveIfSync the phone's timezone and the user's
 // preferences_appSettings
 // about what times he allowed notifications to appear at.
-public class Question implements IQuestion {
+public class Question implements IQuestion, PreLoadable {
 
     private static String TAG = "Question";
 
@@ -43,6 +44,36 @@ public class Question implements IQuestion {
     @Inject private Injector injector;
     @Inject private SequencesStorage sequencesStorage;
     @Inject private ParametersStorage parametersStorage;
+
+    // Only used for autoList
+    private boolean isPreLoaded = false;
+    private Object preLoadedObject;
+
+    @Override
+    public synchronized boolean isPreLoaded() {
+        if (getDetails().getType().equals(AutoListQuestionDescriptionDetails.TYPE)) {
+            return isPreLoaded;
+        } else {
+            // Questions other than autoList don't need pre-loading
+            return true;
+        }
+    }
+
+    @Override
+    public synchronized void onPreLoaded(PreLoadCallback preLoadCallback) {
+        if (getDetails().getType().equals(AutoListQuestionDescriptionDetails.TYPE)) {
+            Logger.v(TAG, "Question is of type autoList, needs pre-loading");
+
+            // TODO: pre-load adapter
+
+        } else {
+            Logger.v(TAG, "Question is NOT of type autoList, " +
+                    "no need to pre-load (i.e. already pre-loaded -> calling possible callback)");
+            if (preLoadCallback != null) {
+                preLoadCallback.onPreLoaded();
+            }
+        }
+    }
 
     public synchronized void importFromQuestionDescription(QuestionDescription description) {
         Logger.d(TAG, "Importing information from QuestionDescription");

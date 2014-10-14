@@ -10,9 +10,10 @@ public class ManySlidersQuestionDescriptionDetails implements IQuestionDescripti
     private static String TAG = "ManySlidersQuestionDescriptionDetails";
 
     public static int DEFAULT_INITIAL_POSITION = -1;
+    public static String TYPE = "ManySliders";
 
     @JsonView(Views.Internal.class)
-    private String type = "ManySliders";
+    private String type = TYPE;
     @JsonView(Views.Internal.class)
     private String text = null;
     @JsonView(Views.Internal.class)
