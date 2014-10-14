@@ -255,13 +255,13 @@
 <p>This application is part of a <i>cognitive science research project</i>. As such, it requires your informed consent. Please read the following and uninstall the app if you disagree with anything.</p>
 
 <p><b>What data will I be sharing?</b></p>
-<p>Scientific research is based on data collection and analysis. The app collects your responses to the questionnaires and probes. Your coarse GPS data, which tells us your current location with a 0.2 - 0.5 miles error is also collected every 20 minutes. Crucially, these two kind of data are sent to our server <b> in anonymous form </b>, with a personnalized but arbitrary identification number. </p>
+<p>Scientific research is based on data collection and analysis. The app collects your responses to the questionnaires and probes. Your rough location is also collected every 20 minutes through mobile network (not GPS!), with a 0.2 - 0.5 miles error. Crucially, these two kind of data are sent to our server <b> in anonymous form </b>, with a personnalized but arbitrary identification number. </p>
 
 <p><b>What will you do with this data?</b></p>
 <p><i>Research!</i> We’ll combine your data with data from thousands of other people to ask questions like: what activities tend to precipitate daydreaming? In what locations are people most likely to daydream? What kind of people are more or less likely to experience mind wandering? And so on. We expect to publish our findings in traditional peer-reviewed social/cognitive science journals.</p>
 
 <p><b>Is it anonymous?</b><p>
-<p><i>Yes</i>. We deliberately avoid asking you for any identifying information such as your email address, name, address, etc. If you look at the app permissions you’ll note that the only permissions we ask for are network access (required in order to send your data back to our server) and coarse GPS data (which we use to determine where you were when you answered the notification).</p>
+<p><i>Yes</i>. We deliberately avoid asking you for any identifying information such as your email address, name, address, etc. If you look at the app permissions you’ll note that the only permissions we ask for are network access (required in order to send your data back to our server) and coarse location through mobile network (which we use to determine where you were when you answered the notification).</p>
 
 <p><b>Is it confidential?</b></p>
 <p><i>Yes</i>. We will not share your responses with anyone except the research team. But remember that since your responses are anonymous to begin with, so it’s not as though the data is of much use to anyone except us.</p>
