@@ -4,8 +4,10 @@ import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.PageGroupDescription;
 import com.brainydroid.daydreaming.db.Views;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.google.inject.Inject;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class PageGroup implements IPageGroup, PreLoadable {
 
@@ -24,6 +26,8 @@ public class PageGroup implements IPageGroup, PreLoadable {
     private int indexInSequence = 0;
 
     private boolean isPreLoaded;
+    private boolean isPreLoading = false;
+    @Inject private HashSet<PreLoadCallback> preLoadCallbacks;
 
     @Override
     public synchronized boolean isPreLoaded() {
@@ -40,43 +44,56 @@ public class PageGroup implements IPageGroup, PreLoadable {
                 Logger.v(TAG, "Already pre-loaded, but no callback to call");
             }
         } else {
-            Logger.v(TAG, "Pre-loading");
+            if (preLoadCallback != null) {
+                preLoadCallbacks.add(preLoadCallback);
+            }
 
-            final ArrayList<Boolean> pagesLoaded = new ArrayList<Boolean>();
-            int index = 0;
-            for (Page p : pages) {
-                pagesLoaded.add(false);
-                final int indexFinal = index;
+            if (isPreLoading) {
+                Logger.v(TAG, "Already pre-loading, recorded potential additional callback");
+            } else {
+                Logger.v(TAG, "Pre-loading");
+                isPreLoading = true;
 
-                PreLoadCallback onPageLoaded = new PreLoadCallback() {
-                    private String TAG = "PreLoadCallback onPageLoaded";
-                    @Override
-                    public void onPreLoaded() {
-                        Logger.v(TAG, "Page loaded");
-                        pagesLoaded.set(indexFinal, true);
+                final ArrayList<Boolean> pagesLoaded = new ArrayList<Boolean>();
+                int index = 0;
+                for (Page p : pages) {
+                    pagesLoaded.add(false);
+                    final int indexFinal = index;
 
-                        // See if all pages are loaded
-                        boolean foundNotLoaded = false;
-                        for (boolean loaded : pagesLoaded) {
-                            if (!loaded) {
-                                foundNotLoaded = true;
-                                break;
+                    PreLoadCallback onPageLoaded = new PreLoadCallback() {
+                        private String TAG = "PreLoadCallback onPageLoaded";
+
+                        @Override
+                        public void onPreLoaded() {
+                            Logger.v(TAG, "Page loaded");
+                            pagesLoaded.set(indexFinal, true);
+
+                            // See if all pages are loaded
+                            boolean foundNotLoaded = false;
+                            for (boolean loaded : pagesLoaded) {
+                                if (!loaded) {
+                                    foundNotLoaded = true;
+                                    break;
+                                }
+                            }
+
+                            if (!foundNotLoaded) {
+                                Logger.v(TAG, "All pages loaded -> calling possible callbacks");
+                                isPreLoaded = true;
+                                isPreLoading = false;
+
+                                // Only non-null callbacks are stored
+                                for (PreLoadCallback storedCallback : preLoadCallbacks) {
+                                    storedCallback.onPreLoaded();
+                                }
+                                preLoadCallbacks = new HashSet<PreLoadCallback>();
                             }
                         }
+                    };
 
-                        if (!foundNotLoaded) {
-                            Logger.v(TAG, "All pages loaded");
-                            isPreLoaded = true;
-                            if (preLoadCallback != null) {
-                                Logger.v(TAG, "Calling callback");
-                                preLoadCallback.onPreLoaded();
-                            }
-                        }
-                    }
-                };
-
-                p.onPreLoaded(onPageLoaded);
-                index++;
+                    p.onPreLoaded(onPageLoaded);
+                    index++;
+                }
             }
         }
     }

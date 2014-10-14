@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.google.inject.Inject;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class AutoListQuestionDescriptionDetails implements IQuestionDescriptionDetails, PreLoadable {
 
@@ -33,6 +34,8 @@ public class AutoListQuestionDescriptionDetails implements IQuestionDescriptionD
 
     @Inject AutoCompleteAdapterFactory autoCompleteAdapterFactory;
     private boolean isPreLoaded = false;
+    private boolean isPreLoading = false;
+    @Inject private HashSet<PreLoadCallback> preLoadCallbacks;
     private AutoCompleteAdapter autoCompleteAdapter;
 
     @Override
@@ -48,27 +51,41 @@ public class AutoListQuestionDescriptionDetails implements IQuestionDescriptionD
                 preLoadCallback.onPreLoaded();
             }
         } else {
-            Logger.v(TAG, "Pre-loading");
-            final AutoCompleteAdapter adapter = autoCompleteAdapterFactory.create();
-            final ArrayList<String> initialPossibilities = getPossibilities();
-            (new AsyncTask<Void, Void, Void>() {
-                @Override
-                protected Void doInBackground(Void... voids) {
-                    Logger.v(TAG, "Initializing adapter");
-                    adapter.initialize(initialPossibilities);
-                    return null;
-                }
+            if (preLoadCallback != null) {
+                preLoadCallbacks.add(preLoadCallback);
+            }
 
-                @Override
-                protected void onPostExecute(Void result) {
-                    Logger.v(TAG, "AutoList question pre-loaded -> calling possible callback");
-                    isPreLoaded = true;
-                    autoCompleteAdapter = adapter;
-                    if (preLoadCallback != null) {
-                        preLoadCallback.onPreLoaded();
+            if (isPreLoading) {
+                Logger.v(TAG, "Already pre-loading, recorded potential additional callback");
+            } else {
+                Logger.v(TAG, "Pre-loading");
+                isPreLoading = true;
+
+                final AutoCompleteAdapter adapter = autoCompleteAdapterFactory.create();
+                final ArrayList<String> initialPossibilities = getPossibilities();
+                (new AsyncTask<Void, Void, Void>() {
+                    @Override
+                    protected Void doInBackground(Void... voids) {
+                        Logger.v(TAG, "Initializing adapter");
+                        adapter.initialize(initialPossibilities);
+                        return null;
                     }
-                }
-            }).execute();
+
+                    @Override
+                    protected void onPostExecute(Void result) {
+                        Logger.v(TAG, "AutoList question pre-loaded -> calling possible callbacks");
+                        isPreLoaded = true;
+                        isPreLoading = false;
+                        autoCompleteAdapter = adapter;
+
+                        // Only non-null callbacks are stored
+                        for (PreLoadCallback storedCallback : preLoadCallbacks) {
+                            storedCallback.onPreLoaded();
+                        }
+                        preLoadCallbacks = new HashSet<PreLoadCallback>();
+                    }
+                }).execute();
+            }
         }
     }
 

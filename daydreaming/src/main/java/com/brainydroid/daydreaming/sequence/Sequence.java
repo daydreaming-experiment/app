@@ -101,6 +101,8 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
     @Inject private ErrorHandler errorHandler;
 
     private boolean isPreLoaded = false;
+    private boolean isPreLoading = false;
+    @Inject private HashSet<PreLoadCallback> preLoadCallbacks;
 
     public static int getRecurrentRequestCode(String sequenceType, String action) {
         if (sequenceType.equals(TYPE_PROBE)) {
@@ -158,43 +160,56 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
                 Logger.v(TAG, "Already pre-loaded, but no callback to call");
             }
         } else {
-            Logger.v(TAG, "Pre-loading");
+            if (preLoadCallback != null) {
+                preLoadCallbacks.add(preLoadCallback);
+            }
 
-            final ArrayList<Boolean> pageGroupsLoaded = new ArrayList<Boolean>();
-            int index = 0;
-            for (PageGroup pg : pageGroups) {
-                pageGroupsLoaded.add(false);
-                final int indexFinal = index;
+            if (isPreLoading) {
+                Logger.v(TAG, "Already pre-loading, recorded potential additional callback");
+            } else {
+                Logger.v(TAG, "Pre-loading");
+                isPreLoading = true;
 
-                PreLoadCallback onPageGroupLoaded = new PreLoadCallback() {
-                    private String TAG = "PreLoadCallback onPageGroupLoaded";
-                    @Override
-                    public void onPreLoaded() {
-                        Logger.v(TAG, "PageGroup loaded");
-                        pageGroupsLoaded.set(indexFinal, true);
+                final ArrayList<Boolean> pageGroupsLoaded = new ArrayList<Boolean>();
+                int index = 0;
+                for (PageGroup pg : pageGroups) {
+                    pageGroupsLoaded.add(false);
+                    final int indexFinal = index;
 
-                        // See if all page groups are loaded
-                        boolean foundNotLoaded = false;
-                        for (boolean loaded : pageGroupsLoaded) {
-                            if (!loaded) {
-                                foundNotLoaded = true;
-                                break;
+                    PreLoadCallback onPageGroupLoaded = new PreLoadCallback() {
+                        private String TAG = "PreLoadCallback onPageGroupLoaded";
+
+                        @Override
+                        public void onPreLoaded() {
+                            Logger.v(TAG, "PageGroup loaded");
+                            pageGroupsLoaded.set(indexFinal, true);
+
+                            // See if all page groups are loaded
+                            boolean foundNotLoaded = false;
+                            for (boolean loaded : pageGroupsLoaded) {
+                                if (!loaded) {
+                                    foundNotLoaded = true;
+                                    break;
+                                }
+                            }
+
+                            if (!foundNotLoaded) {
+                                Logger.v(TAG, "All page groups loaded -> calling possible callbacks");
+                                isPreLoaded = true;
+                                isPreLoading = false;
+
+                                // Only non-null callbacks are stored
+                                for (PreLoadCallback storedCallback : preLoadCallbacks) {
+                                    storedCallback.onPreLoaded();
+                                }
+                                preLoadCallbacks = new HashSet<PreLoadCallback>();
                             }
                         }
+                    };
 
-                        if (!foundNotLoaded) {
-                            Logger.v(TAG, "All page groups loaded");
-                            isPreLoaded = true;
-                            if (preLoadCallback != null) {
-                                Logger.v(TAG, "Calling callback");
-                                preLoadCallback.onPreLoaded();
-                            }
-                        }
-                    }
-                };
-
-                pg.onPreLoaded(onPageGroupLoaded);
-                index++;
+                    pg.onPreLoaded(onPageGroupLoaded);
+                    index++;
+                }
             }
         }
     }
