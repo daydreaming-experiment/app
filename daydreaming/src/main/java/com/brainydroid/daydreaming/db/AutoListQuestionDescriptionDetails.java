@@ -1,11 +1,18 @@
 package com.brainydroid.daydreaming.db;
 
+import android.os.AsyncTask;
+
 import com.brainydroid.daydreaming.background.Logger;
+import com.brainydroid.daydreaming.sequence.PreLoadCallback;
+import com.brainydroid.daydreaming.sequence.PreLoadable;
+import com.brainydroid.daydreaming.ui.filtering.AutoCompleteAdapter;
+import com.brainydroid.daydreaming.ui.filtering.AutoCompleteAdapterFactory;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.google.inject.Inject;
 
 import java.util.ArrayList;
 
-public class AutoListQuestionDescriptionDetails implements IQuestionDescriptionDetails {
+public class AutoListQuestionDescriptionDetails implements IQuestionDescriptionDetails, PreLoadable {
 
     private static String TAG = "AutoListQuestionDescriptionDetails";
 
@@ -20,11 +27,55 @@ public class AutoListQuestionDescriptionDetails implements IQuestionDescriptionD
     @SuppressWarnings("UnusedDeclaration")
     @JsonView(Views.Internal.class)
     private String hint = null;
-    @JsonView(Views.Internal.class)
-    private String glossaryText = null;
     @SuppressWarnings("UnusedDeclaration")
     @JsonView(Views.Internal.class)
     private ArrayList<String> possibilities = null;
+
+    @Inject AutoCompleteAdapterFactory autoCompleteAdapterFactory;
+    private boolean isPreLoaded = false;
+    private AutoCompleteAdapter autoCompleteAdapter;
+
+    @Override
+    public synchronized boolean isPreLoaded() {
+        return isPreLoaded;
+    }
+
+    @Override
+    public synchronized void onPreLoaded(final PreLoadCallback preLoadCallback) {
+        if (isPreLoaded) {
+            Logger.v(TAG, "Question already pre-loaded -> calling possible callback");
+            if (preLoadCallback != null) {
+                preLoadCallback.onPreLoaded();
+            }
+        } else {
+            Logger.v(TAG, "Pre-loading");
+            final AutoCompleteAdapter adapter = autoCompleteAdapterFactory.create();
+            final ArrayList<String> initialPossibilities = getPossibilities();
+            (new AsyncTask<Void, Void, Void>() {
+                @Override
+                protected Void doInBackground(Void... voids) {
+                    Logger.v(TAG, "Initializing adapter");
+                    adapter.initialize(initialPossibilities);
+                    return null;
+                }
+
+                @Override
+                protected void onPostExecute(Void result) {
+                    Logger.v(TAG, "AutoList question pre-loaded -> calling possible callback");
+                    isPreLoaded = true;
+                    autoCompleteAdapter = adapter;
+                    if (preLoadCallback != null) {
+                        preLoadCallback.onPreLoaded();
+                    }
+                }
+            }).execute();
+        }
+    }
+
+    @Override
+    public synchronized Object getPreLoadedObject() {
+        return autoCompleteAdapter;
+    }
 
     @Override
     public String getType() {
@@ -37,10 +88,6 @@ public class AutoListQuestionDescriptionDetails implements IQuestionDescriptionD
 
     public String getHint() {
         return hint;
-    }
-
-    public String getGlossaryText() {
-        return glossaryText;
     }
 
     public ArrayList<String> getPossibilities() {

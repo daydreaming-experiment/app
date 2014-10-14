@@ -1,5 +1,7 @@
 package com.brainydroid.daydreaming.sequence;
 
+import android.os.AsyncTask;
+
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.AutoListQuestionDescriptionDetails;
 import com.brainydroid.daydreaming.db.IQuestionDescriptionDetails;
@@ -7,6 +9,8 @@ import com.brainydroid.daydreaming.db.ParametersStorage;
 import com.brainydroid.daydreaming.db.QuestionDescription;
 import com.brainydroid.daydreaming.db.SequencesStorage;
 import com.brainydroid.daydreaming.db.Views;
+import com.brainydroid.daydreaming.ui.filtering.AutoCompleteAdapter;
+import com.brainydroid.daydreaming.ui.filtering.AutoCompleteAdapterFactory;
 import com.brainydroid.daydreaming.ui.sequences.BaseQuestionViewAdapter;
 import com.brainydroid.daydreaming.ui.sequences.IQuestionViewAdapter;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
@@ -14,6 +18,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+
+import java.util.ArrayList;
 
 // TODO: add some way to saveIfSync the phone's timezone and the user's
 // preferences_appSettings
@@ -45,34 +51,14 @@ public class Question implements IQuestion, PreLoadable {
     @Inject private SequencesStorage sequencesStorage;
     @Inject private ParametersStorage parametersStorage;
 
-    // Only used for autoList
-    private boolean isPreLoaded = false;
-    private Object preLoadedObject;
-
     @Override
     public synchronized boolean isPreLoaded() {
-        if (getDetails().getType().equals(AutoListQuestionDescriptionDetails.TYPE)) {
-            return isPreLoaded;
-        } else {
-            // Questions other than autoList don't need pre-loading
-            return true;
-        }
+        return getDetails().isPreLoaded();
     }
 
     @Override
     public synchronized void onPreLoaded(PreLoadCallback preLoadCallback) {
-        if (getDetails().getType().equals(AutoListQuestionDescriptionDetails.TYPE)) {
-            Logger.v(TAG, "Question is of type autoList, needs pre-loading");
-
-            // TODO: pre-load adapter
-
-        } else {
-            Logger.v(TAG, "Question is NOT of type autoList, " +
-                    "no need to pre-load (i.e. already pre-loaded -> calling possible callback)");
-            if (preLoadCallback != null) {
-                preLoadCallback.onPreLoaded();
-            }
-        }
+        getDetails().onPreLoaded(preLoadCallback);
     }
 
     public synchronized void importFromQuestionDescription(QuestionDescription description) {
