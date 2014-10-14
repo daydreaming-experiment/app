@@ -41,19 +41,23 @@ public class MQSchedulerService extends RecurrentSequenceSchedulerService {
         // Fix what 'now' means, and retrieve the allowed time window
         fixNowAndGetAllowedWindow();
 
-        Calendar startIfToday = (Calendar)now.clone();
+        Calendar startIfToday = (Calendar) now.clone();
         startIfToday.set(Calendar.HOUR_OF_DAY, startAllowedHour);
+        Calendar startIfTodayLast = (Calendar) startIfToday.clone();
         // Start 3 hours before opening of bother window
         startIfToday.add(Calendar.HOUR_OF_DAY, -3);
         startIfToday.set(Calendar.MINUTE, startAllowedMinute);
-        Calendar startIfTomorrow = (Calendar)startIfToday.clone();
+        Calendar startIfTomorrow = (Calendar) startIfToday.clone();
         startIfTomorrow.add(Calendar.DAY_OF_YEAR, 1);
 
         long scheduledTime;
         if (now.before(startIfToday)) {
-            Logger.d(TAG, "now < morning time today -> scheduling today");
+            Logger.d(TAG, "now < morning time today - 3 -> scheduling today");
             // still time to schedule for today!
-            scheduledTime =  startIfToday.getTimeInMillis();
+            scheduledTime = startIfToday.getTimeInMillis();
+        } else if (now.after(startIfToday) && now.before(startIfTodayLast) && statusManager.isLastMQNotifLongAgo()) {
+            Logger.d(TAG, "morning time today > now > morning time today - 3 -> scheduling today and now");
+            scheduledTime = now.getTimeInMillis();
         } else {
             Logger.d(TAG, "now > morning time today -> scheduling tomorrow");
             scheduledTime = startIfTomorrow.getTimeInMillis();

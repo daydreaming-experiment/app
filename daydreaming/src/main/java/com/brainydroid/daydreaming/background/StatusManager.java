@@ -57,6 +57,10 @@ public class StatusManager {
     /** Preference key storing timestamp of the last sync operation */
     private static String LAST_SYNC_TIMESTAMP = "lastSyncTimestamp";
 
+    /** Preference key storing timestamp of the last morning questionnaire */
+    private static String LAST_MORNING_Q_TIMESTAMP = "lastMQNotifTimestamp";
+
+
     /** Preference key storing timestamp of beginning of experiment */
     @SuppressWarnings("FieldCanBeLocal")
     private static String EXP_START_TIMESTAMP = "expStartTimestamp";
@@ -461,6 +465,33 @@ public class StatusManager {
         eSharedPreferences.putLong(getCurrentModeName() + LAST_SYNC_TIMESTAMP, now);
         eSharedPreferences.commit();
     }
+
+    /**
+     * Set the timestamp of the last MQ notification to now.
+     */
+    public synchronized void setLastMQNotifToNow() {
+        long now = Calendar.getInstance().getTimeInMillis();
+        Logger.d(TAG, "{} - Setting last MQ notif timestamp to now", getCurrentModeName());
+        eSharedPreferences.putLong(getCurrentModeName() + LAST_MORNING_Q_TIMESTAMP, now);
+        eSharedPreferences.commit();
+    }
+
+
+    /**
+     * Check if a morning questionnaire notification was long ago.
+     */
+    public synchronized boolean isLastMQNotifLongAgo() {
+        long delay = 18 * 3600;  // 24h - 3h = 18h
+        long threshold = sharedPreferences.getLong(getCurrentModeName() + LAST_MORNING_Q_TIMESTAMP, - delay) + delay;
+        if (threshold < Calendar.getInstance().getTimeInMillis()) {
+            Logger.d(TAG, "{} - Last MQ notif was yesterday", getCurrentModeName());
+            return true;
+        } else {
+            Logger.d(TAG, "{} - Last MQ notif was recent, do not notify", getCurrentModeName());
+            return false;
+        }
+    }
+
 
     /**
      * Check if a sync operation was made not long ago.
