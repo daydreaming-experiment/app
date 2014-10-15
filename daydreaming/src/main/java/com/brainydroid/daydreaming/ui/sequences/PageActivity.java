@@ -216,6 +216,7 @@ public class PageActivity extends RoboFragmentActivity {
             throw new RuntimeException(msg);
         }
         sequence = sequencesStorage.get(sequenceId);
+        sequence.onPreLoaded(null);
         currentPage = sequence.getCurrentPage();
         pageViewAdapter.setPage(currentPage);
     }

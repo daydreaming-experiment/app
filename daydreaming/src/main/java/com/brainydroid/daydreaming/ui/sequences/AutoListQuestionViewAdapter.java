@@ -5,7 +5,6 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
@@ -26,6 +25,7 @@ import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.AutoListQuestionDescriptionDetails;
 import com.brainydroid.daydreaming.db.ParametersStorage;
 import com.brainydroid.daydreaming.sequence.AutoListAnswer;
+import com.brainydroid.daydreaming.sequence.PreLoadCallback;
 import com.brainydroid.daydreaming.ui.filtering.AutoCompleteAdapter;
 import com.brainydroid.daydreaming.ui.filtering.AutoCompleteAdapterFactory;
 import com.brainydroid.daydreaming.ui.filtering.MetaString;
@@ -55,6 +55,7 @@ public class AutoListQuestionViewAdapter
     private LinearLayout selectionLayout;
     private ArrayList<String> initialPossibilities;
     @Inject private HashMap<MetaString, RelativeLayout> selectionViews;
+    private AutoCompleteAdapter adapter;
 
     @TargetApi(11)
     @Override
@@ -62,7 +63,7 @@ public class AutoListQuestionViewAdapter
                                            LinearLayout questionLayout) {
         Logger.d(TAG, "Inflating question views");
 
-        AutoListQuestionDescriptionDetails details =
+        final AutoListQuestionDescriptionDetails details =
                 (AutoListQuestionDescriptionDetails)question.getDetails();
         initialPossibilities = details.getPossibilities();
         initialPossibilities.addAll(parametersStorage.getUserPossibilities(question.getQuestionName()));
@@ -83,24 +84,32 @@ public class AutoListQuestionViewAdapter
         Button addButton = (Button)questionView.findViewById(R.id.question_auto_list_addButton);
 
         autoTextView.setHint(details.getHint());
-        final AutoCompleteAdapter adapter = autoCompleteAdapterFactory.create();
-        autoTextView.setAdapter(adapter);
 
-        final ProgressDialog progressDialog = ProgressDialog.show(activity,
-                "Loading", "Loading question...");
+        if (details.isPreLoaded()) {
+            Logger.v(TAG, "Details already pre-loaded, getting adapter directly");
+            adapter = (AutoCompleteAdapter)details.getPreLoadedObject();
+            // Add missing user possibilities
+            addUserPossibilitiesToAdapter();
+            autoTextView.setAdapter(adapter);
+        } else {
+            Logger.v(TAG, "Details not yet pre-loaded, registering callback");
 
-        (new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... voids) {
-                adapter.initialize(initialPossibilities);
-                return null;
-            }
+            final ProgressDialog progressDialog = ProgressDialog.show(activity,
+                    "Loading", "Loading question...");
 
-            @Override
-            protected void onPostExecute(Void result) {
-                progressDialog.dismiss();
-            }
-        }).execute();
+            details.onPreLoaded(new PreLoadCallback() {
+                private String TAG = "PreLoadCallback (details)";
+                @Override
+                public void onPreLoaded() {
+                    Logger.v(TAG, "Details pre-loaded");
+                    adapter = (AutoCompleteAdapter)details.getPreLoadedObject();
+                    // Add missing user possibilities
+                    addUserPossibilitiesToAdapter();
+                    autoTextView.setAdapter(adapter);
+                    progressDialog.dismiss();
+                }
+            });
+        }
 
         autoTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -183,6 +192,16 @@ public class AutoListQuestionViewAdapter
         views.add(questionView);
 
         return views;
+    }
+
+    private void addUserPossibilitiesToAdapter() {
+        Logger.v(TAG, "Adding user possibilities to adapter");
+
+        ArrayList<String> userPossibilities =
+                parametersStorage.getUserPossibilities(question.getQuestionName());
+        for (String possibility : userPossibilities) {
+            adapter.addPossibility(possibility);
+        }
     }
 
     protected boolean addSelection(final MetaString ms) {

@@ -1,5 +1,7 @@
 package com.brainydroid.daydreaming.db;
 
+import com.brainydroid.daydreaming.sequence.PreLoadable;
+
 /**
  * Interface to implement to represent details of a question.
  * <p/>
@@ -10,7 +12,7 @@ package com.brainydroid.daydreaming.db;
  * @author Vincent Adam
  * @see QuestionPositionDescription
  */
-public interface IQuestionDescriptionDetails {
+public interface IQuestionDescriptionDetails extends PreLoadable {
 
     /**
      * Get the type of question for which this instance is the details field.
@@ -19,6 +21,8 @@ public interface IQuestionDescriptionDetails {
      * @return Question type
      */
     public String getType();
+
+    public Object getPreLoadedObject();
 
     /**
      * Validate the question details are properly initialized.
