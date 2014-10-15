@@ -1,6 +1,17 @@
 Changelog
 =========
 
+0.28.0
+------
+
+* Enhancements
+  * Several content enhancements
+  * [#110] Upgrade to API 20
+  * [#360] Switch to grammar v3.1 allowing optional progress header
+  * [#365] Pre-load sequences to avoid waiting for BK tree load in autoList questions
+* Bug fixes
+  * [#301, #302, #303] Design and icon fixes; also better space usage when sequences have no intro
+
 0.27.0
 ------
 
