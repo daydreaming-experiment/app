@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 
 public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,SequenceJsonFactory>
-        implements ISequence {
+        implements ISequence, PreLoadable {
 
     private static String TAG = "Sequence";
 
@@ -58,7 +58,6 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
     /* Questionnaires: sequence completely answered, uploaded, and must be kept locally */
     public static final String STATUS_UPLOADED_AND_KEEP = "uploadedAndKeep";
 
-
     public static String[] AVAILABLE_STATUSES = new String[] {
             STATUS_PENDING,
             STATUS_RECENTLY_DISMISSED,
@@ -88,6 +87,8 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
     @JsonView(Views.Internal.class)
     private String intro = null;
     @JsonView(Views.Internal.class)
+    private boolean showProgressHeader = true;
+    @JsonView(Views.Internal.class)
     private boolean skipBonuses = true;
     @JsonView(Views.Internal.class)
     private boolean skipBonusesAsked = false;
@@ -98,6 +99,10 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
 
     @Inject private SequencesStorage sequencesStorage;
     @Inject private ErrorHandler errorHandler;
+
+    private boolean isPreLoaded = false;
+    private boolean isPreLoading = false;
+    @Inject private HashSet<PreLoadCallback> preLoadCallbacks;
 
     public static int getRecurrentRequestCode(String sequenceType, String action) {
         if (sequenceType.equals(TYPE_PROBE)) {
@@ -140,8 +145,81 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
         }
     }
 
+    @Override
+    public synchronized boolean isPreLoaded() {
+        return isPreLoaded;
+    }
+
+    @Override
+    public synchronized void onPreLoaded(final PreLoadCallback preLoadCallback) {
+        if (isPreLoaded) {
+            if (preLoadCallback != null) {
+                Logger.v(TAG, "Already pre-loaded, calling callback");
+                preLoadCallback.onPreLoaded();
+            } else {
+                Logger.v(TAG, "Already pre-loaded, but no callback to call");
+            }
+        } else {
+            if (preLoadCallback != null) {
+                preLoadCallbacks.add(preLoadCallback);
+            }
+
+            if (isPreLoading) {
+                Logger.v(TAG, "Already pre-loading, recorded potential additional callback");
+            } else {
+                Logger.v(TAG, "Pre-loading");
+                isPreLoading = true;
+
+                final ArrayList<Boolean> pageGroupsLoaded = new ArrayList<Boolean>();
+                int index = 0;
+                for (PageGroup pg : pageGroups) {
+                    pageGroupsLoaded.add(false);
+                    final int indexFinal = index;
+
+                    PreLoadCallback onPageGroupLoaded = new PreLoadCallback() {
+                        private String TAG = "PreLoadCallback onPageGroupLoaded";
+
+                        @Override
+                        public void onPreLoaded() {
+                            Logger.v(TAG, "PageGroup loaded");
+                            pageGroupsLoaded.set(indexFinal, true);
+
+                            // See if all page groups are loaded
+                            boolean foundNotLoaded = false;
+                            for (boolean loaded : pageGroupsLoaded) {
+                                if (!loaded) {
+                                    foundNotLoaded = true;
+                                    break;
+                                }
+                            }
+
+                            if (!foundNotLoaded) {
+                                Logger.v(TAG, "All page groups loaded -> calling possible callbacks");
+                                isPreLoaded = true;
+                                isPreLoading = false;
+
+                                // Only non-null callbacks are stored
+                                for (PreLoadCallback storedCallback : preLoadCallbacks) {
+                                    storedCallback.onPreLoaded();
+                                }
+                                preLoadCallbacks = new HashSet<PreLoadCallback>();
+                            }
+                        }
+                    };
+
+                    pg.onPreLoaded(onPageGroupLoaded);
+                    index++;
+                }
+            }
+        }
+    }
+
     public synchronized String getIntro() {
         return intro;
+    }
+
+    public synchronized boolean isShowProgressHeader() {
+        return showProgressHeader;
     }
 
     public synchronized String getName() {
@@ -163,10 +241,16 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
         saveIfSync();
     }
 
+    public void setShowProgressHeader(boolean showProgressHeader) {
+        this.showProgressHeader = showProgressHeader;
+        saveIfSync();
+    }
+
     public synchronized void importFromSequenceDescription(SequenceDescription description) {
         setName(description.getName());
         setType(description.getType());
         setIntro(description.getIntro());
+        setShowProgressHeader(description.isShowProgressHeader());
     }
 
     public synchronized void setPageGroups(ArrayList<PageGroup> pageGroups) {

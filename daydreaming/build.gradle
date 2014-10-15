@@ -15,12 +15,12 @@ repositories {
 }
 
 android {
-    compileSdkVersion 16
+    compileSdkVersion 20
     buildToolsVersion "20.0.0"
 
     defaultConfig {
-        versionCode 49
-        versionName "0.27.0"
+        versionCode 50
+        versionName "0.28.0"
     }
 
     buildTypes {

@@ -29,7 +29,7 @@ Not long at all. The app will notify you a few times a day (5 - 7 on average). E
 
 What data will I be sharing?
 
-In addition to the responses you give to the questions presented in each notification, we also collect coarse GPS data, which tells us your current location accurate to approximately 0.2 - 0.5 miles.
+In addition to the responses you give to the questions presented in each notification, we also collect your rough location every 20 minutes through mobile network (not GPS!), with a 0.2 - 0.5 miles error.
 
 What will you do with this data?
 
@@ -37,7 +37,7 @@ Research! We’ll combine your data with data from thousands of other people to 
 
 Is it anonymous?
 
-Yes. We deliberately avoid asking you for any identifying information such as your email address, name, address, etc. If you look at the app permissions you’ll note that the only permissions we ask for are network access (required in order to send your data back to our server) and coarse GPS data (which we use to determine where you were when you answered the notification).
+Yes. We deliberately avoid asking you for any identifying information such as your email address, name, address, etc. If you look at the app permissions you’ll note that the only permissions we ask for are network access (required in order to send your data back to our server) and rough location through mobile network (which we use to determine where you were when you answered the notification).
 
 Is it confidential?
 

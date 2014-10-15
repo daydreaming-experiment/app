@@ -1,6 +1,7 @@
 package com.brainydroid.daydreaming.db;
 
 import com.brainydroid.daydreaming.background.Logger;
+import com.brainydroid.daydreaming.sequence.PreLoadCallback;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import java.util.ArrayList;
@@ -10,9 +11,10 @@ public class ManySlidersQuestionDescriptionDetails implements IQuestionDescripti
     private static String TAG = "ManySlidersQuestionDescriptionDetails";
 
     public static int DEFAULT_INITIAL_POSITION = -1;
+    public static String TYPE = "ManySliders";
 
     @JsonView(Views.Internal.class)
-    private String type = "ManySliders";
+    private String type = TYPE;
     @JsonView(Views.Internal.class)
     private String text = null;
     @JsonView(Views.Internal.class)
@@ -29,6 +31,24 @@ public class ManySlidersQuestionDescriptionDetails implements IQuestionDescripti
     private String addItemHint = null;
     @JsonView(Views.Internal.class)
     private String dialogText = null;
+
+    @Override
+    public synchronized boolean isPreLoaded() {
+        return true;
+    }
+
+    @Override
+    public synchronized void onPreLoaded(PreLoadCallback preLoadCallback) {
+        // This question is always already loaded
+        if (preLoadCallback != null) {
+            preLoadCallback.onPreLoaded();
+        }
+    }
+
+    @Override
+    public synchronized Object getPreLoadedObject() {
+        return null;
+    }
 
     @Override
     public synchronized String getType() {

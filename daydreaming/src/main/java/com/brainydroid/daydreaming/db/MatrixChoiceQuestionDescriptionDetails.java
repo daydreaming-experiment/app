@@ -1,6 +1,7 @@
 package com.brainydroid.daydreaming.db;
 
 import com.brainydroid.daydreaming.background.Logger;
+import com.brainydroid.daydreaming.sequence.PreLoadCallback;
 import com.fasterxml.jackson.annotation.JsonView;
 import java.util.ArrayList;
 
@@ -9,9 +10,11 @@ public class MatrixChoiceQuestionDescriptionDetails implements IQuestionDescript
     @SuppressWarnings({"FieldCanBeLocal"})
     private static String TAG = "MatrixChoiceQuestionDescriptionDetails";
 
+    public static String TYPE = "MatrixChoice";
+
     @SuppressWarnings("FieldCanBeLocal")
     @JsonView(Views.Internal.class)
-    private String type = "MatrixChoice";
+    private String type = TYPE;
     @SuppressWarnings("UnusedDeclaration")
     @JsonView(Views.Internal.class)
     private String text = null;
@@ -20,6 +23,24 @@ public class MatrixChoiceQuestionDescriptionDetails implements IQuestionDescript
     @SuppressWarnings("UnusedDeclaration")
     @JsonView(Views.Internal.class)
     private ArrayList<String> choices = null;
+
+    @Override
+    public synchronized boolean isPreLoaded() {
+        return true;
+    }
+
+    @Override
+    public synchronized void onPreLoaded(PreLoadCallback preLoadCallback) {
+        // This question is always already loaded
+        if (preLoadCallback != null) {
+            preLoadCallback.onPreLoaded();
+        }
+    }
+
+    @Override
+    public synchronized Object getPreLoadedObject() {
+        return null;
+    }
 
     @Override
     public synchronized String getType() {
