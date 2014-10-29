@@ -1,6 +1,14 @@
 Changelog
 =========
 
+0.29.0
+------
+
+* Enhancements
+  * UI tweaks in the results activity
+* Bug fixes
+  * Add missing mother tongue in uploaded profile data
+
 0.28.0
 ------
 
