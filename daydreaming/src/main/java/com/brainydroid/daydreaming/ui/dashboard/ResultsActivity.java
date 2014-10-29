@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
@@ -103,17 +104,20 @@ public class ResultsActivity extends RoboFragmentActivity {
 
     private void setPageLoaded() {
         pageLoaded = true;
-        dismissDialogIfLoadingFinished();
+        finalizeIfLoadingFinished();
     }
 
     private void setResultsDownloaded() {
         resultsDownloaded = true;
-        dismissDialogIfLoadingFinished();
+        finalizeIfLoadingFinished();
     }
 
-    private void dismissDialogIfLoadingFinished() {
-        if (pageLoaded && resultsDownloaded && progressDialog != null) {
-            progressDialog.dismiss();
+    private void finalizeIfLoadingFinished() {
+        if (pageLoaded && resultsDownloaded) {
+            if (progressDialog != null) {
+                progressDialog.dismiss();
+            }
+            webView.setVisibility(View.VISIBLE);
         }
     }
 
