@@ -19,7 +19,7 @@ before_install:
   - export ANDROID_HOME="$(pwd)/android-sdk-linux"
   - export PATH="${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools"
   # Partition downloads into licence groups, otherwise `echo "y"` doesn't work
-  - echo "y" | android update sdk --no-ui --force --filter build-tools-20.0.0,android-20,platform-tools,extra-android-support
+  - echo "y" | android update sdk --no-ui --force --filter build-tools-21.0.2,android-20,platform-tools,extra-android-support
   - echo "y" | android update sdk --no-ui --force --filter extra-android-m2repository
 
   # Come back into main repository
