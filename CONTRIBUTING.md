@@ -77,7 +77,7 @@ Android SDK lives; do that by first running the following commands:
 
 ```sh
 export ANDROID_HOME="<absolute-path-to-parent-folder-of-android-sdk>/android-sdk-linux"
-export PATH="${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools:${ANDROID_HOME}/build-tools/20.0.0"
+export PATH="${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools:${ANDROID_HOME}/build-tools/21.1.0"
 ```
 
 where you replace `<absolute-path-to-parent-folder-of-android-sdk>` by the
@@ -95,7 +95,7 @@ Now, install the necessary SDK packages by running the following command
 (from any folder):
 
 ```sh
-android update sdk --no-ui --force --filter build-tools-20.0.0,android-20,platform-tools,extra-android-support,extra-android-m2repository
+android update sdk --all --no-ui --force --filter build-tools-21.1.0,android-21,platform-tools,extra-android-support,extra-android-m2repository
 ```
 
 (And answering `y` to the license agreement.)
