@@ -4,8 +4,7 @@
     android:layout_height="wrap_content"
     android:layout_gravity="center_horizontal"
     android:padding="5dp"
-    android:descendantFocusability="beforeDescendants"
-    android:focusableInTouchMode="true">
+    android:clickable="true">
 
     <ImageView
         android:id="@+id/question_matrix_choice_item_image"

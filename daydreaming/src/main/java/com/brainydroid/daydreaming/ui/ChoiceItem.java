@@ -35,7 +35,6 @@ public class ChoiceItem extends LinearLayout {
         super(context, attrs, defStyle);
     }
 
-    // TODO: add image here once we have the icons
     public void initialize(String text) {
         Logger.v(TAG, "Initializing");
         imageView = (ImageView)findViewById(R.id.question_matrix_choice_item_image);
@@ -61,7 +60,7 @@ public class ChoiceItem extends LinearLayout {
         imageView.setBackgroundResource(isChecked ? drawableChecked : drawableUnchecked);
         textView.setTextColor(isChecked ?
                 getResources().getColorStateList(R.color.ui_yellow):
-                getResources().getColorStateList(R.color.ui_dark_blue_color));
+                getResources().getColorStateList(R.color.ui_white_text_color));
     }
 
     public String getText() {
