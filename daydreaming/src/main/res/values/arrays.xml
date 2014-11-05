@@ -42,7 +42,6 @@
 
     <string-array name="languages">
         <item>Deutsch</item>
-        <item>English</item>
         <item>Español</item>
         <item>Français</item>
         <item>Italiano</item>
