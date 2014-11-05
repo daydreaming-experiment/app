@@ -41,6 +41,55 @@
     </string-array>
 
     <string-array name="languages">
+        <item>Deutsch</item>
+        <item>English</item>
+        <item>Español</item>
+        <item>Français</item>
+        <item>Italiano</item>
+        <item>Nederlands</item>
+        <item>Polski</item>
+        <item>Русский</item>
+        <item>Sinugboanong Binisaya</item>
+        <item>Svenska</item>
+        <item>Tiếng Việt</item>
+        <item>Winaray</item>
+        <item>العربية</item>
+        <item>Azərbaycanca</item>
+        <item>Български</item>
+        <item>Català</item>
+        <item>Česky</item>
+        <item>Dansk</item>
+        <item>Eesti</item>
+        <item>Ελληνικά</item>
+        <item>Esperanto</item>
+        <item>Euskara</item>
+        <item>فارسی</item>
+        <item>Galego</item>
+        <item>Հայերեն</item>
+        <item>हिन्दी</item>
+        <item>Hrvatski</item>
+        <item>Bahasa Indonesia</item>
+        <item>עברית</item>
+        <item>Latina</item>
+        <item>Lietuvių</item>
+        <item>Magyar</item>
+        <item>Bahasa Melayu</item>
+        <item>Bahaso Minangkabau</item>
+        <item>日本語</item>
+        <item>Norsk</item>
+        <item>Oʻzbekcha</item>
+        <item>Português</item>
+        <item>Qazaqşa</item>
+        <item>Română</item>
+        <item>Slovenčina</item>
+        <item>Slovenščina</item>
+        <item>Srpski</item>
+        <item>Srpskohrvatski</item>
+        <item>Suomi</item>
+        <item>Türkçe</item>
+        <item>Українська</item>
+        <item>Volapük</item>
+        <item>中文</item>
         <item>Mandarin</item>
         <item>Spanish</item>
         <item>English</item>
