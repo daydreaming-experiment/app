@@ -190,31 +190,6 @@ public class StatusManager {
         eSharedPreferences.commit();
     }
 
-    public synchronized void setResultsNotified() {
-        Logger.d(TAG, "{} - Setting resultsNotified to true", getCurrentModeName(), true);
-
-        eSharedPreferences.putBoolean(getCurrentModeName() + ARE_RESULTS_NOTIFIED, true);
-        eSharedPreferences.commit();
-    }
-
-    public synchronized boolean areResultsNotified() {
-        if (sharedPreferences.getBoolean(getCurrentModeName() + ARE_RESULTS_NOTIFIED,
-                false)) {
-            Logger.v(TAG, "{} - Results not yet notified with notification", getCurrentModeName());
-            return true;
-        } else {
-            Logger.v(TAG, "{} - Results already notified with notification", getCurrentModeName());
-            return false;
-        }
-    }
-
-    public synchronized void clearResultsNotified() {
-        Logger.d(TAG, "{} - Clearing resultsNotified", getCurrentModeName());
-
-        eSharedPreferences.remove(getCurrentModeName() + ARE_RESULTS_NOTIFIED);
-        eSharedPreferences.commit();
-    }
-
     public synchronized void setResultsDownloadedToNow() {
         Logger.d(TAG, "{} - Setting resultsDownloaded to true", getCurrentModeName(), true);
 
@@ -637,7 +612,7 @@ public class StatusManager {
         // Clear local flags (after switch)
         clear(EXP_STATUS_FL_COMPLETED);
         clearExperimentStartTimestamp();
-        clearResultsNotified();
+        clear(ARE_RESULTS_NOTIFIED);
         clear(ARE_RESULTS_NOTIFIED_DASHBOARD);
         clearNotificationExpiryExplained();
         clearResultsDownloaded();
@@ -672,7 +647,7 @@ public class StatusManager {
         cancelNotifiedPollsAndCollectingLocations();
 
         // Clear result flags
-        clearResultsNotified();
+        clear(ARE_RESULTS_NOTIFIED);
         clear(ARE_RESULTS_NOTIFIED_DASHBOARD);
         clearNotificationExpiryExplained();
         clearResultsDownloaded();

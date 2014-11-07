@@ -83,7 +83,7 @@ public abstract class RecurrentSequenceSchedulerService extends RoboService {
     }
 
     protected synchronized void notifyResultsIfAvailable() {
-        if (statusManager.areResultsAvailable() && !statusManager.areResultsNotified()) {
+        if (statusManager.areResultsAvailable() && !statusManager.is(StatusManager.ARE_RESULTS_NOTIFIED)) {
             Intent intent = new Intent(this, ResultsActivity.class);
             // No need for special request code here, ResultsActivity is only ever called
             // with a PendingIntent from here.
@@ -104,7 +104,7 @@ public abstract class RecurrentSequenceSchedulerService extends RoboService {
             notificationManager.notify(ResultsActivity.TAG, 0, notification);
 
             // Remember we did all this
-            statusManager.setResultsNotified();
+            statusManager.set(StatusManager.ARE_RESULTS_NOTIFIED);
         }
     }
 
