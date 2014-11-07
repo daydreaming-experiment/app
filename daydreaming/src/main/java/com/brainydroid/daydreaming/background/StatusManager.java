@@ -190,31 +190,6 @@ public class StatusManager {
         eSharedPreferences.commit();
     }
 
-    public synchronized void setResultsNotifiedDashboard() {
-        Logger.d(TAG, "{} - Setting resultsNotifiedDashboard to true", getCurrentModeName(), true);
-
-        eSharedPreferences.putBoolean(getCurrentModeName() + ARE_RESULTS_NOTIFIED_DASHBOARD, true);
-        eSharedPreferences.commit();
-    }
-
-    public synchronized boolean areResultsNotifiedDashboard() {
-        if (sharedPreferences.getBoolean(getCurrentModeName() + ARE_RESULTS_NOTIFIED_DASHBOARD,
-                false)) {
-            Logger.v(TAG, "{} - Results not yet notified to dashboard", getCurrentModeName());
-            return true;
-        } else {
-            Logger.v(TAG, "{} - Results already notified to dashboard", getCurrentModeName());
-            return false;
-        }
-    }
-
-    public synchronized void clearResultsNotifiedDashboard() {
-        Logger.d(TAG, "{} - Clearing resultsNotifiedDashboard", getCurrentModeName());
-
-        eSharedPreferences.remove(getCurrentModeName() + ARE_RESULTS_NOTIFIED_DASHBOARD);
-        eSharedPreferences.commit();
-    }
-
     public synchronized void setResultsNotified() {
         Logger.d(TAG, "{} - Setting resultsNotified to true", getCurrentModeName(), true);
 
@@ -663,7 +638,7 @@ public class StatusManager {
         clear(EXP_STATUS_FL_COMPLETED);
         clearExperimentStartTimestamp();
         clearResultsNotified();
-        clearResultsNotifiedDashboard();
+        clear(ARE_RESULTS_NOTIFIED_DASHBOARD);
         clearNotificationExpiryExplained();
         clearResultsDownloaded();
 
@@ -698,7 +673,7 @@ public class StatusManager {
 
         // Clear result flags
         clearResultsNotified();
-        clearResultsNotifiedDashboard();
+        clear(ARE_RESULTS_NOTIFIED_DASHBOARD);
         clearNotificationExpiryExplained();
         clearResultsDownloaded();
 
