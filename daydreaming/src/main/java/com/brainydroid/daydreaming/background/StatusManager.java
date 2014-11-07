@@ -484,10 +484,10 @@ public class StatusManager {
         long delay = 18 * 3600;  // 24h - 3h = 18h
         long threshold = sharedPreferences.getLong(getCurrentModeName() + LAST_MORNING_Q_TIMESTAMP, - delay) + delay;
         if (threshold < Calendar.getInstance().getTimeInMillis()) {
-            Logger.d(TAG, "{} - Last MQ notif was yesterday", getCurrentModeName());
+            Logger.v(TAG, "{} - Last MQ notif was yesterday", getCurrentModeName());
             return true;
         } else {
-            Logger.d(TAG, "{} - Last MQ notif was recent, do not notify", getCurrentModeName());
+            Logger.v(TAG, "{} - Last MQ notif was recent, do not notify", getCurrentModeName());
             return false;
         }
     }
