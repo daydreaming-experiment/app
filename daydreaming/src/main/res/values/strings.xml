@@ -81,6 +81,8 @@
 
     <!-- Glossary Activity -->
     <string name="glossary_title">GLOSSARY</string>
+    <string name="glossary_explanation_title">What\'s this?</string>
+    <string name="glossary_explanation_text">This glossary contains explanations for words you will encounter in the questions. When answering questions, touch the words in blue to see the definitions!</string>
 
     <!-- About/credits Activity -->
     <string name="credits_text_title_about">ABOUT</string>

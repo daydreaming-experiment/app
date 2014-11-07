@@ -1,5 +1,7 @@
 package com.brainydroid.daydreaming.ui.dashboard;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +10,7 @@ import android.widget.TextView;
 
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
+import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.db.ParametersStorage;
 import com.brainydroid.daydreaming.ui.FontUtils;
 import com.google.inject.Inject;
@@ -17,6 +20,7 @@ import java.util.Map;
 
 import roboguice.activity.RoboFragmentActivity;
 import roboguice.inject.ContentView;
+import roboguice.inject.InjectResource;
 
 @ContentView(R.layout.activity_glossary)
 public class GlossaryActivity extends RoboFragmentActivity {
@@ -25,6 +29,10 @@ public class GlossaryActivity extends RoboFragmentActivity {
 
     @Inject HashMap<String, View> glossaryPairsViews;
     @Inject ParametersStorage parametersStorage;
+    @Inject StatusManager statusManager;
+
+    @InjectResource(R.string.glossary_explanation_title) String explanationTitle;
+    @InjectResource(R.string.glossary_explanation_text) String explanationText;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -34,6 +42,29 @@ public class GlossaryActivity extends RoboFragmentActivity {
         ViewGroup godfatherView = (ViewGroup) this.getWindow().getDecorView();
         populateGlossary();
         FontUtils.setRobotoFont(this, godfatherView);
+    }
+
+    @Override
+    public void onResume() {
+        Logger.v(TAG, "Resuming");
+        super.onResume();
+
+        if (!statusManager.is(StatusManager.GLOSSARY_EXPLAINED)) {
+            Logger.d(TAG, "Glossary not explained yet, showing popup");
+            statusManager.set(StatusManager.GLOSSARY_EXPLAINED);
+
+            AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
+            alertBuilder.setCancelable(false)
+                    .setTitle(explanationTitle)
+                    .setMessage(explanationText)
+                    .setPositiveButton("Got it", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.cancel();
+                        }
+                    });
+            alertBuilder.show();
+        }
     }
 
     public void populateGlossary() {
