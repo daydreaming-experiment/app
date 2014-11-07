@@ -85,6 +85,7 @@ public class StatusManager {
     private static String RESULTS_DOWNLOADED = "resultsDownloaded";
     public static String NOTIFICATION_EXPIRY_EXPLAINED = "notificationExpiryExplained";
     public static String GLOSSARY_EXPLAINED = "glossaryExplained";
+    public static String EQ_EDIT_ACTIVITIES_EXPLAINED = "eqEditActivitiesExplained";
 
     public static final String ACTION_PARAMETERS_STATUS_CHANGE = "actionParametersStatusChange";
 
@@ -559,6 +560,7 @@ public class StatusManager {
         clear(ARE_RESULTS_NOTIFIED_DASHBOARD);
         clear(NOTIFICATION_EXPIRY_EXPLAINED);
         clear(GLOSSARY_EXPLAINED);
+        clear(EQ_EDIT_ACTIVITIES_EXPLAINED);
         clearResultsDownloaded();
 
         // Cancel any running location collection and pending notifications.
@@ -595,6 +597,7 @@ public class StatusManager {
         clear(ARE_RESULTS_NOTIFIED_DASHBOARD);
         clear(NOTIFICATION_EXPIRY_EXPLAINED);
         clear(GLOSSARY_EXPLAINED);
+        clear(EQ_EDIT_ACTIVITIES_EXPLAINED);
         clearResultsDownloaded();
 
         // Clear crypto storage to force a new handshake
