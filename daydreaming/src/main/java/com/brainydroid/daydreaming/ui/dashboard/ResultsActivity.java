@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
+import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.LinearLayout;
@@ -63,10 +64,12 @@ public class ResultsActivity extends RoboFragmentActivity {
             this.resultsWrap = resultsWrap;
         }
 
+        @JavascriptInterface
         public int getVersionCode() {
             return versionCode;
         }
 
+        @JavascriptInterface
         public String getResultsWrap() {
             return resultsWrap;
         }
