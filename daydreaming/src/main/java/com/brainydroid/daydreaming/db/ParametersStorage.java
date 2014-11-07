@@ -559,7 +559,7 @@ public class ParametersStorage {
     public synchronized void flush() {
         Logger.d(TAG, "{} - Flushing all parameters", statusManager.getCurrentModeName());
         statusManager.clearParametersUpdated();
-        statusManager.setParametersFlushed();
+        statusManager.set(StatusManager.EXP_STATUS_PARAMETERS_FLUSHED);
 
         profileStorage.clearParametersVersion();
         clearBackendExpId();
@@ -627,7 +627,7 @@ public class ParametersStorage {
             // If during our network request, parameters are flushed,
             // we won't import the received parameters
             Logger.v(TAG, "Clearing parameters flushed");
-            statusManager.clearParametersFlushed();
+            statusManager.clear(StatusManager.EXP_STATUS_PARAMETERS_FLUSHED);
 
             asyncUpdateParameters(callback, startSyncAppMode, isDebug);
         } else {
@@ -667,7 +667,7 @@ public class ParametersStorage {
                 }
 
                 // Exit if parameters have been flushed since we started
-                if (statusManager.areParametersFlushed()) {
+                if (statusManager.is(StatusManager.EXP_STATUS_PARAMETERS_FLUSHED)) {
                     Logger.i(TAG, "Parameters have been flushed since sync started, "
                             + "aborting parameters update.");
                     callback.onParametersStorageReady(false);
