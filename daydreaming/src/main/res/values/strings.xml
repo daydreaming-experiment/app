@@ -197,6 +197,8 @@
     <string name="page_edit_mode_cancel">Cancel</string>
     <string name="page_too_late_title">Oops, too late!</string>
     <string name="page_too_late_body">Probes are meant to be answered quickly, so we can\'t let you answer this one. From now on notifications will disappear on their own after a few minutes. If you want to answer a probe you missed, you can do so in the dashboard, it will suggest any missed probes.</string>
+    <string name="page_eq_edit_activities_title">Edit your activities</string>
+    <string name="page_eq_edit_activities_text">This page is about what you did in your day. Scroll down to the bottom of the page to edit what activities show up here!</string>
 
     <!-- Display question Activity -->
     <string name="question_welcome_text">HERE ARE A FEW QUICK QUESTIONS:</string>
