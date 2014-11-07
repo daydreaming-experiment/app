@@ -164,6 +164,30 @@ public class StatusManager {
                 + "\nparameters version: " + profileStorageProvider.get().getParametersVersion();
     }
 
+    public synchronized boolean isStatusFlag(String flagName) {
+        if (sharedPreferences.getBoolean(getCurrentModeName() + flagName, false)) {
+            Logger.d(TAG, "{0} - {1} flag is set", getCurrentModeName(), flagName);
+            return true;
+        } else {
+            Logger.d(TAG, "{0} - {1} flag is not set", getCurrentModeName(), flagName);
+            return false;
+        }
+    }
+
+    public synchronized void setStatusFlag(String flagName) {
+        setStatusFlag(flagName, true);
+    }
+
+    public synchronized void clearStatusFlag(String flagName) {
+        setStatusFlag(flagName, false);
+    }
+
+    public synchronized void setStatusFlag(String flagName, boolean value) {
+        Logger.d(TAG, "{0} - Setting {1} flag to {2}", getCurrentModeName(), flagName, value);
+        eSharedPreferences.putBoolean(getCurrentModeName() + flagName, value);
+        eSharedPreferences.commit();
+    }
+
     /**
      * Check if first launch is completed.
      *
@@ -476,7 +500,6 @@ public class StatusManager {
         eSharedPreferences.commit();
     }
 
-
     /**
      * Check if a morning questionnaire notification was long ago.
      */
@@ -491,7 +514,6 @@ public class StatusManager {
             return false;
         }
     }
-
 
     /**
      * Check if a sync operation was made not long ago.
