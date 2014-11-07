@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.brainydroid.daydreaming.R;
+import com.brainydroid.daydreaming.background.ErrorHandler;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.AutoListQuestionDescriptionDetails;
 import com.brainydroid.daydreaming.db.ParametersStorage;
@@ -47,6 +48,7 @@ public class AutoListQuestionViewAdapter
     @Inject AutoCompleteAdapterFactory autoCompleteAdapterFactory;
     @Inject ParametersStorage parametersStorage;
     @Inject InputMethodManager inputMethodManager;
+    @Inject ErrorHandler errorHandler;
 
     @InjectResource(R.string.questionAutoList_please_select) String errorPleaseSelect;
 
@@ -106,7 +108,17 @@ public class AutoListQuestionViewAdapter
                     // Add missing user possibilities
                     addUserPossibilitiesToAdapter();
                     autoTextView.setAdapter(adapter);
-                    progressDialog.dismiss();
+                    try {
+                        progressDialog.dismiss();
+                    } catch (IllegalArgumentException e) {
+                        // Usually, view was not attached to window manager.
+                        // Not sure why this happens, but it's nothing important,
+                        // so just log it hoping that one day we also get
+                        // some informative logs when it does happen.
+                        errorHandler.logError("Error when dismissing ProgressDialog, " +
+                                "might be that the view was not attached to the window manager " +
+                                "(but could be something else)", e);
+                    }
                 }
             });
         }
