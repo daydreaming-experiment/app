@@ -190,23 +190,6 @@ public class StatusManager {
         eSharedPreferences.commit();
     }
 
-    /**
-     * Check if the parameters have been updated.
-     *
-     * @return {@code true} if the parameters have been updated,
-     *         {@code false} otherwise
-     */
-    public synchronized boolean areParametersUpdated() {
-        if (sharedPreferences.getBoolean(getCurrentModeName() + EXP_STATUS_PARAMETERS_UPDATED,
-                false)) {
-            Logger.d(TAG, "{} - Parameters are updated", getCurrentModeName());
-            return true;
-        } else {
-            Logger.d(TAG, "{} - Parameters not updated yet", getCurrentModeName());
-            return false;
-        }
-    }
-
     public synchronized void setResultsNotifiedDashboard() {
         Logger.d(TAG, "{} - Setting resultsNotifiedDashboard to true", getCurrentModeName(), true);
 
@@ -317,6 +300,23 @@ public class StatusManager {
         long now = Calendar.getInstance().getTimeInMillis();
         // Dashboard is running, and we have that information from less than 1 minute ago
         return isDashboardRunning && (now - isDashboardRunningTimestamp < 1 * 60 * 1000);
+    }
+
+    /**
+     * Check if the parameters have been updated.
+     *
+     * @return {@code true} if the parameters have been updated,
+     *         {@code false} otherwise
+     */
+    public synchronized boolean areParametersUpdated() {
+        if (sharedPreferences.getBoolean(getCurrentModeName() + EXP_STATUS_PARAMETERS_UPDATED,
+                false)) {
+            Logger.d(TAG, "{} - Parameters are updated", getCurrentModeName());
+            return true;
+        } else {
+            Logger.d(TAG, "{} - Parameters not updated yet", getCurrentModeName());
+            return false;
+        }
     }
 
     /**
