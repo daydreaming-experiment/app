@@ -44,7 +44,7 @@ public class StatusManager {
     private static String TAG = "StatusManager";
 
     /** Preference key storing the first launch status */
-    private static String EXP_STATUS_FL_COMPLETED =
+    public static String EXP_STATUS_FL_COMPLETED =
             "expStatusFlCompleted";
 
     /** Preference key storing the status of initial questions update */
@@ -164,7 +164,7 @@ public class StatusManager {
                 + "\nparameters version: " + profileStorageProvider.get().getParametersVersion();
     }
 
-    public synchronized boolean isStatusFlag(String flagName) {
+    public synchronized boolean is(String flagName) {
         if (sharedPreferences.getBoolean(getCurrentModeName() + flagName, false)) {
             Logger.d(TAG, "{0} - {1} flag is set", getCurrentModeName(), flagName);
             return true;
@@ -174,50 +174,19 @@ public class StatusManager {
         }
     }
 
-    public synchronized void setStatusFlag(String flagName) {
-        setStatusFlag(flagName, true);
+    public synchronized void set(String flagName) {
+        set(flagName, true);
     }
 
-    public synchronized void clearStatusFlag(String flagName) {
-        setStatusFlag(flagName, false);
+    public synchronized void clear(String flagName) {
+        Logger.d(TAG, "{0} - Clearing {1} flag", getCurrentModeName(), flagName);
+        eSharedPreferences.remove(getCurrentModeName() + flagName);
+        eSharedPreferences.commit();
     }
 
-    public synchronized void setStatusFlag(String flagName, boolean value) {
+    public synchronized void set(String flagName, boolean value) {
         Logger.d(TAG, "{0} - Setting {1} flag to {2}", getCurrentModeName(), flagName, value);
         eSharedPreferences.putBoolean(getCurrentModeName() + flagName, value);
-        eSharedPreferences.commit();
-    }
-
-    /**
-     * Check if first launch is completed.
-     *
-     * @return {@code true} if first launch has completed,
-     *         {@code false} otherwise
-     */
-    public synchronized boolean isFirstLaunchCompleted() {
-        if (sharedPreferences.getBoolean(getCurrentModeName() + EXP_STATUS_FL_COMPLETED, false)) {
-            Logger.d(TAG, "{} - First launch is completed", getCurrentModeName());
-            return true;
-        } else {
-            Logger.d(TAG, "{} - First launch not completed yet", getCurrentModeName());
-            return false;
-        }
-    }
-
-    /**
-     * Set the first launch flag to completed.
-     */
-    public synchronized void setFirstLaunchCompleted() {
-        Logger.d(TAG, "{} - Setting first launch to completed", getCurrentModeName());
-
-        eSharedPreferences.putBoolean(getCurrentModeName() + EXP_STATUS_FL_COMPLETED, true);
-        eSharedPreferences.commit();
-    }
-
-    private synchronized void clearFirstLaunchCompleted() {
-        Logger.d(TAG, "{} - Clearing first launch completed", getCurrentModeName());
-
-        eSharedPreferences.remove(getCurrentModeName() + EXP_STATUS_FL_COMPLETED);
         eSharedPreferences.commit();
     }
 
@@ -691,7 +660,7 @@ public class StatusManager {
         setCurrentMode(MODE_TEST);
 
         // Clear local flags (after switch)
-        clearFirstLaunchCompleted();
+        clear(EXP_STATUS_FL_COMPLETED);
         clearExperimentStartTimestamp();
         clearResultsNotified();
         clearResultsNotifiedDashboard();
@@ -997,7 +966,7 @@ public class StatusManager {
     }
 
     public synchronized void launchNotifyingServices() {
-        if (isFirstLaunchCompleted()) {
+        if (is(EXP_STATUS_FL_COMPLETED)) {
             Logger.d(TAG, "First launch is completed, launching scheduler services");
 
             // Start scheduling polls
@@ -1022,7 +991,7 @@ public class StatusManager {
     public synchronized void launchAllServices() {
         // If first launch hasn't been completed, the user doesn't want
         // anything yet
-        if (isFirstLaunchCompleted()) {
+        if (is(EXP_STATUS_FL_COMPLETED)) {
             launchNotifyingServices();
 
             // Start getting location updates

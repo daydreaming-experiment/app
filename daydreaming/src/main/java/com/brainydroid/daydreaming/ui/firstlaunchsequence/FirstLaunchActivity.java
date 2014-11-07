@@ -90,7 +90,7 @@ public abstract class FirstLaunchActivity extends RoboFragmentActivity {
      * Kills activity if first launch already fully completed.
      */
     protected void checkFirstLaunch() {
-        if (statusManager.isFirstLaunchCompleted() || isExperimentModeActivatedDirty()) {
+        if (statusManager.is(StatusManager.EXP_STATUS_FL_COMPLETED) || isExperimentModeActivatedDirty()) {
             Logger.i(TAG, "First launch completed or test mode theming discrepancy -> finishing");
             finish();
         } else {
@@ -124,7 +124,7 @@ public abstract class FirstLaunchActivity extends RoboFragmentActivity {
     protected void finishFirstLaunch() {
         Logger.i(TAG, "Setting first launch to finished");
 
-        statusManager.setFirstLaunchCompleted();
+        statusManager.set(StatusManager.EXP_STATUS_FL_COMPLETED);
 
         // The SyncService (and following ProbeSchedulerService) and first parameter
         // update are launched by the dashboard. Here we only need to start the
