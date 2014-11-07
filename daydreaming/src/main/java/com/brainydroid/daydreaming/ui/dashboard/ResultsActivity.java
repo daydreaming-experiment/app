@@ -82,8 +82,8 @@ public class ResultsActivity extends RoboFragmentActivity {
         super.onCreate(savedInstanceState);
 
         // No need to notify results again, the user opened them
-        statusManager.setResultsNotified();
-        statusManager.setResultsNotifiedDashboard();
+        statusManager.set(StatusManager.ARE_RESULTS_NOTIFIED);
+        statusManager.set(StatusManager.ARE_RESULTS_NOTIFIED_DASHBOARD);
 
         if (getIntent().getBooleanExtra(DOWNLOAD_RESULTS, true)) {
             resultsDownloaded = false;
