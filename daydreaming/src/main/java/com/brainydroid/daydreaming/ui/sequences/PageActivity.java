@@ -172,7 +172,7 @@ public class PageActivity extends RoboFragmentActivity {
         // Add 30 seconds to the expiry delay to make sure the user didn't just click the
         // notification milliseconds before it was to expire.
         if (now - sequence.getNotificationSystemTimestamp() > Sequence.EXPIRY_DELAY + 30 * 1000) {
-            if (statusManager.isNotificationExpiryExplained()) {
+            if (statusManager.is(StatusManager.NOTIFICATION_EXPIRY_EXPLAINED)) {
                 // We shouldn't be here: we already explained this and somehow a probe did not expire.
                 // Log this error, but keep going.
                 errorHandler.logError("We already explained the notification expiry, " +
@@ -180,7 +180,7 @@ public class PageActivity extends RoboFragmentActivity {
                         new ConsistencyException());
             }
 
-            statusManager.setNotificationExpiryExplained();
+            statusManager.set(StatusManager.NOTIFICATION_EXPIRY_EXPLAINED);
             AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
             alertBuilder.setCancelable(false)
                     .setTitle(tooLateTitle)

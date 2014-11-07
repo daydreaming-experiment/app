@@ -80,9 +80,9 @@ public class StatusManager {
     public static String ARE_RESULTS_NOTIFIED_DASHBOARD = "areResultsNotifiedDashboard";
     public static String ARE_RESULTS_NOTIFIED = "areResultsNotified";
 
-    public static String CURRENT_BEG_END_QUESTIONNAIRE_TYPE = "currentBEQType";
+    private static String CURRENT_BEG_END_QUESTIONNAIRE_TYPE = "currentBEQType";
 
-    public static String RESULTS_DOWNLOADED = "resultsDownloaded";
+    private static String RESULTS_DOWNLOADED = "resultsDownloaded";
     public static String NOTIFICATION_EXPIRY_EXPLAINED = "notificationExpiryExplained";
 
     public static final String ACTION_PARAMETERS_STATUS_CHANGE = "actionParametersStatusChange";
@@ -215,30 +215,6 @@ public class StatusManager {
         eSharedPreferences.remove(getCurrentModeName() + RESULTS_DOWNLOADED);
         eSharedPreferences.commit();
     }
-    public synchronized void setNotificationExpiryExplained() {
-        Logger.d(TAG, "{} - Setting notificationExpiryExplained to true", getCurrentModeName(), true);
-
-        eSharedPreferences.putBoolean(getCurrentModeName() + NOTIFICATION_EXPIRY_EXPLAINED, true);
-        eSharedPreferences.commit();
-    }
-
-    public synchronized boolean isNotificationExpiryExplained() {
-        if (sharedPreferences.getBoolean(getCurrentModeName() + NOTIFICATION_EXPIRY_EXPLAINED,
-                false)) {
-            Logger.v(TAG, "{} - Notification expiry not yet explained", getCurrentModeName());
-            return true;
-        } else {
-            Logger.v(TAG, "{} - Notification expiry not yet explained", getCurrentModeName());
-            return false;
-        }
-    }
-
-   public synchronized void clearNotificationExpiryExplained() {
-       Logger.d(TAG, "{} - Clearing notificationExpiryExplained", getCurrentModeName());
-
-       eSharedPreferences.remove(getCurrentModeName() + NOTIFICATION_EXPIRY_EXPLAINED);
-       eSharedPreferences.commit();
-   }
 
     public synchronized void setDashboardRunning(boolean running) {
         Logger.v(TAG, "Setting isDashboardRunning to {}", running);
@@ -614,7 +590,7 @@ public class StatusManager {
         clearExperimentStartTimestamp();
         clear(ARE_RESULTS_NOTIFIED);
         clear(ARE_RESULTS_NOTIFIED_DASHBOARD);
-        clearNotificationExpiryExplained();
+        clear(NOTIFICATION_EXPIRY_EXPLAINED);
         clearResultsDownloaded();
 
         // Cancel any running location collection and pending notifications.
@@ -649,7 +625,7 @@ public class StatusManager {
         // Clear result flags
         clear(ARE_RESULTS_NOTIFIED);
         clear(ARE_RESULTS_NOTIFIED_DASHBOARD);
-        clearNotificationExpiryExplained();
+        clear(NOTIFICATION_EXPIRY_EXPLAINED);
         clearResultsDownloaded();
 
         // Clear crypto storage to force a new handshake
