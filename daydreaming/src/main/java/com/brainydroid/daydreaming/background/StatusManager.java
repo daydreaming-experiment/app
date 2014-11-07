@@ -84,6 +84,7 @@ public class StatusManager {
 
     private static String RESULTS_DOWNLOADED = "resultsDownloaded";
     public static String NOTIFICATION_EXPIRY_EXPLAINED = "notificationExpiryExplained";
+    public static String GLOSSARY_EXPLAINED = "glossaryExplained";
 
     public static final String ACTION_PARAMETERS_STATUS_CHANGE = "actionParametersStatusChange";
 
@@ -557,6 +558,7 @@ public class StatusManager {
         clear(ARE_RESULTS_NOTIFIED);
         clear(ARE_RESULTS_NOTIFIED_DASHBOARD);
         clear(NOTIFICATION_EXPIRY_EXPLAINED);
+        clear(GLOSSARY_EXPLAINED);
         clearResultsDownloaded();
 
         // Cancel any running location collection and pending notifications.
@@ -588,10 +590,11 @@ public class StatusManager {
         // Cancel any running location collection and pending notifications
         cancelNotifiedPollsAndCollectingLocations();
 
-        // Clear result flags
+        // Clear result and explanation flags
         clear(ARE_RESULTS_NOTIFIED);
         clear(ARE_RESULTS_NOTIFIED_DASHBOARD);
         clear(NOTIFICATION_EXPIRY_EXPLAINED);
+        clear(GLOSSARY_EXPLAINED);
         clearResultsDownloaded();
 
         // Clear crypto storage to force a new handshake
@@ -678,6 +681,7 @@ public class StatusManager {
                 (24 * 60 * 60 * 1000));
         int daysToGo = parametersStorageProvider.get().getExpDuration() - daysElapsed;
 
+        //noinspection SimplifiableIfStatement
         if (areBEQCompleted(Sequence.TYPE_END_QUESTIONNAIRE)) {
             return daysToGo <= 0 || getCurrentMode() == MODE_TEST;
         } else {
