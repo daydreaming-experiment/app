@@ -85,7 +85,7 @@
     <!-- About/credits Activity -->
     <string name="credits_text_title_about">ABOUT</string>
     <string name="credits_text_main1">
-    This App has been developped by a team of French researchers in Paris, London and Berlin. 
+    This App has been developed by a team of French researchers in Paris, London and Berlin.
     \nScience en Poche ("Science in your pocket") kindly supports this project.</string>
     <string name="credits_text_main2">We do other apps too. For more information, feel free to visit our website</string>
     <string name="credits_website">www.daydreaming-the-app.net</string>
@@ -95,16 +95,16 @@
     <string name="vincent_description">Phd Student at UCL \nGatsby Unit</string>
 
     <string name="sebastien_name">Sébastien Lerique</string>
-    <string name="sebastien_description">Phd Student at Berlin</string>
+    <string name="sebastien_description">Phd Student in Berlin\nCentre Marc Bloch</string>
 
     <string name="mikael_name">Mikaël Bastian</string>
-    <string name="mikael_description">Phd Student at Paris \nEcole Normale Supérieure</string>
+    <string name="mikael_description">Phd Student in Paris \nÉcole Normale Supérieure</string>
 
     <string name="gislain_name">Gislain Delaire</string>
-    <string name="gislain_description">Designer at Paris</string>
+    <string name="gislain_description">Designer in Paris</string>
 
     <string name="jerome_name">Jérôme Sackur</string>
-    <string name="jerome_description">Cognitive Psychologist at Paris \nEcole Normale Supérieure</string>
+    <string name="jerome_description">Cognitive Psychologist in Paris \nÉcole Normale Supérieure</string>
 
     <string name="credits_institution1">inst1</string>
     <string name="credits_institution2">inst2</string>
@@ -149,7 +149,11 @@
     <string name="appsettings_allow_sound_text">Beeps at questions</string>
     <string name="settings_time_window_lb_default">8:00</string>
     <string name="settings_time_window_ub_default">22:00</string>
-
+    <string name="settings_erase_my_data">Erase my data</string>
+    <string name="appsettings_warning_data_erase">You won\'t be able to see your results any longer</string>
+    <string name="appsettings_dialog_button_erase_data">Erase anyway</string>
+    <string name="appsettings_dialog_button_keep_data">No, keep my data</string>
+    
     <!-- Profile Activity -->
     <string name="firstLaunchProfile_title_activity">Profile</string>
     <string name="firstLaunchProfile_title_about_you">A LITTLE ABOUT YOU</string>
@@ -255,13 +259,14 @@
 <p>This application is part of a <i>cognitive science research project</i>. As such, it requires your informed consent. Please read the following and uninstall the app if you disagree with anything.</p>
 
 <p><b>What data will I be sharing?</b></p>
-<p>Scientific research is based on data collection and analysis. The app collects your responses to the questionnaires and probes. Your coarse GPS data, which tells us your current location with a 0.2 - 0.5 miles error is also collected every 20 minutes. Crucially, these two kind of data are sent to our server <b> in anonymous form </b>, with a personnalized but arbitrary identification number. </p>
+<p>Scientific research is based on data collection and analysis. The app collects your responses to the questionnaires and probes. Your rough location is also collected every 20 minutes through mobile network (not GPS!), with a 0.2 - 0.5 miles error. Crucially, these two kind of data are sent to our server <b> in anonymous form </b>, with a personalized but arbitrary identification number. </p>
 
 <p><b>What will you do with this data?</b></p>
 <p><i>Research!</i> We’ll combine your data with data from thousands of other people to ask questions like: what activities tend to precipitate daydreaming? In what locations are people most likely to daydream? What kind of people are more or less likely to experience mind wandering? And so on. We expect to publish our findings in traditional peer-reviewed social/cognitive science journals.</p>
 
 <p><b>Is it anonymous?</b><p>
-<p><i>Yes</i>. We deliberately avoid asking you for any identifying information such as your email address, name, address, etc. If you look at the app permissions you\'ll note that the only permissions we ask for are network access (required in order to send your data back to our server) and coarse GPS data (which we use to determine where you were when you answered the notification).</p>
+
+<p><i>Yes</i>. We deliberately avoid asking you for any identifying information such as your email address, name, address, etc. If you look at the app permissions you’ll note that the only permissions we ask for are network access (required in order to send your data back to our server) and coarse location through mobile network (which we use to determine where you were when you answered the notification).</p>
 
 <p><b>Is it confidential?</b></p>
 <p><i>Yes</i>. We will not share your responses with anyone except the research team. But remember that since your responses are anonymous to begin with, it\'s not as though the data is of much use to anyone except us.</p>
@@ -295,7 +300,7 @@
 <p>Answering the questions about your thoughts will take about a minute every time, and the app will notify you a few times a day (5 - 7 on average).</p> 
 <p>Answering the questions about your sleep quality and your free time will take again a couple of minutes.</p> 
 <p>So even if you respond to every single notification every single day, you will spend <b>no more than 10 minutes a day</b> using DayDreaming. </p>
-<p>But if you wish to participate more, you can always spontaneously report your thoughts, by swyping on the dashboard.</p>
+<p>But if you wish to participate more, you can always spontaneously report your thoughts, by swiping on the dashboard.</p>
 <p>And as for filling all of the three questionnaires, it will take less than fifteen minutes. You can fill each of them when you wish. You\'ll do that only twice: in the first three days, and once again in a month. </p>
 
 <p><b>When do I get to see my results? </b></p>
@@ -307,6 +312,5 @@
 
 ]]>
     </string>
-
 
 </resources>

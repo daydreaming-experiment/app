@@ -17,6 +17,8 @@ public class ProfileData {
     @JsonView(Views.Public.class)
     private String education;
     @JsonView(Views.Public.class)
+    private String motherTongue;
+    @JsonView(Views.Public.class)
     private String parametersVersion;
     @JsonView(Views.Public.class)
     private String appVersionName;
@@ -31,6 +33,7 @@ public class ProfileData {
     public ProfileData(@Assisted("age") String age,
                        @Assisted("gender") String gender,
                        @Assisted("education") String education,
+                       @Assisted("motherTongue") String motherTongue,
                        @Assisted("parametersVersion") String parametersVersion,
                        @Assisted("appVersionName") String appVersionName,
                        @Assisted("appVersionCode") int appVersionCode,
@@ -39,6 +42,7 @@ public class ProfileData {
         this.age = age;
         this.gender = gender;
         this.education = education;
+        this.motherTongue = motherTongue;
         this.parametersVersion = parametersVersion;
         this.appVersionName = appVersionName;
         this.appVersionCode = appVersionCode;

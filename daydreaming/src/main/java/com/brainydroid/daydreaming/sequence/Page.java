@@ -8,8 +8,9 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.google.inject.Inject;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
-public class Page implements IPage {
+public class Page implements IPage, PreLoadable {
 
     private static String TAG = "Page";
 
@@ -55,6 +56,79 @@ public class Page implements IPage {
     private int indexOfParentPageGroupInSequence = 0;
     @JsonView(Views.Internal.class)
     private int nPageGroupsInSequence = 0;
+
+    private boolean isPreLoaded = false;
+    private boolean isPreLoading = false;
+    @Inject private HashSet<PreLoadCallback> preLoadCallbacks;
+
+    @Override
+    public synchronized boolean isPreLoaded() {
+        return isPreLoaded;
+    }
+
+    @Override
+    public synchronized void onPreLoaded(final PreLoadCallback preLoadCallback) {
+        if (isPreLoaded) {
+            if (preLoadCallback != null) {
+                Logger.v(TAG, "Already pre-loaded, calling callback");
+                preLoadCallback.onPreLoaded();
+            } else {
+                Logger.v(TAG, "Already pre-loaded, but no callback to call");
+            }
+        } else {
+            if (preLoadCallback != null) {
+                preLoadCallbacks.add(preLoadCallback);
+            }
+
+            if (isPreLoading) {
+                Logger.v(TAG, "Already pre-loading, recorded potential additional callback");
+            } else {
+                Logger.v(TAG, "Pre-loading");
+                isPreLoading = true;
+
+                final ArrayList<Boolean> questionsLoaded = new ArrayList<Boolean>();
+                int index = 0;
+                for (Question q : questions) {
+                    questionsLoaded.add(false);
+                    final int indexFinal = index;
+
+                    PreLoadCallback onQuestionLoaded = new PreLoadCallback() {
+                        private String TAG = "PreLoadCallback onQuestionLoaded";
+
+                        @Override
+                        public void onPreLoaded() {
+                            Logger.v(TAG, "Question loaded");
+                            questionsLoaded.set(indexFinal, true);
+
+                            // See if all questions are loaded
+                            boolean foundNotLoaded = false;
+                            for (boolean loaded : questionsLoaded) {
+                                if (!loaded) {
+                                    foundNotLoaded = true;
+                                    break;
+                                }
+                            }
+
+                            if (!foundNotLoaded) {
+                                Logger.v(TAG, "All questions loaded -> calling possible callbacks");
+                                isPreLoaded = true;
+                                isPreLoading = false;
+
+                                // Only non-null callbacks are stored
+                                for (PreLoadCallback storedCallback : preLoadCallbacks) {
+                                    storedCallback.onPreLoaded();
+                                }
+                                preLoadCallbacks = new HashSet<PreLoadCallback>();
+                            }
+                        }
+                    };
+
+                    q.onPreLoaded(onQuestionLoaded);
+                    index++;
+                }
+            }
+        }
+    }
 
     public void importFromPageDescription(PageDescription description) {
         setName(description.getName());

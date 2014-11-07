@@ -1,11 +1,16 @@
 package com.brainydroid.daydreaming.sequence;
 
+import android.os.AsyncTask;
+
 import com.brainydroid.daydreaming.background.Logger;
+import com.brainydroid.daydreaming.db.AutoListQuestionDescriptionDetails;
 import com.brainydroid.daydreaming.db.IQuestionDescriptionDetails;
 import com.brainydroid.daydreaming.db.ParametersStorage;
 import com.brainydroid.daydreaming.db.QuestionDescription;
 import com.brainydroid.daydreaming.db.SequencesStorage;
 import com.brainydroid.daydreaming.db.Views;
+import com.brainydroid.daydreaming.ui.filtering.AutoCompleteAdapter;
+import com.brainydroid.daydreaming.ui.filtering.AutoCompleteAdapterFactory;
 import com.brainydroid.daydreaming.ui.sequences.BaseQuestionViewAdapter;
 import com.brainydroid.daydreaming.ui.sequences.IQuestionViewAdapter;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
@@ -14,10 +19,12 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 
+import java.util.ArrayList;
+
 // TODO: add some way to saveIfSync the phone's timezone and the user's
 // preferences_appSettings
 // about what times he allowed notifications to appear at.
-public class Question implements IQuestion {
+public class Question implements IQuestion, PreLoadable {
 
     private static String TAG = "Question";
 
@@ -43,6 +50,16 @@ public class Question implements IQuestion {
     @Inject private Injector injector;
     @Inject private SequencesStorage sequencesStorage;
     @Inject private ParametersStorage parametersStorage;
+
+    @Override
+    public synchronized boolean isPreLoaded() {
+        return getDetails().isPreLoaded();
+    }
+
+    @Override
+    public synchronized void onPreLoaded(PreLoadCallback preLoadCallback) {
+        getDetails().onPreLoaded(preLoadCallback);
+    }
 
     public synchronized void importFromQuestionDescription(QuestionDescription description) {
         Logger.d(TAG, "Importing information from QuestionDescription");
