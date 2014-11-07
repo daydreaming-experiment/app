@@ -302,6 +302,10 @@ public class DailySequenceService extends RoboService {
                     "/" + R.raw.notification);
         }
 
+        if (sequenceType.equals(Sequence.TYPE_MORNING_QUESTIONNAIRE)) {
+            statusManager.setLastMQNotifToNow();
+        }
+
         // Get a proper id for the notification, to replace the right notifications
         // That way only one of morning notification and one evening notification will ever be there
         notificationManager.cancel(sequenceType, sequence.getRecurrentNotificationId());
