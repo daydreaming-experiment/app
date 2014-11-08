@@ -11,8 +11,8 @@ public class StarRatingSubQuestion {
     private static String TAG = "StarRatingSubQuestion";
 
     public static final int DEFAULT_INITIAL_RATING = -1;
-    public static final int DEFAULT_NUM_STARS = -1;
-    public static final float DEFAULT_STEP_SIZE = -1f;
+    public static final int DEFAULT_NUM_STARS = 5;
+    public static final float DEFAULT_STEP_SIZE = 0.5f;
 
     @JsonView(Views.Internal.class)
     private String text = null;
