@@ -10,12 +10,10 @@ public class SliderSubQuestion {
     @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "SliderSubQuestion";
 
-    public static int DEFAULT_INITIAL_POSITION = -1;
+    public static final int DEFAULT_INITIAL_POSITION = -1;
 
     @JsonView(Views.Internal.class)
     private String text = null;
-    @JsonView(Views.Internal.class)
-    private String glossaryText = null;
     @JsonView(Views.Internal.class)
     private ArrayList<String> hints = null;
     @SuppressWarnings("FieldCanBeLocal")
@@ -27,13 +25,12 @@ public class SliderSubQuestion {
     @SuppressWarnings("FieldCanBeLocal")
     @JsonView(Views.Internal.class)
     private boolean showLiveIndication = false;
+    @SuppressWarnings("FieldCanBeLocal")
+    @JsonView(Views.Internal.class)
+    private boolean alreadyValid = false;
 
     public synchronized String getText() {
         return text;
-    }
-
-    public synchronized String getGlossaryText() {
-        return glossaryText;
     }
 
     public synchronized ArrayList<String> getHints() {
@@ -50,6 +47,10 @@ public class SliderSubQuestion {
 
     public synchronized boolean getShowLiveIndication() {
         return showLiveIndication;
+    }
+
+    public boolean getAlreadyValid() {
+        return alreadyValid;
     }
 
     public synchronized void validateInitialization() throws JsonParametersException {
