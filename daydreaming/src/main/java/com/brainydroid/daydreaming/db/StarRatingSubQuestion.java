@@ -10,14 +10,12 @@ public class StarRatingSubQuestion {
     @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "StarRatingSubQuestion";
 
-    public static int DEFAULT_INITIAL_RATING = -1;
-    public static int DEFAULT_NUM_STARS = -1;
-    public static float DEFAULT_STEP_SIZE = -1f;
+    public static final int DEFAULT_INITIAL_RATING = -1;
+    public static final int DEFAULT_NUM_STARS = 5;
+    public static final float DEFAULT_STEP_SIZE = 0.5f;
 
     @JsonView(Views.Internal.class)
     private String text = null;
-    @JsonView(Views.Internal.class)
-    private String glossaryText = null;
     @JsonView(Views.Internal.class)
     private ArrayList<String> hints = null;
     @SuppressWarnings("FieldCanBeLocal")
@@ -35,10 +33,9 @@ public class StarRatingSubQuestion {
     @SuppressWarnings("FieldCanBeLocal")
     @JsonView(Views.Internal.class)
     private boolean showLiveIndication = false;
-
-    public synchronized String getGlossaryText() {
-        return glossaryText;
-    }
+    @SuppressWarnings("FieldCanBeLocal")
+    @JsonView(Views.Internal.class)
+    private boolean alreadyValid = false;
 
     public synchronized String getText() {
         return text;
@@ -66,6 +63,10 @@ public class StarRatingSubQuestion {
 
     public synchronized boolean getShowLiveIndication() {
         return showLiveIndication;
+    }
+
+    public boolean getAlreadyValid() {
+        return alreadyValid;
     }
 
     public synchronized void validateInitialization() throws JsonParametersException {

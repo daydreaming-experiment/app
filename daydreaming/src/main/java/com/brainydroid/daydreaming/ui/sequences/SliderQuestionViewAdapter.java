@@ -1,6 +1,5 @@
 package com.brainydroid.daydreaming.ui.sequences;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.text.method.LinkMovementMethod;
 import android.util.FloatMath;
@@ -58,7 +57,6 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
 
     }
 
-    @TargetApi(11)
     private View inflateView(LinearLayout questionLayout, SliderSubQuestion subQuestion) {
         Logger.v(TAG, "Inflating view for subQuestion");
 
@@ -83,10 +81,6 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
                 (AlphaSeekBar)view.findViewById(R.id.question_slider_seekBar);
         seekBar.setProgressDrawable(view.getResources().getDrawable(R.drawable.question_slider_progress));
         seekBar.setThumb(view.getResources().getDrawable(R.drawable.question_slider_thumb));
-        // Lint erroneously catches this as a call that requires API >= 11
-        // (which is exactly why AlphaSeekBar exists),
-        // hence the @TargetApi(11) above.
-        seekBar.setAlpha(0.5f);
 
         final int initialPosition = subQuestion.getInitialPosition();
         if (initialPosition != SliderSubQuestion.DEFAULT_INITIAL_POSITION) {
@@ -100,17 +94,30 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
             selectedSeek.setVisibility(View.GONE);
         }
 
+        if (subQuestion.getAlreadyValid()) {
+            Logger.v(TAG, "SeekBar is initially valid -> setting hint");
+            int progress = seekBar.getProgress();
+            int index = (int) FloatMath.floor((progress / 100f) * hintsNumber);
+            if (index == hintsNumber) {
+                // Have an open interval to the right
+                index -= 1;
+            }
+
+            selectedSeek.setText(hints.get(index));
+        } else {
+            Logger.v(TAG, "SeekBar is initially not valid -> setting transparent");
+            seekBar.setAlpha(0.5f);
+        }
+
         final CheckBox naCheckBox =
                 (CheckBox)view.findViewById(R.id.question_slider_naCheckBox);
         if (!subQuestion.getNotApplyAllowed()) {
             naCheckBox.setVisibility(View.GONE);
         }
 
-
         AlphaSeekBar.OnAlphaSeekBarChangeListener progressListener =
                 new AlphaSeekBar.OnAlphaSeekBarChangeListener() {
 
-            @TargetApi(11)
             @Override
             public void onProgressChanged(AlphaSeekBar seekBar, int progress,
                                           boolean fromUser) {
@@ -124,9 +131,6 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
                     }
 
                     selectedSeek.setText(hints.get(index));
-                    // Lint erroneously catches this as a call that requires API >= 11
-                    // (which is exactly why AlphaSeekBar exists),
-                    // hence the @TargetApi(11) above.
                     seekBar.setAlpha(1f);
                 } else {
                     // Only reset the progress if the change came from the
@@ -155,13 +159,9 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
         CheckBox.OnCheckedChangeListener naListener =
                 new CheckBox.OnCheckedChangeListener() {
 
-            @TargetApi(11)
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 seekBar.setProgress(initialPosition);
-                // Lint erroneously catches this as a call that requires API >= 11
-                // (which is exactly why AlphaSeekBar exists),
-                // hence the @TargetApi(11) above.
                 seekBar.setAlpha(0.5f);
                 if (b) {
                     Logger.d(TAG, "Skipping checkBox checked, " +
