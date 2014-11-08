@@ -58,7 +58,6 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
 
     }
 
-    @TargetApi(11)
     private View inflateView(LinearLayout questionLayout, SliderSubQuestion subQuestion) {
         Logger.v(TAG, "Inflating view for subQuestion");
 
@@ -83,9 +82,6 @@ public class SliderQuestionViewAdapter extends BaseQuestionViewAdapter
                 (AlphaSeekBar)view.findViewById(R.id.question_slider_seekBar);
         seekBar.setProgressDrawable(view.getResources().getDrawable(R.drawable.question_slider_progress));
         seekBar.setThumb(view.getResources().getDrawable(R.drawable.question_slider_thumb));
-        // Lint erroneously catches this as a call that requires API >= 11
-        // (which is exactly why AlphaSeekBar exists),
-        // hence the @TargetApi(11) above.
         seekBar.setAlpha(0.5f);
 
         final int initialPosition = subQuestion.getInitialPosition();
