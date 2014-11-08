@@ -33,7 +33,7 @@ public class NetworkReceiver extends RoboBroadcastReceiver {
 
             // If first launch hasn't been completed, the user doesn't want
             // anything yet. We also want Internet to be available.
-            if (statusManager.isFirstLaunchCompleted() &&
+            if (statusManager.is(StatusManager.EXP_STATUS_FL_COMPLETED) &&
                     statusManager.isDataEnabled()) {
                 Logger.d(TAG, "First launch is completed and data is " +
                         "enabled");

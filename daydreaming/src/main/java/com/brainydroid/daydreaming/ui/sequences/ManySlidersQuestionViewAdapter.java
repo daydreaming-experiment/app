@@ -1,7 +1,6 @@
 package com.brainydroid.daydreaming.ui.sequences;
 
 import android.animation.LayoutTransition;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -66,7 +65,6 @@ public class ManySlidersQuestionViewAdapter
     LinearLayout questionView;
     AutoCompleteTextView autoTextView;
 
-    @TargetApi(11)
     @Override
     protected ArrayList<View> inflateViews(final Activity activity, final RelativeLayout outerPageLayout,
                                            final LinearLayout questionLayout) {
@@ -280,7 +278,6 @@ public class ManySlidersQuestionViewAdapter
         parametersStorage.removeUserPossibility(question.getQuestionName(), ms.getDefinition());
     }
 
-    @TargetApi(11)
     protected void toggleEditMode() {
         // Start ProgressDialog if necessary
         if (!autoCompleteAdapterLoaded && progressDialog == null) {
@@ -315,7 +312,6 @@ public class ManySlidersQuestionViewAdapter
         finishButton.setAlpha(isEditMode ? 0.3f : 1f);
     }
 
-    @TargetApi(11)
     private LinearLayout inflateSlider(final MetaString sliderMetaString) {
         Logger.v(TAG, "Inflating slider {}", sliderMetaString.getDefinition());
 
@@ -347,21 +343,31 @@ public class ManySlidersQuestionViewAdapter
                 R.drawable.question_slider_progress));
         sliderSeek.setThumb(sliderLayout.getResources().getDrawable(
                 R.drawable.question_slider_thumb));
-        // Lint erroneously catches this as a call that requires API >= 11
-        // (which is exactly why AlphaSeekBar exists),
-        // hence the @TargetApi(11) above.
-        sliderSeek.setAlpha(0.5f);
 
         // Set live indication
         final TextView selectedSeek = (TextView)sliderLayout.findViewById(
                 R.id.question_many_sliders_slider_selectedSeek);
         selectedSeek.setVisibility(details.isShowLiveIndication() ? View.VISIBLE : View.GONE);
 
+        if (details.isAlreadyValid()) {
+            Logger.v(TAG, "SeekBar is initially valid -> setting hint");
+            int progress = sliderSeek.getProgress();
+            int index = (int) FloatMath.floor((progress / 100f) * nHints);
+            if (index == nHints) {
+                // Have an open interval to the right
+                index -= 1;
+            }
+
+            selectedSeek.setText(hints.get(index));
+        } else {
+            Logger.v(TAG, "SeekBar is initially not valid -> setting transparent");
+            sliderSeek.setAlpha(0.5f);
+        }
+
         // Set progress listener
         AlphaSeekBar.OnAlphaSeekBarChangeListener progressListener =
                 new AlphaSeekBar.OnAlphaSeekBarChangeListener() {
 
-            @TargetApi(11)
             @Override
             public void onProgressChanged(AlphaSeekBar seekBar, int progress,
                                           boolean fromUser) {
@@ -373,9 +379,6 @@ public class ManySlidersQuestionViewAdapter
                 }
 
                 selectedSeek.setText(hints.get(index));
-                // Lint erroneously catches this as a call that requires API >= 11
-                // (which is exactly why AlphaSeekBar exists),
-                // hence the @TargetApi(11) above.
                 seekBar.setAlpha(1f);
             }
 

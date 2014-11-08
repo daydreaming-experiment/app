@@ -44,18 +44,22 @@ public class StatusManager {
     private static String TAG = "StatusManager";
 
     /** Preference key storing the first launch status */
-    private static String EXP_STATUS_FL_COMPLETED =
+    public static String EXP_STATUS_FL_COMPLETED =
             "expStatusFlCompleted";
 
     /** Preference key storing the status of initial questions update */
     private static String EXP_STATUS_PARAMETERS_UPDATED =
             "expStatusQuestionsUpdated";
     /** Preference key storing the status of initial questions update */
-    private static String EXP_STATUS_PARAMETERS_FLUSHED =
+    public static String EXP_STATUS_PARAMETERS_FLUSHED =
             "expStatusQuestionsFlushed";
 
     /** Preference key storing timestamp of the last sync operation */
     private static String LAST_SYNC_TIMESTAMP = "lastSyncTimestamp";
+
+    /** Preference key storing timestamp of the last morning questionnaire */
+    private static String LAST_MORNING_Q_TIMESTAMP = "lastMQNotifTimestamp";
+
 
     /** Preference key storing timestamp of beginning of experiment */
     @SuppressWarnings("FieldCanBeLocal")
@@ -76,10 +80,12 @@ public class StatusManager {
     public static String ARE_RESULTS_NOTIFIED_DASHBOARD = "areResultsNotifiedDashboard";
     public static String ARE_RESULTS_NOTIFIED = "areResultsNotified";
 
-    public static String CURRENT_BEG_END_QUESTIONNAIRE_TYPE = "currentBEQType";
+    private static String CURRENT_BEG_END_QUESTIONNAIRE_TYPE = "currentBEQType";
 
-    public static String RESULTS_DOWNLOADED = "resultsDownloaded";
+    private static String RESULTS_DOWNLOADED = "resultsDownloaded";
     public static String NOTIFICATION_EXPIRY_EXPLAINED = "notificationExpiryExplained";
+    public static String GLOSSARY_EXPLAINED = "glossaryExplained";
+    public static String EQ_EDIT_ACTIVITIES_EXPLAINED = "eqEditActivitiesExplained";
 
     public static final String ACTION_PARAMETERS_STATUS_CHANGE = "actionParametersStatusChange";
 
@@ -160,103 +166,29 @@ public class StatusManager {
                 + "\nparameters version: " + profileStorageProvider.get().getParametersVersion();
     }
 
-    /**
-     * Check if first launch is completed.
-     *
-     * @return {@code true} if first launch has completed,
-     *         {@code false} otherwise
-     */
-    public synchronized boolean isFirstLaunchCompleted() {
-        if (sharedPreferences.getBoolean(getCurrentModeName() + EXP_STATUS_FL_COMPLETED, false)) {
-            Logger.d(TAG, "{} - First launch is completed", getCurrentModeName());
+    public synchronized boolean is(String flagName) {
+        if (sharedPreferences.getBoolean(getCurrentModeName() + flagName, false)) {
+            Logger.d(TAG, "{0} - {1} flag is set", getCurrentModeName(), flagName);
             return true;
         } else {
-            Logger.d(TAG, "{} - First launch not completed yet", getCurrentModeName());
+            Logger.d(TAG, "{0} - {1} flag is not set", getCurrentModeName(), flagName);
             return false;
         }
     }
 
-    /**
-     * Set the first launch flag to completed.
-     */
-    public synchronized void setFirstLaunchCompleted() {
-        Logger.d(TAG, "{} - Setting first launch to completed", getCurrentModeName());
+    public synchronized void set(String flagName) {
+        set(flagName, true);
+    }
 
-        eSharedPreferences.putBoolean(getCurrentModeName() + EXP_STATUS_FL_COMPLETED, true);
+    public synchronized void clear(String flagName) {
+        Logger.d(TAG, "{0} - Clearing {1} flag", getCurrentModeName(), flagName);
+        eSharedPreferences.remove(getCurrentModeName() + flagName);
         eSharedPreferences.commit();
     }
 
-    private synchronized void clearFirstLaunchCompleted() {
-        Logger.d(TAG, "{} - Clearing first launch completed", getCurrentModeName());
-
-        eSharedPreferences.remove(getCurrentModeName() + EXP_STATUS_FL_COMPLETED);
-        eSharedPreferences.commit();
-    }
-
-    /**
-     * Check if the parameters have been updated.
-     *
-     * @return {@code true} if the parameters have been updated,
-     *         {@code false} otherwise
-     */
-    public synchronized boolean areParametersUpdated() {
-        if (sharedPreferences.getBoolean(getCurrentModeName() + EXP_STATUS_PARAMETERS_UPDATED,
-                false)) {
-            Logger.d(TAG, "{} - Parameters are updated", getCurrentModeName());
-            return true;
-        } else {
-            Logger.d(TAG, "{} - Parameters not updated yet", getCurrentModeName());
-            return false;
-        }
-    }
-
-    public synchronized void setResultsNotifiedDashboard() {
-        Logger.d(TAG, "{} - Setting resultsNotifiedDashboard to true", getCurrentModeName(), true);
-
-        eSharedPreferences.putBoolean(getCurrentModeName() + ARE_RESULTS_NOTIFIED_DASHBOARD, true);
-        eSharedPreferences.commit();
-    }
-
-    public synchronized boolean areResultsNotifiedDashboard() {
-        if (sharedPreferences.getBoolean(getCurrentModeName() + ARE_RESULTS_NOTIFIED_DASHBOARD,
-                false)) {
-            Logger.v(TAG, "{} - Results not yet notified to dashboard", getCurrentModeName());
-            return true;
-        } else {
-            Logger.v(TAG, "{} - Results already notified to dashboard", getCurrentModeName());
-            return false;
-        }
-    }
-
-    public synchronized void clearResultsNotifiedDashboard() {
-        Logger.d(TAG, "{} - Clearing resultsNotifiedDashboard", getCurrentModeName());
-
-        eSharedPreferences.remove(getCurrentModeName() + ARE_RESULTS_NOTIFIED_DASHBOARD);
-        eSharedPreferences.commit();
-    }
-
-    public synchronized void setResultsNotified() {
-        Logger.d(TAG, "{} - Setting resultsNotified to true", getCurrentModeName(), true);
-
-        eSharedPreferences.putBoolean(getCurrentModeName() + ARE_RESULTS_NOTIFIED, true);
-        eSharedPreferences.commit();
-    }
-
-    public synchronized boolean areResultsNotified() {
-        if (sharedPreferences.getBoolean(getCurrentModeName() + ARE_RESULTS_NOTIFIED,
-                false)) {
-            Logger.v(TAG, "{} - Results not yet notified with notification", getCurrentModeName());
-            return true;
-        } else {
-            Logger.v(TAG, "{} - Results already notified with notification", getCurrentModeName());
-            return false;
-        }
-    }
-
-    public synchronized void clearResultsNotified() {
-        Logger.d(TAG, "{} - Clearing resultsNotified", getCurrentModeName());
-
-        eSharedPreferences.remove(getCurrentModeName() + ARE_RESULTS_NOTIFIED);
+    public synchronized void set(String flagName, boolean value) {
+        Logger.d(TAG, "{0} - Setting {1} flag to {2}", getCurrentModeName(), flagName, value);
+        eSharedPreferences.putBoolean(getCurrentModeName() + flagName, value);
         eSharedPreferences.commit();
     }
 
@@ -285,30 +217,6 @@ public class StatusManager {
         eSharedPreferences.remove(getCurrentModeName() + RESULTS_DOWNLOADED);
         eSharedPreferences.commit();
     }
-    public synchronized void setNotificationExpiryExplained() {
-        Logger.d(TAG, "{} - Setting notificationExpiryExplained to true", getCurrentModeName(), true);
-
-        eSharedPreferences.putBoolean(getCurrentModeName() + NOTIFICATION_EXPIRY_EXPLAINED, true);
-        eSharedPreferences.commit();
-    }
-
-    public synchronized boolean isNotificationExpiryExplained() {
-        if (sharedPreferences.getBoolean(getCurrentModeName() + NOTIFICATION_EXPIRY_EXPLAINED,
-                false)) {
-            Logger.v(TAG, "{} - Notification expiry not yet explained", getCurrentModeName());
-            return true;
-        } else {
-            Logger.v(TAG, "{} - Notification expiry not yet explained", getCurrentModeName());
-            return false;
-        }
-    }
-
-   public synchronized void clearNotificationExpiryExplained() {
-       Logger.d(TAG, "{} - Clearing notificationExpiryExplained", getCurrentModeName());
-
-       eSharedPreferences.remove(getCurrentModeName() + NOTIFICATION_EXPIRY_EXPLAINED);
-       eSharedPreferences.commit();
-   }
 
     public synchronized void setDashboardRunning(boolean running) {
         Logger.v(TAG, "Setting isDashboardRunning to {}", running);
@@ -320,6 +228,23 @@ public class StatusManager {
         long now = Calendar.getInstance().getTimeInMillis();
         // Dashboard is running, and we have that information from less than 1 minute ago
         return isDashboardRunning && (now - isDashboardRunningTimestamp < 1 * 60 * 1000);
+    }
+
+    /**
+     * Check if the parameters have been updated.
+     *
+     * @return {@code true} if the parameters have been updated,
+     *         {@code false} otherwise
+     */
+    public synchronized boolean areParametersUpdated() {
+        if (sharedPreferences.getBoolean(getCurrentModeName() + EXP_STATUS_PARAMETERS_UPDATED,
+                false)) {
+            Logger.d(TAG, "{} - Parameters are updated", getCurrentModeName());
+            return true;
+        } else {
+            Logger.d(TAG, "{} - Parameters not updated yet", getCurrentModeName());
+            return false;
+        }
     }
 
     /**
@@ -342,40 +267,6 @@ public class StatusManager {
         Logger.d(TAG, "{} - Clearing parameters updated", getCurrentModeName());
 
         eSharedPreferences.remove(getCurrentModeName() + EXP_STATUS_PARAMETERS_UPDATED);
-        eSharedPreferences.commit();
-    }
-
-    /**
-     * Check if the parameters have been flushed.
-     *
-     * @return {@code true} if the parameters have been flushed,
-     *         {@code false} otherwise
-     */
-    public synchronized boolean areParametersFlushed() {
-        if (sharedPreferences.getBoolean(getCurrentModeName() + EXP_STATUS_PARAMETERS_FLUSHED,
-                false)) {
-            Logger.d(TAG, "{} - Parameters are flushed", getCurrentModeName());
-            return true;
-        } else {
-            Logger.d(TAG, "{} - Parameters not flushed", getCurrentModeName());
-            return false;
-        }
-    }
-
-    /**
-     * Set the flushed parameters flag to on.
-     */
-    public synchronized void setParametersFlushed() {
-        Logger.d(TAG, "{} - Setting parameters to flushed", getCurrentModeName());
-
-        eSharedPreferences.putBoolean(getCurrentModeName() + EXP_STATUS_PARAMETERS_FLUSHED, true);
-        eSharedPreferences.commit();
-    }
-
-    public synchronized void clearParametersFlushed() {
-        Logger.d(TAG, "{} - Clearing parameters flushed", getCurrentModeName());
-
-        eSharedPreferences.remove(getCurrentModeName() + EXP_STATUS_PARAMETERS_FLUSHED);
         eSharedPreferences.commit();
     }
 
@@ -460,6 +351,31 @@ public class StatusManager {
         Logger.d(TAG, "{} - Setting last sync timestamp to now", getCurrentModeName());
         eSharedPreferences.putLong(getCurrentModeName() + LAST_SYNC_TIMESTAMP, now);
         eSharedPreferences.commit();
+    }
+
+    /**
+     * Set the timestamp of the last MQ notification to now.
+     */
+    public synchronized void setLastMQNotifToNow() {
+        long now = Calendar.getInstance().getTimeInMillis();
+        Logger.d(TAG, "{} - Setting last MQ notif timestamp to now", getCurrentModeName());
+        eSharedPreferences.putLong(getCurrentModeName() + LAST_MORNING_Q_TIMESTAMP, now);
+        eSharedPreferences.commit();
+    }
+
+    /**
+     * Check if a morning questionnaire notification was long ago.
+     */
+    public synchronized boolean isLastMQNotifLongAgo() {
+        long delay = 18 * 3600;  // 24h - 3h = 18h
+        long threshold = sharedPreferences.getLong(getCurrentModeName() + LAST_MORNING_Q_TIMESTAMP, - delay) + delay;
+        if (threshold < Calendar.getInstance().getTimeInMillis()) {
+            Logger.v(TAG, "{} - Last MQ notif was yesterday", getCurrentModeName());
+            return true;
+        } else {
+            Logger.v(TAG, "{} - Last MQ notif was recent, do not notify", getCurrentModeName());
+            return false;
+        }
     }
 
     /**
@@ -638,11 +554,13 @@ public class StatusManager {
         setCurrentMode(MODE_TEST);
 
         // Clear local flags (after switch)
-        clearFirstLaunchCompleted();
+        clear(EXP_STATUS_FL_COMPLETED);
         clearExperimentStartTimestamp();
-        clearResultsNotified();
-        clearResultsNotifiedDashboard();
-        clearNotificationExpiryExplained();
+        clear(ARE_RESULTS_NOTIFIED);
+        clear(ARE_RESULTS_NOTIFIED_DASHBOARD);
+        clear(NOTIFICATION_EXPIRY_EXPLAINED);
+        clear(GLOSSARY_EXPLAINED);
+        clear(EQ_EDIT_ACTIVITIES_EXPLAINED);
         clearResultsDownloaded();
 
         // Cancel any running location collection and pending notifications.
@@ -674,10 +592,12 @@ public class StatusManager {
         // Cancel any running location collection and pending notifications
         cancelNotifiedPollsAndCollectingLocations();
 
-        // Clear result flags
-        clearResultsNotified();
-        clearResultsNotifiedDashboard();
-        clearNotificationExpiryExplained();
+        // Clear result and explanation flags
+        clear(ARE_RESULTS_NOTIFIED);
+        clear(ARE_RESULTS_NOTIFIED_DASHBOARD);
+        clear(NOTIFICATION_EXPIRY_EXPLAINED);
+        clear(GLOSSARY_EXPLAINED);
+        clear(EQ_EDIT_ACTIVITIES_EXPLAINED);
         clearResultsDownloaded();
 
         // Clear crypto storage to force a new handshake
@@ -764,6 +684,7 @@ public class StatusManager {
                 (24 * 60 * 60 * 1000));
         int daysToGo = parametersStorageProvider.get().getExpDuration() - daysElapsed;
 
+        //noinspection SimplifiableIfStatement
         if (areBEQCompleted(Sequence.TYPE_END_QUESTIONNAIRE)) {
             return daysToGo <= 0 || getCurrentMode() == MODE_TEST;
         } else {
@@ -944,7 +865,7 @@ public class StatusManager {
     }
 
     public synchronized void launchNotifyingServices() {
-        if (isFirstLaunchCompleted()) {
+        if (is(EXP_STATUS_FL_COMPLETED)) {
             Logger.d(TAG, "First launch is completed, launching scheduler services");
 
             // Start scheduling polls
@@ -969,7 +890,7 @@ public class StatusManager {
     public synchronized void launchAllServices() {
         // If first launch hasn't been completed, the user doesn't want
         // anything yet
-        if (isFirstLaunchCompleted()) {
+        if (is(EXP_STATUS_FL_COMPLETED)) {
             launchNotifyingServices();
 
             // Start getting location updates

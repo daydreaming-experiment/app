@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 public class ManySlidersQuestionDescriptionDetails implements IQuestionDescriptionDetails {
 
+    @SuppressWarnings("FieldCanBeLocal")
     private static String TAG = "ManySlidersQuestionDescriptionDetails";
 
     public static int DEFAULT_INITIAL_POSITION = -1;
@@ -27,6 +28,8 @@ public class ManySlidersQuestionDescriptionDetails implements IQuestionDescripti
     private int initialPosition = DEFAULT_INITIAL_POSITION;
     @JsonView(Views.Internal.class)
     private boolean showLiveIndication = false;
+    @JsonView(Views.Internal.class)
+    private boolean alreadyValid = false;
     @JsonView(Views.Internal.class)
     private String addItemHint = null;
     @JsonView(Views.Internal.class)
@@ -77,6 +80,10 @@ public class ManySlidersQuestionDescriptionDetails implements IQuestionDescripti
 
     public boolean isShowLiveIndication() {
         return showLiveIndication;
+    }
+
+    public boolean isAlreadyValid() {
+        return alreadyValid;
     }
 
     public String getAddItemHint() {

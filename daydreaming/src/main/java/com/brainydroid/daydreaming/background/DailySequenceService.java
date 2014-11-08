@@ -103,7 +103,7 @@ public class DailySequenceService extends RoboService {
                 return START_REDELIVER_INTENT;
             }
 
-            if (statusManager.isNotificationExpiryExplained()) {
+            if (statusManager.is(StatusManager.NOTIFICATION_EXPIRY_EXPLAINED)) {
                 expireProbe(probeId);
             }
         } else if (intent.getBooleanExtra(DISMISS_PROBE, false)) {
@@ -300,6 +300,10 @@ public class DailySequenceService extends RoboService {
             Logger.v(TAG, "Activating beep for notification, custom sound");
             notification.sound = Uri.parse("android.resource://" + "com.brainydroid.daydreaming" +
                     "/" + R.raw.notification);
+        }
+
+        if (sequenceType.equals(Sequence.TYPE_MORNING_QUESTIONNAIRE)) {
+            statusManager.setLastMQNotifToNow();
         }
 
         // Get a proper id for the notification, to replace the right notifications

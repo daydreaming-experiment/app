@@ -6,8 +6,10 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
+import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.brainydroid.daydreaming.R;
@@ -44,6 +46,7 @@ public class ResultsActivity extends RoboFragmentActivity {
     @Inject ErrorHandler errorHandler;
     @Inject Activity activity;
     @InjectView(R.id.activity_results_webView) private WebView webView;
+    @InjectView(R.id.activity_results_root) private LinearLayout rootView;
 
     private boolean failedOnceAlready = false;
     private boolean resultsDownloaded = false;
@@ -61,10 +64,12 @@ public class ResultsActivity extends RoboFragmentActivity {
             this.resultsWrap = resultsWrap;
         }
 
+        @JavascriptInterface
         public int getVersionCode() {
             return versionCode;
         }
 
+        @JavascriptInterface
         public String getResultsWrap() {
             return resultsWrap;
         }
@@ -77,8 +82,8 @@ public class ResultsActivity extends RoboFragmentActivity {
         super.onCreate(savedInstanceState);
 
         // No need to notify results again, the user opened them
-        statusManager.setResultsNotified();
-        statusManager.setResultsNotifiedDashboard();
+        statusManager.set(StatusManager.ARE_RESULTS_NOTIFIED);
+        statusManager.set(StatusManager.ARE_RESULTS_NOTIFIED_DASHBOARD);
 
         if (getIntent().getBooleanExtra(DOWNLOAD_RESULTS, true)) {
             resultsDownloaded = false;
@@ -117,7 +122,13 @@ public class ResultsActivity extends RoboFragmentActivity {
             if (progressDialog != null) {
                 progressDialog.dismiss();
             }
-            webView.setVisibility(View.VISIBLE);
+            // Run on UI thread
+            rootView.post(new Runnable() {
+                @Override
+                public void run() {
+                    webView.setVisibility(View.VISIBLE);
+                }
+            });
         }
     }
 
@@ -143,19 +154,17 @@ public class ResultsActivity extends RoboFragmentActivity {
                         // Cache results
                         if (!resultsStorage.saveResults(serverAnswer)) {
                             Logger.e(TAG, "Couldn't save results to file");
-                            Toast.makeText(activity, "Could not cache your results locally! " +
+                            toastOnUIThread("Could not cache your results locally! " +
                                             "You'll have to download them again next time",
-                                    Toast.LENGTH_LONG
-                            ).show();
+                                    Toast.LENGTH_LONG);
                         }
 
                         jsResults = new JSResults(profileStorage.getAppVersionCode(), serverAnswer);
                         launchWebView();
                     } else {
                         Logger.i(TAG, "Failed to get results");
-                        Toast.makeText(activity,
-                                "Oh no! There was an error loading the results",
-                                Toast.LENGTH_SHORT).show();
+                        toastOnUIThread("Oh no! There was an error loading the results",
+                                Toast.LENGTH_SHORT);
                         progressDialog.dismiss();
                         onBackPressed();
                     }
@@ -183,15 +192,15 @@ public class ResultsActivity extends RoboFragmentActivity {
                         if (!failedOnceAlready) {
                             Logger.i(TAG, "Relaunching results download");
                             failedOnceAlready = true;
-                            Toast.makeText(activity, "Could not load your results from cache! " +
-                                    "Downloading them from server", Toast.LENGTH_LONG).show();
+                            toastOnUIThread("Could not load your results from cache! " +
+                                    "Downloading them from server", Toast.LENGTH_LONG);
                             resultsDownloaded = false;
                             loadResultsAndWebView();
                         } else {
                             Logger.e(TAG, "This error already happened, aborting");
                             // We already went through this. Do not recurse.
-                            Toast.makeText(activity, "Sorry! There was problem loading your results, " +
-                                    "developers have been notified", Toast.LENGTH_LONG).show();
+                            toastOnUIThread("Sorry! There was problem loading your results, " +
+                                    "developers have been notified", Toast.LENGTH_LONG);
                             errorHandler.logError("Could not load results, twice",
                                     new Exception("Could not load results, twice"));
                             if (progressDialog != null) {
@@ -210,25 +219,30 @@ public class ResultsActivity extends RoboFragmentActivity {
 
     private void launchWebView() {
         // Load the results in the webView and start it
-        webView.clearCache(true);
-        webView.addJavascriptInterface(jsResults, "injectedResults");
-        webView.setWebViewClient(new WebViewClient() {
-
+        // Run this on UI thread
+        rootView.post(new Runnable() {
             @Override
-            public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                super.onPageStarted(view, url, favicon);
-            }
+            public void run() {
+                webView.clearCache(true);
+                webView.addJavascriptInterface(jsResults, "injectedResults");
+                webView.setWebViewClient(new WebViewClient() {
 
-            public void onPageFinished(WebView view, String url) {
-                super.onPageFinished(view, url);
-                setPageLoaded();
-            }
+                    @Override
+                    public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                        super.onPageStarted(view, url, favicon);
+                    }
 
-            public void onReceivedError(WebView view, int errorCode,
-                                        String description, String failingUrl) {
-                progressDialog.dismiss();
-                Toast.makeText(activity,
-                        "Oh no! " + description, Toast.LENGTH_SHORT).show();
+                    public void onPageFinished(WebView view, String url) {
+                        super.onPageFinished(view, url);
+                        setPageLoaded();
+                    }
+
+                    public void onReceivedError(WebView view, int errorCode,
+                                                String description, String failingUrl) {
+                        progressDialog.dismiss();
+                        toastOnUIThread("Oh no! " + description, Toast.LENGTH_SHORT);
+                    }
+                });
             }
         });
 
@@ -240,24 +254,42 @@ public class ResultsActivity extends RoboFragmentActivity {
                     Logger.d(TAG, "AuthToken successfully created. Launching GET.");
 
                     // Build the url with query arguments
-                    String authenticatedResultsUrl = parametersStorage.getResultsPageUrl();
-                    if (authenticatedResultsUrl.contains("?")) {
-                        authenticatedResultsUrl += "&";
+                    String tmpAuthenticatedResultsUrl = parametersStorage.getResultsPageUrl();
+                    if (tmpAuthenticatedResultsUrl.contains("?")) {
+                        tmpAuthenticatedResultsUrl += "&";
                     } else {
-                        authenticatedResultsUrl += "?";
+                        tmpAuthenticatedResultsUrl += "?";
                     }
-                    authenticatedResultsUrl += "auth_token=" + authToken;
-                    webView.loadUrl(authenticatedResultsUrl);
+                    tmpAuthenticatedResultsUrl += "auth_token=" + authToken;
+                    final String authenticatedResultsUrl = tmpAuthenticatedResultsUrl;
+                    // Run on UI thread
+                    rootView.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            webView.loadUrl(authenticatedResultsUrl);
+                        }
+                    });
                 } else {
                     Logger.e(TAG, "Error retrieving auth token");
                     progressDialog.dismiss();
-                    Toast.makeText(activity, "Could not retrieve your results! " +
-                                    "Please Try again later", Toast.LENGTH_SHORT).show();
+                    // Run on UI thread
+                    toastOnUIThread("Could not retrieve your results! Please Try again later",
+                            Toast.LENGTH_SHORT);
                 }
             }
         };
 
         cryptoStorage.createJwsAuthToken(authTokenCallback);
+    }
+
+    private void toastOnUIThread(final String text, final int duration) {
+        // Run on UI thread
+        rootView.post(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(activity, text, duration).show();
+            }
+        });
     }
 
     @Override

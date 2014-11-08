@@ -81,6 +81,8 @@
 
     <!-- Glossary Activity -->
     <string name="glossary_title">GLOSSARY</string>
+    <string name="glossary_explanation_title">What\'s this?</string>
+    <string name="glossary_explanation_text">This glossary contains explanations for words you will encounter in the questions. When answering questions, touch the words in blue to see the definitions!</string>
 
     <!-- About/credits Activity -->
     <string name="credits_text_title_about">ABOUT</string>
@@ -195,6 +197,8 @@
     <string name="page_edit_mode_cancel">Cancel</string>
     <string name="page_too_late_title">Oops, too late!</string>
     <string name="page_too_late_body">Probes are meant to be answered quickly, so we can\'t let you answer this one. From now on notifications will disappear on their own after a few minutes. If you want to answer a probe you missed, you can do so in the dashboard, it will suggest any missed probes.</string>
+    <string name="page_eq_edit_activities_title">Edit your activities</string>
+    <string name="page_eq_edit_activities_text">This page is about what you did in your day. Scroll down to the bottom of the page to edit what activities show up here!</string>
 
     <!-- Display question Activity -->
     <string name="question_welcome_text">HERE ARE A FEW QUICK QUESTIONS:</string>
@@ -205,12 +209,12 @@
     <string name="questionSlider_skipped">(Skipped)</string>
     <string name="questionSlider_sliders_untouched_single">Please answer using the slider</string>
     <string name="questionSlider_sliders_untouched_multiple">Please answer on all the sliders</string>
-    <string name="questionSlider_skip">Does not apply</string>
+    <string name="questionSlider_skip">I don\'t know</string>
     <string name="questionStarRating_please_rate">(Select a rating to answer) </string>
     <string name="questionStarRating_skipped">(Skipped)</string>
     <string name="questionStarRating_star_ratings_untouched_single">Please answer using the star scale</string>
     <string name="questionStarRating_star_ratings_untouched_multiple">Please answer on all the star scales</string>
-    <string name="questionStarRating_skip">Does not apply</string>
+    <string name="questionStarRating_skip">I don\'t know</string>
     <string name="questionMultipleChoice_check_all_that_apply">Check all that apply</string>
     <string name="questionMultipleChoice_other_hint">Other</string>
     <string name="questionMultipleChoice_other_please_fill">Please tell us more in the \"Other\" box</string>

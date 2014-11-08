@@ -602,7 +602,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
     }
 
     private void updateResultsPulse() {
-        if (statusManager.areResultsAvailable() && !statusManager.areResultsNotifiedDashboard()) {
+        if (statusManager.areResultsAvailable() && !statusManager.is(StatusManager.ARE_RESULTS_NOTIFIED_DASHBOARD)) {
             // Pulse results button. It's the first time they're available.
             Animation animation = new AlphaAnimation(1, 0); // Change alpha from fully visible to invisible
             animation.setDuration(1000); // duration - half a second
@@ -612,7 +612,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
             resultsButton.setAnimation(animation);
 
             // Remember we did all this
-            statusManager.setResultsNotifiedDashboard();
+            statusManager.set(StatusManager.ARE_RESULTS_NOTIFIED_DASHBOARD);
         } else {
             resultsButton.clearAnimation();
         }
@@ -711,7 +711,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
     }
 
     protected void checkFirstLaunch() {
-        if (!statusManager.isFirstLaunchCompleted()) {
+        if (!statusManager.is(StatusManager.EXP_STATUS_FL_COMPLETED)) {
             Logger.i(TAG, "First launch not completed -> starting first " +
                     "launch sequence and finishing this activity");
             Intent intent = new Intent(this, FirstLaunch00WelcomeActivity.class);

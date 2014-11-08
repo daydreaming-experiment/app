@@ -43,7 +43,8 @@ public class PageActivity extends RoboFragmentActivity {
 
     private static String TAG = "PageActivity";
 
-    public static String EXTRA_SEQUENCE_ID = "sequenceId";
+    public static final String EXTRA_SEQUENCE_ID = "sequenceId";
+    private static final String EQ_ACTIVITY_PAGE_NAME = "usualActivities";
 
     private int sequenceId;
     private Sequence sequence;
@@ -62,6 +63,8 @@ public class PageActivity extends RoboFragmentActivity {
 
     @InjectResource(R.string.page_too_late_title) String tooLateTitle;
     @InjectResource(R.string.page_too_late_body) String tooLateBody;
+    @InjectResource(R.string.page_eq_edit_activities_title) String explanationTitle;
+    @InjectResource(R.string.page_eq_edit_activities_text) String explanationText;
 
     @Inject private PageViewAdapter pageViewAdapter;
     @Inject LocationServiceConnection locationServiceConnection;
@@ -116,6 +119,24 @@ public class PageActivity extends RoboFragmentActivity {
         } else {
             Logger.i(TAG, "No data or no location -> not starting listening" +
                     " tasks");
+        }
+
+        if (currentPage.getName().equals(EQ_ACTIVITY_PAGE_NAME) &&
+                !statusManager.is(StatusManager.EQ_EDIT_ACTIVITIES_EXPLAINED)) {
+            Logger.d(TAG, "Edition of evening activities not yet explained, showing popup");
+            statusManager.set(StatusManager.EQ_EDIT_ACTIVITIES_EXPLAINED);
+
+            AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
+            alertBuilder.setCancelable(false)
+                    .setTitle(explanationTitle)
+                    .setMessage(explanationText)
+                    .setPositiveButton("Got it", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.cancel();
+                        }
+                    });
+            alertBuilder.show();
         }
     }
 
@@ -172,7 +193,7 @@ public class PageActivity extends RoboFragmentActivity {
         // Add 30 seconds to the expiry delay to make sure the user didn't just click the
         // notification milliseconds before it was to expire.
         if (now - sequence.getNotificationSystemTimestamp() > Sequence.EXPIRY_DELAY + 30 * 1000) {
-            if (statusManager.isNotificationExpiryExplained()) {
+            if (statusManager.is(StatusManager.NOTIFICATION_EXPIRY_EXPLAINED)) {
                 // We shouldn't be here: we already explained this and somehow a probe did not expire.
                 // Log this error, but keep going.
                 errorHandler.logError("We already explained the notification expiry, " +
@@ -180,7 +201,7 @@ public class PageActivity extends RoboFragmentActivity {
                         new ConsistencyException());
             }
 
-            statusManager.setNotificationExpiryExplained();
+            statusManager.set(StatusManager.NOTIFICATION_EXPIRY_EXPLAINED);
             AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
             alertBuilder.setCancelable(false)
                     .setTitle(tooLateTitle)

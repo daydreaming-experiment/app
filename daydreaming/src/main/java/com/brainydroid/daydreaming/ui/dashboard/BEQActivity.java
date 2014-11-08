@@ -161,7 +161,7 @@ public class BEQActivity extends RoboFragmentActivity {
     }
 
     protected void checkFirstLaunch() {
-        if (!statusManagerProvider.get().isFirstLaunchCompleted()) {
+        if (!statusManagerProvider.get().is(StatusManager.EXP_STATUS_FL_COMPLETED)) {
             Logger.i(TAG, "First launch not completed -> starting first " +
                     "launch sequence and finishing this activity");
             Intent intent = new Intent(this, FirstLaunch00WelcomeActivity.class);
