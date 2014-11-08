@@ -1,6 +1,5 @@
 package com.brainydroid.daydreaming.ui.sequences;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.text.method.LinkMovementMethod;
 import android.util.FloatMath;
@@ -58,7 +57,6 @@ public class StarRatingQuestionViewAdapter extends BaseQuestionViewAdapter
 
     }
 
-    @TargetApi(11)
     private View inflateView(LinearLayout questionLayout, StarRatingSubQuestion subQuestion) {
         Logger.v(TAG, "Inflating view for subQuestion");
 
@@ -81,10 +79,6 @@ public class StarRatingQuestionViewAdapter extends BaseQuestionViewAdapter
                 (AlphaRatingBar)view.findViewById(R.id.question_star_rating_ratingBar);
         ratingBar.setProgressDrawable(view.getResources().getDrawable(R.drawable.question_slider_progress));
         ratingBar.setThumb(view.getResources().getDrawable(R.drawable.question_slider_thumb));
-        // Lint erroneously catches this as a call that requires API >= 11
-        // (which is exactly why AlphaRatingBar exists),
-        // hence the @TargetApi(11) above.
-        ratingBar.setAlpha(0.5f);
 
         final int numStars = subQuestion.getNumStars();
         final int effectiveNumStars;
@@ -114,6 +108,21 @@ public class StarRatingQuestionViewAdapter extends BaseQuestionViewAdapter
             selectedRating.setVisibility(View.GONE);
         }
 
+        if (subQuestion.getAlreadyValid()) {
+            Logger.v(TAG, "RatingBar is initially valid -> setting hint");
+            float rating = ratingBar.getRating();
+            int index = (int) FloatMath.floor((rating / (float)effectiveNumStars) * hintsNumber);
+            if (index == hintsNumber) {
+                // Have an open interval to the right
+                index -= 1;
+            }
+
+            selectedRating.setText(hints.get(index));
+        } else {
+            Logger.v(TAG, "RatingBar is initially not valid -> setting transparent");
+            ratingBar.setAlpha(0.5f);
+        }
+
         final CheckBox naCheckBox =
                 (CheckBox)view.findViewById(R.id.question_star_rating_naCheckBox);
         if (!subQuestion.getNotApplyAllowed()) {
@@ -122,7 +131,6 @@ public class StarRatingQuestionViewAdapter extends BaseQuestionViewAdapter
 
         AlphaRatingBar.OnAlphaRatingBarChangeListener listener = new AlphaRatingBar.OnAlphaRatingBarChangeListener() {
 
-            @TargetApi(11)
             @Override
             public void onRatingChanged(AlphaRatingBar ratingBar,
                                         float rating, boolean fromUser) {
@@ -136,9 +144,6 @@ public class StarRatingQuestionViewAdapter extends BaseQuestionViewAdapter
                     }
 
                     selectedRating.setText(hints.get(index));
-                    // Lint erroneously catches this as a call that requires API >= 11
-                    // (which is exactly why AlphaRatingBar exists),
-                    // hence the @TargetApi(11) above.
                     ratingBar.setAlpha(1f);
                 } else {
                     // Only reset the rating if the change came from the
@@ -158,13 +163,9 @@ public class StarRatingQuestionViewAdapter extends BaseQuestionViewAdapter
         CheckBox.OnCheckedChangeListener naListener =
                 new CheckBox.OnCheckedChangeListener() {
 
-            @TargetApi(11)
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 ratingBar.setRating(initialRating);
-                // Lint erroneously catches this as a call that requires API >= 11
-                // (which is exactly why AlphaRatingBar exists),
-                // hence the @TargetApi(11) above.
                 ratingBar.setAlpha(0.5f);
                 if (b) {
                     Logger.d(TAG, "Skipping checkbox checked, " +
