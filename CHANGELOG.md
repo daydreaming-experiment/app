@@ -1,6 +1,20 @@
 Changelog
 =========
 
+0.30.0
+------
+
+* Enhancements
+  * Upgrade to API 21
+  * [#394] Add information popup to evening questionnaire's manySliders question the first time it's opened
+  * [#395] Add information popup to glossary the first time it's opened
+  * [#393] Switch to parameter's grammar v3.2, allowing "alreadyValid" field for sliders, starRatings, and manySliders
+* Bug fixes
+  * [#384] Fix thread bugs in WebView on Android 4.4+
+  * [#385] Silently log errors when dismissing progress dialogs in hope of obtaining better debug information
+  * [#391] Fix clickability of choices in matrixQuestion
+  * [#400] Fix JavaScript object injection for ResultsActivity on API >= 17
+
 0.29.0
 ------
 
