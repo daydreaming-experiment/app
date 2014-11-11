@@ -44,7 +44,7 @@
     <string name="dashboard_minute">minute</string>
     <string name="dashboard_minutes">minutes</string>
     <string name="dashboard_ago">ago</string>
-    <string name="dashboard_swipe_to_get_back">Swipe to get it back.</string>
+    <string name="dashboard_swipe_to_get_back">Swipe horizontally to get it back.</string>
     <string name="results_notification_ticker">Daydreaming results available</string>
     <string name="results_notification_title">Daydreaming results</string>
     <string name="results_notification_content">Discover your 30 days of daydreaming</string>
@@ -73,7 +73,7 @@
     <string name="sv_results_title">Results</string>
     <string name="sv_results_text">When available, a detailed report for you here!</string>
     <string name="sv_swipe_title">Share your daydream!</string>
-    <string name="sv_swipe_text">Swipe if you can\'t wait for notifications</string>
+    <string name="sv_swipe_text">Swipe horizontally if you can\'t wait for notifications</string>
     <string name="sv_time_elapsed_title">Time Elapsed</string>
     <string name="sv_time_elapsed_text">The duration you have been running this app</string>
     <string name="sv_time_left_title">Time Left</string>
