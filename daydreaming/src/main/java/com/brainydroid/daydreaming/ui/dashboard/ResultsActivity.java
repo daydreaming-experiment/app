@@ -166,7 +166,13 @@ public class ResultsActivity extends RoboFragmentActivity {
                         toastOnUIThread("Oh no! There was an error loading the results",
                                 Toast.LENGTH_SHORT);
                         progressDialog.dismiss();
-                        onBackPressed();
+                        // Run on UI thread
+                        rootView.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                onBackPressed();
+                            }
+                        });
                     }
                 }
             };
