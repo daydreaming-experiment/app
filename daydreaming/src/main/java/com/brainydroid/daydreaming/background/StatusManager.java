@@ -765,7 +765,7 @@ public class StatusManager {
         String currentBEQType = sharedPreferences.getString(
                 getCurrentModeName() + CURRENT_BEG_END_QUESTIONNAIRE_TYPE, null);
         if (currentBEQType == null) {
-            Logger.d(TAG, "currentBEGType not set, setting it to BeginQuestionnaire");
+            Logger.d(TAG, "currentBEQType not set, setting it to BeginQuestionnaire");
             setCurrentBEQType(Sequence.TYPE_BEGIN_QUESTIONNAIRE);
         }
         Logger.d(TAG, "{0} - currentBEQType is {1}", getCurrentModeName(),
