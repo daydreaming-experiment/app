@@ -41,28 +41,29 @@ public class MQSchedulerService extends RecurrentSequenceSchedulerService {
         // Fix what 'now' means, and retrieve the allowed time window
         fixNowAndGetAllowedWindow();
 
-        Calendar startIfToday = (Calendar) now.clone();
-        startIfToday.set(Calendar.HOUR_OF_DAY, startAllowedHour);
-        Calendar startIfTodayLast = (Calendar) startIfToday.clone();
+        Calendar todayBegin = (Calendar) now.clone();
+        todayBegin.set(Calendar.HOUR_OF_DAY, startAllowedHour);
+        Calendar todayEnd = (Calendar) todayBegin.clone();
         // Allow notifying up to 3 hours after opening of bother window
-        startIfTodayLast.add(Calendar.HOUR_OF_DAY, 3);
+        todayEnd.add(Calendar.HOUR_OF_DAY, 3);
         // Start 3 hours before opening of bother window
-        startIfToday.add(Calendar.HOUR_OF_DAY, -3);
-        startIfToday.set(Calendar.MINUTE, startAllowedMinute);
-        Calendar startIfTomorrow = (Calendar) startIfToday.clone();
-        startIfTomorrow.add(Calendar.DAY_OF_YEAR, 1);
+        todayBegin.add(Calendar.HOUR_OF_DAY, -3);
+        todayBegin.set(Calendar.MINUTE, startAllowedMinute);
+        Calendar tomorrowBegin = (Calendar) todayBegin.clone();
+        tomorrowBegin.add(Calendar.DAY_OF_YEAR, 1);
 
         long scheduledTime;
-        if (now.before(startIfToday)) {
+        if (now.before(todayBegin)) {
             Logger.d(TAG, "now < morning time today - 3 -> scheduling today");
             // still time to schedule for today!
-            scheduledTime = startIfToday.getTimeInMillis();
-        } else if (now.after(startIfToday) && now.before(startIfTodayLast) && statusManager.isLastMQNotifLongAgo()) {
+            scheduledTime = todayBegin.getTimeInMillis();
+        } else if (now.after(todayBegin) && now.before(todayEnd) && statusManager.isLastMQNotifLongAgo()) {
             Logger.d(TAG, "morning time today + 3 > now > morning time today - 3 -> scheduling today and now");
             scheduledTime = now.getTimeInMillis() + 10 * 1000;
         } else {
-            Logger.d(TAG, "now > morning time today + 3 -> scheduling tomorrow");
-            scheduledTime = startIfTomorrow.getTimeInMillis();
+            Logger.d(TAG, "Either already notified less than 18h ago, " +
+                    "or now > morning time today + 3 -> scheduling tomorrow");
+            scheduledTime = tomorrowBegin.getTimeInMillis();
         }
 
         long delay = scheduledTime - now.getTimeInMillis();
