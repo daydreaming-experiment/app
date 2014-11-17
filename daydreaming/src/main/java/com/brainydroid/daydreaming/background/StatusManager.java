@@ -97,8 +97,8 @@ public class StatusManager {
     public static String MODE_NAME_TEST = "test";
     public static String MODE_NAME_PROD = "production";
 
-    /** Delay after which ProbeSchedulerService must be restarted if it hasn't run. 2 days. */
-    public static long RESTART_SCHEDULER_SERVICE_DELAY = 2 * 24 * 60 * 60 * 1000;
+    /** Delay after which ProbeSchedulerService must be restarted if it hasn't run. 1 day. */
+    public static long RESTART_SCHEDULER_SERVICE_DELAY = 24 * 60 * 60 * 1000;
 
     /** Delay after which LocationPointService must be restarted if it hasn't run. 1 hour. */
     public static long RESTART_LOCATION_POINT_SERVICE_DELAY = 1 * 60 * 60 * 1000;

@@ -89,6 +89,8 @@ public class LocationPointService extends RoboService {
 
         // Record last time we ran
         statusManager.setLatestLocationPointServiceSystemTimestampToNow();
+        // Check the other scheduling stuff didn't die away
+        statusManager.checkLatestDailyWasAgesAgo();
 
         // Were we started to start or to stop the listening?
         if (intent.getBooleanExtra(STOP_LOCATION_LISTENING, false)) {
