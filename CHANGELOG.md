@@ -1,6 +1,16 @@
 Changelog
 =========
 
+0.31.0
+------
+
+* Enhancements
+  * Minor text update
+* Bug fixes
+  * Fixed crash in results activity when results couldn't be downloaded
+  * Hide "erase my data" button until it's really implemented
+  * [#407] Morning poll appears multiple times
+
 0.30.0
 ------
 

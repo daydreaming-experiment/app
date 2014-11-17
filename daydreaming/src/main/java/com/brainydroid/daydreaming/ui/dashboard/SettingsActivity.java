@@ -48,7 +48,7 @@ public class SettingsActivity extends RoboFragmentActivity {
     public static String NOTIF_BLINK = "notification_blink_key";
     public static String NOTIF_SOUND = "notification_sound_key";
 
-    @InjectView(R.id.appsettings_erase_data_layout)  LinearLayout eraseDataLayout;
+//    @InjectView(R.id.appsettings_erase_data_layout)  LinearLayout eraseDataLayout;
 
     @InjectView(R.id.settings_time_text_from_layout)   LinearLayout fromLayout;
     @InjectView(R.id.settings_time_text_until_layout) LinearLayout untilLayout;
@@ -116,36 +116,36 @@ public class SettingsActivity extends RoboFragmentActivity {
 
         Logger.v(TAG, "Creating Listeners");
 
-        eraseDataLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(SettingsActivity.this);
-
-                // set title
-                alertDialogBuilder.setTitle("Erase Data");
-
-                // set dialog message
-                alertDialogBuilder
-                        .setMessage(getString(R.string.appsettings_warning_data_erase))
-                        .setCancelable(false)
-                        .setPositiveButton(getString(R.string.appsettings_dialog_button_erase_data),new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,int id) {
-                                eraseMyData();
-                            }
-                        })
-                        .setNegativeButton(getString(R.string.appsettings_dialog_button_keep_data),new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,int id) {
-                                dialog.cancel();
-                            }
-                        });
-
-                // create alert dialog
-                AlertDialog alertDialog = alertDialogBuilder.create();
-                // show it
-                alertDialog.show();
-                FontUtils.setRobotoToAlertDialog(alertDialog,SettingsActivity.this);
-            }
-        });
+//        eraseDataLayout.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(SettingsActivity.this);
+//
+//                // set title
+//                alertDialogBuilder.setTitle("Erase Data");
+//
+//                // set dialog message
+//                alertDialogBuilder
+//                        .setMessage(getString(R.string.appsettings_warning_data_erase))
+//                        .setCancelable(false)
+//                        .setPositiveButton(getString(R.string.appsettings_dialog_button_erase_data),new DialogInterface.OnClickListener() {
+//                            public void onClick(DialogInterface dialog,int id) {
+//                                eraseMyData();
+//                            }
+//                        })
+//                        .setNegativeButton(getString(R.string.appsettings_dialog_button_keep_data),new DialogInterface.OnClickListener() {
+//                            public void onClick(DialogInterface dialog,int id) {
+//                                dialog.cancel();
+//                            }
+//                        });
+//
+//                // create alert dialog
+//                AlertDialog alertDialog = alertDialogBuilder.create();
+//                // show it
+//                alertDialog.show();
+//                FontUtils.setRobotoToAlertDialog(alertDialog,SettingsActivity.this);
+//            }
+//        });
 
         fromLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -270,9 +270,9 @@ public class SettingsActivity extends RoboFragmentActivity {
 
     }
 
-    private void eraseMyData() {
-        //TODO : call erase on server, nothing to do locally?
-    }
+//    private void eraseMyData() {
+//        //TODO : call erase on server, nothing to do locally?
+//    }
 
     private void correctTimeWindow() {
         if (!checkTimeWindow()) {

@@ -278,33 +278,33 @@
 
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/appsettings_erase_data_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="@dimen/global_text_titleTopMargin"
-            android:layout_gravity="center">
+        <!--<LinearLayout-->
+            <!--android:id="@+id/appsettings_erase_data_layout"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:orientation="horizontal"-->
+            <!--android:layout_marginTop="@dimen/global_text_titleTopMargin"-->
+            <!--android:layout_gravity="center">-->
 
-            <ImageView
-                android:id ="@+id/appsettings_erase_icon"
-                android:layout_width="@dimen/settings_icon_size"
-                android:layout_height="@dimen/settings_icon_size"
-                android:scaleType="fitCenter"
-                android:src="@drawable/erase"
-                android:layout_centerVertical="true"
-                android:contentDescription="@null"
-                />
-            <TextView
-                android:id="@+id/settings_erase_data"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:text="@string/settings_erase_my_data"
-                android:textAppearance="@style/ui_font_bodytext_bold"
-                android:textColor="@color/ui_white_text_color"
-                android:paddingLeft="@dimen/settings_textpadding_from_icons"
-                android:gravity="center_vertical"/>
-        </LinearLayout>
+            <!--<ImageView-->
+                <!--android:id ="@+id/appsettings_erase_icon"-->
+                <!--android:layout_width="@dimen/settings_icon_size"-->
+                <!--android:layout_height="@dimen/settings_icon_size"-->
+                <!--android:scaleType="fitCenter"-->
+                <!--android:src="@drawable/erase"-->
+                <!--android:layout_centerVertical="true"-->
+                <!--android:contentDescription="@null"-->
+                <!--/>-->
+            <!--<TextView-->
+                <!--android:id="@+id/settings_erase_data"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:text="@string/settings_erase_my_data"-->
+                <!--android:textAppearance="@style/ui_font_bodytext_bold"-->
+                <!--android:textColor="@color/ui_white_text_color"-->
+                <!--android:paddingLeft="@dimen/settings_textpadding_from_icons"-->
+                <!--android:gravity="center_vertical"/>-->
+        <!--</LinearLayout>-->
 
     </LinearLayout>
 
