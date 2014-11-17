@@ -367,7 +367,7 @@ public class StatusManager {
      * Check if a morning questionnaire notification was long ago.
      */
     public synchronized boolean isLastMQNotifLongAgo() {
-        long delay = 18 * 3600;  // 24h - 3h = 18h
+        long delay = 18 * 3600 * 1000;  // 24h - 3h - 3h = 18h (in milliseconds)
         long threshold = sharedPreferences.getLong(getCurrentModeName() + LAST_MORNING_Q_TIMESTAMP, - delay) + delay;
         if (threshold < Calendar.getInstance().getTimeInMillis()) {
             Logger.v(TAG, "{} - Last MQ notif was yesterday", getCurrentModeName());
