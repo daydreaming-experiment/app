@@ -173,7 +173,6 @@ public abstract class RecurrentSequenceSchedulerService extends RoboService {
         forbiddenSpan = 24 * 60 * 60 * 1000 - allowedSpan;
     }
 
-
     protected void logDelay(long delay) {
         long hours = delay / (60 * 60 * 1000);
         delay %= 60 * 60 * 1000;
@@ -183,7 +182,6 @@ public abstract class RecurrentSequenceSchedulerService extends RoboService {
         Logger.i(TAG, "Sequence of type {3} scheduled in {0} hours, {1} minutes, and {2} seconds",
                 hours, minutes, seconds, getSequenceType());
     }
-
 
     /**
      * Start {@link com.brainydroid.daydreaming.background.SyncService} to synchronize answers.

@@ -58,16 +58,6 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
     /* Questionnaires: sequence completely answered, uploaded, and must be kept locally */
     public static final String STATUS_UPLOADED_AND_KEEP = "uploadedAndKeep";
 
-    public static String[] AVAILABLE_STATUSES = new String[] {
-            STATUS_PENDING,
-            STATUS_RECENTLY_DISMISSED,
-            STATUS_RECENTLY_MISSED,
-            STATUS_RUNNING,
-            STATUS_RECENTLY_PARTIALLY_COMPLETED,
-            STATUS_MISSED_OR_DISMISSED_OR_INCOMPLETE,
-            STATUS_COMPLETED,
-            STATUS_UPLOADED_AND_KEEP};
-
     public static HashSet<String> PAUSED_STATUSES = new HashSet<String>(Arrays.asList(new String[]{
             STATUS_RECENTLY_DISMISSED,
             STATUS_RECENTLY_MISSED,
@@ -77,6 +67,7 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
 
     @JsonView(Views.Public.class)
     private String name = null;
+    @SuppressWarnings("UnusedDeclaration")
     @JsonView(Views.Public.class)
     private long notificationNtpTimestamp = -1;
     @JsonView(Views.Public.class)
