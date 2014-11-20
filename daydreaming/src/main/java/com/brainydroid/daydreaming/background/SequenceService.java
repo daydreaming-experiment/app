@@ -39,9 +39,9 @@ import roboguice.service.RoboService;
  * @see ProbeSchedulerService
  * @see SyncService
  */
-public class DailySequenceService extends RoboService {
+public class SequenceService extends RoboService {
 
-    private static String TAG = "DailySequenceService";
+    private static String TAG = "SequenceService";
 
     public static String CANCEL_PENDING_SEQUENCES = "cancelPendingSequences";
     public static String SEQUENCE_TYPE = "sequenceType";
@@ -78,7 +78,7 @@ public class DailySequenceService extends RoboService {
         // Check LocationPointService hasn't died
         statusManager.checkLatestLocationPointServiceWasAgesAgo();
 
-        sequenceType = intent.getStringExtra(DailySequenceService.SEQUENCE_TYPE);
+        sequenceType = intent.getStringExtra(SequenceService.SEQUENCE_TYPE);
         if (sequenceType == null) {
             Log.d(TAG, "Sequence type not found in intent, found null");
             throw new NullPointerException();
@@ -204,7 +204,7 @@ public class DailySequenceService extends RoboService {
 
     private synchronized void scheduleProbeExpiry(Sequence sequence) {
         // Create and schedule the PendingIntent for DailySequenceService
-        Intent intent = new Intent(this, DailySequenceService.class);
+        Intent intent = new Intent(this, SequenceService.class);
         intent.putExtra(SEQUENCE_TYPE, sequenceType);
         intent.putExtra(EXPIRE_PROBE, true);
         intent.putExtra(PROBE_ID, sequence.getId());
@@ -281,7 +281,7 @@ public class DailySequenceService extends RoboService {
 
         if (sequenceType.equals(Sequence.TYPE_PROBE)) {
             // Create dismissal intent
-            Intent dismissalIntent = new Intent(this, DailySequenceService.class);
+            Intent dismissalIntent = new Intent(this, SequenceService.class);
             dismissalIntent.putExtra(SEQUENCE_TYPE, sequenceType);
             dismissalIntent.putExtra(DISMISS_PROBE, true);
             dismissalIntent.putExtra(PROBE_ID, sequence.getId());

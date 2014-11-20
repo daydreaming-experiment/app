@@ -1,7 +1,7 @@
 package com.brainydroid.daydreaming.sequence;
 
 import com.brainydroid.daydreaming.R;
-import com.brainydroid.daydreaming.background.DailySequenceService;
+import com.brainydroid.daydreaming.background.SequenceService;
 import com.brainydroid.daydreaming.background.ErrorHandler;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.db.SequenceDescription;
@@ -98,9 +98,9 @@ public class Sequence extends TypedStatusModel<Sequence,SequencesStorage,Sequenc
     public static int getRecurrentRequestCode(String sequenceType, String action) {
         if (sequenceType.equals(TYPE_PROBE)) {
             if (action != null) {
-                if (action.equals(DailySequenceService.EXPIRE_PROBE)) {
+                if (action.equals(SequenceService.EXPIRE_PROBE)) {
                     return 0;
-                } else if (action.equals(DailySequenceService.DISMISS_PROBE)) {
+                } else if (action.equals(SequenceService.DISMISS_PROBE)) {
                     return 1;
                 } else {
                     throw new RuntimeException("Asked for request code for type probe and action "

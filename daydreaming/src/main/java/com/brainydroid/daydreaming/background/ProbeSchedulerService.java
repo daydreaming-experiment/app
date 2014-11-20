@@ -16,7 +16,7 @@ import java.util.Calendar;
  * @author Sébastien Lerique
  * @author Vincent Adam
  * @see SyncService
- * @see DailySequenceService
+ * @see SequenceService
  */
 public class ProbeSchedulerService extends RecurrentSequenceSchedulerService {
 

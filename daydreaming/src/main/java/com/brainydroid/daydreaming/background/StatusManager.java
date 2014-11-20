@@ -640,9 +640,9 @@ public class StatusManager {
         context.startService(locationPointServiceIntent);
 
         Logger.d(TAG, "Cancelling notified polls");
-        Intent pollServiceIntent = new Intent(context, DailySequenceService.class);
-        pollServiceIntent.putExtra(DailySequenceService.SEQUENCE_TYPE, Sequence.TYPE_PROBE);
-        pollServiceIntent.putExtra(DailySequenceService.CANCEL_PENDING_SEQUENCES, true);
+        Intent pollServiceIntent = new Intent(context, SequenceService.class);
+        pollServiceIntent.putExtra(SequenceService.SEQUENCE_TYPE, Sequence.TYPE_PROBE);
+        pollServiceIntent.putExtra(SequenceService.CANCEL_PENDING_SEQUENCES, true);
         context.startService(pollServiceIntent);
     }
 
@@ -774,6 +774,7 @@ public class StatusManager {
         return currentBEQType;
     }
 
+    // TODO: BEQ check
     public synchronized String updateBEQType() {
         // if exp is running
         if (isExpRunning()) {
@@ -793,6 +794,7 @@ public class StatusManager {
         return getCurrentBEQType();
     }
 
+    // TODO: BEQ check
     public synchronized void updateBEQNotification() {
         // if exp is running
         if (isExpRunning()) {
@@ -832,6 +834,7 @@ public class StatusManager {
         }
     }
 
+    // TODO: BEQ check
     public synchronized boolean wereBEQAnsweredOnTime() {
         String type = getCurrentBEQType();
         if (areBEQCompleted(type)) {

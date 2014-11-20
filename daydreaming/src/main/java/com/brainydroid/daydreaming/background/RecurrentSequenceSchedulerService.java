@@ -32,7 +32,7 @@ import roboguice.service.RoboService;
  * @author Sébastien Lerique
  * @author Vincent Adam
  * @see com.brainydroid.daydreaming.background.SyncService
- * @see com.brainydroid.daydreaming.background.DailySequenceService
+ * @see SequenceService
  */
 // TODO: database cleaning. If running since long time ago, or null status: flush.
 public abstract class RecurrentSequenceSchedulerService extends RoboService {
@@ -121,8 +121,8 @@ public abstract class RecurrentSequenceSchedulerService extends RoboService {
         long scheduledTime = generateTime();
 
         // Create and schedule the PendingIntent for DailySequenceService
-        Intent intent = new Intent(this, DailySequenceService.class);
-        intent.putExtra(DailySequenceService.SEQUENCE_TYPE, getSequenceType());
+        Intent intent = new Intent(this, SequenceService.class);
+        intent.putExtra(SequenceService.SEQUENCE_TYPE, getSequenceType());
         PendingIntent pendingIntent = PendingIntent.getService(this,
                 Sequence.getRecurrentRequestCode(getSequenceType()),
                 intent, PendingIntent.FLAG_UPDATE_CURRENT);
