@@ -84,15 +84,19 @@ public abstract class RecurrentSequenceSchedulerService extends RoboService {
 
     protected synchronized void notifyResultsIfAvailable() {
         if (statusManager.areResultsAvailable() && !statusManager.is(StatusManager.ARE_RESULTS_NOTIFIED)) {
+            // Create pending intent
             Intent intent = new Intent(this, ResultsActivity.class);
-            // No need for special request code here, ResultsActivity is only ever called
-            // with a PendingIntent from here.
             PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
                     intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            // Create notification
+            String content = getString(R.string.results_notification_content1) + " " +
+                    parametersStorage.getExpDuration() + " " +
+                    getString(R.string.results_notification_content2);
             Notification notification = new NotificationCompat.Builder(this)
                     .setTicker(getString(R.string.results_notification_ticker))
                     .setContentTitle(getString(R.string.results_notification_title))
-                    .setContentText(getString(R.string.results_notification_content))
+                    .setContentText(content)
                     .setContentIntent(contentIntent)
                     .setSmallIcon(R.drawable.ic_stat_notify_small_daydreaming)
                     .setAutoCancel(true)
@@ -101,6 +105,8 @@ public abstract class RecurrentSequenceSchedulerService extends RoboService {
                             | Notification.DEFAULT_SOUND)
                     .build();
 
+            // No need for special request code here, ResultsActivity is only ever called
+            // with a PendingIntent from here.
             notificationManager.notify(ResultsActivity.TAG, 0, notification);
 
             // Remember we did all this

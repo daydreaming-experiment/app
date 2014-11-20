@@ -47,7 +47,8 @@
     <string name="dashboard_swipe_to_get_back">Swipe to get it back.</string>
     <string name="results_notification_ticker">Daydreaming results available</string>
     <string name="results_notification_title">Daydreaming results</string>
-    <string name="results_notification_content">Discover your 30 days of daydreaming</string>
+    <string name="results_notification_content1">Discover your</string>
+    <string name="results_notification_content2">days of daydreaming</string>
     <string name="results_never_downloaded">Your results were never downloaded yet. Depending on your activity, they can take up to 10MB and are best downloaded over wifi. Proceed?</string>
     <string name="results_never_downloaded_yes">Download results</string>
     <string name="results_never_downloaded_no">Not now</string>
