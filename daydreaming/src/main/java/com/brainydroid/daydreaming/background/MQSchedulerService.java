@@ -16,9 +16,9 @@ public class MQSchedulerService extends RecurrentSequenceSchedulerService {
 
         super.onStartCommand(intent, flags, startId);
 
-        // Schedule a sequence
-        if (!statusManager.areParametersUpdated()) {
-            Logger.d(TAG, "Parameters not updated yet. aborting scheduling.");
+        // If exp is not running, don't schedule.
+        if (!statusManager.isExpRunning()) {
+            Logger.d(TAG, "Experiment is not running. Aborting scheduling.");
             return START_REDELIVER_INTENT;
         }
 
@@ -41,16 +41,22 @@ public class MQSchedulerService extends RecurrentSequenceSchedulerService {
         // Fix what 'now' means, and retrieve the allowed time window
         fixNowAndGetAllowedWindow();
 
-        Calendar todayBegin = (Calendar) now.clone();
-        todayBegin.set(Calendar.HOUR_OF_DAY, startAllowedHour);
-        Calendar todayEnd = (Calendar) todayBegin.clone();
-        // Allow notifying up to 3 hours after opening of bother window
-        todayEnd.add(Calendar.HOUR_OF_DAY, 3);
+        Calendar todayBotherStart = (Calendar) now.clone();
+        todayBotherStart.set(Calendar.HOUR_OF_DAY, startAllowedHour);
+        todayBotherStart.set(Calendar.MINUTE, startAllowedMinute);
+
         // Start 3 hours before opening of bother window
+        Calendar todayBegin = (Calendar) todayBotherStart.clone();
         todayBegin.add(Calendar.HOUR_OF_DAY, -3);
-        todayBegin.set(Calendar.MINUTE, startAllowedMinute);
-        Calendar tomorrowBegin = (Calendar) todayBegin.clone();
+
+        // Allow notifying up to 3 hours after opening of bother window
+        Calendar todayEnd = (Calendar) todayBotherStart.clone();
+        todayEnd.add(Calendar.HOUR_OF_DAY, 3);
+
+        // Allow starting tomorrow if necessary
+        Calendar tomorrowBegin = (Calendar) todayBotherStart.clone();
         tomorrowBegin.add(Calendar.DAY_OF_YEAR, 1);
+        tomorrowBegin.add(Calendar.HOUR_OF_DAY, -3);
 
         long scheduledTime;
         if (now.before(todayBegin)) {
