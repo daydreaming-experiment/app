@@ -871,18 +871,15 @@ public class StatusManager {
 
             // Start scheduling polls
             Logger.d(TAG, "Starting ProbeSchedulerService");
-            Intent schedulerIntent = new Intent(context, ProbeSchedulerService.class);
-            context.startService(schedulerIntent);
+            context.startService(new Intent(context, ProbeSchedulerService.class));
 
             // Start notifying Morning questionnaires
             Logger.d(TAG, "Starting MQSchedulerService");
-            Intent MQIntent = new Intent(context, MQSchedulerService.class);
-            context.startService(MQIntent);
+            context.startService(new Intent(context, MQSchedulerService.class));
 
             // Start notifying Evening questionnaires
             Logger.d(TAG, "Starting EQSchedulerService");
-            Intent EQIntent = new Intent(context, EQSchedulerService.class);
-            context.startService(EQIntent);
+            context.startService(new Intent(context, EQSchedulerService.class));
         } else {
             Logger.v(TAG, "First launch not completed -> not re-launching scheduler services");
         }
