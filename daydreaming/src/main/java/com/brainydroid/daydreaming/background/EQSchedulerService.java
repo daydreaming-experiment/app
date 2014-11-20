@@ -16,9 +16,9 @@ public class EQSchedulerService extends RecurrentSequenceSchedulerService {
 
         super.onStartCommand(intent, flags, startId);
 
-        // Schedule a sequence
-        if (!statusManager.areParametersUpdated()) {
-            Logger.d(TAG, "Parameters not updated yet. aborting scheduling.");
+        // If exp is not running, don't schedule.
+        if (!statusManager.isExpRunning()) {
+            Logger.d(TAG, "Experiment is not running. Aborting scheduling.");
             return START_REDELIVER_INTENT;
         }
 
@@ -57,7 +57,9 @@ public class EQSchedulerService extends RecurrentSequenceSchedulerService {
             scheduledTime = startIfTomorrow.getTimeInMillis();
         }
 
-        long delay = scheduledTime - now.getTimeInMillis() + 5000;
+        // Add 10 seconds to time to make sure the scheduled time
+        // hasn't gone past since we decided on it
+        long delay = scheduledTime - now.getTimeInMillis() + 10 * 1000;
         logDelay(delay);
         return nowUpTime + delay;
     }
