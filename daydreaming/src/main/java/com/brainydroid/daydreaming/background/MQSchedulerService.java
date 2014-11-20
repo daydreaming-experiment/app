@@ -60,19 +60,22 @@ public class MQSchedulerService extends RecurrentSequenceSchedulerService {
 
         long scheduledTime;
         if (now.before(todayBegin)) {
-            Logger.d(TAG, "now < morning time today - 3 -> scheduling today");
+            Logger.d(TAG, "morning time today - 3 > now -> scheduling today");
             // still time to schedule for today!
             scheduledTime = todayBegin.getTimeInMillis();
         } else if (now.after(todayBegin) && now.before(todayEnd) && statusManager.isLastMQNotifLongAgo()) {
-            Logger.d(TAG, "morning time today + 3 > now > morning time today - 3 -> scheduling today and now");
-            scheduledTime = now.getTimeInMillis() + 10 * 1000;
+            Logger.d(TAG, "morning time today + 3 > now > morning time today - 3," +
+                    "and last notification was a long time ago -> scheduling today and now");
+            scheduledTime = now.getTimeInMillis();
         } else {
-            Logger.d(TAG, "Either already notified less than 18h ago, " +
+            Logger.d(TAG, "Either already notified not long ago, " +
                     "or now > morning time today + 3 -> scheduling tomorrow");
             scheduledTime = tomorrowBegin.getTimeInMillis();
         }
 
-        long delay = scheduledTime - now.getTimeInMillis();
+        // Add 10 seconds to time to make sure the scheduled time
+        // hasn't gone past since we decided on it
+        long delay = scheduledTime - now.getTimeInMillis() + 10 * 1000;
         logDelay(delay);
         return nowUpTime + delay;
     }
