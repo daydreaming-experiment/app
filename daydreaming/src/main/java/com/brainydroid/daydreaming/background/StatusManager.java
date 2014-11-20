@@ -668,7 +668,6 @@ public class StatusManager {
         return nLoaded == nCompleted;
     }
 
-
     public synchronized boolean areBEQCompleted() {
         if (!areParametersUpdated()) {
             return false;
@@ -677,6 +676,7 @@ public class StatusManager {
         return areBEQCompleted(type);
     }
 
+    // TODO: BEQ check
     public synchronized boolean areResultsAvailable() {
         if (!isExpRunning()) return false;
 
