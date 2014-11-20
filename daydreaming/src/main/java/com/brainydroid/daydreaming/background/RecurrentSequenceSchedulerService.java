@@ -64,14 +64,26 @@ public abstract class RecurrentSequenceSchedulerService extends RoboService {
 
         super.onStartCommand(intent, flags, startId);
 
+        // If exp is not running, do nothing
+        if (!statusManager.isExpRunning()) {
+            Logger.d(TAG, "Experiment is not running. Aborting scheduling.");
+            return START_REDELIVER_INTENT;
+        }
+
         // Notify results if they're available
         notifyResultsIfAvailable();
         // Check if we are getting close to the end to enable the final Begin/End questionnaires
         statusManager.updateBEQType();
+        // Always check if BEQ notification is necessary
+        statusManager.updateBEQNotification();
 
         // Synchronise answers and get parameters if we don't have them. If parameters
         // happen to be updated, all the *SchedulerService will be run again.
         startSyncService();
+
+        // Schedule a sequence
+        scheduleSequence();
+        stopSelf();
 
         return START_REDELIVER_INTENT;
     }

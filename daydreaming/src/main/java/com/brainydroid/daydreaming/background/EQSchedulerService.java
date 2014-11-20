@@ -1,7 +1,5 @@
 package com.brainydroid.daydreaming.background;
 
-import android.content.Intent;
-
 import com.brainydroid.daydreaming.sequence.Sequence;
 
 import java.util.Calendar;
@@ -9,25 +7,6 @@ import java.util.Calendar;
 public class EQSchedulerService extends RecurrentSequenceSchedulerService {
 
     protected static String TAG = "EQSchedulerService";
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        Logger.d(TAG, "Started");
-
-        super.onStartCommand(intent, flags, startId);
-
-        // If exp is not running, don't schedule.
-        if (!statusManager.isExpRunning()) {
-            Logger.d(TAG, "Experiment is not running. Aborting scheduling.");
-            return START_REDELIVER_INTENT;
-        }
-
-        // Schedule a sequence
-        scheduleSequence();
-        stopSelf();
-
-        return START_REDELIVER_INTENT;
-    }
 
     @Override
     protected String getSequenceType() {

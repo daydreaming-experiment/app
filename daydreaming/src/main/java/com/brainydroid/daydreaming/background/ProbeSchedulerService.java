@@ -1,7 +1,5 @@
 package com.brainydroid.daydreaming.background;
 
-import android.content.Intent;
-
 import com.brainydroid.daydreaming.db.Util;
 import com.brainydroid.daydreaming.sequence.Sequence;
 
@@ -21,28 +19,6 @@ import java.util.Calendar;
 public class ProbeSchedulerService extends RecurrentSequenceSchedulerService {
 
     protected static String TAG = "ProbeSchedulerService";
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        Logger.d(TAG, "Started");
-
-        super.onStartCommand(intent, flags, startId);
-
-        // Schedule a sequence
-        if (!statusManager.areParametersUpdated()) {
-            Logger.d(TAG, "Parameters not updated yet. aborting scheduling.");
-            return START_REDELIVER_INTENT;
-        }
-
-        // Always check if BEQ notification is necessary
-        statusManager.updateBEQNotification();
-
-        // Schedule a sequence
-        scheduleSequence();
-        stopSelf();
-
-        return START_REDELIVER_INTENT;
-    }
 
     @Override
     protected String getSequenceType() {
@@ -85,7 +61,7 @@ public class ProbeSchedulerService extends RecurrentSequenceSchedulerService {
         scheduledCalendar.add(Calendar.MILLISECOND, (int)respectfulDelay);
 
         // Now log what's scheduled. This is important to make sure we
-        // obverse the user's settings.         Intent schedulerIntent =
+        // obverse the user's settings.
 
         // Compute waiting hour, minute, and second values
         String scheduledString = Util.formatDate(scheduledCalendar.getTime());
@@ -95,7 +71,6 @@ public class ProbeSchedulerService extends RecurrentSequenceSchedulerService {
         // The scheduled time is returned in milliseconds
         return nowUpTime + respectfulDelay;
     }
-
 
     /**
      * Sample a delay following an exponential distribution with parameter
