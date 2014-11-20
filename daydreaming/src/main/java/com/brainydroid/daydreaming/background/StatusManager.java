@@ -431,7 +431,7 @@ public class StatusManager {
     }
 
     public synchronized void setLatestDailyServiceSystemTimestampToNow() {
-        Logger.d(TAG, "Setting last time DailySequenceService ran to now (system timestamp)");
+        Logger.d(TAG, "Setting last time SequenceService ran to now (system timestamp)");
         eSharedPreferences.putLong(LATEST_DAILY_SERVICE_SYSTEM_TIMESTAMP,
                 Calendar.getInstance().getTimeInMillis());
         eSharedPreferences.commit();

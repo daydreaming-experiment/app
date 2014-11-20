@@ -120,7 +120,7 @@ public abstract class RecurrentSequenceSchedulerService extends RoboService {
         // Generate the time at which the sequence will appear
         long scheduledTime = generateTime();
 
-        // Create and schedule the PendingIntent for DailySequenceService
+        // Create and schedule the PendingIntent for SequenceService
         Intent intent = new Intent(this, SequenceService.class);
         intent.putExtra(SequenceService.SEQUENCE_TYPE, getSequenceType());
         PendingIntent pendingIntent = PendingIntent.getService(this,

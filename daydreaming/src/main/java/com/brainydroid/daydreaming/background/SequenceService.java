@@ -69,7 +69,7 @@ public class SequenceService extends RoboService {
 
     @Override
     public synchronized int onStartCommand(Intent intent, int flags, int startId) {
-        Logger.d(TAG, "DailySequenceService started");
+        Logger.d(TAG, "SequenceService started");
 
         super.onStartCommand(intent, flags, startId);
 
@@ -203,7 +203,7 @@ public class SequenceService extends RoboService {
     }
 
     private synchronized void scheduleProbeExpiry(Sequence sequence) {
-        // Create and schedule the PendingIntent for DailySequenceService
+        // Create and schedule the PendingIntent for SequenceService
         Intent intent = new Intent(this, SequenceService.class);
         intent.putExtra(SEQUENCE_TYPE, sequenceType);
         intent.putExtra(EXPIRE_PROBE, true);
