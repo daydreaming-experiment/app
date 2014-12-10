@@ -793,6 +793,8 @@ public class StatusManager {
     }
 
     public synchronized void updateBEQNotification() {
+        // TODO: change text if after third day (post start or post results)
+
         // if exp is running
         if (isExpRunning()) {
             if (areBEQCompleted()) {
@@ -819,6 +821,7 @@ public class StatusManager {
                         .setContentIntent(contentIntent)
                         .setSmallIcon(R.drawable.ic_stat_notify_small_daydreaming)
                         .setOnlyAlertOnce(true)
+                        .setAutoCancel(true)
                         .setDefaults(flags)
                         .build();
 
