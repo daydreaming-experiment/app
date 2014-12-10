@@ -121,6 +121,7 @@ public class SequenceService extends RoboService {
         } else {
             Logger.v(TAG, "Started to create and notify a sequence of type {}", sequenceType);
 
+            // TODO: BEQ check
             if (statusManager.areParametersUpdated() && statusManager.wereBEQAnsweredOnTime()) {
                 if (sequenceType.equals(Sequence.TYPE_PROBE)) {
                     // If Dashboard is running, reschedule (so as not to flush recently* during dashboard)

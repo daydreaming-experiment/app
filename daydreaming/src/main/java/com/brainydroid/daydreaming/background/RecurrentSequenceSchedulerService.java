@@ -70,6 +70,8 @@ public abstract class RecurrentSequenceSchedulerService extends RoboService {
             return START_REDELIVER_INTENT;
         }
 
+        // TODO: FREQ: why not check here if scheduling hasn't died?
+
         // Notify results if they're available
         notifyResultsIfAvailable();
         // Check if we are getting close to the end to enable the final Begin/End questionnaires

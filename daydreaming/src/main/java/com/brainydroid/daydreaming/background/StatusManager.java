@@ -446,6 +446,7 @@ public class StatusManager {
             if (Calendar.getInstance().getTimeInMillis() - latest > RESTART_SCHEDULER_SERVICE_DELAY) {
                 Logger.d(TAG, "ProbeSchedulerService hasn't run since long ago -> restarting it");
 
+                // TODO: FREQ: restart all notifying services, not just probe
                 Intent schedulerIntent = new Intent(context, ProbeSchedulerService.class);
                 context.startService(schedulerIntent);
             } else {
