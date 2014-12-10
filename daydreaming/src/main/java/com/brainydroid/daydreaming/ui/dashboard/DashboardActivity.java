@@ -442,7 +442,7 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
                 (24 * 60 * 60 * 1000));
         Logger.i(TAG, "Days elapsed: {}", daysElapsed);
 
-        daysToGo = parametersStorage.getExpDuration() - daysElapsed;
+        daysToGo = Math.max(0, parametersStorage.getExpDuration() - daysElapsed);
         Logger.i(TAG, "Days to go: {}", daysToGo);
 
         Runnable timeElapsedUpdater = new Runnable() {
