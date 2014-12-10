@@ -155,7 +155,7 @@
     <string name="appsettings_warning_data_erase">You won\'t be able to see your results any longer</string>
     <string name="appsettings_dialog_button_erase_data">Erase anyway</string>
     <string name="appsettings_dialog_button_keep_data">No, keep my data</string>
-    
+
     <!-- Profile Activity -->
     <string name="firstLaunchProfile_title_activity">Profile</string>
     <string name="firstLaunchProfile_title_about_you">A LITTLE ABOUT YOU</string>
@@ -256,10 +256,10 @@
     <string name="beginNotification_text_after_deadline">Not interested? They\'re important</string>
 
     <string name="endNotification_ticker_before_deadline">Questions about you</string>
-    <string name="endNotification_title_before_deadline">Post-experiment questions</string>
+    <string name="endNotification_title_before_deadline">End-of-experiment questions</string>
     <string name="endNotification_text_before_deadline">Measure how you changed</string>
     <string name="endNotification_ticker_after_deadline">Questions about you</string>
-    <string name="endNotification_title_after_deadline">Post-experiment questions</string>
+    <string name="endNotification_title_after_deadline">End-of-experiment questions</string>
     <string name="endNotification_text_after_deadline">Not interested? It\'s worth it</string>
 
     <!-- Crash Reports -->
@@ -311,8 +311,8 @@
 
 <p><b>How long will it take? </b></p>
 <p><i>Less than 10 minutes/day</i>. Here is the detail:</p>
-<p>Answering the questions about your thoughts will take about a minute every time, and the app will notify you a few times a day (5 - 7 on average).</p> 
-<p>Answering the questions about your sleep quality and your free time will take again a couple of minutes.</p> 
+<p>Answering the questions about your thoughts will take about a minute every time, and the app will notify you a few times a day (5 - 7 on average).</p>
+<p>Answering the questions about your sleep quality and your free time will take again a couple of minutes.</p>
 <p>So even if you respond to every single notification every single day, you will spend <b>no more than 10 minutes a day</b> using DayDreaming. </p>
 <p>But if you wish to participate more, you can always spontaneously report your thoughts, by swiping on the dashboard.</p>
 <p>And as for filling all of the three questionnaires, it will take less than fifteen minutes. You can fill each of them when you wish. You\'ll do that only twice: in the first three days, and once again in a month. </p>
