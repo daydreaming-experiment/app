@@ -785,9 +785,9 @@ public class StatusManager {
                 // if we get close to the end
                 if (daysToGo < 3) {
                     setCurrentBEQType(Sequence.TYPE_END_QUESTIONNAIRE);
+                    updateBEQNotification();
                 }
             }
-            updateBEQNotification();
         }
         return getCurrentBEQType();
     }
@@ -819,8 +819,6 @@ public class StatusManager {
                         .setContentIntent(contentIntent)
                         .setSmallIcon(R.drawable.ic_stat_notify_small_daydreaming)
                         .setOnlyAlertOnce(true)
-                        .setAutoCancel(false)
-                        .setOngoing(true)
                         .setDefaults(flags)
                         .build();
 

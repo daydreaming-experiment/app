@@ -71,7 +71,6 @@ public class BEQActivity extends RoboFragmentActivity {
     public synchronized void onPause() {
         Logger.v(TAG, "Pausing");
         super.onPause();
-        statusManager.updateBEQNotification();
     }
 
     protected ArrayList<String> getSequenceNames(ArrayList<? extends ISequence> sequences) {

@@ -413,15 +413,11 @@ public class PageActivity extends RoboFragmentActivity {
         sequence.setStatus(Sequence.STATUS_COMPLETED);
 
         String sequenceType = sequence.getType();
-        if (sequenceType.equals(Sequence.TYPE_BEGIN_QUESTIONNAIRE) ||
-                sequenceType.equals(Sequence.TYPE_END_QUESTIONNAIRE)) {
-            // No need to schedule, just check if we can clear the BEQ notification
-            statusManager.updateBEQNotification();
-        } else {
+        if (!sequenceType.equals(Sequence.TYPE_BEGIN_QUESTIONNAIRE) &&
+                !sequenceType.equals(Sequence.TYPE_END_QUESTIONNAIRE) &&
+                !sequence.isSelfInitiated()) {
             // Self-initiated probes don't interfere with normal scheduling
-            if (!sequence.isSelfInitiated()) {
-                startSchedulerService();
-            }
+            startSchedulerService();
         }
 
         finish();
