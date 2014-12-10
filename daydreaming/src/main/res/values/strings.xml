@@ -155,7 +155,7 @@
     <string name="appsettings_warning_data_erase">You won\'t be able to see your results any longer</string>
     <string name="appsettings_dialog_button_erase_data">Erase anyway</string>
     <string name="appsettings_dialog_button_keep_data">No, keep my data</string>
-    
+
     <!-- Profile Activity -->
     <string name="firstLaunchProfile_title_activity">Profile</string>
     <string name="firstLaunchProfile_title_about_you">A LITTLE ABOUT YOU</string>
@@ -237,20 +237,30 @@
 
     <!-- Probe Notification -->
     <string name="probeNotification_ticker">Daydreaming poll</string>
-    <string name="probeNotification_title">Daydreaming</string>
-    <string name="probeNotification_text">A few quick questions</string>
+    <string name="probeNotification_title">Quick questions</string>
+    <string name="probeNotification_text">Are you daydreaming right now?</string>
 
     <string name="mqNotification_ticker">Morning poll</string>
     <string name="mqNotification_title">Good morning!</string>
-    <string name="mqNotification_text">A few questions to start the day</string>
+    <string name="mqNotification_text">How was your night?</string>
 
     <string name="eqNotification_ticker">Evening poll</string>
     <string name="eqNotification_title">Good evening!</string>
-    <string name="eqNotification_text">A few questions to close the day</string>
+    <string name="eqNotification_text">How was your day?</string>
 
-    <string name="beqNotification_ticker">Questionnaires</string>
-    <string name="beqNotification_title">Daydreaming</string>
-    <string name="beqNotification_text">Please fill those questionnaires</string>
+    <string name="beginNotification_ticker_before_deadline">Before daydreaming kicks in</string>
+    <string name="beginNotification_title_before_deadline">Questions about you</string>
+    <string name="beginNotification_text_before_deadline">Before starting the experiment</string>
+    <string name="beginNotification_ticker_after_deadline">Questions about you</string>
+    <string name="beginNotification_title_after_deadline">Questions about you</string>
+    <string name="beginNotification_text_after_deadline">Not interested? They\'re important</string>
+
+    <string name="endNotification_ticker_before_deadline">Questions about you</string>
+    <string name="endNotification_title_before_deadline">End-of-experiment questions</string>
+    <string name="endNotification_text_before_deadline">Measure how you changed</string>
+    <string name="endNotification_ticker_after_deadline">Questions about you</string>
+    <string name="endNotification_title_after_deadline">End-of-experiment questions</string>
+    <string name="endNotification_text_after_deadline">Not interested? It\'s worth it</string>
 
     <!-- Crash Reports -->
     <string name="crash_toast_text">Oops Daydreaming just crashed! The developers have been notified.</string>
@@ -301,8 +311,8 @@
 
 <p><b>How long will it take? </b></p>
 <p><i>Less than 10 minutes/day</i>. Here is the detail:</p>
-<p>Answering the questions about your thoughts will take about a minute every time, and the app will notify you a few times a day (5 - 7 on average).</p> 
-<p>Answering the questions about your sleep quality and your free time will take again a couple of minutes.</p> 
+<p>Answering the questions about your thoughts will take about a minute every time, and the app will notify you a few times a day (5 - 7 on average).</p>
+<p>Answering the questions about your sleep quality and your free time will take again a couple of minutes.</p>
 <p>So even if you respond to every single notification every single day, you will spend <b>no more than 10 minutes a day</b> using DayDreaming. </p>
 <p>But if you wish to participate more, you can always spontaneously report your thoughts, by swiping on the dashboard.</p>
 <p>And as for filling all of the three questionnaires, it will take less than fifteen minutes. You can fill each of them when you wish. You\'ll do that only twice: in the first three days, and once again in a month. </p>

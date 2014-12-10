@@ -785,9 +785,9 @@ public class StatusManager {
                 // if we get close to the end
                 if (daysToGo < 3) {
                     setCurrentBEQType(Sequence.TYPE_END_QUESTIONNAIRE);
+                    updateBEQNotification();
                 }
             }
-            updateBEQNotification();
         }
         return getCurrentBEQType();
     }
@@ -800,6 +800,33 @@ public class StatusManager {
                 notificationManager.cancel(Sequence.TYPE_BEGIN_END_QUESTIONNAIRE, 0);
             } else {
                 Logger.d(TAG, "BEQs not completed, refreshing/creating notification");
+
+                // Get the proper text
+                String type = getCurrentBEQType();
+                boolean pendingAfterDeadline = areBEQPendingAfterDeadline();
+                String ticker, title, text;
+                if (type.equals(Sequence.TYPE_BEGIN_QUESTIONNAIRE)) {
+                    if (pendingAfterDeadline) {
+                        ticker = context.getString(R.string.beginNotification_ticker_after_deadline);
+                        title = context.getString(R.string.beginNotification_title_after_deadline);
+                        text = context.getString(R.string.beginNotification_text_after_deadline);
+                    } else {
+                        ticker = context.getString(R.string.beginNotification_ticker_before_deadline);
+                        title = context.getString(R.string.beginNotification_title_before_deadline);
+                        text = context.getString(R.string.beginNotification_text_before_deadline);
+                    }
+                } else {
+                    if (pendingAfterDeadline) {
+                        ticker = context.getString(R.string.endNotification_ticker_after_deadline);
+                        title = context.getString(R.string.endNotification_title_after_deadline);
+                        text = context.getString(R.string.endNotification_text_after_deadline);
+                    } else {
+                        ticker = context.getString(R.string.endNotification_ticker_before_deadline);
+                        title = context.getString(R.string.endNotification_title_before_deadline);
+                        text = context.getString(R.string.endNotification_text_before_deadline);
+                    }
+                }
+
                 Intent intent = new Intent(context, BEQActivity.class);
                 // No need for a request code here, BEQActivity is only ever started from
                 // a PendingIntent from here.
@@ -813,14 +840,13 @@ public class StatusManager {
                 // if persistent: cant be dismissed and do not disappear on click
                 // if not persistent: can be dismissed and self destroy on click
                 Notification notification = new NotificationCompat.Builder(context)
-                        .setTicker(context.getString(R.string.beqNotification_ticker))
-                        .setContentTitle(context.getString(R.string.beqNotification_title))
-                        .setContentText(context.getString(R.string.beqNotification_text))
+                        .setTicker(ticker)
+                        .setContentTitle(title)
+                        .setContentText(text)
                         .setContentIntent(contentIntent)
                         .setSmallIcon(R.drawable.ic_stat_notify_small_daydreaming)
                         .setOnlyAlertOnce(true)
-                        .setAutoCancel(false)
-                        .setOngoing(true)
+                        .setAutoCancel(true)
                         .setDefaults(flags)
                         .build();
 
@@ -831,12 +857,12 @@ public class StatusManager {
         }
     }
 
-    public synchronized boolean wereBEQAnsweredOnTime() {
+    public synchronized boolean areBEQPendingAfterDeadline() {
         String type = getCurrentBEQType();
         if (areBEQCompleted(type)) {
-            Logger.d(TAG, "all BEQ of type {} are answered", type);
+            Logger.d(TAG, "All BEQ of type {} are answered", type);
             // questionnaires already answered
-            return true;
+            return false;
         } else {
 
             int daysElapsed = (int) ((getLatestNtpTime() - getExperimentStartTimestamp()) /
@@ -847,21 +873,21 @@ public class StatusManager {
                 if (daysElapsed > DELAY_TO_ANSWER_BEGQ) {
                     Logger.d(TAG, "{} days elapsed since experiment started and begin questionnaires still unanswered",
                             Integer.toString(daysElapsed));
-                    return false;
+                    return true;
                 }
-                return true;
+                return false;
 
             } else if (type.equals(Sequence.TYPE_END_QUESTIONNAIRE)) {
 
                 if (daysElapsed > parametersStorageProvider.get().getExpDuration()) {
                     Logger.d(TAG, "Experiment time is over (now {} days) but end questionnaires still unanswered",
                             Integer.toString(daysElapsed));
-                    return false;
+                    return true;
                 }
-                return true;
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
     public synchronized void launchNotifyingServices() {
