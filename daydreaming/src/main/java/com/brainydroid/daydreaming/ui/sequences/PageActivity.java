@@ -420,6 +420,11 @@ public class PageActivity extends RoboFragmentActivity {
             startSchedulerService();
         }
 
+        if (sequenceType.equals(Sequence.TYPE_MORNING_QUESTIONNAIRE)) {
+            // Show questionnaire notification if necessary, right after morning questionnaire
+            statusManager.updateBEQNotification();
+        }
+
         finish();
     }
 
