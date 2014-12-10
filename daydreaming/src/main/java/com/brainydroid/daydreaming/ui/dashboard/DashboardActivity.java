@@ -912,14 +912,6 @@ public class DashboardActivity extends RoboFragmentActivity implements View.OnCl
         if (statusManager.areParametersUpdated()) {
             final AlphaButton btn = (AlphaButton)findViewById(R.id.dashboard_begin_questionnaires_button);
 
-            if (statusManager.wereBEQAnsweredOnTime()) {
-                btn.setBackgroundResource(R.drawable.white_rectangle_selector);
-                btn.setTextColor(getResources().getColor(R.color.ui_dark_blue_color));
-            } else {
-                btn.setBackgroundResource(R.drawable.red_rectangle_selector);
-                btn.setTextColor(getResources().getColor(R.color.ui_white_text_color));
-            }
-
             if (!statusManager.areBEQCompleted()) {
 
                 final Animation animation = new AlphaAnimation(1, 0); // Change alpha from fully visible to invisible
