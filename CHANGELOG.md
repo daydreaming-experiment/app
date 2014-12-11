@@ -1,6 +1,13 @@
 Changelog
 =========
 
+0.32.0
+------
+
+* Enhancements
+  * [#275] BEQ notifications are nice to the user (not persistent)
+  * [#334] Allow moving the app to the SD card
+
 0.31.0
 ------
 
