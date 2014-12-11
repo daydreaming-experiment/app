@@ -34,9 +34,6 @@ public class ProbeSchedulerService extends RecurrentSequenceSchedulerService {
             return START_REDELIVER_INTENT;
         }
 
-        // Always check if BEQ notification is necessary
-        statusManager.updateBEQNotification();
-
         // Schedule a sequence
         scheduleSequence();
         stopSelf();
