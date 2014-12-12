@@ -26,14 +26,12 @@ import com.brainydroid.daydreaming.background.ErrorHandler;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.db.Json;
+import com.brainydroid.daydreaming.db.ProfileStorage;
 import com.brainydroid.daydreaming.db.Util;
 import com.brainydroid.daydreaming.ui.FontUtils;
 import com.brainydroid.daydreaming.ui.TimePickerFragment;
 import com.brainydroid.daydreaming.ui.firstlaunchsequence.FirstLaunch00WelcomeActivity;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.inject.Inject;
-
-import org.json.JSONException;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -49,7 +47,6 @@ public class SettingsActivity extends RoboFragmentActivity {
 
     public static String TIME_FROM = "time_from";
     public static String TIME_UNTIL = "time_until";
-    public static String HASHMAP_BOTHER_TIME = "hashmap_bother_time";
 
 
     private static String TAG = "SettingsActivity";
@@ -75,9 +72,8 @@ public class SettingsActivity extends RoboFragmentActivity {
 
     @Inject SharedPreferences sharedPreferences;
     @Inject StatusManager statusManager;
-    @Inject Json json;
-    @Inject
-    ErrorHandler errorHandler;
+    @Inject ProfileStorage profileStorage;
+
 
     @InjectResource(R.string.settings_time_window_lb_default) String defaultTimePreferenceMin;
     @InjectResource(R.string.settings_time_window_ub_default) String defaultTimePreferenceMax;
@@ -150,35 +146,12 @@ public class SettingsActivity extends RoboFragmentActivity {
 //    }
 
     public void updateBotherWindowMap(String type, int hourOfDay, int minute) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        // get hashmap from shared preferences
-        String botherWindowMapJson = sharedPreferences.getString(statusManager.getCurrentModeName() + HASHMAP_BOTHER_TIME, null);
-        Logger.v(TAG, "{0} - botherWindowMapJson is {1}", statusManager.getCurrentModeName(), botherWindowMapJson);
-
-        HashMap<String, String> botherWindowMap;
-        if (botherWindowMapJson == null) {
-            botherWindowMap = new HashMap<String, String>();
-        } else {
-            try {
-                botherWindowMap = json.fromJson(botherWindowMapJson,
-                        new TypeReference<HashMap<String, String>>() {
-                        }
-                );
-            } catch (JSONException e) {
-                errorHandler.handleBaseJsonError(botherWindowMapJson, e);
-                throw new RuntimeException(e);
-            }
-        }
-
+        // get hashmap from shared preferences through profile
+        HashMap<String, String> botherWindowMap = profileStorage.getBotherWindowMap();
         // update hashmap
         botherWindowMap.put(getNowString(), type + ": " + hourOfDay + ":" + pad(minute));
-        // save hashmap into shared preferences
-        botherWindowMapJson = json.toJsonInternal(botherWindowMap);
-        editor.putString(statusManager.getCurrentModeName() + HASHMAP_BOTHER_TIME, botherWindowMapJson);
-        editor.apply();
-
-
-
+        // save hashmap into shared preferences and profile
+        profileStorage.setBotherWindowMap(botherWindowMap);
     }
 
     public void addListenerOnButton() {
