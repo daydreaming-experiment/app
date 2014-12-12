@@ -24,11 +24,18 @@ import android.widget.Toast;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.background.StatusManager;
+import com.brainydroid.daydreaming.db.Json;
 import com.brainydroid.daydreaming.db.Util;
 import com.brainydroid.daydreaming.ui.FontUtils;
 import com.brainydroid.daydreaming.ui.TimePickerFragment;
 import com.brainydroid.daydreaming.ui.firstlaunchsequence.FirstLaunch00WelcomeActivity;
 import com.google.inject.Inject;
+
+import org.json.JSONException;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.HashMap;
 
 import roboguice.activity.RoboFragmentActivity;
 import roboguice.inject.ContentView;
@@ -40,6 +47,8 @@ public class SettingsActivity extends RoboFragmentActivity {
 
     public static String TIME_FROM = "time_from";
     public static String TIME_UNTIL = "time_until";
+    public static String HASHMAP_BOTHER_TIME = "hashmap_bother_time";
+
 
     private static String TAG = "SettingsActivity";
     @SuppressWarnings("FieldCanBeLocal") private static int MIN_WINDOW_HOURS = 5; // 5 hours (in hours)
@@ -64,6 +73,7 @@ public class SettingsActivity extends RoboFragmentActivity {
 
     @Inject SharedPreferences sharedPreferences;
     @Inject StatusManager statusManager;
+    @Inject Json json;
 
     @InjectResource(R.string.settings_time_window_lb_default) String defaultTimePreferenceMin;
     @InjectResource(R.string.settings_time_window_ub_default) String defaultTimePreferenceMax;
@@ -110,6 +120,53 @@ public class SettingsActivity extends RoboFragmentActivity {
     private void initVars() {
         Logger.d(TAG, "Initializing variables");
         updateTimeViews();
+    }
+
+    private String getNowString() {
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, 1);
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String formatted = format.format(cal.getTime());
+        return formatted;
+    }
+
+
+    public class BotherWindowMapWrapper {
+        private HashMap<String, String> botherWindowMap;
+
+        public void setBotherWindowMap(HashMap<String, String> botherWindowMap_) {
+            this.botherWindowMap = botherWindowMap_;
+        }
+        public HashMap<String, String> getBotherWindowMap() {
+            return this.botherWindowMap;
+        }
+
+    }
+
+    public void updateBotherWindowMap(String type, int hourOfDay, int minute) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        // get hashmap from shared preferences
+        String wrapperStr = sharedPreferences.getString(HASHMAP_BOTHER_TIME, null);
+        HashMap<String, String> botherWindowMap;
+        BotherWindowMapWrapper wrapper = null;
+        if (wrapperStr != null) {
+            try {
+                wrapper = json.fromJson(wrapperStr, BotherWindowMapWrapper.class);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            botherWindowMap = wrapper.getBotherWindowMap();
+        } else {
+            botherWindowMap = new HashMap<String, String>();
+        }
+        // update hashmap
+        botherWindowMap.put(getNowString(), type + ": " +hourOfDay + ":" + pad(minute));
+        // save hashmap into shared preferences
+        wrapper.setBotherWindowMap(botherWindowMap);
+        String serializedMap = json.toJsonPublic(wrapper);
+        editor.putString(HASHMAP_BOTHER_TIME, serializedMap);
+        editor.apply();
+
     }
 
     public void addListenerOnButton() {
@@ -170,6 +227,7 @@ public class SettingsActivity extends RoboFragmentActivity {
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         editor.putString(TIME_FROM, hourOfDay + ":" + pad(minute));
                         editor.apply();
+                        updateBotherWindowMap(TIME_FROM, hourOfDay, minute);
 
                         // Listener can correct and update the view here
                         correctTimeWindow();
@@ -206,6 +264,7 @@ public class SettingsActivity extends RoboFragmentActivity {
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         editor.putString(TIME_UNTIL, hourOfDay + ":" + pad(minute));
                         editor.apply();
+                        updateBotherWindowMap(TIME_UNTIL, hourOfDay, minute);
 
                         // Listener can correct and update the view here
                         correctTimeWindow();
