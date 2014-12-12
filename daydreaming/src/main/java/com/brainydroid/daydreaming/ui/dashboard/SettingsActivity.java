@@ -22,6 +22,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.brainydroid.daydreaming.R;
+import com.brainydroid.daydreaming.background.ErrorHandler;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.background.StatusManager;
 import com.brainydroid.daydreaming.db.Json;
@@ -29,6 +30,7 @@ import com.brainydroid.daydreaming.db.Util;
 import com.brainydroid.daydreaming.ui.FontUtils;
 import com.brainydroid.daydreaming.ui.TimePickerFragment;
 import com.brainydroid.daydreaming.ui.firstlaunchsequence.FirstLaunch00WelcomeActivity;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.inject.Inject;
 
 import org.json.JSONException;
@@ -74,6 +76,8 @@ public class SettingsActivity extends RoboFragmentActivity {
     @Inject SharedPreferences sharedPreferences;
     @Inject StatusManager statusManager;
     @Inject Json json;
+    @Inject
+    ErrorHandler errorHandler;
 
     @InjectResource(R.string.settings_time_window_lb_default) String defaultTimePreferenceMin;
     @InjectResource(R.string.settings_time_window_ub_default) String defaultTimePreferenceMax;
@@ -131,41 +135,49 @@ public class SettingsActivity extends RoboFragmentActivity {
     }
 
 
-    public class BotherWindowMapWrapper {
-        private HashMap<String, String> botherWindowMap;
-
-        public void setBotherWindowMap(HashMap<String, String> botherWindowMap_) {
-            this.botherWindowMap = botherWindowMap_;
-        }
-        public HashMap<String, String> getBotherWindowMap() {
-            return this.botherWindowMap;
-        }
-
-    }
+//    public class BotherWindowMapWrapper {
+//        private HashMap<String, String> botherWindowMap;
+//
+//        public BotherWindowMapWrapper() { }
+//
+//        public void setBotherWindowMap(HashMap<String, String> botherWindowMap_) {
+//            this.botherWindowMap = botherWindowMap_;
+//        }
+//        public HashMap<String, String> getBotherWindowMap() {
+//            return this.botherWindowMap;
+//        }
+//
+//    }
 
     public void updateBotherWindowMap(String type, int hourOfDay, int minute) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         // get hashmap from shared preferences
-        String wrapperStr = sharedPreferences.getString(HASHMAP_BOTHER_TIME, null);
+        String botherWindowMapJson = sharedPreferences.getString(statusManager.getCurrentModeName() + HASHMAP_BOTHER_TIME, null);
+        Logger.v(TAG, "{0} - botherWindowMapJson is {1}", statusManager.getCurrentModeName(), botherWindowMapJson);
+
         HashMap<String, String> botherWindowMap;
-        BotherWindowMapWrapper wrapper = null;
-        if (wrapperStr != null) {
-            try {
-                wrapper = json.fromJson(wrapperStr, BotherWindowMapWrapper.class);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            botherWindowMap = wrapper.getBotherWindowMap();
-        } else {
+        if (botherWindowMapJson == null) {
             botherWindowMap = new HashMap<String, String>();
+        } else {
+            try {
+                botherWindowMap = json.fromJson(botherWindowMapJson,
+                        new TypeReference<HashMap<String, String>>() {
+                        }
+                );
+            } catch (JSONException e) {
+                errorHandler.handleBaseJsonError(botherWindowMapJson, e);
+                throw new RuntimeException(e);
+            }
         }
+
         // update hashmap
-        botherWindowMap.put(getNowString(), type + ": " +hourOfDay + ":" + pad(minute));
+        botherWindowMap.put(getNowString(), type + ": " + hourOfDay + ":" + pad(minute));
         // save hashmap into shared preferences
-        wrapper.setBotherWindowMap(botherWindowMap);
-        String serializedMap = json.toJsonPublic(wrapper);
-        editor.putString(HASHMAP_BOTHER_TIME, serializedMap);
+        botherWindowMapJson = json.toJsonInternal(botherWindowMap);
+        editor.putString(statusManager.getCurrentModeName() + HASHMAP_BOTHER_TIME, botherWindowMapJson);
         editor.apply();
+
+
 
     }
 
