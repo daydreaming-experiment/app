@@ -145,11 +145,25 @@ public class SettingsActivity extends RoboFragmentActivity {
 //
 //    }
 
-    public void updateBotherWindowMap(String type, int hourOfDay, int minute) {
+
+
+
+    public void updateBotherWindowMap() {
         // get hashmap from shared preferences through profile
         HashMap<String, String> botherWindowMap = profileStorage.getBotherWindowMap();
         // update hashmap
-        botherWindowMap.put(getNowString(), type + ": " + hourOfDay + ":" + pad(minute));
+        String timeFrom = sharedPreferences.getString(TIME_FROM, defaultTimePreferenceMin);
+        String[] fromParts = timeFrom.split(":");
+        final int minuteFrom = Integer.parseInt(fromParts[1]);
+        final int hourFrom = Integer.parseInt(fromParts[0]);
+        String timeUntil = sharedPreferences.getString(TIME_UNTIL, defaultTimePreferenceMax);
+        String[] untilParts = timeUntil.split(":");
+        final int minuteUntil = Integer.parseInt(untilParts[1]);
+        final int hourUntil = Integer.parseInt(untilParts[0]);
+
+        String botherwindow = "{'from':" + hourFrom + ":" + pad(minuteFrom) +
+                ", 'until':" + hourUntil + ":" + pad(minuteUntil) + "}";
+        botherWindowMap.put(getNowString(), botherwindow);
         // save hashmap into shared preferences and profile
         profileStorage.setBotherWindowMap(botherWindowMap);
     }
@@ -212,12 +226,13 @@ public class SettingsActivity extends RoboFragmentActivity {
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         editor.putString(TIME_FROM, hourOfDay + ":" + pad(minute));
                         editor.apply();
-                        updateBotherWindowMap(TIME_FROM, hourOfDay, minute);
 
                         // Listener can correct and update the view here
                         correctTimeWindow();
                         updateTimeViews();
                         statusManager.launchNotifyingServices();
+                        updateBotherWindowMap();
+
                     }
 
                 };
@@ -249,12 +264,12 @@ public class SettingsActivity extends RoboFragmentActivity {
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         editor.putString(TIME_UNTIL, hourOfDay + ":" + pad(minute));
                         editor.apply();
-                        updateBotherWindowMap(TIME_UNTIL, hourOfDay, minute);
 
                         // Listener can correct and update the view here
                         correctTimeWindow();
                         updateTimeViews();
                         statusManager.launchNotifyingServices();
+                        updateBotherWindowMap();
                     }
 
                 };

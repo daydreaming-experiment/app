@@ -217,6 +217,7 @@ public class ProfileStorage {
         eSharedPreferences.remove(statusManager.getCurrentModeName() + PROFILE_MOTHER_TONGUE);
         eSharedPreferences.remove(statusManager.getCurrentModeName() + PROFILE_EDUCATION);
         eSharedPreferences.remove(statusManager.getCurrentModeName() + PROFILE_PARAMETERS_VERSION);
+        eSharedPreferences.remove(statusManager.getCurrentModeName() + PROFILE_HASHMAP_BOTHER_TIME);
         eSharedPreferences.commit();
         return true;
     }

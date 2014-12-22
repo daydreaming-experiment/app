@@ -26,6 +26,8 @@ public class ProfileData {
     private int appVersionCode;
     @JsonView(Views.Public.class)
     private String mode;
+    @JsonView(Views.Public.class)
+    private String botherWindowMapJson;
 
     public ProfileData() {}
 
@@ -37,7 +39,8 @@ public class ProfileData {
                        @Assisted("parametersVersion") String parametersVersion,
                        @Assisted("appVersionName") String appVersionName,
                        @Assisted("appVersionCode") int appVersionCode,
-                       @Assisted("mode") String mode) {
+                       @Assisted("mode") String mode,
+                       @Assisted("botherWindowMapJson") String botherWindowMapJson) {
         Logger.v(TAG, "Creating a ProfileData instance");
         this.age = age;
         this.gender = gender;
@@ -47,5 +50,6 @@ public class ProfileData {
         this.appVersionName = appVersionName;
         this.appVersionCode = appVersionCode;
         this.mode = mode;
+        this.botherWindowMapJson = botherWindowMapJson;
     }
 }
