@@ -46,7 +46,6 @@ public class SettingsActivity extends RoboFragmentActivity {
     public static String TIME_FROM = "time_from";
     public static String TIME_UNTIL = "time_until";
 
-
     private static String TAG = "SettingsActivity";
     @SuppressWarnings("FieldCanBeLocal") private static int MIN_WINDOW_HOURS = 5; // 5 hours (in hours)
 
@@ -71,7 +70,6 @@ public class SettingsActivity extends RoboFragmentActivity {
     @Inject SharedPreferences sharedPreferences;
     @Inject StatusManager statusManager;
     @Inject ProfileStorage profileStorage;
-
 
     @InjectResource(R.string.settings_time_window_lb_default) String defaultTimePreferenceMin;
     @InjectResource(R.string.settings_time_window_ub_default) String defaultTimePreferenceMax;
@@ -205,7 +203,6 @@ public class SettingsActivity extends RoboFragmentActivity {
                         updateTimeViews();
                         statusManager.launchNotifyingServices();
                         updateBotherWindowMap();
-
                     }
 
                 };
