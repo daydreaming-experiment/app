@@ -52,11 +52,12 @@ public class Profile {
                    @Assisted("parametersVersion") String parametersVersion,
                    @Assisted("appVersionName") String appVersionName,
                    @Assisted("appVersionCode") int appVersionCode,
-                   @Assisted("mode") String mode) {
+                   @Assisted("mode") String mode,
+                   @Assisted("botherWindowMapJson") String botherWindowMapJson) {
         Logger.v(TAG, "Creating a Profile instance with detailed data");
         this.exp_id = expId;
         this.profile_data = profileDataFactory.create(age, gender, education, motherTongue,
-                parametersVersion, appVersionName, appVersionCode, mode);
+                parametersVersion, appVersionName, appVersionCode, mode, botherWindowMapJson);
     }
 
     public synchronized String getId() {

@@ -2,8 +2,6 @@ package com.brainydroid.daydreaming.network;
 
 import com.google.inject.assistedinject.Assisted;
 
-import java.util.HashMap;
-
 public interface ProfileFactory {
 
     public Profile create(@Assisted("expId") String expId,
@@ -16,6 +14,6 @@ public interface ProfileFactory {
                           @Assisted("parametersVersion") String parametersVersion,
                           @Assisted("appVersionName") String appVersionName,
                           @Assisted("appVersionCode") int appVersionCode,
-                          @Assisted("mode") String mode);
-
+                          @Assisted("mode") String mode,
+                          @Assisted("botherWindowMapJson") String botherWindowMapJson);
 }
