@@ -2,6 +2,7 @@ package com.brainydroid.daydreaming.ui.dashboard;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -53,6 +54,7 @@ public class ResultsActivity extends RoboFragmentActivity {
     private boolean pageLoaded = false;
     private ProgressDialog progressDialog;
     private JSResults jsResults = null;
+    private ResultsInterface resultsInterface = null;
 
     public static class JSResults {
 
@@ -72,6 +74,26 @@ public class ResultsActivity extends RoboFragmentActivity {
         @JavascriptInterface
         public String getResultsWrap() {
             return resultsWrap;
+        }
+    }
+
+    public static class ResultsInterface {
+
+        private Activity resultsActivity;
+        private String resultsWrap;
+
+        public ResultsInterface(Activity resultsActivity, String resultsWrap) {
+            this.resultsActivity = resultsActivity;
+            this.resultsWrap = resultsWrap;
+        }
+
+        @JavascriptInterface
+        public void saveRawResults() {
+            Intent sendIntent = new Intent();
+            sendIntent.setAction(Intent.ACTION_SEND);
+            sendIntent.putExtra(Intent.EXTRA_TEXT, resultsWrap);
+            sendIntent.setType("text/plain");
+            resultsActivity.startActivity(sendIntent);
         }
     }
 
@@ -160,6 +182,7 @@ public class ResultsActivity extends RoboFragmentActivity {
                         }
 
                         jsResults = new JSResults(profileStorage.getAppVersionCode(), serverAnswer);
+                        resultsInterface = new ResultsInterface(ResultsActivity.this, serverAnswer);
                         launchWebView();
                     } else {
                         Logger.i(TAG, "Failed to get results");
@@ -216,6 +239,7 @@ public class ResultsActivity extends RoboFragmentActivity {
                         }
                     } else {
                         jsResults = new JSResults(profileStorage.getAppVersionCode(), resultsString);
+                        resultsInterface = new ResultsInterface(ResultsActivity.this, resultsString);
                         launchWebView();
                     }
                 }
@@ -231,6 +255,7 @@ public class ResultsActivity extends RoboFragmentActivity {
             public void run() {
                 webView.clearCache(true);
                 webView.addJavascriptInterface(jsResults, "injectedResults");
+                webView.addJavascriptInterface(resultsInterface, "resultsInterface");
                 webView.setWebViewClient(new WebViewClient() {
 
                     @Override
