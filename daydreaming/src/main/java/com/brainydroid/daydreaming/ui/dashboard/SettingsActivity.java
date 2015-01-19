@@ -24,11 +24,16 @@ import android.widget.Toast;
 import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.background.StatusManager;
+import com.brainydroid.daydreaming.db.ProfileStorage;
 import com.brainydroid.daydreaming.db.Util;
 import com.brainydroid.daydreaming.ui.FontUtils;
 import com.brainydroid.daydreaming.ui.TimePickerFragment;
 import com.brainydroid.daydreaming.ui.firstlaunchsequence.FirstLaunch00WelcomeActivity;
 import com.google.inject.Inject;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.HashMap;
 
 import roboguice.activity.RoboFragmentActivity;
 import roboguice.inject.ContentView;
@@ -64,6 +69,7 @@ public class SettingsActivity extends RoboFragmentActivity {
 
     @Inject SharedPreferences sharedPreferences;
     @Inject StatusManager statusManager;
+    @Inject ProfileStorage profileStorage;
 
     @InjectResource(R.string.settings_time_window_lb_default) String defaultTimePreferenceMin;
     @InjectResource(R.string.settings_time_window_ub_default) String defaultTimePreferenceMax;
@@ -110,6 +116,27 @@ public class SettingsActivity extends RoboFragmentActivity {
     private void initVars() {
         Logger.d(TAG, "Initializing variables");
         updateTimeViews();
+    }
+
+    private String getNowString() {
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, 1);
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return format.format(cal.getTime());
+    }
+
+    public void updateBotherWindowMap() {
+        // Get HashMap from shared preferences through profile
+        HashMap<String, String> botherWindowMap = profileStorage.getBotherWindowMap();
+
+        // Update HashMap
+        String timeFrom = sharedPreferences.getString(TIME_FROM, defaultTimePreferenceMin);
+        String timeUntil = sharedPreferences.getString(TIME_UNTIL, defaultTimePreferenceMax);
+        String botherWindow = timeFrom + "|" + timeUntil;
+        botherWindowMap.put(getNowString(), botherWindow);
+
+        // Save HashMap into shared preferences and profile
+        profileStorage.setBotherWindowMap(botherWindowMap);
     }
 
     public void addListenerOnButton() {
@@ -175,6 +202,7 @@ public class SettingsActivity extends RoboFragmentActivity {
                         correctTimeWindow();
                         updateTimeViews();
                         statusManager.launchNotifyingServices();
+                        updateBotherWindowMap();
                     }
 
                 };
@@ -211,6 +239,7 @@ public class SettingsActivity extends RoboFragmentActivity {
                         correctTimeWindow();
                         updateTimeViews();
                         statusManager.launchNotifyingServices();
+                        updateBotherWindowMap();
                     }
 
                 };

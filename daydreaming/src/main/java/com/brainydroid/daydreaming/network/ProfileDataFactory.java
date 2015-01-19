@@ -13,6 +13,7 @@ public interface ProfileDataFactory {
                               @Assisted("parametersVersion") String parametersVersion,
                               @Assisted("appVersionName") String appVersionName,
                               @Assisted("appVersionCode") int appVersionCode,
-                              @Assisted("mode") String mode);
+                              @Assisted("mode") String mode,
+                              @Assisted("botherWindowMapJson") String botherWindowMapJson);
 
 }

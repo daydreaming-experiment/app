@@ -1,6 +1,13 @@
 Changelog
 =========
 
+0.33.0
+------
+
+* Enhancements
+  * [#380] Provide functionality to results WebView for raw download of results
+  * [#409] Inject Profile and startExpTimestamp to WebView
+
 0.32.0
 ------
 

@@ -1,7 +1,9 @@
 package com.brainydroid.daydreaming.ui.dashboard;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -16,11 +18,13 @@ import com.brainydroid.daydreaming.R;
 import com.brainydroid.daydreaming.background.ErrorHandler;
 import com.brainydroid.daydreaming.background.Logger;
 import com.brainydroid.daydreaming.background.StatusManager;
+import com.brainydroid.daydreaming.db.Json;
 import com.brainydroid.daydreaming.db.ParametersStorage;
 import com.brainydroid.daydreaming.db.ProfileStorage;
 import com.brainydroid.daydreaming.db.ResultsStorage;
 import com.brainydroid.daydreaming.network.CryptoStorage;
 import com.brainydroid.daydreaming.network.HttpConversationCallback;
+import com.brainydroid.daydreaming.network.ProfileWrapper;
 import com.brainydroid.daydreaming.network.ServerTalker;
 import com.google.inject.Inject;
 
@@ -43,6 +47,7 @@ public class ResultsActivity extends RoboFragmentActivity {
     @Inject CryptoStorage cryptoStorage;
     @Inject ProfileStorage profileStorage;
     @Inject ResultsStorage resultsStorage;
+    @Inject Json json;
     @Inject ErrorHandler errorHandler;
     @Inject Activity activity;
     @InjectView(R.id.activity_results_webView) private WebView webView;
@@ -53,14 +58,21 @@ public class ResultsActivity extends RoboFragmentActivity {
     private boolean pageLoaded = false;
     private ProgressDialog progressDialog;
     private JSResults jsResults = null;
+    private ResultsInterface resultsInterface = null;
+    private String profileWrap;
 
     public static class JSResults {
 
         private int versionCode;
+        private String profileWrap;
         private String resultsWrap;
+        private long expStartTimestamp;
 
-        public JSResults(int versionCode, String resultsWrap) {
+        public JSResults(int versionCode, long expStartTimestamp,
+                         String profileWrap, String resultsWrap) {
             this.versionCode = versionCode;
+            this.expStartTimestamp = expStartTimestamp;
+            this.profileWrap = profileWrap;
             this.resultsWrap = resultsWrap;
         }
 
@@ -70,16 +82,48 @@ public class ResultsActivity extends RoboFragmentActivity {
         }
 
         @JavascriptInterface
+        public long getExpStartTimestamp() {
+            return expStartTimestamp;
+        }
+
+        @JavascriptInterface
+        public String getProfileWrap() {
+            return profileWrap;
+        }
+
+        @JavascriptInterface
         public String getResultsWrap() {
             return resultsWrap;
         }
     }
 
+    public static class ResultsInterface {
+
+        private Activity resultsActivity;
+        private String resultsWrap;
+
+        public ResultsInterface(Activity resultsActivity, String resultsWrap) {
+            this.resultsActivity = resultsActivity;
+            this.resultsWrap = resultsWrap;
+        }
+
+        @JavascriptInterface
+        public void saveRawResults() {
+            Intent sendIntent = new Intent();
+            sendIntent.setAction(Intent.ACTION_SEND);
+            sendIntent.putExtra(Intent.EXTRA_TEXT, resultsWrap);
+            sendIntent.setType("text/plain");
+            resultsActivity.startActivity(sendIntent);
+        }
+    }
+
+    @SuppressLint("SetJavaScriptEnabled")
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Logger.v(TAG, "Creating");
 
         super.onCreate(savedInstanceState);
+        initVars();
 
         // No need to notify results again, the user opened them
         statusManager.set(StatusManager.ARE_RESULTS_NOTIFIED);
@@ -93,6 +137,11 @@ public class ResultsActivity extends RoboFragmentActivity {
         }
         webView.getSettings().setJavaScriptEnabled(true);
         loadResultsAndWebView();
+    }
+
+    private void initVars() {
+        ProfileWrapper profileWrapper = profileStorage.getProfile().buildWrapper();
+        profileWrap = json.toJsonPublic(profileWrapper);
     }
 
     public void onResume() {
@@ -159,7 +208,10 @@ public class ResultsActivity extends RoboFragmentActivity {
                                     Toast.LENGTH_LONG);
                         }
 
-                        jsResults = new JSResults(profileStorage.getAppVersionCode(), serverAnswer);
+                        jsResults = new JSResults(profileStorage.getAppVersionCode(),
+                                statusManager.getExperimentStartTimestamp(),
+                                profileWrap, serverAnswer);
+                        resultsInterface = new ResultsInterface(ResultsActivity.this, serverAnswer);
                         launchWebView();
                     } else {
                         Logger.i(TAG, "Failed to get results");
@@ -215,7 +267,10 @@ public class ResultsActivity extends RoboFragmentActivity {
                             activity.finish();
                         }
                     } else {
-                        jsResults = new JSResults(profileStorage.getAppVersionCode(), resultsString);
+                        jsResults = new JSResults(profileStorage.getAppVersionCode(),
+                                statusManager.getExperimentStartTimestamp(),
+                                profileWrap, resultsString);
+                        resultsInterface = new ResultsInterface(ResultsActivity.this, resultsString);
                         launchWebView();
                     }
                 }
@@ -227,10 +282,12 @@ public class ResultsActivity extends RoboFragmentActivity {
         // Load the results in the webView and start it
         // Run this on UI thread
         rootView.post(new Runnable() {
+            @SuppressLint("AddJavascriptInterface")
             @Override
             public void run() {
                 webView.clearCache(true);
                 webView.addJavascriptInterface(jsResults, "injectedResults");
+                webView.addJavascriptInterface(resultsInterface, "resultsInterface");
                 webView.setWebViewClient(new WebViewClient() {
 
                     @Override
