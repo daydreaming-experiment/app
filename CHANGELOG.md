@@ -1,6 +1,12 @@
 Changelog
 =========
 
+0.33.1
+------
+
+* Bug fixes
+  * Fix empty `ArrayList` crash on Android 5 (which changed the behaviour of empty `ArrayList`s)
+
 0.33.0
 ------
 
