@@ -46,12 +46,15 @@ public class Orderer<D extends BuildableOrderable<D,C>,C> {
 
     private ArrayList<ArrayList<D>> shuffleGroups(HashMap<Integer,ArrayList<D>> map) {
         ArrayList<ArrayList<D>> shuffledGroups = new ArrayList<ArrayList<D>>(nSlots);
+        for (int i = 0; i < nSlots; i++) {
+            shuffledGroups.add(null);
+        }
         ArrayList<D> currentGroup;
         for (Map.Entry<Integer, ArrayList<D>> group : map.entrySet()) {
             Logger.v(TAG, "Shuffling slot {}", group.getKey());
             currentGroup = group.getValue();
             util.shuffle(currentGroup);
-            shuffledGroups.add(group.getKey(), currentGroup);
+            shuffledGroups.set(group.getKey(), currentGroup);
         }
 
         return shuffledGroups;
