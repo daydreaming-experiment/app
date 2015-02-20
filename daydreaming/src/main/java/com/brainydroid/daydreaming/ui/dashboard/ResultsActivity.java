@@ -3,7 +3,6 @@ package com.brainydroid.daydreaming.ui.dashboard;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -33,20 +32,14 @@ import com.brainydroid.daydreaming.network.ProfileWrapper;
 import com.brainydroid.daydreaming.network.ServerTalker;
 import com.google.inject.Inject;
 
-import java.io.BufferedWriter;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.HashMap;
 
 import roboguice.activity.RoboFragmentActivity;
 import roboguice.inject.ContentView;
-import roboguice.inject.InjectResource;
 import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_results)
@@ -176,11 +169,11 @@ public class ResultsActivity extends RoboFragmentActivity {
             String imageFilename = saveImageToFile(imageURI, imageType);
 
             // Insert image in MediaStore
-            String uri;
+            Uri uri;
             try {
-                uri = MediaStore.Images.Media.insertImage(resultsActivity.getContentResolver(),
+                uri = Uri.parse(MediaStore.Images.Media.insertImage(resultsActivity.getContentResolver(),
                         imageFilename, "daydreaming-results.png",
-                        "Detailed results of daydreaming experiment");
+                        "Detailed results of daydreaming experiment"));
             } catch (FileNotFoundException e) {
                 Logger.e(TAG, "File '{}' not found while copying to MediaStore: {}",
                         imageFilename, e.getMessage());
@@ -193,7 +186,7 @@ public class ResultsActivity extends RoboFragmentActivity {
             shareIntent.putExtra(Intent.EXTRA_TEXT,
                     resultsActivity.getResources().getString(R.string.results_share_text));
             shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
-            shareIntent.setType(imageType);
+            shareIntent.setType(imageType);  // Used for intent filtering
             resultsActivity.startActivity(Intent.createChooser(
                     shareIntent, resultsActivity.getResources().getString(R.string.results_share_title)));
         }
