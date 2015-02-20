@@ -160,6 +160,7 @@ public class ResultsActivity extends RoboFragmentActivity {
                 FileOutputStream imageStream = new FileOutputStream(imageFile);
                 imageStream.write(Base64.decode(imageDataBytes.getBytes(), Base64.DEFAULT));
                 imageStream.flush();
+                imageStream.close();
             } catch (IOException e) {
                 Logger.e(TAG, "Could not write file '{}': {}",
                         imageFile.getAbsolutePath(), e.getMessage());
