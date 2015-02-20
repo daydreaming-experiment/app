@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -32,8 +33,11 @@ import com.brainydroid.daydreaming.network.ProfileWrapper;
 import com.brainydroid.daydreaming.network.ServerTalker;
 import com.google.inject.Inject;
 
+import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -50,6 +54,7 @@ public class ResultsActivity extends RoboFragmentActivity {
     public static String TAG = "ResultsActivity";
 
     public static String DOWNLOAD_RESULTS = "loadResults";
+    public static String STORAGE_DIRNAME = "resultImages";
 
     @Inject ParametersStorage parametersStorage;
     @Inject StatusManager statusManager;
@@ -125,7 +130,7 @@ public class ResultsActivity extends RoboFragmentActivity {
             saveIntent.putExtra(Intent.EXTRA_TEXT, resultsWrap);
             saveIntent.setType("text/plain");
             resultsActivity.startActivity(Intent.createChooser(
-                    saveIntent, resultsActivity.getResources().getString(R.string.results_save)));
+                    saveIntent, resultsActivity.getResources().getString(R.string.results_save_title)));
         }
     }
 
@@ -137,41 +142,60 @@ public class ResultsActivity extends RoboFragmentActivity {
             this.resultsActivity = resultsActivity;
         }
 
-        @JavascriptInterface
-        public void shareResults(String imageURI, String imageType) {
-
-            // Preliminary content values to store image to MediaStore
-            ContentValues values = new ContentValues();
-            values.put(MediaStore.Images.Media.TITLE, "Daydreaming results");
-            values.put(MediaStore.Images.Media.BUCKET_ID, "daydreaming");
-            values.put(MediaStore.Images.Media.DESCRIPTION, "Detailed results of Daydreaming experiment");
-            values.put(MediaStore.Images.Media.MIME_TYPE, imageType);
-
+        private String saveImageToFile(String imageURI, String imageType) {
             // Obtain image data (without metadata)
             String imageDataBytes = imageURI.substring(imageURI.indexOf(",") + 1);
 
-            // Store our image in MediaStore
-            Uri uri = resultsActivity.getContentResolver().insert(MediaStore.Images.Media.INTERNAL_CONTENT_URI, values);
-            OutputStream outputStream;
+            // Get target file
+            File storageDir = resultsActivity.getApplicationContext().getDir(
+                    STORAGE_DIRNAME, Context.MODE_PRIVATE);
+            File imageFile = new File(storageDir, "results.png");
+            if (imageFile.exists()) {
+                imageFile.delete();
+            }
+
+            // Save the image to file
+            InputStream imageStream = new ByteArrayInputStream(
+                    Base64.decode(imageDataBytes.getBytes(), Base64.DEFAULT));
             try {
-                outputStream = resultsActivity.getContentResolver().openOutputStream(uri);
-                outputStream.write(Base64.decode(imageDataBytes.getBytes(), Base64.DEFAULT));
-                outputStream.close();
-            } catch (FileNotFoundException e) {
-                Logger.e(TAG, "File not found while copying to MediaStore: {}", e.getMessage());
-                throw new RuntimeException(e);
+                BufferedWriter imageWriter = new BufferedWriter(new FileWriter(imageFile));
+                imageWriter.write(imageDataBytes);
+                imageWriter.close();
             } catch (IOException e) {
-                Logger.e(TAG, "IOException while copying to MediaStore: {}", e.getMessage());
+                Logger.e(TAG, "Could not write file '{}': {}",
+                        imageFile.getAbsolutePath(), e.getMessage());
+                throw new RuntimeException(e);
+            }
+
+            return imageFile.getAbsolutePath();
+        }
+
+        @JavascriptInterface
+        public void shareResults(String imageURI, String imageType) {
+            // Save image to file
+            String imageFilename = saveImageToFile(imageURI, imageType);
+
+            // Insert image in MediaStore
+            String uri;
+            try {
+                uri = MediaStore.Images.Media.insertImage(resultsActivity.getContentResolver(),
+                        imageFilename, "daydreaming-results.png",
+                        "Detailed results of daydreaming experiment");
+            } catch (FileNotFoundException e) {
+                Logger.e(TAG, "File '{}' not found while copying to MediaStore: {}",
+                        imageFilename, e.getMessage());
                 throw new RuntimeException(e);
             }
 
             // Share the image
             Intent shareIntent = new Intent();
             shareIntent.setAction(Intent.ACTION_SEND);
+            shareIntent.putExtra(Intent.EXTRA_TEXT,
+                    resultsActivity.getResources().getString(R.string.results_share_text));
             shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
             shareIntent.setType(imageType);
             resultsActivity.startActivity(Intent.createChooser(
-                    shareIntent, resultsActivity.getResources().getString(R.string.results_share)));
+                    shareIntent, resultsActivity.getResources().getString(R.string.results_share_title)));
         }
     }
 
@@ -200,7 +224,7 @@ public class ResultsActivity extends RoboFragmentActivity {
     private void initVars() {
         ProfileWrapper profileWrapper = profileStorage.getProfile().buildWrapper();
         profileWrap = json.toJsonPublic(profileWrapper);
-        shareInterface = new ShareInterface(this);
+        shareInterface = new ShareInterface(this);;
     }
 
     public void onResume() {
