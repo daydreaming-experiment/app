@@ -37,6 +37,7 @@ import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -155,12 +156,10 @@ public class ResultsActivity extends RoboFragmentActivity {
             }
 
             // Save the image to file
-            InputStream imageStream = new ByteArrayInputStream(
-                    Base64.decode(imageDataBytes.getBytes(), Base64.DEFAULT));
             try {
-                BufferedWriter imageWriter = new BufferedWriter(new FileWriter(imageFile));
-                imageWriter.write(imageDataBytes);
-                imageWriter.close();
+                FileOutputStream imageStream = new FileOutputStream(imageFile);
+                imageStream.write(Base64.decode(imageDataBytes.getBytes(), Base64.DEFAULT));
+                imageStream.flush();
             } catch (IOException e) {
                 Logger.e(TAG, "Could not write file '{}': {}",
                         imageFile.getAbsolutePath(), e.getMessage());
