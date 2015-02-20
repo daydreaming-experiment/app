@@ -3,10 +3,14 @@ package com.brainydroid.daydreaming.ui.dashboard;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Base64;
 import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
@@ -28,6 +32,11 @@ import com.brainydroid.daydreaming.network.ProfileWrapper;
 import com.brainydroid.daydreaming.network.ServerTalker;
 import com.google.inject.Inject;
 
+import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 
 import roboguice.activity.RoboFragmentActivity;
@@ -53,8 +62,6 @@ public class ResultsActivity extends RoboFragmentActivity {
     @Inject Activity activity;
     @InjectView(R.id.activity_results_webView) private WebView webView;
     @InjectView(R.id.activity_results_root) private LinearLayout rootView;
-    @InjectResource(R.string.results_save) static String resultsSave;
-    @InjectResource(R.string.results_share) static String resultsShare;
 
     private boolean failedOnceAlready = false;
     private boolean resultsDownloaded = false;
@@ -117,7 +124,8 @@ public class ResultsActivity extends RoboFragmentActivity {
             saveIntent.setAction(Intent.ACTION_SEND);
             saveIntent.putExtra(Intent.EXTRA_TEXT, resultsWrap);
             saveIntent.setType("text/plain");
-            resultsActivity.startActivity(Intent.createChooser(saveIntent, resultsSave));
+            resultsActivity.startActivity(Intent.createChooser(
+                    saveIntent, resultsActivity.getResources().getString(R.string.results_save)));
         }
     }
 
@@ -130,12 +138,40 @@ public class ResultsActivity extends RoboFragmentActivity {
         }
 
         @JavascriptInterface
-        public void shareResults(String dataURI, String dataType) {
+        public void shareResults(String imageURI, String imageType) {
+
+            // Preliminary content values to store image to MediaStore
+            ContentValues values = new ContentValues();
+            values.put(MediaStore.Images.Media.TITLE, "Daydreaming results");
+            values.put(MediaStore.Images.Media.BUCKET_ID, "daydreaming");
+            values.put(MediaStore.Images.Media.DESCRIPTION, "Detailed results of Daydreaming experiment");
+            values.put(MediaStore.Images.Media.MIME_TYPE, imageType);
+
+            // Obtain image data (without metadata)
+            String imageDataBytes = imageURI.substring(imageURI.indexOf(",") + 1);
+
+            // Store our image in MediaStore
+            Uri uri = resultsActivity.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+            OutputStream outputStream;
+            try {
+                outputStream = resultsActivity.getContentResolver().openOutputStream(uri);
+                outputStream.write(Base64.decode(imageDataBytes.getBytes(), Base64.DEFAULT));
+                outputStream.close();
+            } catch (FileNotFoundException e) {
+                Logger.e(TAG, "File not found while copying to MediaStore: {}", e.getMessage());
+                throw new RuntimeException(e);
+            } catch (IOException e) {
+                Logger.e(TAG, "IOException while copying to MediaStore: {}", e.getMessage());
+                throw new RuntimeException(e);
+            }
+
+            // Share the image
             Intent shareIntent = new Intent();
             shareIntent.setAction(Intent.ACTION_SEND);
-            shareIntent.putExtra(Intent.EXTRA_STREAM, dataURI);
-            shareIntent.setType(dataType);
-            resultsActivity.startActivity(Intent.createChooser(shareIntent, resultsShare));
+            shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
+            shareIntent.setType(imageType);
+            resultsActivity.startActivity(Intent.createChooser(
+                    shareIntent, resultsActivity.getResources().getString(R.string.results_share)));
         }
     }
 
