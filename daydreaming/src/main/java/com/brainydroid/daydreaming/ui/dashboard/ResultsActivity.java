@@ -3,9 +3,11 @@ package com.brainydroid.daydreaming.ui.dashboard;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -32,10 +34,9 @@ import com.brainydroid.daydreaming.network.ProfileWrapper;
 import com.brainydroid.daydreaming.network.ServerTalker;
 import com.google.inject.Inject;
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.HashMap;
 
 import roboguice.activity.RoboFragmentActivity;
@@ -48,7 +49,6 @@ public class ResultsActivity extends RoboFragmentActivity {
     public static String TAG = "ResultsActivity";
 
     public static String DOWNLOAD_RESULTS = "loadResults";
-    public static String STORAGE_DIRNAME = "resultImages";
 
     @Inject ParametersStorage parametersStorage;
     @Inject StatusManager statusManager;
@@ -136,49 +136,40 @@ public class ResultsActivity extends RoboFragmentActivity {
             this.resultsActivity = resultsActivity;
         }
 
-        private String saveImageToFile(String imageURI, String imageType) {
-            // Obtain image data (without metadata)
+        private Uri saveImageToMediaStore(String imageURI, String imageType) {
+            // Convert image data to a bitmap
             String imageDataBytes = imageURI.substring(imageURI.indexOf(",") + 1);
+            byte[] decodedString = Base64.decode(imageDataBytes.getBytes(), Base64.DEFAULT);
+            Bitmap image = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
 
-            // Get target file
-            File storageDir = resultsActivity.getApplicationContext().getDir(
-                    STORAGE_DIRNAME, Context.MODE_PRIVATE);
-            File imageFile = new File(storageDir, "results.png");
-            if (imageFile.exists()) {
-                imageFile.delete();
-            }
+            // Insert image in MediaStore
+            ContentResolver cr = resultsActivity.getContentResolver();
+            ContentValues values = new ContentValues();
+            values.put(MediaStore.Images.Media.TITLE, "daydreaming-results.png");
+            values.put(MediaStore.Images.Media.DESCRIPTION, "Detailed results of daydreaming experiment");
+            values.put(MediaStore.Images.Media.MIME_TYPE, imageType);
+            Uri uri = cr.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
 
-            // Save the image to file
             try {
-                FileOutputStream imageStream = new FileOutputStream(imageFile);
-                imageStream.write(Base64.decode(imageDataBytes.getBytes(), Base64.DEFAULT));
-                imageStream.flush();
-                imageStream.close();
+                OutputStream imageOut = cr.openOutputStream(uri);
+                image.compress(Bitmap.CompressFormat.PNG, 100, imageOut);
+                imageOut.close();
+            } catch (FileNotFoundException e) {
+                Logger.e(TAG, "File '{}' not found while opening output stream: {}",
+                        uri.toString(), e.getMessage());
+                throw new RuntimeException(e);
             } catch (IOException e) {
-                Logger.e(TAG, "Could not write file '{}': {}",
-                        imageFile.getAbsolutePath(), e.getMessage());
+                Logger.e(TAG, "Failed to insert image");
                 throw new RuntimeException(e);
             }
 
-            return imageFile.getAbsolutePath();
+            return uri;
         }
 
         @JavascriptInterface
         public void shareResults(String imageURI, String imageType) {
-            // Save image to file
-            String imageFilename = saveImageToFile(imageURI, imageType);
-
-            // Insert image in MediaStore
-            Uri uri;
-            try {
-                uri = Uri.parse(MediaStore.Images.Media.insertImage(resultsActivity.getContentResolver(),
-                        imageFilename, "daydreaming-results.png",
-                        "Detailed results of daydreaming experiment"));
-            } catch (FileNotFoundException e) {
-                Logger.e(TAG, "File '{}' not found while copying to MediaStore: {}",
-                        imageFilename, e.getMessage());
-                throw new RuntimeException(e);
-            }
+            // Save image to the MediaStore
+            Uri uri = saveImageToMediaStore(imageURI, imageType);
 
             // Share the image
             Intent shareIntent = new Intent();
@@ -217,7 +208,7 @@ public class ResultsActivity extends RoboFragmentActivity {
     private void initVars() {
         ProfileWrapper profileWrapper = profileStorage.getProfile().buildWrapper();
         profileWrap = json.toJsonPublic(profileWrapper);
-        shareInterface = new ShareInterface(this);;
+        shareInterface = new ShareInterface(this);
     }
 
     public void onResume() {
