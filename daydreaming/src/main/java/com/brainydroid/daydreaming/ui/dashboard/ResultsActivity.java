@@ -151,7 +151,7 @@ public class ResultsActivity extends RoboFragmentActivity {
             String imageDataBytes = imageURI.substring(imageURI.indexOf(",") + 1);
 
             // Store our image in MediaStore
-            Uri uri = resultsActivity.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+            Uri uri = resultsActivity.getContentResolver().insert(MediaStore.Images.Media.INTERNAL_CONTENT_URI, values);
             OutputStream outputStream;
             try {
                 outputStream = resultsActivity.getContentResolver().openOutputStream(uri);
