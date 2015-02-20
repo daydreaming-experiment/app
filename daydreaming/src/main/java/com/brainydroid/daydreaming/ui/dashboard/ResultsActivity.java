@@ -32,6 +32,7 @@ import java.util.HashMap;
 
 import roboguice.activity.RoboFragmentActivity;
 import roboguice.inject.ContentView;
+import roboguice.inject.InjectResource;
 import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_results)
@@ -52,6 +53,8 @@ public class ResultsActivity extends RoboFragmentActivity {
     @Inject Activity activity;
     @InjectView(R.id.activity_results_webView) private WebView webView;
     @InjectView(R.id.activity_results_root) private LinearLayout rootView;
+    @InjectResource(R.string.results_save) static String resultsSave;
+    @InjectResource(R.string.results_share) static String resultsShare;
 
     private boolean failedOnceAlready = false;
     private boolean resultsDownloaded = false;
@@ -59,6 +62,7 @@ public class ResultsActivity extends RoboFragmentActivity {
     private ProgressDialog progressDialog;
     private JSResults jsResults = null;
     private ResultsInterface resultsInterface = null;
+    private ShareInterface shareInterface = null;
     private String profileWrap;
 
     public static class JSResults {
@@ -109,11 +113,29 @@ public class ResultsActivity extends RoboFragmentActivity {
 
         @JavascriptInterface
         public void saveRawResults() {
-            Intent sendIntent = new Intent();
-            sendIntent.setAction(Intent.ACTION_SEND);
-            sendIntent.putExtra(Intent.EXTRA_TEXT, resultsWrap);
-            sendIntent.setType("text/plain");
-            resultsActivity.startActivity(sendIntent);
+            Intent saveIntent = new Intent();
+            saveIntent.setAction(Intent.ACTION_SEND);
+            saveIntent.putExtra(Intent.EXTRA_TEXT, resultsWrap);
+            saveIntent.setType("text/plain");
+            resultsActivity.startActivity(Intent.createChooser(saveIntent, resultsSave));
+        }
+    }
+
+    public static class ShareInterface {
+
+        private Activity resultsActivity;
+
+        public ShareInterface(Activity resultsActivity) {
+            this.resultsActivity = resultsActivity;
+        }
+
+        @JavascriptInterface
+        public void shareResults(String dataURI, String dataType) {
+            Intent shareIntent = new Intent();
+            shareIntent.setAction(Intent.ACTION_SEND);
+            shareIntent.putExtra(Intent.EXTRA_STREAM, dataURI);
+            shareIntent.setType(dataType);
+            resultsActivity.startActivity(Intent.createChooser(shareIntent, resultsShare));
         }
     }
 
@@ -142,6 +164,7 @@ public class ResultsActivity extends RoboFragmentActivity {
     private void initVars() {
         ProfileWrapper profileWrapper = profileStorage.getProfile().buildWrapper();
         profileWrap = json.toJsonPublic(profileWrapper);
+        shareInterface = new ShareInterface(this);
     }
 
     public void onResume() {
@@ -288,6 +311,7 @@ public class ResultsActivity extends RoboFragmentActivity {
                 webView.clearCache(true);
                 webView.addJavascriptInterface(jsResults, "injectedResults");
                 webView.addJavascriptInterface(resultsInterface, "resultsInterface");
+                webView.addJavascriptInterface(shareInterface, "shareInterface");
                 webView.setWebViewClient(new WebViewClient() {
 
                     @Override
