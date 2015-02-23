@@ -55,6 +55,9 @@
     <string name="results_refresh_download2">old. Do you want to refresh them? This can take up to 10MB, and is best done over wifi.</string>
     <string name="results_refresh_download_yes">Refresh results</string>
     <string name="results_refresh_download_no">Use cache</string>
+    <string name="results_share_title">Share results to…</string>
+    <string name="results_share_text">Check out my results after a month using Daydreaming! http://daydreaming-the-app.net/</string>
+    <string name="results_save_title">Save raw results to…</string>
 
     <string name="dashboard_toast_experiment_not_running">Experiment hasn\'t started yet!</string>
     <string name="dashboard_toast_not_connected">You\'re not connected to the internet!</string>

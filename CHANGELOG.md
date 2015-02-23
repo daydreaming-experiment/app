@@ -1,6 +1,12 @@
 Changelog
 =========
 
+0.34.0
+------
+
+* Enhancements
+  * [#379] Let the results page be shared with an Android share intent (the filename is not controlled yet)
+
 0.33.1
 ------
 

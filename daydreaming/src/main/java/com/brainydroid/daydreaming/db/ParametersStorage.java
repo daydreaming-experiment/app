@@ -179,6 +179,12 @@ public class ParametersStorage {
                     statusManager.getCurrentMode());
             throw new RuntimeException("resultsPageUrl is asked for but not set");
         }
+
+        // Use test results page if in test mode
+        if (statusManager.getCurrentMode() == StatusManager.MODE_TEST) {
+            resultsPageUrl += "/test";
+        }
+
         Logger.d(TAG, "{0} - resultsPageUrl is {1}", statusManager.getCurrentModeName(),
                 resultsPageUrl);
         return resultsPageUrl;

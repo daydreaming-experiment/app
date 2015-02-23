@@ -3,10 +3,16 @@ package com.brainydroid.daydreaming.ui.dashboard;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Base64;
 import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
@@ -28,6 +34,9 @@ import com.brainydroid.daydreaming.network.ProfileWrapper;
 import com.brainydroid.daydreaming.network.ServerTalker;
 import com.google.inject.Inject;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.HashMap;
 
 import roboguice.activity.RoboFragmentActivity;
@@ -59,6 +68,7 @@ public class ResultsActivity extends RoboFragmentActivity {
     private ProgressDialog progressDialog;
     private JSResults jsResults = null;
     private ResultsInterface resultsInterface = null;
+    private ShareInterface shareInterface = null;
     private String profileWrap;
 
     public static class JSResults {
@@ -109,11 +119,67 @@ public class ResultsActivity extends RoboFragmentActivity {
 
         @JavascriptInterface
         public void saveRawResults() {
-            Intent sendIntent = new Intent();
-            sendIntent.setAction(Intent.ACTION_SEND);
-            sendIntent.putExtra(Intent.EXTRA_TEXT, resultsWrap);
-            sendIntent.setType("text/plain");
-            resultsActivity.startActivity(sendIntent);
+            Intent saveIntent = new Intent();
+            saveIntent.setAction(Intent.ACTION_SEND);
+            saveIntent.putExtra(Intent.EXTRA_TEXT, resultsWrap);
+            saveIntent.setType("text/plain");
+            resultsActivity.startActivity(Intent.createChooser(
+                    saveIntent, resultsActivity.getResources().getString(R.string.results_save_title)));
+        }
+    }
+
+    public static class ShareInterface {
+
+        private Activity resultsActivity;
+
+        public ShareInterface(Activity resultsActivity) {
+            this.resultsActivity = resultsActivity;
+        }
+
+        private Uri saveImageToMediaStore(String imageURI, String imageType) {
+            // Convert image data to a bitmap
+            String imageDataBytes = imageURI.substring(imageURI.indexOf(",") + 1);
+            byte[] decodedString = Base64.decode(imageDataBytes.getBytes(), Base64.DEFAULT);
+            Bitmap image = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+
+            // Insert image in MediaStore
+            ContentResolver cr = resultsActivity.getContentResolver();
+            ContentValues values = new ContentValues();
+            values.put(MediaStore.Images.Media.TITLE, "daydreaming-results.png");
+            values.put(MediaStore.Images.Media.DESCRIPTION, "Detailed results of daydreaming experiment");
+            values.put(MediaStore.Images.Media.MIME_TYPE, imageType);
+            Uri uri = cr.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+
+            try {
+                OutputStream imageOut = cr.openOutputStream(uri);
+                image.compress(Bitmap.CompressFormat.PNG, 100, imageOut);
+                imageOut.close();
+            } catch (FileNotFoundException e) {
+                Logger.e(TAG, "File '{}' not found while opening output stream: {}",
+                        uri.toString(), e.getMessage());
+                throw new RuntimeException(e);
+            } catch (IOException e) {
+                Logger.e(TAG, "Failed to insert image");
+                throw new RuntimeException(e);
+            }
+
+            return uri;
+        }
+
+        @JavascriptInterface
+        public void shareResults(String imageURI, String imageType) {
+            // Save image to the MediaStore
+            Uri uri = saveImageToMediaStore(imageURI, imageType);
+
+            // Share the image
+            Intent shareIntent = new Intent();
+            shareIntent.setAction(Intent.ACTION_SEND);
+            shareIntent.putExtra(Intent.EXTRA_TEXT,
+                    resultsActivity.getResources().getString(R.string.results_share_text));
+            shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
+            shareIntent.setType(imageType);  // Used for intent filtering
+            resultsActivity.startActivity(Intent.createChooser(
+                    shareIntent, resultsActivity.getResources().getString(R.string.results_share_title)));
         }
     }
 
@@ -142,6 +208,7 @@ public class ResultsActivity extends RoboFragmentActivity {
     private void initVars() {
         ProfileWrapper profileWrapper = profileStorage.getProfile().buildWrapper();
         profileWrap = json.toJsonPublic(profileWrapper);
+        shareInterface = new ShareInterface(this);
     }
 
     public void onResume() {
@@ -288,6 +355,7 @@ public class ResultsActivity extends RoboFragmentActivity {
                 webView.clearCache(true);
                 webView.addJavascriptInterface(jsResults, "injectedResults");
                 webView.addJavascriptInterface(resultsInterface, "resultsInterface");
+                webView.addJavascriptInterface(shareInterface, "shareInterface");
                 webView.setWebViewClient(new WebViewClient() {
 
                     @Override
