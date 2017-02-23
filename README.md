@@ -8,7 +8,7 @@ Daydreaming app
 Daydreaming is a pilot cognitive science experiment that studies
 **mind-wandering** patterns by using smartphones. It takes advantage of *in
 vivo* possibilities, that is measurements that are not usually possible in a
-lab. Read more at [dayreaming-the-app.net](http://daydreaming-the-app.net).
+lab.
 
 This experiment is part of the larger
 [Science-en-Poche](http://www.iscpif.fr/sep) project, making it easier for
